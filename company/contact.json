@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Harmonic Insight 連絡先情報",
+  "version": "1.0.0",
+  "company": {
+    "name": "Harmonic Insight",
+    "legalName": "Harmonic Insight Inc.",
+    "founded": 2024
+  },
+  "contact": {
+    "general": {
+      "email": "info@harmonicinsight.com",
+      "website": "https://harmonicinsight.com"
+    },
+    "support": {
+      "email": "support@harmonicinsight.com",
+      "portal": "https://support.harmonicinsight.com",
+      "hours": "平日 9:00-18:00 (JST)"
+    },
+    "sales": {
+      "email": "sales@harmonicinsight.com",
+      "phone": null
+    },
+    "press": {
+      "email": "press@harmonicinsight.com"
+    },
+    "legal": {
+      "email": "legal@harmonicinsight.com"
+    },
+    "privacy": {
+      "email": "privacy@harmonicinsight.com"
+    }
+  },
+  "social": {
+    "twitter": "https://twitter.com/harmonicinsight",
+    "linkedin": "https://linkedin.com/company/harmonicinsight",
+    "github": "https://github.com/HarmonicInsight"
+  },
+  "address": {
+    "country": "Japan",
+    "postalCode": null,
+    "prefecture": null,
+    "city": null,
+    "street": null
+  }
+}

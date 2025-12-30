@@ -1,0 +1,21 @@
+{
+  "name": "@insight-series/license",
+  "version": "1.0.0",
+  "description": "Insight Series License Management - TypeScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "keywords": [
+    "insight-series",
+    "license"
+  ],
+  "author": "Harmonic Insight",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}

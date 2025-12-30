@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Insight Series 製品定義",
+  "version": "1.0.0",
+  "products": {
+    "desktop": [
+      {
+        "id": "sales-insight",
+        "code": "SALES",
+        "name": "SalesInsight",
+        "displayName": "SalesInsight",
+        "description": "AI営業支援アシスタント",
+        "category": "sales",
+        "platform": ["windows", "macos"],
+        "framework": "tauri",
+        "status": "active",
+        "repository": "HarmonicInsight/SalesInsight",
+        "features": [
+          "realtime-analysis",
+          "talk-optimization",
+          "crm-integration"
+        ]
+      },
+      {
+        "id": "insight-slide",
+        "code": "SLIDE",
+        "name": "InsightSlide",
+        "displayName": "InsightSlide",
+        "description": "AIプレゼンテーション支援",
+        "category": "presentation",
+        "platform": ["windows", "macos"],
+        "framework": "tauri",
+        "status": "development",
+        "repository": "HarmonicInsight/InsightSlide",
+        "features": [
+          "slide-generation",
+          "speech-coaching",
+          "rehearsal-analysis"
+        ]
+      },
+      {
+        "id": "insight-py",
+        "code": "PY",
+        "name": "InsightPy",
+        "displayName": "InsightPy",
+        "description": "Pythonデータ分析支援",
+        "category": "data-analysis",
+        "platform": ["windows", "macos", "linux"],
+        "framework": "python",
+        "status": "planned",
+        "repository": "HarmonicInsight/InsightPy",
+        "features": [
+          "code-generation",
+          "data-visualization",
+          "report-creation"
+        ]
+      },
+      {
+        "id": "interview-insight",
+        "code": "INTV",
+        "name": "InterviewInsight",
+        "displayName": "InterviewInsight",
+        "description": "AI採用面接支援",
+        "category": "hr",
+        "platform": ["windows", "macos"],
+        "framework": "tauri",
+        "status": "planned",
+        "repository": "HarmonicInsight/InterviewInsight",
+        "features": [
+          "interview-evaluation",
+          "question-suggestion",
+          "bias-detection"
+        ]
+      }
+    ],
+    "mobile": [
+      {
+        "id": "sales-insight-mobile",
+        "code": "SALES-M",
+        "name": "SalesInsight Mobile",
+        "parentProduct": "sales-insight",
+        "platform": ["ios", "android"],
+        "framework": "react-native",
+        "status": "planned"
+      },
+      {
+        "id": "insight-slide-mobile",
+        "code": "SLIDE-M",
+        "name": "InsightSlide Mobile",
+        "parentProduct": "insight-slide",
+        "platform": ["ios", "android"],
+        "framework": "react-native",
+        "status": "planned"
+      }
+    ]
+  },
+  "tiers": {
+    "TRIAL": {
+      "name": "Trial",
+      "duration": 30,
+      "durationUnit": "days",
+      "features": ["basic"],
+      "limits": {
+        "apiCalls": 100,
+        "storage": "100MB"
+      }
+    },
+    "STD": {
+      "name": "Standard",
+      "duration": 365,
+      "durationUnit": "days",
+      "features": ["basic", "standard"],
+      "limits": {
+        "apiCalls": 10000,
+        "storage": "5GB"
+      }
+    },
+    "PRO": {
+      "name": "Professional",
+      "duration": 365,
+      "durationUnit": "days",
+      "features": ["basic", "standard", "professional"],
+      "limits": {
+        "apiCalls": 100000,
+        "storage": "50GB"
+      }
+    },
+    "ENT": {
+      "name": "Enterprise",
+      "duration": null,
+      "durationUnit": "perpetual",
+      "features": ["basic", "standard", "professional", "enterprise"],
+      "limits": {
+        "apiCalls": "unlimited",
+        "storage": "unlimited"
+      }
+    }
+  },
+  "featureFlags": {
+    "basic": [
+      "core-functionality",
+      "local-processing"
+    ],
+    "standard": [
+      "cloud-sync",
+      "export-basic"
+    ],
+    "professional": [
+      "team-collaboration",
+      "advanced-analytics",
+      "export-advanced",
+      "api-access"
+    ],
+    "enterprise": [
+      "sso",
+      "audit-logs",
+      "custom-deployment",
+      "priority-support",
+      "sla"
+    ]
+  }
+}
