@@ -71,6 +71,19 @@
           "question-suggestion",
           "bias-detection"
         ]
+      },
+      {
+        "id": "insight-suite",
+        "code": "ALL",
+        "name": "Insight Suite",
+        "displayName": "Insight Suite",
+        "description": "全製品バンドル",
+        "category": "bundle",
+        "platform": ["windows", "macos"],
+        "framework": "mixed",
+        "status": "active",
+        "repository": null,
+        "features": ["all"]
       }
     ],
     "mobile": [
@@ -97,7 +110,7 @@
   "tiers": {
     "TRIAL": {
       "name": "Trial",
-      "duration": 30,
+      "duration": 14,
       "durationUnit": "days",
       "features": ["basic"],
       "limits": {

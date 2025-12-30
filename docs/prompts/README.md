@@ -8,7 +8,7 @@
 2. 対応するプロンプトファイルの内容をコピー
 3. Claude Code に貼り付けて実行
 
-## プロンプト一覧
+## デスクトップアプリ統合プロンプト
 
 | アプリ | プロンプト | 製品コード | 技術スタック |
 |--------|-----------|-----------|-------------|
@@ -16,6 +16,15 @@
 | InsightSlide | [INSIGHTSLIDE_SETUP.md](./INSIGHTSLIDE_SETUP.md) | `SLIDE` | Python + Tkinter |
 | InsightPy | [INSIGHTPY_SETUP.md](./INSIGHTPY_SETUP.md) | `PY` | Python |
 | InterviewInsight | [INTERVIEWINSIGHT_SETUP.md](./INTERVIEWINSIGHT_SETUP.md) | `INTV` | TBD |
+
+## モバイルモジュール追加プロンプト
+
+insight-common に Android/iOS 用モジュールを追加するためのプロンプトです。
+
+| プラットフォーム | プロンプト | 言語 | 追加モジュール |
+|----------------|-----------|------|---------------|
+| Android | [MOBILE_ANDROID_SETUP.md](./MOBILE_ANDROID_SETUP.md) | Kotlin | license, utils, errors, i18n |
+| iOS | [MOBILE_IOS_SETUP.md](./MOBILE_IOS_SETUP.md) | Swift | license, utils, errors, i18n |
 
 ## 共通手順
 
