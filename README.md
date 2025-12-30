@@ -28,8 +28,14 @@ insight-common/
 │   ├── index.ts       # TypeScript版
 │   ├── __init__.py    # Python版
 │   └── README.md
-├── brand/             # ブランド資産
-│   └── colors.json    # カラーパレット定義
+├── brand/             # ブランド・デザインシステム
+│   ├── colors.json         # カラーパレット
+│   ├── design-system.json  # タイポグラフィ・スペーシング等
+│   └── voice-guidelines.md # トーン＆マナー
+├── ui/                # UI共通定義
+│   ├── menu-structure.json # メニュー・ナビゲーション
+│   ├── components.md       # コンポーネント設計
+│   └── README.md
 ├── legal/             # 法務文書
 │   ├── terms-of-service.md
 │   └── privacy-policy.md
@@ -79,6 +85,8 @@ INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
 ## ドキュメント
 
+### 技術ドキュメント
+
 | ドキュメント | 説明 |
 |-------------|------|
 | [クイックスタート](./docs/QUICKSTART.md) | 5分で導入 |
@@ -88,6 +96,16 @@ INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 | [ユーティリティ](./utils/README.md) | 共通ユーティリティ関数 |
 | [エラー定義](./errors/README.md) | 共通エラー型とコード |
 | [統合プロンプト](./docs/prompts/README.md) | 各製品向けセットアップ手順 |
+
+### デザイン・UXドキュメント
+
+| ドキュメント | 説明 |
+|-------------|------|
+| [デザインシステム](./brand/design-system.json) | タイポグラフィ・スペーシング・アニメーション |
+| [カラーパレット](./brand/colors.json) | ブランドカラー・製品カラー |
+| [トーン＆マナー](./brand/voice-guidelines.md) | UIテキスト・メッセージの書き方 |
+| [UIコンポーネント](./ui/components.md) | 共通UI設計ガイドライン |
+| [メニュー構造](./ui/menu-structure.json) | ナビゲーション・設定画面の構造 |
 
 ## 使用方法
 

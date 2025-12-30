@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Insight Series 共通メニュー構造",
+  "version": "1.0.0",
+  "sidebar": {
+    "width": "260px",
+    "collapsedWidth": "64px",
+    "position": "left",
+    "sections": [
+      {
+        "id": "main",
+        "items": [
+          {
+            "id": "home",
+            "label": { "ja": "ホーム", "en": "Home" },
+            "icon": "Home",
+            "path": "/",
+            "shortcut": "Ctrl+H"
+          },
+          {
+            "id": "dashboard",
+            "label": { "ja": "ダッシュボード", "en": "Dashboard" },
+            "icon": "LayoutDashboard",
+            "path": "/dashboard",
+            "shortcut": "Ctrl+D"
+          }
+        ]
+      },
+      {
+        "id": "workspace",
+        "label": { "ja": "ワークスペース", "en": "Workspace" },
+        "items": [
+          {
+            "id": "projects",
+            "label": { "ja": "プロジェクト", "en": "Projects" },
+            "icon": "FolderOpen",
+            "path": "/projects"
+          },
+          {
+            "id": "recent",
+            "label": { "ja": "最近使用", "en": "Recent" },
+            "icon": "Clock",
+            "path": "/recent"
+          },
+          {
+            "id": "favorites",
+            "label": { "ja": "お気に入り", "en": "Favorites" },
+            "icon": "Star",
+            "path": "/favorites"
+          }
+        ]
+      },
+      {
+        "id": "tools",
+        "label": { "ja": "ツール", "en": "Tools" },
+        "items": "product-specific"
+      }
+    ],
+    "footer": [
+      {
+        "id": "settings",
+        "label": { "ja": "設定", "en": "Settings" },
+        "icon": "Settings",
+        "path": "/settings",
+        "shortcut": "Ctrl+,"
+      },
+      {
+        "id": "help",
+        "label": { "ja": "ヘルプ", "en": "Help" },
+        "icon": "HelpCircle",
+        "path": "/help",
+        "shortcut": "F1"
+      }
+    ]
+  },
+  "header": {
+    "height": "56px",
+    "layout": ["logo", "breadcrumb", "spacer", "search", "notifications", "user"],
+    "components": {
+      "logo": {
+        "showText": true,
+        "collapsible": true
+      },
+      "search": {
+        "placeholder": { "ja": "検索...", "en": "Search..." },
+        "shortcut": "Ctrl+K"
+      },
+      "notifications": {
+        "icon": "Bell",
+        "showBadge": true
+      },
+      "user": {
+        "showAvatar": true,
+        "menu": [
+          { "id": "profile", "label": { "ja": "プロフィール", "en": "Profile" }, "icon": "User" },
+          { "id": "license", "label": { "ja": "ライセンス", "en": "License" }, "icon": "Key" },
+          { "type": "divider" },
+          { "id": "logout", "label": { "ja": "ログアウト", "en": "Logout" }, "icon": "LogOut" }
+        ]
+      }
+    }
+  },
+  "contextMenu": {
+    "file": [
+      { "id": "open", "label": { "ja": "開く", "en": "Open" }, "shortcut": "Enter" },
+      { "id": "rename", "label": { "ja": "名前を変更", "en": "Rename" }, "shortcut": "F2" },
+      { "type": "divider" },
+      { "id": "duplicate", "label": { "ja": "複製", "en": "Duplicate" }, "shortcut": "Ctrl+D" },
+      { "id": "export", "label": { "ja": "エクスポート", "en": "Export" } },
+      { "type": "divider" },
+      { "id": "delete", "label": { "ja": "削除", "en": "Delete" }, "shortcut": "Del", "danger": true }
+    ]
+  },
+  "settings": {
+    "categories": [
+      {
+        "id": "general",
+        "label": { "ja": "一般", "en": "General" },
+        "icon": "Settings",
+        "items": [
+          { "id": "language", "label": { "ja": "言語", "en": "Language" }, "type": "select" },
+          { "id": "theme", "label": { "ja": "テーマ", "en": "Theme" }, "type": "select", "options": ["light", "dark", "system"] },
+          { "id": "autoSave", "label": { "ja": "自動保存", "en": "Auto Save" }, "type": "toggle" }
+        ]
+      },
+      {
+        "id": "appearance",
+        "label": { "ja": "外観", "en": "Appearance" },
+        "icon": "Palette",
+        "items": [
+          { "id": "fontSize", "label": { "ja": "フォントサイズ", "en": "Font Size" }, "type": "slider" },
+          { "id": "sidebarPosition", "label": { "ja": "サイドバー位置", "en": "Sidebar Position" }, "type": "select" },
+          { "id": "compactMode", "label": { "ja": "コンパクトモード", "en": "Compact Mode" }, "type": "toggle" }
+        ]
+      },
+      {
+        "id": "notifications",
+        "label": { "ja": "通知", "en": "Notifications" },
+        "icon": "Bell",
+        "items": [
+          { "id": "desktop", "label": { "ja": "デスクトップ通知", "en": "Desktop Notifications" }, "type": "toggle" },
+          { "id": "sound", "label": { "ja": "サウンド", "en": "Sound" }, "type": "toggle" },
+          { "id": "email", "label": { "ja": "メール通知", "en": "Email Notifications" }, "type": "toggle" }
+        ]
+      },
+      {
+        "id": "license",
+        "label": { "ja": "ライセンス", "en": "License" },
+        "icon": "Key",
+        "items": [
+          { "id": "key", "label": { "ja": "ライセンスキー", "en": "License Key" }, "type": "input" },
+          { "id": "status", "label": { "ja": "ステータス", "en": "Status" }, "type": "display" },
+          { "id": "expires", "label": { "ja": "有効期限", "en": "Expires" }, "type": "display" }
+        ]
+      },
+      {
+        "id": "advanced",
+        "label": { "ja": "詳細設定", "en": "Advanced" },
+        "icon": "Wrench",
+        "items": [
+          { "id": "dataPath", "label": { "ja": "データ保存先", "en": "Data Path" }, "type": "path" },
+          { "id": "logs", "label": { "ja": "ログ", "en": "Logs" }, "type": "action" },
+          { "id": "reset", "label": { "ja": "設定をリセット", "en": "Reset Settings" }, "type": "action", "danger": true }
+        ]
+      },
+      {
+        "id": "about",
+        "label": { "ja": "このアプリについて", "en": "About" },
+        "icon": "Info",
+        "items": [
+          { "id": "version", "label": { "ja": "バージョン", "en": "Version" }, "type": "display" },
+          { "id": "updates", "label": { "ja": "アップデート確認", "en": "Check Updates" }, "type": "action" },
+          { "id": "terms", "label": { "ja": "利用規約", "en": "Terms of Service" }, "type": "link" },
+          { "id": "privacy", "label": { "ja": "プライバシーポリシー", "en": "Privacy Policy" }, "type": "link" }
+        ]
+      }
+    ]
+  },
+  "productSpecific": {
+    "salesInsight": {
+      "tools": [
+        { "id": "analysis", "label": { "ja": "商談分析", "en": "Deal Analysis" }, "icon": "TrendingUp" },
+        { "id": "scripts", "label": { "ja": "トークスクリプト", "en": "Talk Scripts" }, "icon": "FileText" },
+        { "id": "suggestions", "label": { "ja": "提案作成", "en": "Proposals" }, "icon": "Lightbulb" }
+      ]
+    },
+    "insightSlide": {
+      "tools": [
+        { "id": "slides", "label": { "ja": "スライド作成", "en": "Create Slides" }, "icon": "Presentation" },
+        { "id": "templates", "label": { "ja": "テンプレート", "en": "Templates" }, "icon": "Layout" },
+        { "id": "rehearsal", "label": { "ja": "リハーサル", "en": "Rehearsal" }, "icon": "Video" }
+      ]
+    },
+    "insightPy": {
+      "tools": [
+        { "id": "notebook", "label": { "ja": "ノートブック", "en": "Notebook" }, "icon": "BookOpen" },
+        { "id": "visualization", "label": { "ja": "可視化", "en": "Visualization" }, "icon": "BarChart" },
+        { "id": "reports", "label": { "ja": "レポート", "en": "Reports" }, "icon": "FileOutput" }
+      ]
+    },
+    "interviewInsight": {
+      "tools": [
+        { "id": "interviews", "label": { "ja": "面接一覧", "en": "Interviews" }, "icon": "Users" },
+        { "id": "evaluation", "label": { "ja": "評価", "en": "Evaluation" }, "icon": "ClipboardCheck" },
+        { "id": "questions", "label": { "ja": "質問集", "en": "Questions" }, "icon": "MessageSquare" }
+      ]
+    }
+  },
+  "shortcuts": {
+    "global": [
+      { "key": "Ctrl+N", "action": "new", "label": { "ja": "新規作成", "en": "New" } },
+      { "key": "Ctrl+O", "action": "open", "label": { "ja": "開く", "en": "Open" } },
+      { "key": "Ctrl+S", "action": "save", "label": { "ja": "保存", "en": "Save" } },
+      { "key": "Ctrl+Shift+S", "action": "saveAs", "label": { "ja": "名前を付けて保存", "en": "Save As" } },
+      { "key": "Ctrl+Z", "action": "undo", "label": { "ja": "元に戻す", "en": "Undo" } },
+      { "key": "Ctrl+Shift+Z", "action": "redo", "label": { "ja": "やり直す", "en": "Redo" } },
+      { "key": "Ctrl+K", "action": "search", "label": { "ja": "検索", "en": "Search" } },
+      { "key": "Ctrl+,", "action": "settings", "label": { "ja": "設定", "en": "Settings" } },
+      { "key": "F1", "action": "help", "label": { "ja": "ヘルプ", "en": "Help" } },
+      { "key": "Ctrl+Q", "action": "quit", "label": { "ja": "終了", "en": "Quit" } }
+    ]
+  }
+}

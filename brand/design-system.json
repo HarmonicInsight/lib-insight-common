@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Insight Series デザインシステム - Premium Consultant Style",
+  "version": "1.0.0",
+  "philosophy": {
+    "concept": "Professional Intelligence",
+    "keywords": ["洗練", "信頼", "知性", "効率", "先進性"],
+    "personality": {
+      "ja": "プロフェッショナルに寄り添う、信頼できるパートナー",
+      "en": "A trusted partner for professionals"
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": {
+        "ja": "'Noto Sans JP', 'Hiragino Sans', sans-serif",
+        "en": "'Inter', 'SF Pro Display', -apple-system, sans-serif"
+      },
+      "mono": "'JetBrains Mono', 'Fira Code', monospace",
+      "display": "'Inter', 'SF Pro Display', sans-serif"
+    },
+    "scale": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem"
+    },
+    "lineHeight": {
+      "tight": 1.25,
+      "normal": 1.5,
+      "relaxed": 1.75
+    },
+    "fontWeight": {
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "usage": {
+      "h1": { "size": "2xl", "weight": "bold", "lineHeight": "tight" },
+      "h2": { "size": "xl", "weight": "semibold", "lineHeight": "tight" },
+      "h3": { "size": "lg", "weight": "semibold", "lineHeight": "normal" },
+      "body": { "size": "base", "weight": "normal", "lineHeight": "relaxed" },
+      "caption": { "size": "sm", "weight": "normal", "lineHeight": "normal" },
+      "label": { "size": "sm", "weight": "medium", "lineHeight": "normal" }
+    }
+  },
+  "spacing": {
+    "unit": 4,
+    "scale": {
+      "0": "0",
+      "1": "0.25rem",
+      "2": "0.5rem",
+      "3": "0.75rem",
+      "4": "1rem",
+      "5": "1.25rem",
+      "6": "1.5rem",
+      "8": "2rem",
+      "10": "2.5rem",
+      "12": "3rem",
+      "16": "4rem",
+      "20": "5rem",
+      "24": "6rem"
+    },
+    "layout": {
+      "sidebarWidth": "260px",
+      "sidebarCollapsedWidth": "64px",
+      "headerHeight": "56px",
+      "contentMaxWidth": "1200px",
+      "cardPadding": "1.5rem",
+      "sectionGap": "2rem"
+    }
+  },
+  "borderRadius": {
+    "none": "0",
+    "sm": "0.25rem",
+    "md": "0.5rem",
+    "lg": "0.75rem",
+    "xl": "1rem",
+    "full": "9999px"
+  },
+  "shadows": {
+    "none": "none",
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+    "inner": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
+    "card": "0 2px 8px rgba(0, 0, 0, 0.08)",
+    "cardHover": "0 8px 24px rgba(0, 0, 0, 0.12)"
+  },
+  "animation": {
+    "duration": {
+      "instant": "0ms",
+      "fast": "150ms",
+      "normal": "250ms",
+      "slow": "400ms"
+    },
+    "easing": {
+      "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "in": "cubic-bezier(0.4, 0, 1, 1)",
+      "out": "cubic-bezier(0, 0, 0.2, 1)",
+      "inOut": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "patterns": {
+      "fadeIn": { "duration": "normal", "easing": "out" },
+      "slideIn": { "duration": "normal", "easing": "out" },
+      "scale": { "duration": "fast", "easing": "default" },
+      "hover": { "duration": "fast", "easing": "default" }
+    }
+  },
+  "breakpoints": {
+    "sm": "640px",
+    "md": "768px",
+    "lg": "1024px",
+    "xl": "1280px",
+    "2xl": "1536px"
+  },
+  "zIndex": {
+    "base": 0,
+    "dropdown": 100,
+    "sticky": 200,
+    "modal": 300,
+    "popover": 400,
+    "tooltip": 500,
+    "toast": 600
+  },
+  "iconography": {
+    "library": "Lucide Icons",
+    "sizes": {
+      "sm": "16px",
+      "md": "20px",
+      "lg": "24px",
+      "xl": "32px"
+    },
+    "strokeWidth": 1.5,
+    "style": "outline"
+  }
+}
