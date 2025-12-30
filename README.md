@@ -52,12 +52,20 @@ INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
 | コード | 名称 | 期間 |
 |--------|------|------|
-| TRIAL | Trial | 30日間 |
+| TRIAL | Trial | 任意指定（デフォルト14日） |
 | STD | Standard | 年間 |
 | PRO | Professional | 年間 |
 | ENT | Enterprise | 永久 |
 
 詳細は [license/README.md](./license/README.md) を参照してください。
+
+## ドキュメント
+
+| ドキュメント | 説明 |
+|-------------|------|
+| [クイックスタート](./docs/QUICKSTART.md) | 5分で導入 |
+| [統合ガイド](./docs/INTEGRATION_GUIDE.md) | 詳細な統合手順 |
+| [ライセンス仕様](./license/README.md) | ライセンスキー形式・機能制限 |
 
 ## 使用方法
 
