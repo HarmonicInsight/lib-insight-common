@@ -78,8 +78,8 @@ Harmonic Insight（以下「当社」）は、お客様のプライバシーを�
 
 プライバシーに関するお問い合わせ：
 
-- Email: privacy@harmonicinsight.com
-- Web: https://harmonicinsight.com/privacy
+- Email: info@h-insight.jp
+- Web: https://h-insight.jp
 - 住所: [会社住所]
 
 ## 12. 準拠法

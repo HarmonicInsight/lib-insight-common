@@ -59,5 +59,5 @@
 
 本規約に関するお問い合わせは、以下までご連絡ください：
 
-- Email: legal@harmonicinsight.com
-- Web: https://harmonicinsight.com/contact
+- Email: info@h-insight.jp
+- Web: https://h-insight.jp

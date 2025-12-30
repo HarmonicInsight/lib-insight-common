@@ -532,4 +532,4 @@ jobs:
 質問や問題がある場合：
 
 - Issue: https://github.com/HarmonicInsight/insight-common/issues
-- Email: dev@harmonicinsight.com
+- Email: developer@h-insight.jp

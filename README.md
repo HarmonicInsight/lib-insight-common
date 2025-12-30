@@ -193,5 +193,6 @@ python -m pytest
 
 ## 連絡先
 
-- サポート: support@harmonicinsight.com
-- 開発チーム: dev@harmonicinsight.com
+- 一般: info@h-insight.jp
+- サポート: support@h-insight.jp
+- 開発チーム: developer@h-insight.jp

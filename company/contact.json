@@ -9,38 +9,32 @@
   },
   "contact": {
     "general": {
-      "email": "info@harmonicinsight.com",
-      "website": "https://harmonicinsight.com"
+      "email": "info@h-insight.jp",
+      "website": "https://h-insight.jp"
     },
     "support": {
-      "email": "support@harmonicinsight.com",
-      "portal": "https://support.harmonicinsight.com",
+      "email": "support@h-insight.jp",
       "hours": "平日 9:00-18:00 (JST)"
     },
-    "sales": {
-      "email": "sales@harmonicinsight.com",
-      "phone": null
-    },
-    "press": {
-      "email": "press@harmonicinsight.com"
+    "developer": {
+      "email": "developer@h-insight.jp"
     },
     "legal": {
-      "email": "legal@harmonicinsight.com"
+      "email": "info@h-insight.jp"
     },
     "privacy": {
-      "email": "privacy@harmonicinsight.com"
+      "email": "info@h-insight.jp"
     }
   },
   "social": {
-    "twitter": "https://twitter.com/harmonicinsight",
-    "linkedin": "https://linkedin.com/company/harmonicinsight",
     "github": "https://github.com/HarmonicInsight"
   },
   "address": {
-    "country": "Japan",
-    "postalCode": null,
-    "prefecture": null,
-    "city": null,
-    "street": null
+    "country": "Japan"
+  },
+  "staff": {
+    "astia": "astia@h-insight.jp",
+    "erik": "erik.arthur@h-insight.jp",
+    "lulico": "lulico@h-insight.jp"
   }
 }

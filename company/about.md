@@ -61,4 +61,4 @@ Harmonic Insightは、AI技術を活用したビジネスソフトウェアを�
 
 私たちは常に優秀な人材を求めています。詳しくは採用ページをご覧ください。
 
-https://harmonicinsight.com/careers
+https://h-insight.jp
