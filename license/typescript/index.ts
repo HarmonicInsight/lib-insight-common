@@ -30,6 +30,71 @@ export const TIER_NAMES: Record<LicenseTier, string> = {
 };
 
 /**
+ * ティア定義
+ * - durationDays: 日数ベースの期限（TRIAL用）
+ * - durationMonths: 月数ベースの期限（STD/PRO用）
+ * - null: 永久ライセンス（ENT用）
+ */
+export const TIERS: Record<LicenseTier, {
+  name: string;
+  nameJa: string;
+  durationMonths: number | null;
+  durationDays?: number;
+}> = {
+  TRIAL: { name: 'Trial', nameJa: 'トライアル', durationMonths: null, durationDays: 14 },
+  STD: { name: 'Standard', nameJa: 'スタンダード', durationMonths: 12 },
+  PRO: { name: 'Professional', nameJa: 'プロフェッショナル', durationMonths: 12 },
+  ENT: { name: 'Enterprise', nameJa: 'エンタープライズ', durationMonths: null },
+};
+
+/**
+ * 機能制限定義
+ */
+export interface FeatureLimits {
+  maxFiles: number;
+  maxRecords: number;
+  batchProcessing: boolean;
+  export: boolean;
+  cloudSync: boolean;
+  priority: boolean;
+}
+
+export const TIER_LIMITS: Record<LicenseTier, FeatureLimits> = {
+  TRIAL: {
+    maxFiles: 10,
+    maxRecords: 500,
+    batchProcessing: true,
+    export: true,
+    cloudSync: false,
+    priority: false,
+  },
+  STD: {
+    maxFiles: 50,
+    maxRecords: 5000,
+    batchProcessing: true,
+    export: true,
+    cloudSync: false,
+    priority: false,
+  },
+  PRO: {
+    maxFiles: Infinity,
+    maxRecords: 50000,
+    batchProcessing: true,
+    export: true,
+    cloudSync: true,
+    priority: true,
+  },
+  ENT: {
+    maxFiles: Infinity,
+    maxRecords: Infinity,
+    batchProcessing: true,
+    export: true,
+    cloudSync: true,
+    priority: true,
+  },
+};
+
+/**
  * ライセンスキーのフォーマット検証用正規表現
  * 形式: INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
  */
@@ -53,8 +118,10 @@ function calculateChecksum(input: string): string {
 export class LicenseValidator {
   /**
    * ライセンスキーを検証する
+   * @param licenseKey ライセンスキー
+   * @param storedExpiresAt 保存されている有効期限（任意）
    */
-  validate(licenseKey: string): LicenseInfo {
+  validate(licenseKey: string, storedExpiresAt?: Date): LicenseInfo {
     if (!licenseKey) {
       return {
         isValid: false,
@@ -94,12 +161,20 @@ export class LicenseValidator {
       };
     }
 
-    // 有効期限の計算（TRIALは30日、STD/PROは365日、ENTは無期限）
-    let expiresAt: Date | null = null;
-    if (tier !== 'ENT') {
-      const days = tier === 'TRIAL' ? 30 : 365;
-      expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + days);
+    // 有効期限の決定
+    let expiresAt: Date | null = storedExpiresAt || null;
+
+    // 期限切れチェック (ENT は期限なし)
+    if (tier !== 'ENT' && expiresAt) {
+      if (expiresAt < new Date()) {
+        return {
+          isValid: false,
+          product: product as ProductCode,
+          tier: tier as LicenseTier,
+          expiresAt,
+          error: 'License expired',
+        };
+      }
     }
 
     return {
@@ -128,9 +203,53 @@ export class LicenseValidator {
 }
 
 /**
- * ライセンスキーを生成する（開発・テスト用）
+ * 機能制限を取得
  */
-export function generateLicenseKey(product: ProductCode, tier: LicenseTier): string {
+export function getFeatureLimits(tier: LicenseTier | null): FeatureLimits {
+  if (!tier) {
+    return TIER_LIMITS.TRIAL; // デフォルトはTRIAL制限
+  }
+  return TIER_LIMITS[tier];
+}
+
+/**
+ * ライセンスキー生成オプション
+ */
+export interface GenerateOptions {
+  productCode: ProductCode;
+  tier: LicenseTier;
+  expiresAt?: Date;  // 指定しない場合はティアのデフォルト期間
+}
+
+/**
+ * デフォルトの有効期限を計算
+ */
+function calculateDefaultExpiry(tier: LicenseTier): Date | null {
+  const tierConfig = TIERS[tier];
+
+  // 日数ベースの期限 (TRIAL用)
+  if (tierConfig.durationDays) {
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + tierConfig.durationDays);
+    return expiry;
+  }
+
+  // 月数ベースの期限 (STD, PRO用)
+  if (tierConfig.durationMonths) {
+    const expiry = new Date();
+    expiry.setMonth(expiry.getMonth() + tierConfig.durationMonths);
+    return expiry;
+  }
+
+  return null; // 永久ライセンス (ENT)
+}
+
+/**
+ * ライセンスキーを生成する
+ */
+export function generateLicenseKey(options: GenerateOptions): string {
+  const { productCode, tier, expiresAt } = options;
+
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   const randomPart = () => {
     let result = '';
@@ -142,10 +261,23 @@ export function generateLicenseKey(product: ProductCode, tier: LicenseTier): str
 
   const part1 = randomPart();
   const part2 = randomPart();
-  const baseKey = `INS-${product}-${tier}-${part1}-${part2}`;
+  const baseKey = `INS-${productCode}-${tier}-${part1}-${part2}`;
   const checksum = calculateChecksum(baseKey);
 
   return `${baseKey}-${checksum}`;
+}
+
+/**
+ * ライセンスキーと有効期限を一緒に生成
+ */
+export function generateLicenseWithExpiry(options: GenerateOptions): {
+  licenseKey: string;
+  expiresAt: Date | null;
+} {
+  const licenseKey = generateLicenseKey(options);
+  const expiresAt = options.expiresAt || calculateDefaultExpiry(options.tier);
+
+  return { licenseKey, expiresAt };
 }
 
 export default LicenseValidator;
