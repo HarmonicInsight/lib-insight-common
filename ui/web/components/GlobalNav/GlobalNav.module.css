@@ -1,0 +1,289 @@
+/**
+ * GlobalNav スタイル
+ *
+ * CSS 変数を使用してカスタマイズ可能
+ * --hi-nav-height: ナビゲーションの高さ
+ * --hi-nav-bg: 背景色
+ * --hi-nav-text: テキスト色
+ * --hi-nav-accent: アクセント色
+ */
+
+.globalNav {
+  --nav-height: var(--hi-nav-height, 64px);
+  --nav-bg: var(--hi-nav-bg, #ffffff);
+  --nav-text: var(--hi-nav-text, #1a1a1a);
+  --nav-text-muted: var(--hi-nav-text-muted, #666666);
+  --nav-accent: var(--hi-nav-accent, #2563eb);
+  --nav-border: var(--hi-nav-border, #e5e5e5);
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.globalNav.dark {
+  --nav-bg: #0a0a0a;
+  --nav-text: #ffffff;
+  --nav-text-muted: #a0a0a0;
+  --nav-border: #333333;
+  background-color: rgba(10, 10, 10, 0.9);
+}
+
+.container {
+  max-width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ロゴ */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+  opacity: 0.8;
+}
+
+.logo:focus {
+  outline: 2px solid var(--nav-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.logoIcon {
+  color: var(--nav-accent);
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--nav-text);
+  letter-spacing: -0.02em;
+}
+
+/* デスクトップナビゲーション */
+.desktopNav {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktopNav {
+    display: block;
+  }
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  margin: 0;
+}
+
+.navLink {
+  display: block;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--nav-text-muted);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--nav-text);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.globalNav.dark .navLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navLink.active {
+  color: var(--nav-accent);
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.navLink:focus {
+  outline: 2px solid var(--nav-accent);
+  outline-offset: 2px;
+}
+
+/* モバイルメニューボタン */
+.mobileMenuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mobileMenuButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.globalNav.dark .mobileMenuButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobileMenuButton:focus {
+  outline: 2px solid var(--nav-accent);
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .mobileMenuButton {
+    display: none;
+  }
+}
+
+/* ハンバーガーアイコン */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 20px;
+  height: 20px;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--nav-text);
+  border-radius: 1px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger.open span:first-child {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.open span:last-child {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* モバイルナビゲーション */
+.mobileNav {
+  position: fixed;
+  top: var(--nav-height);
+  right: 0;
+  width: 100%;
+  max-width: 320px;
+  height: calc(100vh - var(--nav-height));
+  background: var(--nav-bg);
+  border-left: 1px solid var(--nav-border);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+.mobileNav.open {
+  transform: translateX(0);
+}
+
+@media (min-width: 768px) {
+  .mobileNav {
+    display: none;
+  }
+}
+
+.mobileNavList {
+  list-style: none;
+  margin: 0;
+  padding: 16px;
+}
+
+.mobileNavItem {
+  margin: 0;
+}
+
+.mobileNavLink {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  color: var(--nav-text);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.mobileNavLink:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.globalNav.dark .mobileNavLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobileNavLink.active {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.mobileNavLink.active::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  width: 3px;
+  height: 24px;
+  background: var(--nav-accent);
+  border-radius: 2px;
+}
+
+.mobileNavDescription {
+  font-size: 12px;
+  color: var(--nav-text-muted);
+}
+
+/* オーバーレイ */
+.overlay {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--nav-height));
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 998;
+}
+
+@media (min-width: 768px) {
+  .overlay {
+    display: none;
+  }
+}

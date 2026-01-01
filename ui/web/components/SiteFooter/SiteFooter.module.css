@@ -1,0 +1,232 @@
+/**
+ * SiteFooter スタイル
+ *
+ * CSS 変数を使用してカスタマイズ可能
+ * --hi-footer-bg: 背景色
+ * --hi-footer-text: テキスト色
+ * --hi-footer-accent: アクセント色
+ */
+
+.siteFooter {
+  --footer-bg: var(--hi-footer-bg, #f5f5f5);
+  --footer-text: var(--hi-footer-text, #1a1a1a);
+  --footer-text-muted: var(--hi-footer-text-muted, #666666);
+  --footer-accent: var(--hi-footer-accent, #2563eb);
+  --footer-border: var(--hi-footer-border, #e5e5e5);
+
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  margin-top: auto;
+}
+
+.siteFooter.dark {
+  --footer-bg: #0a0a0a;
+  --footer-text: #ffffff;
+  --footer-text-muted: #a0a0a0;
+  --footer-border: #333333;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 64px 24px 32px;
+}
+
+/* メインコンテンツ */
+.main {
+  display: grid;
+  gap: 48px;
+}
+
+@media (min-width: 768px) {
+  .main {
+    grid-template-columns: 1fr 2fr;
+    gap: 64px;
+  }
+}
+
+/* ブランドセクション */
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.logoIcon {
+  color: var(--footer-accent);
+  flex-shrink: 0;
+}
+
+.logoTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.logoText {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--footer-text);
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  font-size: 12px;
+  color: var(--footer-text-muted);
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--footer-text-muted);
+  margin: 0;
+}
+
+/* ソーシャルリンク */
+.social {
+  display: flex;
+  gap: 12px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--footer-text-muted);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.siteFooter.dark .socialLink {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.socialLink:hover {
+  color: var(--footer-accent);
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.socialLink:focus {
+  outline: 2px solid var(--footer-accent);
+  outline-offset: 2px;
+}
+
+/* リンクグリッド */
+.linksGrid {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 640px) {
+  .linksGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.linkGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.linkGroupTitle {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--footer-text);
+  margin: 0;
+}
+
+.linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link {
+  font-size: 14px;
+  color: var(--footer-text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--footer-accent);
+}
+
+.link:focus {
+  outline: 2px solid var(--footer-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.link.current {
+  color: var(--footer-accent);
+  font-weight: 500;
+}
+
+/* 区切り線 */
+.divider {
+  border: none;
+  border-top: 1px solid var(--footer-border);
+  margin: 48px 0 24px;
+}
+
+/* ボトムバー */
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.copyright {
+  font-size: 13px;
+  color: var(--footer-text-muted);
+  margin: 0;
+}
+
+.bottomLinks {
+  display: flex;
+  gap: 24px;
+}
+
+.bottomLink {
+  font-size: 13px;
+  color: var(--footer-text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.bottomLink:hover {
+  color: var(--footer-accent);
+}
+
+.bottomLink:focus {
+  outline: 2px solid var(--footer-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
