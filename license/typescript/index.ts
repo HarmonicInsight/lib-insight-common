@@ -11,7 +11,7 @@ export interface LicenseInfo {
   error?: string;
 }
 
-export type ProductCode = 'SALES' | 'SLIDE' | 'PY' | 'INTV' | 'ALL';
+export type ProductCode = 'SALES' | 'SLIDE' | 'PY' | 'INTV' | 'FORG' | 'ALL';
 export type LicenseTier = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
 
 export const PRODUCT_NAMES: Record<ProductCode, string> = {
@@ -19,6 +19,7 @@ export const PRODUCT_NAMES: Record<ProductCode, string> = {
   SLIDE: 'InsightSlide',
   PY: 'InsightPy',
   INTV: 'InterviewInsight',
+  FORG: 'InsightForguncy',
   ALL: 'Insight Series Bundle',
 };
 
@@ -98,7 +99,7 @@ export const TIER_LIMITS: Record<LicenseTier, FeatureLimits> = {
  * ライセンスキーのフォーマット検証用正規表現
  * 形式: INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
  */
-const LICENSE_KEY_REGEX = /^INS-(SALES|SLIDE|PY|INTV|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$/;
+const LICENSE_KEY_REGEX = /^INS-(SALES|SLIDE|PY|INTV|FORG|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$/;
 
 /**
  * チェックサムを計算する

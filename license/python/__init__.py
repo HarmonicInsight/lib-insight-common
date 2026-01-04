@@ -16,6 +16,7 @@ class ProductCode(Enum):
     SLIDE = "SLIDE"  # InsightSlide
     PY = "PY"        # InsightPy
     INTV = "INTV"    # InterviewInsight
+    FORG = "FORG"    # InsightForguncy
     ALL = "ALL"      # 全製品バンドル
 
 
@@ -32,6 +33,7 @@ PRODUCT_NAMES = {
     ProductCode.SLIDE: "InsightSlide",
     ProductCode.PY: "InsightPy",
     ProductCode.INTV: "InterviewInsight",
+    ProductCode.FORG: "InsightForguncy",
     ProductCode.ALL: "Insight Series Bundle",
 }
 
@@ -105,7 +107,7 @@ TIER_LIMITS: Dict[LicenseTier, FeatureLimits] = {
 # ライセンスキーのフォーマット検証用正規表現
 # 形式: INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 LICENSE_KEY_REGEX = re.compile(
-    r"^INS-(SALES|SLIDE|PY|INTV|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"
+    r"^INS-(SALES|SLIDE|PY|INTV|FORG|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"
 )
 
 

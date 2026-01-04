@@ -17,10 +17,11 @@ INS-SALES-STD-I9J0-K1L2-Z1     # SalesInsight Standard
 
 | コード | 製品名 | 説明 |
 |--------|--------|------|
-| `SALES` | SalesInsight | 営業管理 |
-| `SLIDE` | InsightSlide | スライド管理 |
+| `SALES` | SalesInsight | 営業支援 |
+| `SLIDE` | InsightSlide | プレゼン支援 |
 | `PY` | InsightPy | Python開発支援 |
-| `INTV` | InterviewInsight | インタビュー支援 |
+| `INTV` | InterviewInsight | 面接支援 |
+| `FORG` | InsightForguncy | Forguncy開発支援 |
 | `ALL` | Insight Series Bundle | 全製品バンドル |
 
 ## ティア

@@ -73,6 +73,23 @@
         ]
       },
       {
+        "id": "insight-forguncy",
+        "code": "FORG",
+        "name": "InsightForguncy",
+        "displayName": "InsightForguncy",
+        "description": "Forguncy AI開発支援",
+        "category": "development",
+        "platform": ["windows"],
+        "framework": "tauri",
+        "status": "development",
+        "repository": "HarmonicInsight/app-win-insight-forguncy",
+        "features": [
+          "code-generation",
+          "formula-assistance",
+          "ui-optimization"
+        ]
+      },
+      {
         "id": "insight-suite",
         "code": "ALL",
         "name": "Insight Suite",
