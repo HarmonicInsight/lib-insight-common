@@ -1,310 +1,477 @@
 """
 Insight Series License Management - Python
-InsightPy等のPython製アプリケーション向けライセンス管理モジュール
+オフラインライセンス認証モジュール
+
+キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 """
 
+import hmac
+import hashlib
+import base64
+import json
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from pathlib import Path
 from typing import Optional, Dict, Any
 
 
+# =============================================================================
+# 定数・設定
+# =============================================================================
+
 class ProductCode(Enum):
-    """製品コード"""
-    SALES = "SALES"  # SalesInsight
-    SLIDE = "SLIDE"  # InsightSlide
-    PY = "PY"        # InsightPy
-    INTV = "INTV"    # InterviewInsight
-    FORG = "FORG"    # InsightForguncy
-    ALL = "ALL"      # 全製品バンドル
+    """製品コード（4文字）"""
+    INSS = "INSS"  # InsightSlide Standard
+    INSP = "INSP"  # InsightSlide Pro
+    INPY = "INPY"  # InsightPy Standard
+    FGIN = "FGIN"  # ForguncyInsight Standard
 
 
-class LicenseTier(Enum):
-    """ライセンスティア"""
-    TRIAL = "TRIAL"  # トライアル（期間指定）
-    STD = "STD"      # Standard（年間）
-    PRO = "PRO"      # Professional（年間）
-    ENT = "ENT"      # Enterprise（永久）
+class Plan(Enum):
+    """プラン"""
+    TRIAL = "TRIAL"    # トライアル（14日間）
+    STD = "STD"        # Standard
+    PRO = "PRO"        # Professional
 
 
-PRODUCT_NAMES = {
-    ProductCode.SALES: "SalesInsight",
-    ProductCode.SLIDE: "InsightSlide",
-    ProductCode.PY: "InsightPy",
-    ProductCode.INTV: "InterviewInsight",
-    ProductCode.FORG: "InsightForguncy",
-    ProductCode.ALL: "Insight Series Bundle",
+PRODUCT_NAMES: Dict[ProductCode, str] = {
+    ProductCode.INSS: "InsightSlide Standard",
+    ProductCode.INSP: "InsightSlide Pro",
+    ProductCode.INPY: "InsightPy",
+    ProductCode.FGIN: "ForguncyInsight",
 }
 
-TIER_NAMES = {
-    LicenseTier.TRIAL: "Trial",
-    LicenseTier.STD: "Standard",
-    LicenseTier.PRO: "Professional",
-    LicenseTier.ENT: "Enterprise",
+PLAN_NAMES: Dict[Plan, str] = {
+    Plan.TRIAL: "トライアル",
+    Plan.STD: "Standard",
+    Plan.PRO: "Pro",
 }
 
-# ティア定義
-# - duration_days: 日数ベースの期限（TRIAL用）
-# - duration_months: 月数ベースの期限（STD/PRO用）
-# - None: 永久ライセンス（ENT用）
-TIERS: Dict[LicenseTier, Dict[str, Any]] = {
-    LicenseTier.TRIAL: {"name": "Trial", "name_ja": "トライアル", "duration_months": None, "duration_days": 14},
-    LicenseTier.STD: {"name": "Standard", "name_ja": "スタンダード", "duration_months": 12},
-    LicenseTier.PRO: {"name": "Professional", "name_ja": "プロフェッショナル", "duration_months": 12},
-    LicenseTier.ENT: {"name": "Enterprise", "name_ja": "エンタープライズ", "duration_months": None},
+# 製品と対応プラン
+PRODUCT_PLANS: Dict[str, list] = {
+    "InsightSlide": [ProductCode.INSS, ProductCode.INSP],
+    "InsightPy": [ProductCode.INPY],
+    "ForguncyInsight": [ProductCode.FGIN],
 }
 
+# トライアル期間（日）
+TRIAL_DAYS = 14
 
-@dataclass
-class FeatureLimits:
-    """機能制限"""
-    max_files: int
-    max_records: int
-    batch_processing: bool
-    export: bool
-    cloud_sync: bool
-    priority: bool
-
-
-# 機能制限定義
-TIER_LIMITS: Dict[LicenseTier, FeatureLimits] = {
-    LicenseTier.TRIAL: FeatureLimits(
-        max_files=10,
-        max_records=500,
-        batch_processing=True,
-        export=True,
-        cloud_sync=False,
-        priority=False,
-    ),
-    LicenseTier.STD: FeatureLimits(
-        max_files=50,
-        max_records=5000,
-        batch_processing=True,
-        export=True,
-        cloud_sync=False,
-        priority=False,
-    ),
-    LicenseTier.PRO: FeatureLimits(
-        max_files=float('inf'),
-        max_records=50000,
-        batch_processing=True,
-        export=True,
-        cloud_sync=True,
-        priority=True,
-    ),
-    LicenseTier.ENT: FeatureLimits(
-        max_files=float('inf'),
-        max_records=float('inf'),
-        batch_processing=True,
-        export=True,
-        cloud_sync=True,
-        priority=True,
-    ),
-}
-
-
-# ライセンスキーのフォーマット検証用正規表現
-# 形式: INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
+# ライセンスキー正規表現
+# 形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 LICENSE_KEY_REGEX = re.compile(
-    r"^INS-(SALES|SLIDE|PY|INTV|FORG|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"
+    r"^(INSS|INSP|INPY|FGIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
 )
 
 
+# =============================================================================
+# エラーコード
+# =============================================================================
+
+class ErrorCode(Enum):
+    E001 = "E001"  # キー形式不正
+    E002 = "E002"  # 署名検証失敗
+    E003 = "E003"  # メール不一致
+    E004 = "E004"  # 期限切れ
+    E005 = "E005"  # 製品不一致
+    E006 = "E006"  # トライアル済
+
+
+ERROR_MESSAGES: Dict[ErrorCode, str] = {
+    ErrorCode.E001: "ライセンスキーの形式が正しくありません",
+    ErrorCode.E002: "ライセンスキーが無効です",
+    ErrorCode.E003: "メールアドレスが一致しません",
+    ErrorCode.E004: "ライセンスの有効期限が切れています",
+    ErrorCode.E005: "このライセンスは {product} 用です",
+    ErrorCode.E006: "トライアル期間は終了しています",
+}
+
+
+# =============================================================================
+# データクラス
+# =============================================================================
+
 @dataclass
-class LicenseInfo:
-    """ライセンス情報"""
+class AuthResult:
+    """認証結果"""
+    success: bool
+    product: Optional[ProductCode] = None
+    plan: Optional[Plan] = None
+    expires: Optional[datetime] = None
+    error_code: Optional[ErrorCode] = None
+    message: Optional[str] = None
+
+
+class LicenseStatus(Enum):
+    """ライセンス状態"""
+    VALID = "valid"                    # 有効
+    EXPIRING_SOON = "expiring_soon"    # 30日以内に期限切れ
+    EXPIRED = "expired"                # 期限切れ
+    NOT_FOUND = "not_found"            # 未認証
+
+
+@dataclass
+class StatusResult:
+    """ステータス確認結果"""
+    status: LicenseStatus
     is_valid: bool
-    product: Optional[ProductCode]
-    tier: Optional[LicenseTier]
-    expires_at: Optional[datetime]
-    error: Optional[str] = None
+    product: Optional[ProductCode] = None
+    plan: Optional[Plan] = None
+    expires: Optional[datetime] = None
+    days_remaining: Optional[int] = None
+    email: Optional[str] = None
 
 
-def _calculate_checksum(input_str: str) -> str:
-    """チェックサムを計算する"""
-    total = sum(ord(c) * (i + 1) for i, c in enumerate(input_str))
-    checksum_value = total % 1296
+# =============================================================================
+# 署名・ハッシュ
+# =============================================================================
 
-    # Base36エンコード
-    chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    if checksum_value == 0:
-        return "00"
-
-    result = ""
-    while checksum_value:
-        result = chars[checksum_value % 36] + result
-        checksum_value //= 36
-
-    return result.zfill(2)
+# 署名用シークレットキー（本番では環境変数から取得）
+_SECRET_KEY = os.environ.get(
+    "INSIGHT_LICENSE_SECRET",
+    b"insight-series-license-secret-2026"
+)
+if isinstance(_SECRET_KEY, str):
+    _SECRET_KEY = _SECRET_KEY.encode()
 
 
-class LicenseValidator:
-    """ライセンスバリデーター"""
+def _generate_email_hash(email: str) -> str:
+    """メールアドレスから4文字のハッシュを生成"""
+    h = hashlib.sha256(email.lower().strip().encode()).digest()
+    return base64.b32encode(h)[:4].decode().upper()
 
-    def validate(self, license_key: str, stored_expires_at: Optional[datetime] = None) -> LicenseInfo:
+
+def _generate_signature(data: str) -> str:
+    """署名を生成（8文字）"""
+    sig = hmac.new(_SECRET_KEY, data.encode(), hashlib.sha256).digest()
+    encoded = base64.b32encode(sig)[:8].decode().upper()
+    return encoded
+
+
+def _verify_signature(data: str, signature: str) -> bool:
+    """署名を検証"""
+    expected = _generate_signature(data)
+    return hmac.compare_digest(expected, signature)
+
+
+# =============================================================================
+# ライセンスマネージャー
+# =============================================================================
+
+class LicenseManager:
+    """ライセンス管理クラス"""
+
+    def __init__(self, product: str, config_dir: Optional[Path] = None):
         """
-        ライセンスキーを検証する
+        Args:
+            product: 製品名（InsightSlide, InsightPy, ForguncyInsight）
+            config_dir: 設定保存ディレクトリ（省略時はデフォルト）
+        """
+        self.product = product
+        self.config_dir = config_dir or self._get_default_config_dir()
+        self.config_path = self.config_dir / "license.dat"
+        self._cached_data: Optional[Dict] = None
+
+    def _get_default_config_dir(self) -> Path:
+        """デフォルトの設定ディレクトリ"""
+        if os.name == 'nt':  # Windows
+            base = Path(os.environ.get('APPDATA', ''))
+        else:  # macOS/Linux
+            home = Path.home()
+            if (home / "Library").exists():  # macOS
+                base = home / "Library" / "Application Support"
+            else:  # Linux
+                base = home / ".config"
+        return base / "HarmonicInsight" / self.product
+
+    def _get_valid_product_codes(self) -> list:
+        """この製品で有効な製品コード一覧"""
+        return PRODUCT_PLANS.get(self.product, [])
+
+    def authenticate(self, email: str, key: str) -> AuthResult:
+        """
+        ライセンス認証
 
         Args:
-            license_key: ライセンスキー
-            stored_expires_at: 保存されている有効期限（任意）
+            email: メールアドレス
+            key: ライセンスキー
+
+        Returns:
+            AuthResult
         """
-        if not license_key:
-            return LicenseInfo(
-                is_valid=False,
-                product=None,
-                tier=None,
-                expires_at=None,
-                error="License key is required"
-            )
+        email = email.strip().lower()
+        key = key.strip().upper()
 
-        normalized = license_key.strip().upper()
-        match = LICENSE_KEY_REGEX.match(normalized)
-
+        # 1. キー形式チェック
+        match = LICENSE_KEY_REGEX.match(key)
         if not match:
-            return LicenseInfo(
-                is_valid=False,
-                product=None,
-                tier=None,
-                expires_at=None,
-                error="Invalid license key format"
+            return AuthResult(
+                success=False,
+                error_code=ErrorCode.E001,
+                message=ERROR_MESSAGES[ErrorCode.E001]
             )
 
-        product_str, tier_str, part1, part2, provided_checksum = match.groups()
+        product_code_str, plan_str, yymm, email_hash, sig1, sig2 = match.groups()
+        product_code = ProductCode(product_code_str)
+        plan = Plan(plan_str)
+        signature = sig1 + sig2
 
-        # チェックサム検証
-        base_key = f"INS-{product_str}-{tier_str}-{part1}-{part2}"
-        expected_checksum = _calculate_checksum(base_key)
-
-        if provided_checksum != expected_checksum:
-            return LicenseInfo(
-                is_valid=False,
-                product=None,
-                tier=None,
-                expires_at=None,
-                error="Invalid checksum"
+        # 2. 署名検証
+        sign_data = f"{product_code_str}-{plan_str}-{yymm}-{email_hash}"
+        if not _verify_signature(sign_data, signature):
+            return AuthResult(
+                success=False,
+                error_code=ErrorCode.E002,
+                message=ERROR_MESSAGES[ErrorCode.E002]
             )
 
-        product = ProductCode(product_str)
-        tier = LicenseTier(tier_str)
+        # 3. メールハッシュ照合
+        expected_hash = _generate_email_hash(email)
+        if email_hash != expected_hash:
+            return AuthResult(
+                success=False,
+                error_code=ErrorCode.E003,
+                message=ERROR_MESSAGES[ErrorCode.E003]
+            )
 
-        # 有効期限の決定
-        expires_at = stored_expires_at
+        # 4. 有効期限チェック
+        try:
+            year = 2000 + int(yymm[:2])
+            month = int(yymm[2:])
+            # 月末日を有効期限とする
+            if month == 12:
+                expires = datetime(year + 1, 1, 1) - timedelta(days=1)
+            else:
+                expires = datetime(year, month + 1, 1) - timedelta(days=1)
+            expires = expires.replace(hour=23, minute=59, second=59)
+        except ValueError:
+            return AuthResult(
+                success=False,
+                error_code=ErrorCode.E001,
+                message=ERROR_MESSAGES[ErrorCode.E001]
+            )
 
-        # 期限切れチェック (ENT は期限なし)
-        if tier != LicenseTier.ENT and expires_at:
-            if expires_at < datetime.now():
-                return LicenseInfo(
-                    is_valid=False,
-                    product=product,
-                    tier=tier,
-                    expires_at=expires_at,
-                    error="License expired"
+        if datetime.now() > expires:
+            return AuthResult(
+                success=False,
+                product=product_code,
+                plan=plan,
+                expires=expires,
+                error_code=ErrorCode.E004,
+                message=ERROR_MESSAGES[ErrorCode.E004]
+            )
+
+        # 5. 製品コードチェック
+        valid_codes = self._get_valid_product_codes()
+        if product_code not in valid_codes:
+            return AuthResult(
+                success=False,
+                product=product_code,
+                plan=plan,
+                expires=expires,
+                error_code=ErrorCode.E005,
+                message=ERROR_MESSAGES[ErrorCode.E005].format(
+                    product=PRODUCT_NAMES.get(product_code, product_code.value)
                 )
+            )
 
-        return LicenseInfo(
-            is_valid=True,
-            product=product,
-            tier=tier,
-            expires_at=expires_at
+        # 認証成功 → ローカル保存
+        self._save_license(email, key, product_code, plan, expires)
+
+        return AuthResult(
+            success=True,
+            product=product_code,
+            plan=plan,
+            expires=expires
         )
 
-    def is_product_covered(self, license_info: LicenseInfo, target_product: ProductCode) -> bool:
-        """製品がライセンスでカバーされているかチェック"""
-        if not license_info.is_valid or not license_info.product:
-            return False
+    def _save_license(
+        self,
+        email: str,
+        key: str,
+        product_code: ProductCode,
+        plan: Plan,
+        expires: datetime
+    ) -> None:
+        """ライセンス情報を保存"""
+        self.config_dir.mkdir(parents=True, exist_ok=True)
 
-        # ALLライセンスは全製品をカバー
-        if license_info.product == ProductCode.ALL:
-            return True
+        data = {
+            "email": email,
+            "key": key,
+            "product": PRODUCT_NAMES.get(product_code, product_code.value),
+            "productCode": product_code.value,
+            "plan": plan.value,
+            "expires": expires.strftime("%Y-%m-%d"),
+            "verifiedAt": datetime.now().isoformat()
+        }
 
-        return license_info.product == target_product
+        # 簡易暗号化（本番ではより強固な暗号化を使用）
+        content = json.dumps(data, ensure_ascii=False)
+        encoded = base64.b64encode(content.encode()).decode()
+
+        with open(self.config_path, 'w', encoding='utf-8') as f:
+            f.write(encoded)
+
+        self._cached_data = data
+
+    def _load_license(self) -> Optional[Dict]:
+        """保存されたライセンス情報を読み込む"""
+        if self._cached_data:
+            return self._cached_data
+
+        if not self.config_path.exists():
+            return None
+
+        try:
+            with open(self.config_path, 'r', encoding='utf-8') as f:
+                encoded = f.read()
+
+            content = base64.b64decode(encoded).decode()
+            self._cached_data = json.loads(content)
+            return self._cached_data
+        except Exception:
+            return None
+
+    def check_status(self) -> StatusResult:
+        """ライセンス状態を確認"""
+        data = self._load_license()
+
+        if not data:
+            return StatusResult(
+                status=LicenseStatus.NOT_FOUND,
+                is_valid=False
+            )
+
+        try:
+            expires = datetime.strptime(data["expires"], "%Y-%m-%d")
+            expires = expires.replace(hour=23, minute=59, second=59)
+            now = datetime.now()
+            days_remaining = (expires - now).days
+
+            product_code = ProductCode(data["productCode"])
+            plan = Plan(data["plan"])
+
+            if now > expires:
+                return StatusResult(
+                    status=LicenseStatus.EXPIRED,
+                    is_valid=False,
+                    product=product_code,
+                    plan=plan,
+                    expires=expires,
+                    days_remaining=0,
+                    email=data.get("email")
+                )
+
+            if days_remaining <= 30:
+                status = LicenseStatus.EXPIRING_SOON
+            else:
+                status = LicenseStatus.VALID
+
+            return StatusResult(
+                status=status,
+                is_valid=True,
+                product=product_code,
+                plan=plan,
+                expires=expires,
+                days_remaining=days_remaining,
+                email=data.get("email")
+            )
+
+        except Exception:
+            return StatusResult(
+                status=LicenseStatus.NOT_FOUND,
+                is_valid=False
+            )
+
+    def clear_license(self) -> None:
+        """ライセンス情報をクリア"""
+        self._cached_data = None
+        if self.config_path.exists():
+            self.config_path.unlink()
+
+    @property
+    def days_remaining(self) -> int:
+        """残り日数"""
+        status = self.check_status()
+        return status.days_remaining or 0
 
 
-def get_feature_limits(tier: Optional[LicenseTier]) -> FeatureLimits:
-    """機能制限を取得"""
-    if not tier:
-        return TIER_LIMITS[LicenseTier.TRIAL]  # デフォルトはTRIAL制限
-    return TIER_LIMITS[tier]
-
-
-def _calculate_default_expiry(tier: LicenseTier) -> Optional[datetime]:
-    """デフォルトの有効期限を計算"""
-    tier_config = TIERS[tier]
-
-    # 日数ベースの期限 (TRIAL用)
-    duration_days = tier_config.get("duration_days")
-    if duration_days:
-        return datetime.now() + timedelta(days=duration_days)
-
-    # 月数ベースの期限 (STD, PRO用)
-    duration_months = tier_config.get("duration_months")
-    if duration_months:
-        now = datetime.now()
-        new_month = now.month + duration_months
-        new_year = now.year + (new_month - 1) // 12
-        new_month = (new_month - 1) % 12 + 1
-        return datetime(new_year, new_month, now.day)
-
-    return None  # 永久ライセンス (ENT)
-
+# =============================================================================
+# ライセンスキー生成（開発者用）
+# =============================================================================
 
 def generate_license_key(
     product_code: ProductCode,
-    tier: LicenseTier,
+    plan: Plan,
+    email: str,
+    expires: datetime
 ) -> str:
-    """ライセンスキーを生成する"""
-    import random
-    import string
-
-    chars = string.ascii_uppercase + string.digits
-    random_part = lambda: ''.join(random.choices(chars, k=4))
-
-    part1 = random_part()
-    part2 = random_part()
-    base_key = f"INS-{product_code.value}-{tier.value}-{part1}-{part2}"
-    checksum = _calculate_checksum(base_key)
-
-    return f"{base_key}-{checksum}"
-
-
-def generate_license_with_expiry(
-    product_code: ProductCode,
-    tier: LicenseTier,
-    expires_at: Optional[datetime] = None,
-) -> Dict[str, Any]:
     """
-    ライセンスキーと有効期限を一緒に生成
+    ライセンスキーを生成
 
     Args:
         product_code: 製品コード
-        tier: ライセンスティア
-        expires_at: 有効期限（指定しない場合はティアのデフォルト期間）
+        plan: プラン
+        email: メールアドレス
+        expires: 有効期限
 
     Returns:
-        {"license_key": str, "expires_at": datetime | None}
+        ライセンスキー（PPPP-PLAN-YYMM-HASH-SIG1-SIG2形式）
     """
-    license_key = generate_license_key(product_code, tier)
-    final_expires_at = expires_at if expires_at else _calculate_default_expiry(tier)
+    # YYMM形式
+    yymm = expires.strftime("%y%m")
 
-    return {
-        "license_key": license_key,
-        "expires_at": final_expires_at,
-    }
+    # メールハッシュ
+    email_hash = _generate_email_hash(email)
 
+    # 署名データ
+    sign_data = f"{product_code.value}-{plan.value}-{yymm}-{email_hash}"
+
+    # 署名生成
+    signature = _generate_signature(sign_data)
+    sig1, sig2 = signature[:4], signature[4:]
+
+    return f"{product_code.value}-{plan.value}-{yymm}-{email_hash}-{sig1}-{sig2}"
+
+
+def generate_trial_key(product_code: ProductCode, email: str) -> str:
+    """
+    トライアルキーを生成
+
+    Args:
+        product_code: 製品コード
+        email: メールアドレス
+
+    Returns:
+        トライアルキー
+    """
+    expires = datetime.now() + timedelta(days=TRIAL_DAYS)
+    return generate_license_key(product_code, Plan.TRIAL, email, expires)
+
+
+# =============================================================================
+# エクスポート
+# =============================================================================
 
 __all__ = [
+    # クラス
+    "LicenseManager",
     "ProductCode",
-    "LicenseTier",
-    "LicenseInfo",
-    "FeatureLimits",
-    "LicenseValidator",
-    "generate_license_key",
-    "generate_license_with_expiry",
-    "get_feature_limits",
+    "Plan",
+    "ErrorCode",
+    "LicenseStatus",
+    "AuthResult",
+    "StatusResult",
+    # 定数
     "PRODUCT_NAMES",
-    "TIER_NAMES",
-    "TIERS",
-    "TIER_LIMITS",
+    "PLAN_NAMES",
+    "TRIAL_DAYS",
+    "ERROR_MESSAGES",
+    # 関数
+    "generate_license_key",
+    "generate_trial_key",
 ]

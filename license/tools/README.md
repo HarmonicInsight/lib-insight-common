@@ -1,6 +1,19 @@
 # ライセンス発行ツール
 
-Insight Series のライセンスキーを発行するツール
+Insight Series のライセンスキーを発行するCLIツール
+
+## キー形式
+
+```
+PPPP-PLAN-YYMM-HASH-SIG1-SIG2
+
+例: INSP-PRO-2701-A3F8-K9X2-M4PQ
+    │    │    │    │    └─ 署名（8文字）
+    │    │    │    └────── メールハッシュ（4文字）
+    │    │    └─────────── 有効期限（2027年1月）
+    │    └──────────────── プラン（Pro）
+    └───────────────────── 製品（InsightSlide Pro）
+```
 
 ## セットアップ
 
@@ -16,7 +29,7 @@ cd insight-common/license/tools
 ## 使い方
 
 ```bash
-python generate-license.py -p ALL -t TRIAL
+python generate-license.py -p INSP --plan PRO -e user@example.com --expires 2027-01-31
 ```
 
 ## 使用例
@@ -24,80 +37,68 @@ python generate-license.py -p ALL -t TRIAL
 ### 1. トライアルライセンス（14日間）
 
 ```bash
-python generate-license.py -p ALL -t TRIAL
+python generate-license.py -p INSS --trial -e user@example.com
+python generate-license.py -p INPY --trial -e user@example.com
+python generate-license.py -p FGIN --trial -e user@example.com
 ```
 
-### 2. 年間ライセンス
+### 2. 年間ライセンス（12ヶ月）
 
 ```bash
-# InsightSlide Standard 12ヶ月
-python generate-license.py -p SLIDE -t STD -m 12
+# InsightSlide Standard
+python generate-license.py -p INSS --plan STD -e user@example.com -m 12
 
-# InsightForguncy Professional 12ヶ月
-python generate-license.py -p FORG -t PRO -m 12
+# InsightSlide Pro
+python generate-license.py -p INSP --plan PRO -e user@example.com -m 12
+
+# InsightPy
+python generate-license.py -p INPY --plan STD -e user@example.com -m 12
+
+# ForguncyInsight
+python generate-license.py -p FGIN --plan STD -e user@example.com -m 12
 ```
 
 ### 3. 指定日までのライセンス
 
 ```bash
-python generate-license.py -p SLIDE -t PRO -e 2025-12-31
-```
-
-### 4. Enterpriseライセンス（永久）
-
-```bash
-python generate-license.py -p ALL -t ENT
-```
-
-### 5. 一括発行
-
-```bash
-# 10個発行
-python generate-license.py -p ALL -t TRIAL -n 10
-
-# CSV出力
-python generate-license.py -p ALL -t TRIAL -n 100 --csv > licenses.csv
-
-# JSON出力
-python generate-license.py -p ALL -t TRIAL -n 10 --json > licenses.json
+python generate-license.py -p INSP --plan PRO -e user@example.com --expires 2027-12-31
 ```
 
 ---
 
 ## オプション
 
-| オプション | 短縮形 | 説明 | デフォルト |
-|-----------|--------|------|------------|
-| `--product` | `-p` | 製品コード | ALL |
-| `--tier` | `-t` | ティア | TRIAL |
-| `--expires` | `-e` | 有効期限 (YYYY-MM-DD) | - |
+| オプション | 短縮形 | 説明 | 必須 |
+|-----------|--------|------|:----:|
+| `--product` | `-p` | 製品コード | ✓ |
+| `--email` | `-e` | メールアドレス | ✓ |
+| `--plan` | - | プラン (STD/PRO) | △ |
+| `--trial` | - | トライアル発行 | △ |
+| `--expires` | - | 有効期限 (YYYY-MM-DD) | - |
 | `--months` | `-m` | 有効期間（月数） | - |
-| `--count` | `-n` | 発行数 | 1 |
 | `--json` | - | JSON形式のみ出力 | - |
 | `--csv` | - | CSV形式のみ出力 | - |
-| `--help` | `-h` | ヘルプ表示 | - |
+
+※ `--plan` または `--trial` のどちらかが必須
 
 ---
 
 ## 製品コード
 
-| コード | 製品名 |
-|--------|--------|
-| `SALES` | SalesInsight |
-| `SLIDE` | InsightSlide |
-| `PY` | InsightPy |
-| `INTV` | InterviewInsight |
-| `FORG` | InsightForguncy |
-| `ALL` | 全製品バンドル |
+| コード | 製品名 | 価格 |
+|--------|--------|-----:|
+| `INSS` | InsightSlide Standard | 29,800円/年 |
+| `INSP` | InsightSlide Pro | 49,800円/年 |
+| `INPY` | InsightPy | 19,800円/年 |
+| `FGIN` | ForguncyInsight | 49,800円/年 |
 
-## ティア
+## プラン
 
 | コード | 名称 | 期間 |
 |--------|------|------|
-| `TRIAL` | Trial | 14日 |
-| `STD` | Standard | 12ヶ月 |
-| `PRO` | Professional | 12ヶ月 |
-| `ENT` | Enterprise | 永久 |
+| `TRIAL` | トライアル | 14日 |
+| `STD` | Standard | 年間 |
+| `PRO` | Pro | 年間 |
 
 ---
 
@@ -108,11 +109,22 @@ python generate-license.py -p ALL -t TRIAL -n 10 --json > licenses.json
   Insight Series ライセンス発行
 ========================================
 
-製品: Insight Series Bundle (ALL)
-ティア: Trial (TRIAL)
+製品:       InsightSlide Pro (INSP)
+プラン:     Pro (PRO)
+メール:     user@example.com
+有効期限:   2027-01-31
 
 ----------------------------------------
-1. INS-ALL-TRIAL-A1B2-C3D4-X9
-   有効期限: 2025-01-18
+ライセンスキー: INSP-PRO-2701-A3F8-K9X2-M4PQ
 ----------------------------------------
 ```
+
+---
+
+## 注意事項
+
+1. **メールアドレス紐付け**: ライセンスキーはメールアドレスと紐付けられます。認証時に同じメールアドレスが必要です。
+
+2. **オフライン検証**: ライセンス検証はオフラインで実行可能。サーバー通信は不要です。
+
+3. **署名検証**: HMAC-SHA256による署名検証で改ざんを検出します。

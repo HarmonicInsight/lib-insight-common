@@ -1,284 +1,437 @@
 /**
  * Insight Series License Management - TypeScript
- * Tauri/React製品向けライセンス管理モジュール
+ * オフラインライセンス認証モジュール
+ *
+ * キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
  */
 
-export interface LicenseInfo {
-  isValid: boolean;
-  product: ProductCode | null;
-  tier: LicenseTier | null;
-  expiresAt: Date | null;
-  error?: string;
+// =============================================================================
+// 型定義
+// =============================================================================
+
+export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN';
+export type Plan = 'TRIAL' | 'STD' | 'PRO';
+export type ErrorCode = 'E001' | 'E002' | 'E003' | 'E004' | 'E005' | 'E006';
+
+export interface AuthResult {
+  success: boolean;
+  product?: ProductCode;
+  plan?: Plan;
+  expires?: Date;
+  errorCode?: ErrorCode;
+  message?: string;
 }
 
-export type ProductCode = 'SALES' | 'SLIDE' | 'PY' | 'INTV' | 'FORG' | 'ALL';
-export type LicenseTier = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+export type LicenseStatusType = 'valid' | 'expiring_soon' | 'expired' | 'not_found';
+
+export interface StatusResult {
+  status: LicenseStatusType;
+  isValid: boolean;
+  product?: ProductCode;
+  plan?: Plan;
+  expires?: Date;
+  daysRemaining?: number;
+  email?: string;
+}
+
+export interface LicenseData {
+  email: string;
+  key: string;
+  product: string;
+  productCode: ProductCode;
+  plan: Plan;
+  expires: string;
+  verifiedAt: string;
+}
+
+// =============================================================================
+// 定数
+// =============================================================================
 
 export const PRODUCT_NAMES: Record<ProductCode, string> = {
-  SALES: 'SalesInsight',
-  SLIDE: 'InsightSlide',
-  PY: 'InsightPy',
-  INTV: 'InterviewInsight',
-  FORG: 'InsightForguncy',
-  ALL: 'Insight Series Bundle',
+  INSS: 'InsightSlide Standard',
+  INSP: 'InsightSlide Pro',
+  INPY: 'InsightPy',
+  FGIN: 'ForguncyInsight',
 };
 
-export const TIER_NAMES: Record<LicenseTier, string> = {
-  TRIAL: 'Trial',
+export const PLAN_NAMES: Record<Plan, string> = {
+  TRIAL: 'トライアル',
   STD: 'Standard',
-  PRO: 'Professional',
-  ENT: 'Enterprise',
+  PRO: 'Pro',
 };
 
-/**
- * ティア定義
- * - durationDays: 日数ベースの期限（TRIAL用）
- * - durationMonths: 月数ベースの期限（STD/PRO用）
- * - null: 永久ライセンス（ENT用）
- */
-export const TIERS: Record<LicenseTier, {
-  name: string;
-  nameJa: string;
-  durationMonths: number | null;
-  durationDays?: number;
-}> = {
-  TRIAL: { name: 'Trial', nameJa: 'トライアル', durationMonths: null, durationDays: 14 },
-  STD: { name: 'Standard', nameJa: 'スタンダード', durationMonths: 12 },
-  PRO: { name: 'Professional', nameJa: 'プロフェッショナル', durationMonths: 12 },
-  ENT: { name: 'Enterprise', nameJa: 'エンタープライズ', durationMonths: null },
+export const PRODUCT_PLANS: Record<string, ProductCode[]> = {
+  InsightSlide: ['INSS', 'INSP'],
+  InsightPy: ['INPY'],
+  ForguncyInsight: ['FGIN'],
 };
 
-/**
- * 機能制限定義
- */
-export interface FeatureLimits {
-  maxFiles: number;
-  maxRecords: number;
-  batchProcessing: boolean;
-  export: boolean;
-  cloudSync: boolean;
-  priority: boolean;
+export const TRIAL_DAYS = 14;
+
+export const ERROR_MESSAGES: Record<ErrorCode, string> = {
+  E001: 'ライセンスキーの形式が正しくありません',
+  E002: 'ライセンスキーが無効です',
+  E003: 'メールアドレスが一致しません',
+  E004: 'ライセンスの有効期限が切れています',
+  E005: 'このライセンスは {product} 用です',
+  E006: 'トライアル期間は終了しています',
+};
+
+// ライセンスキー正規表現
+const LICENSE_KEY_REGEX = /^(INSS|INSP|INPY|FGIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+
+// 署名用シークレットキー
+const SECRET_KEY = 'insight-series-license-secret-2026';
+
+// =============================================================================
+// 署名・ハッシュ (ブラウザ互換)
+// =============================================================================
+
+async function sha256(message: string): Promise<ArrayBuffer> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(message);
+  return await crypto.subtle.digest('SHA-256', data);
 }
 
-export const TIER_LIMITS: Record<LicenseTier, FeatureLimits> = {
-  TRIAL: {
-    maxFiles: 10,
-    maxRecords: 500,
-    batchProcessing: true,
-    export: true,
-    cloudSync: false,
-    priority: false,
-  },
-  STD: {
-    maxFiles: 50,
-    maxRecords: 5000,
-    batchProcessing: true,
-    export: true,
-    cloudSync: false,
-    priority: false,
-  },
-  PRO: {
-    maxFiles: Infinity,
-    maxRecords: 50000,
-    batchProcessing: true,
-    export: true,
-    cloudSync: true,
-    priority: true,
-  },
-  ENT: {
-    maxFiles: Infinity,
-    maxRecords: Infinity,
-    batchProcessing: true,
-    export: true,
-    cloudSync: true,
-    priority: true,
-  },
-};
+function arrayBufferToBase32(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let result = '';
+  let bits = 0;
+  let value = 0;
 
-/**
- * ライセンスキーのフォーマット検証用正規表現
- * 形式: INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
- */
-const LICENSE_KEY_REGEX = /^INS-(SALES|SLIDE|PY|INTV|FORG|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$/;
-
-/**
- * チェックサムを計算する
- */
-function calculateChecksum(input: string): string {
-  let sum = 0;
-  for (let i = 0; i < input.length; i++) {
-    sum += input.charCodeAt(i) * (i + 1);
-  }
-  const checksum = (sum % 1296).toString(36).toUpperCase().padStart(2, '0');
-  return checksum;
-}
-
-/**
- * ライセンスバリデーター
- */
-export class LicenseValidator {
-  /**
-   * ライセンスキーを検証する
-   * @param licenseKey ライセンスキー
-   * @param storedExpiresAt 保存されている有効期限（任意）
-   */
-  validate(licenseKey: string, storedExpiresAt?: Date): LicenseInfo {
-    if (!licenseKey) {
-      return {
-        isValid: false,
-        product: null,
-        tier: null,
-        expiresAt: null,
-        error: 'License key is required',
-      };
+  for (const byte of bytes) {
+    value = (value << 8) | byte;
+    bits += 8;
+    while (bits >= 5) {
+      result += alphabet[(value >>> (bits - 5)) & 31];
+      bits -= 5;
     }
+  }
 
-    const normalized = licenseKey.trim().toUpperCase();
-    const match = normalized.match(LICENSE_KEY_REGEX);
+  if (bits > 0) {
+    result += alphabet[(value << (5 - bits)) & 31];
+  }
 
+  return result;
+}
+
+async function generateEmailHash(email: string): Promise<string> {
+  const hash = await sha256(email.toLowerCase().trim());
+  return arrayBufferToBase32(hash).substring(0, 4);
+}
+
+async function hmacSha256(key: string, message: string): Promise<ArrayBuffer> {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(key);
+  const messageData = encoder.encode(message);
+
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  return await crypto.subtle.sign('HMAC', cryptoKey, messageData);
+}
+
+async function generateSignature(data: string): Promise<string> {
+  const sig = await hmacSha256(SECRET_KEY, data);
+  return arrayBufferToBase32(sig).substring(0, 8);
+}
+
+async function verifySignature(data: string, signature: string): Promise<boolean> {
+  const expected = await generateSignature(data);
+  return expected === signature;
+}
+
+// =============================================================================
+// ストレージインターフェース
+// =============================================================================
+
+export interface LicenseStorage {
+  load(): Promise<LicenseData | null>;
+  save(data: LicenseData): Promise<void>;
+  clear(): Promise<void>;
+}
+
+/**
+ * ローカルストレージベースのストレージ（ブラウザ/Tauri用）
+ */
+export class LocalStorageAdapter implements LicenseStorage {
+  private key: string;
+
+  constructor(productName: string) {
+    this.key = `insight-license-${productName}`;
+  }
+
+  async load(): Promise<LicenseData | null> {
+    try {
+      const encoded = localStorage.getItem(this.key);
+      if (!encoded) return null;
+      const decoded = atob(encoded);
+      return JSON.parse(decoded);
+    } catch {
+      return null;
+    }
+  }
+
+  async save(data: LicenseData): Promise<void> {
+    const encoded = btoa(JSON.stringify(data));
+    localStorage.setItem(this.key, encoded);
+  }
+
+  async clear(): Promise<void> {
+    localStorage.removeItem(this.key);
+  }
+}
+
+// =============================================================================
+// ライセンスマネージャー
+// =============================================================================
+
+export interface LicenseManagerOptions {
+  product: string;
+  storage?: LicenseStorage;
+}
+
+/**
+ * ライセンスマネージャー
+ */
+export class LicenseManager {
+  private product: string;
+  private storage: LicenseStorage;
+  private cachedData: LicenseData | null = null;
+
+  constructor(options: LicenseManagerOptions) {
+    this.product = options.product;
+    this.storage = options.storage || new LocalStorageAdapter(options.product);
+  }
+
+  private getValidProductCodes(): ProductCode[] {
+    return PRODUCT_PLANS[this.product] || [];
+  }
+
+  /**
+   * ライセンス認証
+   */
+  async authenticate(email: string, key: string): Promise<AuthResult> {
+    email = email.trim().toLowerCase();
+    key = key.trim().toUpperCase();
+
+    // 1. キー形式チェック
+    const match = key.match(LICENSE_KEY_REGEX);
     if (!match) {
       return {
-        isValid: false,
-        product: null,
-        tier: null,
-        expiresAt: null,
-        error: 'Invalid license key format',
+        success: false,
+        errorCode: 'E001',
+        message: ERROR_MESSAGES.E001,
       };
     }
 
-    const [, product, tier, part1, part2, providedChecksum] = match;
+    const [, productCodeStr, planStr, yymm, emailHash, sig1, sig2] = match;
+    const productCode = productCodeStr as ProductCode;
+    const plan = planStr as Plan;
+    const signature = sig1 + sig2;
 
-    // チェックサム検証
-    const baseKey = `INS-${product}-${tier}-${part1}-${part2}`;
-    const expectedChecksum = calculateChecksum(baseKey);
-
-    if (providedChecksum !== expectedChecksum) {
-      return {
-        isValid: false,
-        product: null,
-        tier: null,
-        expiresAt: null,
-        error: 'Invalid checksum',
-      };
-    }
-
-    // 有効期限の決定
-    let expiresAt: Date | null = storedExpiresAt || null;
-
-    // 期限切れチェック (ENT は期限なし)
-    if (tier !== 'ENT' && expiresAt) {
-      if (expiresAt < new Date()) {
+    // 2. 署名検証
+    const signData = `${productCodeStr}-${planStr}-${yymm}-${emailHash}`;
+    try {
+      if (!(await verifySignature(signData, signature))) {
         return {
-          isValid: false,
-          product: product as ProductCode,
-          tier: tier as LicenseTier,
-          expiresAt,
-          error: 'License expired',
+          success: false,
+          errorCode: 'E002',
+          message: ERROR_MESSAGES.E002,
         };
       }
+    } catch {
+      return {
+        success: false,
+        errorCode: 'E002',
+        message: ERROR_MESSAGES.E002,
+      };
     }
 
+    // 3. メールハッシュ照合
+    const expectedHash = await generateEmailHash(email);
+    if (emailHash !== expectedHash) {
+      return {
+        success: false,
+        errorCode: 'E003',
+        message: ERROR_MESSAGES.E003,
+      };
+    }
+
+    // 4. 有効期限チェック
+    const year = 2000 + parseInt(yymm.substring(0, 2), 10);
+    const month = parseInt(yymm.substring(2, 4), 10);
+    const expires = new Date(year, month, 0, 23, 59, 59); // 月末
+
+    if (new Date() > expires) {
+      return {
+        success: false,
+        product: productCode,
+        plan,
+        expires,
+        errorCode: 'E004',
+        message: ERROR_MESSAGES.E004,
+      };
+    }
+
+    // 5. 製品コードチェック
+    const validCodes = this.getValidProductCodes();
+    if (!validCodes.includes(productCode)) {
+      return {
+        success: false,
+        product: productCode,
+        plan,
+        expires,
+        errorCode: 'E005',
+        message: ERROR_MESSAGES.E005.replace('{product}', PRODUCT_NAMES[productCode]),
+      };
+    }
+
+    // 認証成功 → ローカル保存
+    const data: LicenseData = {
+      email,
+      key,
+      product: PRODUCT_NAMES[productCode],
+      productCode,
+      plan,
+      expires: expires.toISOString().split('T')[0],
+      verifiedAt: new Date().toISOString(),
+    };
+
+    await this.storage.save(data);
+    this.cachedData = data;
+
     return {
-      isValid: true,
-      product: product as ProductCode,
-      tier: tier as LicenseTier,
-      expiresAt,
+      success: true,
+      product: productCode,
+      plan,
+      expires,
     };
   }
 
   /**
-   * 製品がライセンスでカバーされているかチェック
+   * ライセンス状態を確認
    */
-  isProductCovered(licenseInfo: LicenseInfo, targetProduct: ProductCode): boolean {
-    if (!licenseInfo.isValid || !licenseInfo.product) {
-      return false;
+  async checkStatus(): Promise<StatusResult> {
+    const data = this.cachedData || (await this.storage.load());
+
+    if (!data) {
+      return {
+        status: 'not_found',
+        isValid: false,
+      };
     }
 
-    // ALLライセンスは全製品をカバー
-    if (licenseInfo.product === 'ALL') {
-      return true;
-    }
+    this.cachedData = data;
 
-    return licenseInfo.product === targetProduct;
+    try {
+      const expires = new Date(data.expires + 'T23:59:59');
+      const now = new Date();
+      const daysRemaining = Math.floor((expires.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (now > expires) {
+        return {
+          status: 'expired',
+          isValid: false,
+          product: data.productCode,
+          plan: data.plan,
+          expires,
+          daysRemaining: 0,
+          email: data.email,
+        };
+      }
+
+      const status: LicenseStatusType = daysRemaining <= 30 ? 'expiring_soon' : 'valid';
+
+      return {
+        status,
+        isValid: true,
+        product: data.productCode,
+        plan: data.plan,
+        expires,
+        daysRemaining,
+        email: data.email,
+      };
+    } catch {
+      return {
+        status: 'not_found',
+        isValid: false,
+      };
+    }
+  }
+
+  /**
+   * ライセンス情報をクリア
+   */
+  async clearLicense(): Promise<void> {
+    this.cachedData = null;
+    await this.storage.clear();
+  }
+
+  /**
+   * 残り日数を取得
+   */
+  async getDaysRemaining(): Promise<number> {
+    const status = await this.checkStatus();
+    return status.daysRemaining || 0;
   }
 }
 
-/**
- * 機能制限を取得
- */
-export function getFeatureLimits(tier: LicenseTier | null): FeatureLimits {
-  if (!tier) {
-    return TIER_LIMITS.TRIAL; // デフォルトはTRIAL制限
-  }
-  return TIER_LIMITS[tier];
-}
+// =============================================================================
+// ライセンスキー生成（開発者用・Node.js環境）
+// =============================================================================
 
-/**
- * ライセンスキー生成オプション
- */
 export interface GenerateOptions {
   productCode: ProductCode;
-  tier: LicenseTier;
-  expiresAt?: Date;  // 指定しない場合はティアのデフォルト期間
+  plan: Plan;
+  email: string;
+  expires: Date;
 }
 
 /**
- * デフォルトの有効期限を計算
+ * ライセンスキーを生成（同期版・CLIツール用）
+ * ※ Node.js 環境でのみ使用
  */
-function calculateDefaultExpiry(tier: LicenseTier): Date | null {
-  const tierConfig = TIERS[tier];
+export function generateLicenseKeySync(options: GenerateOptions): string {
+  // Node.js crypto を使用
+  const crypto = require('crypto');
+  const { productCode, plan, email, expires } = options;
 
-  // 日数ベースの期限 (TRIAL用)
-  if (tierConfig.durationDays) {
-    const expiry = new Date();
-    expiry.setDate(expiry.getDate() + tierConfig.durationDays);
-    return expiry;
-  }
+  // YYMM形式
+  const yy = String(expires.getFullYear()).substring(2);
+  const mm = String(expires.getMonth() + 1).padStart(2, '0');
+  const yymm = yy + mm;
 
-  // 月数ベースの期限 (STD, PRO用)
-  if (tierConfig.durationMonths) {
-    const expiry = new Date();
-    expiry.setMonth(expiry.getMonth() + tierConfig.durationMonths);
-    return expiry;
-  }
+  // メールハッシュ
+  const emailHashRaw = crypto.createHash('sha256').update(email.toLowerCase().trim()).digest();
+  const emailHash = emailHashRaw.toString('base64').replace(/[^A-Z0-9]/gi, '').substring(0, 4).toUpperCase();
 
-  return null; // 永久ライセンス (ENT)
+  // 署名
+  const signData = `${productCode}-${plan}-${yymm}-${emailHash}`;
+  const hmac = crypto.createHmac('sha256', SECRET_KEY);
+  hmac.update(signData);
+  const sig = hmac.digest();
+  const signature = sig.toString('base64').replace(/[^A-Z0-9]/gi, '').substring(0, 8).toUpperCase();
+  const sig1 = signature.substring(0, 4);
+  const sig2 = signature.substring(4, 8);
+
+  return `${productCode}-${plan}-${yymm}-${emailHash}-${sig1}-${sig2}`;
 }
 
 /**
- * ライセンスキーを生成する
+ * トライアルキーを生成（同期版）
  */
-export function generateLicenseKey(options: GenerateOptions): string {
-  const { productCode, tier, expiresAt } = options;
-
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const randomPart = () => {
-    let result = '';
-    for (let i = 0; i < 4; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-
-  const part1 = randomPart();
-  const part2 = randomPart();
-  const baseKey = `INS-${productCode}-${tier}-${part1}-${part2}`;
-  const checksum = calculateChecksum(baseKey);
-
-  return `${baseKey}-${checksum}`;
+export function generateTrialKeySync(productCode: ProductCode, email: string): string {
+  const expires = new Date();
+  expires.setDate(expires.getDate() + TRIAL_DAYS);
+  return generateLicenseKeySync({ productCode, plan: 'TRIAL', email, expires });
 }
 
-/**
- * ライセンスキーと有効期限を一緒に生成
- */
-export function generateLicenseWithExpiry(options: GenerateOptions): {
-  licenseKey: string;
-  expiresAt: Date | null;
-} {
-  const licenseKey = generateLicenseKey(options);
-  const expiresAt = options.expiresAt || calculateDefaultExpiry(options.tier);
-
-  return { licenseKey, expiresAt };
-}
-
-export default LicenseValidator;
+export default LicenseManager;
