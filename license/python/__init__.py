@@ -129,13 +129,23 @@ class StatusResult:
 # 署名・ハッシュ
 # =============================================================================
 
-# 署名用シークレットキー（本番では環境変数から取得）
-_SECRET_KEY = os.environ.get(
-    "INSIGHT_LICENSE_SECRET",
-    b"insight-series-license-secret-2026"
-)
-if isinstance(_SECRET_KEY, str):
-    _SECRET_KEY = _SECRET_KEY.encode()
+# 署名用シークレットキー（環境変数から取得 - 必須）
+# セキュリティ上、デフォルト値は設定しない
+_SECRET_KEY_RAW = os.environ.get("INSIGHT_LICENSE_SECRET")
+_SECRET_KEY: Optional[bytes] = None
+_LICENSE_VERIFICATION_AVAILABLE = False
+
+if _SECRET_KEY_RAW:
+    _SECRET_KEY = _SECRET_KEY_RAW.encode() if isinstance(_SECRET_KEY_RAW, str) else _SECRET_KEY_RAW
+    _LICENSE_VERIFICATION_AVAILABLE = True
+else:
+    # 環境変数が設定されていない場合は警告
+    import warnings
+    warnings.warn(
+        "INSIGHT_LICENSE_SECRET environment variable not set. "
+        "License verification disabled - FREE mode only.",
+        RuntimeWarning
+    )
 
 
 def _generate_email_hash(email: str) -> str:
@@ -145,16 +155,28 @@ def _generate_email_hash(email: str) -> str:
 
 
 def _generate_signature(data: str) -> str:
-    """署名を生成（8文字）"""
+    """署名を生成（8文字）- 秘密鍵が必要"""
+    if not _LICENSE_VERIFICATION_AVAILABLE or _SECRET_KEY is None:
+        raise RuntimeError("License signing not available - INSIGHT_LICENSE_SECRET not set")
     sig = hmac.new(_SECRET_KEY, data.encode(), hashlib.sha256).digest()
     encoded = base64.b32encode(sig)[:8].decode().upper()
     return encoded
 
 
 def _verify_signature(data: str, signature: str) -> bool:
-    """署名を検証"""
-    expected = _generate_signature(data)
-    return hmac.compare_digest(expected, signature)
+    """署名を検証 - 秘密鍵が必要"""
+    if not _LICENSE_VERIFICATION_AVAILABLE or _SECRET_KEY is None:
+        return False  # 検証不可 → 無効扱い
+    try:
+        expected = _generate_signature(data)
+        return hmac.compare_digest(expected, signature)
+    except Exception:
+        return False
+
+
+def is_license_verification_available() -> bool:
+    """ライセンス検証が利用可能かどうか"""
+    return _LICENSE_VERIFICATION_AVAILABLE
 
 
 # =============================================================================
@@ -474,4 +496,5 @@ __all__ = [
     # 関数
     "generate_license_key",
     "generate_trial_key",
+    "is_license_verification_available",
 ]
