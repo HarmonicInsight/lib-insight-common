@@ -89,7 +89,8 @@
     "text": {
       "primary": "#F9FAFB",
       "secondary": "#D1D5DB",
-      "disabled": "#6B7280"
+      "disabled": "#6B7280",
+      "title": "#60A5FA"
     }
   },
   "lightMode": {
@@ -101,7 +102,8 @@
     "text": {
       "primary": "#111827",
       "secondary": "#4B5563",
-      "disabled": "#9CA3AF"
+      "disabled": "#9CA3AF",
+      "title": "#2563EB"
     }
   }
 }
