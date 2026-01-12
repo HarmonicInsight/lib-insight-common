@@ -1,0 +1,105 @@
+{
+  "$schema": "./schema/endings.schema.json",
+  "version": "1.0.0",
+  "description": "日本語 語尾パターン辞書（確信度・ニュアンス分析用）",
+  "patterns": {
+    "definite": {
+      "name": "確定",
+      "certaintyScore": 1.0,
+      "endings": [
+        { "pattern": "です", "impact": 1.0 },
+        { "pattern": "ます", "impact": 1.0 },
+        { "pattern": "だ", "impact": 0.9 },
+        { "pattern": "である", "impact": 1.0 },
+        { "pattern": "ました", "impact": 1.0 },
+        { "pattern": "でした", "impact": 1.0 },
+        { "pattern": "した", "impact": 0.9 }
+      ]
+    },
+    "probable": {
+      "name": "高確率",
+      "certaintyScore": 0.7,
+      "endings": [
+        { "pattern": "だろう", "impact": 0.7 },
+        { "pattern": "でしょう", "impact": 0.7 },
+        { "pattern": "はず", "impact": 0.8 },
+        { "pattern": "はずです", "impact": 0.8 },
+        { "pattern": "と思います", "impact": 0.6 },
+        { "pattern": "と思う", "impact": 0.6 },
+        { "pattern": "ようです", "impact": 0.6 },
+        { "pattern": "みたいです", "impact": 0.5 }
+      ]
+    },
+    "possible": {
+      "name": "可能性",
+      "certaintyScore": 0.4,
+      "endings": [
+        { "pattern": "かもしれない", "impact": 0.4 },
+        { "pattern": "かもしれません", "impact": 0.4 },
+        { "pattern": "かも", "impact": 0.3 },
+        { "pattern": "可能性がある", "impact": 0.5 },
+        { "pattern": "らしい", "impact": 0.4 },
+        { "pattern": "っぽい", "impact": 0.3 },
+        { "pattern": "気がする", "impact": 0.4 }
+      ]
+    },
+    "uncertain": {
+      "name": "不確実",
+      "certaintyScore": 0.2,
+      "endings": [
+        { "pattern": "わからない", "impact": 0.1 },
+        { "pattern": "わかりません", "impact": 0.1 },
+        { "pattern": "不明", "impact": 0.1 },
+        { "pattern": "かな", "impact": 0.3 },
+        { "pattern": "のか", "impact": 0.3 }
+      ]
+    },
+    "nuance": {
+      "name": "ニュアンス付き語尾",
+      "patterns": [
+        {
+          "pattern": "てしまった",
+          "nuance": "regret",
+          "emotionImpact": { "category": "frustration", "boost": 0.3 },
+          "note": "後悔・意図せぬ結果"
+        },
+        {
+          "pattern": "てしまいました",
+          "nuance": "regret",
+          "emotionImpact": { "category": "frustration", "boost": 0.3 }
+        },
+        {
+          "pattern": "ちゃった",
+          "nuance": "regret",
+          "emotionImpact": { "category": "frustration", "boost": 0.2 },
+          "note": "カジュアルな後悔"
+        },
+        {
+          "pattern": "てほしい",
+          "nuance": "hope",
+          "emotionImpact": { "category": "request", "boost": 0.4 }
+        },
+        {
+          "pattern": "ていただきたい",
+          "nuance": "hope",
+          "emotionImpact": { "category": "request", "boost": 0.5 }
+        },
+        {
+          "pattern": "べきだ",
+          "nuance": "assertion",
+          "emotionImpact": { "category": "request", "boost": 0.3 }
+        },
+        {
+          "pattern": "なければならない",
+          "nuance": "obligation",
+          "urgencyImpact": 0.2
+        },
+        {
+          "pattern": "ないといけない",
+          "nuance": "obligation",
+          "urgencyImpact": 0.2
+        }
+      ]
+    }
+  }
+}

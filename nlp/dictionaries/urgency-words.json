@@ -1,0 +1,73 @@
+{
+  "$schema": "./schema/urgency-words.schema.json",
+  "version": "1.0.0",
+  "description": "日本語ビジネス文脈 緊急度辞書",
+  "levels": {
+    "critical": {
+      "name": "即時対応",
+      "score": 1.0,
+      "words": [
+        { "word": "止まった", "weight": 1.0 },
+        { "word": "動かない", "weight": 1.0 },
+        { "word": "動かなくなった", "weight": 1.0 },
+        { "word": "業務停止", "weight": 1.0 },
+        { "word": "使えない", "weight": 0.9, "note": "システム系で critical" },
+        { "word": "落ちた", "weight": 0.9 },
+        { "word": "クラッシュ", "weight": 0.9 },
+        { "word": "障害", "weight": 0.9 },
+        { "word": "本番", "weight": 0.8, "note": "本番環境の問題" },
+        { "word": "お客様", "weight": 0.7, "note": "顧客影響" },
+        { "word": "顧客", "weight": 0.7 }
+      ]
+    },
+    "high": {
+      "name": "高緊急度",
+      "score": 0.8,
+      "words": [
+        { "word": "至急", "weight": 1.0 },
+        { "word": "緊急", "weight": 1.0 },
+        { "word": "急ぎ", "weight": 0.9 },
+        { "word": "今すぐ", "weight": 1.0 },
+        { "word": "すぐに", "weight": 0.9 },
+        { "word": "今日中", "weight": 0.8 },
+        { "word": "本日中", "weight": 0.8 },
+        { "word": "ASAP", "weight": 1.0 },
+        { "word": "asap", "weight": 1.0 },
+        { "word": "大至急", "weight": 1.0 },
+        { "word": "急務", "weight": 0.9 },
+        { "word": "間に合わない", "weight": 0.8 }
+      ]
+    },
+    "medium": {
+      "name": "中緊急度",
+      "score": 0.5,
+      "words": [
+        { "word": "なるべく早く", "weight": 0.7 },
+        { "word": "早めに", "weight": 0.6 },
+        { "word": "今週中", "weight": 0.6 },
+        { "word": "週内", "weight": 0.6 },
+        { "word": "明日まで", "weight": 0.7 },
+        { "word": "締め切り", "weight": 0.7 },
+        { "word": "デッドライン", "weight": 0.7 },
+        { "word": "期限", "weight": 0.6 },
+        { "word": "遅れ", "weight": 0.5 },
+        { "word": "遅延", "weight": 0.5 }
+      ]
+    },
+    "low": {
+      "name": "低緊急度",
+      "score": 0.2,
+      "words": [
+        { "word": "できれば", "weight": 0.3 },
+        { "word": "余裕があれば", "weight": 0.2 },
+        { "word": "時間があれば", "weight": 0.2 },
+        { "word": "そのうち", "weight": 0.1 },
+        { "word": "いつか", "weight": 0.1 },
+        { "word": "次回", "weight": 0.3 },
+        { "word": "来週", "weight": 0.3 },
+        { "word": "来月", "weight": 0.2 },
+        { "word": "将来的に", "weight": 0.1 }
+      ]
+    }
+  }
+}
