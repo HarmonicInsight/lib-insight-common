@@ -1,0 +1,115 @@
+{
+  "$schema": "./schema/emotion-words.schema.json",
+  "version": "1.0.0",
+  "description": "日本語ビジネス文脈 感情辞書",
+  "categories": {
+    "anxiety": {
+      "name": "不安系",
+      "valence": -0.6,
+      "words": [
+        { "word": "心配", "weight": 0.7 },
+        { "word": "不安", "weight": 0.8 },
+        { "word": "困る", "weight": 0.6 },
+        { "word": "困った", "weight": 0.7 },
+        { "word": "わからない", "weight": 0.5 },
+        { "word": "分からない", "weight": 0.5 },
+        { "word": "怖い", "weight": 0.8 },
+        { "word": "恐い", "weight": 0.8 },
+        { "word": "やばい", "weight": 0.7 },
+        { "word": "ヤバい", "weight": 0.7 },
+        { "word": "まずい", "weight": 0.6 },
+        { "word": "どうしよう", "weight": 0.7 },
+        { "word": "大丈夫", "weight": 0.3, "note": "疑問形で不安を示す" }
+      ]
+    },
+    "anger": {
+      "name": "怒り系",
+      "valence": -0.9,
+      "words": [
+        { "word": "ひどい", "weight": 0.8 },
+        { "word": "酷い", "weight": 0.8 },
+        { "word": "最悪", "weight": 0.9 },
+        { "word": "使えない", "weight": 0.7 },
+        { "word": "ふざけるな", "weight": 1.0 },
+        { "word": "ふざけんな", "weight": 1.0 },
+        { "word": "ありえない", "weight": 0.8 },
+        { "word": "あり得ない", "weight": 0.8 },
+        { "word": "許せない", "weight": 0.9 },
+        { "word": "腹立つ", "weight": 0.9 },
+        { "word": "むかつく", "weight": 0.9 },
+        { "word": "いい加減", "weight": 0.7 },
+        { "word": "なんで", "weight": 0.4, "note": "文脈により怒り" }
+      ]
+    },
+    "frustration": {
+      "name": "困惑・疲弊系",
+      "valence": -0.5,
+      "words": [
+        { "word": "大変", "weight": 0.6 },
+        { "word": "きつい", "weight": 0.7 },
+        { "word": "辛い", "weight": 0.7 },
+        { "word": "つらい", "weight": 0.7 },
+        { "word": "しんどい", "weight": 0.7 },
+        { "word": "疲れた", "weight": 0.5 },
+        { "word": "疲れる", "weight": 0.5 },
+        { "word": "面倒", "weight": 0.5 },
+        { "word": "めんどう", "weight": 0.5 },
+        { "word": "やってられない", "weight": 0.8 },
+        { "word": "無理", "weight": 0.7 },
+        { "word": "難しい", "weight": 0.4 },
+        { "word": "厳しい", "weight": 0.5 }
+      ]
+    },
+    "request": {
+      "name": "要望系",
+      "valence": 0.0,
+      "words": [
+        { "word": "ほしい", "weight": 0.6 },
+        { "word": "欲しい", "weight": 0.6 },
+        { "word": "あれば", "weight": 0.4 },
+        { "word": "できたら", "weight": 0.5 },
+        { "word": "できれば", "weight": 0.5 },
+        { "word": "お願い", "weight": 0.6 },
+        { "word": "改善", "weight": 0.5 },
+        { "word": "追加", "weight": 0.4 },
+        { "word": "対応", "weight": 0.4 },
+        { "word": "検討", "weight": 0.4 },
+        { "word": "要望", "weight": 0.6 },
+        { "word": "リクエスト", "weight": 0.6 }
+      ]
+    },
+    "gratitude": {
+      "name": "感謝系",
+      "valence": 0.8,
+      "words": [
+        { "word": "ありがとう", "weight": 0.9 },
+        { "word": "ありがとうございます", "weight": 1.0 },
+        { "word": "感謝", "weight": 0.9 },
+        { "word": "助かる", "weight": 0.8 },
+        { "word": "助かります", "weight": 0.9 },
+        { "word": "助かった", "weight": 0.8 },
+        { "word": "おかげ", "weight": 0.7 },
+        { "word": "お礼", "weight": 0.8 }
+      ]
+    },
+    "satisfaction": {
+      "name": "満足系",
+      "valence": 0.7,
+      "words": [
+        { "word": "良い", "weight": 0.6 },
+        { "word": "いい", "weight": 0.5 },
+        { "word": "素晴らしい", "weight": 0.9 },
+        { "word": "すばらしい", "weight": 0.9 },
+        { "word": "完璧", "weight": 1.0 },
+        { "word": "最高", "weight": 0.9 },
+        { "word": "便利", "weight": 0.6 },
+        { "word": "使いやすい", "weight": 0.7 },
+        { "word": "わかりやすい", "weight": 0.7 },
+        { "word": "嬉しい", "weight": 0.8 },
+        { "word": "うれしい", "weight": 0.8 },
+        { "word": "よかった", "weight": 0.6 },
+        { "word": "解決", "weight": 0.7 }
+      ]
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "$schema": "./schema/politeness.schema.json",
+  "version": "1.0.0",
+  "description": "日本語 敬語・丁寧度辞書",
+  "levels": {
+    "honorific": {
+      "name": "敬語（尊敬語・謙譲語）",
+      "score": 1.0,
+      "patterns": [
+        { "pattern": "いらっしゃ", "type": "尊敬語" },
+        { "pattern": "おっしゃ", "type": "尊敬語" },
+        { "pattern": "ご覧", "type": "尊敬語" },
+        { "pattern": "召し上が", "type": "尊敬語" },
+        { "pattern": "くださ", "type": "尊敬語" },
+        { "pattern": "いただ", "type": "謙譲語" },
+        { "pattern": "申し", "type": "謙譲語" },
+        { "pattern": "参り", "type": "謙譲語" },
+        { "pattern": "存じ", "type": "謙譲語" },
+        { "pattern": "拝見", "type": "謙譲語" },
+        { "pattern": "拝読", "type": "謙譲語" }
+      ]
+    },
+    "polite": {
+      "name": "丁寧語",
+      "score": 0.7,
+      "patterns": [
+        { "pattern": "です", "type": "丁寧語" },
+        { "pattern": "ます", "type": "丁寧語" },
+        { "pattern": "でした", "type": "丁寧語" },
+        { "pattern": "ました", "type": "丁寧語" },
+        { "pattern": "ません", "type": "丁寧語" },
+        { "pattern": "でしょうか", "type": "丁寧語" },
+        { "pattern": "ございます", "type": "丁寧語" }
+      ]
+    },
+    "casual": {
+      "name": "カジュアル",
+      "score": 0.4,
+      "patterns": [
+        { "pattern": "だよ", "type": "casual" },
+        { "pattern": "だね", "type": "casual" },
+        { "pattern": "じゃん", "type": "casual" },
+        { "pattern": "だろ", "type": "casual" },
+        { "pattern": "かな", "type": "casual" },
+        { "pattern": "よね", "type": "casual" }
+      ]
+    },
+    "rough": {
+      "name": "荒い（怒りの兆候）",
+      "score": 0.1,
+      "patterns": [
+        { "pattern": "だろが", "type": "rough", "angerSignal": true },
+        { "pattern": "じゃねー", "type": "rough", "angerSignal": true },
+        { "pattern": "ねーよ", "type": "rough", "angerSignal": true },
+        { "pattern": "んだよ", "type": "rough", "angerSignal": true },
+        { "pattern": "ふざけんな", "type": "rough", "angerSignal": true },
+        { "pattern": "なんだよ", "type": "rough", "angerSignal": true },
+        { "pattern": "やれよ", "type": "rough", "angerSignal": true }
+      ]
+    }
+  },
+  "degradationPatterns": {
+    "description": "敬語崩れの検出パターン（怒りの兆候）",
+    "patterns": [
+      {
+        "from": "ください",
+        "to": "くれ",
+        "signal": "怒り・苛立ち"
+      },
+      {
+        "from": "ます",
+        "to": "る",
+        "signal": "フラストレーション"
+      },
+      {
+        "from": "です",
+        "to": "だ",
+        "signal": "軽度の崩れ"
+      }
+    ],
+    "note": "会話の流れで敬語レベルが下がると怒りの兆候"
+  }
+}

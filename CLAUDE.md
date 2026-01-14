@@ -10,13 +10,16 @@
 ├─────────────────────────────────────────────────────────────┤
 │  insight-common (サブモジュール)                             │
 │  ├── infrastructure/   # 認証・DB・API Gateway              │
+│  ├── nlp/             # 日本語NLP (JBCA)                    │
 │  ├── brand/           # カラー・フォント・ロゴ               │
-│  └── components/      # 共通UIコンポーネント                 │
+│  └── docs/            # プラットフォーム標準                 │
 ├─────────────────────────────────────────────────────────────┤
 │  harmonic-mart-generator (ナレッジ処理が必要な場合)           │
 │  ├── ingest/          # PDF解析・チャンキング                │
 │  └── search/          # Hybrid Search                       │
 └─────────────────────────────────────────────────────────────┘
+
+📖 技術選定の詳細: docs/platform-standard.md を参照
 ```
 
 ## 2. 必須手順
@@ -36,17 +39,24 @@ git submodule add https://github.com/HarmonicInsight/insight-common.git
 `.env.local` に以下を設定:
 
 ```env
-# Firebase (必須)
+# Firebase (🟢 標準 - 必須)
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 
-# Supabase (必須)
+# Supabase (⚪ 業務系のみ - オプション)
 SUPABASE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
-# オプション
+# Pinecone (⚪ AI連携時 - オプション)
+PINECONE_API_KEY=
+PINECONE_INDEX=
+
+# Claude API (🟢 標準)
+ANTHROPIC_API_KEY=
+
+# その他オプション
 REDIS_URL=                    # レート制限用
 AUDIT_LOG_WEBHOOK=            # 監査ログ外部連携
 SECURITY_ALERT_WEBHOOK=       # セキュリティアラート
