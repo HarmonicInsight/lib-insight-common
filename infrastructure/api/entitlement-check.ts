@@ -9,7 +9,7 @@
  *   - 機能アクセス判定
  *
  * リクエスト:
- *   POST { product_code: "INSS", feature: "export_pdf" }
+ *   POST { product_code: "INSS", feature: "inmv_subtitle" }
  *
  * レスポンス:
  *   { allowed: true, plan: "PRO", expires_at: "2025-12-31" }
@@ -18,49 +18,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { verifyRequest } from '../auth/firebase-admin';
 import { createClient } from '@supabase/supabase-js';
+import { PlanCode, canAccessFeature, FEATURE_MATRIX } from '../../config/products';
 
 // Supabase クライアント（Service Role）
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-
-// 機能アクセスマトリクス
-const FEATURE_MATRIX: Record<string, string[]> = {
-  // ========================================
-  // 共通機能
-  // ========================================
-  // 基本機能（全プラン）
-  'basic': ['FREE', 'STD', 'PRO', 'ENT'],
-
-  // Standard以上
-  'export_pdf': ['STD', 'PRO', 'ENT'],
-  'export_excel': ['STD', 'PRO', 'ENT'],
-  'cloud_sync': ['STD', 'PRO', 'ENT'],
-
-  // Pro以上
-  'batch_process': ['PRO', 'ENT'],
-  'advanced_filter': ['PRO', 'ENT'],
-  'priority_support': ['PRO', 'ENT'],
-
-  // Enterprise専用
-  'api_access': ['ENT'],
-  'sso': ['ENT'],
-  'audit_log': ['ENT'],
-  'custom_branding': ['ENT'],
-
-  // ========================================
-  // InsightMovie (INMV) 専用機能
-  // ========================================
-  // 基本機能（全プラン）
-  'video_generate': ['FREE', 'STD', 'PRO', 'ENT'],  // 基本動画生成
-
-  // Pro以上のみ
-  'subtitle': ['PRO', 'ENT'],              // 字幕機能
-  'subtitle_style': ['PRO', 'ENT'],        // 字幕スタイル選択
-  'transition': ['PRO', 'ENT'],            // トランジション効果
-  'pptx_import': ['PRO', 'ENT'],           // PPTX取込
-};
 
 interface EntitlementRequest {
   product_code: string;
@@ -69,7 +33,7 @@ interface EntitlementRequest {
 
 interface EntitlementResponse {
   allowed: boolean;
-  plan: string;
+  plan: PlanCode;
   expires_at: string | null;
   reason?: string;
 }
@@ -123,7 +87,7 @@ export default async function handler(
 
     // ライセンスなし → FREE扱い
     if (!license) {
-      const allowed = checkAccess('FREE', feature);
+      const allowed = canAccessFeature(feature, 'FREE');
       return res.status(200).json({
         allowed,
         plan: 'FREE',
@@ -153,7 +117,7 @@ export default async function handler(
     }
 
     // 機能アクセス判定
-    const allowed = checkAccess(license.plan, feature);
+    const allowed = canAccessFeature(feature, license.plan as PlanCode);
 
     return res.status(200).json({
       allowed,
@@ -165,19 +129,4 @@ export default async function handler(
     console.error('Entitlement check error:', error);
     return res.status(500).json({ error: 'サーバーエラー' });
   }
-}
-
-/**
- * 機能アクセス判定
- */
-function checkAccess(plan: string, feature: string): boolean {
-  const allowedPlans = FEATURE_MATRIX[feature];
-
-  // 未定義の機能 → 全員許可（デフォルト安全側）
-  if (!allowedPlans) {
-    console.warn(`未定義の機能: ${feature} - デフォルトで許可`);
-    return true;
-  }
-
-  return allowedPlans.includes(plan);
 }
