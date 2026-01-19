@@ -3,6 +3,20 @@
  *
  * サーバーサイド・クライアントサイド両方で利用可能な
  * ライセンス管理機能を提供
+ *
+ * ## 使用方法
+ *
+ * ### サーバーサイド
+ * ```typescript
+ * const checker = new ServerLicenseChecker(supabase, 'INMV');
+ * const canUse = await checker.checkFeature(userId, 'subtitle');
+ * ```
+ *
+ * ### クライアントサイド
+ * ```typescript
+ * const manager = new ClientLicenseManager('INMV');
+ * const canUse = await manager.canUseFeature('subtitle');
+ * ```
  */
 
 import {
@@ -10,42 +24,58 @@ import {
   PlanCode,
   PlanLimits,
   FeatureDefinition,
+  ProductOrCommon,
   PRODUCTS,
   PLANS,
   PRODUCT_FEATURES,
   COMMON_FEATURES,
-  FEATURE_MATRIX,
-  getPlanLimits,
-  canAccessFeature,
-  isPlanAtLeast,
-  // 新API
+  DEFAULT_PLAN_LIMITS,
+  PRODUCT_PLAN_LIMITS,
+  // 推奨API
+  checkFeature,
+  checkProductFeature,
+  checkCommonFeature,
+  getFeatureLimit,
+  getRequiredPlan,
   getProductFeatures,
   getFeatureDefinition,
-  checkProductFeature,
-  getFeatureLimit,
+  getCommonFeatureDefinition,
   getProductFeatureMatrix,
+  getPlanLimits,
+  isPlanAtLeast,
+  // 後方互換
+  FEATURE_MATRIX,
+  canAccessFeature,
 } from '../../config/products';
 
-// Re-export
+// Re-export all from config/products
 export {
   ProductCode,
   PlanCode,
   PlanLimits,
   FeatureDefinition,
+  ProductOrCommon,
   PRODUCTS,
   PLANS,
   PRODUCT_FEATURES,
   COMMON_FEATURES,
-  FEATURE_MATRIX,
-  getPlanLimits,
-  canAccessFeature,
-  isPlanAtLeast,
-  // 新API
+  DEFAULT_PLAN_LIMITS,
+  PRODUCT_PLAN_LIMITS,
+  // 推奨API
+  checkFeature,
+  checkProductFeature,
+  checkCommonFeature,
+  getFeatureLimit,
+  getRequiredPlan,
   getProductFeatures,
   getFeatureDefinition,
-  checkProductFeature,
-  getFeatureLimit,
+  getCommonFeatureDefinition,
   getProductFeatureMatrix,
+  getPlanLimits,
+  isPlanAtLeast,
+  // 後方互換
+  FEATURE_MATRIX,
+  canAccessFeature,
 };
 
 // =============================================================================
@@ -168,25 +198,39 @@ export class ServerLicenseChecker {
   }
 
   /**
-   * 機能アクセスをチェック（製品固有の機能キーを使用）
+   * 機能アクセスをチェック（製品固有 + 共通機能を自動判定）
+   *
    * @param userId ユーザーID
    * @param featureKey 機能キー（製品プレフィックスなし: 'subtitle'）
+   *
+   * @example
+   * // 製品固有機能
+   * await checker.checkFeature(userId, 'subtitle');
+   * // 共通機能
+   * await checker.checkFeature(userId, 'api_access');
    */
-  async checkFeature(userId: string, featureKey: string): Promise<FeatureCheckResult> {
+  async checkFeatureAccess(userId: string, featureKey: string): Promise<FeatureCheckResult> {
     const result = await this.checkLicense(userId);
     const plan = result.license?.plan || 'FREE';
 
-    // 新API: 製品コードを考慮したチェック
-    const allowed = checkProductFeature(this.productCode, featureKey, plan);
-    const feature = getFeatureDefinition(this.productCode, featureKey);
-    const minRequiredPlan = feature?.allowedPlans[0];
+    // 統合API: 製品固有 + 共通機能を自動判定
+    const allowed = checkFeature(this.productCode, featureKey, plan);
+    const requiredPlan = getRequiredPlan(this.productCode, featureKey);
 
     return {
       allowed,
       plan,
-      requiredPlan: allowed ? undefined : minRequiredPlan as PlanCode | undefined,
-      reason: allowed ? undefined : `This feature requires ${minRequiredPlan} plan or higher`,
+      requiredPlan: allowed ? undefined : requiredPlan || undefined,
+      reason: allowed ? undefined : `This feature requires ${requiredPlan} plan or higher`,
     };
+  }
+
+  /**
+   * 機能アクセスをチェック（製品固有機能のみ）
+   * @deprecated 新規実装では checkFeatureAccess を使用
+   */
+  async checkFeature(userId: string, featureKey: string): Promise<FeatureCheckResult> {
+    return this.checkFeatureAccess(userId, featureKey);
   }
 
   /**
@@ -336,12 +380,19 @@ export class ClientLicenseManager {
   }
 
   /**
-   * 機能が利用可能かチェック
+   * 機能が利用可能かチェック（製品固有 + 共通機能を自動判定）
+   *
    * @param featureKey 機能キー（製品プレフィックスなし: 'subtitle'）
+   *
+   * @example
+   * // 製品固有機能
+   * await manager.canUseFeature('subtitle');
+   * // 共通機能
+   * await manager.canUseFeature('api_access');
    */
   async canUseFeature(featureKey: string): Promise<boolean> {
     const state = await this.getState();
-    return checkProductFeature(this.productCode, featureKey, state.plan);
+    return checkFeature(this.productCode, featureKey, state.plan);
   }
 
   /**
@@ -431,21 +482,16 @@ export function getProductDisplayName(product: ProductCode, locale: 'en' | 'ja' 
 }
 
 /**
- * アップグレードが必要なプランを取得（製品指定版・推奨）
+ * アップグレードが必要なプランを取得
+ * @deprecated config/products.ts の getRequiredPlan を使用
  */
 export function getRequiredPlanForProductFeature(product: ProductCode, featureKey: string): PlanCode | null {
-  const feature = getFeatureDefinition(product, featureKey);
-  if (!feature || feature.allowedPlans.length === 0) return null;
-
-  // 最低限必要なプランを返す（priority が最小のもの）
-  return feature.allowedPlans.reduce((min, plan) => {
-    return PLANS[plan].priority < PLANS[min].priority ? plan : min;
-  });
+  return getRequiredPlan(product, featureKey);
 }
 
 /**
  * アップグレードが必要なプランを取得（後方互換）
- * @deprecated 新規実装では getRequiredPlanForProductFeature を使用
+ * @deprecated config/products.ts の getRequiredPlan を使用
  */
 export function getRequiredPlanForFeature(feature: string): PlanCode | null {
   const allowedPlans = FEATURE_MATRIX[feature];
