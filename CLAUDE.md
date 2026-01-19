@@ -133,15 +133,64 @@ withGateway(handler, { requiredPlan: ['PRO', 'ENT'] });
 
 | コード | 製品名 | 説明 |
 |-------|-------|------|
-| INSS | InsightSlide Standard | AIスライド作成（標準版） |
-| INSP | InsightSlide Pro | AIスライド作成（プロ版） |
-| INPY | InsightPy | Python学習 |
+| INSS | InsightSlide | PowerPointコンテンツ抽出・更新 |
+| INSP | InsightSlide Pro | プロ向けPowerPointツール |
+| INPY | InsightPy | Windows自動化Python実行環境 |
 | FGIN | ForguncyInsight | Forguncy連携 |
 | INMV | InsightMovie | 画像・PPTから動画作成 |
 
 新規製品を追加する場合は `config/products.ts` も更新してください。
 
 ## 7. ライセンスシステム
+
+### プラン体系
+
+| プラン | 説明 | 有効期限 |
+|-------|------|---------|
+| FREE | 機能制限あり | 無期限 |
+| TRIAL | 全機能利用可能（評価用） | 標準1ヶ月（発行時に自由設定可） |
+| STD | 標準機能 | 12ヶ月 |
+| PRO | 全機能 | 12ヶ月 |
+| ENT | カスタマイズ | 要相談 |
+
+### 製品別機能マトリクス
+
+#### InsightSlide (INSS)
+
+| 機能 | FREE | TRIAL | STD | PRO |
+|-----|------|-------|-----|-----|
+| Extract/Update | ○ | ○ | ○ | ○ |
+| スライド更新数 | 3枚 | 無制限 | 無制限 | 無制限 |
+| JSON入出力 | × | ○ | ○ | ○ |
+| フォルダ一括処理 | × | ○ | ○ | ○ |
+| 2ファイル比較 | × | ○ | ○ | ○ |
+| 自動バックアップ | × | ○ | × | ○ |
+
+#### InsightPy (INPY)
+
+| 機能 | FREE | TRIAL | STD | PRO |
+|-----|------|-------|-----|-----|
+| コード実行 | ○ | ○ | ○ | ○ |
+| スクリプト保存数 | 3個 | 無制限 | 50個 | 無制限 |
+| プリセット利用 | ○ | ○ | ○ | ○ |
+| クラウド同期 | × | ○ | × | ○ |
+
+#### InsightMovie (INMV)
+
+| 機能 | FREE | TRIAL | STD | PRO |
+|-----|------|-------|-----|-----|
+| 動画生成 | ○ | ○ | ○ | ○ |
+| 字幕 | × | ○ | × | ○ |
+| 字幕スタイル選択 | × | ○ | × | ○ |
+| トランジション | × | ○ | × | ○ |
+| PPTX取込 | × | ○ | × | ○ |
+
+### ライセンスキー形式
+
+```
+{製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}
+例: INMV-PRO-2601-XXXX-XXXX-XXXX
+```
 
 ### サーバーサイド実装
 
@@ -164,19 +213,10 @@ if (!result.isValid) {
 }
 
 // 機能アクセス確認
-const canUse4K = await licenseChecker.checkFeature(userId, 'video_4k');
-if (!canUse4K.allowed) {
+const canUseFeature = await licenseChecker.checkFeature(userId, 'inmv_subtitle');
+if (!canUseFeature.allowed) {
   return res.status(403).json({ error: 'PRO以上のプランが必要です' });
 }
-
-// 月間制限確認
-const withinLimit = await licenseChecker.isWithinMonthlyLimit(userId);
-if (!withinLimit) {
-  return res.status(429).json({ error: '今月の利用上限に達しました' });
-}
-
-// 利用をログに記録
-await licenseChecker.logUsage(userId, 'video_generate', { resolution: '1080p' });
 ```
 
 ### クライアントサイド実装
@@ -190,24 +230,11 @@ const licenseManager = new ClientLicenseManager('INMV');
 const plan = await licenseManager.getPlan();
 
 // 機能確認（UI表示用）
-const can4K = await licenseManager.canUseFeature('video_4k');
-if (!can4K) {
+const canSubtitle = await licenseManager.canUseFeature('inmv_subtitle');
+if (!canSubtitle) {
   // アップグレード促進UIを表示
 }
-
-// 制限確認
-const limits = await licenseManager.getLimits();
-console.log(`月間上限: ${limits.monthlyLimit}本`);
 ```
-
-### プラン別制限（InsightMovie）
-
-| プラン | 字幕 | 字幕スタイル選択 | トランジション | PPTX取込 |
-|-------|-----|----------------|--------------|---------|
-| FREE | × | × | × | × |
-| STD | × | × | × | × |
-| PRO | ○ | ○ | ○ | ○ |
-| ENT | ○ | ○ | ○ | ○ |
 
 ## 8. 困ったときは
 

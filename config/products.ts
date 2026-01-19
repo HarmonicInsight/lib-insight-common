@@ -24,6 +24,9 @@ export interface PlanInfo {
   name: string;
   nameJa: string;
   priority: number; // 高いほど上位プラン
+  description: string;
+  descriptionJa: string;
+  defaultDurationMonths: number; // デフォルト有効期間（月）、-1は要相談
 }
 
 export interface PlanLimits {
@@ -52,24 +55,24 @@ export interface PlanLimits {
 export const PRODUCTS: Record<ProductCode, ProductInfo> = {
   INSS: {
     code: 'INSS',
-    name: 'InsightSlide Standard',
-    nameJa: 'InsightSlide スタンダード',
-    description: 'AI-powered slide creation tool',
-    descriptionJa: 'AIによるスライド作成ツール',
+    name: 'InsightSlide',
+    nameJa: 'InsightSlide',
+    description: 'PowerPoint content extraction and update tool',
+    descriptionJa: 'PowerPointコンテンツ抽出・更新ツール',
   },
   INSP: {
     code: 'INSP',
     name: 'InsightSlide Pro',
     nameJa: 'InsightSlide プロ',
-    description: 'Advanced AI slide creation with professional features',
-    descriptionJa: 'プロ向け機能搭載のAIスライド作成ツール',
+    description: 'Advanced PowerPoint tool with professional features',
+    descriptionJa: 'プロ向け機能搭載のPowerPointツール',
   },
   INPY: {
     code: 'INPY',
     name: 'InsightPy',
     nameJa: 'InsightPy',
-    description: 'Python learning platform with AI assistance',
-    descriptionJa: 'AI支援付きPython学習プラットフォーム',
+    description: 'Python execution environment for Windows automation',
+    descriptionJa: 'Windows自動化のためのPython実行環境',
   },
   FGIN: {
     code: 'FGIN',
@@ -97,30 +100,45 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Free',
     nameJa: 'フリー',
     priority: 0,
+    description: 'Basic features with limitations',
+    descriptionJa: '機能制限あり',
+    defaultDurationMonths: -1, // 無期限
   },
   TRIAL: {
     code: 'TRIAL',
     name: 'Trial',
     nameJa: 'トライアル',
-    priority: 1,
+    priority: 4, // 全機能使えるため最上位と同等
+    description: 'Full features for evaluation',
+    descriptionJa: '全機能利用可能（期間限定）',
+    defaultDurationMonths: 1, // 標準1ヶ月、発行時に自由設定可
   },
   STD: {
     code: 'STD',
     name: 'Standard',
     nameJa: 'スタンダード',
     priority: 2,
+    description: 'Standard features for regular use',
+    descriptionJa: '標準機能',
+    defaultDurationMonths: 12,
   },
   PRO: {
     code: 'PRO',
     name: 'Pro',
     nameJa: 'プロ',
     priority: 3,
+    description: 'All features with priority support',
+    descriptionJa: '全機能',
+    defaultDurationMonths: 12,
   },
   ENT: {
     code: 'ENT',
     name: 'Enterprise',
     nameJa: 'エンタープライズ',
     priority: 4,
+    description: 'Custom features and dedicated support',
+    descriptionJa: 'カスタマイズ（要相談）',
+    defaultDurationMonths: -1, // 要相談
   },
 };
 
@@ -130,27 +148,27 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
 
 export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   FREE: {
-    monthlyLimit: 10,
+    monthlyLimit: -1,
     maxFileSizeMB: 10,
     maxStorageItems: 5,
     maxResolution: '720p',
-    hasWatermark: true,
+    hasWatermark: false,
     batchEnabled: false,
     apiEnabled: false,
     priorityProcessing: false,
   },
   TRIAL: {
-    monthlyLimit: 20,
-    maxFileSizeMB: 50,
-    maxStorageItems: 10,
-    maxResolution: '1080p',
-    hasWatermark: true,
+    monthlyLimit: -1,
+    maxFileSizeMB: -1,
+    maxStorageItems: -1,
+    maxResolution: '4K',
+    hasWatermark: false,
     batchEnabled: true,
     apiEnabled: false,
     priorityProcessing: false,
   },
   STD: {
-    monthlyLimit: 100,
+    monthlyLimit: -1,
     maxFileSizeMB: 100,
     maxStorageItems: 50,
     maxResolution: '1080p',
@@ -160,9 +178,9 @@ export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
     priorityProcessing: false,
   },
   PRO: {
-    monthlyLimit: -1, // 無制限
-    maxFileSizeMB: 500,
-    maxStorageItems: 500,
+    monthlyLimit: -1,
+    maxFileSizeMB: -1,
+    maxStorageItems: -1,
     maxResolution: '4K',
     hasWatermark: false,
     batchEnabled: true,
@@ -171,7 +189,7 @@ export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   },
   ENT: {
     monthlyLimit: -1,
-    maxFileSizeMB: 2000,
+    maxFileSizeMB: -1,
     maxStorageItems: -1,
     maxResolution: '4K',
     hasWatermark: false,
@@ -187,7 +205,7 @@ export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
 
 export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   FREE: {
-    monthlyLimit: -1,       // 無制限
+    monthlyLimit: -1,
     maxFileSizeMB: 100,
     maxStorageItems: -1,
     maxResolution: '1080p',
@@ -198,11 +216,11 @@ export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   },
   TRIAL: {
     monthlyLimit: -1,
-    maxFileSizeMB: 100,
+    maxFileSizeMB: -1,
     maxStorageItems: -1,
-    maxResolution: '1080p',
+    maxResolution: '4K',
     hasWatermark: false,
-    batchEnabled: false,
+    batchEnabled: true,
     apiEnabled: false,
     priorityProcessing: false,
   },
@@ -218,11 +236,11 @@ export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   },
   PRO: {
     monthlyLimit: -1,
-    maxFileSizeMB: 1000,
+    maxFileSizeMB: -1,
     maxStorageItems: -1,
     maxResolution: '4K',
     hasWatermark: false,
-    batchEnabled: false,
+    batchEnabled: true,
     apiEnabled: false,
     priorityProcessing: false,
   },
@@ -232,9 +250,9 @@ export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
     maxStorageItems: -1,
     maxResolution: '4K',
     hasWatermark: false,
-    batchEnabled: false,
+    batchEnabled: true,
     apiEnabled: true,
-    priorityProcessing: false,
+    priorityProcessing: true,
   },
 };
 
@@ -266,28 +284,49 @@ export const FEATURE_MATRIX: Record<string, PlanCode[]> = {
   // 共通機能
   // ========================================
   'basic': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-  'export_pdf': ['STD', 'PRO', 'ENT'],
-  'export_excel': ['STD', 'PRO', 'ENT'],
-  'cloud_sync': ['STD', 'PRO', 'ENT'],
-  'batch_process': ['PRO', 'ENT'],
-  'advanced_filter': ['PRO', 'ENT'],
-  'priority_support': ['PRO', 'ENT'],
   'api_access': ['ENT'],
   'sso': ['ENT'],
   'audit_log': ['ENT'],
   'custom_branding': ['ENT'],
 
   // ========================================
+  // InsightSlide (INSS) 専用機能
+  // ========================================
+  'inss_extract': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],       // Extract機能
+  'inss_update': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],        // Update機能（FREEは3スライド制限）
+  'inss_update_unlimited': ['TRIAL', 'STD', 'PRO', 'ENT'],      // 無制限Update
+  'inss_json': ['TRIAL', 'STD', 'PRO', 'ENT'],                  // JSON入出力
+  'inss_batch': ['TRIAL', 'STD', 'PRO', 'ENT'],                 // フォルダ一括処理
+  'inss_compare': ['TRIAL', 'STD', 'PRO', 'ENT'],               // 2ファイル比較
+  'inss_auto_backup': ['TRIAL', 'PRO', 'ENT'],                  // 自動バックアップ
+
+  // ========================================
+  // InsightPy (INPY) 専用機能
+  // ========================================
+  'inpy_execute': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],       // コード実行
+  'inpy_presets': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],       // プリセット利用
+  'inpy_scripts_3': ['FREE'],                                    // 3スクリプト保存
+  'inpy_scripts_50': ['STD'],                                    // 50スクリプト保存
+  'inpy_scripts_unlimited': ['TRIAL', 'PRO', 'ENT'],            // 無制限スクリプト
+  'inpy_cloud_sync': ['TRIAL', 'PRO', 'ENT'],                   // クラウド同期
+
+  // ========================================
   // InsightMovie (INMV) 専用機能
   // ========================================
-  // 基本機能（全プラン）
-  'video_generate': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],  // 基本動画生成
+  'inmv_generate': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],      // 基本動画生成
+  'inmv_subtitle': ['TRIAL', 'PRO', 'ENT'],                     // 字幕機能
+  'inmv_subtitle_style': ['TRIAL', 'PRO', 'ENT'],               // 字幕スタイル選択
+  'inmv_transition': ['TRIAL', 'PRO', 'ENT'],                   // トランジション効果
+  'inmv_pptx_import': ['TRIAL', 'PRO', 'ENT'],                  // PPTX取込
 
-  // Pro以上のみ
-  'subtitle': ['PRO', 'ENT'],              // 字幕機能
-  'subtitle_style': ['PRO', 'ENT'],        // 字幕スタイル選択
-  'transition': ['PRO', 'ENT'],            // トランジション効果
-  'pptx_import': ['PRO', 'ENT'],           // PPTX取込
+  // ========================================
+  // 後方互換性のための旧キー（非推奨）
+  // ========================================
+  'subtitle': ['TRIAL', 'PRO', 'ENT'],
+  'subtitle_style': ['TRIAL', 'PRO', 'ENT'],
+  'transition': ['TRIAL', 'PRO', 'ENT'],
+  'pptx_import': ['TRIAL', 'PRO', 'ENT'],
+  'video_generate': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
 };
 
 /**
@@ -305,9 +344,30 @@ export function canAccessFeature(feature: string, planCode: PlanCode): boolean {
 
 /**
  * プランが別のプラン以上かチェック
+ * 注意: TRIALは全機能使えるため特殊扱い
  */
 export function isPlanAtLeast(userPlan: PlanCode, requiredPlan: PlanCode): boolean {
+  // TRIALは全機能使えるので、どのプランが要求されても許可
+  if (userPlan === 'TRIAL') {
+    return true;
+  }
   return PLANS[userPlan].priority >= PLANS[requiredPlan].priority;
+}
+
+/**
+ * プラン表示名を取得
+ */
+export function getPlanDisplayName(plan: PlanCode, locale: 'en' | 'ja' = 'ja'): string {
+  const planInfo = PLANS[plan];
+  return locale === 'ja' ? planInfo.nameJa : planInfo.name;
+}
+
+/**
+ * 製品表示名を取得
+ */
+export function getProductDisplayName(product: ProductCode, locale: 'en' | 'ja' = 'ja'): string {
+  const productInfo = PRODUCTS[product];
+  return locale === 'ja' ? productInfo.nameJa : productInfo.name;
 }
 
 // =============================================================================
@@ -323,4 +383,6 @@ export default {
   getPlanLimits,
   canAccessFeature,
   isPlanAtLeast,
+  getPlanDisplayName,
+  getProductDisplayName,
 };
