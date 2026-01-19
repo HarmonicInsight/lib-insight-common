@@ -187,29 +187,29 @@ export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
 
 export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   FREE: {
-    monthlyLimit: 5,        // 月5本まで
-    maxFileSizeMB: 50,      // 入力ファイル50MBまで
-    maxStorageItems: 5,
-    maxResolution: '720p',
-    hasWatermark: true,
+    monthlyLimit: -1,       // 無制限
+    maxFileSizeMB: 100,
+    maxStorageItems: -1,
+    maxResolution: '1080p',
+    hasWatermark: false,
     batchEnabled: false,
     apiEnabled: false,
     priorityProcessing: false,
   },
   TRIAL: {
-    monthlyLimit: 10,
+    monthlyLimit: -1,
     maxFileSizeMB: 100,
-    maxStorageItems: 10,
+    maxStorageItems: -1,
     maxResolution: '1080p',
-    hasWatermark: true,
+    hasWatermark: false,
     batchEnabled: false,
     apiEnabled: false,
     priorityProcessing: false,
   },
   STD: {
-    monthlyLimit: 30,       // 月30本まで
+    monthlyLimit: -1,
     maxFileSizeMB: 200,
-    maxStorageItems: 50,
+    maxStorageItems: -1,
     maxResolution: '1080p',
     hasWatermark: false,
     batchEnabled: false,
@@ -217,24 +217,24 @@ export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
     priorityProcessing: false,
   },
   PRO: {
-    monthlyLimit: -1,       // 無制限
-    maxFileSizeMB: 1000,
-    maxStorageItems: 500,
-    maxResolution: '4K',
-    hasWatermark: false,
-    batchEnabled: true,
-    apiEnabled: false,
-    priorityProcessing: true,
-  },
-  ENT: {
     monthlyLimit: -1,
-    maxFileSizeMB: 5000,
+    maxFileSizeMB: 1000,
     maxStorageItems: -1,
     maxResolution: '4K',
     hasWatermark: false,
-    batchEnabled: true,
+    batchEnabled: false,
+    apiEnabled: false,
+    priorityProcessing: false,
+  },
+  ENT: {
+    monthlyLimit: -1,
+    maxFileSizeMB: -1,
+    maxStorageItems: -1,
+    maxResolution: '4K',
+    hasWatermark: false,
+    batchEnabled: false,
     apiEnabled: true,
-    priorityProcessing: true,
+    priorityProcessing: false,
   },
 };
 
@@ -280,19 +280,14 @@ export const FEATURE_MATRIX: Record<string, PlanCode[]> = {
   // ========================================
   // InsightMovie (INMV) 専用機能
   // ========================================
-  'video_generate': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-  'video_720p': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-  'video_1080p': ['STD', 'PRO', 'ENT'],
-  'ppt_convert': ['STD', 'PRO', 'ENT'],
-  'no_watermark': ['STD', 'PRO', 'ENT'],
-  'custom_bgm': ['STD', 'PRO', 'ENT'],
-  'video_4k': ['PRO', 'ENT'],
-  'batch_render': ['PRO', 'ENT'],
-  'priority_render': ['PRO', 'ENT'],
-  'advanced_effects': ['PRO', 'ENT'],
-  'unlimited_videos': ['PRO', 'ENT'],
-  'white_label': ['ENT'],
-  'team_workspace': ['ENT'],
+  // 基本機能（全プラン）
+  'video_generate': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],  // 基本動画生成
+
+  // Pro以上のみ
+  'subtitle': ['PRO', 'ENT'],              // 字幕機能
+  'subtitle_style': ['PRO', 'ENT'],        // 字幕スタイル選択
+  'transition': ['PRO', 'ENT'],            // トランジション効果
+  'pptx_import': ['PRO', 'ENT'],           // PPTX取込
 };
 
 /**
