@@ -2,6 +2,12 @@
  * Harmonic Insight 製品・プラン定義
  *
  * 全製品で共通利用する製品コード、プラン、機能制限を定義
+ *
+ * ## 設計方針
+ * - 機能は製品ごとに定義（PRODUCT_FEATURES）
+ * - 数値制限はlimitValuesで表現
+ * - ブール型機能はallowedPlansで制御
+ * - 製品をまたいだ機能チェックを防止
  */
 
 // =============================================================================
@@ -27,6 +33,22 @@ export interface PlanInfo {
   description: string;
   descriptionJa: string;
   defaultDurationMonths: number; // デフォルト有効期間（月）、-1は要相談
+}
+
+/**
+ * 機能定義
+ * - type: 'boolean' = 有効/無効のみ、'limit' = 数値制限あり
+ * - allowedPlans: この機能が有効なプラン一覧
+ * - limitValues: 数値制限の場合、プラン別の値（-1 = 無制限）
+ */
+export interface FeatureDefinition {
+  key: string;
+  product: ProductCode;
+  name: string;
+  nameJa: string;
+  type: 'boolean' | 'limit';
+  allowedPlans: PlanCode[];
+  limitValues?: Partial<Record<PlanCode, number>>;
 }
 
 export interface PlanLimits {
@@ -276,66 +298,307 @@ export function getPlanLimits(productCode: ProductCode, planCode: PlanCode): Pla
 }
 
 // =============================================================================
-// 機能マトリクス
+// 製品別機能定義（標準化）
 // =============================================================================
 
-export const FEATURE_MATRIX: Record<string, PlanCode[]> = {
+/**
+ * 製品別の機能定義
+ * - 各製品の機能を明確に定義
+ * - type: 'boolean' | 'limit' で制御方法を統一
+ * - limitValues で数値制限を表現
+ */
+export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // ========================================
-  // 共通機能
+  // InsightSlide (INSS)
   // ========================================
-  'basic': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-  'api_access': ['ENT'],
-  'sso': ['ENT'],
-  'audit_log': ['ENT'],
-  'custom_branding': ['ENT'],
+  INSS: [
+    {
+      key: 'extract',
+      product: 'INSS',
+      name: 'Extract',
+      nameJa: 'コンテンツ抽出',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+    },
+    {
+      key: 'update',
+      product: 'INSS',
+      name: 'Update',
+      nameJa: 'コンテンツ更新',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+    },
+    {
+      key: 'json',
+      product: 'INSS',
+      name: 'JSON I/O',
+      nameJa: 'JSON入出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    },
+    {
+      key: 'batch',
+      product: 'INSS',
+      name: 'Batch Processing',
+      nameJa: 'フォルダ一括処理',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    },
+    {
+      key: 'compare',
+      product: 'INSS',
+      name: 'File Compare',
+      nameJa: '2ファイル比較',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    },
+    {
+      key: 'auto_backup',
+      product: 'INSS',
+      name: 'Auto Backup',
+      nameJa: '自動バックアップ',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    },
+  ],
 
   // ========================================
-  // InsightSlide (INSS) 専用機能
+  // InsightSlide Pro (INSP) - INSSの上位版
   // ========================================
-  'inss_extract': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],       // Extract機能
-  'inss_update': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],        // Update機能（FREEは3スライド制限）
-  'inss_update_unlimited': ['TRIAL', 'STD', 'PRO', 'ENT'],      // 無制限Update
-  'inss_json': ['TRIAL', 'STD', 'PRO', 'ENT'],                  // JSON入出力
-  'inss_batch': ['TRIAL', 'STD', 'PRO', 'ENT'],                 // フォルダ一括処理
-  'inss_compare': ['TRIAL', 'STD', 'PRO', 'ENT'],               // 2ファイル比較
-  'inss_auto_backup': ['TRIAL', 'PRO', 'ENT'],                  // 自動バックアップ
+  INSP: [
+    // INSSと同じ機能 + Pro専用機能を追加可能
+  ],
 
   // ========================================
-  // InsightPy (INPY) 専用機能
+  // InsightPy (INPY)
   // ========================================
-  'inpy_execute': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],       // コード実行
-  'inpy_presets': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],       // プリセット利用
-  'inpy_scripts_3': ['FREE'],                                    // 3スクリプト保存
-  'inpy_scripts_50': ['STD'],                                    // 50スクリプト保存
-  'inpy_scripts_unlimited': ['TRIAL', 'PRO', 'ENT'],            // 無制限スクリプト
-  'inpy_cloud_sync': ['TRIAL', 'PRO', 'ENT'],                   // クラウド同期
+  INPY: [
+    {
+      key: 'execute',
+      product: 'INPY',
+      name: 'Code Execution',
+      nameJa: 'コード実行',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+    },
+    {
+      key: 'presets',
+      product: 'INPY',
+      name: 'Presets',
+      nameJa: 'プリセット利用',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+    },
+    {
+      key: 'scripts',
+      product: 'INPY',
+      name: 'Script Storage',
+      nameJa: 'スクリプト保存数',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+    },
+    {
+      key: 'cloud_sync',
+      product: 'INPY',
+      name: 'Cloud Sync',
+      nameJa: 'クラウド同期',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    },
+  ],
 
   // ========================================
-  // InsightMovie (INMV) 専用機能
+  // ForguncyInsight (FGIN)
   // ========================================
-  'inmv_generate': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],      // 基本動画生成
-  'inmv_subtitle': ['TRIAL', 'PRO', 'ENT'],                     // 字幕機能
-  'inmv_subtitle_style': ['TRIAL', 'PRO', 'ENT'],               // 字幕スタイル選択
-  'inmv_transition': ['TRIAL', 'PRO', 'ENT'],                   // トランジション効果
-  'inmv_pptx_import': ['TRIAL', 'PRO', 'ENT'],                  // PPTX取込
+  FGIN: [
+    // 機能定義を追加
+  ],
 
   // ========================================
-  // 後方互換性のための旧キー（非推奨）
+  // InsightMovie (INMV)
   // ========================================
-  'subtitle': ['TRIAL', 'PRO', 'ENT'],
-  'subtitle_style': ['TRIAL', 'PRO', 'ENT'],
-  'transition': ['TRIAL', 'PRO', 'ENT'],
-  'pptx_import': ['TRIAL', 'PRO', 'ENT'],
-  'video_generate': ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+  INMV: [
+    {
+      key: 'generate',
+      product: 'INMV',
+      name: 'Video Generation',
+      nameJa: '動画生成',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+    },
+    {
+      key: 'subtitle',
+      product: 'INMV',
+      name: 'Subtitle',
+      nameJa: '字幕',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    },
+    {
+      key: 'subtitle_style',
+      product: 'INMV',
+      name: 'Subtitle Style',
+      nameJa: '字幕スタイル選択',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    },
+    {
+      key: 'transition',
+      product: 'INMV',
+      name: 'Transition',
+      nameJa: 'トランジション',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    },
+    {
+      key: 'pptx_import',
+      product: 'INMV',
+      name: 'PPTX Import',
+      nameJa: 'PPTX取込',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    },
+  ],
 };
 
+// =============================================================================
+// 共通機能（全製品共通）
+// =============================================================================
+
+export const COMMON_FEATURES: FeatureDefinition[] = [
+  {
+    key: 'api_access',
+    product: 'INSS', // ダミー、共通なので実際には使用しない
+    name: 'API Access',
+    nameJa: 'API利用',
+    type: 'boolean',
+    allowedPlans: ['ENT'],
+  },
+  {
+    key: 'sso',
+    product: 'INSS',
+    name: 'SSO',
+    nameJa: 'シングルサインオン',
+    type: 'boolean',
+    allowedPlans: ['ENT'],
+  },
+  {
+    key: 'audit_log',
+    product: 'INSS',
+    name: 'Audit Log',
+    nameJa: '監査ログ',
+    type: 'boolean',
+    allowedPlans: ['ENT'],
+  },
+];
+
+// =============================================================================
+// 機能マトリクス（後方互換性 + フラット参照用）
+// =============================================================================
+
 /**
- * 機能が利用可能かチェック
+ * フラットな機能マトリクス
+ * - 後方互換性のため維持
+ * - 新規実装では PRODUCT_FEATURES を使用推奨
+ */
+export const FEATURE_MATRIX: Record<string, PlanCode[]> = (() => {
+  const matrix: Record<string, PlanCode[]> = {};
+
+  // 共通機能を追加
+  for (const feature of COMMON_FEATURES) {
+    matrix[feature.key] = feature.allowedPlans;
+  }
+
+  // 製品別機能を追加（プレフィックス付きとプレフィックスなし両方）
+  for (const [productCode, features] of Object.entries(PRODUCT_FEATURES)) {
+    for (const feature of features) {
+      // プレフィックス付き: inmv_subtitle
+      const prefixedKey = `${productCode.toLowerCase()}_${feature.key}`;
+      matrix[prefixedKey] = feature.allowedPlans;
+
+      // プレフィックスなし（後方互換性）: subtitle
+      // 既存キーがなければ追加
+      if (!matrix[feature.key]) {
+        matrix[feature.key] = feature.allowedPlans;
+      }
+    }
+  }
+
+  return matrix;
+})();
+
+// =============================================================================
+// 機能チェック関数（標準API）
+// =============================================================================
+
+/**
+ * 製品の機能一覧を取得
+ */
+export function getProductFeatures(product: ProductCode): FeatureDefinition[] {
+  return PRODUCT_FEATURES[product] || [];
+}
+
+/**
+ * 製品の機能定義を取得
+ */
+export function getFeatureDefinition(product: ProductCode, featureKey: string): FeatureDefinition | null {
+  const features = PRODUCT_FEATURES[product];
+  return features?.find(f => f.key === featureKey) || null;
+}
+
+/**
+ * 機能が利用可能かチェック（製品指定版・推奨）
+ */
+export function checkProductFeature(product: ProductCode, featureKey: string, plan: PlanCode): boolean {
+  const feature = getFeatureDefinition(product, featureKey);
+  if (!feature) {
+    console.warn(`Unknown feature: ${product}/${featureKey} - allowing by default`);
+    return true;
+  }
+  return feature.allowedPlans.includes(plan);
+}
+
+/**
+ * 機能の数値制限を取得
+ * @returns 制限値（-1 = 無制限、null = 制限機能ではない）
+ */
+export function getFeatureLimit(product: ProductCode, featureKey: string, plan: PlanCode): number | null {
+  const feature = getFeatureDefinition(product, featureKey);
+  if (!feature || feature.type !== 'limit') {
+    return null;
+  }
+  return feature.limitValues?.[plan] ?? -1;
+}
+
+/**
+ * 製品の機能可否一覧を取得（UI表示用）
+ */
+export function getProductFeatureMatrix(product: ProductCode, plan: PlanCode): Array<{
+  key: string;
+  name: string;
+  nameJa: string;
+  enabled: boolean;
+  limit: number | null;
+}> {
+  const features = getProductFeatures(product);
+  return features.map(feature => ({
+    key: feature.key,
+    name: feature.name,
+    nameJa: feature.nameJa,
+    enabled: feature.allowedPlans.includes(plan),
+    limit: feature.type === 'limit' ? (feature.limitValues?.[plan] ?? -1) : null,
+  }));
+}
+
+/**
+ * 機能が利用可能かチェック（後方互換性用）
+ * @deprecated 新規実装では checkProductFeature を使用
  */
 export function canAccessFeature(feature: string, planCode: PlanCode): boolean {
   const allowedPlans = FEATURE_MATRIX[feature];
   if (!allowedPlans) {
-    // 未定義の機能はデフォルト許可（安全側）
     console.warn(`Unknown feature: ${feature} - allowing by default`);
     return true;
   }
@@ -347,7 +610,6 @@ export function canAccessFeature(feature: string, planCode: PlanCode): boolean {
  * 注意: TRIALは全機能使えるため特殊扱い
  */
 export function isPlanAtLeast(userPlan: PlanCode, requiredPlan: PlanCode): boolean {
-  // TRIALは全機能使えるので、どのプランが要求されても許可
   if (userPlan === 'TRIAL') {
     return true;
   }
@@ -375,13 +637,25 @@ export function getProductDisplayName(product: ProductCode, locale: 'en' | 'ja' 
 // =============================================================================
 
 export default {
+  // 定義
   PRODUCTS,
   PLANS,
+  PRODUCT_FEATURES,
+  COMMON_FEATURES,
+  FEATURE_MATRIX,
   DEFAULT_PLAN_LIMITS,
   INMV_PLAN_LIMITS,
-  FEATURE_MATRIX,
+
+  // 製品別機能チェック（推奨API）
+  getProductFeatures,
+  getFeatureDefinition,
+  checkProductFeature,
+  getFeatureLimit,
+  getProductFeatureMatrix,
+
+  // 汎用関数
   getPlanLimits,
-  canAccessFeature,
+  canAccessFeature,  // @deprecated
   isPlanAtLeast,
   getPlanDisplayName,
   getProductDisplayName,
