@@ -9,7 +9,7 @@
 // 型定義
 // =============================================================================
 
-export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN';
+export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV';
 export type Plan = 'TRIAL' | 'STD' | 'PRO';
 export type ErrorCode = 'E001' | 'E002' | 'E003' | 'E004' | 'E005' | 'E006';
 
@@ -53,6 +53,7 @@ export const PRODUCT_NAMES: Record<ProductCode, string> = {
   INSP: 'InsightSlide Pro',
   INPY: 'InsightPy',
   FGIN: 'ForguncyInsight',
+  INMV: 'InsightMovie',
 };
 
 export const PLAN_NAMES: Record<Plan, string> = {
@@ -65,6 +66,7 @@ export const PRODUCT_PLANS: Record<string, ProductCode[]> = {
   InsightSlide: ['INSS', 'INSP'],
   InsightPy: ['INPY'],
   ForguncyInsight: ['FGIN'],
+  InsightMovie: ['INMV'],
 };
 
 export const TRIAL_DAYS = 14;
@@ -79,7 +81,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
 };
 
 // ライセンスキー正規表現
-const LICENSE_KEY_REGEX = /^(INSS|INSP|INPY|FGIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+const LICENSE_KEY_REGEX = /^(INSS|INSP|INPY|FGIN|INMV)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
 // 署名用シークレットキー
 const SECRET_KEY = 'insight-series-license-secret-2026';

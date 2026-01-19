@@ -133,14 +133,84 @@ withGateway(handler, { requiredPlan: ['PRO', 'ENT'] });
 
 | コード | 製品名 | 説明 |
 |-------|-------|------|
-| INSS | InsightSlide | スライド作成 |
-| INSP | InsightPy | Python学習 |
+| INSS | InsightSlide Standard | AIスライド作成（標準版） |
+| INSP | InsightSlide Pro | AIスライド作成（プロ版） |
+| INPY | InsightPy | Python学習 |
 | FGIN | ForguncyInsight | Forguncy連携 |
-| INJL | InsightJournal | ジャーナル/メモ |
+| INMV | InsightMovie | 画像・PPTから動画作成 |
 
-新規製品を追加する場合は、このリストを更新してください。
+新規製品を追加する場合は `config/products.ts` も更新してください。
 
-## 7. 困ったときは
+## 7. ライセンスシステム
+
+### サーバーサイド実装
+
+```typescript
+import { ServerLicenseChecker } from '@/insight-common/infrastructure/license';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+// ライセンスチェッカーを初期化
+const licenseChecker = new ServerLicenseChecker(supabase, 'INMV');
+
+// ライセンス確認
+const result = await licenseChecker.checkLicense(userId);
+if (!result.isValid) {
+  return res.status(403).json({ error: result.reason });
+}
+
+// 機能アクセス確認
+const canUse4K = await licenseChecker.checkFeature(userId, 'video_4k');
+if (!canUse4K.allowed) {
+  return res.status(403).json({ error: 'PRO以上のプランが必要です' });
+}
+
+// 月間制限確認
+const withinLimit = await licenseChecker.isWithinMonthlyLimit(userId);
+if (!withinLimit) {
+  return res.status(429).json({ error: '今月の利用上限に達しました' });
+}
+
+// 利用をログに記録
+await licenseChecker.logUsage(userId, 'video_generate', { resolution: '1080p' });
+```
+
+### クライアントサイド実装
+
+```typescript
+import { ClientLicenseManager } from '@/insight-common/infrastructure/license';
+
+const licenseManager = new ClientLicenseManager('INMV');
+
+// プラン取得
+const plan = await licenseManager.getPlan();
+
+// 機能確認（UI表示用）
+const can4K = await licenseManager.canUseFeature('video_4k');
+if (!can4K) {
+  // アップグレード促進UIを表示
+}
+
+// 制限確認
+const limits = await licenseManager.getLimits();
+console.log(`月間上限: ${limits.monthlyLimit}本`);
+```
+
+### プラン別制限（InsightMovie）
+
+| プラン | 月間動画数 | 最大解像度 | ウォーターマーク | バッチ処理 |
+|-------|----------|-----------|----------------|-----------|
+| FREE | 5本 | 720p | あり | × |
+| TRIAL | 10本 | 1080p | あり | × |
+| STD | 30本 | 1080p | なし | × |
+| PRO | 無制限 | 4K | なし | ○ |
+| ENT | 無制限 | 4K | なし | ○ |
+
+## 8. 困ったときは
 
 ```bash
 # セットアップ確認

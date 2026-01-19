@@ -27,6 +27,9 @@ const supabase = createClient(
 
 // 機能アクセスマトリクス
 const FEATURE_MATRIX: Record<string, string[]> = {
+  // ========================================
+  // 共通機能
+  // ========================================
   // 基本機能（全プラン）
   'basic': ['FREE', 'STD', 'PRO', 'ENT'],
 
@@ -45,6 +48,30 @@ const FEATURE_MATRIX: Record<string, string[]> = {
   'sso': ['ENT'],
   'audit_log': ['ENT'],
   'custom_branding': ['ENT'],
+
+  // ========================================
+  // InsightMovie (INMV) 専用機能
+  // ========================================
+  // 基本機能（全プラン）
+  'video_generate': ['FREE', 'STD', 'PRO', 'ENT'],  // 基本動画生成
+  'video_720p': ['FREE', 'STD', 'PRO', 'ENT'],      // 720p出力
+
+  // Standard以上
+  'video_1080p': ['STD', 'PRO', 'ENT'],             // 1080p (Full HD) 出力
+  'ppt_convert': ['STD', 'PRO', 'ENT'],             // PPTから動画変換
+  'no_watermark': ['STD', 'PRO', 'ENT'],            // ウォーターマークなし
+  'custom_bgm': ['STD', 'PRO', 'ENT'],              // カスタムBGM
+
+  // Pro以上
+  'video_4k': ['PRO', 'ENT'],                       // 4K出力
+  'batch_render': ['PRO', 'ENT'],                   // バッチレンダリング
+  'priority_render': ['PRO', 'ENT'],                // 優先レンダリング
+  'advanced_effects': ['PRO', 'ENT'],               // 高度なエフェクト
+  'unlimited_videos': ['PRO', 'ENT'],               // 動画生成数無制限
+
+  // Enterprise専用
+  'white_label': ['ENT'],                           // ホワイトラベル出力
+  'team_workspace': ['ENT'],                        // チームワークスペース
 };
 
 interface EntitlementRequest {

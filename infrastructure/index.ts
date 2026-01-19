@@ -72,12 +72,43 @@ export interface EntitlementResult {
   reason?: string;
 }
 
-// Constants
+// License
+export {
+  ServerLicenseChecker,
+  ClientLicenseManager,
+  getPlanDisplayName,
+  getProductDisplayName,
+  getRequiredPlanForFeature,
+  getDaysRemaining,
+  getLicenseStatusMessage,
+  canAccessFeature,
+  isPlanAtLeast,
+  getPlanLimits,
+  type LicenseInfo,
+  type LicenseCheckResult,
+  type FeatureCheckResult,
+  type UsageInfo,
+  type ClientLicenseState,
+} from './license';
+
+// Product Config
+export {
+  type ProductCode,
+  type PlanCode,
+  type PlanLimits,
+  PRODUCTS,
+  DEFAULT_PLAN_LIMITS,
+  INMV_PLAN_LIMITS,
+  PRODUCT_PLAN_LIMITS,
+} from '../config/products';
+
+// Constants (legacy - use config/products.ts instead)
 export const PRODUCT_CODES = {
   INSS: 'InsightSlide Standard',
   INSP: 'InsightSlide Pro',
   INPY: 'InsightPy',
   FGIN: 'ForguncyInsight',
+  INMV: 'InsightMovie',
 } as const;
 
 export const PLANS = {
@@ -87,23 +118,5 @@ export const PLANS = {
   ENT: { name: 'Enterprise', priority: 3 },
 } as const;
 
-export const FEATURE_MATRIX: Record<string, string[]> = {
-  // 基本機能（全プラン）
-  'basic': ['FREE', 'STD', 'PRO', 'ENT'],
-
-  // Standard以上
-  'export_pdf': ['STD', 'PRO', 'ENT'],
-  'export_excel': ['STD', 'PRO', 'ENT'],
-  'cloud_sync': ['STD', 'PRO', 'ENT'],
-
-  // Pro以上
-  'batch_process': ['PRO', 'ENT'],
-  'advanced_filter': ['PRO', 'ENT'],
-  'priority_support': ['PRO', 'ENT'],
-
-  // Enterprise専用
-  'api_access': ['ENT'],
-  'sso': ['ENT'],
-  'audit_log': ['ENT'],
-  'custom_branding': ['ENT'],
-};
+// Re-export FEATURE_MATRIX from config/products.ts
+export { FEATURE_MATRIX } from '../config/products';
