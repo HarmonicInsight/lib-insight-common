@@ -15,6 +15,9 @@ insight-common/
 ├── brand/            # ブランド・デザイン
 ├── ui/               # UI構造定義
 ├── config/           # 製品設定
+├── hooks/            # 共通フック（音声入力等）
+├── contexts/         # 共通コンテキスト
+├── components/       # 共通コンポーネント
 ├── legal/            # 法務文書
 └── company/          # 会社情報
 ```
@@ -340,7 +343,290 @@ config.featureFlags       // 機能フラグ
 
 ---
 
-## 8. legal/ - 法務文書
+## 8. hooks/ - 共通フック
+
+### パス
+| ファイル | 内容 | プラットフォーム |
+|---------|------|-----------------|
+| `hooks/useVoiceInput.ts` | 音声入力フック | Web |
+| `hooks/useVoiceInput.native.ts` | 音声入力フック | React Native |
+
+### useVoiceInput - 統一音声入力
+
+クロスプラットフォーム対応の音声入力フック。**1.5秒自動コミット**機能でプラットフォーム間の挙動を統一。
+
+**特徴:**
+- Web (Chrome/Edge): Web Speech APIの自動文末検出 + 1.5秒バックアップタイマー
+- Web (Safari iOS): Whisper APIへフォールバック
+- React Native (iOS/Android): expo-speech-recognition + 1.5秒自動コミット
+
+**挙動の統一:**
+| プラットフォーム | ネイティブの挙動 | 統一後の挙動 |
+|----------------|-----------------|-------------|
+| Chrome/Edge | `isFinal`自動検出 | そのまま（自然） |
+| Safari iOS | リアルタイム非対応 | Whisper使用 |
+| React Native | `isFinal`不安定 | **1.5秒タイマーで補完** |
+
+### エクスポート
+
+```typescript
+// Web
+import { useVoiceInput } from '@insight/hooks/useVoiceInput';
+
+export interface VoiceInputConfig {
+  onFinalText: (text: string) => void;  // 確定テキスト
+  onInterimText?: (text: string) => void; // 途中テキスト
+  autoCommitDelay?: number;  // デフォルト: 1500ms
+  language?: string;         // デフォルト: 'ja-JP'
+  forceAutoCommitDelay?: boolean; // isFinalでも遅延適用
+  onError?: (error: string) => void;
+  onStart?: () => void;
+  onStop?: () => void;
+}
+
+// 戻り値
+interface UseVoiceInputReturn {
+  isListening: boolean;
+  interimText: string;
+  method: 'webspeech' | 'whisper' | 'native' | 'none';
+  error: string | null;
+  startListening: () => void;
+  stopListening: () => void;
+  clearInterim: () => void;
+  commitInterim: () => void;
+}
+```
+
+### 使用例
+
+```tsx
+// Web (React/Next.js)
+import { useVoiceInput } from '@/insight-common/hooks/useVoiceInput';
+
+function TextInput() {
+  const [text, setText] = useState('');
+
+  const {
+    isListening,
+    interimText,
+    startListening,
+    stopListening,
+  } = useVoiceInput({
+    onFinalText: (t) => setText((prev) => prev + t + ' '),
+    autoCommitDelay: 1500,
+  });
+
+  return (
+    <div>
+      <textarea value={text + interimText} readOnly />
+      <button onClick={isListening ? stopListening : startListening}>
+        {isListening ? '停止' : '🎤 音声入力'}
+      </button>
+    </div>
+  );
+}
+```
+
+```tsx
+// React Native
+import { useVoiceInputRN } from '@/insight-common/hooks/useVoiceInput.native';
+
+function VoiceInput() {
+  const [text, setText] = useState('');
+
+  const {
+    isListening,
+    interimText,
+    startListening,
+    stopListening,
+  } = useVoiceInputRN({
+    onFinalText: (t) => setText((prev) => prev + t + ' '),
+    autoCommitDelay: 1500,
+  });
+
+  return (
+    <View>
+      <Text>{text}{interimText}</Text>
+      <Button
+        title={isListening ? '停止' : '🎤 音声入力'}
+        onPress={isListening ? stopListening : startListening}
+      />
+    </View>
+  );
+}
+```
+
+### 依存関係
+
+| プラットフォーム | 依存パッケージ |
+|----------------|---------------|
+| Web | なし（ブラウザAPIを使用） |
+| React Native | `expo-speech-recognition` |
+
+---
+
+## 9. contexts/ - 共通コンテキスト
+
+### パス
+| ファイル | 内容 |
+|---------|------|
+| `contexts/createDataContext.tsx` | データコンテキストファクトリー |
+
+### createDataContext - 汎用データ管理
+
+アプリ間で共通のデータ管理パターンを提供するファクトリー関数。
+
+**特徴:**
+- ローカルストレージ自動永続化
+- CRUD操作（create, update, remove）
+- ローディング/エラー状態管理
+- Web (localStorage) / React Native (AsyncStorage) 両対応
+
+### エクスポート
+
+```typescript
+import { createDataContext, createAsyncStorageAdapter } from '@insight/contexts/createDataContext';
+
+interface DataContextConfig<T> {
+  storageKey: string;              // ストレージキー
+  generateId?: () => string;       // ID生成関数
+  storageAdapter?: StorageAdapter; // ストレージアダプター
+  initialData?: T[];               // 初期データ
+  normalize?: (data: T[]) => T[];  // データ正規化
+  debug?: boolean;                 // デバッグモード
+}
+
+interface DataContextValue<T> {
+  items: T[];
+  setItems: React.Dispatch<...>;
+  isLoaded: boolean;
+  error: string | null;
+  create: (item: Omit<T, 'id'>) => T;
+  update: (id: string, updates: Partial<T>) => void;
+  remove: (id: string) => void;
+  findById: (id: string) => T | undefined;
+  clear: () => void;
+}
+```
+
+### 使用例
+
+```tsx
+// contexts/TodoContext.tsx
+import { createDataContext } from '@/insight-common/contexts/createDataContext';
+
+interface Todo {
+  id: string;
+  title: string;
+  status: 'todo' | 'doing' | 'done';
+  scheduledDate: string;
+  createdAt?: string;
+}
+
+const {
+  Provider: TodoProvider,
+  useContext: useTodos,
+} = createDataContext<Todo>({
+  storageKey: 'app_todos',
+  normalize: (todos) => todos.map(t => ({
+    ...t,
+    status: t.status || 'todo',
+  })),
+});
+
+export { TodoProvider, useTodos };
+```
+
+```tsx
+// App.tsx
+import { TodoProvider } from './contexts/TodoContext';
+
+export default function App() {
+  return (
+    <TodoProvider>
+      <HomeScreen />
+    </TodoProvider>
+  );
+}
+```
+
+```tsx
+// screens/HomeScreen.tsx
+import { useTodos } from '../contexts/TodoContext';
+
+function HomeScreen() {
+  const { items, create, update, remove, isLoaded } = useTodos();
+
+  if (!isLoaded) return <Loading />;
+
+  const handleAdd = () => {
+    create({
+      title: '新しいタスク',
+      status: 'todo',
+      scheduledDate: new Date().toISOString().split('T')[0],
+    });
+  };
+
+  return (
+    <View>
+      {items.map(todo => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          onToggle={() => update(todo.id, {
+            status: todo.status === 'done' ? 'todo' : 'done'
+          })}
+          onDelete={() => remove(todo.id)}
+        />
+      ))}
+      <Button title="追加" onPress={handleAdd} />
+    </View>
+  );
+}
+```
+
+### React Native (AsyncStorage)
+
+```tsx
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createDataContext, createAsyncStorageAdapter } from '@/insight-common/contexts/createDataContext';
+
+const asyncStorageAdapter = createAsyncStorageAdapter(AsyncStorage);
+
+const { Provider, useContext } = createDataContext<Todo>({
+  storageKey: 'app_todos',
+  storageAdapter: asyncStorageAdapter,
+});
+```
+
+---
+
+## 10. components/ - 共通コンポーネント
+
+### パス
+| ファイル | 内容 | プラットフォーム |
+|---------|------|-----------------|
+| `components/VoiceInputUnified.tsx` | 統合音声入力UI | Web |
+
+### VoiceInputUnified - 音声入力ボタン
+
+Web向けの音声入力UIコンポーネント。Chrome/EdgeではWeb Speech API、iOS SafariではWhisper APIを自動選択。
+
+```tsx
+import { VoiceInputUnified } from '@/insight-common/components/VoiceInputUnified';
+
+<VoiceInputUnified
+  onTranscript={(text) => appendText(text)}
+  onInterimTranscript={(text) => setPreview(text)}
+  whisperEndpoint="/api/transcribe"
+  disabled={false}
+  maxDuration={60}
+/>
+```
+
+---
+
+## 11. legal/ - 法務文書
 
 ### パス
 | ファイル | 内容 |
@@ -350,7 +636,7 @@ config.featureFlags       // 機能フラグ
 
 ---
 
-## 9. company/ - 会社情報
+## 12. company/ - 会社情報
 
 ### パス
 | ファイル | 内容 |
