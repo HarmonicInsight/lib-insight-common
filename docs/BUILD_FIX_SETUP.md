@@ -28,26 +28,90 @@ Claude Code を使って、以下のプラットフォームのビルドエラ�
 
 ---
 
+## 推奨バージョン一覧（2026年1月時点）
+
+| ツール | 推奨バージョン | 入手先 | 備考 |
+|-------|--------------|--------|------|
+| Node.js | **24.x LTS** (Krypton) | [nodejs.org](https://nodejs.org/) | Active LTS（2028年4月まで） |
+| Python | **3.13.x** または **3.14.x** | [python.org](https://www.python.org/downloads/) | 3.10は2026年10月でEOL |
+| Git | 最新版 | [git-scm.com](https://git-scm.com/) | |
+| Claude Code | 最新版 | npm または公式インストーラー | ネイティブWindows対応済み |
+
+---
+
+## WSL について
+
+### 結論: **WSL 2 推奨**（必須ではない）
+
+Claude Code は 2025年にネイティブ Windows 版がリリースされ、PowerShell から直接実行可能です。ただし、以下の理由から **WSL 2 環境を推奨** します：
+
+| 項目 | ネイティブ Windows | WSL 2 |
+|------|-------------------|-------|
+| セットアップ | 簡単 | やや手間 |
+| サンドボックス | 非対応 | **対応**（セキュリティ向上） |
+| Linux コマンド | Git Bash 経由 | **ネイティブ** |
+| シェルスクリプト | 互換性問題あり | **完全互換** |
+| Docker 連携 | Docker Desktop 必要 | **シームレス** |
+
+**推奨**: 開発をメインで行う場合は WSL 2 をセットアップしてください。
+
+---
+
 ## Step 1: 基本ツールのインストール
 
 ### 1.1 Node.js のインストール
 
+**推奨バージョン: 24.x LTS "Krypton"**（Active LTS、2028年4月までサポート）
+
+**方法A: 公式インストーラー（推奨）**
 1. [Node.js 公式サイト](https://nodejs.org/ja/) にアクセス
-2. **LTS 版**（推奨版）をダウンロード
-3. インストーラーを実行（デフォルト設定でOK）
-4. 「Automatically install the necessary tools...」にチェック
+2. **24.x LTS** をダウンロード
+3. インストーラーを実行
+4. 「Automatically install the necessary tools...」に**チェックを入れる**（Chocolatey経由でビルドツールがインストールされる）
+
+**方法B: winget を使用**
+```powershell
+winget install OpenJS.NodeJS.LTS
+```
 
 確認：
 ```powershell
-node --version
+node --version   # v24.x.x が表示されること
 npm --version
 ```
 
-### 1.2 Git のインストール
+### 1.2 Python のインストール
+
+**推奨バージョン: 3.13.x または 3.14.x**
+
+> Python は一部のツール（fastlane の依存関係など）で必要になる場合があります。
+
+**方法A: Python Install Manager（推奨）**
+```powershell
+winget install 9NQ7512CXL7T
+```
+
+**方法B: 公式インストーラー**
+1. [Python 公式サイト](https://www.python.org/downloads/) にアクセス
+2. **Python 3.13.x** または **3.14.x** をダウンロード
+3. インストール時に **「Add Python to PATH」にチェック**
+
+確認：
+```powershell
+python --version   # Python 3.13.x または 3.14.x
+pip --version
+```
+
+### 1.3 Git のインストール
 
 1. [Git for Windows](https://gitforwindows.org/) にアクセス
 2. ダウンロードしてインストール
 3. 設定は基本的にデフォルトでOK（エディタは好みで選択）
+
+または winget:
+```powershell
+winget install Git.Git
+```
 
 確認：
 ```powershell
@@ -60,10 +124,13 @@ git config --global user.name "Your Name"
 git config --global user.email "your-email@example.com"
 ```
 
-### 1.3 Windows Terminal のインストール（推奨）
+### 1.4 Windows Terminal のインストール（推奨）
 
-1. Microsoft Store で「Windows Terminal」を検索
-2. インストール
+```powershell
+winget install Microsoft.WindowsTerminal
+```
+
+または Microsoft Store で「Windows Terminal」を検索してインストール。
 
 ---
 
@@ -339,6 +406,7 @@ Write-Host ""
 
 Write-Host "Node.js:" -NoNewline; node --version
 Write-Host "npm:" -NoNewline; npm --version
+Write-Host "Python:" -NoNewline; python --version
 Write-Host "Git:" -NoNewline; git --version
 Write-Host "Claude Code:" -NoNewline; claude --version
 Write-Host "GitHub CLI:" -NoNewline; gh --version | Select-Object -First 1
@@ -641,25 +709,58 @@ vercel link
 
 ---
 
-## WSL 環境の場合（オプション）
+## WSL 2 環境のセットアップ（推奨）
 
-WSL (Windows Subsystem for Linux) を使用する場合は、WSL 内でも同様にセットアップします。
+WSL 2 を使用すると、サンドボックス機能が有効になりセキュリティが向上します。
 
-### WSL のインストール
+### WSL 2 のインストール
 
 ```powershell
-# 管理者権限で実行
+# 管理者権限で PowerShell を実行
 wsl --install
+```
+
+再起動後、Ubuntu が自動的にセットアップされます。
+
+### WSL 2 であることを確認
+
+```powershell
+wsl --list --verbose
+```
+
+VERSION が `2` であることを確認。`1` の場合は変換：
+```powershell
+wsl --set-version Ubuntu 2
 ```
 
 ### WSL 内でのセットアップ
 
 ```bash
-# Node.js (nvm 経由)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+# システム更新
+sudo apt update && sudo apt upgrade -y
+
+# 必要なパッケージ
+sudo apt install -y build-essential curl git ripgrep
+
+# Node.js (nvm 経由 - バージョン管理が容易)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 source ~/.bashrc
-nvm install --lts
-nvm use --lts
+nvm install 24    # LTS版
+nvm use 24
+nvm alias default 24
+
+# Python (pyenv 経由 - バージョン管理が容易)
+curl https://pyenv.run | bash
+
+# ~/.bashrc に以下を追加
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+source ~/.bashrc
+
+# Python インストール
+pyenv install 3.13.11
+pyenv global 3.13.11
 
 # GitHub CLI
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
@@ -667,15 +768,36 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githu
 sudo apt update
 sudo apt install gh
 
-# npm ツール
-npm install -g @anthropic-ai/claude-code vercel @railway/cli eas-cli supabase
+# Supabase CLI (別途インストール - npm版は非推奨)
+curl -fsSL https://deb.supabase.com/signing-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/supabase-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/supabase-archive-keyring.gpg] https://deb.supabase.com stable main" | sudo tee /etc/apt/sources.list.d/supabase.list > /dev/null
+sudo apt update
+sudo apt install supabase
 
-# 認証
+# npm グローバルツール
+npm install -g @anthropic-ai/claude-code vercel @railway/cli eas-cli
+
+# 全認証
 gh auth login
 vercel login
 railway login
 eas login
 supabase login
+claude auth login
+```
+
+### バージョン確認
+
+```bash
+node --version      # v24.x.x
+python --version    # Python 3.13.x
+git --version
+gh --version
+vercel --version
+railway --version
+eas --version
+supabase --version
+claude --version
 ```
 
 ---
@@ -684,7 +806,17 @@ supabase login
 
 | 日付 | バージョン | 内容 |
 |------|-----------|------|
+| 2026-01-25 | 1.1.0 | WSL 2 推奨、Python追加、バージョン情報追加 |
 | 2026-01-25 | 1.0.0 | 初版作成 |
+
+---
+
+## 参考リンク
+
+- [Claude Code 公式ドキュメント](https://code.claude.com/docs/en/setup)
+- [Node.js リリーススケジュール](https://nodejs.org/en/about/previous-releases)
+- [Python ダウンロード](https://www.python.org/downloads/)
+- [WSL インストールガイド](https://docs.microsoft.com/ja-jp/windows/wsl/install)
 
 ---
 
