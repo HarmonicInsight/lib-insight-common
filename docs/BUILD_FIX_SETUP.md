@@ -55,16 +55,20 @@ claude "ビルドエラー直して"
 
 ### Codespaces で利用可能なツール
 
-| ツール | バージョン | 用途 |
-|--------|-----------|------|
-| Node.js | 24.x LTS | JavaScript/TypeScript |
-| Python | 3.13.x | Python |
-| gh | 最新版 | GitHub 操作 |
-| claude | 最新版 | AI 自動修正 |
-| vercel | 最新版 | Vercel デプロイ |
-| railway | 最新版 | Railway デプロイ |
-| eas | 最新版 | Expo/RN ビルド |
-| supabase | 最新版 | Supabase 操作 |
+| カテゴリ | ツール | 用途 |
+|---------|--------|------|
+| **ランタイム** | Node.js 24.x LTS | JavaScript/TypeScript |
+| | Python 3.13.x | Python |
+| **ビルド** | gh | GitHub 操作 |
+| | claude | AI 自動修正 |
+| | vercel | Vercel デプロイ |
+| | railway | Railway デプロイ |
+| | eas | Expo/RN ビルド |
+| | supabase | Supabase 操作 |
+| **メッセージング** | teamsapp | Microsoft Teams CLI |
+| | slack | Slack CLI |
+| | az | Azure CLI（Teams Bot用） |
+| | ngrok | ローカルWebhook開発 |
 
 ### 他のリポジトリに適用する
 
@@ -78,6 +82,41 @@ your-repo/
 └── scripts/
     ├── auto-fix.sh
     └── fix.sh
+```
+
+---
+
+## Windows ワンクリックセットアップ
+
+管理者権限の PowerShell で以下を実行：
+
+```powershell
+# insight-common をクローン済みの場合
+.\scripts\setup-windows.ps1
+
+# または直接ダウンロードして実行
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/setup-windows.ps1" -OutFile "setup.ps1"
+.\setup.ps1
+```
+
+インストールされるもの:
+- Node.js 24.x LTS, Python 3.13, Git
+- GitHub CLI, Azure CLI, ngrok
+- Claude Code, Vercel, Railway, EAS, Supabase CLI
+- Microsoft Teams CLI
+
+---
+
+## WSL 2 ワンクリックセットアップ
+
+WSL 2 内で以下を実行：
+
+```bash
+# insight-common をクローン済みの場合
+./scripts/setup-wsl.sh
+
+# または直接ダウンロードして実行
+curl -fsSL https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/setup-wsl.sh | bash
 ```
 
 ---
@@ -880,10 +919,62 @@ claude --version
 
 ---
 
+## メッセージングプラットフォーム連携
+
+LINE、Slack、Teams アプリ開発に必要なツールです。
+
+### CLI ツール（セットアップスクリプトで自動インストール）
+
+| ツール | コマンド | 用途 |
+|--------|---------|------|
+| Microsoft Teams CLI | `teamsapp` | Teams アプリ開発 |
+| Slack CLI | `slack` | Slack Workflow Builder |
+| Azure CLI | `az` | Teams Bot 登録 |
+| ngrok | `ngrok` | ローカル Webhook 開発 |
+
+### SDK（プロジェクトごとにインストール）
+
+```bash
+# LINE Bot
+npm install @line/bot-sdk
+
+# Slack Bot
+npm install @slack/bolt @slack/web-api
+
+# Microsoft Teams Bot
+npm install botbuilder @microsoft/teams-js
+```
+
+### 認証コマンド
+
+```bash
+# Azure (Teams Bot 用)
+az login
+
+# Slack CLI
+slack login
+
+# ngrok
+ngrok authtoken <YOUR_TOKEN>
+```
+
+### ローカル開発（Webhook テスト）
+
+```bash
+# ngrok でローカルサーバーを公開
+ngrok http 3000
+
+# 表示された URL を LINE/Slack/Teams の Webhook URL に設定
+# 例: https://xxxx-xxx-xxx.ngrok.io/webhook
+```
+
+---
+
 ## 更新履歴
 
 | 日付 | バージョン | 内容 |
 |------|-----------|------|
+| 2026-01-25 | 1.2.0 | Codespaces対応、メッセージング連携追加、ワンクリックセットアップ |
 | 2026-01-25 | 1.1.0 | WSL 2 推奨、Python追加、バージョン情報追加 |
 | 2026-01-25 | 1.0.0 | 初版作成 |
 
