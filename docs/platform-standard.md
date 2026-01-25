@@ -119,6 +119,112 @@ Claude Codeで直接構築することで、柔軟性とコスト削減を両立
 
 ---
 
+## デスクトップアプリ標準
+
+> Web/APIとは別に、Windowsデスクトップアプリ開発の標準を定義
+
+### 開発フェーズ別技術選定
+
+| フェーズ | 技術 | 用途 | 採用 |
+|---------|------|------|------|
+| **プロトタイプ** | Python + Tkinter | 高速開発、仕様検証 | 🟢 |
+| **製品化（軽量）** | Tauri + React | 5MB配布、モダンUI | ⚪ |
+| **製品化（Office連携）** | C# + WPF + Open XML SDK | MS公式SDK、堅牢 | ⚪ |
+| **ローカルAPI** | Flask | ラズパイ、画像処理サーバー | 🟢 |
+
+### 配布形式比較
+
+| 技術 | 配布サイズ | 起動速度 | 難読化 | Office連携 |
+|------|-----------|---------|--------|-----------|
+| Python + PyInstaller | 50-80MB | 2-5秒 | 弱 | python-pptx（非公式） |
+| Tauri + React | 5-15MB | 0.5秒 | 中 | 要追加実装 |
+| C# + WPF | 15-25MB | 0.3秒 | 強（Dotfuscator） | Open XML SDK（公式） |
+
+### 推奨開発フロー
+
+```
+1. プロトタイプ（Python + Tkinter）
+   ├── 機能検証
+   ├── UI/UX確認
+   └── ライセンス体系確定
+
+2. 製品化判断
+   ├── Office連携が重要 → C# + WPF
+   ├── 軽量配布が重要 → Tauri + React
+   └── 現状維持 → Python + PyInstaller
+```
+
+### 製品別技術選定
+
+| 製品 | 現在 | 移行先（検討中） | 理由 |
+|------|------|-----------------|------|
+| InsightSlide (INSS) | Python + Tkinter | C# + WPF | PPT完全互換が必要 |
+| InsightSlide Pro (INSP) | Python + Tkinter | C# + WPF | INSS継承 |
+| InsightPy (INPY) | Python + Tkinter | Python維持 | Python実行環境が本質 |
+| InsightMovie (INMV) | Python + Tkinter | Tauri or 維持 | 軽量配布 or 現状維持 |
+| ForguncyInsight (FGIN) | Python + Tkinter | C# + WPF | Forguncy連携 |
+
+### Flask の位置づけ
+
+```
+Flask = 軽量Webサーバー（デスクトップアプリの補助）
+
+用途例:
+├── ラズパイでの画像処理API
+├── ローカルでのAI推論サーバー
+├── デスクトップアプリのバックエンド
+└── Stable Diffusion WebUI連携
+
+※ 本格的なWebアプリは Next.js + Vercel を使用
+```
+
+### Tauri の位置づけ
+
+```
+Tauri = 軽量デスクトップアプリフレームワーク
+
+メリット:
+├── Electron比で1/10のサイズ（5MB vs 50MB）
+├── Rust製でメモリ効率が良い
+├── React/Vue/Svelteでフロント開発
+└── クロスプラットフォーム対応
+
+デメリット:
+├── Rust学習コスト
+├── Office連携ライブラリが貧弱
+└── ネイティブ機能アクセスに制限
+
+採用判断:
+├── Office連携不要 + 軽量配布重視 → Tauri検討
+└── Office連携必須 → C# + WPF
+```
+
+### C# + WPF の位置づけ
+
+```
+C# + WPF = Windows向け本格製品開発
+
+メリット:
+├── Open XML SDK（MS公式）で完全なOffice互換
+├── 10年以上の後方互換保証
+├── Visual Studioの強力なデバッグ環境
+├── Dotfuscatorで堅牢な難読化
+└── 企業向け提案で「MS技術」と言える信頼性
+
+デメリット:
+├── Windows専用
+├── 学習コスト（2-4週間）
+└── 既存Python資産の書き直し
+
+採用判断:
+├── PowerPoint/Excel完全互換が必要 → C#
+├── 企業向け製品として販売 → C#
+├── ライセンス保護が重要 → C#
+└── クロスプラットフォーム必須 → 他を検討
+```
+
+---
+
 ## Harmonic Factoryの強み
 
 ```
