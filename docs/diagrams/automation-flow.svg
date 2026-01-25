@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="claudeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D97706"/>
+      <stop offset="100%" style="stop-color:#B45309"/>
+    </linearGradient>
+    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#06B6D4"/>
+      <stop offset="100%" style="stop-color:#0891B2"/>
+    </linearGradient>
+    <filter id="shadow3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="flowArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0891B2"/>
+    </marker>
+    <marker id="grayArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6B7280"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#1F2937">
+    自動化フロー（Claude Code + build-auto-fix）
+  </text>
+
+  <!-- Setup Options -->
+  <g filter="url(#shadow3)">
+    <rect x="30" y="60" width="840" height="90" rx="10" fill="#F0FDF4" stroke="#22C55E" stroke-width="2"/>
+    <text x="450" y="85" text-anchor="middle" font-size="14" font-weight="bold" fill="#166534">セットアップ方法</text>
+
+    <g transform="translate(60, 100)">
+      <rect width="240" height="40" rx="6" fill="white" stroke="#22C55E"/>
+      <text x="120" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">GitHub Codespaces</text>
+      <text x="120" y="32" text-anchor="middle" font-size="9" fill="#6B7280">ワンクリック・3分で完了</text>
+    </g>
+
+    <g transform="translate(330, 100)">
+      <rect width="240" height="40" rx="6" fill="white" stroke="#22C55E"/>
+      <text x="120" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">Windows PowerShell</text>
+      <text x="120" y="32" text-anchor="middle" font-size="9" fill="#6B7280">setup-windows.ps1</text>
+    </g>
+
+    <g transform="translate(600, 100)">
+      <rect width="240" height="40" rx="6" fill="white" stroke="#22C55E"/>
+      <text x="120" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">WSL 2 / Linux</text>
+      <text x="120" y="32" text-anchor="middle" font-size="9" fill="#6B7280">setup-wsl.sh</text>
+    </g>
+  </g>
+
+  <!-- Main Flow -->
+  <text x="450" y="180" text-anchor="middle" font-size="16" font-weight="bold" fill="#0891B2">
+    ビルドエラー自動修正フロー
+  </text>
+
+  <!-- Step 1: Trigger -->
+  <g filter="url(#shadow3)" transform="translate(60, 200)">
+    <rect width="180" height="80" rx="10" fill="url(#claudeGrad)"/>
+    <text x="90" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="white">1. トリガー</text>
+    <text x="90" y="50" text-anchor="middle" font-size="10" fill="white">"ビルドエラー直して"</text>
+    <text x="90" y="65" text-anchor="middle" font-size="10" fill="white">または auto-fix.sh</text>
+  </g>
+
+  <path d="M245 240 L280 240" stroke="#0891B2" stroke-width="3" marker-end="url(#flowArrow)"/>
+
+  <!-- Step 2: Check -->
+  <g filter="url(#shadow3)" transform="translate(290, 200)">
+    <rect width="180" height="80" rx="10" fill="url(#flowGrad)"/>
+    <text x="90" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="white">2. 状態確認</text>
+    <text x="90" y="42" text-anchor="middle" font-size="9" fill="white">gh run list</text>
+    <text x="90" y="55" text-anchor="middle" font-size="9" fill="white">vercel list</text>
+    <text x="90" y="68" text-anchor="middle" font-size="9" fill="white">railway logs</text>
+  </g>
+
+  <path d="M475 240 L510 240" stroke="#0891B2" stroke-width="3" marker-end="url(#flowArrow)"/>
+
+  <!-- Step 3: Get Logs -->
+  <g filter="url(#shadow3)" transform="translate(520, 200)">
+    <rect width="180" height="80" rx="10" fill="url(#flowGrad)"/>
+    <text x="90" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="white">3. ログ取得</text>
+    <text x="90" y="42" text-anchor="middle" font-size="9" fill="white">gh run view --log-failed</text>
+    <text x="90" y="55" text-anchor="middle" font-size="9" fill="white">vercel logs [url]</text>
+    <text x="90" y="68" text-anchor="middle" font-size="9" fill="white">eas build:view [id]</text>
+  </g>
+
+  <path d="M705 240 L740 240" stroke="#0891B2" stroke-width="3" marker-end="url(#flowArrow)"/>
+
+  <!-- Step 4: Analyze -->
+  <g filter="url(#shadow3)" transform="translate(750, 200)">
+    <rect width="120" height="80" rx="10" fill="url(#claudeGrad)"/>
+    <text x="60" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="white">4. 分析</text>
+    <text x="60" y="50" text-anchor="middle" font-size="9" fill="white">Claude が</text>
+    <text x="60" y="65" text-anchor="middle" font-size="9" fill="white">原因特定</text>
+  </g>
+
+  <!-- Down Arrow -->
+  <path d="M810 285 L810 310 L150 310 L150 335" stroke="#0891B2" stroke-width="3" marker-end="url(#flowArrow)"/>
+
+  <!-- Step 5: Fix -->
+  <g filter="url(#shadow3)" transform="translate(60, 340)">
+    <rect width="180" height="80" rx="10" fill="url(#claudeGrad)"/>
+    <text x="90" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="white">5. コード修正</text>
+    <text x="90" y="45" text-anchor="middle" font-size="9" fill="white">Claude がファイル編集</text>
+    <text x="90" y="60" text-anchor="middle" font-size="9" fill="white">型エラー・依存関係等</text>
+  </g>
+
+  <path d="M245 380 L280 380" stroke="#0891B2" stroke-width="3" marker-end="url(#flowArrow)"/>
+
+  <!-- Step 6: Commit -->
+  <g filter="url(#shadow3)" transform="translate(290, 340)">
+    <rect width="180" height="80" rx="10" fill="url(#flowGrad)"/>
+    <text x="90" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="white">6. コミット</text>
+    <text x="90" y="45" text-anchor="middle" font-size="9" fill="white">git add -A</text>
+    <text x="90" y="60" text-anchor="middle" font-size="9" fill="white">git commit -m "fix: ..."</text>
+  </g>
+
+  <path d="M475 380 L510 380" stroke="#0891B2" stroke-width="3" marker-end="url(#flowArrow)"/>
+
+  <!-- Step 7: Push -->
+  <g filter="url(#shadow3)" transform="translate(520, 340)">
+    <rect width="180" height="80" rx="10" fill="url(#flowGrad)"/>
+    <text x="90" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="white">7. プッシュ</text>
+    <text x="90" y="50" text-anchor="middle" font-size="9" fill="white">git push</text>
+    <text x="90" y="65" text-anchor="middle" font-size="9" fill="white">→ 自動デプロイ開始</text>
+  </g>
+
+  <path d="M705 380 L740 380" stroke="#0891B2" stroke-width="3" marker-end="url(#flowArrow)"/>
+
+  <!-- Step 8: Verify -->
+  <g filter="url(#shadow3)" transform="translate(750, 340)">
+    <rect width="120" height="80" rx="10" fill="#10B981"/>
+    <text x="60" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="white">8. 確認</text>
+    <text x="60" y="50" text-anchor="middle" font-size="9" fill="white">ビルド成功</text>
+    <text x="60" y="65" text-anchor="middle" font-size="9" fill="white">を検証</text>
+  </g>
+
+  <!-- Loop Arrow -->
+  <path d="M810 425 L810 450 L450 450" stroke="#6B7280" stroke-width="2" stroke-dasharray="5,5"/>
+  <path d="M450 450 L450 470" stroke="#6B7280" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#grayArrow)"/>
+  <text x="630" y="465" font-size="10" fill="#6B7280">失敗時: ステップ2へ戻る</text>
+
+  <!-- Supported Platforms -->
+  <g filter="url(#shadow3)">
+    <rect x="30" y="485" width="840" height="100" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="450" y="510" text-anchor="middle" font-size="14" font-weight="bold" fill="#334155">対応プラットフォーム</text>
+
+    <g transform="translate(60, 525)">
+      <rect width="110" height="45" rx="6" fill="#24292F"/>
+      <text x="55" y="20" text-anchor="middle" font-size="10" fill="white">GitHub</text>
+      <text x="55" y="35" text-anchor="middle" font-size="9" fill="#8B949E">Actions</text>
+    </g>
+
+    <g transform="translate(185, 525)">
+      <rect width="110" height="45" rx="6" fill="#000000"/>
+      <text x="55" y="28" text-anchor="middle" font-size="11" fill="white">Vercel</text>
+    </g>
+
+    <g transform="translate(310, 525)">
+      <rect width="110" height="45" rx="6" fill="#0B0D0E"/>
+      <text x="55" y="28" text-anchor="middle" font-size="11" fill="white">Railway</text>
+    </g>
+
+    <g transform="translate(435, 525)">
+      <rect width="110" height="45" rx="6" fill="#000020"/>
+      <text x="55" y="20" text-anchor="middle" font-size="10" fill="white">EAS</text>
+      <text x="55" y="35" text-anchor="middle" font-size="9" fill="#8B949E">(Expo)</text>
+    </g>
+
+    <g transform="translate(560, 525)">
+      <rect width="110" height="45" rx="6" fill="#3ECF8E"/>
+      <text x="55" y="28" text-anchor="middle" font-size="11" fill="white">Supabase</text>
+    </g>
+
+    <g transform="translate(685, 525)">
+      <rect width="160" height="45" rx="6" fill="#4A154B"/>
+      <text x="80" y="18" text-anchor="middle" font-size="9" fill="white">LINE / Slack</text>
+      <text x="80" y="33" text-anchor="middle" font-size="9" fill="white">Teams (Webhook)</text>
+    </g>
+  </g>
+</svg>
