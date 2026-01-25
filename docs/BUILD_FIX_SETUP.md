@@ -14,6 +14,9 @@ Claude Code を使って、以下のプラットフォームのビルドエラ�
 | Vercel | `vercel` | 可能 |
 | Railway | `railway` | 可能 |
 | EAS (Expo) | `eas` | 可能 |
+| Supabase | `supabase` | 可能 |
+| Xcode Cloud | `gh` + API | 可能 |
+| fastlane | `fastlane` | 可能 |
 
 ---
 
@@ -21,7 +24,7 @@ Claude Code を使って、以下のプラットフォームのビルドエラ�
 
 - Windows 10/11 (64bit)
 - インターネット接続
-- 各サービスのアカウント（GitHub, Vercel, Railway, Expo）
+- 各サービスのアカウント（GitHub, Vercel, Railway, Expo, Supabase）
 
 ---
 
@@ -211,7 +214,121 @@ eas whoami
 
 ---
 
-## Step 7: 環境確認
+## Step 7: Supabase CLI のインストール
+
+### 7.1 インストール
+
+**方法A: npm を使用**
+```powershell
+npm install -g supabase
+```
+
+**方法B: winget を使用**
+```powershell
+winget install --id Supabase.CLI
+```
+
+**方法C: Scoop を使用**
+```powershell
+scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+scoop install supabase
+```
+
+確認：
+```powershell
+supabase --version
+```
+
+### 7.2 認証
+
+```powershell
+supabase login
+```
+
+ブラウザが開くので Supabase アカウントでログインします。
+
+確認：
+```powershell
+supabase projects list
+```
+
+### 7.3 プロジェクトリンク（プロジェクトディレクトリ内で実行）
+
+```powershell
+supabase link --project-ref <PROJECT_ID>
+```
+
+`<PROJECT_ID>` は Supabase ダッシュボードの URL から取得できます：
+`https://supabase.com/dashboard/project/<PROJECT_ID>`
+
+---
+
+## Step 8: iOS/macOS ビルドツール（macOS のみ）
+
+> **注意**: iOS/macOS アプリのビルドには macOS が必要です。Windows では Xcode Cloud のログ確認のみ可能です。
+
+### 8.1 Xcode Cloud（GitHub CLI 経由）
+
+Xcode Cloud のビルド状況は GitHub Actions と同様に `gh` コマンドで確認できます：
+
+```bash
+# Xcode Cloud のワークフロー一覧
+gh run list --workflow="Xcode Cloud"
+
+# 失敗したビルドのログ
+gh run view <RUN_ID> --log-failed
+```
+
+### 8.2 fastlane のインストール（macOS）
+
+```bash
+# Homebrew でインストール（推奨）
+brew install fastlane
+
+# または RubyGems でインストール
+sudo gem install fastlane
+```
+
+確認：
+```bash
+fastlane --version
+```
+
+### 8.3 fastlane の認証
+
+```bash
+# App Store Connect API キーを設定（推奨）
+# 1. App Store Connect で API キーを作成
+# 2. 環境変数を設定
+export APP_STORE_CONNECT_API_KEY_ID="YOUR_KEY_ID"
+export APP_STORE_CONNECT_API_KEY_ISSUER_ID="YOUR_ISSUER_ID"
+export APP_STORE_CONNECT_API_KEY_KEY_FILEPATH="/path/to/AuthKey_XXXXX.p8"
+
+# または Apple ID でログイン
+fastlane spaceauth -u your@email.com
+```
+
+### 8.4 fastlane コマンド
+
+```bash
+# ビルド＆テスト
+fastlane ios build
+fastlane ios test
+
+# TestFlight にアップロード
+fastlane ios beta
+
+# App Store にリリース
+fastlane ios release
+
+# 証明書・プロビジョニングプロファイル同期
+fastlane match development
+fastlane match appstore
+```
+
+---
+
+## Step 9: 環境確認
 
 全ての CLI が正しくインストールされているか確認：
 
@@ -228,6 +345,7 @@ Write-Host "GitHub CLI:" -NoNewline; gh --version | Select-Object -First 1
 Write-Host "Vercel:" -NoNewline; vercel --version
 Write-Host "Railway:" -NoNewline; railway --version
 Write-Host "EAS:" -NoNewline; eas --version
+Write-Host "Supabase:" -NoNewline; supabase --version
 
 Write-Host ""
 Write-Host "=== Auth Status Check ===" -ForegroundColor Cyan
@@ -244,6 +362,9 @@ railway whoami
 
 Write-Host "EAS:" -ForegroundColor Yellow
 eas whoami
+
+Write-Host "Supabase:" -ForegroundColor Yellow
+supabase projects list
 ```
 
 ---
@@ -272,12 +393,13 @@ GitHub Actions のエラーを確認して修正して
 Vercel のデプロイエラーを直して
 Railway のビルドログ見て
 EAS のビルドエラー直して
+Supabase の Edge Functions のエラー確認して
 ```
 
 ### 全プラットフォーム一括確認
 
 ```
-GitHub、Vercel、Railway、EAS の全てのビルド状況を確認して、エラーがあれば修正してpushして
+GitHub、Vercel、Railway、EAS、Supabase の全てのビルド状況を確認して、エラーがあれば修正してpushして
 ```
 
 ---
@@ -336,6 +458,70 @@ eas build:view <BUILD_ID>
 eas build:list --limit=1
 ```
 
+### Supabase
+
+```powershell
+# Edge Functions 一覧
+supabase functions list
+
+# Edge Functions のログ（リアルタイム）
+supabase functions logs <FUNCTION_NAME>
+
+# データベースのマイグレーション状態
+supabase migration list
+
+# ローカル開発環境の状態
+supabase status
+
+# Edge Functions のデプロイ
+supabase functions deploy <FUNCTION_NAME>
+
+# 全 Edge Functions をデプロイ
+supabase functions deploy
+
+# データベースの差分確認
+supabase db diff
+
+# リモートDBとの差分を確認
+supabase db diff --linked
+```
+
+### Xcode Cloud
+
+```bash
+# Xcode Cloud ワークフロー一覧（GitHub Actions として表示）
+gh run list --workflow="Xcode Cloud" --limit=5
+
+# 失敗したビルドのログ
+gh run view <RUN_ID> --log-failed
+
+# App Store Connect API 経由（要 API キー設定）
+# Xcode Cloud のビルド一覧は App Store Connect からも確認可能
+```
+
+### fastlane（macOS のみ）
+
+```bash
+# iOS ビルド
+fastlane ios build
+
+# テスト実行
+fastlane ios test
+
+# TestFlight アップロード
+fastlane ios beta
+
+# ビルドエラーの詳細ログ
+fastlane ios build --verbose
+
+# 利用可能なレーン一覧
+fastlane lanes
+
+# 証明書の状態確認
+fastlane match nuke distribution  # 注意: 証明書を削除
+fastlane match appstore --readonly  # 読み取りのみ
+```
+
 ---
 
 ## プロジェクト用 CLAUDE.md テンプレート
@@ -371,6 +557,25 @@ eas build:list --status=errored --limit=1
 ```
 → 失敗があれば `eas build:view <ID>` でログ取得
 
+## 5. Supabase
+```bash
+supabase functions list
+supabase functions logs <FUNCTION_NAME>
+```
+→ Edge Functions のエラーログを確認
+
+## 6. Xcode Cloud
+```bash
+gh run list --workflow="Xcode Cloud" --limit=1
+```
+→ 失敗があれば `gh run view <ID> --log-failed` でログ取得
+
+## 7. fastlane（macOS）
+```bash
+fastlane ios build --verbose
+```
+→ ビルドエラーの詳細を確認
+
 ## 修正後
 ```bash
 git add -A && git commit -m "fix: ビルドエラーを修正" && git push
@@ -401,6 +606,10 @@ railway login
 # EAS
 eas logout
 eas login
+
+# Supabase
+supabase logout
+supabase login
 ```
 
 ### 「コマンドが見つかりません」エラー
@@ -459,13 +668,14 @@ sudo apt update
 sudo apt install gh
 
 # npm ツール
-npm install -g @anthropic-ai/claude-code vercel @railway/cli eas-cli
+npm install -g @anthropic-ai/claude-code vercel @railway/cli eas-cli supabase
 
 # 認証
 gh auth login
 vercel login
 railway login
 eas login
+supabase login
 ```
 
 ---
