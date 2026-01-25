@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6366F1"/>
+      <stop offset="100%" style="stop-color:#8B5CF6"/>
+    </linearGradient>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#1F2937">
+    標準化レイヤー（insight-common）
+  </text>
+  <text x="400" y="55" text-anchor="middle" font-size="12" fill="#6B7280">
+    全製品で共有される共通モジュール
+  </text>
+
+  <!-- withGateway Section -->
+  <g filter="url(#shadow2)">
+    <rect x="40" y="75" width="720" height="130" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+    <rect x="40" y="75" width="720" height="35" rx="10" fill="url(#headerGrad)"/>
+    <rect x="40" y="95" width="720" height="15" fill="url(#headerGrad)"/>
+    <text x="400" y="98" text-anchor="middle" font-size="16" font-weight="bold" fill="white">API Gateway（withGateway）</text>
+
+    <g transform="translate(60, 125)">
+      <rect width="150" height="60" rx="6" fill="white" stroke="#F59E0B"/>
+      <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">認証</text>
+      <text x="75" y="42" text-anchor="middle" font-size="10" fill="#6B7280">Firebase JWT検証</text>
+    </g>
+
+    <g transform="translate(230, 125)">
+      <rect width="150" height="60" rx="6" fill="white" stroke="#F59E0B"/>
+      <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">レート制限</text>
+      <text x="75" y="42" text-anchor="middle" font-size="10" fill="#6B7280">Redis / メモリ</text>
+    </g>
+
+    <g transform="translate(400, 125)">
+      <rect width="150" height="60" rx="6" fill="white" stroke="#F59E0B"/>
+      <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">権限チェック</text>
+      <text x="75" y="42" text-anchor="middle" font-size="10" fill="#6B7280">プラン別機能制限</text>
+    </g>
+
+    <g transform="translate(570, 125)">
+      <rect width="150" height="60" rx="6" fill="white" stroke="#F59E0B"/>
+      <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400E">監査ログ</text>
+      <text x="75" y="42" text-anchor="middle" font-size="10" fill="#6B7280">全API呼出を記録</text>
+    </g>
+  </g>
+
+  <!-- License System -->
+  <g filter="url(#shadow2)">
+    <rect x="40" y="220" width="350" height="150" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+    <rect x="40" y="220" width="350" height="35" rx="10" fill="#3B82F6"/>
+    <rect x="40" y="240" width="350" height="15" fill="#3B82F6"/>
+    <text x="215" y="243" text-anchor="middle" font-size="14" font-weight="bold" fill="white">ライセンスシステム</text>
+
+    <text x="60" y="280" font-size="11" fill="#1E40AF">プラン: FREE | TRIAL | STD | PRO | ENT</text>
+    <text x="60" y="300" font-size="11" fill="#1E40AF">キー形式: INSS-PRO-2601-XXXX-XXXX</text>
+    <text x="60" y="320" font-size="11" fill="#1E40AF">検証: サーバーサイド + オフライン</text>
+    <text x="60" y="340" font-size="11" fill="#1E40AF">機能マトリクス: 製品×プラン×機能</text>
+    <text x="60" y="360" font-size="11" fill="#1E40AF">ストレージ: Supabase licenses テーブル</text>
+  </g>
+
+  <!-- Brand System -->
+  <g filter="url(#shadow2)">
+    <rect x="410" y="220" width="350" height="150" rx="10" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+    <rect x="410" y="220" width="350" height="35" rx="10" fill="#10B981"/>
+    <rect x="410" y="240" width="350" height="15" fill="#10B981"/>
+    <text x="585" y="243" text-anchor="middle" font-size="14" font-weight="bold" fill="white">ブランドシステム</text>
+
+    <g transform="translate(430, 265)">
+      <rect width="70" height="25" rx="4" fill="#2563EB"/>
+      <text x="35" y="17" text-anchor="middle" font-size="9" fill="white">Title</text>
+    </g>
+    <g transform="translate(510, 265)">
+      <rect width="70" height="25" rx="4" fill="#6366F1"/>
+      <text x="35" y="17" text-anchor="middle" font-size="9" fill="white">Primary</text>
+    </g>
+    <g transform="translate(590, 265)">
+      <rect width="70" height="25" rx="4" fill="#F8FAFC" stroke="#E5E7EB"/>
+      <text x="35" y="17" text-anchor="middle" font-size="9" fill="#374151">BG</text>
+    </g>
+    <g transform="translate(670, 265)">
+      <rect width="70" height="25" rx="4" fill="#EF4444"/>
+      <text x="35" y="17" text-anchor="middle" font-size="9" fill="white">Error</text>
+    </g>
+
+    <text x="430" y="315" font-size="11" fill="#065F46">colors.json - 統一カラーパレット</text>
+    <text x="430" y="335" font-size="11" fill="#065F46">フォント: Noto Sans JP + Inter</text>
+    <text x="430" y="355" font-size="11" fill="#065F46">ロゴ・アイコン: SVG 形式</text>
+  </g>
+
+  <!-- i18n -->
+  <g filter="url(#shadow2)">
+    <rect x="40" y="385" width="230" height="120" rx="10" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+    <rect x="40" y="385" width="230" height="30" rx="10" fill="#EF4444"/>
+    <rect x="40" y="400" width="230" height="15" fill="#EF4444"/>
+    <text x="155" y="405" text-anchor="middle" font-size="13" font-weight="bold" fill="white">i18n 多言語</text>
+
+    <text x="60" y="440" font-size="11" fill="#991B1B">対応言語: ja / en</text>
+    <text x="60" y="460" font-size="11" fill="#991B1B">React: I18nProvider</text>
+    <text x="60" y="480" font-size="11" fill="#991B1B">Python: i18n_helper</text>
+  </g>
+
+  <!-- NLP -->
+  <g filter="url(#shadow2)">
+    <rect x="285" y="385" width="230" height="120" rx="10" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+    <rect x="285" y="385" width="230" height="30" rx="10" fill="#6366F1"/>
+    <rect x="285" y="400" width="230" height="15" fill="#6366F1"/>
+    <text x="400" y="405" text-anchor="middle" font-size="13" font-weight="bold" fill="white">nlp/ 日本語処理</text>
+
+    <text x="305" y="440" font-size="11" fill="#3730A3">JBCA: 形態素解析</text>
+    <text x="305" y="460" font-size="11" fill="#3730A3">テキスト正規化</text>
+    <text x="305" y="480" font-size="11" fill="#3730A3">類似度計算</text>
+  </g>
+
+  <!-- UI/Components -->
+  <g filter="url(#shadow2)">
+    <rect x="530" y="385" width="230" height="120" rx="10" fill="#F3E8FF" stroke="#A855F7" stroke-width="2"/>
+    <rect x="530" y="385" width="230" height="30" rx="10" fill="#A855F7"/>
+    <rect x="530" y="400" width="230" height="15" fill="#A855F7"/>
+    <text x="645" y="405" text-anchor="middle" font-size="13" font-weight="bold" fill="white">ui/ コンポーネント</text>
+
+    <text x="550" y="440" font-size="11" fill="#7C3AED">メニュー構造定義</text>
+    <text x="550" y="460" font-size="11" fill="#7C3AED">Web: Webサイト共通</text>
+    <text x="550" y="480" font-size="11" fill="#7C3AED">React Hooks</text>
+  </g>
+
+  <!-- Usage Flow -->
+  <g filter="url(#shadow2)">
+    <rect x="40" y="520" width="720" height="110" rx="10" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="2"/>
+    <text x="400" y="545" text-anchor="middle" font-size="14" font-weight="bold" fill="#374151">使用方法</text>
+
+    <g transform="translate(60, 560)">
+      <rect width="200" height="55" rx="6" fill="white" stroke="#D1D5DB"/>
+      <text x="100" y="20" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">1. サブモジュール追加</text>
+      <text x="100" y="38" text-anchor="middle" font-size="9" fill="#6B7280" font-family="monospace">git submodule add</text>
+      <text x="100" y="50" text-anchor="middle" font-size="9" fill="#6B7280" font-family="monospace">...insight-common.git</text>
+    </g>
+
+    <path d="M265 588 L290 588" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arrow2)"/>
+    <defs>
+      <marker id="arrow2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#9CA3AF"/>
+      </marker>
+    </defs>
+
+    <g transform="translate(300, 560)">
+      <rect width="200" height="55" rx="6" fill="white" stroke="#D1D5DB"/>
+      <text x="100" y="20" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">2. インポート</text>
+      <text x="100" y="38" text-anchor="middle" font-size="9" fill="#6B7280" font-family="monospace">import { withGateway }</text>
+      <text x="100" y="50" text-anchor="middle" font-size="9" fill="#6B7280" font-family="monospace">from '@/insight-common/...'</text>
+    </g>
+
+    <path d="M505 588 L530 588" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arrow2)"/>
+
+    <g transform="translate(540, 560)">
+      <rect width="200" height="55" rx="6" fill="white" stroke="#D1D5DB"/>
+      <text x="100" y="20" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">3. 適用</text>
+      <text x="100" y="38" text-anchor="middle" font-size="9" fill="#6B7280" font-family="monospace">withGateway(handler,</text>
+      <text x="100" y="50" text-anchor="middle" font-size="9" fill="#6B7280" font-family="monospace">{ requireAuth: true })</text>
+    </g>
+  </g>
+</svg>

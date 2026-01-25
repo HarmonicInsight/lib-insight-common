@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="grayGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6B7280"/>
+      <stop offset="100%" style="stop-color:#4B5563"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#1F2937">
+    Harmonic Insight アーキテクチャ全体像
+  </text>
+
+  <!-- App Layer -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="70" width="700" height="100" rx="12" fill="url(#blueGrad)"/>
+    <text x="400" y="105" text-anchor="middle" font-size="18" font-weight="bold" fill="white">アプリケーション層</text>
+
+    <!-- Products -->
+    <rect x="70" y="120" width="120" height="35" rx="6" fill="white" fill-opacity="0.9"/>
+    <text x="130" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">InsightSlide</text>
+
+    <rect x="200" y="120" width="120" height="35" rx="6" fill="white" fill-opacity="0.9"/>
+    <text x="260" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">InsightPy</text>
+
+    <rect x="330" y="120" width="120" height="35" rx="6" fill="white" fill-opacity="0.9"/>
+    <text x="390" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">InsightMovie</text>
+
+    <rect x="460" y="120" width="120" height="35" rx="6" fill="white" fill-opacity="0.9"/>
+    <text x="520" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">SalesInsight</text>
+
+    <rect x="590" y="120" width="140" height="35" rx="6" fill="white" fill-opacity="0.9"/>
+    <text x="660" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">InterviewInsight</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M400 175 L400 195" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9CA3AF"/>
+    </marker>
+  </defs>
+
+  <!-- insight-common Layer -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="200" width="700" height="180" rx="12" fill="url(#purpleGrad)"/>
+    <text x="400" y="230" text-anchor="middle" font-size="18" font-weight="bold" fill="white">insight-common（サブモジュール）</text>
+
+    <!-- Modules -->
+    <g>
+      <rect x="70" y="250" width="150" height="110" rx="8" fill="white" fill-opacity="0.95"/>
+      <text x="145" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">infrastructure/</text>
+      <text x="145" y="295" text-anchor="middle" font-size="11" fill="#4B5563">認証 (Firebase)</text>
+      <text x="145" y="312" text-anchor="middle" font-size="11" fill="#4B5563">API Gateway</text>
+      <text x="145" y="329" text-anchor="middle" font-size="11" fill="#4B5563">ライセンス管理</text>
+      <text x="145" y="346" text-anchor="middle" font-size="11" fill="#4B5563">監査ログ</text>
+    </g>
+
+    <g>
+      <rect x="235" y="250" width="130" height="110" rx="8" fill="white" fill-opacity="0.95"/>
+      <text x="300" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">brand/</text>
+      <text x="300" y="300" text-anchor="middle" font-size="11" fill="#4B5563">カラーシステム</text>
+      <text x="300" y="317" text-anchor="middle" font-size="11" fill="#4B5563">フォント</text>
+      <text x="300" y="334" text-anchor="middle" font-size="11" fill="#4B5563">ロゴ・アイコン</text>
+    </g>
+
+    <g>
+      <rect x="380" y="250" width="130" height="110" rx="8" fill="white" fill-opacity="0.95"/>
+      <text x="445" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">i18n/</text>
+      <text x="445" y="300" text-anchor="middle" font-size="11" fill="#4B5563">多言語対応</text>
+      <text x="445" y="317" text-anchor="middle" font-size="11" fill="#4B5563">日本語 / 英語</text>
+      <text x="445" y="334" text-anchor="middle" font-size="11" fill="#4B5563">翻訳テンプレート</text>
+    </g>
+
+    <g>
+      <rect x="525" y="250" width="100" height="110" rx="8" fill="white" fill-opacity="0.95"/>
+      <text x="575" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">nlp/</text>
+      <text x="575" y="300" text-anchor="middle" font-size="11" fill="#4B5563">日本語NLP</text>
+      <text x="575" y="317" text-anchor="middle" font-size="11" fill="#4B5563">JBCA</text>
+    </g>
+
+    <g>
+      <rect x="640" y="250" width="90" height="110" rx="8" fill="white" fill-opacity="0.95"/>
+      <text x="685" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">skills/</text>
+      <text x="685" y="300" text-anchor="middle" font-size="11" fill="#4B5563">自動修正</text>
+      <text x="685" y="317" text-anchor="middle" font-size="11" fill="#4B5563">ワークフロー</text>
+    </g>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M400 385 L400 405" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- External Services Layer -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="410" width="700" height="80" rx="12" fill="url(#greenGrad)"/>
+    <text x="400" y="440" text-anchor="middle" font-size="18" font-weight="bold" fill="white">外部サービス</text>
+
+    <rect x="80" y="455" width="100" height="25" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="130" y="472" text-anchor="middle" font-size="11" fill="#059669">Firebase</text>
+
+    <rect x="195" y="455" width="100" height="25" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="245" y="472" text-anchor="middle" font-size="11" fill="#059669">Supabase</text>
+
+    <rect x="310" y="455" width="100" height="25" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="360" y="472" text-anchor="middle" font-size="11" fill="#059669">Claude API</text>
+
+    <rect x="425" y="455" width="100" height="25" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="475" y="472" text-anchor="middle" font-size="11" fill="#059669">Vercel</text>
+
+    <rect x="540" y="455" width="100" height="25" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="590" y="472" text-anchor="middle" font-size="11" fill="#059669">Railway</text>
+
+    <rect x="655" y="455" width="80" height="25" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="695" y="472" text-anchor="middle" font-size="11" fill="#059669">EAS</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M400 495 L400 515" stroke="#9CA3AF" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- DevOps Layer -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="520" width="700" height="60" rx="12" fill="url(#grayGrad)"/>
+    <text x="400" y="545" text-anchor="middle" font-size="16" font-weight="bold" fill="white">自動化・DevOps</text>
+
+    <rect x="100" y="555" width="130" height="20" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="165" y="569" text-anchor="middle" font-size="10" fill="#4B5563">Claude Code CLI</text>
+
+    <rect x="250" y="555" width="130" height="20" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="315" y="569" text-anchor="middle" font-size="10" fill="#4B5563">GitHub Codespaces</text>
+
+    <rect x="400" y="555" width="130" height="20" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="465" y="569" text-anchor="middle" font-size="10" fill="#4B5563">GitHub Actions</text>
+
+    <rect x="550" y="555" width="130" height="20" rx="4" fill="white" fill-opacity="0.9"/>
+    <text x="615" y="569" text-anchor="middle" font-size="10" fill="#4B5563">build-auto-fix Skill</text>
+  </g>
+</svg>

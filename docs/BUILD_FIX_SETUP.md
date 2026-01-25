@@ -4,6 +4,123 @@
 
 ---
 
+## セットアップ方法の選択
+
+| 方法 | 難易度 | 所要時間 | 推奨用途 |
+|------|--------|----------|----------|
+| **GitHub Codespaces** | 簡単 | 3分 | すぐ試したい、チーム共有 |
+| WSL 2 | 中程度 | 30分 | 本格的な開発環境 |
+| ネイティブ Windows | 中程度 | 20分 | WSL不要の場合 |
+
+**推奨**: まず **Codespaces** で試してから、必要に応じてローカル環境を構築してください。
+
+---
+
+## GitHub Codespaces（最速セットアップ）
+
+### Step 1: Codespaces を起動
+
+1. GitHub でリポジトリを開く
+2. `Code` → `Codespaces` → `Create codespace on main`
+3. 自動的にセットアップが実行される（2-3分）
+
+### Step 2: 各サービスにログイン
+
+```bash
+# Claude Code（必須）
+claude login
+
+# GitHub（通常は自動認証済み）
+gh auth status
+
+# 以下は使用するサービスのみ
+vercel login      # Vercel
+railway login     # Railway
+eas login         # EAS (Expo)
+supabase login    # Supabase
+```
+
+### Step 3: 使用開始
+
+```bash
+# 方法1: スクリプト実行（全環境チェック）
+./scripts/auto-fix.sh
+
+# 方法2: シンプル版
+./scripts/fix.sh
+
+# 方法3: Claude Code に直接指示
+claude "ビルドエラー直して"
+```
+
+### Codespaces で利用可能なツール
+
+| カテゴリ | ツール | 用途 |
+|---------|--------|------|
+| **ランタイム** | Node.js 24.x LTS | JavaScript/TypeScript |
+| | Python 3.13.x | Python |
+| **ビルド** | gh | GitHub 操作 |
+| | claude | AI 自動修正 |
+| | vercel | Vercel デプロイ |
+| | railway | Railway デプロイ |
+| | eas | Expo/RN ビルド |
+| | supabase | Supabase 操作 |
+| **メッセージング** | teamsapp | Microsoft Teams CLI |
+| | slack | Slack CLI |
+| | az | Azure CLI（Teams Bot用） |
+| | ngrok | ローカルWebhook開発 |
+
+### 他のリポジトリに適用する
+
+以下のファイルをコピーしてください：
+
+```
+your-repo/
+├── .devcontainer/
+│   ├── devcontainer.json
+│   └── setup.sh
+└── scripts/
+    ├── auto-fix.sh
+    └── fix.sh
+```
+
+---
+
+## Windows ワンクリックセットアップ
+
+管理者権限の PowerShell で以下を実行：
+
+```powershell
+# insight-common をクローン済みの場合
+.\scripts\setup-windows.ps1
+
+# または直接ダウンロードして実行
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/setup-windows.ps1" -OutFile "setup.ps1"
+.\setup.ps1
+```
+
+インストールされるもの:
+- Node.js 24.x LTS, Python 3.13, Git
+- GitHub CLI, Azure CLI, ngrok
+- Claude Code, Vercel, Railway, EAS, Supabase CLI
+- Microsoft Teams CLI
+
+---
+
+## WSL 2 ワンクリックセットアップ
+
+WSL 2 内で以下を実行：
+
+```bash
+# insight-common をクローン済みの場合
+./scripts/setup-wsl.sh
+
+# または直接ダウンロードして実行
+curl -fsSL https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/setup-wsl.sh | bash
+```
+
+---
+
 ## 概要
 
 Claude Code を使って、以下のプラットフォームのビルドエラーを自動検出・修正できます：
@@ -802,10 +919,62 @@ claude --version
 
 ---
 
+## メッセージングプラットフォーム連携
+
+LINE、Slack、Teams アプリ開発に必要なツールです。
+
+### CLI ツール（セットアップスクリプトで自動インストール）
+
+| ツール | コマンド | 用途 |
+|--------|---------|------|
+| Microsoft Teams CLI | `teamsapp` | Teams アプリ開発 |
+| Slack CLI | `slack` | Slack Workflow Builder |
+| Azure CLI | `az` | Teams Bot 登録 |
+| ngrok | `ngrok` | ローカル Webhook 開発 |
+
+### SDK（プロジェクトごとにインストール）
+
+```bash
+# LINE Bot
+npm install @line/bot-sdk
+
+# Slack Bot
+npm install @slack/bolt @slack/web-api
+
+# Microsoft Teams Bot
+npm install botbuilder @microsoft/teams-js
+```
+
+### 認証コマンド
+
+```bash
+# Azure (Teams Bot 用)
+az login
+
+# Slack CLI
+slack login
+
+# ngrok
+ngrok authtoken <YOUR_TOKEN>
+```
+
+### ローカル開発（Webhook テスト）
+
+```bash
+# ngrok でローカルサーバーを公開
+ngrok http 3000
+
+# 表示された URL を LINE/Slack/Teams の Webhook URL に設定
+# 例: https://xxxx-xxx-xxx.ngrok.io/webhook
+```
+
+---
+
 ## 更新履歴
 
 | 日付 | バージョン | 内容 |
 |------|-----------|------|
+| 2026-01-25 | 1.2.0 | Codespaces対応、メッセージング連携追加、ワンクリックセットアップ |
 | 2026-01-25 | 1.1.0 | WSL 2 推奨、Python追加、バージョン情報追加 |
 | 2026-01-25 | 1.0.0 | 初版作成 |
 
