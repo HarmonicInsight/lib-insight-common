@@ -4,6 +4,84 @@
 
 ---
 
+## セットアップ方法の選択
+
+| 方法 | 難易度 | 所要時間 | 推奨用途 |
+|------|--------|----------|----------|
+| **GitHub Codespaces** | 簡単 | 3分 | すぐ試したい、チーム共有 |
+| WSL 2 | 中程度 | 30分 | 本格的な開発環境 |
+| ネイティブ Windows | 中程度 | 20分 | WSL不要の場合 |
+
+**推奨**: まず **Codespaces** で試してから、必要に応じてローカル環境を構築してください。
+
+---
+
+## GitHub Codespaces（最速セットアップ）
+
+### Step 1: Codespaces を起動
+
+1. GitHub でリポジトリを開く
+2. `Code` → `Codespaces` → `Create codespace on main`
+3. 自動的にセットアップが実行される（2-3分）
+
+### Step 2: 各サービスにログイン
+
+```bash
+# Claude Code（必須）
+claude login
+
+# GitHub（通常は自動認証済み）
+gh auth status
+
+# 以下は使用するサービスのみ
+vercel login      # Vercel
+railway login     # Railway
+eas login         # EAS (Expo)
+supabase login    # Supabase
+```
+
+### Step 3: 使用開始
+
+```bash
+# 方法1: スクリプト実行（全環境チェック）
+./scripts/auto-fix.sh
+
+# 方法2: シンプル版
+./scripts/fix.sh
+
+# 方法3: Claude Code に直接指示
+claude "ビルドエラー直して"
+```
+
+### Codespaces で利用可能なツール
+
+| ツール | バージョン | 用途 |
+|--------|-----------|------|
+| Node.js | 24.x LTS | JavaScript/TypeScript |
+| Python | 3.13.x | Python |
+| gh | 最新版 | GitHub 操作 |
+| claude | 最新版 | AI 自動修正 |
+| vercel | 最新版 | Vercel デプロイ |
+| railway | 最新版 | Railway デプロイ |
+| eas | 最新版 | Expo/RN ビルド |
+| supabase | 最新版 | Supabase 操作 |
+
+### 他のリポジトリに適用する
+
+以下のファイルをコピーしてください：
+
+```
+your-repo/
+├── .devcontainer/
+│   ├── devcontainer.json
+│   └── setup.sh
+└── scripts/
+    ├── auto-fix.sh
+    └── fix.sh
+```
+
+---
+
 ## 概要
 
 Claude Code を使って、以下のプラットフォームのビルドエラーを自動検出・修正できます：
