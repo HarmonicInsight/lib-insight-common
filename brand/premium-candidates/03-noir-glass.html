@@ -81,6 +81,27 @@
     backdrop-filter: var(--glass-blur);
   }
 
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-logo {
+    width: 30px;
+    height: 30px;
+    background: var(--text-primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--bg-primary);
+    letter-spacing: -0.02em;
+  }
+
   .nav-wordmark {
     font-family: var(--font-display);
     font-size: 22px;
@@ -903,7 +924,10 @@
 
 <!-- Navigation -->
 <nav class="nav">
-  <span class="nav-wordmark">Harmonic Insight</span>
+  <div class="nav-brand">
+    <div class="nav-logo">Hi</div>
+    <span class="nav-wordmark">Harmonic Insight</span>
+  </div>
   <ul class="nav-center">
     <li><a href="#">Products</a></li>
     <li><a href="#">Enterprise</a></li>
