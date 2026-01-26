@@ -54,6 +54,12 @@ claude
 | InsightPy | [INSIGHTPY_SETUP.md](./INSIGHTPY_SETUP.md) | `PY` | Python |
 | InterviewInsight | [INTERVIEWINSIGHT_SETUP.md](./INTERVIEWINSIGHT_SETUP.md) | `INTV` | Tauri + React + TypeScript |
 
+### 環境構築
+
+| 環境 | プロンプト | 説明 |
+|------|-----------|------|
+| GitHub Codespaces | [CODESPACES_SETUP.md](./CODESPACES_SETUP.md) | Codespaces 自動ビルド環境（CLI 自動インストール） |
+
 ### モバイルモジュール追加
 
 insight-common 自体に Android/iOS モジュールを追加するプロンプト:
