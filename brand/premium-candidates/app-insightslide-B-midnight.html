@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insight Slides v2.0.0 — Pattern B: Midnight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Pattern B: Midnight — Deep navy + ice blue accent === */
+    --bg-app: #090B11;
+    --bg-sidebar: #0D1017;
+    --bg-main: #10131C;
+    --bg-elevated: #161A26;
+    --bg-hover: #1B2030;
+    --bg-active: #212738;
+    --bg-titlebar: #060810;
+
+    --accent: #5B8DEF;
+    --accent-hover: #6F9DF3;
+    --accent-muted: rgba(91,141,239,0.10);
+    --accent-subtle: rgba(91,141,239,0.05);
+    --accent-glow: 0 0 24px rgba(91,141,239,0.12);
+    --accent-gradient: linear-gradient(135deg, #5B8DEF, #8AB4F8);
+
+    --green: #34D399;
+    --green-muted: rgba(52,211,153,0.10);
+    --blue: #8AB4F8;
+    --blue-muted: rgba(138,180,248,0.08);
+    --orange: #FBBD60;
+    --orange-muted: rgba(251,189,96,0.08);
+    --purple: #B794F6;
+    --purple-muted: rgba(183,148,246,0.08);
+
+    --text-primary: #E0E4EE;
+    --text-secondary: #8890A4;
+    --text-tertiary: #525A72;
+    --text-accent: #8AB4F8;
+
+    --border: rgba(138,180,248,0.06);
+    --border-strong: rgba(138,180,248,0.12);
+    --border-accent: rgba(91,141,239,0.25);
+
+    --font: 'DM Sans', 'Noto Sans JP', -apple-system, sans-serif;
+    --radius: 10px;
+    --radius-sm: 7px;
+    --radius-lg: 14px;
+
+    --shadow-btn: 0 1px 3px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+    --transition: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-app);
+    color: var(--text-primary);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ===== TITLE BAR ===== */
+  .titlebar {
+    height: 38px;
+    background: var(--bg-titlebar);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.6);
+  }
+
+  .titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .titlebar-icon {
+    width: 20px;
+    height: 20px;
+    background: var(--accent-gradient);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .titlebar-text {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .titlebar-menu {
+    display: flex;
+    gap: 2px;
+  }
+
+  .titlebar-menu-item {
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .titlebar-menu-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .titlebar-controls {
+    display: flex;
+  }
+
+  .titlebar-btn {
+    width: 46px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+
+  .titlebar-btn svg { width: 10px; height: 10px; stroke: var(--text-tertiary); stroke-width: 1.5; fill: none; }
+  .titlebar-btn:hover { background: var(--bg-hover); }
+  .titlebar-btn:hover svg { stroke: var(--text-primary); }
+  .titlebar-btn.close:hover { background: #E81123; }
+  .titlebar-btn.close:hover svg { stroke: white; }
+
+  /* ===== APP HEADER ===== */
+  .app-header {
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-app);
+  }
+
+  .app-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .app-logo {
+    width: 30px;
+    height: 30px;
+    background: var(--accent-gradient);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    box-shadow: var(--accent-glow);
+  }
+
+  .app-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .app-version {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: 4px;
+  }
+
+  .plan-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 12px;
+    background: var(--accent-muted);
+    border: 1px solid var(--border-accent);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .plan-pill::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .app-header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hdr-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .hdr-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .hdr-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  /* ===== LAYOUT ===== */
+  .app-body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    height: calc(100vh - 38px - 54px);
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .sb-group {
+    margin-bottom: 6px;
+  }
+
+  .sb-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 12px 10px 6px;
+  }
+
+  .sb-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: var(--font);
+    text-align: left;
+  }
+
+  .sb-btn:hover { background: var(--bg-hover); }
+  .sb-btn:active { background: var(--bg-active); }
+
+  .sb-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .sb-icon svg {
+    width: 15px;
+    height: 15px;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .sb-icon.pptx { background: var(--orange-muted); }
+  .sb-icon.pptx svg { stroke: var(--orange); }
+  .sb-icon.excel { background: var(--green-muted); }
+  .sb-icon.excel svg { stroke: var(--green); }
+  .sb-icon.json { background: var(--blue-muted); }
+  .sb-icon.json svg { stroke: var(--blue); }
+  .sb-icon.folder { background: var(--accent-muted); }
+  .sb-icon.folder svg { stroke: var(--accent); }
+  .sb-icon.compare { background: var(--purple-muted); }
+  .sb-icon.compare svg { stroke: var(--purple); }
+
+  .sb-text { flex: 1; min-width: 0; }
+
+  .sb-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .sb-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.3;
+  }
+
+  .tag-pro {
+    padding: 2px 6px;
+    background: linear-gradient(135deg, rgba(91,141,239,0.15), rgba(138,180,248,0.08));
+    border: 1px solid var(--border-accent);
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-accent);
+    letter-spacing: 0.06em;
+  }
+
+  .sb-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 6px 8px;
+  }
+
+  /* Settings */
+  .sb-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+  }
+
+  .sb-setting:hover { background: var(--bg-hover); }
+
+  .sb-setting-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .switch {
+    width: 36px;
+    height: 20px;
+    background: var(--bg-active);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--transition);
+    border: 1px solid var(--border);
+  }
+
+  .switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: var(--text-tertiary);
+    border-radius: 50%;
+    transition: all var(--transition);
+  }
+
+  .switch.on { background: var(--accent); border-color: var(--accent); }
+  .switch.on::after { transform: translateX(16px); background: white; }
+
+  .sb-footer {
+    margin-top: auto;
+    padding: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .sb-footer-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    border-radius: var(--radius-sm);
+    background: var(--accent-subtle);
+    border: 1px solid rgba(91,141,239,0.08);
+  }
+
+  .sb-footer-hint svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    fill: none;
+    flex-shrink: 0;
+  }
+
+  /* ===== MAIN ===== */
+  .main {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-main);
+  }
+
+  .main-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 36px;
+  }
+
+  /* Welcome */
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+  }
+
+  .welcome-glyph {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--accent-muted), var(--accent-subtle));
+    border: 1px solid var(--border-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    box-shadow: var(--accent-glow);
+  }
+
+  .welcome-glyph svg {
+    width: 30px;
+    height: 30px;
+    stroke: var(--accent);
+    stroke-width: 1.4;
+    fill: none;
+  }
+
+  .welcome h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .welcome p {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    max-width: 420px;
+    line-height: 1.7;
+    margin-bottom: 44px;
+  }
+
+  .steps {
+    width: 100%;
+    max-width: 480px;
+    text-align: left;
+    background: var(--bg-sidebar);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step-item:last-child { border-bottom: none; }
+
+  .step-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .step-body { flex: 1; }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .step-hint {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  /* Data Table */
+  .data-area { display: none; }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .file-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .file-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    background: var(--orange-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .file-badge svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--orange);
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .file-label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .file-sub {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .toolbar-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .t-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .t-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .t-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .tbl {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .tbl thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tbl tbody td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    transition: background var(--transition);
+  }
+
+  .tbl tbody tr:last-child td { border-bottom: none; }
+  .tbl tbody tr:hover td { background: var(--bg-hover); color: var(--text-primary); }
+
+  .s-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--accent-subtle);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .type-tag {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .type-tag.t { background: var(--orange-muted); color: var(--orange); }
+  .type-tag.b { background: var(--blue-muted); color: var(--blue); }
+  .type-tag.n { background: var(--purple-muted); color: var(--purple); }
+
+  /* ===== BOTTOM BAR ===== */
+  .bottom {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-app);
+  }
+
+  .bottom-l {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px rgba(52,211,153,0.4);
+    animation: blink 3s ease infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  .status-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .progress-track {
+    width: 140px;
+    height: 3px;
+    background: var(--bg-active);
+    border-radius: 2px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-gradient);
+    border-radius: 2px;
+  }
+
+  .detail-link {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--font);
+    transition: color var(--transition);
+  }
+
+  .detail-link:hover { color: var(--text-secondary); }
+
+  .bottom-r {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ex-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .ex-btn svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .ex-btn.ghost {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  .ex-btn.ghost:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .ex-btn.accent {
+    background: var(--accent-gradient);
+    border: none;
+    color: white;
+    font-weight: 600;
+    box-shadow: var(--accent-glow);
+  }
+
+  .ex-btn.accent:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(91,141,239,0.25);
+  }
+
+  .stop-btn {
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-family: var(--font);
+    font-size: 12px;
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-tertiary);
+    transition: all var(--transition);
+  }
+
+  .stop-btn:hover { border-color: var(--border-strong); color: var(--text-secondary); }
+
+  .kbd {
+    padding: 1px 5px;
+    background: var(--bg-active);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    margin-left: auto;
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg-active); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TITLE BAR -->
+<div class="titlebar">
+  <div class="titlebar-left">
+    <div class="titlebar-icon">Hi</div>
+    <span class="titlebar-text">Insight Slides v2.0.0 — Professional</span>
+  </div>
+  <div class="titlebar-menu">
+    <span class="titlebar-menu-item">ファイル</span>
+    <span class="titlebar-menu-item">編集</span>
+    <span class="titlebar-menu-item">表示</span>
+    <span class="titlebar-menu-item">ヘルプ</span>
+  </div>
+  <div class="titlebar-controls">
+    <div class="titlebar-btn"><svg viewBox="0 0 10 1"><line x1="0" y1=".5" x2="10" y2=".5"/></svg></div>
+    <div class="titlebar-btn"><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></div>
+    <div class="titlebar-btn close"><svg viewBox="0 0 10 10"><line x1="0" y1="0" x2="10" y2="10"/><line x1="10" y1="0" x2="0" y2="10"/></svg></div>
+  </div>
+</div>
+
+<!-- APP HEADER -->
+<header class="app-header">
+  <div class="app-brand">
+    <div class="app-logo">Hi</div>
+    <div>
+      <span class="app-name">Insight Slides</span>
+      <span class="app-version">v2.0.0</span>
+    </div>
+    <span class="plan-pill">Professional</span>
+  </div>
+  <div class="app-header-right">
+    <button class="hdr-btn">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      設定
+    </button>
+    <button class="hdr-btn">
+      <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>
+      ライセンス
+    </button>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="app-body">
+  <aside class="sidebar">
+    <div class="sb-group">
+      <div class="sb-label">入力（1ファイル）</div>
+      <button class="sb-btn">
+        <span class="sb-icon pptx"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        <span class="sb-text"><span class="sb-name">PPTX読込</span><span class="sb-desc">PowerPointファイルを開く</span></span>
+        <span class="kbd">Ctrl+O</span>
+      </button>
+      <button class="sb-btn">
+        <span class="sb-icon excel"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        <span class="sb-text"><span class="sb-name">Excel読込</span><span class="sb-desc">Excelからインポート</span></span>
+      </button>
+      <button class="sb-btn">
+        <span class="sb-icon json"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        <span class="sb-text"><span class="sb-name">JSON読込</span><span class="sb-desc">JSONからインポート</span></span>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-group">
+      <div class="sb-label">フォルダー一括</div>
+      <button class="sb-btn">
+        <span class="sb-icon folder"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
+        <span class="sb-text"><span class="sb-name">フォルダー → Excel</span><span class="sb-desc">一括でExcelに出力</span></span>
+        <span class="tag-pro">PRO</span>
+      </button>
+      <button class="sb-btn">
+        <span class="sb-icon folder"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
+        <span class="sb-text"><span class="sb-name">Excel → フォルダ</span><span class="sb-desc">Excelから一括反映</span></span>
+        <span class="tag-pro">PRO</span>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-group">
+      <div class="sb-label">ツール</div>
+      <button class="sb-btn">
+        <span class="sb-icon compare"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="8" height="18" rx="1"/><rect x="14" y="3" width="8" height="18" rx="1"/></svg></span>
+        <span class="sb-text"><span class="sb-name">2ファイル比較</span><span class="sb-desc">差分を視覚的に表示</span></span>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-group">
+      <div class="sb-label">処理設定</div>
+      <div class="sb-setting">
+        <span class="sb-setting-text">スピーカーノート含む</span>
+        <div class="switch"></div>
+      </div>
+      <div class="sb-setting">
+        <span class="sb-setting-text">自動バックアップ</span>
+        <div class="switch on"></div>
+      </div>
+    </div>
+
+    <div class="sb-footer">
+      <div class="sb-footer-hint">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        ファイルを読み込んで開始
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="main-scroll">
+      <div class="welcome">
+        <div class="welcome-glyph">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h2>PowerPointテキストを編集</h2>
+        <p>PPTXからテキストを抽出し、Excel感覚で編集。<br>ワンクリックでPPTXに反映。</p>
+        <div class="steps">
+          <div class="step-item"><div class="step-badge">1</div><div class="step-body"><div class="step-title">PPTXファイルを選択</div><div class="step-hint">左パネルからファイルを読み込み</div></div></div>
+          <div class="step-item"><div class="step-badge">2</div><div class="step-body"><div class="step-title">テキスト一覧が表示</div><div class="step-hint">スライド番号・タイプで整理</div></div></div>
+          <div class="step-item"><div class="step-badge">3</div><div class="step-body"><div class="step-title">セルをダブルクリックで編集</div><div class="step-hint">インラインで直接変更</div></div></div>
+          <div class="step-item"><div class="step-badge">4</div><div class="step-body"><div class="step-title">PPTXに反映で保存</div><div class="step-hint">自動バックアップで安全に更新</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="bottom-l">
+        <div class="status-indicator"><div class="dot"></div><span class="status-label">待機中</span></div>
+        <button class="detail-link">詳細を表示</button>
+      </div>
+      <div class="bottom-r">
+        <button class="stop-btn">中止</button>
+        <button class="ex-btn ghost"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>JSON</button>
+        <button class="ex-btn ghost"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Excel</button>
+        <button class="ex-btn accent"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>PPTXに反映</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
