@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insight Slides v2.0.0 — Professional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* === Premium App Color System === */
+    --bg-app: #101012;
+    --bg-sidebar: #151517;
+    --bg-main: #18181B;
+    --bg-elevated: #1E1E22;
+    --bg-hover: #232328;
+    --bg-active: #28282E;
+    --bg-input: #1A1A1E;
+    --bg-titlebar: #0C0C0E;
+
+    --accent: #C9A84C;
+    --accent-hover: #D4B65E;
+    --accent-muted: rgba(201,168,76,0.12);
+    --accent-subtle: rgba(201,168,76,0.06);
+    --accent-glow: 0 0 20px rgba(201,168,76,0.15);
+
+    --green: #34D399;
+    --green-muted: rgba(52,211,153,0.12);
+    --blue: #60A5FA;
+    --blue-muted: rgba(96,165,250,0.10);
+    --orange: #FB923C;
+    --orange-muted: rgba(251,146,60,0.10);
+    --red: #F87171;
+
+    --text-primary: #ECECEF;
+    --text-secondary: #9194A0;
+    --text-tertiary: #5C5F6E;
+    --text-accent: #C9A84C;
+
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.10);
+    --border-accent: rgba(201,168,76,0.25);
+
+    --font: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius: 8px;
+    --radius-sm: 6px;
+    --radius-lg: 12px;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+    --shadow-btn: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+
+    --transition: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-app);
+    color: var(--text-primary);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ============================================
+     TITLE BAR (Windows-style)
+     ============================================ */
+  .titlebar {
+    height: 36px;
+    background: var(--bg-titlebar);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    -webkit-app-region: drag;
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+  }
+
+  .titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .titlebar-icon {
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--bg-app);
+    letter-spacing: -0.03em;
+  }
+
+  .titlebar-text {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-weight: 400;
+  }
+
+  .titlebar-menu {
+    display: flex;
+    gap: 2px;
+    -webkit-app-region: no-drag;
+  }
+
+  .titlebar-menu-item {
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .titlebar-menu-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .titlebar-controls {
+    display: flex;
+    -webkit-app-region: no-drag;
+  }
+
+  .titlebar-btn {
+    width: 46px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+
+  .titlebar-btn svg { width: 10px; height: 10px; stroke: var(--text-tertiary); stroke-width: 1.5; fill: none; }
+  .titlebar-btn:hover { background: var(--bg-hover); }
+  .titlebar-btn:hover svg { stroke: var(--text-primary); }
+  .titlebar-btn.close:hover { background: #E81123; }
+  .titlebar-btn.close:hover svg { stroke: white; }
+
+  /* ============================================
+     APP HEADER
+     ============================================ */
+  .app-header {
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-app);
+  }
+
+  .app-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .app-logo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #C9A84C 0%, #E8D5A3 100%);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bg-app);
+    letter-spacing: -0.03em;
+    box-shadow: var(--accent-glow);
+  }
+
+  .app-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .app-version {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+
+  .app-plan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: var(--accent-muted);
+    border: 1px solid var(--border-accent);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .app-plan-badge::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .app-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-icon-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--text-tertiary);
+    border: none;
+    background: none;
+  }
+
+  .header-icon-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+  }
+
+  .header-icon-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .license-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .license-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .license-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  /* ============================================
+     MAIN LAYOUT
+     ============================================ */
+  .app-body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    height: calc(100vh - 36px - 52px);
+  }
+
+  /* ============================================
+     SIDEBAR
+     ============================================ */
+  .sidebar {
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .sidebar-section {
+    padding: 20px 16px 8px;
+  }
+
+  .sidebar-section + .sidebar-section {
+    border-top: 1px solid var(--border);
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+    padding: 0 8px;
+  }
+
+  /* --- Action Buttons --- */
+  .action-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition);
+    border: 1px solid transparent;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font);
+  }
+
+  .action-btn:hover {
+    background: var(--bg-hover);
+  }
+
+  .action-btn:active {
+    background: var(--bg-active);
+  }
+
+  .action-btn .icon-wrap {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .action-btn .icon-wrap svg {
+    width: 15px;
+    height: 15px;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .action-btn .icon-wrap.pptx { background: var(--orange-muted); }
+  .action-btn .icon-wrap.pptx svg { stroke: var(--orange); }
+
+  .action-btn .icon-wrap.excel { background: var(--green-muted); }
+  .action-btn .icon-wrap.excel svg { stroke: var(--green); }
+
+  .action-btn .icon-wrap.json { background: var(--blue-muted); }
+  .action-btn .icon-wrap.json svg { stroke: var(--blue); }
+
+  .action-btn .icon-wrap.folder { background: var(--accent-muted); }
+  .action-btn .icon-wrap.folder svg { stroke: var(--accent); }
+
+  .action-btn .icon-wrap.compare { background: rgba(168,85,247,0.10); }
+  .action-btn .icon-wrap.compare svg { stroke: #A855F7; }
+
+  .action-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .action-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .action-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.3;
+    margin-top: 1px;
+  }
+
+  .pro-tag {
+    padding: 2px 6px;
+    background: var(--accent-muted);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  /* --- Separator --- */
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 16px;
+  }
+
+  /* --- Settings --- */
+  .settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 8px;
+  }
+
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition);
+  }
+
+  .setting-row:hover { background: var(--bg-hover); }
+
+  .setting-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .toggle-switch {
+    width: 36px;
+    height: 20px;
+    background: var(--bg-active);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--transition);
+    border: 1px solid var(--border);
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: var(--text-tertiary);
+    border-radius: 50%;
+    transition: all var(--transition);
+  }
+
+  .toggle-switch.on {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .toggle-switch.on::after {
+    transform: translateX(16px);
+    background: var(--bg-app);
+  }
+
+  /* --- Sidebar footer --- */
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .sidebar-footer-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .sidebar-footer-info svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-tertiary);
+    stroke-width: 1.8;
+    fill: none;
+    flex-shrink: 0;
+  }
+
+  /* ============================================
+     MAIN CONTENT
+     ============================================ */
+  .main {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-main);
+    overflow: hidden;
+  }
+
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+  }
+
+  /* --- Welcome / Empty State --- */
+  .welcome-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .welcome-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--accent-subtle);
+    border: 1px solid rgba(201,168,76,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .welcome-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .welcome-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .welcome-desc {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    max-width: 400px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+
+  .welcome-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 460px;
+    text-align: left;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-muted);
+    border: 1px solid rgba(201,168,76,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .step-sub {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+  }
+
+  /* --- Data Table (loaded state) --- */
+  .data-view {
+    display: none; /* toggle with JS in real app */
+  }
+
+  .data-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .data-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .data-file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .file-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: var(--orange-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .file-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--orange);
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .file-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .file-meta {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .data-toolbar-right {
+    display: flex;
+    gap: 6px;
+  }
+
+  .tool-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow-btn);
+  }
+
+  .tool-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .tool-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  .slide-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .slide-table thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .slide-table tbody td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-sidebar);
+    transition: all var(--transition);
+  }
+
+  .slide-table tbody tr:last-child td { border-bottom: none; }
+
+  .slide-table tbody tr:hover td {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .slide-table tbody td.editable {
+    cursor: text;
+    color: var(--text-primary);
+  }
+
+  .slide-table tbody td.editable:hover {
+    background: var(--bg-active);
+  }
+
+  .slide-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--accent-subtle);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .cell-type {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .cell-type.title { background: var(--accent-muted); color: var(--accent); }
+  .cell-type.body { background: var(--blue-muted); color: var(--blue); }
+  .cell-type.note { background: rgba(168,85,247,0.10); color: #A855F7; }
+
+  /* ============================================
+     BOTTOM BAR
+     ============================================ */
+  .bottom-bar {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-app);
+    flex-shrink: 0;
+  }
+
+  .bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-bar {
+    width: 160px;
+    height: 3px;
+    background: var(--bg-active);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px rgba(52,211,153,0.4);
+    animation: statusPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .status-text {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .detail-toggle {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color var(--transition);
+    text-decoration: none;
+    border: none;
+    background: none;
+    font-family: var(--font);
+  }
+
+  .detail-toggle:hover { color: var(--text-secondary); }
+
+  .bottom-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .export-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-btn);
+  }
+
+  .export-btn svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .export-btn.secondary {
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+  }
+
+  .export-btn.secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .export-btn.primary {
+    background: linear-gradient(180deg, #D4B65E 0%, #C9A84C 100%);
+    border: 1px solid rgba(201,168,76,0.6);
+    color: #1A1400;
+    font-weight: 600;
+  }
+
+  .export-btn.primary:hover {
+    background: linear-gradient(180deg, #DFC36E 0%, #D4B65E 100%);
+    box-shadow: var(--accent-glow), var(--shadow-btn);
+    transform: translateY(-1px);
+  }
+
+  .cancel-btn {
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-tertiary);
+    transition: all var(--transition);
+  }
+
+  .cancel-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    border-color: var(--border-strong);
+  }
+
+  /* ============================================
+     KBD shortcut hints
+     ============================================ */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 5px;
+    background: var(--bg-active);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    font-family: var(--font);
+    margin-left: auto;
+  }
+
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--bg-active); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+</style>
+</head>
+<body>
+
+<!-- ===== TITLE BAR ===== -->
+<div class="titlebar">
+  <div class="titlebar-left">
+    <div class="titlebar-icon">Hi</div>
+    <span class="titlebar-text">Insight Slides v2.0.0 — Professional</span>
+  </div>
+  <div class="titlebar-menu">
+    <span class="titlebar-menu-item">ファイル</span>
+    <span class="titlebar-menu-item">編集</span>
+    <span class="titlebar-menu-item">表示</span>
+    <span class="titlebar-menu-item">ヘルプ</span>
+  </div>
+  <div class="titlebar-controls">
+    <div class="titlebar-btn">
+      <svg viewBox="0 0 10 1"><line x1="0" y1="0.5" x2="10" y2="0.5"/></svg>
+    </div>
+    <div class="titlebar-btn">
+      <svg viewBox="0 0 10 10"><rect x="0.5" y="0.5" width="9" height="9" rx="0"/></svg>
+    </div>
+    <div class="titlebar-btn close">
+      <svg viewBox="0 0 10 10"><line x1="0" y1="0" x2="10" y2="10"/><line x1="10" y1="0" x2="0" y2="10"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP HEADER ===== -->
+<header class="app-header">
+  <div class="app-brand">
+    <div class="app-logo">Hi</div>
+    <div>
+      <span class="app-name">Insight Slides</span>
+      <span class="app-version">v2.0.0</span>
+    </div>
+    <span class="app-plan-badge">Professional</span>
+  </div>
+  <div class="app-header-right">
+    <button class="header-icon-btn" title="設定">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
+    <button class="license-btn">
+      <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>
+      ライセンス
+    </button>
+  </div>
+</header>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">入力（1ファイル）</div>
+      <div class="action-group">
+        <button class="action-btn">
+          <span class="icon-wrap pptx">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <span class="action-text">
+            <span class="action-name">PPTX読込</span>
+            <span class="action-desc">PowerPointファイルを開く</span>
+          </span>
+          <span class="kbd">Ctrl+O</span>
+        </button>
+        <button class="action-btn">
+          <span class="icon-wrap excel">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <span class="action-text">
+            <span class="action-name">Excel読込</span>
+            <span class="action-desc">Excelファイルからインポート</span>
+          </span>
+        </button>
+        <button class="action-btn">
+          <span class="icon-wrap json">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <span class="action-text">
+            <span class="action-name">JSON読込</span>
+            <span class="action-desc">JSONデータからインポート</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">フォルダー一括</div>
+      <div class="action-group">
+        <button class="action-btn">
+          <span class="icon-wrap folder">
+            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          </span>
+          <span class="action-text">
+            <span class="action-name">フォルダー → Excel</span>
+            <span class="action-desc">一括でExcelに出力</span>
+          </span>
+          <span class="pro-tag">Pro</span>
+        </button>
+        <button class="action-btn">
+          <span class="icon-wrap folder">
+            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          </span>
+          <span class="action-text">
+            <span class="action-name">Excel → フォルダ</span>
+            <span class="action-desc">Excelから一括反映</span>
+          </span>
+          <span class="pro-tag">Pro</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">ツール</div>
+      <div class="action-group">
+        <button class="action-btn">
+          <span class="icon-wrap compare">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="8" height="18" rx="1"/><rect x="14" y="3" width="8" height="18" rx="1"/></svg>
+          </span>
+          <span class="action-text">
+            <span class="action-name">2ファイル比較</span>
+            <span class="action-desc">差分を視覚的に表示</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">処理設定</div>
+      <div class="settings-group">
+        <div class="setting-row">
+          <span class="setting-label">スピーカーノート含む</span>
+          <div class="toggle-switch"></div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">更新前に自動バックアップ</span>
+          <div class="toggle-switch on"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-info">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span>左パネルからファイルを読み込んで開始</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="main-content">
+
+      <!-- Welcome / Empty State -->
+      <div class="welcome-area">
+        <div class="welcome-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h2 class="welcome-title">PowerPointテキストを編集</h2>
+        <p class="welcome-desc">
+          PPTXファイルからテキストを抽出し、Excel感覚で一括編集。<br>
+          編集後はワンクリックでPPTXに反映できます。
+        </p>
+        <div class="welcome-steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title">左のパネルでPPTXファイルを選択</div>
+              <div class="step-sub">Excel・JSONからのインポートにも対応</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title">テキストが一覧で表示されます</div>
+              <div class="step-sub">スライド番号・テキストタイプで整理</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title">セルをダブルクリックして編集</div>
+              <div class="step-sub">インラインで直接テキストを変更</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-title">「PPTXに反映」で変更を保存</div>
+              <div class="step-sub">自動バックアップで安全に更新</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Table (shown when file is loaded) -->
+      <div class="data-view" style="display:none;">
+        <div class="data-toolbar">
+          <div class="data-toolbar-left">
+            <div class="data-file-info">
+              <div class="file-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="file-name">presentation_Q4_2026.pptx</div>
+                <div class="file-meta">24 slides / 142 text elements</div>
+              </div>
+            </div>
+          </div>
+          <div class="data-toolbar-right">
+            <button class="tool-btn">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              検索
+            </button>
+            <button class="tool-btn">
+              <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              フィルター
+            </button>
+          </div>
+        </div>
+        <table class="slide-table">
+          <thead>
+            <tr>
+              <th style="width:60px;">Slide</th>
+              <th style="width:80px;">Type</th>
+              <th>テキスト内容</th>
+              <th style="width:100px;">文字数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="slide-num">1</span></td>
+              <td><span class="cell-type title">Title</span></td>
+              <td class="editable">Q4 2026 業績報告</td>
+              <td>11</td>
+            </tr>
+            <tr>
+              <td><span class="slide-num">1</span></td>
+              <td><span class="cell-type body">Body</span></td>
+              <td class="editable">第4四半期の業績をご報告いたします</td>
+              <td>17</td>
+            </tr>
+            <tr>
+              <td><span class="slide-num">2</span></td>
+              <td><span class="cell-type title">Title</span></td>
+              <td class="editable">エグゼクティブサマリー</td>
+              <td>11</td>
+            </tr>
+            <tr>
+              <td><span class="slide-num">2</span></td>
+              <td><span class="cell-type body">Body</span></td>
+              <td class="editable">売上高は前年同期比14.2%増の12.4億円を達成</td>
+              <td>23</td>
+            </tr>
+            <tr>
+              <td><span class="slide-num">2</span></td>
+              <td><span class="cell-type note">Note</span></td>
+              <td class="editable">※為替影響を除くと+16.8%</td>
+              <td>14</td>
+            </tr>
+            <tr>
+              <td><span class="slide-num">3</span></td>
+              <td><span class="cell-type title">Title</span></td>
+              <td class="editable">セグメント別業績</td>
+              <td>8</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+      <div class="bottom-left">
+        <div class="progress-area">
+          <div class="status-dot"></div>
+          <span class="status-text">待機中</span>
+        </div>
+        <div class="progress-area" style="display:none;">
+          <div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div>
+          <span class="progress-text">処理中... 35%</span>
+        </div>
+        <button class="detail-toggle">詳細を表示</button>
+      </div>
+      <div class="bottom-right">
+        <button class="cancel-btn">中止</button>
+        <button class="export-btn secondary">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          JSON
+        </button>
+        <button class="export-btn secondary">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Excel
+        </button>
+        <button class="export-btn primary">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          PPTXに反映
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
