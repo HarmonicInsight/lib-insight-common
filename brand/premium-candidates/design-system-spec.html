@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmonic Insight — Design System Specification v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ================================================================
+     DESIGN TOKENS — Ivory & Gold Theme
+     これが正式なトークン定義です。全プロダクトで使用してください。
+     ================================================================ */
+  :root {
+    /* --- Background --- */
+    --bg-primary: #FAF8F5;
+    --bg-secondary: #F3F0EB;
+    --bg-card: #FFFFFF;
+    --bg-elevated: #F7F5F1;
+    --bg-hover: #EEEBE5;
+    --bg-active: #E8E4DC;
+    --bg-titlebar: #2C2820;
+    --bg-titlebar-hover: rgba(255,255,255,0.08);
+    --bg-overlay: rgba(28,25,23,0.4);
+
+    /* --- Accent (Gold) --- */
+    --accent-900: #5C4A12;
+    --accent-800: #6E5918;
+    --accent-700: #8C711E;
+    --accent-600: #A68325;
+    --accent-500: #B8942F;
+    --accent-400: #C9A84C;
+    --accent-300: #D4B96E;
+    --accent-200: #E8D5A3;
+    --accent-100: #F0E6C8;
+    --accent-50: #FAF5E8;
+    --accent-gradient: linear-gradient(135deg, #C9A84C 0%, #B8942F 100%);
+    --accent-gradient-hover: linear-gradient(135deg, #D4B96E 0%, #C9A84C 100%);
+    --accent-muted: rgba(184,148,47,0.08);
+    --accent-subtle: rgba(184,148,47,0.04);
+
+    /* --- Semantic: Status --- */
+    --success-700: #15803D;
+    --success-600: #16A34A;
+    --success-500: #22C55E;
+    --success-bg: rgba(22,163,74,0.06);
+    --success-border: rgba(22,163,74,0.15);
+
+    --warning-700: #A16207;
+    --warning-600: #CA8A04;
+    --warning-500: #EAB308;
+    --warning-bg: rgba(202,138,4,0.06);
+    --warning-border: rgba(202,138,4,0.15);
+
+    --error-700: #B91C1C;
+    --error-600: #DC2626;
+    --error-500: #EF4444;
+    --error-bg: rgba(220,38,38,0.06);
+    --error-border: rgba(220,38,38,0.15);
+
+    --info-700: #1D4ED8;
+    --info-600: #2563EB;
+    --info-500: #3B82F6;
+    --info-bg: rgba(37,99,235,0.05);
+    --info-border: rgba(37,99,235,0.12);
+
+    /* --- Category Colors (for icons/badges) --- */
+    --cat-pptx: #D97706;
+    --cat-pptx-bg: rgba(217,119,6,0.06);
+    --cat-pptx-border: rgba(217,119,6,0.12);
+
+    --cat-excel: #16A34A;
+    --cat-excel-bg: rgba(22,163,74,0.06);
+    --cat-excel-border: rgba(22,163,74,0.10);
+
+    --cat-json: #2563EB;
+    --cat-json-bg: rgba(37,99,235,0.05);
+    --cat-json-border: rgba(37,99,235,0.08);
+
+    --cat-folder: #B8942F;
+    --cat-folder-bg: rgba(184,148,47,0.08);
+    --cat-folder-border: rgba(184,148,47,0.12);
+
+    --cat-compare: #7C3AED;
+    --cat-compare-bg: rgba(124,58,237,0.05);
+    --cat-compare-border: rgba(124,58,237,0.08);
+
+    /* --- Text --- */
+    --text-primary: #1C1917;
+    --text-secondary: #57534E;
+    --text-tertiary: #A8A29E;
+    --text-disabled: #D6D3D1;
+    --text-accent: #8C711E;
+    --text-on-accent: #FFFFFF;
+    --text-on-dark: #F3F0EB;
+    --text-on-dark-secondary: rgba(243,240,235,0.6);
+    --text-on-dark-tertiary: rgba(243,240,235,0.35);
+
+    /* --- Link --- */
+    --link-default: #8C711E;
+    --link-hover: #6E5918;
+    --link-visited: #7C3AED;
+    --link-active: #5C4A12;
+
+    /* --- Border --- */
+    --border-default: #E7E2DA;
+    --border-strong: #D6D0C6;
+    --border-subtle: #F0ECE5;
+    --border-accent: rgba(184,148,47,0.25);
+    --border-accent-strong: rgba(184,148,47,0.5);
+    --border-focus: #B8942F;
+    --border-error: #DC2626;
+
+    /* --- Shadow --- */
+    --shadow-xs: 0 1px 2px rgba(28,25,23,0.03);
+    --shadow-sm: 0 1px 3px rgba(28,25,23,0.05), 0 1px 2px rgba(28,25,23,0.03);
+    --shadow-md: 0 4px 16px rgba(28,25,23,0.06);
+    --shadow-lg: 0 12px 40px rgba(28,25,23,0.08);
+    --shadow-xl: 0 20px 60px rgba(28,25,23,0.12);
+    --shadow-gold: 0 4px 16px rgba(184,148,47,0.12);
+    --shadow-gold-lg: 0 8px 32px rgba(184,148,47,0.18);
+    --shadow-focus: 0 0 0 3px rgba(184,148,47,0.15);
+    --shadow-error-focus: 0 0 0 3px rgba(220,38,38,0.12);
+
+    /* --- Typography --- */
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', 'Noto Sans JP', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* --- Radius --- */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+
+    /* --- Spacing --- */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+
+    /* --- Transition --- */
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-fast: 100ms;
+    --duration-normal: 150ms;
+    --duration-slow: 300ms;
+  }
+
+  /* ================================================================
+     DOCUMENT STYLES (for this spec page only)
+     ================================================================ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .spec-header {
+    background: var(--bg-titlebar);
+    color: var(--text-on-dark);
+    padding: 48px;
+  }
+
+  .spec-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .spec-logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-gradient);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .spec-logo-text {
+    font-family: var(--font-display);
+    font-size: 20px;
+  }
+
+  .spec-header h1 {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .spec-header p {
+    color: var(--text-on-dark-secondary);
+    font-size: 15px;
+  }
+
+  .spec-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(250,248,245,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-default);
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .spec-nav a {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .spec-nav a:hover { color: var(--text-primary); }
+  .spec-nav a.active { color: var(--text-accent); border-bottom-color: var(--accent-500); }
+
+  .spec-section {
+    padding: 64px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .spec-section:last-child { border-bottom: none; }
+
+  .spec-section h2 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .spec-section .subtitle {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    margin-bottom: 40px;
+  }
+
+  .spec-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    margin-top: 40px;
+    letter-spacing: 0.02em;
+  }
+
+  .spec-section h3:first-of-type { margin-top: 0; }
+
+  /* --- Color Swatches --- */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .swatch {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-default);
+    background: var(--bg-card);
+  }
+
+  .swatch-color {
+    height: 56px;
+  }
+
+  .swatch-info {
+    padding: 10px 12px;
+  }
+
+  .swatch-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1px;
+  }
+
+  .swatch-token {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+  }
+
+  .swatch-hex {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+
+  /* --- Component showcase --- */
+  .showcase {
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .showcase-dark {
+    background: var(--bg-titlebar);
+    border-color: rgba(255,255,255,0.06);
+  }
+
+  .showcase-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .showcase-row:last-child { margin-bottom: 0; }
+
+  .showcase-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .showcase-label-dark {
+    color: var(--text-on-dark-tertiary);
+  }
+
+  /* --- Token table --- */
+  .token-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .token-table thead th {
+    text-align: left;
+    padding: 10px 16px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-default);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  .token-table tbody td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+  }
+
+  .token-table tbody tr:last-child td { border-bottom: none; }
+  .token-table tbody tr:hover td { background: var(--bg-elevated); }
+
+  .token-var {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-700);
+    background: var(--accent-subtle);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .token-val {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .color-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border-default);
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  /* ================================================================
+     ACTUAL COMPONENT STYLES (Production-ready)
+     以下がプロダクトで使用する実際のスタイルです
+     ================================================================ */
+
+  /* --- Buttons --- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease);
+    border: none;
+    outline: none;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn:focus-visible {
+    box-shadow: var(--shadow-focus);
+  }
+
+  .btn svg {
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    flex-shrink: 0;
+  }
+
+  /* Size: Default */
+  .btn-md {
+    padding: 8px 20px;
+    font-size: 13px;
+    border-radius: var(--radius-sm);
+  }
+  .btn-md svg { width: 14px; height: 14px; }
+
+  /* Size: Small */
+  .btn-sm {
+    padding: 5px 14px;
+    font-size: 12px;
+    border-radius: var(--radius-sm);
+  }
+  .btn-sm svg { width: 13px; height: 13px; }
+
+  /* Size: Large */
+  .btn-lg {
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+  }
+  .btn-lg svg { width: 16px; height: 16px; }
+
+  /* Size: Pill (for HP/marketing) */
+  .btn-pill {
+    padding: 12px 32px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+  }
+  .btn-pill svg { width: 16px; height: 16px; }
+
+  /* Variant: Primary (Gold) */
+  .btn-primary {
+    background: var(--accent-gradient);
+    color: var(--text-on-accent);
+    box-shadow: var(--shadow-gold);
+  }
+  .btn-primary:hover {
+    background: var(--accent-gradient-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-gold-lg);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-gold);
+  }
+  .btn-primary:disabled {
+    background: var(--bg-active);
+    color: var(--text-disabled);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Variant: Secondary */
+  .btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+    box-shadow: var(--shadow-xs);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+  }
+  .btn-secondary:active {
+    background: var(--bg-hover);
+  }
+  .btn-secondary:disabled {
+    background: var(--bg-elevated);
+    color: var(--text-disabled);
+    border-color: var(--border-subtle);
+    cursor: not-allowed;
+  }
+
+  /* Variant: Ghost */
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+  }
+  .btn-ghost:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  .btn-ghost:active { background: var(--bg-active); }
+
+  /* Variant: Danger */
+  .btn-danger {
+    background: var(--error-600);
+    color: white;
+    box-shadow: 0 1px 3px rgba(220,38,38,0.15);
+  }
+  .btn-danger:hover {
+    background: var(--error-700);
+    transform: translateY(-1px);
+  }
+
+  /* Variant: Outline Accent */
+  .btn-outline-accent {
+    background: transparent;
+    color: var(--text-accent);
+    border: 1px solid var(--border-accent);
+  }
+  .btn-outline-accent:hover {
+    background: var(--accent-muted);
+    border-color: var(--border-accent-strong);
+  }
+
+  /* --- Links --- */
+  .link {
+    color: var(--link-default);
+    text-decoration: underline;
+    text-decoration-color: rgba(140,113,30,0.3);
+    text-underline-offset: 2px;
+    transition: all var(--duration-fast);
+  }
+  .link:hover {
+    color: var(--link-hover);
+    text-decoration-color: var(--link-hover);
+  }
+  .link:active { color: var(--link-active); }
+
+  .link-subtle {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+  }
+  .link-subtle:hover { color: var(--text-primary); }
+
+  .link-nav {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color var(--duration-normal);
+  }
+  .link-nav:hover { color: var(--text-primary); }
+  .link-nav.active { color: var(--text-accent); font-weight: 500; }
+
+  .link-arrow {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color var(--duration-fast);
+  }
+  .link-arrow::after { content: '\2192'; }
+  .link-arrow:hover { color: var(--text-primary); }
+
+  /* --- Form: Input --- */
+  .input {
+    width: 100%;
+    padding: 9px 14px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: all var(--duration-normal);
+    box-shadow: var(--shadow-xs);
+  }
+  .input::placeholder { color: var(--text-tertiary); }
+  .input:hover { border-color: var(--border-strong); }
+  .input:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+  }
+  .input.error {
+    border-color: var(--border-error);
+  }
+  .input.error:focus {
+    box-shadow: var(--shadow-error-focus);
+  }
+  .input:disabled {
+    background: var(--bg-elevated);
+    color: var(--text-disabled);
+    cursor: not-allowed;
+  }
+
+  .input-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .input-hint {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  .input-error-msg {
+    font-size: 12px;
+    color: var(--error-600);
+    margin-top: 4px;
+  }
+
+  /* --- Form: Select --- */
+  .select {
+    width: 100%;
+    padding: 9px 14px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all var(--duration-normal);
+    box-shadow: var(--shadow-xs);
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23A8A29E' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  .select:hover { border-color: var(--border-strong); }
+  .select:focus { border-color: var(--border-focus); box-shadow: var(--shadow-focus); }
+
+  /* --- Form: Toggle --- */
+  .toggle {
+    width: 38px;
+    height: 22px;
+    background: var(--bg-active);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--duration-normal);
+    border: 1px solid var(--border-strong);
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+    transition: transform var(--duration-normal) var(--ease);
+  }
+  .toggle.on {
+    background: var(--accent-500);
+    border-color: var(--accent-700);
+  }
+  .toggle.on::after {
+    transform: translateX(16px);
+  }
+  .toggle.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* --- Form: Radio Group --- */
+  .radio-group {
+    display: inline-flex;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .radio-opt {
+    padding: 7px 18px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    background: var(--bg-card);
+    cursor: pointer;
+    border-right: 1px solid var(--border-default);
+    transition: all var(--duration-normal);
+  }
+  .radio-opt:last-child { border-right: none; }
+  .radio-opt:hover { color: var(--text-secondary); background: var(--bg-elevated); }
+  .radio-opt.selected {
+    color: var(--text-accent);
+    background: var(--accent-muted);
+    font-weight: 600;
+  }
+
+  /* --- Badges --- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .badge-dot::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .badge-success { background: var(--success-bg); color: var(--success-600); border: 1px solid var(--success-border); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning-600); border: 1px solid var(--warning-border); }
+  .badge-error { background: var(--error-bg); color: var(--error-600); border: 1px solid var(--error-border); }
+  .badge-info { background: var(--info-bg); color: var(--info-600); border: 1px solid var(--info-border); }
+  .badge-accent { background: var(--accent-muted); color: var(--text-accent); border: 1px solid var(--border-accent); }
+  .badge-neutral { background: var(--bg-elevated); color: var(--text-secondary); border: 1px solid var(--border-default); }
+
+  /* Plan badge */
+  .badge-plan {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: var(--accent-muted);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .badge-plan::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-500);
+  }
+
+  /* Pro tag */
+  .tag-pro {
+    padding: 2px 6px;
+    background: var(--accent-muted);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-xs);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--accent-500);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Type tags (for data table) */
+  .tag-type {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: var(--radius-xs);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tag-type.title { background: var(--cat-pptx-bg); color: var(--cat-pptx); border: 1px solid var(--cat-pptx-border); }
+  .tag-type.body { background: var(--cat-json-bg); color: var(--cat-json); border: 1px solid var(--cat-json-border); }
+  .tag-type.note { background: var(--cat-compare-bg); color: var(--cat-compare); border: 1px solid var(--cat-compare-border); }
+
+  /* --- Category Icons --- */
+  .cat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cat-icon svg { width: 15px; height: 15px; stroke-width: 1.8; fill: none; }
+
+  .cat-icon.pptx { background: var(--cat-pptx-bg); border: 1px solid var(--cat-pptx-border); }
+  .cat-icon.pptx svg { stroke: var(--cat-pptx); }
+  .cat-icon.excel { background: var(--cat-excel-bg); border: 1px solid var(--cat-excel-border); }
+  .cat-icon.excel svg { stroke: var(--cat-excel); }
+  .cat-icon.json { background: var(--cat-json-bg); border: 1px solid var(--cat-json-border); }
+  .cat-icon.json svg { stroke: var(--cat-json); }
+  .cat-icon.folder { background: var(--cat-folder-bg); border: 1px solid var(--cat-folder-border); }
+  .cat-icon.folder svg { stroke: var(--cat-folder); }
+  .cat-icon.compare { background: var(--cat-compare-bg); border: 1px solid var(--cat-compare-border); }
+  .cat-icon.compare svg { stroke: var(--cat-compare); }
+
+  /* --- Keyboard Shortcut --- */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xs);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    box-shadow: var(--shadow-xs);
+  }
+
+  /* --- Status Dot --- */
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .status-dot::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .status-dot.online::before { background: var(--success-600); box-shadow: 0 0 4px rgba(22,163,74,0.3); }
+  .status-dot.warning::before { background: var(--warning-600); box-shadow: 0 0 4px rgba(202,138,4,0.3); }
+  .status-dot.offline::before { background: var(--text-tertiary); }
+  .status-dot.error::before { background: var(--error-600); box-shadow: 0 0 4px rgba(220,38,38,0.3); }
+
+  /* --- Typography showcase helpers --- */
+  .type-sample { margin-bottom: 16px; }
+  .type-meta { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); margin-top: 2px; }
+
+  .form-demo { max-width: 360px; }
+  .form-demo .field { margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="spec-header">
+  <div class="spec-logo">
+    <div class="spec-logo-mark">Hi</div>
+    <span class="spec-logo-text">Harmonic Insight</span>
+  </div>
+  <h1>Design System Specification</h1>
+  <p>Ivory &amp; Gold Theme &mdash; v1.0 &mdash; 全プロダクト共通デザイントークン &amp; コンポーネント定義</p>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav class="spec-nav">
+  <a href="#colors" class="active">Colors</a>
+  <a href="#typography">Typography</a>
+  <a href="#buttons">Buttons</a>
+  <a href="#links">Links</a>
+  <a href="#forms">Forms</a>
+  <a href="#badges">Badges &amp; Tags</a>
+  <a href="#icons">Category Icons</a>
+  <a href="#status">Status</a>
+  <a href="#shadows">Shadows</a>
+  <a href="#spacing">Spacing &amp; Radius</a>
+</nav>
+
+<!-- ===== 1. COLORS ===== -->
+<section class="spec-section" id="colors">
+  <h2>Colors</h2>
+  <p class="subtitle">全カラートークンの定義。CSS変数名で参照してください。</p>
+
+  <h3>Background</h3>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#FAF8F5;"></div><div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-token">--bg-primary</div><div class="swatch-hex">#FAF8F5</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F3F0EB;"></div><div class="swatch-info"><div class="swatch-name">Secondary</div><div class="swatch-token">--bg-secondary</div><div class="swatch-hex">#F3F0EB</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#FFFFFF;"></div><div class="swatch-info"><div class="swatch-name">Card</div><div class="swatch-token">--bg-card</div><div class="swatch-hex">#FFFFFF</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F7F5F1;"></div><div class="swatch-info"><div class="swatch-name">Elevated</div><div class="swatch-token">--bg-elevated</div><div class="swatch-hex">#F7F5F1</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#EEEBE5;"></div><div class="swatch-info"><div class="swatch-name">Hover</div><div class="swatch-token">--bg-hover</div><div class="swatch-hex">#EEEBE5</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E8E4DC;"></div><div class="swatch-info"><div class="swatch-name">Active</div><div class="swatch-token">--bg-active</div><div class="swatch-hex">#E8E4DC</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#2C2820;"></div><div class="swatch-info"><div class="swatch-name">Titlebar</div><div class="swatch-token">--bg-titlebar</div><div class="swatch-hex">#2C2820</div></div></div>
+  </div>
+
+  <h3>Accent (Gold)</h3>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#FAF5E8;"></div><div class="swatch-info"><div class="swatch-name">50</div><div class="swatch-token">--accent-50</div><div class="swatch-hex">#FAF5E8</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F0E6C8;"></div><div class="swatch-info"><div class="swatch-name">100</div><div class="swatch-token">--accent-100</div><div class="swatch-hex">#F0E6C8</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#E8D5A3;"></div><div class="swatch-info"><div class="swatch-name">200</div><div class="swatch-token">--accent-200</div><div class="swatch-hex">#E8D5A3</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#D4B96E;"></div><div class="swatch-info"><div class="swatch-name">300</div><div class="swatch-token">--accent-300</div><div class="swatch-hex">#D4B96E</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C9A84C;"></div><div class="swatch-info"><div class="swatch-name">400</div><div class="swatch-token">--accent-400</div><div class="swatch-hex">#C9A84C</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#B8942F;"></div><div class="swatch-info"><div class="swatch-name">500 (Primary)</div><div class="swatch-token">--accent-500</div><div class="swatch-hex">#B8942F</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#A68325;"></div><div class="swatch-info"><div class="swatch-name">600</div><div class="swatch-token">--accent-600</div><div class="swatch-hex">#A68325</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#8C711E;"></div><div class="swatch-info"><div class="swatch-name">700</div><div class="swatch-token">--accent-700</div><div class="swatch-hex">#8C711E</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#6E5918;"></div><div class="swatch-info"><div class="swatch-name">800</div><div class="swatch-token">--accent-800</div><div class="swatch-hex">#6E5918</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#5C4A12;"></div><div class="swatch-info"><div class="swatch-name">900</div><div class="swatch-token">--accent-900</div><div class="swatch-hex">#5C4A12</div></div></div>
+  </div>
+
+  <h3>Text</h3>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#1C1917;"></div><div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-token">--text-primary</div><div class="swatch-hex">#1C1917</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#57534E;"></div><div class="swatch-info"><div class="swatch-name">Secondary</div><div class="swatch-token">--text-secondary</div><div class="swatch-hex">#57534E</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#A8A29E;"></div><div class="swatch-info"><div class="swatch-name">Tertiary</div><div class="swatch-token">--text-tertiary</div><div class="swatch-hex">#A8A29E</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#D6D3D1;"></div><div class="swatch-info"><div class="swatch-name">Disabled</div><div class="swatch-token">--text-disabled</div><div class="swatch-hex">#D6D3D1</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#8C711E;"></div><div class="swatch-info"><div class="swatch-name">Accent</div><div class="swatch-token">--text-accent</div><div class="swatch-hex">#8C711E</div></div></div>
+  </div>
+
+  <h3>Semantic / Status</h3>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#16A34A;"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-token">--success-600</div><div class="swatch-hex">#16A34A</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#CA8A04;"></div><div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-token">--warning-600</div><div class="swatch-hex">#CA8A04</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#DC2626;"></div><div class="swatch-info"><div class="swatch-name">Error</div><div class="swatch-token">--error-600</div><div class="swatch-hex">#DC2626</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#2563EB;"></div><div class="swatch-info"><div class="swatch-name">Info</div><div class="swatch-token">--info-600</div><div class="swatch-hex">#2563EB</div></div></div>
+  </div>
+
+  <h3>Category Colors（機能別アイコン・バッジ用）</h3>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#D97706;"></div><div class="swatch-info"><div class="swatch-name">PPTX</div><div class="swatch-token">--cat-pptx</div><div class="swatch-hex">#D97706</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#16A34A;"></div><div class="swatch-info"><div class="swatch-name">Excel</div><div class="swatch-token">--cat-excel</div><div class="swatch-hex">#16A34A</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#2563EB;"></div><div class="swatch-info"><div class="swatch-name">JSON</div><div class="swatch-token">--cat-json</div><div class="swatch-hex">#2563EB</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#B8942F;"></div><div class="swatch-info"><div class="swatch-name">Folder</div><div class="swatch-token">--cat-folder</div><div class="swatch-hex">#B8942F</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#7C3AED;"></div><div class="swatch-info"><div class="swatch-name">Compare</div><div class="swatch-token">--cat-compare</div><div class="swatch-hex">#7C3AED</div></div></div>
+  </div>
+</section>
+
+<!-- ===== 2. TYPOGRAPHY ===== -->
+<section class="spec-section" id="typography">
+  <h2>Typography</h2>
+  <p class="subtitle">Playfair Display（見出し）+ DM Sans（本文）+ Noto Sans JP（日本語）</p>
+
+  <h3>Display / 見出し — Playfair Display</h3>
+  <div class="showcase">
+    <div class="type-sample"><span style="font-family:var(--font-display); font-size:48px; font-weight:400; letter-spacing:-0.02em;">Enterprise Intelligence</span><div class="type-meta">48px / weight 400 / letter-spacing -0.02em / --font-display</div></div>
+    <div class="type-sample"><span style="font-family:var(--font-display); font-size:36px; font-weight:400;">Refined Dashboard</span><div class="type-meta">36px / weight 400</div></div>
+    <div class="type-sample"><span style="font-family:var(--font-display); font-size:28px; font-weight:400;">Section Heading</span><div class="type-meta">28px / weight 400</div></div>
+    <div class="type-sample"><span style="font-family:var(--font-display); font-size:22px; font-weight:400;">Card Title</span><div class="type-meta">22px / weight 400</div></div>
+    <div class="type-sample"><span style="font-family:var(--font-display); font-size:22px; font-weight:400; font-style:italic; color:var(--accent-500);">Italic Accent</span><div class="type-meta">22px / weight 400 / italic / color: --accent-500</div></div>
+  </div>
+
+  <h3>Body / 本文 — DM Sans</h3>
+  <div class="showcase">
+    <div class="type-sample"><span style="font-size:16px; color:var(--text-primary);">本文テキスト（Primary）— 高度な業務自動化とインサイト分析を提供</span><div class="type-meta">16px / weight 400 / color: --text-primary</div></div>
+    <div class="type-sample"><span style="font-size:14px; color:var(--text-secondary);">本文テキスト（Secondary）— 補足情報や説明文</span><div class="type-meta">14px / weight 400 / color: --text-secondary</div></div>
+    <div class="type-sample"><span style="font-size:13px; color:var(--text-secondary);">UIテキスト — ボタン、メニュー、テーブルセル</span><div class="type-meta">13px / weight 500 / color: --text-secondary</div></div>
+    <div class="type-sample"><span style="font-size:12px; color:var(--text-tertiary);">キャプション — ラベル、ヒント、メタ情報</span><div class="type-meta">12px / weight 400 / color: --text-tertiary</div></div>
+    <div class="type-sample"><span style="font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary);">SECTION LABEL</span><div class="type-meta">10px / weight 600 / uppercase / letter-spacing 0.1em</div></div>
+  </div>
+
+  <h3>Mono — JetBrains Mono</h3>
+  <div class="showcase">
+    <div class="type-sample"><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary);">INMV-PRO-2601-XXXX-XXXX-XXXX</span><div class="type-meta">13px / --font-mono / ライセンスキー、コード、トークン名</div></div>
+  </div>
+</section>
+
+<!-- ===== 3. BUTTONS ===== -->
+<section class="spec-section" id="buttons">
+  <h2>Buttons</h2>
+  <p class="subtitle">全バリアント × 全サイズ × 全状態の定義。</p>
+
+  <h3>Variants</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="showcase-label">Primary</span>
+      <button class="btn btn-primary btn-md">PPTXに反映</button>
+      <button class="btn btn-primary btn-md" style="opacity:0.7; cursor:default;">Hover</button>
+      <button class="btn btn-primary btn-md" disabled>Disabled</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Secondary</span>
+      <button class="btn btn-secondary btn-md">Excel</button>
+      <button class="btn btn-secondary btn-md" style="background:var(--bg-elevated); color:var(--text-primary); border-color:var(--border-strong);">Hover</button>
+      <button class="btn btn-secondary btn-md" disabled>Disabled</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Ghost</span>
+      <button class="btn btn-ghost btn-md">詳細を表示</button>
+      <button class="btn btn-ghost btn-md" style="background:var(--bg-hover); color:var(--text-primary);">Hover</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Outline Accent</span>
+      <button class="btn btn-outline-accent btn-md">Select Plan</button>
+      <button class="btn btn-outline-accent btn-md" style="background:var(--accent-muted);">Hover</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Danger</span>
+      <button class="btn btn-danger btn-md">削除</button>
+    </div>
+  </div>
+
+  <h3>Sizes</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="showcase-label">Small</span>
+      <button class="btn btn-primary btn-sm">保存</button>
+      <button class="btn btn-secondary btn-sm">キャンセル</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Medium (Default)</span>
+      <button class="btn btn-primary btn-md">PPTXに反映</button>
+      <button class="btn btn-secondary btn-md">エクスポート</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Large</span>
+      <button class="btn btn-primary btn-lg">Start Your Trial</button>
+      <button class="btn btn-secondary btn-lg">View Demo</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Pill (HP用)</span>
+      <button class="btn btn-primary btn-pill">Get Started</button>
+      <button class="btn btn-outline-accent btn-pill" style="border-radius:var(--radius-full);">Contact Sales</button>
+    </div>
+  </div>
+
+  <h3>With Icon</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <button class="btn btn-primary btn-md"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>PPTXに反映</button>
+      <button class="btn btn-secondary btn-md"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>JSON</button>
+      <button class="btn btn-secondary btn-md"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Excel</button>
+    </div>
+  </div>
+
+  <h3>Titlebar (Dark context)</h3>
+  <div class="showcase showcase-dark">
+    <div class="showcase-row">
+      <span class="showcase-label showcase-label-dark">Menu Item</span>
+      <span style="padding:3px 10px; font-size:12px; color:rgba(255,255,255,0.55); border-radius:4px;">ファイル</span>
+      <span style="padding:3px 10px; font-size:12px; color:rgba(255,255,255,0.85); border-radius:4px; background:rgba(255,255,255,0.08);">Hover</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. LINKS ===== -->
+<section class="spec-section" id="links">
+  <h2>Links</h2>
+  <p class="subtitle">文脈に応じた4種類のリンクスタイル。</p>
+
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="showcase-label">Default</span>
+      <a href="#" class="link" onclick="return false">ドキュメントを見る</a>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Subtle</span>
+      <a href="#" class="link-subtle" onclick="return false">Sign In</a>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Navigation</span>
+      <a href="#" class="link-nav" onclick="return false">Products</a>
+      <a href="#" class="link-nav active" onclick="return false">Solutions (active)</a>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Arrow</span>
+      <a href="#" class="link-arrow" onclick="return false">View Demo</a>
+    </div>
+  </div>
+
+  <h3>Link Color Tokens</h3>
+  <table class="token-table">
+    <thead><tr><th>State</th><th>Token</th><th>Value</th><th>Preview</th></tr></thead>
+    <tbody>
+      <tr><td>Default</td><td><span class="token-var">--link-default</span></td><td><span class="token-val">#8C711E</span></td><td><span class="color-dot" style="background:#8C711E;"></span></td></tr>
+      <tr><td>Hover</td><td><span class="token-var">--link-hover</span></td><td><span class="token-val">#6E5918</span></td><td><span class="color-dot" style="background:#6E5918;"></span></td></tr>
+      <tr><td>Active</td><td><span class="token-var">--link-active</span></td><td><span class="token-val">#5C4A12</span></td><td><span class="color-dot" style="background:#5C4A12;"></span></td></tr>
+      <tr><td>Visited</td><td><span class="token-var">--link-visited</span></td><td><span class="token-val">#7C3AED</span></td><td><span class="color-dot" style="background:#7C3AED;"></span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 5. FORMS ===== -->
+<section class="spec-section" id="forms">
+  <h2>Forms</h2>
+  <p class="subtitle">入力要素の全状態定義。</p>
+
+  <h3>Text Input</h3>
+  <div class="showcase">
+    <div class="form-demo">
+      <div class="field">
+        <label class="input-label">組織名</label>
+        <input class="input" placeholder="株式会社ハーモニック" />
+        <div class="input-hint">法人名を正式名称で入力</div>
+      </div>
+      <div class="field">
+        <label class="input-label">Focus 状態</label>
+        <input class="input" value="admin@harmonic-insight.com" style="border-color:var(--border-focus); box-shadow:var(--shadow-focus);" />
+      </div>
+      <div class="field">
+        <label class="input-label">Error 状態</label>
+        <input class="input error" value="invalid-email" style="border-color:var(--border-error); box-shadow:var(--shadow-error-focus);" />
+        <div class="input-error-msg">有効なメールアドレスを入力してください</div>
+      </div>
+      <div class="field">
+        <label class="input-label">Disabled</label>
+        <input class="input" disabled value="変更不可" />
+      </div>
+    </div>
+  </div>
+
+  <h3>Select</h3>
+  <div class="showcase">
+    <div class="form-demo">
+      <div class="field">
+        <label class="input-label">ライセンスプラン</label>
+        <select class="select"><option>Professional</option><option>Standard</option><option>Enterprise</option></select>
+      </div>
+    </div>
+  </div>
+
+  <h3>Toggle Switch</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="showcase-label">Off</span>
+      <div class="toggle"></div>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">On</span>
+      <div class="toggle on"></div>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Disabled</span>
+      <div class="toggle disabled"></div>
+      <div class="toggle on disabled"></div>
+    </div>
+  </div>
+
+  <h3>Radio Group (Segmented)</h3>
+  <div class="showcase">
+    <div class="radio-group">
+      <span class="radio-opt">Free</span>
+      <span class="radio-opt">Standard</span>
+      <span class="radio-opt selected">Professional</span>
+      <span class="radio-opt">Enterprise</span>
+    </div>
+  </div>
+
+  <h3>Input Token Reference</h3>
+  <table class="token-table">
+    <thead><tr><th>State</th><th>Border</th><th>Shadow</th></tr></thead>
+    <tbody>
+      <tr><td>Default</td><td><span class="token-var">--border-default</span> #E7E2DA</td><td><span class="token-var">--shadow-xs</span></td></tr>
+      <tr><td>Hover</td><td><span class="token-var">--border-strong</span> #D6D0C6</td><td>same</td></tr>
+      <tr><td>Focus</td><td><span class="token-var">--border-focus</span> #B8942F</td><td><span class="token-var">--shadow-focus</span> (gold ring)</td></tr>
+      <tr><td>Error</td><td><span class="token-var">--border-error</span> #DC2626</td><td><span class="token-var">--shadow-error-focus</span> (red ring)</td></tr>
+      <tr><td>Disabled</td><td><span class="token-var">--border-subtle</span> #F0ECE5</td><td>none</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 6. BADGES ===== -->
+<section class="spec-section" id="badges">
+  <h2>Badges &amp; Tags</h2>
+  <p class="subtitle">ステータス表示、プランバッジ、タイプタグ。</p>
+
+  <h3>Status Badges</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="badge badge-success badge-dot">Active</span>
+      <span class="badge badge-warning badge-dot">Renewal</span>
+      <span class="badge badge-error badge-dot">Expired</span>
+      <span class="badge badge-info badge-dot">Trial</span>
+      <span class="badge badge-accent badge-dot">Pro</span>
+      <span class="badge badge-neutral badge-dot">Free</span>
+    </div>
+  </div>
+
+  <h3>Plan Badge</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="badge-plan">Professional</span>
+      <span class="tag-pro">PRO</span>
+    </div>
+  </div>
+
+  <h3>Data Type Tags（テーブル内用）</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="tag-type title">Title</span>
+      <span class="tag-type body">Body</span>
+      <span class="tag-type note">Note</span>
+    </div>
+  </div>
+
+  <h3>Keyboard Shortcut</h3>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="kbd">Ctrl+O</span>
+      <span class="kbd">Ctrl+S</span>
+      <span class="kbd">Ctrl+Shift+E</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. CATEGORY ICONS ===== -->
+<section class="spec-section" id="icons">
+  <h2>Category Icons</h2>
+  <p class="subtitle">各機能カテゴリに対応した背景色 + アイコン色の組み合わせ。</p>
+
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="showcase-label">PPTX</span>
+      <span class="cat-icon pptx"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+      <span style="font-size:12px; color:var(--text-tertiary);">bg: <span class="token-var">--cat-pptx-bg</span> / stroke: <span class="token-var">--cat-pptx</span> #D97706</span>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Excel</span>
+      <span class="cat-icon excel"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+      <span style="font-size:12px; color:var(--text-tertiary);">bg: <span class="token-var">--cat-excel-bg</span> / stroke: <span class="token-var">--cat-excel</span> #16A34A</span>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">JSON</span>
+      <span class="cat-icon json"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+      <span style="font-size:12px; color:var(--text-tertiary);">bg: <span class="token-var">--cat-json-bg</span> / stroke: <span class="token-var">--cat-json</span> #2563EB</span>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Folder</span>
+      <span class="cat-icon folder"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
+      <span style="font-size:12px; color:var(--text-tertiary);">bg: <span class="token-var">--cat-folder-bg</span> / stroke: <span class="token-var">--cat-folder</span> #B8942F</span>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Compare</span>
+      <span class="cat-icon compare"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="8" height="18" rx="1"/><rect x="14" y="3" width="8" height="18" rx="1"/></svg></span>
+      <span style="font-size:12px; color:var(--text-tertiary);">bg: <span class="token-var">--cat-compare-bg</span> / stroke: <span class="token-var">--cat-compare</span> #7C3AED</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8. STATUS ===== -->
+<section class="spec-section" id="status">
+  <h2>Status Indicators</h2>
+  <p class="subtitle">システム・プロセスの状態表示。</p>
+
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="showcase-label">Online / Ready</span>
+      <span class="status-dot online">待機中</span>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Warning</span>
+      <span class="status-dot warning">要確認</span>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Error</span>
+      <span class="status-dot error">エラー</span>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Offline</span>
+      <span class="status-dot offline">未接続</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 9. SHADOWS ===== -->
+<section class="spec-section" id="shadows">
+  <h2>Shadows</h2>
+  <p class="subtitle">エレベーション（深度）に応じたシャドウ定義。</p>
+
+  <div class="showcase">
+    <div class="showcase-row" style="gap:24px;">
+      <div style="width:100px;height:60px;background:var(--bg-card);border-radius:var(--radius-md);box-shadow:var(--shadow-xs);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);">xs</div>
+      <div style="width:100px;height:60px;background:var(--bg-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);">sm</div>
+      <div style="width:100px;height:60px;background:var(--bg-card);border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);">md</div>
+      <div style="width:100px;height:60px;background:var(--bg-card);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);">lg</div>
+      <div style="width:100px;height:60px;background:var(--bg-card);border-radius:var(--radius-md);box-shadow:var(--shadow-xl);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);">xl</div>
+      <div style="width:100px;height:60px;background:var(--bg-card);border-radius:var(--radius-md);box-shadow:var(--shadow-gold);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-accent);">gold</div>
+    </div>
+  </div>
+
+  <h3>Focus Ring</h3>
+  <div class="showcase">
+    <div class="showcase-row" style="gap:24px;">
+      <div style="width:100px;height:40px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border-focus);box-shadow:var(--shadow-focus);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);">Focus (gold)</div>
+      <div style="width:100px;height:40px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border-error);box-shadow:var(--shadow-error-focus);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-tertiary);">Error focus</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10. SPACING & RADIUS ===== -->
+<section class="spec-section" id="spacing">
+  <h2>Spacing &amp; Radius</h2>
+  <p class="subtitle">4px基準のスペーシングスケールとボーダーラディウス。</p>
+
+  <h3>Spacing Scale</h3>
+  <table class="token-table">
+    <thead><tr><th>Token</th><th>Value</th><th>Preview</th></tr></thead>
+    <tbody>
+      <tr><td><span class="token-var">--space-1</span></td><td>4px</td><td><div style="width:4px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+      <tr><td><span class="token-var">--space-2</span></td><td>8px</td><td><div style="width:8px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+      <tr><td><span class="token-var">--space-3</span></td><td>12px</td><td><div style="width:12px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+      <tr><td><span class="token-var">--space-4</span></td><td>16px</td><td><div style="width:16px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+      <tr><td><span class="token-var">--space-6</span></td><td>24px</td><td><div style="width:24px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+      <tr><td><span class="token-var">--space-8</span></td><td>32px</td><td><div style="width:32px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+      <tr><td><span class="token-var">--space-12</span></td><td>48px</td><td><div style="width:48px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+      <tr><td><span class="token-var">--space-16</span></td><td>64px</td><td><div style="width:64px;height:12px;background:var(--accent-400);border-radius:1px;"></div></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Border Radius</h3>
+  <div class="showcase">
+    <div class="showcase-row" style="gap:20px;">
+      <div style="width:48px;height:48px;background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-tertiary);">xs 4</div>
+      <div style="width:48px;height:48px;background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-tertiary);">sm 6</div>
+      <div style="width:48px;height:48px;background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-tertiary);">md 8</div>
+      <div style="width:48px;height:48px;background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-tertiary);">lg 12</div>
+      <div style="width:48px;height:48px;background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:var(--radius-xl);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-tertiary);">xl 16</div>
+      <div style="width:48px;height:48px;background:var(--bg-elevated);border:1px solid var(--border-default);border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-tertiary);">full</div>
+    </div>
+  </div>
+
+  <h3>使い分けルール</h3>
+  <table class="token-table">
+    <thead><tr><th>コンポーネント</th><th>Radius</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>Badge / Tag</td><td><span class="token-var">--radius-xs</span> (4px)</td><td>小さなインライン要素</td></tr>
+      <tr><td>Button (App)</td><td><span class="token-var">--radius-sm</span> (6px)</td><td>アプリ内ボタン・入力</td></tr>
+      <tr><td>Card</td><td><span class="token-var">--radius-lg</span> (12px)</td><td>カード・パネル</td></tr>
+      <tr><td>Modal / Frame</td><td><span class="token-var">--radius-xl</span> (16px)</td><td>モーダル・フレーム</td></tr>
+      <tr><td>Button (HP)</td><td><span class="token-var">--radius-full</span></td><td>マーケティング用ピルボタン</td></tr>
+      <tr><td>Plan Badge</td><td><span class="token-var">--radius-full</span></td><td>バッジ</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</body>
+</html>
