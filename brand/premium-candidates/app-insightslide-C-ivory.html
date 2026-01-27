@@ -770,6 +770,29 @@
 
   .can-btn:hover { color: var(--text-secondary); background: var(--bg-elevated); }
 
+  /* Danger Subtle — 通常UI内の破壊的アクション（タブ・ツールバー内の削除等） */
+  /* 普段は他のボタンと同じトーン。hover時のみ赤く変化。 */
+  .danger-subtle {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+  }
+  .danger-subtle:hover {
+    color: #DC2626;
+    background: rgba(220,38,38,0.06);
+  }
+  .danger-subtle:active {
+    color: #B91C1C;
+    background: rgba(220,38,38,0.1);
+  }
+
   .kbd {
     padding: 1px 5px;
     background: var(--bg-main);

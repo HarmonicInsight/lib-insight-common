@@ -535,7 +535,7 @@
   }
   .btn-ghost:active { background: var(--bg-active); }
 
-  /* Variant: Danger */
+  /* Variant: Danger (確認ダイアログ等、最終確認時のみ使用) */
   .btn-danger {
     background: var(--error-600);
     color: white;
@@ -544,6 +544,21 @@
   .btn-danger:hover {
     background: var(--error-700);
     transform: translateY(-1px);
+  }
+
+  /* Variant: Danger Subtle (通常UI内の破壊的アクション用 — 推奨) */
+  .btn-danger-subtle {
+    background: transparent;
+    color: var(--text-tertiary);
+    border: none;
+  }
+  .btn-danger-subtle:hover {
+    color: var(--error-600);
+    background: var(--error-bg);
+  }
+  .btn-danger-subtle:active {
+    color: var(--error-700);
+    background: rgba(220,38,38,0.1);
   }
 
   /* Variant: Outline Accent */
@@ -1052,9 +1067,24 @@
       <button class="btn btn-outline-accent btn-md" style="background:var(--accent-muted);">Hover</button>
     </div>
     <div class="showcase-row">
-      <span class="showcase-label">Danger</span>
-      <button class="btn btn-danger btn-md">削除</button>
+      <span class="showcase-label">Danger Subtle</span>
+      <button class="btn btn-danger-subtle btn-md">削除</button>
+      <button class="btn btn-danger-subtle btn-md" style="color:var(--error-600); background:var(--error-bg);">Hover</button>
     </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Danger (確認用)</span>
+      <button class="btn btn-danger btn-md">完全に削除する</button>
+    </div>
+  </div>
+  <div style="background:var(--info-bg); border:1px solid var(--info-border); border-radius:var(--radius-md); padding:14px 18px; margin-top:12px; font-size:13px; color:var(--text-secondary); line-height:1.8;">
+    <strong style="color:var(--info-700);">Danger ボタンの使い分け：</strong>
+    <table class="token-table" style="margin-top:12px;">
+      <thead><tr><th>バリアント</th><th>用途</th><th>見た目</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Danger Subtle</strong>（推奨）</td><td>通常UIのタブ・ツールバー内の削除。普段は目立たず、hover時に赤く変化</td><td>テキスト: tertiary → hover時: 赤テキスト + 薄赤背景</td></tr>
+        <tr><td><strong>Danger</strong>（限定使用）</td><td>確認ダイアログの最終実行ボタンのみ。「本当に削除しますか？」→「削除する」</td><td>赤ベタ塗り + 白テキスト</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <h3>Sizes</h3>
