@@ -61,7 +61,8 @@
     color: var(--text-primary);
     font-size: 13px;
     line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+    /* -webkit-font-smoothing: antialiased は Windows デスクトップでぼけるため使用禁止 */
+    -webkit-font-smoothing: auto;
     height: 100vh;
     overflow: hidden;
     user-select: none;
@@ -218,11 +219,12 @@
     gap: 6px;
     padding: 6px 14px;
     background: var(--bg-main);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
     color: var(--text-secondary);
     font-family: var(--font);
     font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
     transition: all var(--transition);
     box-shadow: var(--shadow-sm);
@@ -230,7 +232,7 @@
 
   .h-btn:hover {
     background: var(--bg-elevated);
-    border-color: var(--border-strong);
+    border-color: var(--accent);
     color: var(--text-primary);
   }
 
@@ -268,6 +270,11 @@
     text-transform: uppercase;
     color: var(--text-tertiary);
     padding: 12px 10px 6px;
+    /* ラベルは背景なし・ボーダーなし。ボタンと誤認させない */
+    background: none;
+    border: none;
+    border-radius: 0;
+    cursor: default;
   }
 
   .s-btn {
