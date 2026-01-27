@@ -62,7 +62,8 @@
     color: var(--text-primary);
     font-size: 13px;
     line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+    /* -webkit-font-smoothing: antialiased は Windows デスクトップでぼけるため使用禁止 */
+    -webkit-font-smoothing: auto;
     height: 100vh;
     overflow: hidden;
     user-select: none;

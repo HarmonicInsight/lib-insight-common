@@ -535,7 +535,7 @@
   }
   .btn-ghost:active { background: var(--bg-active); }
 
-  /* Variant: Danger */
+  /* Variant: Danger (確認ダイアログ等、最終確認時のみ使用) */
   .btn-danger {
     background: var(--error-600);
     color: white;
@@ -544,6 +544,21 @@
   .btn-danger:hover {
     background: var(--error-700);
     transform: translateY(-1px);
+  }
+
+  /* Variant: Danger Subtle (通常UI内の破壊的アクション用 — 推奨) */
+  .btn-danger-subtle {
+    background: transparent;
+    color: var(--text-tertiary);
+    border: none;
+  }
+  .btn-danger-subtle:hover {
+    color: var(--error-600);
+    background: var(--error-bg);
+  }
+  .btn-danger-subtle:active {
+    color: var(--error-700);
+    background: rgba(220,38,38,0.1);
   }
 
   /* Variant: Outline Accent */
@@ -985,6 +1000,90 @@
   <div class="showcase">
     <div class="type-sample"><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-secondary);">INMV-PRO-2601-XXXX-XXXX-XXXX</span><div class="type-meta">13px / --font-mono / ライセンスキー、コード、トークン名</div></div>
   </div>
+
+  <h3>Section Label（セクション見出し）</h3>
+  <div class="showcase">
+    <div class="type-sample">
+      <span style="font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); background:none; border:none; padding:0;">プリセット</span>
+      <div class="type-meta">10px / weight 600 / uppercase / color: --text-tertiary / <strong style="color:var(--error-600);">背景なし・ボーダーなし</strong></div>
+    </div>
+    <div class="type-sample">
+      <span style="font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); background:none; border:none; padding:0;">保存済みスクリプト</span>
+      <div class="type-meta">10px / weight 600 / uppercase / color: --text-tertiary / <strong style="color:var(--error-600);">背景なし・ボーダーなし</strong></div>
+    </div>
+  </div>
+  <div style="background:var(--error-bg); border:1px solid var(--error-border); border-radius:var(--radius-md); padding:14px 18px; margin-top:12px; font-size:13px; color:var(--text-secondary);">
+    <strong style="color:var(--error-600);">⚠ 注意:</strong> セクションラベルは<strong>テキストのみ</strong>で表示すること。背景色・ボーダー・パディングを付けるとボタンと誤認される。ラベルは<code style="font-family:var(--font-mono); font-size:12px;">background: none; border: none; padding: 12px 10px 6px;</code> とする。
+  </div>
+
+  <h3>デスクトップアプリ フォントレンダリング</h3>
+  <div style="background:var(--warning-bg); border:1px solid var(--warning-border); border-radius:var(--radius-md); padding:14px 18px; font-size:13px; color:var(--text-secondary);">
+    <strong style="color:var(--warning-700);">Windows デスクトップアプリでの注意:</strong>
+    <ul style="margin:8px 0 0 20px; line-height:1.8;">
+      <li><code style="font-family:var(--font-mono); font-size:12px;">-webkit-font-smoothing: antialiased</code> は<strong style="color:var(--error-600);">使用禁止</strong>。Windowsでフォントがぼける原因になる</li>
+      <li>代わりに <code style="font-family:var(--font-mono); font-size:12px;">-webkit-font-smoothing: auto</code> を使用するか、プロパティ自体を省略</li>
+      <li>デスクトップアプリのUI本文は <code style="font-family:var(--font-mono); font-size:12px;">'Segoe UI Variable', 'Segoe UI', 'Noto Sans JP', sans-serif</code> も検討</li>
+      <li>font-weight: 300（Light）は避け、400以上を使用する</li>
+      <li>13px未満のフォントサイズでは font-weight: 500以上を推奨</li>
+    </ul>
+  </div>
+
+  <h3>DPI対応（Windows 高DPIディスプレイ）</h3>
+  <div style="background:var(--error-bg); border:1px solid var(--error-border); border-radius:var(--radius-md); padding:14px 18px; font-size:13px; color:var(--text-secondary);">
+    <strong style="color:var(--error-600);">必須:</strong> CSSの調整だけではフォントのぼけは解消しない。<strong>プロセスレベルのDPI Awareness設定が前提条件</strong>。未設定の場合、OSがビットマップスケーリングを行い、全UI要素がぼける。
+  </div>
+  <table class="token-table" style="margin-top:16px;">
+    <thead><tr><th>フレームワーク</th><th>DPI対応方法</th><th>実装コード</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Python (tkinter)</strong></td>
+        <td>起動前に <code style="font-family:var(--font-mono); font-size:12px;">SetProcessDpiAwareness(1)</code> を呼び出し</td>
+        <td><code style="font-family:var(--font-mono); font-size:11px;">import ctypes; ctypes.windll.shcore.SetProcessDpiAwareness(1)</code></td>
+      </tr>
+      <tr>
+        <td><strong>Python (tkinter) 代替</strong></td>
+        <td>tkの組み込みDPI対応</td>
+        <td><code style="font-family:var(--font-mono); font-size:11px;">root.tk.call('tk', 'scaling', dpi/72)</code></td>
+      </tr>
+      <tr>
+        <td><strong>Electron</strong></td>
+        <td>デフォルトで対応済み。必要に応じてフラグ追加</td>
+        <td><code style="font-family:var(--font-mono); font-size:11px;">app.commandLine.appendSwitch('high-dpi-support', '1')</code></td>
+      </tr>
+      <tr>
+        <td><strong>WPF</strong></td>
+        <td>マニフェストで Per-Monitor V2 を宣言</td>
+        <td><code style="font-family:var(--font-mono); font-size:11px;">&lt;dpiAwareness&gt;PerMonitorV2&lt;/dpiAwareness&gt;</code></td>
+      </tr>
+      <tr>
+        <td><strong>WinForms</strong></td>
+        <td>Program.cs で有効化</td>
+        <td><code style="font-family:var(--font-mono); font-size:11px;">Application.SetHighDpiMode(HighDpiMode.PerMonitorV2)</code></td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="background:var(--info-bg); border:1px solid var(--info-border); border-radius:var(--radius-md); padding:14px 18px; margin-top:12px; font-size:13px; color:var(--text-secondary); line-height:1.8;">
+    <strong style="color:var(--info-700);">DPI Awareness レベル:</strong>
+    <table class="token-table" style="margin-top:12px;">
+      <thead><tr><th>値</th><th>名称</th><th>挙動</th><th>推奨</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>Unaware</td><td>OSがビットマップ拡大（ぼける）</td><td style="color:var(--error-600);">❌ 使用禁止</td></tr>
+        <tr><td>1</td><td>System DPI Aware</td><td>プライマリモニタのDPIで描画。マルチモニタ時にぼける場合あり</td><td style="color:var(--warning-700);">△ 最低限</td></tr>
+        <tr><td>2</td><td>Per-Monitor DPI Aware</td><td>各モニタのDPIに動的対応。最もクリア</td><td style="color:var(--success-600);">✅ 推奨</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>CSS / フォント指定サマリ</h3>
+  <table class="token-table" style="margin-top:16px;">
+    <thead><tr><th>コンテキスト</th><th>フォント指定</th><th>font-smoothing</th><th>DPI対応</th></tr></thead>
+    <tbody>
+      <tr><td>Webブラウザ（HP）</td><td><span class="token-var">--font-body</span> (DM Sans)</td><td><span class="token-val">antialiased</span> ✅ OK</td><td>不要（ブラウザ管理）</td></tr>
+      <tr><td>デスクトップ（Electron）</td><td><span class="token-var">--font-body</span> or system-ui</td><td><span class="token-val">auto</span> ✅ 推奨</td><td>デフォルト対応済み</td></tr>
+      <tr><td>デスクトップ（Python/tkinter）</td><td>Segoe UI / Noto Sans JP</td><td>N/A</td><td><strong style="color:var(--error-600);">SetProcessDpiAwareness 必須</strong></td></tr>
+      <tr><td>デスクトップ（WPF/WinForms）</td><td>Segoe UI / Noto Sans JP</td><td>N/A（OS管理）</td><td>マニフェスト/コード設定</td></tr>
+    </tbody>
+  </table>
 </section>
 
 <!-- ===== 3. BUTTONS ===== -->
@@ -1017,9 +1116,24 @@
       <button class="btn btn-outline-accent btn-md" style="background:var(--accent-muted);">Hover</button>
     </div>
     <div class="showcase-row">
-      <span class="showcase-label">Danger</span>
-      <button class="btn btn-danger btn-md">削除</button>
+      <span class="showcase-label">Danger Subtle</span>
+      <button class="btn btn-danger-subtle btn-md">削除</button>
+      <button class="btn btn-danger-subtle btn-md" style="color:var(--error-600); background:var(--error-bg);">Hover</button>
     </div>
+    <div class="showcase-row">
+      <span class="showcase-label">Danger (確認用)</span>
+      <button class="btn btn-danger btn-md">完全に削除する</button>
+    </div>
+  </div>
+  <div style="background:var(--info-bg); border:1px solid var(--info-border); border-radius:var(--radius-md); padding:14px 18px; margin-top:12px; font-size:13px; color:var(--text-secondary); line-height:1.8;">
+    <strong style="color:var(--info-700);">Danger ボタンの使い分け：</strong>
+    <table class="token-table" style="margin-top:12px;">
+      <thead><tr><th>バリアント</th><th>用途</th><th>見た目</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Danger Subtle</strong>（推奨）</td><td>通常UIのタブ・ツールバー内の削除。普段は目立たず、hover時に赤く変化</td><td>テキスト: tertiary → hover時: 赤テキスト + 薄赤背景</td></tr>
+        <tr><td><strong>Danger</strong>（限定使用）</td><td>確認ダイアログの最終実行ボタンのみ。「本当に削除しますか？」→「削除する」</td><td>赤ベタ塗り + 白テキスト</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <h3>Sizes</h3>
@@ -1055,6 +1169,35 @@
     </div>
   </div>
 
+  <h3>Toolbar / Header Action（ツールバーボタン）</h3>
+  <div style="background:var(--warning-bg); border:1px solid var(--warning-border); border-radius:var(--radius-md); padding:14px 18px; margin-bottom:16px; font-size:13px; color:var(--text-secondary);">
+    <strong style="color:var(--warning-700);">⚠ Ivory背景での注意:</strong> Secondary/Ghostボタンは背景(#FAF8F5)との差が小さい。ツールバーやヘッダーのアクションボタンには<strong>必ず可視性の高いスタイル</strong>を使うこと。<code style="font-family:var(--font-mono); font-size:12px;">--border-strong</code> + <code style="font-family:var(--font-mono); font-size:12px;">--shadow-sm</code> を必須とする。
+  </div>
+  <div class="showcase">
+    <div class="showcase-row">
+      <span class="showcase-label">✅ 正しい</span>
+      <button class="btn btn-secondary btn-md" style="background:var(--bg-card); border:1px solid var(--border-strong); box-shadow:var(--shadow-sm);">開く</button>
+      <button class="btn btn-secondary btn-md" style="background:var(--bg-card); border:1px solid var(--border-strong); box-shadow:var(--shadow-sm);">ファイル保存</button>
+      <button class="btn btn-secondary btn-md" style="background:var(--bg-card); border:1px solid var(--border-strong); box-shadow:var(--shadow-sm);">新規</button>
+    </div>
+    <div class="showcase-row">
+      <span class="showcase-label">❌ 間違い</span>
+      <button class="btn btn-secondary btn-md" style="background:var(--bg-primary); border:1px solid var(--border-default); box-shadow:none; opacity:0.7;">開く</button>
+      <button class="btn btn-secondary btn-md" style="background:var(--bg-primary); border:1px solid var(--border-default); box-shadow:none; opacity:0.7;">ファイル保存</button>
+    </div>
+  </div>
+  <table class="token-table" style="margin-top:16px;">
+    <thead><tr><th>プロパティ</th><th>ツールバーボタン（必須値）</th><th>理由</th></tr></thead>
+    <tbody>
+      <tr><td>background</td><td><span class="token-var">--bg-card</span> (#FFFFFF)</td><td>背景(#FAF8F5)との明確な差</td></tr>
+      <tr><td>border</td><td><span class="token-var">--border-strong</span> (#D6D0C6)</td><td>defaultボーダーでは薄すぎる</td></tr>
+      <tr><td>box-shadow</td><td><span class="token-var">--shadow-sm</span></td><td>立体感でボタンと認識させる</td></tr>
+      <tr><td>color</td><td><span class="token-var">--text-secondary</span> (#57534E)</td><td>tertiaryは薄すぎる</td></tr>
+      <tr><td>hover:background</td><td><span class="token-var">--bg-elevated</span> (#F7F5F1)</td><td>ホバーフィードバック</td></tr>
+      <tr><td>hover:border</td><td><span class="token-var">--accent-500</span> (#B8942F)</td><td>ゴールドで操作フィードバック</td></tr>
+    </tbody>
+  </table>
+
   <h3>Titlebar (Dark context)</h3>
   <div class="showcase showcase-dark">
     <div class="showcase-row">
@@ -1062,6 +1205,19 @@
       <span style="padding:3px 10px; font-size:12px; color:rgba(255,255,255,0.55); border-radius:4px;">ファイル</span>
       <span style="padding:3px 10px; font-size:12px; color:rgba(255,255,255,0.85); border-radius:4px; background:rgba(255,255,255,0.08);">Hover</span>
     </div>
+  </div>
+
+  <h3>Label vs Button 判別ルール</h3>
+  <div style="background:var(--info-bg); border:1px solid var(--info-border); border-radius:var(--radius-md); padding:14px 18px; font-size:13px; color:var(--text-secondary); line-height:1.8;">
+    <strong style="color:var(--info-700);">ラベルとボタンの視覚的区別は必須。</strong> 以下のルールを厳守すること：
+    <table class="token-table" style="margin-top:12px;">
+      <thead><tr><th>要素</th><th>背景</th><th>ボーダー</th><th>カーソル</th><th>例</th></tr></thead>
+      <tbody>
+        <tr><td><strong>セクションラベル</strong></td><td>none（透明）</td><td>none</td><td>default</td><td>プリセット、保存済みスクリプト、実行結果</td></tr>
+        <tr><td><strong>ボタン</strong></td><td>#FFFFFF + shadow</td><td>--border-strong</td><td>pointer</td><td>開く、ファイル保存、新規</td></tr>
+        <tr><td><strong>タブ</strong></td><td>none（activeのみ）</td><td>bottom only</td><td>pointer</td><td>読込、実行、編集</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
