@@ -398,6 +398,32 @@ export interface GenerateOptions {
 }
 
 /**
+ * Node.js Buffer を Base32 (RFC 4648) にエンコード
+ * ※ ブラウザ版 arrayBufferToBase32 と同一のアルゴリズム
+ */
+function bufferToBase32(buffer: Buffer): string {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let result = '';
+  let bits = 0;
+  let value = 0;
+
+  for (const byte of buffer) {
+    value = (value << 8) | byte;
+    bits += 8;
+    while (bits >= 5) {
+      result += alphabet[(value >>> (bits - 5)) & 31];
+      bits -= 5;
+    }
+  }
+
+  if (bits > 0) {
+    result += alphabet[(value << (5 - bits)) & 31];
+  }
+
+  return result;
+}
+
+/**
  * ライセンスキーを生成（同期版・CLIツール用）
  * ※ Node.js 環境でのみ使用
  */
@@ -411,16 +437,16 @@ export function generateLicenseKeySync(options: GenerateOptions): string {
   const mm = String(expires.getMonth() + 1).padStart(2, '0');
   const yymm = yy + mm;
 
-  // メールハッシュ
+  // メールハッシュ（Base32）
   const emailHashRaw = crypto.createHash('sha256').update(email.toLowerCase().trim()).digest();
-  const emailHash = emailHashRaw.toString('base64').replace(/[^A-Z0-9]/gi, '').substring(0, 4).toUpperCase();
+  const emailHash = bufferToBase32(emailHashRaw).substring(0, 4).toUpperCase();
 
-  // 署名
+  // 署名（Base32）
   const signData = `${productCode}-${plan}-${yymm}-${emailHash}`;
   const hmac = crypto.createHmac('sha256', SECRET_KEY);
   hmac.update(signData);
   const sig = hmac.digest();
-  const signature = sig.toString('base64').replace(/[^A-Z0-9]/gi, '').substring(0, 8).toUpperCase();
+  const signature = bufferToBase32(sig).substring(0, 8).toUpperCase();
   const sig1 = signature.substring(0, 4);
   const sig2 = signature.substring(4, 8);
 

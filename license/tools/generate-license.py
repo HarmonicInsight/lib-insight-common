@@ -47,6 +47,9 @@ def parse_args():
   # ForguncyInsight Standard
   python generate-license.py -p FGIN --plan STD -e user@example.com -m 12
 
+  # InsightMovie Pro（12ヶ月）
+  python generate-license.py -p INMV --plan PRO -e user@example.com -m 12
+
   # 10個一括発行（同じメールで複数キーは発行不可、異なるメールが必要）
   python generate-license.py -p INSS --plan STD -e user@example.com -m 12
 
@@ -55,6 +58,7 @@ def parse_args():
   INSP  - InsightSlide Pro
   INPY  - InsightPy
   FGIN  - ForguncyInsight
+  INMV  - InsightMovie
 
 プラン:
   TRIAL  - トライアル（14日間）
@@ -67,7 +71,7 @@ def parse_args():
         '-p', '--product',
         type=str,
         required=True,
-        choices=['INSS', 'INSP', 'INPY', 'FGIN'],
+        choices=['INSS', 'INSP', 'INPY', 'FGIN', 'INMV'],
         help='製品コード'
     )
 
