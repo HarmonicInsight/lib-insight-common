@@ -8,7 +8,7 @@ namespace InsightCommon.Theme;
 public static class InsightColors
 {
     // ── ブランドカラー ──
-    public static readonly Color BrandPrimary = FromHex("#2563EB");
+    public static readonly Color BrandPrimary = FromHex("#B8942F");
     public static readonly Color BrandTitle   = FromHex("#2563EB");
 
     // ── プラン別カラー（ライト・ダーク共通） ──
