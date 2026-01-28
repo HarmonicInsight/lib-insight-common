@@ -9,7 +9,7 @@ using InsightCommon.Theme;
 namespace InsightCommon.UI;
 
 /// <summary>
-/// Insight Series 共通ライセンスダイアログ
+/// Insight Series 共通ライセンスダイアログ（日英2か国語対応）
 ///
 /// 統一レイアウト:
 ///   1. タイトル（製品名）
@@ -23,6 +23,7 @@ public class InsightLicenseDialog : Window
     private readonly LicenseDialogOptions _options;
     private readonly InsightTheme _theme;
     private readonly InsightLicenseManager _licenseManager;
+    private readonly bool _isJa;
 
     // UI elements
     private TextBlock _planLabel = null!;
@@ -37,10 +38,11 @@ public class InsightLicenseDialog : Window
         _options = options;
         _theme = InsightTheme.Create(options.ThemeMode);
         _licenseManager = options.LicenseManager;
+        _isJa = string.Equals(options.Locale, "ja", StringComparison.OrdinalIgnoreCase);
 
         Title = options.ProductName;
         Width = 550;
-        Height = 620;
+        Height = 720;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
         ResizeMode = ResizeMode.NoResize;
         Background = _theme.BackgroundBrush;
@@ -49,6 +51,10 @@ public class InsightLicenseDialog : Window
         BuildUI();
         LoadCurrentLicense();
     }
+
+    // ── Localized text helper ──
+
+    private string L(string ja, string en) => _isJa ? ja : en;
 
     private void BuildUI()
     {
@@ -103,7 +109,7 @@ public class InsightLicenseDialog : Window
         };
         Grid.SetRow(closePanel, 2);
 
-        var closeBtn = CreateButton("閉じる", isCancel: true);
+        var closeBtn = CreateButton(L("閉じる", "Close"), isCancel: true);
         closeBtn.Click += (_, _) => { DialogResult = false; Close(); };
         closePanel.Children.Add(closeBtn);
 
@@ -125,7 +131,7 @@ public class InsightLicenseDialog : Window
 
         panel.Children.Add(new TextBlock
         {
-            Text = "現在のプラン",
+            Text = L("現在のプラン", "Current Plan"),
             FontSize = InsightTheme.FontSizeSmall,
             Foreground = _theme.TextSecondaryBrush,
             HorizontalAlignment = HorizontalAlignment.Center,
@@ -164,7 +170,7 @@ public class InsightLicenseDialog : Window
 
         container.Children.Add(new TextBlock
         {
-            Text = "機能一覧",
+            Text = L("機能一覧", "Features"),
             FontSize = InsightTheme.FontSizeBody,
             FontWeight = FontWeights.Bold,
             Foreground = _theme.TextPrimaryBrush,
@@ -223,7 +229,7 @@ public class InsightLicenseDialog : Window
 
         container.Children.Add(new TextBlock
         {
-            Text = "ライセンス認証",
+            Text = L("ライセンス認証", "License Activation"),
             FontSize = InsightTheme.FontSizeBody,
             FontWeight = FontWeights.Bold,
             Foreground = _theme.TextPrimaryBrush,
@@ -236,7 +242,7 @@ public class InsightLicenseDialog : Window
         // メールアドレス
         panel.Children.Add(new TextBlock
         {
-            Text = "メールアドレス",
+            Text = L("メールアドレス", "Email Address"),
             FontSize = InsightTheme.FontSizeSmall,
             Foreground = _theme.TextSecondaryBrush,
             Margin = new Thickness(0, 0, 0, 4),
@@ -256,7 +262,7 @@ public class InsightLicenseDialog : Window
         // ライセンスキー
         panel.Children.Add(new TextBlock
         {
-            Text = "ライセンスキー",
+            Text = L("ライセンスキー", "License Key"),
             FontSize = InsightTheme.FontSizeSmall,
             Foreground = _theme.TextSecondaryBrush,
             Margin = new Thickness(0, 8, 0, 4),
@@ -299,12 +305,12 @@ public class InsightLicenseDialog : Window
             Margin = new Thickness(0, 10, 0, 0),
         };
 
-        var activateBtn = CreateButton("アクティベート", isPrimary: true);
+        var activateBtn = CreateButton(L("アクティベート", "Activate"), isPrimary: true);
         activateBtn.MinWidth = 120;
         activateBtn.Click += (_, _) => ActivateLicense();
         btnPanel.Children.Add(activateBtn);
 
-        var clearBtn = CreateButton("クリア");
+        var clearBtn = CreateButton(L("クリア", "Clear"));
         clearBtn.MinWidth = 70;
         clearBtn.Click += (_, _) => ClearLicense();
         btnPanel.Children.Add(clearBtn);
@@ -341,7 +347,9 @@ public class InsightLicenseDialog : Window
         // ステータス
         if (license.IsValid && license.ExpiresAt.HasValue)
         {
-            _statusLabel.Text = $"有効期限: {license.ExpiresAt.Value:yyyy年MM月dd日}";
+            _statusLabel.Text = _isJa
+                ? $"有効期限: {license.ExpiresAt.Value:yyyy年MM月dd日}"
+                : $"Expires: {license.ExpiresAt.Value:MMM dd, yyyy}";
             var days = license.DaysRemaining ?? 0;
             _statusLabel.Foreground = days <= 30
                 ? (days <= 0 ? _theme.ErrorBrush : _theme.WarningBrush)
@@ -390,12 +398,12 @@ public class InsightLicenseDialog : Window
                     bool available = _licenseManager.CanUseFeature(_options.FeatureMatrix, featureKey);
                     if (available)
                     {
-                        tb.Text = feature.AvailableText ?? "○利用可能";
+                        tb.Text = feature.AvailableText ?? L("○利用可能", "○ Available");
                         tb.Foreground = new SolidColorBrush(_theme.Success);
                     }
                     else
                     {
-                        tb.Text = feature.UnavailableText ?? "×STD以上が必要";
+                        tb.Text = feature.UnavailableText ?? L("×STD以上が必要", "× STD or higher");
                         tb.Foreground = _theme.TextMutedBrush;
                     }
                 }
@@ -408,9 +416,32 @@ public class InsightLicenseDialog : Window
         var email = _emailTextBox.Text?.Trim() ?? string.Empty;
         var key = _keyTextBox.Text?.Trim() ?? string.Empty;
 
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(key))
+        {
+            _validationMessage.Text = L(
+                "メールアドレスとライセンスキーを入力してください。",
+                "Please enter your email address and license key.");
+            _validationMessage.Foreground = _theme.ErrorBrush;
+            return;
+        }
+
         var (success, message) = _licenseManager.Activate(email, key);
 
-        _validationMessage.Text = message;
+        // Localize common activation messages
+        var displayMessage = message;
+        if (success && _licenseManager.CurrentLicense.Plan != PlanCode.Free)
+        {
+            var planName = PlanDisplay.GetName(_licenseManager.CurrentLicense.Plan);
+            displayMessage = L(
+                $"ライセンスが正常にアクティベートされました（{planName}）。",
+                $"License activated successfully ({planName}).");
+        }
+        else if (!success)
+        {
+            displayMessage = LocalizeErrorMessage(message);
+        }
+
+        _validationMessage.Text = displayMessage;
         _validationMessage.Foreground = success
             ? new SolidColorBrush(_theme.Success)
             : _theme.ErrorBrush;
@@ -418,10 +449,23 @@ public class InsightLicenseDialog : Window
         UpdateUI();
 
         // UpdateUI がメッセージをクリアするので復元
-        _validationMessage.Text = message;
+        _validationMessage.Text = displayMessage;
         _validationMessage.Foreground = success
             ? new SolidColorBrush(_theme.Success)
             : _theme.ErrorBrush;
+    }
+
+    private string LocalizeErrorMessage(string message)
+    {
+        if (_isJa) return message; // 元のメッセージはすでに日本語
+
+        // 既知のエラーメッセージを英語に変換
+        if (message.Contains("形式が正しくありません")) return "Invalid license key format.";
+        if (message.Contains("製品コードが一致しません")) return "Product code does not match.";
+        if (message.Contains("署名が無効です")) return "Invalid license signature.";
+        if (message.Contains("有効期限が切れています")) return "License has expired.";
+        if (message.Contains("メールアドレスが一致しません")) return "Email address does not match.";
+        return message;
     }
 
     private void ClearLicense()
@@ -430,7 +474,7 @@ public class InsightLicenseDialog : Window
         _emailTextBox.Text = "";
         _keyTextBox.Text = "";
         UpdateUI();
-        _validationMessage.Text = "ライセンスがクリアされました。";
+        _validationMessage.Text = L("ライセンスがクリアされました。", "License has been cleared.");
         _validationMessage.Foreground = _theme.TextSecondaryBrush;
     }
 

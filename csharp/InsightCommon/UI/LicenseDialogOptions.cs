@@ -18,6 +18,9 @@ public class LicenseDialogOptions
     /// <summary>テーマモード</summary>
     public InsightThemeMode ThemeMode { get; set; } = InsightThemeMode.Light;
 
+    /// <summary>表示言語（"ja" or "en"、デフォルト: "ja"）</summary>
+    public string Locale { get; set; } = "ja";
+
     /// <summary>表示する機能一覧</summary>
     public FeatureDefinition[] Features { get; set; } = [];
 
