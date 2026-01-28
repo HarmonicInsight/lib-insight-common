@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>InsightCommon</RootNamespace>
+    <AssemblyName>InsightCommon</AssemblyName>
+    <Version>1.0.0</Version>
+    <Company>Harmonic Insight</Company>
+    <Description>Shared UI and license management library for Insight Series applications</Description>
+  </PropertyGroup>
+
+</Project>
