@@ -29,6 +29,7 @@ class ProductCode(Enum):
     INPY = "INPY"  # InsightPy Standard
     FGIN = "FGIN"  # ForguncyInsight Standard
     INMV = "INMV"  # InsightMovie
+    INBT = "INBT"  # InsightBot (RPA)
 
 
 class Plan(Enum):
@@ -44,6 +45,7 @@ PRODUCT_NAMES: Dict[ProductCode, str] = {
     ProductCode.INPY: "InsightPy",
     ProductCode.FGIN: "ForguncyInsight",
     ProductCode.INMV: "InsightMovie",
+    ProductCode.INBT: "InsightBot",
 }
 
 PLAN_NAMES: Dict[Plan, str] = {
@@ -58,6 +60,7 @@ PRODUCT_PLANS: Dict[str, list] = {
     "InsightPy": [ProductCode.INPY],
     "ForguncyInsight": [ProductCode.FGIN],
     "InsightMovie": [ProductCode.INMV],
+    "InsightBot": [ProductCode.INBT],
 }
 
 # トライアル期間（日）
@@ -66,7 +69,7 @@ TRIAL_DAYS = 14
 # ライセンスキー正規表現
 # 形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 LICENSE_KEY_REGEX = re.compile(
-    r"^(INSS|INSP|INPY|FGIN|INMV)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+    r"^(INSS|INSP|INPY|FGIN|INMV|INBT)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
 )
 
 
