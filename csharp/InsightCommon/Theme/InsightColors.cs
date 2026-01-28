@@ -18,24 +18,24 @@ public static class InsightColors
     public static readonly Color PlanPro   = FromHex("#3B82F6");
     public static readonly Color PlanEnt   = FromHex("#F59E0B"); // Gold
 
-    // ── ライトテーマ（ニュートラルグレー） ──
+    // ── ライトテーマ（完全ニュートラル・青みゼロ） ──
     public static class Light
     {
-        public static readonly Color Background      = FromHex("#F9FAFB");
+        public static readonly Color Background      = FromHex("#FAFAFA");
         public static readonly Color Surface          = FromHex("#FFFFFF");
-        public static readonly Color SurfaceHover     = FromHex("#F3F4F6");
-        public static readonly Color TextPrimary      = FromHex("#111827");
-        public static readonly Color TextSecondary    = FromHex("#6B7280");
-        public static readonly Color TextMuted        = FromHex("#9CA3AF");
-        public static readonly Color Border           = FromHex("#E5E7EB");
+        public static readonly Color SurfaceHover     = FromHex("#F5F5F5");
+        public static readonly Color TextPrimary      = FromHex("#171717");
+        public static readonly Color TextSecondary    = FromHex("#737373");
+        public static readonly Color TextMuted        = FromHex("#A3A3A3");
+        public static readonly Color Border           = FromHex("#E5E5E5");
         public static readonly Color Success          = FromHex("#10B981");
         public static readonly Color Error            = FromHex("#EF4444");
         public static readonly Color Warning          = FromHex("#F59E0B");
-        public static readonly Color MenuBackground   = FromHex("#F3F4F6");
-        public static readonly Color MenuForeground   = FromHex("#374151");
-        public static readonly Color MenuHover        = FromHex("#E5E7EB");
-        public static readonly Color TitleBar         = FromHex("#F3F4F6");
-        public static readonly Color TitleBarText     = FromHex("#374151");
+        public static readonly Color MenuBackground   = FromHex("#F5F5F5");
+        public static readonly Color MenuForeground   = FromHex("#404040");
+        public static readonly Color MenuHover        = FromHex("#E5E5E5");
+        public static readonly Color TitleBar         = FromHex("#F5F5F5");
+        public static readonly Color TitleBarText     = FromHex("#404040");
     }
 
     // ── ダークテーマ ──
