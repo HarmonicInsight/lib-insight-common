@@ -449,39 +449,54 @@ public class InsightLicenseDialog : Window
 
     private Button CreateButton(string text, bool isPrimary = false, bool isCancel = false)
     {
+        var bg = isPrimary
+            ? new SolidColorBrush(InsightColors.BrandPrimary)
+            : _theme.SurfaceBrush;
+        var fg = isPrimary
+            ? new SolidColorBrush(Colors.White)
+            : _theme.TextPrimaryBrush;
+        var borderBrush = isPrimary
+            ? new SolidColorBrush(InsightColors.BrandPrimary)
+            : new SolidColorBrush(_theme.Border);
+
         var btn = new Button
         {
             Content = text,
             MinWidth = 90,
             Height = 32,
             Margin = new Thickness(0, 0, 6, 0),
-            Padding = new Thickness(16, 4, 16, 4),
             FontSize = InsightTheme.FontSizeBody,
             FontFamily = InsightTheme.UIFont,
             Cursor = Cursors.Hand,
             IsCancel = isCancel,
+            // Use custom template to prevent WPF default chrome from overriding colors
+            Template = CreateFlatButtonTemplate(bg, fg, borderBrush),
         };
 
-        if (_theme.Mode == InsightThemeMode.Dark)
-        {
-            btn.Background = isPrimary
-                ? new SolidColorBrush(InsightColors.BrandPrimary)
-                : _theme.SurfaceBrush;
-            btn.Foreground = _theme.TextPrimaryBrush;
-            btn.BorderBrush = new SolidColorBrush(_theme.Border);
-        }
-        else
-        {
-            btn.Background = isPrimary
-                ? new SolidColorBrush(InsightColors.BrandPrimary)
-                : _theme.SurfaceBrush;
-            btn.Foreground = isPrimary
-                ? new SolidColorBrush(Colors.White)
-                : _theme.TextPrimaryBrush;
-            btn.BorderBrush = new SolidColorBrush(_theme.Border);
-        }
-
         return btn;
+    }
+
+    private static ControlTemplate CreateFlatButtonTemplate(
+        Brush background, Brush foreground, Brush borderBrush)
+    {
+        var template = new ControlTemplate(typeof(Button));
+
+        var borderFactory = new FrameworkElementFactory(typeof(Border));
+        borderFactory.SetValue(Border.BackgroundProperty, background);
+        borderFactory.SetValue(Border.BorderBrushProperty, borderBrush);
+        borderFactory.SetValue(Border.BorderThicknessProperty, new Thickness(1));
+        borderFactory.SetValue(Border.CornerRadiusProperty, new CornerRadius(4));
+        borderFactory.SetValue(Border.PaddingProperty, new Thickness(16, 4, 16, 4));
+
+        var contentFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+        contentFactory.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        contentFactory.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+        contentFactory.SetValue(TextElement.ForegroundProperty, foreground);
+
+        borderFactory.AppendChild(contentFactory);
+        template.VisualTree = borderFactory;
+
+        return template;
     }
 
     private void ApplyTextBoxStyle(TextBox textBox)
