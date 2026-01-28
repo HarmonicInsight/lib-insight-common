@@ -31,7 +31,7 @@
 // =============================================================================
 
 /** 製品コード */
-export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV';
+export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT';
 
 /** プランコード */
 export type PlanCode = 'FREE' | 'TRIAL' | 'STD' | 'PRO' | 'ENT';
@@ -162,6 +162,13 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightMovie',
     description: 'AI video creation from images, text, and PowerPoint',
     descriptionJa: '画像・テキスト・PPTからAI動画作成',
+  },
+  INBT: {
+    code: 'INBT',
+    name: 'InsightBot',
+    nameJa: 'InsightBot',
+    description: 'Python-based RPA bot for Windows automation',
+    descriptionJa: 'Python RPA自動化ボット',
   },
 };
 
@@ -382,6 +389,45 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // ========================================
   FGIN: [
     // 機能定義を追加予定
+  ],
+
+  // ========================================
+  // InsightBot (INBT)
+  // ========================================
+  INBT: [
+    {
+      key: 'execute',
+      name: 'Script Execution',
+      nameJa: 'スクリプト実行',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'RPAスクリプトの実行',
+    },
+    {
+      key: 'presets',
+      name: 'Presets',
+      nameJa: 'プリセット利用',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '定義済みスクリプトテンプレートの利用',
+    },
+    {
+      key: 'jobs',
+      name: 'Job Storage',
+      nameJa: 'JOB保存数',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+      descriptionJa: '保存可能なJOB数',
+    },
+    {
+      key: 'cloud_sync',
+      name: 'Cloud Sync',
+      nameJa: 'クラウド同期',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'JOBのクラウド同期',
+    },
   ],
 
   // ========================================

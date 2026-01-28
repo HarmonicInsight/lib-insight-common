@@ -138,6 +138,7 @@ withGateway(handler, { requiredPlan: ['PRO', 'ENT'] });
 | INPY | InsightPy | Windows自動化Python実行環境 |
 | FGIN | ForguncyInsight | Forguncy連携 |
 | INMV | InsightMovie | 画像・PPTから動画作成 |
+| INBT | InsightBot | Python RPA自動化ボット |
 
 新規製品を追加する場合は `config/products.ts` も更新してください。
 
@@ -172,6 +173,15 @@ withGateway(handler, { requiredPlan: ['PRO', 'ENT'] });
 |-----|------|-------|-----|-----|
 | コード実行 | ○ | ○ | ○ | ○ |
 | スクリプト保存数 | 3個 | 無制限 | 50個 | 無制限 |
+| プリセット利用 | ○ | ○ | ○ | ○ |
+| クラウド同期 | × | ○ | × | ○ |
+
+#### InsightBot (INBT)
+
+| 機能 | FREE | TRIAL | STD | PRO |
+|-----|------|-------|-----|-----|
+| スクリプト実行 | ○ | ○ | ○ | ○ |
+| JOB保存数 | 3個 | 無制限 | 50個 | 無制限 |
 | プリセット利用 | ○ | ○ | ○ | ○ |
 | クラウド同期 | × | ○ | × | ○ |
 
