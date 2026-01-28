@@ -1,3 +1,4 @@
+using System.Windows.Media;
 using InsightCommon.License;
 using InsightCommon.Theme;
 
@@ -25,4 +26,10 @@ public class LicenseDialogOptions
 
     /// <summary>ライセンスマネージャーインスタンス</summary>
     public required InsightLicenseManager LicenseManager { get; set; }
+
+    /// <summary>プライマリボタンのカスタム色（null の場合は InsightColors.BrandPrimary を使用）</summary>
+    public Color? BrandColor { get; set; }
+
+    /// <summary>プライマリボタンのホバー色（null の場合は BrandColor を暗くした色を使用）</summary>
+    public Color? BrandHoverColor { get; set; }
 }

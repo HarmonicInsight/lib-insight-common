@@ -450,14 +450,15 @@ public class InsightLicenseDialog : Window
 
     private Button CreateButton(string text, bool isPrimary = false, bool isCancel = false)
     {
+        var brandColor = _options.BrandColor ?? InsightColors.BrandPrimary;
         var bg = isPrimary
-            ? new SolidColorBrush(InsightColors.BrandPrimary)
+            ? new SolidColorBrush(brandColor)
             : _theme.SurfaceBrush;
         var fg = isPrimary
             ? new SolidColorBrush(Colors.White)
             : _theme.TextPrimaryBrush;
         var borderBrush = isPrimary
-            ? new SolidColorBrush(InsightColors.BrandPrimary)
+            ? new SolidColorBrush(brandColor)
             : new SolidColorBrush(_theme.Border);
 
         var btn = new Button
