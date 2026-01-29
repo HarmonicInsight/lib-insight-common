@@ -1,0 +1,47 @@
+name: Validate Design Standards
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make script executable
+        run: chmod +x scripts/validate-standards.sh
+
+      - name: Validate standards compliance
+        run: |
+          echo "=== Insight Series Design Standards Check ==="
+          ./scripts/validate-standards.sh .
+
+      - name: Check for blue primary color violation
+        run: |
+          # Check if blue (#2563EB) is used as primary (not as info/semantic)
+          if grep -rn "primary.*#2563EB\|#2563EB.*primary\|PrimaryColor.*#2563EB" \
+             --include="*.xaml" --include="*.swift" --include="*.xml" \
+             --include="*.ts" --include="*.tsx" --include="*.css" \
+             --include="*.py" . 2>/dev/null; then
+            echo "❌ ERROR: Blue (#2563EB) is used as primary color!"
+            echo "   Primary must be Gold (#B8942F)"
+            exit 1
+          fi
+          echo "✅ Primary color check passed"
+
+      - name: Check for gold primary color
+        run: |
+          # Verify gold is defined somewhere
+          if ! grep -rn "#B8942F\|B8942F" \
+             --include="*.xaml" --include="*.swift" --include="*.xml" \
+             --include="*.ts" --include="*.tsx" --include="*.css" \
+             --include="*.json" --include="*.py" . 2>/dev/null; then
+            echo "⚠️ WARNING: Gold (#B8942F) not found in project"
+            echo "   Make sure to use Ivory & Gold theme"
+          else
+            echo "✅ Gold primary color found"
+          fi
