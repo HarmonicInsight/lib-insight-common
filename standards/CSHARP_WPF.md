@@ -323,10 +323,16 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
 </Style>
 ```
 
-### 例外: 作業画面特化アプリ（InsightMovie等）
+### 例外: 作業画面特化アプリ
 
 以下のアプリは作業画面が中心のため、例外として独自レイアウトを許可：
 - **InsightMovie**: タイムライン・プレビューが主体のため、ツールバー形式を維持
+- **InsightSlides**: ファイル操作・編集が主体のため、左サイドバー+右コンテンツ形式を維持
+
+**ただし例外アプリでも以下は必須:**
+- ライセンスボタンは右上に配置
+- Ivory & Gold カラーテーマを使用
+- プランバッジを表示
 
 ---
 
