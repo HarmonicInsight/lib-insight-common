@@ -31,7 +31,7 @@
 // =============================================================================
 
 /** 製品コード */
-export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT';
+export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT' | 'INCA';
 
 /** プランコード */
 export type PlanCode = 'FREE' | 'TRIAL' | 'STD' | 'PRO' | 'ENT';
@@ -169,6 +169,13 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightBot',
     description: 'Python-based RPA bot for Windows automation',
     descriptionJa: 'Python RPA自動化ボット',
+  },
+  INCA: {
+    code: 'INCA',
+    name: 'InsightNoCodeAnalyzer',
+    nameJa: 'InsightNoCodeAnalyzer',
+    description: 'RPA and low-code platform analyzer for migration assessment',
+    descriptionJa: 'RPA・ローコードプラットフォーム解析・移行アセスメントツール',
   },
 };
 
@@ -427,6 +434,60 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'JOBのクラウド同期',
+    },
+  ],
+
+  // ========================================
+  // InsightNoCodeAnalyzer (INCA)
+  // ========================================
+  INCA: [
+    {
+      key: 'rpa_analysis',
+      name: 'RPA Analysis',
+      nameJa: 'RPA解析',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'BizRobo等のRPAソース解析',
+    },
+    {
+      key: 'lowcode_analysis',
+      name: 'Low-code Analysis',
+      nameJa: 'ローコード解析',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Forguncy等のローコードツール解析',
+    },
+    {
+      key: 'migration_assessment',
+      name: 'Migration Assessment',
+      nameJa: '移行アセスメント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '工数見積もり・複雑度分析',
+    },
+    {
+      key: 'akabot_conversion',
+      name: 'akaBot Conversion',
+      nameJa: 'akaBot変換',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'BizRoboからakaBotへの変換',
+    },
+    {
+      key: 'export_json',
+      name: 'JSON Export',
+      nameJa: 'JSON出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '解析結果のJSON形式出力',
+    },
+    {
+      key: 'export_markdown',
+      name: 'Markdown Export',
+      nameJa: 'Markdown出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '解析結果のMarkdown形式出力',
     },
   ],
 

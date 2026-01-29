@@ -139,6 +139,7 @@ withGateway(handler, { requiredPlan: ['PRO', 'ENT'] });
 | FGIN | ForguncyInsight | Forguncy連携 |
 | INMV | InsightMovie | 画像・PPTから動画作成 |
 | INBT | InsightBot | Python RPA自動化ボット |
+| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
 
 新規製品を追加する場合は `config/products.ts` も更新してください。
 
