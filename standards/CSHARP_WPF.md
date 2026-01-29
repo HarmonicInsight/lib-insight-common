@@ -123,8 +123,18 @@ YourApp/
 
 **右側（必須）:**
 1. 設定ボタン（オプション）: `⚙ 設定`
-2. ライセンスボタン: `🔑 ライセンス`
-3. ウィンドウコントロール: 最小化 / 最大化 / 閉じる
+2. **言語切り替え**: `English` / `日本語`
+3. **ライセンスボタン**: `🔑 ライセンス`
+4. ウィンドウコントロール: 最小化 / 最大化 / 閉じる
+
+### 言語切り替え仕様
+
+| 項目 | 値 |
+|-----|-----|
+| 対応言語 | 日本語 (ja), English (en) |
+| デフォルト | システム言語に従う |
+| 保存先 | `%APPDATA%/HarmonicInsight/{製品名}/settings.json` |
+| ボタン表示 | 現在の言語の**反対側**を表示（日本語時は「English」）|
 
 ### MainWindow.xaml テンプレート
 
@@ -198,13 +208,19 @@ YourApp/
                                 <TextBlock Text="設定"/>
                             </StackPanel>
                         </Button>
+                        <!-- 言語切り替えボタン -->
+                        <Button Style="{StaticResource TitleBarButtonStyle}"
+                                Command="{Binding ToggleLanguageCommand}"
+                                Margin="8,0">
+                            <TextBlock Text="{Binding LanguageButtonText}"/>
+                        </Button>
                         <!-- ライセンスボタン -->
                         <Button Style="{StaticResource TitleBarButtonStyle}"
                                 Command="{Binding OpenLicenseCommand}"
                                 Margin="8,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🔑" Margin="0,0,4,0"/>
-                                <TextBlock Text="ライセンス"/>
+                                <TextBlock Text="{Binding LicenseButtonText}"/>
                             </StackPanel>
                         </Button>
                         <!-- ウィンドウコントロール -->
@@ -330,7 +346,8 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
 - **InsightSlides**: ファイル操作・編集が主体のため、左サイドバー+右コンテンツ形式を維持
 
 **ただし例外アプリでも以下は必須:**
-- ライセンスボタンは右上に配置
+- **言語切り替えボタン**は右上に配置
+- **ライセンスボタン**は右上に配置（言語切り替えの右隣）
 - Ivory & Gold カラーテーマを使用
 - プランバッジを表示
 
@@ -343,10 +360,17 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
 - [ ] **WindowStyle="None"** でカスタムタイトルバーを使用
 - [ ] タイトルバー左側に **Insight {製品名}**（Gold 色）がある
 - [ ] タイトルバー左側に **バージョン** と **プランバッジ** がある
+- [ ] タイトルバー右側に **言語切り替えボタン** がある
 - [ ] タイトルバー右側に **ライセンスボタン** がある
 - [ ] ウィンドウコントロール（最小化/最大化/閉じる）がある
 - [ ] タイトルバーでドラッグ移動できる
 - [ ] ウィンドウ枠線が `BorderBrush` (#E7E2DA) 1px
+
+### 多言語対応
+
+- [ ] 日本語 / English の切り替えが可能
+- [ ] 言語設定が `settings.json` に保存される
+- [ ] 全ての UI テキストがリソースファイルから読み込まれる
 
 ### デザイン（トンマナ）
 
