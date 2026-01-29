@@ -82,7 +82,187 @@ YourApp/
 
 ---
 
+## UI レイアウト標準
+
+### 標準レイアウト: 縦型サイドバー
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  [ロゴ] Insight                                          │
+│         {製品名}                                         │
+├────────────┬────────────────────────────────────────────┤
+│            │                                             │
+│  🏠 ホーム  │                                             │
+│  📋 機能1   │           メインコンテンツ                   │
+│  🔄 機能2   │                                             │
+│  📊 機能3   │                                             │
+│            │                                             │
+│  ────────  │                                             │
+│  🔑 ライセンス │                                          │
+│            │                                             │
+│  v1.0.0    │                                             │
+└────────────┴────────────────────────────────────────────┘
+     260px              残り全幅
+```
+
+### レイアウト仕様
+
+| 項目 | 値 |
+|-----|-----|
+| サイドバー幅 | **260px** 固定 |
+| サイドバー背景 | `BgSecondaryBrush` (#F3F0EB) |
+| メインコンテンツ背景 | `BgPrimaryBrush` (#FAF8F5) |
+| 区切り線 | `BorderBrush` (#E7E2DA) 1px |
+
+### メニュー配置ルール
+
+1. **ロゴセクション**（上部）
+   - 「Insight」ロゴ（Gold 色）
+   - 製品名サブタイトル
+
+2. **機能メニュー**（中央）
+   - ホーム（常に最初）
+   - 製品固有の機能メニュー
+   - アイコン + ラベル形式
+
+3. **ライセンスメニュー**（下部固定）
+   - 🔑 ライセンス
+   - **必ずメニューの最下部に配置**
+
+4. **バージョン表示**（最下部）
+   - `v{メジャー}.{マイナー}.{パッチ}`
+
+### MainWindow.xaml テンプレート
+
+```xml
+<Window x:Class="YourApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Insight {製品名}" Height="720" Width="1280"
+        Background="{StaticResource BgPrimaryBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>  <!-- サイドバー固定幅 -->
+            <ColumnDefinition Width="*"/>    <!-- メインコンテンツ -->
+        </Grid.ColumnDefinitions>
+
+        <!-- サイドバー -->
+        <Border Grid.Column="0"
+                Background="{StaticResource BgSecondaryBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>  <!-- ロゴ -->
+                    <RowDefinition Height="*"/>     <!-- メニュー -->
+                    <RowDefinition Height="Auto"/>  <!-- ライセンス -->
+                    <RowDefinition Height="Auto"/>  <!-- バージョン -->
+                </Grid.RowDefinitions>
+
+                <!-- ロゴセクション -->
+                <StackPanel Grid.Row="0" Margin="20,24,20,16">
+                    <TextBlock Text="Insight"
+                               FontSize="24" FontWeight="Bold"
+                               Foreground="{StaticResource PrimaryBrush}"/>
+                    <TextBlock Text="{製品名}"
+                               FontSize="14"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                </StackPanel>
+
+                <!-- 機能メニュー -->
+                <ItemsControl Grid.Row="1"
+                              ItemsSource="{Binding MenuItems}"
+                              Margin="8,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Style="{StaticResource SidebarMenuItemStyle}"
+                                         Command="{Binding DataContext.NavigateCommand,
+                                                   RelativeSource={RelativeSource AncestorType=Window}}"
+                                         CommandParameter="{Binding ModuleType}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Icon}" Width="24"/>
+                                    <TextBlock Text="{Binding Label}"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- ライセンスメニュー（固定位置） -->
+                <Border Grid.Row="2" Margin="8,8">
+                    <RadioButton Style="{StaticResource SidebarMenuItemStyle}"
+                                 Command="{Binding NavigateToLicenseCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔑" Width="24"/>
+                            <TextBlock Text="ライセンス"/>
+                        </StackPanel>
+                    </RadioButton>
+                </Border>
+
+                <!-- バージョン表示 -->
+                <TextBlock Grid.Row="3"
+                           Text="v1.0.0"
+                           FontSize="12"
+                           Foreground="{StaticResource TextTertiaryBrush}"
+                           Margin="20,8,20,16"/>
+            </Grid>
+        </Border>
+
+        <!-- メインコンテンツ -->
+        <ContentControl Grid.Column="1"
+                        Content="{Binding CurrentView}"
+                        Margin="24"/>
+    </Grid>
+</Window>
+```
+
+### Styles.xaml メニュースタイル
+
+```xml
+<!-- サイドバーメニュー項目スタイル -->
+<Style x:Key="SidebarMenuItemStyle" TargetType="RadioButton">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    <Setter Property="Padding" Value="16,12"/>
+    <Setter Property="Margin" Value="0,2"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="RadioButton">
+                <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="8"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource BgHoverBrush}"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource PrimaryLightBrush}"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</Style>
+```
+
+---
+
 ## 必須チェックリスト
+
+### レイアウト（UI構造）
+
+- [ ] **縦型サイドバー**（260px 固定幅）を使用している
+- [ ] サイドバー上部に **Insight ロゴ**（Gold 色）がある
+- [ ] サイドバー最下部に **ライセンスメニュー** がある
+- [ ] バージョン表示がサイドバー最下部にある
+- [ ] メインコンテンツは ContentControl で切り替え
 
 ### デザイン（トンマナ）
 
@@ -91,8 +271,9 @@ YourApp/
 - [ ] **Background (#FAF8F5)** がメイン背景に使用されている
 - [ ] **ハードコードされた色がない**（全て StaticResource 経由）
 - [ ] **青色 (#2563EB)** がプライマリとして使用されて**いない**
-- [ ] カードは白背景 + border-radius: 12px
+- [ ] カードは白背景 + CornerRadius: 12
 - [ ] テキストは Stone 系の暖色（#1C1917, #57534E）
+- [ ] サイドバー背景は `BgSecondaryBrush` (#F3F0EB)
 
 ### ライセンス
 
@@ -122,7 +303,100 @@ YourApp/
 
 ---
 
+## ボタンスタイル
+
+### プライマリボタン（Gold）
+
+```xml
+<Style x:Key="PrimaryButtonStyle" TargetType="Button">
+    <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Padding" Value="24,12"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="Button">
+                <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="8"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource PrimaryHoverBrush}"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</Style>
+```
+
+### セカンダリボタン（アウトライン）
+
+```xml
+<Style x:Key="SecondaryButtonStyle" TargetType="Button">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Padding" Value="24,12"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="Button">
+                <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="border" Property="Background"
+                                Value="{StaticResource BgHoverBrush}"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</Style>
+```
+
+---
+
 ## ファイルテンプレート
+
+### MenuItem.cs（メニュー項目モデル）
+
+```csharp
+namespace YourApp.Models;
+
+public record MenuItem
+{
+    public required ModuleType ModuleType { get; init; }
+    public required string Label { get; init; }
+    public required string Icon { get; init; }
+    public string? RequiredLicense { get; init; }  // "rpa", "lowcode" など
+}
+
+public enum ModuleType
+{
+    Home,
+    // 製品固有の機能...
+    License  // 必ず最後
+}
+```
 
 ### PlanCode.cs
 
