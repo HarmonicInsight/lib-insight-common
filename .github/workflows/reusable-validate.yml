@@ -1,0 +1,28 @@
+# Reusable workflow - 他のリポジトリから呼び出し可能
+name: Reusable Standards Validation
+
+on:
+  workflow_call:
+    inputs:
+      project_path:
+        description: 'Path to validate'
+        required: false
+        default: '.'
+        type: string
+
+jobs:
+  validate-design-system:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout lib-insight-common
+        uses: actions/checkout@v4
+        with:
+          repository: HarmonicInsight/lib-insight-common
+          path: insight-common
+
+      - name: Run validation
+        run: |
+          chmod +x insight-common/scripts/validate-standards.sh
+          insight-common/scripts/validate-standards.sh ${{ inputs.project_path }}

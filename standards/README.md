@@ -73,16 +73,55 @@ Border:           #E7E2DA (Warm Gray)
 - 製品タイトル（Gold色、中央配置）
 - カードスタイル（白背景、border-radius: 12px）
 
-## チェックリスト実行
+## 自動チェック（CI/CD）
 
-各プラットフォームのチェックリストは、開発開始時と完了時に実行してください。
+### 新規リポジトリへの導入
+
+**必須:** 以下のワークフローファイルを追加してください：
+
+```bash
+# 1. .github/workflows ディレクトリ作成
+mkdir -p .github/workflows
+
+# 2. ワークフローファイルをコピー
+cp lib-insight-common/templates/github-workflow-validate.yml .github/workflows/validate-standards.yml
+
+# 3. コミット
+git add .github/workflows/validate-standards.yml
+git commit -m "ci: add design standards validation"
+```
+
+これにより、**PRを出すたびに自動でチェック**されます。
+チェックに失敗したPRはマージできません。
+
+### 手動チェック
+
+ローカルで事前確認：
 
 ```bash
 # 検証スクリプト実行
-./scripts/validate-app.sh <app-directory>
+./lib-insight-common/scripts/validate-standards.sh .
 ```
+
+## チェック内容
+
+| チェック項目 | 説明 |
+|-------------|------|
+| 🔵 Blue Primary | #2563EB がプライマリとして使われていない |
+| 🟡 Gold Primary | #B8942F が定義されている |
+| 📄 Background | #FAF8F5 が背景色として定義されている |
+| 🔑 LicenseManager | ライセンス管理クラスが実装されている |
+| 📝 Key Format | ライセンスキー形式パターンが存在する |
 
 ## 違反時の対応
 
-標準に従っていないコードは**レビューで却下**されます。
+標準に従っていないコードは**PRがブロック**されます。
 不明点がある場合は、このドキュメントまたは既存製品の実装を参照してください。
+
+### 参考実装
+
+| プラットフォーム | リポジトリ |
+|----------------|-----------|
+| C# (WPF) | app-nocode-analyzer-C |
+| React | app-insight-slide-web |
+| iOS | app-insight-mobile-ios |

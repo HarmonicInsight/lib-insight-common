@@ -1,0 +1,16 @@
+# このファイルを .github/workflows/validate-standards.yml にコピーしてください
+# Copy this file to .github/workflows/validate-standards.yml
+
+name: Validate Design Standards
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    uses: HarmonicInsight/lib-insight-common/.github/workflows/reusable-validate.yml@main
+    with:
+      project_path: '.'
