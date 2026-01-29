@@ -31,7 +31,7 @@
 // =============================================================================
 
 /** 製品コード */
-export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT' | 'INCA';
+export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT' | 'INCA' | 'INIG';
 
 /** プランコード */
 export type PlanCode = 'FREE' | 'TRIAL' | 'STD' | 'PRO' | 'ENT';
@@ -176,6 +176,13 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightNoCodeAnalyzer',
     description: 'RPA and low-code platform analyzer for migration assessment',
     descriptionJa: 'RPA・ローコードプラットフォーム解析・移行アセスメントツール',
+  },
+  INIG: {
+    code: 'INIG',
+    name: 'InsightImageGen',
+    nameJa: 'InsightImageGen',
+    description: 'AI image and audio generation tool with Stable Diffusion and VOICEVOX',
+    descriptionJa: 'Stable Diffusion・VOICEVOXを活用したAI画像・音声生成ツール',
   },
 };
 
@@ -488,6 +495,61 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '解析結果のMarkdown形式出力',
+    },
+  ],
+
+  // ========================================
+  // InsightImageGen (INIG)
+  // ========================================
+  INIG: [
+    {
+      key: 'generate_image',
+      name: 'Image Generation',
+      nameJa: '画像生成',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Stable Diffusionによる画像生成',
+    },
+    {
+      key: 'batch_image',
+      name: 'Batch Image Generation',
+      nameJa: 'バッチ画像生成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '複数画像の一括生成',
+    },
+    {
+      key: 'generate_audio',
+      name: 'Audio Generation',
+      nameJa: '音声生成',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'VOICEVOXによる音声生成',
+    },
+    {
+      key: 'character_prompts',
+      name: 'Character Prompts',
+      nameJa: 'キャラクタープロンプト',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: 20, PRO: -1, ENT: -1 },
+      descriptionJa: '保存可能なキャラクタープロンプト数',
+    },
+    {
+      key: 'hi_res',
+      name: 'High Resolution',
+      nameJa: '高解像度出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '高解像度画像の生成',
+    },
+    {
+      key: 'cloud_sync',
+      name: 'Cloud Sync',
+      nameJa: 'クラウド同期',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'プロンプト・設定のクラウド同期',
     },
   ],
 
