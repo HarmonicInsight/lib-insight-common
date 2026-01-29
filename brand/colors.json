@@ -1,109 +1,112 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Insight Series ブランドカラー定義",
-  "version": "1.0.0",
+  "description": "Insight Series ブランドカラー定義 - Ivory & Gold Theme",
+  "version": "2.0.0",
+  "theme": "Ivory & Gold",
+
+  "background": {
+    "primary": "#FAF8F5",
+    "secondary": "#F3F0EB",
+    "card": "#FFFFFF",
+    "hover": "#EEEBE5",
+    "sidebar": "#F3F0EB"
+  },
+
+  "accent": {
+    "gold": {
+      "50": "#FDF9EF",
+      "100": "#F9F0D9",
+      "200": "#F0E6C8",
+      "300": "#E5D5A0",
+      "400": "#D4BC6A",
+      "500": "#B8942F",
+      "600": "#8C711E",
+      "700": "#6B5518",
+      "800": "#4A3B10",
+      "900": "#2D2408"
+    }
+  },
+
   "brand": {
-    "primary": {
-      "main": "#2563EB",
-      "light": "#60A5FA",
-      "dark": "#1D4ED8",
-      "contrastText": "#FFFFFF"
-    },
-    "secondary": {
-      "main": "#7C3AED",
-      "light": "#A78BFA",
-      "dark": "#5B21B6",
-      "contrastText": "#FFFFFF"
-    },
-    "accent": {
-      "main": "#06B6D4",
-      "light": "#67E8F9",
-      "dark": "#0891B2",
-      "contrastText": "#FFFFFF"
-    }
+    "primary": "#B8942F",
+    "primaryHover": "#8C711E",
+    "primaryLight": "#F0E6C8"
   },
+
   "semantic": {
-    "success": {
-      "main": "#10B981",
-      "light": "#6EE7B7",
-      "dark": "#059669",
-      "contrastText": "#FFFFFF"
-    },
-    "warning": {
-      "main": "#F59E0B",
-      "light": "#FCD34D",
-      "dark": "#D97706",
-      "contrastText": "#000000"
-    },
-    "error": {
-      "main": "#EF4444",
-      "light": "#FCA5A5",
-      "dark": "#DC2626",
-      "contrastText": "#FFFFFF"
-    },
-    "info": {
-      "main": "#3B82F6",
-      "light": "#93C5FD",
-      "dark": "#2563EB",
-      "contrastText": "#FFFFFF"
-    }
+    "success": "#16A34A",
+    "successLight": "#DCFCE7",
+    "warning": "#CA8A04",
+    "warningLight": "#FEF9C3",
+    "error": "#DC2626",
+    "errorLight": "#FEE2E2",
+    "info": "#2563EB",
+    "infoLight": "#DBEAFE"
   },
-  "neutral": {
-    "white": "#FFFFFF",
-    "gray50": "#F9FAFB",
-    "gray100": "#F3F4F6",
-    "gray200": "#E5E7EB",
-    "gray300": "#D1D5DB",
-    "gray400": "#9CA3AF",
-    "gray500": "#6B7280",
-    "gray600": "#4B5563",
-    "gray700": "#374151",
-    "gray800": "#1F2937",
-    "gray900": "#111827",
-    "black": "#000000"
+
+  "category": {
+    "rpa": "#16A34A",
+    "lowcode": "#7C3AED",
+    "doc": "#2563EB",
+    "pptx": "#D97706",
+    "json": "#2563EB",
+    "api": "#0891B2"
   },
-  "products": {
-    "salesInsight": {
-      "primary": "#2563EB",
-      "secondary": "#1E40AF"
-    },
-    "insightSlide": {
-      "primary": "#7C3AED",
-      "secondary": "#5B21B6"
-    },
-    "insightPy": {
-      "primary": "#059669",
-      "secondary": "#047857"
-    },
-    "interviewInsight": {
-      "primary": "#DC2626",
-      "secondary": "#B91C1C"
-    }
+
+  "text": {
+    "primary": "#1C1917",
+    "secondary": "#57534E",
+    "tertiary": "#A8A29E",
+    "muted": "#D6D3D1",
+    "accent": "#8C711E",
+    "onPrimary": "#FFFFFF"
   },
+
+  "link": {
+    "default": "#B8942F",
+    "hover": "#8C711E",
+    "visited": "#6B5518"
+  },
+
+  "border": {
+    "default": "#E7E2DA",
+    "light": "#F3F0EB",
+    "focus": "#B8942F"
+  },
+
+  "plan": {
+    "free": "#A8A29E",
+    "trial": "#2563EB",
+    "std": "#16A34A",
+    "pro": "#B8942F",
+    "ent": "#7C3AED"
+  },
+
   "darkMode": {
     "background": {
-      "default": "#111827",
-      "paper": "#1F2937",
-      "elevated": "#374151"
+      "primary": "#1C1917",
+      "secondary": "#292524",
+      "card": "#292524",
+      "hover": "#3D3835"
     },
     "text": {
-      "primary": "#F9FAFB",
-      "secondary": "#D1D5DB",
-      "disabled": "#6B7280",
-      "title": "#60A5FA"
+      "primary": "#FAF8F5",
+      "secondary": "#D6D3D1",
+      "tertiary": "#A8A29E"
+    },
+    "border": {
+      "default": "#3D3835",
+      "light": "#292524"
     }
   },
-  "lightMode": {
-    "background": {
-      "default": "#FFFFFF",
-      "paper": "#F9FAFB",
-      "elevated": "#FFFFFF"
-    },
-    "text": {
-      "primary": "#111827",
-      "secondary": "#4B5563",
-      "disabled": "#9CA3AF",
-      "title": "#2563EB"
-    }
+
+  "usage": {
+    "notes": [
+      "Primary (Gold #B8942F) は製品タイトル、アクセント、CTAボタンに使用",
+      "Background Primary (#FAF8F5) は全体背景に使用",
+      "Background Card (#FFFFFF) はカード、モーダルに使用",
+      "Text Primary (#1C1917) は本文、見出しに使用",
+      "Semantic colors はステータス表示に使用"
+    ]
   }
 }
