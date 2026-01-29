@@ -84,53 +84,47 @@ YourApp/
 
 ## UI レイアウト標準
 
-### 標準レイアウト: 縦型サイドバー
+### 標準レイアウト: カスタムトップバー
+
+**Windows標準タイトルバーは使用しない**（安っぽく見えるため）
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  [ロゴ] Insight                                          │
-│         {製品名}                                         │
-├────────────┬────────────────────────────────────────────┤
-│            │                                             │
-│  🏠 ホーム  │                                             │
-│  📋 機能1   │           メインコンテンツ                   │
-│  🔄 機能2   │                                             │
-│  📊 機能3   │                                             │
-│            │                                             │
-│  ────────  │                                             │
-│  🔑 ライセンス │                                          │
-│            │                                             │
-│  v1.0.0    │                                             │
-└────────────┴────────────────────────────────────────────┘
-     260px              残り全幅
+┌─────────────────────────────────────────────────────────────────┐
+│ Insight {製品名}  v1.0.0  ● FREE    [⚙設定] [🔑ライセンス] [─][□][×] │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │ 機能ボタン / タブ / アクションエリア                      │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│                     メインコンテンツエリア                        │
+│                                                                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ### レイアウト仕様
 
 | 項目 | 値 |
 |-----|-----|
-| サイドバー幅 | **260px** 固定 |
-| サイドバー背景 | `BgSecondaryBrush` (#F3F0EB) |
+| ウィンドウスタイル | `WindowStyle="None"` |
+| タイトルバー高さ | **48px** |
+| タイトルバー背景 | `BgSecondaryBrush` (#F3F0EB) |
 | メインコンテンツ背景 | `BgPrimaryBrush` (#FAF8F5) |
-| 区切り線 | `BorderBrush` (#E7E2DA) 1px |
+| ウィンドウ枠線 | `BorderBrush` (#E7E2DA) 1px |
+| 角丸 | CornerRadius: 8 (Windows 11対応) |
 
-### メニュー配置ルール
+### タイトルバー配置ルール
 
-1. **ロゴセクション**（上部）
-   - 「Insight」ロゴ（Gold 色）
-   - 製品名サブタイトル
+**左側（必須）:**
+1. 製品ロゴ/名前: `Insight {製品名}` (Gold 色)
+2. バージョン: `v1.0.0` (薄いグレー)
+3. プランバッジ: `● FREE` / `● STD` など
 
-2. **機能メニュー**（中央）
-   - ホーム（常に最初）
-   - 製品固有の機能メニュー
-   - アイコン + ラベル形式
-
-3. **ライセンスメニュー**（下部固定）
-   - 🔑 ライセンス
-   - **必ずメニューの最下部に配置**
-
-4. **バージョン表示**（最下部）
-   - `v{メジャー}.{マイナー}.{パッチ}`
+**右側（必須）:**
+1. 設定ボタン（オプション）: `⚙ 設定`
+2. ライセンスボタン: `🔑 ライセンス`
+3. ウィンドウコントロール: 最小化 / 最大化 / 閉じる
 
 ### MainWindow.xaml テンプレート
 
@@ -138,119 +132,201 @@ YourApp/
 <Window x:Class="YourApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Insight {製品名}" Height="720" Width="1280"
-        Background="{StaticResource BgPrimaryBrush}">
+        Title="Insight {製品名}"
+        Height="720" Width="1280"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>  <!-- サイドバー固定幅 -->
-            <ColumnDefinition Width="*"/>    <!-- メインコンテンツ -->
-        </Grid.ColumnDefinitions>
+    <Border Background="{StaticResource BgPrimaryBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48"/>  <!-- タイトルバー -->
+                <RowDefinition Height="*"/>   <!-- コンテンツ -->
+            </Grid.RowDefinitions>
 
-        <!-- サイドバー -->
-        <Border Grid.Column="0"
-                Background="{StaticResource BgSecondaryBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,0,1,0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>  <!-- ロゴ -->
-                    <RowDefinition Height="*"/>     <!-- メニュー -->
-                    <RowDefinition Height="Auto"/>  <!-- ライセンス -->
-                    <RowDefinition Height="Auto"/>  <!-- バージョン -->
-                </Grid.RowDefinitions>
+            <!-- カスタムタイトルバー -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource BgSecondaryBrush}"
+                    CornerRadius="8,8,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>    <!-- 左: ロゴ・バージョン -->
+                        <ColumnDefinition Width="Auto"/> <!-- 右: ボタン群 -->
+                    </Grid.ColumnDefinitions>
 
-                <!-- ロゴセクション -->
-                <StackPanel Grid.Row="0" Margin="20,24,20,16">
-                    <TextBlock Text="Insight"
-                               FontSize="24" FontWeight="Bold"
-                               Foreground="{StaticResource PrimaryBrush}"/>
-                    <TextBlock Text="{製品名}"
-                               FontSize="14"
-                               Foreground="{StaticResource TextSecondaryBrush}"/>
-                </StackPanel>
+                    <!-- 左側: ロゴ・バージョン・プラン -->
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="16,0">
+                        <!-- 製品名 -->
+                        <TextBlock Text="Insight {製品名}"
+                                   FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryBrush}"/>
+                        <!-- バージョン -->
+                        <TextBlock Text="v1.0.0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextTertiaryBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="12,0,0,0"/>
+                        <!-- プランバッジ -->
+                        <Border Background="{StaticResource PrimaryLightBrush}"
+                                CornerRadius="4"
+                                Padding="8,2"
+                                Margin="12,0,0,0">
+                            <TextBlock Text="{Binding CurrentPlan}"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextAccentBrush}"/>
+                        </Border>
+                    </StackPanel>
 
-                <!-- 機能メニュー -->
-                <ItemsControl Grid.Row="1"
-                              ItemsSource="{Binding MenuItems}"
-                              Margin="8,0">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <RadioButton Style="{StaticResource SidebarMenuItemStyle}"
-                                         Command="{Binding DataContext.NavigateCommand,
-                                                   RelativeSource={RelativeSource AncestorType=Window}}"
-                                         CommandParameter="{Binding ModuleType}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Icon}" Width="24"/>
-                                    <TextBlock Text="{Binding Label}"/>
-                                </StackPanel>
-                            </RadioButton>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    <!-- 右側: ボタン群 -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <!-- 設定ボタン（オプション） -->
+                        <Button Style="{StaticResource TitleBarButtonStyle}"
+                                Command="{Binding OpenSettingsCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⚙" Margin="0,0,4,0"/>
+                                <TextBlock Text="設定"/>
+                            </StackPanel>
+                        </Button>
+                        <!-- ライセンスボタン -->
+                        <Button Style="{StaticResource TitleBarButtonStyle}"
+                                Command="{Binding OpenLicenseCommand}"
+                                Margin="8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔑" Margin="0,0,4,0"/>
+                                <TextBlock Text="ライセンス"/>
+                            </StackPanel>
+                        </Button>
+                        <!-- ウィンドウコントロール -->
+                        <Button Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MinimizeButton_Click">─</Button>
+                        <Button Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MaximizeButton_Click">□</Button>
+                        <Button Style="{StaticResource CloseButtonStyle}"
+                                Click="CloseButton_Click">×</Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-                <!-- ライセンスメニュー（固定位置） -->
-                <Border Grid.Row="2" Margin="8,8">
-                    <RadioButton Style="{StaticResource SidebarMenuItemStyle}"
-                                 Command="{Binding NavigateToLicenseCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🔑" Width="24"/>
-                            <TextBlock Text="ライセンス"/>
-                        </StackPanel>
-                    </RadioButton>
-                </Border>
-
-                <!-- バージョン表示 -->
-                <TextBlock Grid.Row="3"
-                           Text="v1.0.0"
-                           FontSize="12"
-                           Foreground="{StaticResource TextTertiaryBrush}"
-                           Margin="20,8,20,16"/>
-            </Grid>
-        </Border>
-
-        <!-- メインコンテンツ -->
-        <ContentControl Grid.Column="1"
-                        Content="{Binding CurrentView}"
-                        Margin="24"/>
-    </Grid>
+            <!-- メインコンテンツ -->
+            <ContentControl Grid.Row="1"
+                            Content="{Binding CurrentView}"
+                            Margin="24"/>
+        </Grid>
+    </Border>
 </Window>
 ```
 
-### Styles.xaml メニュースタイル
+### MainWindow.xaml.cs（ウィンドウ操作）
+
+```csharp
+private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+{
+    if (e.ClickCount == 2)
+        MaximizeButton_Click(sender, e);
+    else
+        DragMove();
+}
+
+private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+    => WindowState = WindowState.Minimized;
+
+private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+    => WindowState = WindowState == WindowState.Maximized
+        ? WindowState.Normal
+        : WindowState.Maximized;
+
+private void CloseButton_Click(object sender, RoutedEventArgs e)
+    => Close();
+```
+
+### Styles.xaml タイトルバースタイル
 
 ```xml
-<!-- サイドバーメニュー項目スタイル -->
-<Style x:Key="SidebarMenuItemStyle" TargetType="RadioButton">
+<!-- タイトルバーボタン -->
+<Style x:Key="TitleBarButtonStyle" TargetType="Button">
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-    <Setter Property="Padding" Value="16,12"/>
-    <Setter Property="Margin" Value="0,2"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Padding" Value="12,6"/>
     <Setter Property="Cursor" Value="Hand"/>
     <Setter Property="Template">
         <Setter.Value>
-            <ControlTemplate TargetType="RadioButton">
+            <ControlTemplate TargetType="Button">
                 <Border x:Name="border"
                         Background="{TemplateBinding Background}"
-                        CornerRadius="8"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="6"
                         Padding="{TemplateBinding Padding}">
-                    <ContentPresenter/>
+                    <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
                 </Border>
                 <ControlTemplate.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="border" Property="Background"
                                 Value="{StaticResource BgHoverBrush}"/>
                     </Trigger>
-                    <Trigger Property="IsChecked" Value="True">
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</Style>
+
+<!-- ウィンドウコントロールボタン -->
+<Style x:Key="WindowControlButtonStyle" TargetType="Button">
+    <Setter Property="Width" Value="46"/>
+    <Setter Property="Height" Value="32"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="Button">
+                <Border x:Name="border"
+                        Background="{TemplateBinding Background}">
+                    <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="border" Property="Background"
-                                Value="{StaticResource PrimaryLightBrush}"/>
+                                Value="{StaticResource BgHoverBrush}"/>
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
         </Setter.Value>
     </Setter>
 </Style>
+
+<!-- 閉じるボタン（赤ホバー） -->
+<Style x:Key="CloseButtonStyle" TargetType="Button"
+       BasedOn="{StaticResource WindowControlButtonStyle}">
+    <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+            <Setter Property="Background" Value="#DC2626"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Trigger>
+    </Style.Triggers>
+</Style>
 ```
+
+### 例外: 作業画面特化アプリ（InsightMovie等）
+
+以下のアプリは作業画面が中心のため、例外として独自レイアウトを許可：
+- **InsightMovie**: タイムライン・プレビューが主体のため、ツールバー形式を維持
 
 ---
 
@@ -258,11 +334,13 @@ YourApp/
 
 ### レイアウト（UI構造）
 
-- [ ] **縦型サイドバー**（260px 固定幅）を使用している
-- [ ] サイドバー上部に **Insight ロゴ**（Gold 色）がある
-- [ ] サイドバー最下部に **ライセンスメニュー** がある
-- [ ] バージョン表示がサイドバー最下部にある
-- [ ] メインコンテンツは ContentControl で切り替え
+- [ ] **WindowStyle="None"** でカスタムタイトルバーを使用
+- [ ] タイトルバー左側に **Insight {製品名}**（Gold 色）がある
+- [ ] タイトルバー左側に **バージョン** と **プランバッジ** がある
+- [ ] タイトルバー右側に **ライセンスボタン** がある
+- [ ] ウィンドウコントロール（最小化/最大化/閉じる）がある
+- [ ] タイトルバーでドラッグ移動できる
+- [ ] ウィンドウ枠線が `BorderBrush` (#E7E2DA) 1px
 
 ### デザイン（トンマナ）
 
