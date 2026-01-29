@@ -274,7 +274,33 @@ export async function activateLicense(licenseKey: string) {
 EOF
 
 # =============================================
-# 10. README 生成
+# 10. GitHub Actions ワークフロー（デザイン標準チェック）
+# =============================================
+echo -e "${YELLOW}🔍 GitHub Actions ワークフロー設定...${NC}"
+mkdir -p .github/workflows
+
+cat > .github/workflows/validate-standards.yml << 'EOF'
+# Insight Series デザイン標準チェック
+# PRを出すと自動でチェックされ、違反があるとマージできません
+name: Validate Design Standards
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    uses: HarmonicInsight/lib-insight-common/.github/workflows/reusable-validate.yml@main
+    with:
+      project_path: '.'
+EOF
+
+echo -e "${GREEN}✅ PR時に自動でデザイン標準チェックが実行されます${NC}"
+
+# =============================================
+# 11. README 生成
 # =============================================
 echo -e "${YELLOW}📄 README.md 生成...${NC}"
 cat > README.md << EOF
@@ -312,7 +338,7 @@ pnpm run dev
 EOF
 
 # =============================================
-# 11. 初回コミット
+# 12. 初回コミット
 # =============================================
 echo -e "${YELLOW}📦 初回コミット...${NC}"
 git add .
