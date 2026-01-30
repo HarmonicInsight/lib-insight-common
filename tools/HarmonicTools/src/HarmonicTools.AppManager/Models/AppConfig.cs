@@ -93,36 +93,6 @@ public class AppConfig
                 },
                 new()
                 {
-                    Name = "InsightSlidePro",
-                    ProductCode = "INSP",
-                    SolutionPath = "InsightSlide.sln",
-                    ProjectPath = "src/InsightSlidePro.App/InsightSlidePro.App.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = "src/InsightSlidePro.App/bin/{config}/net8.0-windows/InsightSlidePro.App.exe",
-                    Description = "プロ向け PowerPoint ツール（INSS 全機能 + 拡張）"
-                },
-                new()
-                {
-                    Name = "InsightPy",
-                    ProductCode = "INPY",
-                    SolutionPath = "InsightPy.sln",
-                    ProjectPath = "src/InsightPy.App/InsightPy.App.csproj",
-                    TestProjectPath = "tests/InsightPy.Core.Tests",
-                    ExeRelativePath = "src/InsightPy.App/bin/{config}/net8.0-windows/InsightPy.App.exe",
-                    Description = "Windows 自動化 Python 実行環境"
-                },
-                new()
-                {
-                    Name = "ForguncyInsight",
-                    ProductCode = "FGIN",
-                    SolutionPath = "ForguncyInsight.sln",
-                    ProjectPath = "src/ForguncyInsight.App/ForguncyInsight.App.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = "src/ForguncyInsight.App/bin/{config}/net8.0-windows/ForguncyInsight.App.exe",
-                    Description = "Forguncy 連携・分析ツール"
-                },
-                new()
-                {
                     Name = "InsightMovie",
                     ProductCode = "INMV",
                     SolutionPath = "InsightMovie.sln",
