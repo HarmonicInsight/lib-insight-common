@@ -66,6 +66,10 @@ public partial class MainWindow : Window
     {
         _selectedApp = AppListBox.SelectedItem as AppDefinition;
         UpdateAppDetails();
+
+        // Close edit panel on selection change
+        EditPanel.Visibility = Visibility.Collapsed;
+        EditToggleBtn.Content = "編集";
     }
 
     private void UpdateAppDetails()
@@ -200,6 +204,61 @@ public partial class MainWindow : Window
         }
     }
 
+    // ── Edit ──
+
+    private void EditToggle_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+
+        if (EditPanel.Visibility == Visibility.Collapsed)
+        {
+            PopulateEditFields(_selectedApp);
+            EditPanel.Visibility = Visibility.Visible;
+            EditToggleBtn.Content = "閉じる";
+        }
+        else
+        {
+            EditPanel.Visibility = Visibility.Collapsed;
+            EditToggleBtn.Content = "編集";
+        }
+    }
+
+    private void PopulateEditFields(AppDefinition app)
+    {
+        EditName.Text = app.Name;
+        EditProductCode.Text = app.ProductCode;
+        EditDescription.Text = app.Description;
+        EditSolutionPath.Text = app.SolutionPath;
+        EditProjectPath.Text = app.ProjectPath;
+        EditTestPath.Text = app.TestProjectPath;
+        EditExePath.Text = app.ExeRelativePath;
+    }
+
+    private void SaveEdit_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+
+        _selectedApp.Name = EditName.Text.Trim();
+        _selectedApp.ProductCode = EditProductCode.Text.Trim();
+        _selectedApp.Description = EditDescription.Text.Trim();
+        _selectedApp.SolutionPath = EditSolutionPath.Text.Trim();
+        _selectedApp.ProjectPath = EditProjectPath.Text.Trim();
+        _selectedApp.TestProjectPath = EditTestPath.Text.Trim();
+        _selectedApp.ExeRelativePath = EditExePath.Text.Trim();
+
+        SaveConfig();
+        UpdateAppDetails();
+
+        var saved = _selectedApp;
+        RefreshAppList();
+        AppListBox.SelectedItem = saved;
+
+        EditPanel.Visibility = Visibility.Collapsed;
+        EditToggleBtn.Content = "編集";
+
+        AppendOutput($"[保存] {_selectedApp.Name} の設定を保存しました。\n");
+    }
+
     // ── Add/Remove ──
 
     private void AddApp_Click(object sender, RoutedEventArgs e)
@@ -216,6 +275,11 @@ public partial class MainWindow : Window
         RefreshAppList();
         AppListBox.SelectedItem = app;
         SaveConfig();
+
+        // Auto-open edit panel for new app
+        PopulateEditFields(app);
+        EditPanel.Visibility = Visibility.Visible;
+        EditToggleBtn.Content = "閉じる";
     }
 
     private void RemoveApp_Click(object sender, RoutedEventArgs e)
