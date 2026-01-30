@@ -182,7 +182,8 @@
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="アプリ名:"
                                                Style="{StaticResource EditLabel}"/>
                                     <TextBox x:Name="EditName" Grid.Row="0" Grid.Column="1"
-                                             Style="{StaticResource EditField}"/>
+                                             Style="{StaticResource EditField}"
+                                             TextChanged="EditName_TextChanged"/>
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="製品コード:"
                                                Style="{StaticResource EditLabel}"/>

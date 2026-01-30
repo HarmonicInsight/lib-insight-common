@@ -223,8 +223,11 @@ public partial class MainWindow : Window
         }
     }
 
+    private bool _suppressAutoFill;
+
     private void PopulateEditFields(AppDefinition app)
     {
+        _suppressAutoFill = true;
         EditName.Text = app.Name;
         EditProductCode.Text = app.ProductCode;
         EditDescription.Text = app.Description;
@@ -232,6 +235,64 @@ public partial class MainWindow : Window
         EditProjectPath.Text = app.ProjectPath;
         EditTestPath.Text = app.TestProjectPath;
         EditExePath.Text = app.ExeRelativePath;
+        _suppressAutoFill = false;
+    }
+
+    private void EditName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        if (_suppressAutoFill) return;
+
+        var name = EditName.Text.Trim();
+        if (string.IsNullOrEmpty(name)) return;
+
+        // Generate product code from name (e.g. "HarmonicSheet" -> "HMSH")
+        EditProductCode.Text = GenerateProductCode(name);
+
+        // Auto-fill paths using the convention:
+        //   Solution:  {Name}.sln
+        //   Project:   src/{Name}.App/{Name}.App.csproj
+        //   Test:      tests/{Name}.Core.Tests
+        //   Exe:       src/{Name}.App/bin/{config}/net8.0-windows/{Name}.App.exe
+        EditSolutionPath.Text = $"{name}.sln";
+        EditProjectPath.Text = $"src/{name}.App/{name}.App.csproj";
+        EditTestPath.Text = $"tests/{name}.Core.Tests";
+        EditExePath.Text = $"src/{name}.App/bin/{{config}}/net8.0-windows/{name}.App.exe";
+        EditDescription.Text = $"{name} アプリケーション";
+    }
+
+    private static string GenerateProductCode(string name)
+    {
+        // Extract uppercase letters or word starts to make a short code
+        // e.g. "HarmonicSheet" -> "HS", then pad to 4 chars -> "HMSH"
+        // Strategy: take first 2 chars of each PascalCase word
+        var words = new List<string>();
+        var current = "";
+        foreach (var c in name)
+        {
+            if (char.IsUpper(c) && current.Length > 0)
+            {
+                words.Add(current);
+                current = c.ToString();
+            }
+            else
+            {
+                current += c;
+            }
+        }
+        if (current.Length > 0) words.Add(current);
+
+        if (words.Count == 0) return "NEW";
+
+        // Take first 2 chars of each word, up to 4 chars total
+        var code = "";
+        var charsPerWord = Math.Max(1, Math.Min(4 / words.Count, 2));
+        foreach (var w in words)
+        {
+            code += w[..Math.Min(charsPerWord, w.Length)];
+            if (code.Length >= 4) break;
+        }
+
+        return code.ToUpperInvariant().PadRight(4, 'X')[..4];
     }
 
     private void SaveEdit_Click(object sender, RoutedEventArgs e)
