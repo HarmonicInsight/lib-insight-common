@@ -1,0 +1,265 @@
+<Window x:Class="HarmonicTools.AppManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Harmonic App Manager"
+        Width="1100" Height="750"
+        MinWidth="900" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip">
+    <Border Background="{StaticResource BgPrimaryBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title Bar -->
+            <Border Grid.Row="0" Background="{StaticResource BgSecondaryBrush}"
+                    CornerRadius="8,8,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                        <TextBlock Text="Harmonic App Manager"
+                                   FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                   FontSize="15" FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryBrush}"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="v1.0"
+                                   FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextTertiaryBrush}"
+                                   VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0">
+                        <Button Content="─" Click="Minimize_Click" Width="36" Height="36"
+                                Background="Transparent" BorderThickness="0" FontSize="14"
+                                Foreground="{StaticResource TextSecondaryBrush}" Cursor="Hand"/>
+                        <Button Content="□" Click="Maximize_Click" Width="36" Height="36"
+                                Background="Transparent" BorderThickness="0" FontSize="14"
+                                Foreground="{StaticResource TextSecondaryBrush}" Cursor="Hand"/>
+                        <Button x:Name="CloseBtn" Content="✕" Click="Close_Click" Width="36" Height="36"
+                                Background="Transparent" BorderThickness="0" FontSize="12"
+                                Foreground="{StaticResource TextSecondaryBrush}" Cursor="Hand"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Main Content -->
+            <Grid Grid.Row="1" Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Panel: App List -->
+                <Border Grid.Column="0" Background="{StaticResource BgCardBrush}"
+                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                        CornerRadius="8" Margin="0,0,8,0" Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="管理アプリ一覧"
+                                   FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,8"/>
+
+                        <!-- Base Path -->
+                        <StackPanel Grid.Row="1" Margin="0,0,0,8">
+                            <TextBlock Text="リポジトリパス:"
+                                       FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                       FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="BasePathBox"
+                                         FontFamily="Consolas, Cascadia Code"
+                                         FontSize="11" Padding="6,4"
+                                         Background="{StaticResource BgPrimaryBrush}"
+                                         BorderBrush="{StaticResource BorderBrush}"
+                                         Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <Button Grid.Column="1" Content="..."
+                                        Style="{StaticResource SecondaryButton}"
+                                        Padding="8,4" Margin="4,0,0,0"
+                                        Click="BrowseBasePath_Click"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- App List -->
+                        <ListBox x:Name="AppListBox" Grid.Row="2"
+                                 Background="Transparent" BorderThickness="0"
+                                 SelectionChanged="AppListBox_SelectionChanged"
+                                 FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="4,6">
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <!-- Add/Remove buttons -->
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="追加" Style="{StaticResource SecondaryButton}"
+                                    Padding="12,4" Click="AddApp_Click"/>
+                            <Button Content="削除" Style="{StaticResource DangerButton}"
+                                    Padding="12,4" Margin="8,0,0,0" Click="RemoveApp_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Right Panel: Details & Actions -->
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- App Details -->
+                    <Border Grid.Row="0" Background="{StaticResource BgCardBrush}"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                            CornerRadius="8" Margin="8,0,0,0" Padding="16,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="SelectedAppName" Grid.Row="0"
+                                       Text="アプリを選択してください"
+                                       FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                       FontSize="20" FontWeight="Bold"
+                                       Foreground="{StaticResource PrimaryBrush}"/>
+
+                            <!-- Path Info -->
+                            <Grid Grid.Row="1" Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="ソリューション:"
+                                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
+                                <TextBlock x:Name="SolutionPathText" Grid.Row="0" Grid.Column="1"
+                                           FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontFamily="Consolas, Cascadia Code" Margin="0,2"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="プロジェクト:"
+                                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
+                                <TextBlock x:Name="ProjectPathText" Grid.Row="1" Grid.Column="1"
+                                           FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontFamily="Consolas, Cascadia Code" Margin="0,2"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Debug exe:"
+                                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
+                                <TextBlock x:Name="DebugExeText" Grid.Row="2" Grid.Column="1"
+                                           FontSize="11" FontFamily="Consolas, Cascadia Code" Margin="0,2"
+                                           TextTrimming="CharacterEllipsis" Cursor="Hand"
+                                           MouseLeftButtonDown="ExePath_Click"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Release exe:"
+                                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
+                                <TextBlock x:Name="ReleaseExeText" Grid.Row="3" Grid.Column="1"
+                                           FontSize="11" FontFamily="Consolas, Cascadia Code" Margin="0,2"
+                                           TextTrimming="CharacterEllipsis" Cursor="Hand"
+                                           MouseLeftButtonDown="ExePath_Click"/>
+                            </Grid>
+
+                            <!-- Action Buttons -->
+                            <WrapPanel Grid.Row="2" Margin="0,12,0,0">
+                                <Button Content="Build (Debug)" Style="{StaticResource PrimaryButton}"
+                                        Margin="0,0,8,8" Click="BuildDebug_Click"/>
+                                <Button Content="Build (Release)" Style="{StaticResource PrimaryButton}"
+                                        Margin="0,0,8,8" Click="BuildRelease_Click"/>
+                                <Button Content="Publish (自己完結型)" Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,8,8" Click="Publish_Click"/>
+                                <Button Content="Run" Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,8,8" Click="Run_Click"/>
+                                <Button Content="Test" Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,8,8" Click="Test_Click"/>
+                                <Button Content="Build All (sln)" Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,8,8" Click="BuildAll_Click"/>
+                                <Button Content="フォルダを開く" Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,8,8" Click="OpenFolder_Click"/>
+                                <Button x:Name="CancelBtn" Content="中断" Style="{StaticResource DangerButton}"
+                                        Margin="0,0,8,8" Click="Cancel_Click" IsEnabled="False"/>
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Status Bar -->
+                    <Border Grid.Row="1" Margin="8,8,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Border x:Name="StatusBadge" CornerRadius="4" Padding="8,2"
+                                    Background="{StaticResource BgSecondaryBrush}">
+                                <TextBlock x:Name="StatusText" Text="待機中"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Output Console -->
+                    <Border Grid.Row="2" Background="#1C1917"
+                            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                            CornerRadius="8" Margin="8,8,0,0" Padding="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,6,0,4">
+                                <TextBlock Text="出力コンソール"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                           FontSize="11" Foreground="#A8A29E"/>
+                                <Button Content="クリア" Background="Transparent" BorderThickness="0"
+                                        Foreground="#A8A29E" FontSize="11" Margin="16,0,0,0"
+                                        Cursor="Hand" Click="ClearOutput_Click"
+                                        FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"/>
+                            </StackPanel>
+                            <TextBox x:Name="OutputBox" Grid.Row="1"
+                                     IsReadOnly="True" TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Background="Transparent" Foreground="#E7E2DA"
+                                     FontFamily="Consolas, Cascadia Code, MS Gothic"
+                                     FontSize="12" BorderThickness="0"
+                                     Padding="8,4" AcceptsReturn="True"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
