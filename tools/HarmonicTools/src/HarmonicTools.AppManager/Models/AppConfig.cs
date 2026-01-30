@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json;
 
 namespace HarmonicTools.AppManager.Models;

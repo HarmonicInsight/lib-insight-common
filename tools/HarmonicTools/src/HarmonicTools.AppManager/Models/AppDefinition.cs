@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace HarmonicTools.AppManager.Models;
 
 /// <summary>
