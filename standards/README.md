@@ -46,27 +46,30 @@ Border:           #E7E2DA (Warm Gray)
 ```
 
 **プラン体系:**
-| プラン | 説明 |
-|-------|------|
-| FREE | 基本機能のみ（機能制限あり） |
-| TRIAL | 全機能利用可能（評価用、1ヶ月） |
-| STD | 標準機能（12ヶ月） |
-| PRO | 全機能（12ヶ月） |
-| ENT | カスタマイズ（要相談） |
+| プラン | 説明 | 対象 |
+|-------|------|------|
+| FREE | 基本機能のみ（※HMSHでは廃止、デフォルト=TRIAL） | — |
+| TRIAL | 全機能利用可能（評価用、1ヶ月） | 評価ユーザー |
+| STD | 標準機能（コラボレーション機能を除く、12ヶ月） | 個人利用 |
+| PRO | 全機能（コラボレーション含む、12ヶ月） | 法人・チーム |
+| ENT | カスタマイズ（要相談） | 企業 |
 
 ### 3. 製品コード
 
 新規製品を追加する場合は `config/products.ts` に登録:
 
-| コード | 製品名 |
-|-------|-------|
-| INSS | InsightSlide |
-| INSP | InsightSlide Pro |
-| INPY | InsightPy |
-| FGIN | ForguncyInsight |
-| INMV | InsightMovie |
-| INBT | InsightBot |
-| INCA | InsightNoCodeAnalyzer |
+| コード | 製品名 | 備考 |
+|-------|-------|------|
+| INSS | InsightSlide | |
+| INSP | InsightSlide Pro | |
+| INPY | InsightPy | |
+| FGIN | ForguncyInsight | |
+| INMV | InsightMovie | |
+| INBT | InsightBot | |
+| INCA | InsightNoCodeAnalyzer | |
+| HMSH | HarmonicSheet | STD: 個人, PRO: 法人（FREE廃止） |
+| HMDC | HarmonicDoc | |
+| HMSL | HarmonicSlide | |
 
 ### 4. UI パターン
 
