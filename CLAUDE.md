@@ -160,7 +160,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | INMV | InsightMovie | 画像・PPTから動画作成 |
 | INBT | InsightBot | Python RPA自動化ボット |
 | INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
-| HMSH | HarmonicSheet | Excel操作・自動化ツール |
+| HMSH | HarmonicSheet | Excelバージョン管理・チームコラボレーション（STD: 個人, PRO: 法人） |
 | HMDC | HarmonicDoc | Wordドキュメント操作・自動化ツール |
 | HMSL | HarmonicSlide | PowerPointプレゼンテーション操作・自動化ツール |
 
@@ -173,13 +173,29 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ### プラン体系
 
-| プラン | 説明 | 有効期限 |
-|-------|------|---------|
-| FREE | 機能制限あり | 無期限 |
-| TRIAL | 全機能利用可能（評価用） | 1ヶ月 |
-| STD | 標準機能 | 12ヶ月 |
-| PRO | 全機能 | 12ヶ月 |
-| ENT | カスタマイズ | 要相談 |
+| プラン | 説明 | 対象 | 有効期限 |
+|-------|------|------|---------|
+| FREE | 機能制限あり（※HMSHでは廃止、デフォルト=TRIAL） | — | 無期限 |
+| TRIAL | 全機能利用可能（評価用） | 評価ユーザー | 1ヶ月 |
+| STD | 標準機能（コラボレーション機能を除く） | 個人利用 | 12ヶ月 |
+| PRO | 全機能（コラボレーション含む） | 法人・チーム | 12ヶ月 |
+| ENT | カスタマイズ | 企業 | 要相談 |
+
+### HarmonicSheet (HMSH) 機能マトリクス
+
+> **STD = 個人利用**（1人で数値を算出）、**PRO = 法人・チーム利用**（コラボレーション）
+
+| 機能 | TRIAL | STD | PRO | ENT |
+|------|:-----:|:---:|:---:|:---:|
+| Excel読み込み・編集 | ✅ | ✅ | ✅ | ✅ |
+| バージョン管理 | ✅ | ✅ | ✅ | ✅ |
+| 差分比較 | ✅ | ✅ | ✅ | ✅ |
+| セル変更ログ | ✅ | ✅ | ✅ | ✅ |
+| エクスポート | ✅ | ✅ | ✅ | ✅ |
+| 変更者表示 | ✅ | ❌ | ✅ | ✅ |
+| 掲示板 | ✅ | ❌ | ✅ | ✅ |
+| AIアシスタント | ✅ | ❌ | ✅ | ✅ |
+| メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
 
 ### ライセンスキー形式
 
