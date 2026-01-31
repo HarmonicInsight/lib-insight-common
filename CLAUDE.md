@@ -207,8 +207,78 @@ getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEqu
 **新規製品を追加する場合:**
 1. `config/products.ts` に登録
 2. `config/pricing.ts` に価格を設定
-3. この一覧に追加
-4. ライセンス機能マトリクスを定義
+3. `config/sales-strategy.ts` に販売戦略を設定
+4. この一覧に追加
+5. ライセンス機能マトリクスを定義
+
+### 販売戦略・マーケット展開
+
+#### 展開フェーズ
+
+```
+Phase 1（現在）   Phase 2（拡大）     Phase 3（成熟）
+┌──────────┐    ┌──────────────┐    ┌──────────────┐
+│  日本市場  │ →  │ 北米・欧州    │ →  │ 韓国・東南ア  │
+│  実績構築  │    │ グローバル展開 │    │ リセラー展開  │
+└──────────┘    └──────────────┘    └──────────────┘
+```
+
+#### 【A】コンサルティング連動型の販売戦略
+
+| 項目 | 内容 |
+|------|------|
+| **主要市場** | 日本国内（Phase 1） → 東南アジア（Phase 2） |
+| **販売方法** | コンサル案件内での直接提案（営業コスト最小） |
+| **顧客層** | 大手〜中堅企業のIT部門・DX推進部門 |
+| **決済** | Stripe（自社サイト）/ 請求書払い |
+| **KPI** | 案件あたり単価 × コンサル案件数 |
+
+> **ポイント**: 新規マーケティング不要。既存コンサル案件のクライアントへの追加提案が最もROIが高い。
+
+#### 【B】グローバルスタンドアロン型の販売戦略
+
+| 項目 | 内容 |
+|------|------|
+| **主要市場** | 日本 → 北米・欧州 → 韓国・東南アジア |
+| **販売方法** | 自社サイト + Paddle（MoR） + Microsoft Store |
+| **顧客層** | Office業務ユーザー（個人〜中小企業） |
+| **決済** | Paddle（グローバル税務代行） / Microsoft Store |
+| **KPI** | MRR / ARR / トライアル転換率 / チャーンレート / LTV |
+
+**マーケティングチャネル（優先順）:**
+
+| 優先度 | チャネル | 種別 | 対象地域 |
+|:------:|---------|------|---------|
+| 1 | SEO / コンテンツマーケティング | Organic | 全地域 |
+| 2 | YouTube 製品デモ | Organic | 日本・北米 |
+| 3 | Product Hunt / Hacker News | Organic | 北米 |
+| 4 | Microsoft Store | Organic | 北米・欧州 |
+| 5 | Google Ads（検索連動） | Paid | 日本・北米 |
+| 6 | SNS（X / LinkedIn） | Organic | 全地域 |
+| 7 | リセラー・VAR | Partner | 日本・韓国・東南アジア |
+
+**決済プラットフォーム:**
+
+| プラットフォーム | 役割 | 手数料 | MoR | 備考 |
+|----------------|------|:------:|:---:|------|
+| Paddle | グローバル主力 | ~5% | ✅ | VAT/消費税の申告・納付を代行 |
+| Microsoft Store | Windows流入 | ~12% | ✅ | デスクトップアプリの自然流入 |
+| Stripe | 日本国内 | ~3.6% | — | 自社サイト決済・コンサル連動型 |
+
+> **全製品共通**: 1ヶ月の無料トライアル、クレジットカード不要で開始可能。
+
+```typescript
+import { getSalesStrategy, getProductsByRegion } from '@/insight-common/config/sales-strategy';
+
+// 製品の販売戦略を取得
+const strategy = getSalesStrategy('INSS');
+strategy.targetMarkets;     // Phase別の展開マーケット
+strategy.positioning;       // 'PowerPointのコンテンツ抽出・一括更新を自動化...'
+
+// 地域で販売可能な製品を取得
+getProductsByRegion('US');   // ['INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL']
+getProductsByRegion('JP');   // 全製品
+```
 
 ## 6. ライセンスシステム
 
