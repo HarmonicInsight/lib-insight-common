@@ -107,17 +107,49 @@ from your_app.ui.colors import Colors
 # Colors.BG_PRIMARY = "#FAF8F5"
 ```
 
-## 3. 禁止事項
+## 3. サードパーティライセンス（全製品共通）
+
+Syncfusion 等のサードパーティライセンスキーは `config/third-party-licenses.json` で**全製品共通管理**されています。
+
+### Syncfusion Essential Studio
+
+```json
+// config/third-party-licenses.json
+{
+  "syncfusion": {
+    "licenseKey": "Ngo9BigBOggjHTQxAR8/...",
+    "usedBy": ["HMSH", "HMDC", "HMSL"]
+  }
+}
+```
+
+**アプリ起動時の登録（C# / WPF）:**
+
+```csharp
+// App.xaml.cs の OnStartup 冒頭で呼び出す
+// 優先順位: 環境変数 > third-party-licenses.json > ハードコードフォールバック
+var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
+if (string.IsNullOrEmpty(licenseKey))
+    licenseKey = ThirdPartyLicenses.GetSyncfusionKey();  // JSONから読み込み
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
+```
+
+**キー更新時:** `config/third-party-licenses.json` の `licenseKey` を書き換えるだけで全製品に反映されます。
+
+---
+
+## 4. 禁止事項
 
 | ❌ やってはいけない | ✅ 正しいやり方 |
 |-------------------|----------------|
 | **Blue (#2563EB) をプライマリに使用** | **Gold (#B8942F) を使用** |
 | ハードコードされた色値 | StaticResource/変数を使用 |
 | 独自のライセンス実装 | `InsightLicenseManager` を使用 |
+| サードパーティキーを各アプリに直書き | `config/third-party-licenses.json` で共通管理 |
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 
-## 4. 製品コード一覧
+## 5. 製品コード一覧
 
 | コード | 製品名 | 説明 |
 |-------|-------|------|
@@ -137,7 +169,7 @@ from your_app.ui.colors import Colors
 2. この一覧に追加
 3. ライセンス機能マトリクスを定義
 
-## 5. ライセンスシステム
+## 6. ライセンスシステム
 
 ### プラン体系
 
@@ -183,17 +215,18 @@ from your_app.ui.colors import Colors
 └────────────────────────────────────┘
 ```
 
-## 6. 開発完了チェックリスト
+## 7. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
 - [ ] **デザイン**: 青色がプライマリとして使用されて**いない**
 - [ ] **ライセンス**: InsightLicenseManager が実装されている
 - [ ] **ライセンス**: ライセンス画面が Insight Slides 形式に準拠
+- [ ] **サードパーティ**: Syncfusion キーが `third-party-licenses.json` 経由で登録されている
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 
-## 7. 困ったときは
+## 8. 困ったときは
 
 ```bash
 # 標準検証

@@ -12,4 +12,8 @@
     <Description>Shared UI and license management library for Insight Series applications</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Syncfusion.Licensing" Version="*" />
+  </ItemGroup>
+
 </Project>
