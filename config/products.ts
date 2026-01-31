@@ -31,7 +31,7 @@
 // =============================================================================
 
 /** 製品コード */
-export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT' | 'INCA' | 'INIG';
+export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'HMSH' | 'HMDC' | 'HMSL';
 
 /** プランコード */
 export type PlanCode = 'FREE' | 'TRIAL' | 'STD' | 'PRO' | 'ENT';
@@ -183,6 +183,27 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightImageGen',
     description: 'AI image and audio generation tool with Stable Diffusion and VOICEVOX',
     descriptionJa: 'Stable Diffusion・VOICEVOXを活用したAI画像・音声生成ツール',
+  },
+  HMSH: {
+    code: 'HMSH',
+    name: 'HarmonicSheet',
+    nameJa: 'HarmonicSheet',
+    description: 'Excel spreadsheet operations and automation tool',
+    descriptionJa: 'Excel操作・自動化ツール',
+  },
+  HMDC: {
+    code: 'HMDC',
+    name: 'HarmonicDoc',
+    nameJa: 'HarmonicDoc',
+    description: 'Word document operations and automation tool',
+    descriptionJa: 'Wordドキュメント操作・自動化ツール',
+  },
+  HMSL: {
+    code: 'HMSL',
+    name: 'HarmonicSlide',
+    nameJa: 'HarmonicSlide',
+    description: 'PowerPoint presentation operations and automation tool',
+    descriptionJa: 'PowerPointプレゼンテーション操作・自動化ツール',
   },
 };
 
@@ -596,6 +617,171 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'PowerPointファイルからの素材取込',
+    },
+  ],
+
+  // ========================================
+  // HarmonicSheet (HMSH)
+  // ========================================
+  HMSH: [
+    {
+      key: 'read_excel',
+      name: 'Read Excel',
+      nameJa: 'Excel読取',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Excelファイルの読み取り',
+    },
+    {
+      key: 'write_excel',
+      name: 'Write Excel',
+      nameJa: 'Excel書込',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      descriptionJa: 'Excelファイルへの書き込み（FREEは3シートまで）',
+    },
+    {
+      key: 'formula',
+      name: 'Formula Analysis',
+      nameJa: '数式解析',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Excel数式の解析・変換',
+    },
+    {
+      key: 'macro',
+      name: 'Macro Execution',
+      nameJa: 'マクロ実行',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VBAマクロの実行・変換',
+    },
+    {
+      key: 'batch',
+      name: 'Batch Processing',
+      nameJa: 'バッチ処理',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '複数Excelファイルの一括処理',
+    },
+    {
+      key: 'template',
+      name: 'Template',
+      nameJa: 'テンプレート',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'テンプレートからのExcel生成',
+    },
+  ],
+
+  // ========================================
+  // HarmonicDoc (HMDC)
+  // ========================================
+  HMDC: [
+    {
+      key: 'read_doc',
+      name: 'Read Document',
+      nameJa: 'ドキュメント読取',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Wordドキュメントの読み取り',
+    },
+    {
+      key: 'write_doc',
+      name: 'Write Document',
+      nameJa: 'ドキュメント書込',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      descriptionJa: 'Wordドキュメントへの書き込み（FREEは3ページまで）',
+    },
+    {
+      key: 'convert',
+      name: 'Convert Format',
+      nameJa: 'フォーマット変換',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'PDF・HTML等へのフォーマット変換',
+    },
+    {
+      key: 'template',
+      name: 'Template',
+      nameJa: 'テンプレート',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'テンプレートからのドキュメント生成',
+    },
+    {
+      key: 'batch',
+      name: 'Batch Processing',
+      nameJa: 'バッチ処理',
+      type: 'boolean',
+      allowedPlans: ['PRO', 'ENT'],
+      descriptionJa: '複数ドキュメントの一括処理',
+    },
+    {
+      key: 'macro',
+      name: 'Macro Execution',
+      nameJa: 'マクロ実行',
+      type: 'boolean',
+      allowedPlans: ['PRO', 'ENT'],
+      descriptionJa: 'VBAマクロの実行・変換',
+    },
+  ],
+
+  // ========================================
+  // HarmonicSlide (HMSL)
+  // ========================================
+  HMSL: [
+    {
+      key: 'read_pptx',
+      name: 'Read PPTX',
+      nameJa: 'PPTX読取',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'PowerPointファイルの読み取り',
+    },
+    {
+      key: 'write_pptx',
+      name: 'Write PPTX',
+      nameJa: 'PPTX書込',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      descriptionJa: 'PowerPointファイルへの書き込み（FREEは3スライドまで）',
+    },
+    {
+      key: 'extract_slides',
+      name: 'Extract Slides',
+      nameJa: 'スライド抽出',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライドの個別抽出・分割',
+    },
+    {
+      key: 'generate_pdf',
+      name: 'Generate PDF',
+      nameJa: 'PDF生成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'スライドからPDFの生成',
+    },
+    {
+      key: 'batch',
+      name: 'Batch Processing',
+      nameJa: 'バッチ処理',
+      type: 'boolean',
+      allowedPlans: ['PRO', 'ENT'],
+      descriptionJa: '複数PPTXファイルの一括処理',
+    },
+    {
+      key: 'template',
+      name: 'Template',
+      nameJa: 'テンプレート',
+      type: 'boolean',
+      allowedPlans: ['PRO', 'ENT'],
+      descriptionJa: 'テンプレートからのスライド生成',
     },
   ],
 };

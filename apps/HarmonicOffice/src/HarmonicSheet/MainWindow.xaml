@@ -1,0 +1,174 @@
+<Window x:Class="HarmonicSheet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Harmonic Sheet"
+        Height="720" Width="1280"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI">
+
+    <Border Background="{StaticResource BgPrimaryBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- カスタムタイトルバー -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource BgSecondaryBrush}"
+                    CornerRadius="8,8,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 左側: ロゴ・バージョン・プラン -->
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="16,0">
+                        <!-- 製品名 -->
+                        <TextBlock x:Name="ProductNameText"
+                                   Text="Harmonic Sheet"
+                                   FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryBrush}"/>
+                        <!-- バージョン -->
+                        <TextBlock Text="v1.0.0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextTertiaryBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="12,0,0,0"/>
+                        <!-- プランバッジ -->
+                        <Border Background="{StaticResource PrimaryLightBrush}"
+                                CornerRadius="4"
+                                Padding="8,2"
+                                Margin="12,0,0,0"
+                                VerticalAlignment="Center">
+                            <TextBlock x:Name="PlanBadgeText"
+                                       Text="FREE"
+                                       FontSize="11" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextAccentBrush}"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- 右側: ボタン群 -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <!-- 言語切り替えボタン -->
+                        <Button x:Name="LanguageToggleButton"
+                                Style="{StaticResource TitleBarButtonStyle}"
+                                Click="LanguageToggle_Click"
+                                Content="English"
+                                Margin="0,0,4,0"/>
+                        <!-- ライセンスボタン -->
+                        <Button x:Name="LicenseButton"
+                                Style="{StaticResource TitleBarButtonStyle}"
+                                Click="LicenseButton_Click"
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x1F511;" Margin="0,0,4,0"/>
+                                <TextBlock x:Name="LicenseButtonText" Text="ライセンス"/>
+                            </StackPanel>
+                        </Button>
+                        <!-- ウィンドウコントロール -->
+                        <Button Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MinimizeButton_Click"
+                                Content="&#x2500;"/>
+                        <Button Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MaximizeButton_Click"
+                                Content="&#x25A1;"/>
+                        <Button Style="{StaticResource CloseButtonStyle}"
+                                Click="CloseButton_Click"
+                                Content="&#x00D7;"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- メインコンテンツ -->
+            <Grid Grid.Row="1" Margin="24">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- ツールバーエリア -->
+                <Border Grid.Row="0"
+                        Background="{StaticResource BgCardBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20,16"
+                        Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock x:Name="ToolbarTitleText"
+                                   Text="Excel 操作ツール"
+                                   FontSize="18" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,12"/>
+                        <WrapPanel>
+                            <Button x:Name="BtnReadExcel"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Content="Excel 読み込み"
+                                    Margin="0,0,8,8"/>
+                            <Button x:Name="BtnWriteExcel"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="Excel 書き出し"
+                                    Margin="0,0,8,8"/>
+                            <Button x:Name="BtnFormula"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="数式操作"
+                                    Margin="0,0,8,8"/>
+                            <Button x:Name="BtnMacro"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="マクロ実行"
+                                    Margin="0,0,8,8"/>
+                            <Button x:Name="BtnBatch"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="一括処理"
+                                    Margin="0,0,8,8"/>
+                            <Button x:Name="BtnTemplate"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="テンプレート"
+                                    Margin="0,0,8,8"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- メインワークエリア -->
+                <Border Grid.Row="1"
+                        Background="{StaticResource BgCardBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="20">
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <TextBlock x:Name="PlaceholderTitleText"
+                                       Text="Harmonic Sheet"
+                                       FontSize="28" FontWeight="Bold"
+                                       Foreground="{StaticResource PrimaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="PlaceholderSubText"
+                                       Text="Excel ファイルを選択するか、上のツールバーから操作を選んでください"
+                                       FontSize="14"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

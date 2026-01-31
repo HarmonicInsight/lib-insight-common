@@ -1,0 +1,200 @@
+<Window x:Class="HarmonicDoc.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Harmonic Doc"
+        Width="1280" Height="720"
+        MinWidth="800" MinHeight="500"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI">
+
+    <Border Background="{StaticResource BgPrimaryBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title Bar -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource BgSecondaryBrush}"
+                    CornerRadius="8,8,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Product Name, Version, Plan Badge -->
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Margin="16,0,0,0">
+                        <TextBlock Text="Harmonic Doc"
+                                   Foreground="{StaticResource PrimaryBrush}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="v1.0.0"
+                                   Foreground="{StaticResource TextTertiaryBrush}"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Margin="8,0,0,0"/>
+                        <Border Background="{StaticResource PrimaryLightBrush}"
+                                CornerRadius="4"
+                                Padding="8,2"
+                                Margin="12,0,0,0"
+                                VerticalAlignment="Center">
+                            <TextBlock x:Name="PlanBadgeText"
+                                       Text="FREE"
+                                       Foreground="{StaticResource TextAccentBrush}"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Right: Language, License, Window Controls -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <!-- Language Toggle -->
+                        <Button x:Name="LanguageButton"
+                                Content="English"
+                                Style="{StaticResource TitleBarButtonStyle}"
+                                Click="LanguageToggle_Click"
+                                Margin="0,0,4,0"/>
+
+                        <!-- License Button -->
+                        <Button Style="{StaticResource TitleBarButtonStyle}"
+                                Click="LicenseButton_Click"
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x1F511;"
+                                           FontSize="13"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,4,0"/>
+                                <TextBlock x:Name="LicenseButtonText"
+                                           Text="ライセンス"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Minimize -->
+                        <Button Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MinimizeButton_Click"
+                                Content="&#x2500;"/>
+                        <!-- Maximize -->
+                        <Button Style="{StaticResource WindowControlButtonStyle}"
+                                Click="MaximizeButton_Click"
+                                Content="&#x25A1;"/>
+                        <!-- Close -->
+                        <Button Style="{StaticResource CloseButtonStyle}"
+                                Click="CloseButton_Click"
+                                Content="&#x2715;"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Main Content -->
+            <Grid Grid.Row="1" Margin="24">
+                <Border Background="{StaticResource BgCardBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="32">
+                    <StackPanel VerticalAlignment="Top">
+                        <!-- Header -->
+                        <TextBlock Text="Word Document Operations"
+                                   FontSize="24"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="Select an operation to perform on your Word documents."
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Margin="0,0,0,24"/>
+
+                        <!-- Operation Buttons -->
+                        <WrapPanel Orientation="Horizontal">
+                            <Border Background="{StaticResource BgPrimaryBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="24,20"
+                                    Margin="0,0,12,12"
+                                    Width="220">
+                                <StackPanel>
+                                    <TextBlock Text="&#x1F4C4;"
+                                               FontSize="28"
+                                               Margin="0,0,0,8"/>
+                                    <TextBlock Text="Open Document"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               Margin="0,0,0,4"/>
+                                    <TextBlock Text="Open and view Word documents"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="{StaticResource BgPrimaryBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="24,20"
+                                    Margin="0,0,12,12"
+                                    Width="220">
+                                <StackPanel>
+                                    <TextBlock Text="&#x1F4DD;"
+                                               FontSize="28"
+                                               Margin="0,0,0,8"/>
+                                    <TextBlock Text="Extract Text"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               Margin="0,0,0,4"/>
+                                    <TextBlock Text="Extract text content from documents"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="{StaticResource BgPrimaryBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="24,20"
+                                    Margin="0,0,12,12"
+                                    Width="220">
+                                <StackPanel>
+                                    <TextBlock Text="&#x1F504;"
+                                               FontSize="28"
+                                               Margin="0,0,0,8"/>
+                                    <TextBlock Text="Convert Format"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               Margin="0,0,0,4"/>
+                                    <TextBlock Text="Convert between document formats"
+                                               FontSize="12"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
