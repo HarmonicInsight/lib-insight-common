@@ -1,0 +1,165 @@
+<Window x:Class="HarmonicSheet.Views.LicenseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="License - Harmonic Sheet"
+        Height="680" Width="520"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI">
+
+    <Border Background="{StaticResource BgPrimaryBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- タイトルバー -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource BgSecondaryBrush}"
+                    CornerRadius="8,8,0,0"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <TextBlock x:Name="WindowTitleText"
+                               Text="ライセンス管理"
+                               FontSize="13" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               VerticalAlignment="Center"
+                               Margin="16,0,0,0"/>
+                    <Button Style="{StaticResource CloseButtonStyle}"
+                            Click="CloseButton_Click"
+                            Content="&#x00D7;"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- コンテンツ -->
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="32,24,32,32">
+
+                    <!-- 製品名 -->
+                    <TextBlock Text="Harmonic Sheet"
+                               FontSize="24" FontWeight="Bold"
+                               Foreground="{StaticResource PrimaryBrush}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,24"/>
+
+                    <!-- 現在のプラン -->
+                    <Border Background="{StaticResource BgCardBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="24,20"
+                            Margin="0,0,0,16">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="CurrentPlanLabel"
+                                       Text="現在のプラン"
+                                       FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="CurrentPlanText"
+                                       Text="FREE"
+                                       FontSize="32" FontWeight="Bold"
+                                       Foreground="{StaticResource PrimaryBrush}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="ExpiryDateText"
+                                       Text=""
+                                       FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 機能一覧 -->
+                    <Border Background="{StaticResource BgCardBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="24,16"
+                            Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock x:Name="FeatureListLabel"
+                                       Text="機能一覧"
+                                       FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       Margin="0,0,0,12"/>
+                            <StackPanel x:Name="FeatureListPanel"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ライセンス認証セクション -->
+                    <Border Background="{StaticResource BgCardBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="24,16"
+                            Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock x:Name="ActivationSectionLabel"
+                                       Text="ライセンス認証"
+                                       FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       Margin="0,0,0,12"/>
+
+                            <!-- メールアドレス -->
+                            <TextBlock x:Name="EmailLabel"
+                                       Text="メールアドレス"
+                                       FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Margin="0,0,0,4"/>
+                            <TextBox x:Name="EmailTextBox"
+                                     Style="{StaticResource InputTextBoxStyle}"
+                                     Margin="0,0,0,12"
+                                     KeyDown="TextBox_KeyDown"/>
+
+                            <!-- ライセンスキー -->
+                            <TextBlock x:Name="LicenseKeyLabel"
+                                       Text="ライセンスキー"
+                                       FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Margin="0,0,0,4"/>
+                            <TextBox x:Name="LicenseKeyTextBox"
+                                     Style="{StaticResource InputTextBoxStyle}"
+                                     Margin="0,0,0,16"
+                                     KeyDown="TextBox_KeyDown"/>
+
+                            <!-- ボタン -->
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <Button x:Name="ActivateButton"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Content="アクティベート"
+                                        Click="Activate_Click"
+                                        Margin="0,0,12,0"/>
+                                <Button x:Name="ClearButton"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Content="クリア"
+                                        Click="Clear_Click"/>
+                            </StackPanel>
+
+                            <!-- ステータスメッセージ -->
+                            <TextBlock x:Name="StatusMessage"
+                                       Text=""
+                                       FontSize="13"
+                                       TextWrapping="Wrap"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,12,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</Window>

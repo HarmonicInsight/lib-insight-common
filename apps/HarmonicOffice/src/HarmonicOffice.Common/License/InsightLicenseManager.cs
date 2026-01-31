@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace InsightCommon.License;
+namespace HarmonicOffice.Common.License;
 
 /// <summary>
 /// Insight Series 共通ライセンスマネージャー
@@ -38,8 +38,8 @@ public class InsightLicenseManager
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="productCode">製品コード (INSS, INSP, INPY, FGIN, INMV, INBT)</param>
-    /// <param name="productName">製品名 (InsightSlide, InsightMovie, InsightBot, etc.)</param>
+    /// <param name="productCode">製品コード (HMSH, HMDC, HMSL, etc.)</param>
+    /// <param name="productName">製品名 (HarmonicSheet, HarmonicDoc, HarmonicSlide)</param>
     public InsightLicenseManager(string productCode, string productName)
     {
         _productCode = productCode;
@@ -234,8 +234,6 @@ public class InsightLicenseManager
     /// <summary>
     /// 指定の機能が利用可能かを判定
     /// </summary>
-    /// <param name="featureMatrix">機能名→許可プラン配列のマップ</param>
-    /// <param name="feature">チェックする機能名</param>
     public bool CanUseFeature(Dictionary<string, PlanCode[]> featureMatrix, string feature)
     {
         if (!featureMatrix.TryGetValue(feature, out var allowedPlans))

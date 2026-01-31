@@ -128,6 +128,9 @@ from your_app.ui.colors import Colors
 | INMV | InsightMovie | 画像・PPTから動画作成 |
 | INBT | InsightBot | Python RPA自動化ボット |
 | INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
+| HMSH | HarmonicSheet | Excel操作・自動化ツール |
+| HMDC | HarmonicDoc | Wordドキュメント操作・自動化ツール |
+| HMSL | HarmonicSlide | PowerPointプレゼンテーション操作・自動化ツール |
 
 **新規製品を追加する場合:**
 1. `config/products.ts` に登録
