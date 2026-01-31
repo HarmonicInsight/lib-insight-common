@@ -606,7 +606,72 @@ public class InsightLicenseManager
 
 ---
 
+## サードパーティライセンス管理
+
+Syncfusion 等のサードパーティライセンスキーは `insight-common/config/third-party-licenses.json` で**全製品共通管理**されています。各アプリに直書きしないでください。
+
+### 必須実装: ThirdPartyLicenses.cs
+
+各アプリに `ThirdPartyLicenses.cs` を作成し、共通 JSON からキーを読み込みます。
+
+```csharp
+internal static class ThirdPartyLicenses
+{
+    public static string GetSyncfusionKey()
+    {
+        // 1. insight-common/config/third-party-licenses.json から読み込み
+        try
+        {
+            var path = FindConfigPath();
+            if (path != null && File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                using var doc = JsonDocument.Parse(json);
+                if (doc.RootElement.TryGetProperty("syncfusion", out var sf) &&
+                    sf.TryGetProperty("licenseKey", out var key))
+                {
+                    var value = key.GetString();
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+        }
+        catch { }
+
+        // 2. ハードコードフォールバック
+        return "YOUR_FALLBACK_KEY";
+    }
+}
+```
+
+### App.xaml.cs での登録
+
+```csharp
+protected override void OnStartup(StartupEventArgs e)
+{
+    base.OnStartup(e);
+
+    // サードパーティライセンス登録（環境変数 > JSON > フォールバック）
+    var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
+    if (string.IsNullOrEmpty(licenseKey))
+        licenseKey = ThirdPartyLicenses.GetSyncfusionKey();
+    if (!string.IsNullOrEmpty(licenseKey))
+        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
+
+    // ...
+}
+```
+
+### チェックリスト
+
+- [ ] `ThirdPartyLicenses.cs` が作成されている
+- [ ] App.xaml.cs の OnStartup で Syncfusion キーを登録している
+- [ ] キーがハードコード**のみ**で管理されて**いない**（JSON読み込み優先）
+
+---
+
 ## 参考実装
 
+- **HarmonicSheet**: `app-Insight-excel` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
 - **InsightNoCodeAnalyzer**: `app-nocode-analyzer-C` リポジトリ
 - **InsightSlide**: ライセンス画面のリファレンス実装

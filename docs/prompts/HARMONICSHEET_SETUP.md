@@ -47,7 +47,22 @@ git submodule update --init --recursive
 - Background (Ivory): `#FAF8F5`
 - **Blue (#2563EB) を使用してはいけません**
 
-### 3. ライセンス統合
+### 3. サードパーティライセンス（Syncfusion）
+
+HarmonicSheet は Syncfusion SfSpreadsheet を使用しています。ライセンスキーは `insight-common/config/third-party-licenses.json` で全製品共通管理されています。
+
+```csharp
+// App.xaml.cs の OnStartup 冒頭
+// ThirdPartyLicenses.cs が JSON → 環境変数 → フォールバックの順で取得
+var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
+if (string.IsNullOrEmpty(licenseKey))
+    licenseKey = ThirdPartyLicenses.GetSyncfusionKey();
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
+```
+
+キー更新時は `insight-common/config/third-party-licenses.json` の `syncfusion.licenseKey` を書き換えるだけで HMSH/HMDC/HMSL すべてに反映されます。
+
+### 4. Insight ライセンス統合
 
 ```csharp
 using InsightCommon.License;
@@ -56,7 +71,7 @@ using InsightCommon.License;
 var licenseManager = new InsightLicenseManager("HMSH");
 ```
 
-### 4. メニュー構造
+### 5. メニュー構造
 
 `insight-common/ui/menu-structure.json` の `harmonicSheet` セクションに定義されたメニューを実装してください。
 
@@ -80,7 +95,7 @@ var licenseManager = new InsightLicenseManager("HMSH");
 - ショートカットキー一覧
 - HarmonicSheetについて
 
-### 5. ヘルプシステム
+### 6. ヘルプシステム
 
 ヘルプコンテンツは `insight-common/ui/help/` に配置されています。
 
@@ -94,7 +109,7 @@ var licenseManager = new InsightLicenseManager("HMSH");
 
 これらの Markdown をアプリ内のヘルプビューアで表示するか、HTML に変換してブラウザで開く形で実装してください。
 
-### 6. 履歴ファイル（.hsheet）
+### 7. 履歴ファイル（.hsheet）
 
 HarmonicSheet は変更履歴を `.hsheet` ファイル（ZIP アーカイブ）として保存します。
 
@@ -129,6 +144,7 @@ HarmonicSheet は変更履歴を `.hsheet` ファイル（ZIP アーカイブ）
 - [ ] Gold (#B8942F) がプライマリカラーとして使用されている
 - [ ] Ivory (#FAF8F5) が背景色として使用されている
 - [ ] 青色がプライマリとして使用されていない
+- [ ] Syncfusion キーが ThirdPartyLicenses 経由で登録されている
 - [ ] InsightLicenseManager が "HMSH" で初期化されている
 - [ ] ライセンス画面が Insight Slides 形式に準拠
 - [ ] メニュー構造が menu-structure.json に準拠
