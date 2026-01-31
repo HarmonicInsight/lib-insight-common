@@ -59,8 +59,8 @@ export interface PlanInfo {
   priority: number;
   description: string;
   descriptionJa: string;
-  /** デフォルト有効期間（月）、-1 は無期限/要相談 */
-  defaultDurationMonths: number;
+  /** デフォルト有効期間（日）、-1 は無期限/要相談 */
+  defaultDurationDays: number;
 }
 
 /**
@@ -219,34 +219,34 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     priority: 0,
     description: 'Basic features with limitations',
     descriptionJa: '機能制限あり',
-    defaultDurationMonths: -1,
+    defaultDurationDays: -1,
   },
   TRIAL: {
     code: 'TRIAL',
     name: 'Trial',
     nameJa: 'トライアル',
     priority: 4,  // 全機能使えるため最上位と同等
-    description: 'Full features for evaluation (time-limited)',
-    descriptionJa: '全機能利用可能（期間限定）',
-    defaultDurationMonths: 1,
+    description: 'Full features for evaluation (14 days)',
+    descriptionJa: '全機能利用可能（14日間）',
+    defaultDurationDays: 14,
   },
   STD: {
     code: 'STD',
     name: 'Standard',
     nameJa: 'スタンダード',
     priority: 2,
-    description: 'Standard features for regular use',
-    descriptionJa: '標準機能',
-    defaultDurationMonths: 12,
+    description: 'Standard features for individual use (365 days)',
+    descriptionJa: '個人向け標準機能（365日）',
+    defaultDurationDays: 365,
   },
   PRO: {
     code: 'PRO',
     name: 'Pro',
     nameJa: 'プロ',
     priority: 3,
-    description: 'All product features',
-    descriptionJa: '全機能',
-    defaultDurationMonths: 12,
+    description: 'All features for business/team use (365 days)',
+    descriptionJa: '法人・チーム向け全機能（365日）',
+    defaultDurationDays: 365,
   },
   ENT: {
     code: 'ENT',
@@ -255,7 +255,7 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     priority: 4,
     description: 'Custom features and dedicated support',
     descriptionJa: 'カスタマイズ（要相談）',
-    defaultDurationMonths: -1,
+    defaultDurationDays: -1,
   },
 };
 
