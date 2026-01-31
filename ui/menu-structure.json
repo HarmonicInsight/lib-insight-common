@@ -204,6 +204,26 @@
         { "id": "evaluation", "label": { "ja": "評価", "en": "Evaluation" }, "icon": "ClipboardCheck" },
         { "id": "questions", "label": { "ja": "質問集", "en": "Questions" }, "icon": "MessageSquare" }
       ]
+    },
+    "harmonicSheet": {
+      "tools": [
+        { "id": "open-excel", "label": { "ja": "Excelファイルを開く", "en": "Open Excel File" }, "icon": "FileSpreadsheet", "shortcut": "Ctrl+O" },
+        { "id": "read-sheet", "label": { "ja": "シート読取", "en": "Read Sheet" }, "icon": "Table", "shortcut": "Ctrl+R" },
+        { "id": "write-sheet", "label": { "ja": "シート書込", "en": "Write Sheet" }, "icon": "PenLine", "shortcut": "Ctrl+W" },
+        { "id": "formula-analysis", "label": { "ja": "数式解析", "en": "Formula Analysis" }, "icon": "Calculator" },
+        { "id": "macro-execution", "label": { "ja": "マクロ実行", "en": "Macro Execution" }, "icon": "Play" },
+        { "id": "batch-process", "label": { "ja": "バッチ処理", "en": "Batch Processing" }, "icon": "Layers" },
+        { "id": "template", "label": { "ja": "テンプレート", "en": "Template" }, "icon": "LayoutTemplate" },
+        { "id": "history", "label": { "ja": "変更履歴", "en": "History" }, "icon": "History", "shortcut": "Ctrl+H" }
+      ],
+      "helpMenu": [
+        { "id": "quick-start", "label": { "ja": "クイックスタート", "en": "Quick Start" }, "icon": "Rocket", "path": "/help/quick-start" },
+        { "id": "excel-commands", "label": { "ja": "Excelコマンド集", "en": "Excel Commands" }, "icon": "BookOpen", "path": "/help/excel-commands" },
+        { "id": "history-files", "label": { "ja": "履歴ファイルについて", "en": "About History Files" }, "icon": "Archive", "path": "/help/history-files" },
+        { "id": "faq", "label": { "ja": "よくある質問", "en": "FAQ" }, "icon": "HelpCircle", "path": "/help/faq" },
+        { "id": "keyboard-shortcuts", "label": { "ja": "ショートカットキー一覧", "en": "Keyboard Shortcuts" }, "icon": "Keyboard", "path": "/help/shortcuts" },
+        { "id": "about", "label": { "ja": "HarmonicSheetについて", "en": "About HarmonicSheet" }, "icon": "Info", "path": "/help/about" }
+      ]
     }
   },
   "shortcuts": {
