@@ -64,7 +64,6 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
@@ -74,31 +73,8 @@
                                    FontSize="13" FontWeight="SemiBold"
                                    Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,8"/>
 
-                        <!-- Base Path -->
-                        <StackPanel Grid.Row="1" Margin="0,0,0,8">
-                            <TextBlock Text="リポジトリパス:"
-                                       FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
-                                       FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox x:Name="BasePathBox"
-                                         FontFamily="Consolas, Cascadia Code"
-                                         FontSize="11" Padding="6,4"
-                                         Background="{StaticResource BgPrimaryBrush}"
-                                         BorderBrush="{StaticResource BorderBrush}"
-                                         Foreground="{StaticResource TextPrimaryBrush}"/>
-                                <Button Grid.Column="1" Content="..."
-                                        Style="{StaticResource SecondaryButton}"
-                                        Padding="8,4" Margin="4,0,0,0"
-                                        Click="BrowseBasePath_Click"/>
-                            </Grid>
-                        </StackPanel>
-
                         <!-- App List -->
-                        <ListBox x:Name="AppListBox" Grid.Row="2"
+                        <ListBox x:Name="AppListBox" Grid.Row="1"
                                  Background="Transparent" BorderThickness="0"
                                  SelectionChanged="AppListBox_SelectionChanged"
                                  FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI">
@@ -117,7 +93,7 @@
                         </ListBox>
 
                         <!-- Add/Remove buttons -->
-                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,8,0,0">
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
                             <Button Content="追加" Style="{StaticResource SecondaryButton}"
                                     Padding="12,4" Click="AddApp_Click"/>
                             <Button Content="削除" Style="{StaticResource DangerButton}"
@@ -177,6 +153,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="アプリ名:"
@@ -195,24 +172,39 @@
                                     <TextBox x:Name="EditDescription" Grid.Row="2" Grid.Column="1"
                                              Style="{StaticResource EditField}"/>
 
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="ソリューション:"
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="リポジトリパス:"
                                                Style="{StaticResource EditLabel}"/>
-                                    <TextBox x:Name="EditSolutionPath" Grid.Row="3" Grid.Column="1"
+                                    <Grid Grid.Row="3" Grid.Column="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="EditBasePath" Grid.Column="0"
+                                                 Style="{StaticResource EditField}"/>
+                                        <Button Grid.Column="1" Content="..."
+                                                Style="{StaticResource SecondaryButton}"
+                                                Padding="8,4" Margin="4,0,0,2"
+                                                Click="BrowseEditBasePath_Click"/>
+                                    </Grid>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="ソリューション:"
+                                               Style="{StaticResource EditLabel}"/>
+                                    <TextBox x:Name="EditSolutionPath" Grid.Row="4" Grid.Column="1"
                                              Style="{StaticResource EditField}"/>
 
-                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="プロジェクト:"
+                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="プロジェクト:"
                                                Style="{StaticResource EditLabel}"/>
-                                    <TextBox x:Name="EditProjectPath" Grid.Row="4" Grid.Column="1"
+                                    <TextBox x:Name="EditProjectPath" Grid.Row="5" Grid.Column="1"
                                              Style="{StaticResource EditField}"/>
 
-                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="テスト:"
+                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="テスト:"
                                                Style="{StaticResource EditLabel}"/>
-                                    <TextBox x:Name="EditTestPath" Grid.Row="5" Grid.Column="1"
+                                    <TextBox x:Name="EditTestPath" Grid.Row="6" Grid.Column="1"
                                              Style="{StaticResource EditField}"/>
 
-                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="exe相対パス:"
+                                    <TextBlock Grid.Row="7" Grid.Column="0" Text="exe相対パス:"
                                                Style="{StaticResource EditLabel}"/>
-                                    <Grid Grid.Row="6" Grid.Column="1">
+                                    <Grid Grid.Row="7" Grid.Column="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
@@ -238,36 +230,46 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="ソリューション:"
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="リポジトリ:"
                                            FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
                                            FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
-                                <TextBlock x:Name="SolutionPathText" Grid.Row="0" Grid.Column="1"
+                                <TextBlock x:Name="BasePathText" Grid.Row="0" Grid.Column="1"
+                                           FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontFamily="Consolas, Cascadia Code" Margin="0,2"
+                                           TextTrimming="CharacterEllipsis" Cursor="Hand"
+                                           MouseLeftButtonDown="BasePathText_Click"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="ソリューション:"
+                                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
+                                <TextBlock x:Name="SolutionPathText" Grid.Row="1" Grid.Column="1"
                                            FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"
                                            FontFamily="Consolas, Cascadia Code" Margin="0,2"
                                            TextTrimming="CharacterEllipsis"/>
 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="プロジェクト:"
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="プロジェクト:"
                                            FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
                                            FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
-                                <TextBlock x:Name="ProjectPathText" Grid.Row="1" Grid.Column="1"
+                                <TextBlock x:Name="ProjectPathText" Grid.Row="2" Grid.Column="1"
                                            FontSize="11" Foreground="{StaticResource TextPrimaryBrush}"
                                            FontFamily="Consolas, Cascadia Code" Margin="0,2"
                                            TextTrimming="CharacterEllipsis"/>
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Debug exe:"
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Debug exe:"
                                            FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
                                            FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
-                                <TextBlock x:Name="DebugExeText" Grid.Row="2" Grid.Column="1"
+                                <TextBlock x:Name="DebugExeText" Grid.Row="3" Grid.Column="1"
                                            FontSize="11" FontFamily="Consolas, Cascadia Code" Margin="0,2"
                                            TextTrimming="CharacterEllipsis" Cursor="Hand"
                                            MouseLeftButtonDown="ExePath_Click"/>
 
-                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Release exe:"
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Release exe:"
                                            FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
                                            FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI" Margin="0,2"/>
-                                <TextBlock x:Name="ReleaseExeText" Grid.Row="3" Grid.Column="1"
+                                <TextBlock x:Name="ReleaseExeText" Grid.Row="4" Grid.Column="1"
                                            FontSize="11" FontFamily="Consolas, Cascadia Code" Margin="0,2"
                                            TextTrimming="CharacterEllipsis" Cursor="Hand"
                                            MouseLeftButtonDown="ExePath_Click"/>
