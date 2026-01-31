@@ -149,25 +149,66 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 
-## 5. 製品コード一覧
+## 5. 製品コード一覧・価格戦略
 
-| コード | 製品名 | 説明 |
-|-------|-------|------|
-| INSS | InsightSlide | PowerPointコンテンツ抽出・更新 |
-| INSP | InsightSlide Pro | プロ向けPowerPointツール |
-| INPY | InsightPy | Windows自動化Python実行環境 |
-| FGIN | ForguncyInsight | Forguncy連携 |
-| INMV | InsightMovie | 画像・PPTから動画作成 |
-| INBT | InsightBot | Python RPA自動化ボット |
-| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
-| HMSH | HarmonicSheet | Excelバージョン管理・チームコラボレーション（STD: 個人, PRO: 法人） |
-| HMDC | HarmonicDoc | Wordドキュメント操作・自動化ツール |
-| HMSL | HarmonicSlide | PowerPointプレゼンテーション操作・自動化ツール |
+### 販売チャネルと価格帯
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  【A】コンサルティング連動型      年額 98万円〜398万円              │
+│  コンサル案件（数千万円規模）の一環として提供。少量・高単価。       │
+│  INCA / INBT / FGIN / INMV / INIG                                  │
+├──────────────────────────────────────────────────────────────────────┤
+│  【B】グローバルスタンドアロン型   年額 49,800円〜148,000円         │
+│  Office系汎用ツール。5〜10万円帯でグローバルに大量販売。            │
+│  INSS / INSP / INPY / HMSH / HMDC / HMSL                          │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### 【A】コンサルティング連動型
+
+| コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
+|-------|-------|------|---------------|---------------|-----|
+| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
+| INBT | InsightBot | Python RPA自動化ボット | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| FGIN | ForguncyInsight | Forguncy連携 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| INMV | InsightMovie | 画像・PPTから動画作成 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| INIG | InsightImageGen | AI画像・音声生成 | ¥980,000 | ¥1,980,000 | 個別見積 |
+
+> **考え方**: コンサルティング開発案件（数千万円規模）の中で使用するツール。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。大量販売は不要。
+
+### 【B】グローバルスタンドアロン型
+
+| コード | 製品名 | 説明 | FREE | STD（税抜/年） | PRO（税抜/年） | USD STD | USD PRO |
+|-------|-------|------|------|---------------|---------------|---------|---------|
+| INSS | InsightSlide | PowerPointコンテンツ抽出・更新 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| INSP | InsightSlide Pro | プロ向けPowerPointツール | — | ¥79,800 | ¥148,000 | $530 | $980 |
+| INPY | InsightPy | Windows自動化Python実行環境 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| HMSH | HarmonicSheet | Excelバージョン管理・チームコラボ | — | ¥59,800 | ¥118,000 | $400 | $780 |
+| HMDC | HarmonicDoc | Wordドキュメント操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| HMSL | HarmonicSlide | PowerPoint操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+
+> **考え方**: Office系の汎用ツールとして単独でグローバル展開。5〜10万円帯で大量販売を目指す。全製品1ヶ月の無料トライアルあり。
+
+### 価格定義ファイル
+
+```typescript
+import { getPrice, getSalesChannel } from '@/insight-common/config/pricing';
+
+// 製品の販売チャネルを確認
+getSalesChannel('INCA');  // 'consulting'
+getSalesChannel('INSS');  // 'standalone'
+
+// 価格を取得
+getPrice('INSS', 'STD');  // { annualPrice: 49800, currency: 'JPY', monthlyEquivalent: 4150 }
+getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEquivalent: 331667 }
+```
 
 **新規製品を追加する場合:**
 1. `config/products.ts` に登録
-2. この一覧に追加
-3. ライセンス機能マトリクスを定義
+2. `config/pricing.ts` に価格を設定
+3. この一覧に追加
+4. ライセンス機能マトリクスを定義
 
 ## 6. ライセンスシステム
 
