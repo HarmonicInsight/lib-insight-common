@@ -12,6 +12,7 @@
 | プラットフォーム | ファイル | 主な用途 |
 |----------------|---------|---------|
 | **公開Webサイト** | [WEBSITE.md](./WEBSITE.md) | **製品HP・会社HP・LP（色・デザイン統一）** |
+| **アプリアイコン** | [APP_ICONS.md](./APP_ICONS.md) | **全製品共通アイコン仕様** |
 | C# (WPF) | [CSHARP_WPF.md](./CSHARP_WPF.md) | Windows デスクトップアプリ |
 | Python | [PYTHON.md](./PYTHON.md) | CLI ツール、バックエンド |
 | React/Next.js | [REACT.md](./REACT.md) | Web アプリケーション（アプリUI） |
