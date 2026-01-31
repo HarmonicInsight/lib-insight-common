@@ -101,5 +101,24 @@
             <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource ErrorBrush}"/>
         </Style>
+
+        <!-- Edit Form Styles -->
+        <Style x:Key="EditLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI, Yu Gothic UI"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,8,6"/>
+        </Style>
+
+        <Style x:Key="EditField" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Consolas, Cascadia Code"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Background" Value="{StaticResource BgCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
     </Application.Resources>
 </Application>

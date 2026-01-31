@@ -20,7 +20,6 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         _config = AppConfig.Load();
-        BasePathBox.Text = _config.Apps.FirstOrDefault()?.BasePath ?? "";
 
         _runner.OutputReceived += OnOutputReceived;
         _runner.CommandCompleted += OnCommandCompleted;
@@ -66,6 +65,10 @@ public partial class MainWindow : Window
     {
         _selectedApp = AppListBox.SelectedItem as AppDefinition;
         UpdateAppDetails();
+
+        // Close edit panel on selection change
+        EditPanel.Visibility = Visibility.Collapsed;
+        EditToggleBtn.Content = "編集";
     }
 
     private void UpdateAppDetails()
@@ -73,6 +76,7 @@ public partial class MainWindow : Window
         if (_selectedApp == null)
         {
             SelectedAppName.Text = "アプリを選択してください";
+            BasePathText.Text = "";
             SolutionPathText.Text = "";
             ProjectPathText.Text = "";
             DebugExeText.Text = "";
@@ -80,9 +84,11 @@ public partial class MainWindow : Window
             return;
         }
 
-        _selectedApp.BasePath = BasePathBox.Text.Trim();
-
         SelectedAppName.Text = _selectedApp.Name;
+        BasePathText.Text = string.IsNullOrEmpty(_selectedApp.BasePath) ? "(未設定)" : _selectedApp.BasePath;
+        BasePathText.Foreground = string.IsNullOrEmpty(_selectedApp.BasePath)
+            ? (Brush)FindResource("ErrorBrush")
+            : (Brush)FindResource("TextPrimaryBrush");
         SolutionPathText.Text = _selectedApp.ResolvedSolutionPath;
         ProjectPathText.Text = _selectedApp.ResolvedProjectPath;
 
@@ -102,7 +108,7 @@ public partial class MainWindow : Window
 
     // ── Base Path ──
 
-    private void BrowseBasePath_Click(object sender, RoutedEventArgs e)
+    private void BrowseEditBasePath_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFolderDialog
         {
@@ -111,9 +117,15 @@ public partial class MainWindow : Window
 
         if (dialog.ShowDialog() == true)
         {
-            BasePathBox.Text = dialog.FolderName;
-            UpdateAppDetails();
-            SaveConfig();
+            EditBasePath.Text = dialog.FolderName;
+        }
+    }
+
+    private void BasePathText_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (_selectedApp != null && !string.IsNullOrEmpty(_selectedApp.BasePath) && Directory.Exists(_selectedApp.BasePath))
+        {
+            Process.Start("explorer.exe", _selectedApp.BasePath);
         }
     }
 
@@ -176,11 +188,9 @@ public partial class MainWindow : Window
         {
             Process.Start("explorer.exe", dir);
         }
-        else
+        else if (!string.IsNullOrEmpty(_selectedApp.BasePath) && Directory.Exists(_selectedApp.BasePath))
         {
-            var basePath = BasePathBox.Text.Trim();
-            if (Directory.Exists(basePath))
-                Process.Start("explorer.exe", basePath);
+            Process.Start("explorer.exe", _selectedApp.BasePath);
         }
     }
 
@@ -200,6 +210,124 @@ public partial class MainWindow : Window
         }
     }
 
+    // ── Edit ──
+
+    private void EditToggle_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+
+        if (EditPanel.Visibility == Visibility.Collapsed)
+        {
+            PopulateEditFields(_selectedApp);
+            EditPanel.Visibility = Visibility.Visible;
+            EditToggleBtn.Content = "閉じる";
+        }
+        else
+        {
+            EditPanel.Visibility = Visibility.Collapsed;
+            EditToggleBtn.Content = "編集";
+        }
+    }
+
+    private bool _suppressAutoFill;
+
+    private void PopulateEditFields(AppDefinition app)
+    {
+        _suppressAutoFill = true;
+        EditName.Text = app.Name;
+        EditProductCode.Text = app.ProductCode;
+        EditDescription.Text = app.Description;
+        EditBasePath.Text = app.BasePath;
+        EditSolutionPath.Text = app.SolutionPath;
+        EditProjectPath.Text = app.ProjectPath;
+        EditTestPath.Text = app.TestProjectPath;
+        EditExePath.Text = app.ExeRelativePath;
+        _suppressAutoFill = false;
+    }
+
+    private void EditName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        if (_suppressAutoFill) return;
+
+        var name = EditName.Text.Trim();
+        if (string.IsNullOrEmpty(name)) return;
+
+        // Generate product code from name (e.g. "HarmonicSheet" -> "HMSH")
+        EditProductCode.Text = GenerateProductCode(name);
+
+        // Auto-fill paths using the convention:
+        //   Solution:  {Name}.sln
+        //   Project:   src/{Name}.App/{Name}.App.csproj
+        //   Test:      tests/{Name}.Core.Tests
+        //   Exe:       src/{Name}.App/bin/{config}/net8.0-windows/{Name}.App.exe
+        EditSolutionPath.Text = $"{name}.sln";
+        EditProjectPath.Text = $"src/{name}.App/{name}.App.csproj";
+        EditTestPath.Text = $"tests/{name}.Core.Tests";
+        EditExePath.Text = $"src/{name}.App/bin/{{config}}/net8.0-windows/{name}.App.exe";
+        EditDescription.Text = $"{name} アプリケーション";
+    }
+
+    private static string GenerateProductCode(string name)
+    {
+        // Extract uppercase letters or word starts to make a short code
+        // e.g. "HarmonicSheet" -> "HS", then pad to 4 chars -> "HMSH"
+        // Strategy: take first 2 chars of each PascalCase word
+        var words = new List<string>();
+        var current = "";
+        foreach (var c in name)
+        {
+            if (char.IsUpper(c) && current.Length > 0)
+            {
+                words.Add(current);
+                current = c.ToString();
+            }
+            else
+            {
+                current += c;
+            }
+        }
+        if (current.Length > 0) words.Add(current);
+
+        if (words.Count == 0) return "NEW";
+
+        // Take first 2 chars of each word, up to 4 chars total
+        var code = "";
+        var charsPerWord = Math.Max(1, Math.Min(4 / words.Count, 2));
+        foreach (var w in words)
+        {
+            code += w[..Math.Min(charsPerWord, w.Length)];
+            if (code.Length >= 4) break;
+        }
+
+        return code.ToUpperInvariant().PadRight(4, 'X')[..4];
+    }
+
+    private void SaveEdit_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+
+        _selectedApp.Name = EditName.Text.Trim();
+        _selectedApp.ProductCode = EditProductCode.Text.Trim();
+        _selectedApp.Description = EditDescription.Text.Trim();
+        _selectedApp.BasePath = EditBasePath.Text.Trim();
+        _selectedApp.SolutionPath = EditSolutionPath.Text.Trim();
+        _selectedApp.ProjectPath = EditProjectPath.Text.Trim();
+        _selectedApp.TestProjectPath = EditTestPath.Text.Trim();
+        _selectedApp.ExeRelativePath = EditExePath.Text.Trim();
+
+        SaveConfig();
+        UpdateAppDetails();
+
+        var saved = _selectedApp;
+        RefreshAppList();
+        AppListBox.SelectedItem = saved;
+
+        EditPanel.Visibility = Visibility.Collapsed;
+        EditToggleBtn.Content = "編集";
+
+        AppendOutput($"[保存] {_selectedApp.Name} の設定を保存しました。\n");
+    }
+
     // ── Add/Remove ──
 
     private void AddApp_Click(object sender, RoutedEventArgs e)
@@ -208,14 +336,18 @@ public partial class MainWindow : Window
         {
             Name = "新規アプリ",
             ProductCode = "NEW",
-            Description = "説明を入力",
-            BasePath = BasePathBox.Text.Trim()
+            Description = "説明を入力"
         };
 
         _config.Apps.Add(app);
         RefreshAppList();
         AppListBox.SelectedItem = app;
         SaveConfig();
+
+        // Auto-open edit panel for new app
+        PopulateEditFields(app);
+        EditPanel.Visibility = Visibility.Visible;
+        EditToggleBtn.Content = "閉じる";
     }
 
     private void RemoveApp_Click(object sender, RoutedEventArgs e)
@@ -284,11 +416,9 @@ public partial class MainWindow : Window
             return false;
         }
 
-        _selectedApp.BasePath = BasePathBox.Text.Trim();
-
         if (string.IsNullOrEmpty(_selectedApp.BasePath))
         {
-            AppendOutput("[エラー] リポジトリパスを設定してください。\n");
+            AppendOutput($"[エラー] {_selectedApp.Name} のリポジトリパスを設定してください（編集ボタンから設定）。\n");
             return false;
         }
 
@@ -297,7 +427,7 @@ public partial class MainWindow : Window
 
     private string GetWorkingDir()
     {
-        var basePath = BasePathBox.Text.Trim();
+        var basePath = _selectedApp?.BasePath ?? "";
         return Directory.Exists(basePath) ? basePath : Environment.CurrentDirectory;
     }
 
@@ -323,8 +453,6 @@ public partial class MainWindow : Window
 
     private void SaveConfig()
     {
-        foreach (var app in _config.Apps)
-            app.BasePath = BasePathBox.Text.Trim();
         _config.Save();
     }
 
