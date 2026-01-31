@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Insight Series サードパーティライセンスキー（全製品共通）",
+  "version": "1.0.0",
+  "_note": "このファイルのキーはすべての Harmonic Insight 製品で共有されます。製品固有のキーは各製品リポジトリで管理してください。",
+
+  "syncfusion": {
+    "provider": "Syncfusion",
+    "description": "Essential Studio® - UI コンポーネントスイート（SfSpreadsheet, SfRichTextBoxAdv 等）",
+    "licenseUrl": "https://www.syncfusion.com/products/communitylicense",
+    "licenseKey": "Ngo9BigBOggjHTQxAR8/V1JGaF5cXGpCfExxWmFZfVhgd19EaFZQRGYuP1ZhSXxVdkRgWH9dcnxURmheWUB9XEA=",
+    "type": "essentialStudio7Day",
+    "issuedDate": "2026-01-31",
+    "expiresDate": "2026-02-07",
+    "envVar": "SYNCFUSION_LICENSE_KEY",
+    "usedBy": ["HMSH", "HMDC", "HMSL"]
+  }
+}
