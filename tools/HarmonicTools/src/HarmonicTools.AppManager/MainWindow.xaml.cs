@@ -131,73 +131,71 @@ public partial class MainWindow : Window
 
     // ── Build Commands ──
 
-    private async void BuildDebug_Click(object sender, RoutedEventArgs e)
+    private void BuildDebug_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
-        SetRunning(true);
-        if (!_selectedApp!.IsDotNet)
+        var title = $"{_selectedApp!.Name} - Debug Build";
+        if (!_selectedApp.IsDotNet)
         {
-            await RunBuildCommand();
+            RunBuildCommandExternal(title);
             return;
         }
-        await _runner.RunAsync("dotnet", $"build \"{_selectedApp.ResolvedProjectPath}\"", GetWorkingDir());
+        _runner.RunInExternalConsole(title, "dotnet", $"build \"{_selectedApp.ResolvedProjectPath}\"", GetWorkingDir());
     }
 
-    private async void BuildRelease_Click(object sender, RoutedEventArgs e)
+    private void BuildRelease_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
-        SetRunning(true);
-        if (!_selectedApp!.IsDotNet)
+        var title = $"{_selectedApp!.Name} - Release Build";
+        if (!_selectedApp.IsDotNet)
         {
-            await RunBuildCommand();
+            RunBuildCommandExternal(title);
             return;
         }
-        await _runner.RunAsync("dotnet", $"build \"{_selectedApp.ResolvedProjectPath}\" -c Release", GetWorkingDir());
+        _runner.RunInExternalConsole(title, "dotnet", $"build \"{_selectedApp.ResolvedProjectPath}\" -c Release", GetWorkingDir());
     }
 
-    private async void Publish_Click(object sender, RoutedEventArgs e)
+    private void Publish_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
-        SetRunning(true);
+        var title = $"{_selectedApp!.Name} - Publish";
 
         // build.ps1 がある場合はそれを使用（dotnet publish + Inno Setup インストーラー作成）
-        if (_selectedApp!.HasBuildScript)
+        if (_selectedApp.HasBuildScript)
         {
-            AppendOutput($"[Publish] {_selectedApp.BuildCommand} を実行中...\n");
-            await RunBuildCommand();
+            RunBuildCommandExternal(title);
             return;
         }
 
         if (!_selectedApp.IsDotNet)
         {
-            await RunBuildCommand();
+            RunBuildCommandExternal(title);
             return;
         }
-        await _runner.RunAsync("dotnet",
+        _runner.RunInExternalConsole(title, "dotnet",
             $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r win-x64 --self-contained /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true",
             GetWorkingDir());
     }
 
-    private async void Run_Click(object sender, RoutedEventArgs e)
+    private void Run_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
-        SetRunning(true);
-        if (!_selectedApp!.IsDotNet)
+        var title = $"{_selectedApp!.Name} - Run";
+        if (!_selectedApp.IsDotNet)
         {
             var exePath = _selectedApp.DistExePath;
             if (!string.IsNullOrEmpty(exePath) && File.Exists(exePath))
             {
-                await _runner.RunAsync(exePath, "", _selectedApp.BasePath);
+                _runner.RunInExternalConsole(title, exePath, "", _selectedApp.BasePath);
                 return;
             }
             AppendOutput("[情報] exe が見つかりません。先にビルドしてください。\n");
-            SetRunning(false);
             return;
         }
-        await _runner.RunAsync("dotnet", $"run --project \"{_selectedApp.ResolvedProjectPath}\"", GetWorkingDir());
+        _runner.RunInExternalConsole(title, "dotnet", $"run --project \"{_selectedApp.ResolvedProjectPath}\"", GetWorkingDir());
     }
 
-    private async void Test_Click(object sender, RoutedEventArgs e)
+    private void Test_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
         if (string.IsNullOrEmpty(_selectedApp!.TestProjectPath))
@@ -205,24 +203,47 @@ public partial class MainWindow : Window
             AppendOutput("[情報] テストプロジェクトが設定されていません。\n");
             return;
         }
-        SetRunning(true);
-        await _runner.RunAsync("dotnet", $"test \"{_selectedApp!.ResolvedTestProjectPath}\"", GetWorkingDir());
+        var title = $"{_selectedApp.Name} - Test";
+        _runner.RunInExternalConsole(title, "dotnet", $"test \"{_selectedApp.ResolvedTestProjectPath}\"", GetWorkingDir());
     }
 
-    private async void BuildAll_Click(object sender, RoutedEventArgs e)
+    private void BuildAll_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
-        SetRunning(true);
-        if (!_selectedApp!.IsDotNet)
+        var title = $"{_selectedApp!.Name} - Build All";
+        if (!_selectedApp.IsDotNet)
         {
-            await RunBuildCommand();
+            RunBuildCommandExternal(title);
             return;
         }
-        await _runner.RunAsync("dotnet", $"build \"{_selectedApp.ResolvedSolutionPath}\"", GetWorkingDir());
+        _runner.RunInExternalConsole(title, "dotnet", $"build \"{_selectedApp.ResolvedSolutionPath}\"", GetWorkingDir());
     }
 
     /// <summary>
-    /// BuildCommand（build.ps1 / build.bat 等）を実行
+    /// BuildCommand を外部コンソールで実行
+    /// </summary>
+    private void RunBuildCommandExternal(string title, string? extraArgs = null)
+    {
+        if (string.IsNullOrEmpty(_selectedApp!.BuildCommand))
+        {
+            AppendOutput("[情報] ビルドコマンドが設定されていません。\n");
+            return;
+        }
+        var cmdPath = Path.Combine(_selectedApp.BasePath, _selectedApp.BuildCommand);
+        var args = extraArgs ?? "";
+
+        if (_selectedApp.BuildCommand.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase))
+        {
+            _runner.RunPs1InExternalConsole(title, cmdPath, args, _selectedApp.BasePath);
+        }
+        else
+        {
+            _runner.RunInExternalConsole(title, cmdPath, args, _selectedApp.BasePath);
+        }
+    }
+
+    /// <summary>
+    /// BuildCommand を埋め込みコンソールで実行（Release パイプライン用）
     /// </summary>
     private async Task<bool> RunBuildCommand(string? extraArgs = null)
     {
