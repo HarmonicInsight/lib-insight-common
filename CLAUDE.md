@@ -52,8 +52,9 @@
 │                      あなたのアプリ                          │
 ├─────────────────────────────────────────────────────────────┤
 │  insight-common (サブモジュール)                             │
-│  ├── standards/      # プラットフォーム別開発標準 ⭐ NEW     │
+│  ├── standards/      # プラットフォーム別開発標準            │
 │  ├── brand/          # カラー・フォント・ロゴ               │
+│  ├── config/         # 製品・価格・販売戦略・リセラー        │
 │  ├── infrastructure/ # 認証・DB・API Gateway              │
 │  ├── nlp/           # 日本語NLP (JBCA)                    │
 │  └── docs/          # プラットフォーム標準                 │
@@ -149,27 +150,191 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 
-## 5. 製品コード一覧
+## 5. 製品コード一覧・価格戦略
 
-| コード | 製品名 | 説明 |
-|-------|-------|------|
-| INSS | InsightSlide | PowerPointコンテンツ抽出・更新 |
-| INSP | InsightSlide Pro | プロ向けPowerPointツール |
-| INPY | InsightPy | Windows自動化Python実行環境 |
-| FGIN | ForguncyInsight | Forguncy連携 |
-| INMV | InsightMovie | 画像・PPTから動画作成 |
-| INBT | InsightBot | Python RPA自動化ボット |
-| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
-| HMSH | HarmonicSheet | Excelバージョン管理・チームコラボレーション（STD: 個人, PRO: 法人） |
-| HMDC | HarmonicDoc | Wordドキュメント操作・自動化ツール |
-| HMSL | HarmonicSlide | PowerPointプレゼンテーション操作・自動化ツール |
+### 販売チャネルと価格帯
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  【A】コンサルティング連動型      年額 98万円〜398万円              │
+│  コンサル案件（数千万円規模）の一環として提供。少量・高単価。       │
+│  INCA / INBT / FGIN / INMV / INIG                                  │
+├──────────────────────────────────────────────────────────────────────┤
+│  【B】グローバルスタンドアロン型   年額 49,800円〜148,000円         │
+│  Office系汎用ツール。5〜10万円帯でグローバルに大量販売。            │
+│  INSS / INSP / INPY / HMSH / HMDC / HMSL                          │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### 【A】コンサルティング連動型
+
+| コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
+|-------|-------|------|---------------|---------------|-----|
+| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
+| INBT | InsightBot | Python RPA自動化ボット | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| FGIN | ForguncyInsight | Forguncy連携 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| INMV | InsightMovie | 画像・PPTから動画作成 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| INIG | InsightImageGen | AI画像・音声生成 | ¥980,000 | ¥1,980,000 | 個別見積 |
+
+> **考え方**: コンサルティング開発案件（数千万円規模）の中で使用するツール。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。大量販売は不要。
+
+### 【B】グローバルスタンドアロン型
+
+| コード | 製品名 | 説明 | FREE | STD（税抜/年） | PRO（税抜/年） | USD STD | USD PRO |
+|-------|-------|------|------|---------------|---------------|---------|---------|
+| INSS | InsightSlide | PowerPointコンテンツ抽出・更新 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| INSP | InsightSlide Pro | プロ向けPowerPointツール | — | ¥79,800 | ¥148,000 | $530 | $980 |
+| INPY | InsightPy | Windows自動化Python実行環境 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| HMSH | HarmonicSheet | Excelバージョン管理・チームコラボ | — | ¥59,800 | ¥118,000 | $400 | $780 |
+| HMDC | HarmonicDoc | Wordドキュメント操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| HMSL | HarmonicSlide | PowerPoint操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+
+> **考え方**: Office系の汎用ツールとして単独でグローバル展開。5〜10万円帯で大量販売を目指す。全製品1ヶ月の無料トライアルあり。
+
+### 価格定義ファイル
+
+```typescript
+import { getPrice, getSalesChannel } from '@/insight-common/config/pricing';
+
+// 製品の販売チャネルを確認
+getSalesChannel('INCA');  // 'consulting'
+getSalesChannel('INSS');  // 'standalone'
+
+// 価格を取得
+getPrice('INSS', 'STD');  // { annualPrice: 49800, currency: 'JPY', monthlyEquivalent: 4150 }
+getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEquivalent: 331667 }
+```
 
 **新規製品を追加する場合:**
 1. `config/products.ts` に登録
-2. この一覧に追加
-3. ライセンス機能マトリクスを定義
+2. `config/pricing.ts` に価格を設定
+3. `config/sales-strategy.ts` に販売戦略を設定
+4. この一覧に追加
+5. ライセンス機能マトリクスを定義
 
-## 6. ライセンスシステム
+## 6. 販売戦略・マーケット展開
+
+### 展開フェーズ
+
+```
+Phase 1（現在）   Phase 2（拡大）     Phase 3（成熟）
+┌──────────┐    ┌──────────────┐    ┌──────────────┐
+│  日本市場  │ →  │ 北米・欧州    │ →  │ 韓国・東南ア  │
+│  実績構築  │    │ グローバル展開 │    │ リセラー展開  │
+└──────────┘    └──────────────┘    └──────────────┘
+```
+
+### 【A】コンサルティング連動型の販売戦略
+
+| 項目 | 内容 |
+|------|------|
+| **主要市場** | 日本国内（Phase 1） → 東南アジア（Phase 2） |
+| **販売方法** | コンサル案件内での直接提案（営業コスト最小） |
+| **顧客層** | 大手〜中堅企業のIT部門・DX推進部門 |
+| **決済** | Stripe（自社サイト）/ 請求書払い |
+| **KPI** | 案件あたり単価 × コンサル案件数 |
+
+> **ポイント**: 新規マーケティング不要。既存コンサル案件のクライアントへの追加提案が最もROIが高い。
+
+### 【B】グローバルスタンドアロン型の販売戦略
+
+| 項目 | 内容 |
+|------|------|
+| **主要市場** | 日本 → 北米・欧州 → 韓国・東南アジア |
+| **販売方法** | 自社サイト + Paddle（MoR） + Microsoft Store |
+| **顧客層** | Office業務ユーザー（個人〜中小企業） |
+| **決済** | Paddle（グローバル税務代行） / Microsoft Store |
+| **KPI** | MRR / ARR / トライアル転換率 / チャーンレート / LTV |
+
+**マーケティングチャネル（優先順）:**
+
+| 優先度 | チャネル | 種別 | 対象地域 |
+|:------:|---------|------|---------|
+| 1 | SEO / コンテンツマーケティング | Organic | 全地域 |
+| 2 | YouTube 製品デモ | Organic | 日本・北米 |
+| 3 | Product Hunt / Hacker News | Organic | 北米 |
+| 4 | Microsoft Store | Organic | 北米・欧州 |
+| 5 | Google Ads（検索連動） | Paid | 日本・北米 |
+| 6 | SNS（X / LinkedIn） | Organic | 全地域 |
+| 7 | リセラー・VAR | Partner | 日本・韓国・東南アジア |
+
+**決済プラットフォーム:**
+
+| プラットフォーム | 役割 | 手数料 | MoR | 備考 |
+|----------------|------|:------:|:---:|------|
+| Paddle | グローバル主力 | ~5% | ✅ | VAT/消費税の申告・納付を代行 |
+| Microsoft Store | Windows流入 | ~12% | ✅ | デスクトップアプリの自然流入 |
+| Stripe | 日本国内 | ~3.6% | — | 自社サイト決済・コンサル連動型 |
+
+> **全製品共通**: 1ヶ月の無料トライアル、クレジットカード不要で開始可能。
+
+```typescript
+import { getSalesStrategy, getProductsByRegion } from '@/insight-common/config/sales-strategy';
+
+// 製品の販売戦略を取得
+const strategy = getSalesStrategy('INSS');
+strategy.targetMarkets;     // Phase別の展開マーケット
+strategy.positioning;       // 'PowerPointのコンテンツ抽出・一括更新を自動化...'
+
+// 地域で販売可能な製品を取得
+getProductsByRegion('US');   // ['INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL']
+getProductsByRegion('JP');   // 全製品
+```
+
+## 7. 販売代理店（リセラー）パートナープログラム
+
+### パートナーティア
+
+```
+┌──────────────┬───────────────┬───────────────┐
+│  Registered  │    Silver     │     Gold      │
+│  登録パートナー│  シルバー      │    ゴールド    │
+├──────────────┼───────────────┼───────────────┤
+│  誰でも参加可 │  年間5件以上   │  年間20件以上  │
+│  仕入値引 20% │  仕入値引 30%  │  仕入値引 40% │
+│  非独占       │  非独占        │  地域独占可    │
+│  セルフサーブ │  専任担当      │  専任+共同マーケ│
+└──────────────┴───────────────┴───────────────┘
+```
+
+### コミッション構造（仕入れ値引きモデル）
+
+| ティア | 仕入れ値引き | 初年度コミッション | 更新コミッション | 紹介のみ |
+|:------:|:----------:|:----------------:|:--------------:|:-------:|
+| Registered | 20% | 20% | 10% | 15% |
+| Silver | 30% | 30% | 15% | 20% |
+| Gold | 40% | 40% | 20% | 25% |
+
+### リセラー対象製品
+
+| 製品 | リセラー販売 | 最低販売価格 | デモ | NFR |
+|------|:----------:|:----------:|:----:|:---:|
+| INSS / INSP / INPY | ✅ | 定価の80%以上 | 5本 | 2本 |
+| HMSH / HMDC / HMSL | ✅ | 定価の80%以上 | 5本 | 2本 |
+| INCA / INBT / FGIN / INMV / INIG | ❌ | — | — | — |
+
+> **コンサル連動型はリセラー販売不可**（自社コンサル案件と一体のため）。
+
+### 契約条件
+
+- **契約期間**: 12ヶ月（自動更新）、解約は3ヶ月前通知
+- **支払サイト**: 30日
+- **初年度ノルマ**: なし（2年目以降、ティア維持には最低件数が必要）
+- **顧客所有権**: ライセンス契約はHarmonic Insightが締結。顧客リストは共有。
+- **サポート分担**: 1次（操作）=パートナー、2次（バグ・技術）=Harmonic Insight
+
+```typescript
+import { calculateWholesalePrice, getResellerProducts } from '@/insight-common/config/reseller-strategy';
+
+// リセラー販売可能な製品
+getResellerProducts();  // ['INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL']
+
+// Silver パートナーがINSS STD（¥49,800）を販売した場合
+calculateWholesalePrice(49800, 'silver');
+// { wholesalePrice: 34860, partnerProfit: 14940, discount: 0.30 }
+```
+
+## 8. ライセンスシステム
 
 ### プラン体系
 
@@ -231,7 +396,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 └────────────────────────────────────┘
 ```
 
-## 7. 開発完了チェックリスト
+## 9. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
@@ -242,7 +407,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 
-## 8. 困ったときは
+## 10. 困ったときは
 
 ```bash
 # 標準検証
