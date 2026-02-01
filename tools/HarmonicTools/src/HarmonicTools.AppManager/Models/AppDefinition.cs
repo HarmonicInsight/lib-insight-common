@@ -145,24 +145,33 @@ public class AppDefinition
         get
         {
             var released = !string.IsNullOrEmpty(LastReleasedTag);
-
             var hasInstaller = LatestInstallerExe != null;
 
+            // ビルド状態を判定
+            string status;
             if (!IsDotNet)
             {
                 var hasDist = !string.IsNullOrEmpty(DistExePath) && File.Exists(DistExePath);
-                if (released) return $"★ {LastReleasedTag}";
-                if (hasInstaller) return "● インストーラー有";
-                return hasDist ? "● 配布可" : "○ 未ビルド";
+                if (released) status = "★ リリース済";
+                else if (hasInstaller) status = "● インストーラー有";
+                else if (hasDist) status = "● 配布可";
+                else status = "○ 未ビルド";
             }
-            var hasPublish = !string.IsNullOrEmpty(PublishExePath) && File.Exists(PublishExePath);
-            var hasRelease = !string.IsNullOrEmpty(ReleaseExePath) && File.Exists(ReleaseExePath);
+            else
+            {
+                var hasPublish = !string.IsNullOrEmpty(PublishExePath) && File.Exists(PublishExePath);
+                var hasRelease = !string.IsNullOrEmpty(ReleaseExePath) && File.Exists(ReleaseExePath);
 
-            if (released) return $"★ {LastReleasedTag}";
-            if (hasInstaller) return "● インストーラー有";
-            if (hasPublish) return "● 配布可";
-            if (hasRelease) return "◐ ビルド済";
-            return "○ 未ビルド";
+                if (released) status = "★ リリース済";
+                else if (hasInstaller) status = "● インストーラー有";
+                else if (hasPublish) status = "● 配布可";
+                else if (hasRelease) status = "◐ ビルド済";
+                else status = "○ 未ビルド";
+            }
+
+            // バージョン表示: リリース済みならタグ、それ以外は製品コード
+            var version = released ? LastReleasedTag : ProductCode;
+            return $"{version}  {status}";
         }
     }
 
