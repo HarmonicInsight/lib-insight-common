@@ -1,0 +1,1284 @@
+From ab5379eca176fbe1b953517251bfee6d0a4eb2dd Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 1 Feb 2026 11:35:15 +0000
+Subject: [PATCH 1/2] =?UTF-8?q?fix:=20=E3=83=A9=E3=82=A4=E3=82=BB=E3=83=B3?=
+ =?UTF-8?q?=E3=82=B9=E3=83=98=E3=83=83=E3=83=80=E3=83=BB=E3=83=A9=E3=82=A4?=
+ =?UTF-8?q?=E3=82=BB=E3=83=B3=E3=82=B9=E7=AE=A1=E7=90=86=E3=82=92=E9=96=8B?=
+ =?UTF-8?q?=E7=99=BA=E6=A8=99=E6=BA=96=E3=81=AB=E6=BA=96=E6=8B=A0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- 全C#ファイルに Copyright (c) Harmonic Insight ヘッダを追加
+- License/ ディレクトリに PlanCode, LicenseInfo, InsightLicenseManager を追加
+- MainViewModel のライセンス管理を InsightLicenseManager に統合
+- BoolToColorConverter の色をデザインシステム標準に修正
+  (#28a745 → #16A34A, #dc3545 → #DC2626, #6c757d → #57534E)
+- ライセンス保存先: %APPDATA%/HarmonicInsight/InsightImageGen/license.json
+- ライセンスキー形式: INIG-{PLAN}-{YYMM}-XXXX-XXXX-XXXX
+
+https://claude.ai/code/session_018xPqMN9EAxgx84CMcpZh14
+---
+ InsightMediaGenerator/App.xaml.cs             |   2 +
+ InsightMediaGenerator/AssemblyInfo.cs         |   2 +
+ .../Converters/BoolToVisibilityConverter.cs   |   6 +-
+ .../License/InsightLicenseManager.cs          | 215 ++++++++++++++++++
+ InsightMediaGenerator/License/LicenseInfo.cs  |  39 ++++
+ InsightMediaGenerator/License/PlanCode.cs     |  35 +++
+ InsightMediaGenerator/MainWindow.xaml.cs      |   2 +
+ InsightMediaGenerator/Models/AppConfig.cs     |   2 +
+ .../Models/AudioGenerationParams.cs           |   2 +
+ .../Models/CharacterPrompt.cs                 |   2 +
+ .../Models/ImageGenerationRequest.cs          |   2 +
+ InsightMediaGenerator/Models/ImageMetadata.cs |   2 +
+ .../Models/JsonFileRecord.cs                  |   2 +
+ InsightMediaGenerator/Models/Speaker.cs       |   2 +
+ .../Services/AudioPlayerService.cs            |   2 +
+ .../Services/DatabaseService.cs               |   2 +
+ InsightMediaGenerator/Services/FileService.cs |   2 +
+ .../Interfaces/IAudioPlayerService.cs         |   2 +
+ .../Services/Interfaces/IDatabaseService.cs   |   2 +
+ .../Services/Interfaces/IFileService.cs       |   2 +
+ .../Interfaces/IStableDiffusionService.cs     |   2 +
+ .../Services/Interfaces/IVoicevoxService.cs   |   2 +
+ .../Services/StableDiffusionService.cs        |   2 +
+ .../Services/VoicevoxService.cs               |   2 +
+ .../ViewModels/AudioViewModel.cs              |   2 +
+ .../ViewModels/BatchImageViewModel.cs         |   2 +
+ .../ViewModels/MainViewModel.cs               |  91 ++------
+ .../ViewModels/SimpleImageViewModel.cs        |   2 +
+ InsightMediaGenerator/Views/AudioView.xaml.cs |   2 +
+ .../Views/BatchImageView.xaml.cs              |   2 +
+ .../Views/SimpleImageView.xaml.cs             |   2 +
+ 31 files changed, 370 insertions(+), 68 deletions(-)
+ create mode 100644 InsightMediaGenerator/License/InsightLicenseManager.cs
+ create mode 100644 InsightMediaGenerator/License/LicenseInfo.cs
+ create mode 100644 InsightMediaGenerator/License/PlanCode.cs
+
+diff --git a/InsightMediaGenerator/App.xaml.cs b/InsightMediaGenerator/App.xaml.cs
+index 4633a18..73fb04a 100644
+--- a/InsightMediaGenerator/App.xaml.cs
++++ b/InsightMediaGenerator/App.xaml.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.IO;
+ using System.Text.Json;
+ using System.Windows;
+diff --git a/InsightMediaGenerator/AssemblyInfo.cs b/InsightMediaGenerator/AssemblyInfo.cs
+index cc29e7f..489bffc 100644
+--- a/InsightMediaGenerator/AssemblyInfo.cs
++++ b/InsightMediaGenerator/AssemblyInfo.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Windows;
+ 
+ [assembly:ThemeInfo(
+diff --git a/InsightMediaGenerator/Converters/BoolToVisibilityConverter.cs b/InsightMediaGenerator/Converters/BoolToVisibilityConverter.cs
+index 6c500ae..e1e204b 100644
+--- a/InsightMediaGenerator/Converters/BoolToVisibilityConverter.cs
++++ b/InsightMediaGenerator/Converters/BoolToVisibilityConverter.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Globalization;
+ using System.Windows;
+ using System.Windows.Data;
+@@ -48,9 +50,9 @@ public class BoolToColorConverter : IValueConverter
+     {
+         if (value is bool boolValue)
+         {
+-            return boolValue ? "#28a745" : "#dc3545"; // Green for connected, Red for disconnected
++            return boolValue ? "#16A34A" : "#DC2626"; // Success for connected, Error for disconnected
+         }
+-        return "#6c757d"; // Gray for unknown
++        return "#57534E"; // TextSecondary for unknown
+     }
+ 
+     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+diff --git a/InsightMediaGenerator/License/InsightLicenseManager.cs b/InsightMediaGenerator/License/InsightLicenseManager.cs
+new file mode 100644
+index 0000000..be6e989
+--- /dev/null
++++ b/InsightMediaGenerator/License/InsightLicenseManager.cs
+@@ -0,0 +1,215 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
++using System.IO;
++using System.Text.Json;
++using System.Text.RegularExpressions;
++
++namespace InsightMediaGenerator.License;
++
++public class InsightLicenseManager
++{
++    private static readonly Regex KeyPattern = new(
++        @"^INIG-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
++        RegexOptions.Compiled);
++
++    private const string ProductCode = "INIG";
++    private readonly string _storagePath;
++
++    public InsightLicenseManager()
++    {
++        _storagePath = Path.Combine(
++            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
++            "HarmonicInsight", "InsightImageGen", "license.json");
++        LoadLicense();
++    }
++
++    public LicenseInfo CurrentLicense { get; private set; } = LicenseInfo.Free();
++
++    public bool IsActivated => CurrentLicense.PlanCode != PlanCode.Free && CurrentLicense.IsValid;
++
++    public (bool Success, string Message) Activate(string email, string key)
++    {
++        if (string.IsNullOrWhiteSpace(email))
++            return (false, "メールアドレスを入力してください。");
++
++        if (string.IsNullOrWhiteSpace(key))
++            return (false, "ライセンスキーを入力してください。");
++
++        key = key.Trim().ToUpperInvariant();
++
++        if (!KeyPattern.IsMatch(key))
++            return (false, $"ライセンスキーの形式が正しくありません。\n形式: {ProductCode}-{{プラン}}-{{YYMM}}-XXXX-XXXX-XXXX");
++
++        // Extract plan from key
++        var match = KeyPattern.Match(key);
++        var planStr = match.Groups[1].Value;
++        var plan = PlanCodeExtensions.FromString(planStr);
++
++        if (plan == PlanCode.Free)
++            return (false, "無効なプランコードです。");
++
++        // Extract expiry from YYMM
++        var yymm = match.Groups[2].Value;
++        if (!TryParseExpiry(yymm, out var expiresAt))
++            return (false, "ライセンスキーの有効期限が不正です。");
++
++        var license = new LicenseInfo
++        {
++            Email = email.Trim(),
++            LicenseKey = key,
++            Plan = plan.ToDisplayName(),
++            ExpiresAt = expiresAt,
++            ActivatedAt = DateTime.UtcNow
++        };
++
++        CurrentLicense = license;
++        SaveLicense();
++
++        return (true, $"{plan.ToDisplayName()} プランをアクティベートしました。");
++    }
++
++    public void Deactivate()
++    {
++        CurrentLicense = LicenseInfo.Free();
++
++        try
++        {
++            if (File.Exists(_storagePath))
++                File.Delete(_storagePath);
++        }
++        catch
++        {
++            // Ignore file deletion errors
++        }
++    }
++
++    public bool CanUseFeature(string featureKey)
++    {
++        var plan = CurrentLicense.PlanCode;
++
++        // If license is expired, fall back to Free
++        if (plan != PlanCode.Free && CurrentLicense.IsExpired)
++            plan = PlanCode.Free;
++
++        return featureKey switch
++        {
++            "generate_image" => true,
++            "generate_audio" => true,
++            "batch_image" => plan is PlanCode.Trial or PlanCode.Std or PlanCode.Pro or PlanCode.Ent,
++            "hi_res" => plan is PlanCode.Trial or PlanCode.Pro or PlanCode.Ent,
++            "cloud_sync" => plan is PlanCode.Trial or PlanCode.Pro or PlanCode.Ent,
++            _ => false
++        };
++    }
++
++    public int GetFeatureLimit(string featureKey)
++    {
++        var plan = CurrentLicense.PlanCode;
++
++        if (plan != PlanCode.Free && CurrentLicense.IsExpired)
++            plan = PlanCode.Free;
++
++        if (featureKey == "character_prompts")
++        {
++            return plan switch
++            {
++                PlanCode.Free => 3,
++                PlanCode.Trial => -1,
++                PlanCode.Std => 20,
++                PlanCode.Pro => -1,
++                PlanCode.Ent => -1,
++                _ => 3
++            };
++        }
++
++        return -1;
++    }
++
++    private void LoadLicense()
++    {
++        try
++        {
++            // Priority: environment variable > saved license file
++            var envKey = Environment.GetEnvironmentVariable("INIG_LICENSE_KEY");
++            if (!string.IsNullOrEmpty(envKey) && KeyPattern.IsMatch(envKey.Trim().ToUpperInvariant()))
++            {
++                var match = KeyPattern.Match(envKey.Trim().ToUpperInvariant());
++                var planStr = match.Groups[1].Value;
++                var plan = PlanCodeExtensions.FromString(planStr);
++                var yymm = match.Groups[2].Value;
++                TryParseExpiry(yymm, out var expiresAt);
++
++                CurrentLicense = new LicenseInfo
++                {
++                    LicenseKey = envKey.Trim().ToUpperInvariant(),
++                    Plan = plan.ToDisplayName(),
++                    ExpiresAt = expiresAt,
++                    ActivatedAt = DateTime.UtcNow
++                };
++                return;
++            }
++
++            if (File.Exists(_storagePath))
++            {
++                var json = File.ReadAllText(_storagePath);
++                var license = JsonSerializer.Deserialize<LicenseInfo>(json);
++                if (license != null)
++                {
++                    CurrentLicense = license;
++                    return;
++                }
++            }
++        }
++        catch
++        {
++            // Fall through to default
++        }
++
++        CurrentLicense = LicenseInfo.Free();
++    }
++
++    private void SaveLicense()
++    {
++        try
++        {
++            var directory = Path.GetDirectoryName(_storagePath);
++            if (!string.IsNullOrEmpty(directory))
++                Directory.CreateDirectory(directory);
++
++            var json = JsonSerializer.Serialize(CurrentLicense, new JsonSerializerOptions
++            {
++                WriteIndented = true
++            });
++            File.WriteAllText(_storagePath, json);
++        }
++        catch
++        {
++            // Ignore save errors
++        }
++    }
++
++    private static bool TryParseExpiry(string yymm, out DateTime expiresAt)
++    {
++        expiresAt = default;
++
++        if (yymm.Length != 4) return false;
++
++        if (!int.TryParse(yymm[..2], out var year) || !int.TryParse(yymm[2..], out var month))
++            return false;
++
++        if (month < 1 || month > 12) return false;
++
++        year += 2000;
++        expiresAt = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, DateTimeKind.Utc);
++        return true;
++    }
++
++    public static string MaskLicenseKey(string key)
++    {
++        if (string.IsNullOrEmpty(key) || key.Length < 10)
++            return "****";
++
++        // Show first 9 chars (INIG-XXX-) and mask the rest
++        return key[..9] + new string('*', key.Length - 9);
++    }
++}
+diff --git a/InsightMediaGenerator/License/LicenseInfo.cs b/InsightMediaGenerator/License/LicenseInfo.cs
+new file mode 100644
+index 0000000..3b4ffaa
+--- /dev/null
++++ b/InsightMediaGenerator/License/LicenseInfo.cs
+@@ -0,0 +1,39 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
++using System.Text.Json.Serialization;
++
++namespace InsightMediaGenerator.License;
++
++public class LicenseInfo
++{
++    [JsonPropertyName("email")]
++    public string Email { get; set; } = string.Empty;
++
++    [JsonPropertyName("licenseKey")]
++    public string LicenseKey { get; set; } = string.Empty;
++
++    [JsonPropertyName("plan")]
++    public string Plan { get; set; } = "FREE";
++
++    [JsonPropertyName("expiresAt")]
++    public DateTime? ExpiresAt { get; set; }
++
++    [JsonPropertyName("activatedAt")]
++    public DateTime? ActivatedAt { get; set; }
++
++    [JsonIgnore]
++    public PlanCode PlanCode => PlanCodeExtensions.FromString(Plan);
++
++    [JsonIgnore]
++    public bool IsValid => PlanCode != PlanCode.Free
++                           && ExpiresAt.HasValue
++                           && ExpiresAt.Value > DateTime.UtcNow;
++
++    [JsonIgnore]
++    public bool IsExpired => ExpiresAt.HasValue && ExpiresAt.Value <= DateTime.UtcNow;
++
++    public static LicenseInfo Free() => new()
++    {
++        Plan = "FREE"
++    };
++}
+diff --git a/InsightMediaGenerator/License/PlanCode.cs b/InsightMediaGenerator/License/PlanCode.cs
+new file mode 100644
+index 0000000..cb7fc78
+--- /dev/null
++++ b/InsightMediaGenerator/License/PlanCode.cs
+@@ -0,0 +1,35 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
++namespace InsightMediaGenerator.License;
++
++public enum PlanCode
++{
++    Free,
++    Trial,
++    Std,
++    Pro,
++    Ent
++}
++
++public static class PlanCodeExtensions
++{
++    public static string ToDisplayName(this PlanCode plan) => plan switch
++    {
++        PlanCode.Free => "FREE",
++        PlanCode.Trial => "TRIAL",
++        PlanCode.Std => "STD",
++        PlanCode.Pro => "PRO",
++        PlanCode.Ent => "ENT",
++        _ => "FREE"
++    };
++
++    public static PlanCode FromString(string plan) => plan.ToUpperInvariant() switch
++    {
++        "FREE" => PlanCode.Free,
++        "TRIAL" => PlanCode.Trial,
++        "STD" => PlanCode.Std,
++        "PRO" => PlanCode.Pro,
++        "ENT" => PlanCode.Ent,
++        _ => PlanCode.Free
++    };
++}
+diff --git a/InsightMediaGenerator/MainWindow.xaml.cs b/InsightMediaGenerator/MainWindow.xaml.cs
+index dc71200..cb4b225 100644
+--- a/InsightMediaGenerator/MainWindow.xaml.cs
++++ b/InsightMediaGenerator/MainWindow.xaml.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Diagnostics;
+ using System.IO;
+ using System.Windows;
+diff --git a/InsightMediaGenerator/Models/AppConfig.cs b/InsightMediaGenerator/Models/AppConfig.cs
+index ce80aa8..046431b 100644
+--- a/InsightMediaGenerator/Models/AppConfig.cs
++++ b/InsightMediaGenerator/Models/AppConfig.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Text.Json.Serialization;
+ 
+ namespace InsightMediaGenerator.Models;
+diff --git a/InsightMediaGenerator/Models/AudioGenerationParams.cs b/InsightMediaGenerator/Models/AudioGenerationParams.cs
+index dea99b4..7d098cf 100644
+--- a/InsightMediaGenerator/Models/AudioGenerationParams.cs
++++ b/InsightMediaGenerator/Models/AudioGenerationParams.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ namespace InsightMediaGenerator.Models;
+ 
+ public class AudioGenerationParams
+diff --git a/InsightMediaGenerator/Models/CharacterPrompt.cs b/InsightMediaGenerator/Models/CharacterPrompt.cs
+index 64ccaae..0f4a10a 100644
+--- a/InsightMediaGenerator/Models/CharacterPrompt.cs
++++ b/InsightMediaGenerator/Models/CharacterPrompt.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Text.Json.Serialization;
+ using CommunityToolkit.Mvvm.ComponentModel;
+ 
+diff --git a/InsightMediaGenerator/Models/ImageGenerationRequest.cs b/InsightMediaGenerator/Models/ImageGenerationRequest.cs
+index 239d50a..8e5d25f 100644
+--- a/InsightMediaGenerator/Models/ImageGenerationRequest.cs
++++ b/InsightMediaGenerator/Models/ImageGenerationRequest.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ namespace InsightMediaGenerator.Models;
+ 
+ public class ImageGenerationRequest
+diff --git a/InsightMediaGenerator/Models/ImageMetadata.cs b/InsightMediaGenerator/Models/ImageMetadata.cs
+index 21a6dcf..0dd307a 100644
+--- a/InsightMediaGenerator/Models/ImageMetadata.cs
++++ b/InsightMediaGenerator/Models/ImageMetadata.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ namespace InsightMediaGenerator.Models;
+ 
+ public class ImageMetadata
+diff --git a/InsightMediaGenerator/Models/JsonFileRecord.cs b/InsightMediaGenerator/Models/JsonFileRecord.cs
+index 16fd96c..6115267 100644
+--- a/InsightMediaGenerator/Models/JsonFileRecord.cs
++++ b/InsightMediaGenerator/Models/JsonFileRecord.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ namespace InsightMediaGenerator.Models;
+ 
+ public class JsonFileRecord
+diff --git a/InsightMediaGenerator/Models/Speaker.cs b/InsightMediaGenerator/Models/Speaker.cs
+index fbefcab..237fbaf 100644
+--- a/InsightMediaGenerator/Models/Speaker.cs
++++ b/InsightMediaGenerator/Models/Speaker.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ namespace InsightMediaGenerator.Models;
+ 
+ public class Speaker
+diff --git a/InsightMediaGenerator/Services/AudioPlayerService.cs b/InsightMediaGenerator/Services/AudioPlayerService.cs
+index 4747a84..d3c0b85 100644
+--- a/InsightMediaGenerator/Services/AudioPlayerService.cs
++++ b/InsightMediaGenerator/Services/AudioPlayerService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.IO;
+ using NAudio.Wave;
+ using InsightMediaGenerator.Services.Interfaces;
+diff --git a/InsightMediaGenerator/Services/DatabaseService.cs b/InsightMediaGenerator/Services/DatabaseService.cs
+index 5bda3b7..cc49a05 100644
+--- a/InsightMediaGenerator/Services/DatabaseService.cs
++++ b/InsightMediaGenerator/Services/DatabaseService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.IO;
+ using Microsoft.Data.Sqlite;
+ using InsightMediaGenerator.Models;
+diff --git a/InsightMediaGenerator/Services/FileService.cs b/InsightMediaGenerator/Services/FileService.cs
+index 706ac58..f008aa4 100644
+--- a/InsightMediaGenerator/Services/FileService.cs
++++ b/InsightMediaGenerator/Services/FileService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.IO;
+ using System.Text.Json;
+ using InsightMediaGenerator.Models;
+diff --git a/InsightMediaGenerator/Services/Interfaces/IAudioPlayerService.cs b/InsightMediaGenerator/Services/Interfaces/IAudioPlayerService.cs
+index 98d7687..7c8d381 100644
+--- a/InsightMediaGenerator/Services/Interfaces/IAudioPlayerService.cs
++++ b/InsightMediaGenerator/Services/Interfaces/IAudioPlayerService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ namespace InsightMediaGenerator.Services.Interfaces;
+ 
+ public interface IAudioPlayerService : IDisposable
+diff --git a/InsightMediaGenerator/Services/Interfaces/IDatabaseService.cs b/InsightMediaGenerator/Services/Interfaces/IDatabaseService.cs
+index 94ab311..b047c06 100644
+--- a/InsightMediaGenerator/Services/Interfaces/IDatabaseService.cs
++++ b/InsightMediaGenerator/Services/Interfaces/IDatabaseService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using InsightMediaGenerator.Models;
+ 
+ namespace InsightMediaGenerator.Services.Interfaces;
+diff --git a/InsightMediaGenerator/Services/Interfaces/IFileService.cs b/InsightMediaGenerator/Services/Interfaces/IFileService.cs
+index 9e2825b..67a96e5 100644
+--- a/InsightMediaGenerator/Services/Interfaces/IFileService.cs
++++ b/InsightMediaGenerator/Services/Interfaces/IFileService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.IO;
+ using InsightMediaGenerator.Models;
+ 
+diff --git a/InsightMediaGenerator/Services/Interfaces/IStableDiffusionService.cs b/InsightMediaGenerator/Services/Interfaces/IStableDiffusionService.cs
+index e970296..81186f8 100644
+--- a/InsightMediaGenerator/Services/Interfaces/IStableDiffusionService.cs
++++ b/InsightMediaGenerator/Services/Interfaces/IStableDiffusionService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using InsightMediaGenerator.Models;
+ 
+ namespace InsightMediaGenerator.Services.Interfaces;
+diff --git a/InsightMediaGenerator/Services/Interfaces/IVoicevoxService.cs b/InsightMediaGenerator/Services/Interfaces/IVoicevoxService.cs
+index fb883a3..ac26092 100644
+--- a/InsightMediaGenerator/Services/Interfaces/IVoicevoxService.cs
++++ b/InsightMediaGenerator/Services/Interfaces/IVoicevoxService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using InsightMediaGenerator.Models;
+ 
+ namespace InsightMediaGenerator.Services.Interfaces;
+diff --git a/InsightMediaGenerator/Services/StableDiffusionService.cs b/InsightMediaGenerator/Services/StableDiffusionService.cs
+index a357cec..bddaf46 100644
+--- a/InsightMediaGenerator/Services/StableDiffusionService.cs
++++ b/InsightMediaGenerator/Services/StableDiffusionService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.IO;
+ using System.Net.Http;
+ using System.Net.Http.Json;
+diff --git a/InsightMediaGenerator/Services/VoicevoxService.cs b/InsightMediaGenerator/Services/VoicevoxService.cs
+index 79d3e1d..4a6cb9c 100644
+--- a/InsightMediaGenerator/Services/VoicevoxService.cs
++++ b/InsightMediaGenerator/Services/VoicevoxService.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.IO;
+ using System.Net.Http;
+ using System.Net.Http.Json;
+diff --git a/InsightMediaGenerator/ViewModels/AudioViewModel.cs b/InsightMediaGenerator/ViewModels/AudioViewModel.cs
+index bd3663e..3c37ae7 100644
+--- a/InsightMediaGenerator/ViewModels/AudioViewModel.cs
++++ b/InsightMediaGenerator/ViewModels/AudioViewModel.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Collections.ObjectModel;
+ using System.IO;
+ using CommunityToolkit.Mvvm.ComponentModel;
+diff --git a/InsightMediaGenerator/ViewModels/BatchImageViewModel.cs b/InsightMediaGenerator/ViewModels/BatchImageViewModel.cs
+index 894afcc..0dc9ec4 100644
+--- a/InsightMediaGenerator/ViewModels/BatchImageViewModel.cs
++++ b/InsightMediaGenerator/ViewModels/BatchImageViewModel.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Collections.ObjectModel;
+ using System.IO;
+ using CommunityToolkit.Mvvm.ComponentModel;
+diff --git a/InsightMediaGenerator/ViewModels/MainViewModel.cs b/InsightMediaGenerator/ViewModels/MainViewModel.cs
+index 445398a..babd72b 100644
+--- a/InsightMediaGenerator/ViewModels/MainViewModel.cs
++++ b/InsightMediaGenerator/ViewModels/MainViewModel.cs
+@@ -1,8 +1,11 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Diagnostics;
+ using System.IO;
+ using System.Windows;
+ using CommunityToolkit.Mvvm.ComponentModel;
+ using CommunityToolkit.Mvvm.Input;
++using InsightMediaGenerator.License;
+ using InsightMediaGenerator.Models;
+ 
+ namespace InsightMediaGenerator.ViewModels;
+@@ -10,6 +13,7 @@ namespace InsightMediaGenerator.ViewModels;
+ public partial class MainViewModel : ObservableObject
+ {
+     private readonly AppConfig _config;
++    private readonly InsightLicenseManager _licenseManager;
+ 
+     public SimpleImageViewModel SimpleImage { get; }
+     public BatchImageViewModel BatchImage { get; }
+@@ -49,13 +53,14 @@ public partial class MainViewModel : ObservableObject
+         BatchImage = batchImage;
+         Audio = audio;
+         _config = config;
++        _licenseManager = new InsightLicenseManager();
+         CanLaunchSd = !string.IsNullOrEmpty(config.StableDiffusion.WebuiBatPath);
+     }
+ 
+     public async Task InitializeAsync()
+     {
+         // Load license info
+-        await LoadLicenseInfoAsync();
++        LoadLicenseInfo();
+ 
+         // Initialize sub view models
+         await Task.WhenAll(
+@@ -68,27 +73,17 @@ public partial class MainViewModel : ObservableObject
+         await CheckServiceConnectionsAsync();
+     }
+ 
+-    private async Task LoadLicenseInfoAsync()
++    private void LoadLicenseInfo()
+     {
+-        // TODO: Implement license loading from local storage or API
+-        // For now, default to FREE plan
+-        await Task.CompletedTask;
+-
+-        // Load from environment or config
+-        var licenseKey = Environment.GetEnvironmentVariable("INIG_LICENSE_KEY");
+-        if (!string.IsNullOrEmpty(licenseKey))
+-        {
+-            LicenseKey = licenseKey;
+-            // TODO: Validate license and set CurrentPlan accordingly
+-            // CurrentPlan = await ValidateLicenseAsync(licenseKey);
+-        }
++        var license = _licenseManager.CurrentLicense;
++        CurrentPlan = license.PlanCode.ToDisplayName();
++        LicenseKey = license.LicenseKey;
++        LicenseExpiresAt = license.ExpiresAt;
+     }
+ 
+     private async Task CheckServiceConnectionsAsync()
+     {
+-        // TODO: Implement actual connection checks
+         await Task.CompletedTask;
+-
+         // These will be updated by the services when they connect
+     }
+ 
+@@ -209,19 +204,24 @@ public partial class MainViewModel : ObservableObject
+ 
+     public void ShowLicenseDialog()
+     {
+-        var planInfo = CurrentPlan switch
++        var license = _licenseManager.CurrentLicense;
++        var planInfo = license.PlanCode switch
+         {
+-            "FREE" => "フリープラン (機能制限あり)",
+-            "TRIAL" => $"トライアルプラン (有効期限: {LicenseExpiresAt?.ToString("yyyy/MM/dd") ?? "不明"})",
+-            "STD" => $"スタンダードプラン (有効期限: {LicenseExpiresAt?.ToString("yyyy/MM/dd") ?? "不明"})",
+-            "PRO" => $"プロプラン (有効期限: {LicenseExpiresAt?.ToString("yyyy/MM/dd") ?? "不明"})",
+-            "ENT" => "エンタープライズプラン",
++            PlanCode.Free => "フリープラン (機能制限あり)",
++            PlanCode.Trial => $"トライアルプラン (有効期限: {license.ExpiresAt?.ToString("yyyy/MM/dd") ?? "不明"})",
++            PlanCode.Std => $"スタンダードプラン (有効期限: {license.ExpiresAt?.ToString("yyyy/MM/dd") ?? "不明"})",
++            PlanCode.Pro => $"プロプラン (有効期限: {license.ExpiresAt?.ToString("yyyy/MM/dd") ?? "不明"})",
++            PlanCode.Ent => "エンタープライズプラン",
+             _ => "不明"
+         };
+ 
++        var maskedKey = string.IsNullOrEmpty(license.LicenseKey)
++            ? "未設定"
++            : InsightLicenseManager.MaskLicenseKey(license.LicenseKey);
++
+         var message = $"InsightImageGen ライセンス情報\n\n" +
+                       $"現在のプラン: {planInfo}\n\n" +
+-                      $"ライセンスキー: {(string.IsNullOrEmpty(LicenseKey) ? "未設定" : MaskLicenseKey(LicenseKey))}\n\n" +
++                      $"ライセンスキー: {maskedKey}\n\n" +
+                       "ライセンスを購入または更新するには:\n" +
+                       "https://harmonic-insight.com/products/insight-image-gen";
+ 
+@@ -234,16 +234,12 @@ public partial class MainViewModel : ObservableObject
+ 
+         if (result == MessageBoxResult.OK)
+         {
+-            // Open license activation dialog
+             ShowLicenseActivationDialog();
+         }
+     }
+ 
+     private void ShowLicenseActivationDialog()
+     {
+-        // TODO: Implement proper license activation dialog
+-        // For now, show a simple input dialog concept
+-
+         var message = "ライセンスキーを入力してください:\n\n" +
+                       "形式: INIG-{プラン}-{YYMM}-{XXXX}-{XXXX}-{XXXX}\n" +
+                       "例: INIG-PRO-2601-ABCD-EFGH-IJKL\n\n" +
+@@ -259,50 +255,13 @@ public partial class MainViewModel : ObservableObject
+         );
+     }
+ 
+-    private static string MaskLicenseKey(string key)
+-    {
+-        if (string.IsNullOrEmpty(key) || key.Length < 10)
+-            return "****";
+-
+-        // Show first 9 chars (INIG-XXX-) and mask the rest
+-        return key[..9] + new string('*', key.Length - 9);
+-    }
+-
+-    /// <summary>
+-    /// Check if a feature is available for the current plan
+-    /// </summary>
+     public bool CanUseFeature(string featureKey)
+     {
+-        // Feature availability based on INIG product features from products.ts
+-        return featureKey switch
+-        {
+-            "generate_image" => true, // All plans
+-            "generate_audio" => true, // All plans
+-            "batch_image" => CurrentPlan is "TRIAL" or "STD" or "PRO" or "ENT",
+-            "hi_res" => CurrentPlan is "TRIAL" or "PRO" or "ENT",
+-            "cloud_sync" => CurrentPlan is "TRIAL" or "PRO" or "ENT",
+-            _ => false
+-        };
++        return _licenseManager.CanUseFeature(featureKey);
+     }
+ 
+-    /// <summary>
+-    /// Get the limit for a feature (returns -1 for unlimited)
+-    /// </summary>
+     public int GetFeatureLimit(string featureKey)
+     {
+-        if (featureKey == "character_prompts")
+-        {
+-            return CurrentPlan switch
+-            {
+-                "FREE" => 3,
+-                "TRIAL" => -1,
+-                "STD" => 20,
+-                "PRO" => -1,
+-                "ENT" => -1,
+-                _ => 3
+-            };
+-        }
+-
+-        return -1; // No limit by default
++        return _licenseManager.GetFeatureLimit(featureKey);
+     }
+ }
+diff --git a/InsightMediaGenerator/ViewModels/SimpleImageViewModel.cs b/InsightMediaGenerator/ViewModels/SimpleImageViewModel.cs
+index f1c9ac0..83b7ab7 100644
+--- a/InsightMediaGenerator/ViewModels/SimpleImageViewModel.cs
++++ b/InsightMediaGenerator/ViewModels/SimpleImageViewModel.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Collections.ObjectModel;
+ using CommunityToolkit.Mvvm.ComponentModel;
+ using CommunityToolkit.Mvvm.Input;
+diff --git a/InsightMediaGenerator/Views/AudioView.xaml.cs b/InsightMediaGenerator/Views/AudioView.xaml.cs
+index 5f90ae6..980f939 100644
+--- a/InsightMediaGenerator/Views/AudioView.xaml.cs
++++ b/InsightMediaGenerator/Views/AudioView.xaml.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Windows.Controls;
+ 
+ namespace InsightMediaGenerator.Views;
+diff --git a/InsightMediaGenerator/Views/BatchImageView.xaml.cs b/InsightMediaGenerator/Views/BatchImageView.xaml.cs
+index 3de107e..2906e00 100644
+--- a/InsightMediaGenerator/Views/BatchImageView.xaml.cs
++++ b/InsightMediaGenerator/Views/BatchImageView.xaml.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Windows;
+ using System.Windows.Controls;
+ using Microsoft.Win32;
+diff --git a/InsightMediaGenerator/Views/SimpleImageView.xaml.cs b/InsightMediaGenerator/Views/SimpleImageView.xaml.cs
+index 041955f..e62c4b7 100644
+--- a/InsightMediaGenerator/Views/SimpleImageView.xaml.cs
++++ b/InsightMediaGenerator/Views/SimpleImageView.xaml.cs
+@@ -1,3 +1,5 @@
++// Copyright (c) Harmonic Insight. All rights reserved.
++
+ using System.Windows.Controls;
+ 
+ namespace InsightMediaGenerator.Views;
+-- 
+2.43.0
+
+
+From 28c6bdd3b6930dd88a73fb33f46be0595d00cf1f Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 1 Feb 2026 11:43:50 +0000
+Subject: [PATCH 2/2] =?UTF-8?q?fix:=20=E3=83=A9=E3=82=A4=E3=82=BB=E3=83=B3?=
+ =?UTF-8?q?=E3=82=B9=E7=AE=A1=E7=90=86=E3=82=92=20insight-common=20?=
+ =?UTF-8?q?=E7=B5=B1=E5=90=88=E3=83=A9=E3=82=A4=E3=82=BB=E3=83=B3=E3=82=B9?=
+ =?UTF-8?q?=E3=82=B5=E3=83=BC=E3=83=90=E3=83=BC=E3=81=AB=E6=BA=96=E6=8B=A0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- InsightLicenseManager に license-server.ts の LICENSE_SERVER_ENDPOINTS を統合
+  - validate: POST /api/v1/licenses/validate（起動時オンライン検証）
+  - activate: POST /api/v1/licenses/activate（アクティベーション）
+  - ベースURL: https://license.harmonicinsight.com
+- products.ts の PRODUCT_FEATURES['INIG'] に準拠した機能判定（コメントで対応明記）
+- MainViewModel のハードコードURL(harmonic-insight.com)を license.harmonicinsight.com に修正
+- オフラインフォールバック対応（サーバー接続失敗時はキー形式からローカル認証）
+
+https://claude.ai/code/session_018xPqMN9EAxgx84CMcpZh14
+---
+ .../License/InsightLicenseManager.cs          | 250 ++++++++++++++++--
+ .../ViewModels/MainViewModel.cs               |  28 +-
+ 2 files changed, 246 insertions(+), 32 deletions(-)
+
+diff --git a/InsightMediaGenerator/License/InsightLicenseManager.cs b/InsightMediaGenerator/License/InsightLicenseManager.cs
+index be6e989..0f22914 100644
+--- a/InsightMediaGenerator/License/InsightLicenseManager.cs
++++ b/InsightMediaGenerator/License/InsightLicenseManager.cs
+@@ -1,25 +1,52 @@
+ // Copyright (c) Harmonic Insight. All rights reserved.
+ 
+ using System.IO;
++using System.Net.Http;
++using System.Net.Http.Json;
+ using System.Text.Json;
++using System.Text.Json.Serialization;
+ using System.Text.RegularExpressions;
+ 
+ namespace InsightMediaGenerator.License;
+ 
++/// <summary>
++/// insight-common/config/license-server.ts の LICENSE_SERVER_ENDPOINTS に対応する
++/// 統合ライセンスサーバークライアント。
++///
++/// エンドポイント:
++///   validate  → POST /api/v1/licenses/validate
++///   activate  → POST /api/v1/licenses/activate
++/// </summary>
+ public class InsightLicenseManager
+ {
++    // --- insight-common/config/license-server.ts: LICENSE_SERVER_ENDPOINTS ---
++    private const string LicenseServerBaseUrl = "https://license.harmonicinsight.com";
++    private const string ValidateEndpoint = "/api/v1/licenses/validate";
++    private const string ActivateEndpoint = "/api/v1/licenses/activate";
++
++    // --- insight-common/config/products.ts: ProductCode = 'INIG' ---
++    private const string ProductCode = "INIG";
++
++    // --- ライセンスキー形式: {製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2} ---
+     private static readonly Regex KeyPattern = new(
+         @"^INIG-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
+         RegexOptions.Compiled);
+ 
+-    private const string ProductCode = "INIG";
+     private readonly string _storagePath;
++    private readonly HttpClient _httpClient;
+ 
+-    public InsightLicenseManager()
++    public InsightLicenseManager(HttpClient? httpClient = null)
+     {
+         _storagePath = Path.Combine(
+             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+             "HarmonicInsight", "InsightImageGen", "license.json");
++
++        _httpClient = httpClient ?? new HttpClient
++        {
++            BaseAddress = new Uri(LicenseServerBaseUrl),
++            Timeout = TimeSpan.FromSeconds(10)
++        };
++
+         LoadLicense();
+     }
+ 
+@@ -27,7 +54,12 @@ public class InsightLicenseManager
+ 
+     public bool IsActivated => CurrentLicense.PlanCode != PlanCode.Free && CurrentLicense.IsValid;
+ 
+-    public (bool Success, string Message) Activate(string email, string key)
++    // =========================================================================
++    // insight-common/config/license-server.ts: activate endpoint
++    // POST /api/v1/licenses/activate
++    // =========================================================================
++
++    public async Task<(bool Success, string Message)> ActivateAsync(string email, string key)
+     {
+         if (string.IsNullOrWhiteSpace(email))
+             return (false, "メールアドレスを入力してください。");
+@@ -40,7 +72,73 @@ public class InsightLicenseManager
+         if (!KeyPattern.IsMatch(key))
+             return (false, $"ライセンスキーの形式が正しくありません。\n形式: {ProductCode}-{{プラン}}-{{YYMM}}-XXXX-XXXX-XXXX");
+ 
+-        // Extract plan from key
++        // ライセンスサーバーで認証
++        try
++        {
++            var response = await _httpClient.PostAsJsonAsync(ActivateEndpoint, new
++            {
++                licenseKey = key,
++                email = email.Trim(),
++                productCode = ProductCode
++            });
++
++            if (response.IsSuccessStatusCode)
++            {
++                var result = await response.Content.ReadFromJsonAsync<ServerActivateResponse>();
++                if (result is { Success: true })
++                {
++                    var license = new LicenseInfo
++                    {
++                        Email = email.Trim(),
++                        LicenseKey = key,
++                        Plan = result.Plan ?? ExtractPlanFromKey(key),
++                        ExpiresAt = result.ExpiresAt,
++                        ActivatedAt = DateTime.UtcNow
++                    };
++
++                    CurrentLicense = license;
++                    SaveLicense();
++                    return (true, $"{license.Plan} プランをアクティベートしました。");
++                }
++
++                return (false, result?.Error ?? "ライセンスサーバーがアクティベートを拒否しました。");
++            }
++        }
++        catch (HttpRequestException)
++        {
++            // サーバー接続失敗時はオフラインアクティベーション
++        }
++        catch (TaskCanceledException)
++        {
++            // タイムアウト時もオフラインアクティベーション
++        }
++
++        // オフラインフォールバック: キー形式から直接パース
++        return ActivateOffline(email, key);
++    }
++
++    /// <summary>
++    /// 同期版（UI呼び出し用）
++    /// </summary>
++    public (bool Success, string Message) Activate(string email, string key)
++    {
++        try
++        {
++            return ActivateAsync(email, key).GetAwaiter().GetResult();
++        }
++        catch
++        {
++            return ActivateOffline(email, key);
++        }
++    }
++
++    private (bool Success, string Message) ActivateOffline(string email, string key)
++    {
++        key = key.Trim().ToUpperInvariant();
++
++        if (!KeyPattern.IsMatch(key))
++            return (false, $"ライセンスキーの形式が正しくありません。\n形式: {ProductCode}-{{プラン}}-{{YYMM}}-XXXX-XXXX-XXXX");
++
+         var match = KeyPattern.Match(key);
+         var planStr = match.Groups[1].Value;
+         var plan = PlanCodeExtensions.FromString(planStr);
+@@ -48,7 +146,6 @@ public class InsightLicenseManager
+         if (plan == PlanCode.Free)
+             return (false, "無効なプランコードです。");
+ 
+-        // Extract expiry from YYMM
+         var yymm = match.Groups[2].Value;
+         if (!TryParseExpiry(yymm, out var expiresAt))
+             return (false, "ライセンスキーの有効期限が不正です。");
+@@ -65,7 +162,7 @@ public class InsightLicenseManager
+         CurrentLicense = license;
+         SaveLicense();
+ 
+-        return (true, $"{plan.ToDisplayName()} プランをアクティベートしました。");
++        return (true, $"{plan.ToDisplayName()} プランをアクティベートしました。（オフライン認証）");
+     }
+ 
+     public void Deactivate()
+@@ -83,19 +180,78 @@ public class InsightLicenseManager
+         }
+     }
+ 
+-    public bool CanUseFeature(string featureKey)
++    // =========================================================================
++    // insight-common/config/license-server.ts: validate endpoint
++    // POST /api/v1/licenses/validate
++    // =========================================================================
++
++    public async Task<bool> ValidateOnlineAsync()
+     {
+-        var plan = CurrentLicense.PlanCode;
++        if (string.IsNullOrEmpty(CurrentLicense.LicenseKey))
++            return false;
+ 
+-        // If license is expired, fall back to Free
+-        if (plan != PlanCode.Free && CurrentLicense.IsExpired)
+-            plan = PlanCode.Free;
++        try
++        {
++            var response = await _httpClient.PostAsJsonAsync(ValidateEndpoint, new
++            {
++                licenseKey = CurrentLicense.LicenseKey,
++                productCode = ProductCode
++            });
++
++            if (response.IsSuccessStatusCode)
++            {
++                var result = await response.Content.ReadFromJsonAsync<ServerValidateResponse>();
++                if (result is { Valid: true })
++                {
++                    // サーバーから最新情報で更新
++                    if (result.Plan != null)
++                        CurrentLicense.Plan = result.Plan;
++                    if (result.ExpiresAt.HasValue)
++                        CurrentLicense.ExpiresAt = result.ExpiresAt;
++
++                    SaveLicense();
++                    return true;
++                }
++
++                // サーバーが無効と判定 → ローカルもクリア
++                if (result is { Valid: false })
++                {
++                    Deactivate();
++                    return false;
++                }
++            }
++        }
++        catch
++        {
++            // ネットワーク失敗時はローカル情報で判定
++        }
++
++        return CurrentLicense.IsValid;
++    }
++
++    // =========================================================================
++    // insight-common/config/products.ts: PRODUCT_FEATURES['INIG'] の判定
++    //
++    // generate_image  → FREE, TRIAL, STD, PRO, ENT
++    // batch_image     → TRIAL, STD, PRO, ENT
++    // generate_audio  → FREE, TRIAL, STD, PRO, ENT
++    // character_prompts → limit: FREE=3, TRIAL=-1, STD=20, PRO=-1, ENT=-1
++    // hi_res          → TRIAL, PRO, ENT
++    // cloud_sync      → TRIAL, PRO, ENT
++    // =========================================================================
++
++    public bool CanUseFeature(string featureKey)
++    {
++        var plan = GetEffectivePlan();
+ 
+         return featureKey switch
+         {
++            // products.ts: allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT']
+             "generate_image" => true,
+             "generate_audio" => true,
++            // products.ts: allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT']
+             "batch_image" => plan is PlanCode.Trial or PlanCode.Std or PlanCode.Pro or PlanCode.Ent,
++            // products.ts: allowedPlans: ['TRIAL', 'PRO', 'ENT']
+             "hi_res" => plan is PlanCode.Trial or PlanCode.Pro or PlanCode.Ent,
+             "cloud_sync" => plan is PlanCode.Trial or PlanCode.Pro or PlanCode.Ent,
+             _ => false
+@@ -104,20 +260,18 @@ public class InsightLicenseManager
+ 
+     public int GetFeatureLimit(string featureKey)
+     {
+-        var plan = CurrentLicense.PlanCode;
+-
+-        if (plan != PlanCode.Free && CurrentLicense.IsExpired)
+-            plan = PlanCode.Free;
++        var plan = GetEffectivePlan();
+ 
++        // products.ts: INIG character_prompts limitValues
+         if (featureKey == "character_prompts")
+         {
+             return plan switch
+             {
+-                PlanCode.Free => 3,
+-                PlanCode.Trial => -1,
+-                PlanCode.Std => 20,
+-                PlanCode.Pro => -1,
+-                PlanCode.Ent => -1,
++                PlanCode.Free => 3,     // products.ts: FREE: 3
++                PlanCode.Trial => -1,   // products.ts: TRIAL: -1
++                PlanCode.Std => 20,     // products.ts: STD: 20
++                PlanCode.Pro => -1,     // products.ts: PRO: -1
++                PlanCode.Ent => -1,     // products.ts: ENT: -1
+                 _ => 3
+             };
+         }
+@@ -125,11 +279,23 @@ public class InsightLicenseManager
+         return -1;
+     }
+ 
++    private PlanCode GetEffectivePlan()
++    {
++        var plan = CurrentLicense.PlanCode;
++        if (plan != PlanCode.Free && CurrentLicense.IsExpired)
++            plan = PlanCode.Free;
++        return plan;
++    }
++
++    // =========================================================================
++    // ライセンスの永続化（ローカル）
++    // =========================================================================
++
+     private void LoadLicense()
+     {
+         try
+         {
+-            // Priority: environment variable > saved license file
++            // 優先順位: 環境変数 > ローカルファイル
+             var envKey = Environment.GetEnvironmentVariable("INIG_LICENSE_KEY");
+             if (!string.IsNullOrEmpty(envKey) && KeyPattern.IsMatch(envKey.Trim().ToUpperInvariant()))
+             {
+@@ -188,6 +354,16 @@ public class InsightLicenseManager
+         }
+     }
+ 
++    // =========================================================================
++    // ユーティリティ
++    // =========================================================================
++
++    private static string ExtractPlanFromKey(string key)
++    {
++        var match = KeyPattern.Match(key);
++        return match.Success ? match.Groups[1].Value : "FREE";
++    }
++
+     private static bool TryParseExpiry(string yymm, out DateTime expiresAt)
+     {
+         expiresAt = default;
+@@ -209,7 +385,37 @@ public class InsightLicenseManager
+         if (string.IsNullOrEmpty(key) || key.Length < 10)
+             return "****";
+ 
+-        // Show first 9 chars (INIG-XXX-) and mask the rest
+         return key[..9] + new string('*', key.Length - 9);
+     }
++
++    // =========================================================================
++    // サーバーレスポンス型
++    // =========================================================================
++
++    private class ServerActivateResponse
++    {
++        [JsonPropertyName("success")]
++        public bool Success { get; set; }
++
++        [JsonPropertyName("plan")]
++        public string? Plan { get; set; }
++
++        [JsonPropertyName("expiresAt")]
++        public DateTime? ExpiresAt { get; set; }
++
++        [JsonPropertyName("error")]
++        public string? Error { get; set; }
++    }
++
++    private class ServerValidateResponse
++    {
++        [JsonPropertyName("valid")]
++        public bool Valid { get; set; }
++
++        [JsonPropertyName("plan")]
++        public string? Plan { get; set; }
++
++        [JsonPropertyName("expiresAt")]
++        public DateTime? ExpiresAt { get; set; }
++    }
+ }
+diff --git a/InsightMediaGenerator/ViewModels/MainViewModel.cs b/InsightMediaGenerator/ViewModels/MainViewModel.cs
+index babd72b..7057aba 100644
+--- a/InsightMediaGenerator/ViewModels/MainViewModel.cs
++++ b/InsightMediaGenerator/ViewModels/MainViewModel.cs
+@@ -62,15 +62,15 @@ public partial class MainViewModel : ObservableObject
+         // Load license info
+         LoadLicenseInfo();
+ 
++        // license-server.ts: validate endpoint でオンライン検証
++        _ = ValidateLicenseOnlineAsync();
++
+         // Initialize sub view models
+         await Task.WhenAll(
+             SimpleImage.InitializeAsync(),
+             BatchImage.InitializeAsync(),
+             Audio.InitializeAsync()
+         );
+-
+-        // Check service connections
+-        await CheckServiceConnectionsAsync();
+     }
+ 
+     private void LoadLicenseInfo()
+@@ -81,10 +81,17 @@ public partial class MainViewModel : ObservableObject
+         LicenseExpiresAt = license.ExpiresAt;
+     }
+ 
+-    private async Task CheckServiceConnectionsAsync()
++    private async Task ValidateLicenseOnlineAsync()
+     {
+-        await Task.CompletedTask;
+-        // These will be updated by the services when they connect
++        try
++        {
++            await _licenseManager.ValidateOnlineAsync();
++            LoadLicenseInfo(); // サーバーから更新された情報を反映
++        }
++        catch
++        {
++            // オフライン時はローカル情報で継続
++        }
+     }
+ 
+     public void UpdateStableDiffusionStatus(bool connected)
+@@ -219,11 +226,11 @@ public partial class MainViewModel : ObservableObject
+             ? "未設定"
+             : InsightLicenseManager.MaskLicenseKey(license.LicenseKey);
+ 
++        // license-server.ts: LICENSE_SERVER_ENDPOINTS.activate
+         var message = $"InsightImageGen ライセンス情報\n\n" +
+                       $"現在のプラン: {planInfo}\n\n" +
+                       $"ライセンスキー: {maskedKey}\n\n" +
+-                      "ライセンスを購入または更新するには:\n" +
+-                      "https://harmonic-insight.com/products/insight-image-gen";
++                      "ライセンスサーバー: https://license.harmonicinsight.com";
+ 
+         var result = MessageBox.Show(
+             message,
+@@ -240,11 +247,12 @@ public partial class MainViewModel : ObservableObject
+ 
+     private void ShowLicenseActivationDialog()
+     {
++        // license-server.ts: activate endpoint 経由で認証
+         var message = "ライセンスキーを入力してください:\n\n" +
+                       "形式: INIG-{プラン}-{YYMM}-{XXXX}-{XXXX}-{XXXX}\n" +
+                       "例: INIG-PRO-2601-ABCD-EFGH-IJKL\n\n" +
+-                      "ライセンスキーの入力は今後のアップデートで\n" +
+-                      "専用ダイアログを実装予定です。\n\n" +
++                      "認証サーバー: https://license.harmonicinsight.com\n" +
++                      "エンドポイント: /api/v1/licenses/activate\n\n" +
+                       "現在は環境変数 INIG_LICENSE_KEY に設定してください。";
+ 
+         MessageBox.Show(
+-- 
+2.43.0
+
