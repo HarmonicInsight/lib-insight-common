@@ -87,7 +87,7 @@ public class AppConfig
                 {
                     Name = "InsightPy",
                     ProductCode = "INPY",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
                     SolutionPath = "InsightPy.sln",
                     ProjectPath = "InsightPy/InsightPy.csproj",
                     TestProjectPath = "",
@@ -100,7 +100,7 @@ public class AppConfig
                 {
                     Name = "InsightOfficeSheet",
                     ProductCode = "IOSH",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-office-sheet"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
                     SolutionPath = "InsightOfficeSheet.sln",
                     ProjectPath = "InsightOfficeSheet/InsightOfficeSheet.csproj",
                     TestProjectPath = "",
@@ -111,7 +111,7 @@ public class AppConfig
                 {
                     Name = "InsightSlide",
                     ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C"),
                     SolutionPath = "InsightSlide.sln",
                     ProjectPath = "InsightSlide/InsightSlide.csproj",
                     TestProjectPath = "",
@@ -122,7 +122,7 @@ public class AppConfig
                 {
                     Name = "InterviewInsight",
                     ProductCode = "INIV",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-interview-insight"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
                     SolutionPath = "InterviewInsight.sln",
                     ProjectPath = "InterviewInsight/InterviewInsight.csproj",
                     TestProjectPath = "",
@@ -135,7 +135,7 @@ public class AppConfig
                 {
                     Name = "InsightMovie",
                     ProductCode = "INMV",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie-gen-win-C"),
                     SolutionPath = "InsightMovie.sln",
                     ProjectPath = "InsightMovie/InsightMovie.csproj",
                     TestProjectPath = "",
@@ -146,7 +146,7 @@ public class AppConfig
                 {
                     Name = "InsightImageGen",
                     ProductCode = "INIG",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-imagegen"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-image-gen-C"),
                     SolutionPath = "InsightImageGen.sln",
                     ProjectPath = "InsightImageGen/InsightImageGen.csproj",
                     TestProjectPath = "",
