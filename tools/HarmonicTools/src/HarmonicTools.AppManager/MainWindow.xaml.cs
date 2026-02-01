@@ -357,7 +357,43 @@ public partial class MainWindow : Window
         var version = VersionInput.Text.Trim();
         var versionPart = string.IsNullOrEmpty(version) ? "v?.?.?" :
             (version.StartsWith("v") ? version : $"v{version}");
-        AppendOutput($"  タグ: {_selectedApp.ProductCode}-{versionPart}\n\n");
+        var expectedTag = $"{_selectedApp.ProductCode}-{versionPart}";
+        AppendOutput($"  タグ: {expectedTag}\n");
+
+        // 6. GitHub Release 状態
+        AppendOutput($"\n── GitHub Release ──\n");
+        if (!string.IsNullOrEmpty(_selectedApp.LastReleasedTag))
+        {
+            AppendOutput($"  最終リリース: {_selectedApp.LastReleasedTag}\n");
+        }
+        try
+        {
+            var psi = new ProcessStartInfo("gh",
+                $"release view {expectedTag} --repo {AppConfig.ReleaseRepo} --json tagName,createdAt,assets")
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            var proc = Process.Start(psi);
+            var output = proc?.StandardOutput.ReadToEnd().Trim() ?? "";
+            proc?.WaitForExit();
+            if (proc?.ExitCode == 0)
+            {
+                AppendOutput($"  ✓ {expectedTag} はリリース済み\n");
+                AppendOutput($"  {output}\n");
+            }
+            else
+            {
+                AppendOutput($"  ✗ {expectedTag} は未リリース\n");
+            }
+        }
+        catch
+        {
+            AppendOutput("  ✗ gh CLI でリリース状態を確認できません\n");
+        }
+        AppendOutput("\n");
     }
 
     private void CheckExeStatus(string label, string exePath)
@@ -509,6 +545,9 @@ public partial class MainWindow : Window
 
         if (releaseSuccess)
         {
+            _selectedApp.LastReleasedTag = tag;
+            SaveConfig();
+            RefreshStatusIcons();
             AppendOutput($"\n[完了] GitHub Release を作成しました: {releaseRepo}/releases/tag/{tag}\n");
         }
         else
@@ -768,6 +807,14 @@ public partial class MainWindow : Window
     private void SaveConfig()
     {
         _config.Save();
+    }
+
+    private void RefreshStatusIcons()
+    {
+        var selected = AppListBox.SelectedItem;
+        AppListBox.ItemsSource = null;
+        AppListBox.ItemsSource = _config.Apps;
+        if (selected != null) AppListBox.SelectedItem = selected;
     }
 
     protected override void OnClosed(EventArgs e)

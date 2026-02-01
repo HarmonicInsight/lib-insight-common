@@ -21,6 +21,11 @@ public class AppDefinition
     public string BuildCommand { get; set; } = string.Empty;
 
     /// <summary>
+    /// 最後にリリースしたタグ（例: "INBT-v1.0.0"）。リリース成功時に保存。
+    /// </summary>
+    public string LastReleasedTag { get; set; } = string.Empty;
+
+    /// <summary>
     /// dotnet プロジェクトかどうか
     /// </summary>
     [System.Text.Json.Serialization.JsonIgnore]
@@ -103,14 +108,18 @@ public class AppDefinition
     {
         get
         {
+            var released = !string.IsNullOrEmpty(LastReleasedTag);
+
             if (!IsDotNet)
             {
                 var hasDist = !string.IsNullOrEmpty(DistExePath) && File.Exists(DistExePath);
+                if (released) return $"★ {LastReleasedTag}";
                 return hasDist ? "● 配布可" : "○ 未ビルド";
             }
             var hasPublish = !string.IsNullOrEmpty(PublishExePath) && File.Exists(PublishExePath);
             var hasRelease = !string.IsNullOrEmpty(ReleaseExePath) && File.Exists(ReleaseExePath);
 
+            if (released) return $"★ {LastReleasedTag}";
             if (hasPublish) return "● 配布可";
             if (hasRelease) return "◐ ビルド済";
             return "○ 未ビルド";
