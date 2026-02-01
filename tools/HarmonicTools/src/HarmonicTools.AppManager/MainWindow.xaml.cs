@@ -633,7 +633,7 @@ public partial class MainWindow : Window
         // Step 3: gh release create
         AppendOutput($"\n[3/3] gh release create {tag} → {releaseRepo}\n");
         var releaseSuccess = await _runner.RunAsync("gh",
-            $"release create {tag} \"{uploadFile}\" --repo {releaseRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\"",
+            $"release create {tag} \"{uploadFile}\" --repo {releaseRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\" --draft=false",
             GetWorkingDir());
 
         // Cleanup temp zip if needed
