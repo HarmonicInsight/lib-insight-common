@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 
 namespace HarmonicTools.AppManager.Models;
 
@@ -14,6 +15,28 @@ public class AppDefinition
     public string TestProjectPath { get; set; } = string.Empty;
     public string ExeRelativePath { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// dotnet 以外のビルドコマンド（例: "build.bat"）。空なら dotnet build を使用。
+    /// </summary>
+    public string BuildCommand { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 最後にリリースしたタグ（例: "INBT-v1.0.0"）。リリース成功時に保存。
+    /// </summary>
+    public string LastReleasedTag { get; set; } = string.Empty;
+
+    /// <summary>
+    /// インストーラー出力ディレクトリ（BasePath からの相対パス、例: "Output"）
+    /// build.ps1 が Inno Setup で生成した exe が格納されるフォルダ
+    /// </summary>
+    public string InstallerDir { get; set; } = string.Empty;
+
+    /// <summary>
+    /// dotnet プロジェクトかどうか
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool IsDotNet => !string.IsNullOrEmpty(ProjectPath);
 
     /// <summary>
     /// 解決済みのソリューション絶対パス
@@ -71,16 +94,72 @@ public class AppDefinition
     }
 
     /// <summary>
-    /// 左パネル表示用ステータスアイコン
+    /// build.ps1 等のビルドスクリプトがあるか
     /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool HasBuildScript => !string.IsNullOrEmpty(BuildCommand);
+
+    /// <summary>
+    /// インストーラー出力ディレクトリの絶対パス
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string ResolvedInstallerDir => string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(InstallerDir)
+        ? string.Empty
+        : Path.Combine(BasePath, InstallerDir);
+
+    /// <summary>
+    /// インストーラー exe を検索して最新のものを返す
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string? LatestInstallerExe
+    {
+        get
+        {
+            var dir = ResolvedInstallerDir;
+            if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) return null;
+            return Directory.GetFiles(dir, "*Setup*.exe")
+                .Concat(Directory.GetFiles(dir, "*Installer*.exe"))
+                .Select(f => new FileInfo(f))
+                .OrderByDescending(f => f.LastWriteTime)
+                .FirstOrDefault()?.FullName;
+        }
+    }
+
+    /// <summary>
+    /// 配布用 exe パス（dotnet: PublishExePath, 非dotnet: ExeRelativePath ベース）
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string DistExePath
+    {
+        get
+        {
+            if (IsDotNet) return PublishExePath;
+            if (string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(ExeRelativePath)) return string.Empty;
+            return Path.Combine(BasePath, ExeRelativePath);
+        }
+    }
+
     [System.Text.Json.Serialization.JsonIgnore]
     public string StatusIcon
     {
         get
         {
+            var released = !string.IsNullOrEmpty(LastReleasedTag);
+
+            var hasInstaller = LatestInstallerExe != null;
+
+            if (!IsDotNet)
+            {
+                var hasDist = !string.IsNullOrEmpty(DistExePath) && File.Exists(DistExePath);
+                if (released) return $"★ {LastReleasedTag}";
+                if (hasInstaller) return "● インストーラー有";
+                return hasDist ? "● 配布可" : "○ 未ビルド";
+            }
             var hasPublish = !string.IsNullOrEmpty(PublishExePath) && File.Exists(PublishExePath);
             var hasRelease = !string.IsNullOrEmpty(ReleaseExePath) && File.Exists(ReleaseExePath);
 
+            if (released) return $"★ {LastReleasedTag}";
+            if (hasInstaller) return "● インストーラー有";
             if (hasPublish) return "● 配布可";
             if (hasRelease) return "◐ ビルド済";
             return "○ 未ビルド";
