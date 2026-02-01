@@ -42,17 +42,24 @@ public class AppConfig
         catch { }
     }
 
+    /// <summary>
+    /// デフォルトの開発ルートディレクトリ（C:\dev）
+    /// 各アプリの BasePath = DevRoot + リポジトリフォルダ名
+    /// </summary>
+    private const string DefaultDevRoot = @"C:\dev";
+
     public static AppConfig CreateDefault()
     {
         return new AppConfig
         {
             Apps = new List<AppDefinition>
             {
-                // ── Harmonic シリーズ（HarmonicSheet ソリューション）──
+                // ── Harmonic シリーズ（app-Insight-excel リポジトリ）──
                 new()
                 {
                     Name = "HarmonicSheet",
                     ProductCode = "HMSH",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
                     SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = "src/HarmonicSheet.App/HarmonicSheet.App.csproj",
                     TestProjectPath = "tests/HarmonicSheet.Core.Tests",
@@ -63,6 +70,7 @@ public class AppConfig
                 {
                     Name = "HarmonicDoc",
                     ProductCode = "HMDC",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
                     SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = "src/HarmonicDoc.App/HarmonicDoc.App.csproj",
                     TestProjectPath = "",
@@ -73,6 +81,7 @@ public class AppConfig
                 {
                     Name = "HarmonicSlide",
                     ProductCode = "HMSL",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
                     SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = "src/HarmonicSlide.App/HarmonicSlide.App.csproj",
                     TestProjectPath = "",
@@ -80,41 +89,12 @@ public class AppConfig
                     Description = "PowerPoint 操作ツール（スライド編集・変換）"
                 },
 
-                // ── Insight シリーズ（config/products.ts 登録製品）──
-                new()
-                {
-                    Name = "InsightSlide",
-                    ProductCode = "INSS",
-                    SolutionPath = "InsightSlide.sln",
-                    ProjectPath = "src/InsightSlide.App/InsightSlide.App.csproj",
-                    TestProjectPath = "tests/InsightSlide.Core.Tests",
-                    ExeRelativePath = "src/InsightSlide.App/bin/{config}/net8.0-windows/InsightSlide.App.exe",
-                    Description = "PowerPoint コンテンツ抽出・更新ツール"
-                },
-                new()
-                {
-                    Name = "InsightMovie",
-                    ProductCode = "INMV",
-                    SolutionPath = "InsightMovie.sln",
-                    ProjectPath = "src/InsightMovie.App/InsightMovie.App.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = "src/InsightMovie.App/bin/{config}/net8.0-windows/InsightMovie.App.exe",
-                    Description = "画像・テキスト・PPT から AI 動画作成"
-                },
-                new()
-                {
-                    Name = "InsightBot",
-                    ProductCode = "INBT",
-                    SolutionPath = "InsightBot.sln",
-                    ProjectPath = "src/InsightBot.App/InsightBot.App.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = "src/InsightBot.App/bin/{config}/net8.0-windows/InsightBot.App.exe",
-                    Description = "Python RPA 自動化ボット"
-                },
+                // ── Insight シリーズ ──
                 new()
                 {
                     Name = "InsightNoCodeAnalyzer",
                     ProductCode = "INCA",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-nocode-analyzer-C"),
                     SolutionPath = "InsightNoCodeAnalyzer.sln",
                     ProjectPath = "src/InsightNoCodeAnalyzer.App/InsightNoCodeAnalyzer.App.csproj",
                     TestProjectPath = "tests/InsightNoCodeAnalyzer.Core.Tests",
@@ -123,8 +103,31 @@ public class AppConfig
                 },
                 new()
                 {
+                    Name = "InsightForguncy",
+                    ProductCode = "FGIN",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-win-insight-forguncy"),
+                    SolutionPath = "InsightForguncy.sln",
+                    ProjectPath = "src/InsightForguncy.App/InsightForguncy.App.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = "src/InsightForguncy.App/bin/{config}/net8.0-windows/InsightForguncy.App.exe",
+                    Description = "Forguncy 連携・AI 開発支援ツール"
+                },
+                new()
+                {
+                    Name = "InsightMovie",
+                    ProductCode = "INMV",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie"),
+                    SolutionPath = "InsightMovie.sln",
+                    ProjectPath = "src/InsightMovie.App/InsightMovie.App.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = "src/InsightMovie.App/bin/{config}/net8.0-windows/InsightMovie.App.exe",
+                    Description = "画像・テキスト・PPT から AI 動画作成"
+                },
+                new()
+                {
                     Name = "InsightImageGen",
                     ProductCode = "INIG",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-imagegen"),
                     SolutionPath = "InsightImageGen.sln",
                     ProjectPath = "src/InsightImageGen.App/InsightImageGen.App.csproj",
                     TestProjectPath = "",
