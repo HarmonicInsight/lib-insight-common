@@ -651,8 +651,12 @@ public partial class MainWindow : Window
             needsCleanup = true;
         }
 
-        // Step 3: gh release create
+        // Step 3: 既存リリースがあれば削除
         AppendOutput($"\n[3/3] gh release create {tag} → {releaseRepo}\n");
+        await _runner.RunAsync("gh",
+            $"release delete {tag} --repo {releaseRepo} --yes --cleanup-tag",
+            GetWorkingDir());
+
         var releaseSuccess = await _runner.RunAsync("gh",
             $"release create {tag} \"{uploadFile}\" --repo {releaseRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\" --draft=false",
             GetWorkingDir());
