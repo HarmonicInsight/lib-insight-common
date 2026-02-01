@@ -227,10 +227,7 @@ public partial class MainWindow : Window
         CheckExeStatus("Release exe", releaseExe);
 
         // 3. Self-contained publish (win-x64)
-        var projectDir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "";
-        var publishExe = Path.Combine(projectDir, "bin", "Release", "net8.0-windows", "win-x64", "publish",
-            Path.GetFileName(_selectedApp.ExeRelativePath.Replace("{config}", "Release")));
-        CheckExeStatus("Publish exe (win-x64)", publishExe);
+        CheckExeStatus("Publish exe (win-x64)", _selectedApp.PublishExePath);
 
         // 4. gh CLI
         AppendOutput("── gh CLI ──\n");
@@ -564,6 +561,11 @@ public partial class MainWindow : Window
         {
             SetRunning(false);
             UpdateAppDetails();
+
+            // ステータスアイコンを更新
+            var saved = _selectedApp;
+            RefreshAppList();
+            if (saved != null) AppListBox.SelectedItem = saved;
 
             if (success)
             {

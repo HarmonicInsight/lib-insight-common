@@ -55,5 +55,37 @@ public class AppDefinition
         ? string.Empty
         : Path.Combine(BasePath, ExeRelativePath.Replace("{config}", "Release"));
 
+    /// <summary>
+    /// Self-contained publish exe パス (win-x64)
+    /// </summary>
+    public string PublishExePath
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(ProjectPath) || string.IsNullOrEmpty(ExeRelativePath))
+                return string.Empty;
+            var projectDir = Path.GetDirectoryName(ResolvedProjectPath) ?? "";
+            var exeName = Path.GetFileName(ExeRelativePath.Replace("{config}", "Release"));
+            return Path.Combine(projectDir, "bin", "Release", "net8.0-windows", "win-x64", "publish", exeName);
+        }
+    }
+
+    /// <summary>
+    /// 左パネル表示用ステータスアイコン
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string StatusIcon
+    {
+        get
+        {
+            var hasPublish = !string.IsNullOrEmpty(PublishExePath) && File.Exists(PublishExePath);
+            var hasRelease = !string.IsNullOrEmpty(ReleaseExePath) && File.Exists(ReleaseExePath);
+
+            if (hasPublish) return "● 配布可";
+            if (hasRelease) return "◐ ビルド済";
+            return "○ 未ビルド";
+        }
+    }
+
     public override string ToString() => $"{Name} ({ProductCode})";
 }
