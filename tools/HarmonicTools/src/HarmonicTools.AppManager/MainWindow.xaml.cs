@@ -165,7 +165,7 @@ public partial class MainWindow : Window
             return;
         }
         await _runner.RunAsync("dotnet",
-            $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r win-x64 --self-contained",
+            $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r win-x64 --self-contained /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true",
             GetWorkingDir());
     }
 
@@ -462,7 +462,7 @@ public partial class MainWindow : Window
         {
             AppendOutput($"[1/3] dotnet publish -c Release -r {rid} --self-contained ...\n");
             var publishSuccess = await _runner.RunAsync("dotnet",
-                $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r {rid} --self-contained",
+                $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r {rid} --self-contained /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true",
                 GetWorkingDir());
 
             if (!publishSuccess)
