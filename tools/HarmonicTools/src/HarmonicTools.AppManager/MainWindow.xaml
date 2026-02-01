@@ -9,7 +9,13 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResize">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      CornerRadius="8"/>
+    </WindowChrome.WindowChrome>
     <Border Background="{StaticResource BgPrimaryBrush}"
             BorderBrush="{StaticResource BorderBrush}"
             BorderThickness="1"
@@ -55,14 +61,15 @@
             <!-- Main Content -->
             <Grid Grid.Row="1" Margin="16">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="280"/>
+                    <ColumnDefinition Width="280" MinWidth="180" MaxWidth="500"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Left Panel: App List -->
                 <Border Grid.Column="0" Background="{StaticResource BgCardBrush}"
                         BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                        CornerRadius="8" Margin="0,0,8,0" Padding="12">
+                        CornerRadius="8" Margin="0,0,0,0" Padding="12">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -116,8 +123,14 @@
                     </Grid>
                 </Border>
 
+                <!-- GridSplitter -->
+                <GridSplitter Grid.Column="1" Width="6"
+                              HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                              Background="Transparent" Cursor="SizeWE"
+                              ShowsPreview="False"/>
+
                 <!-- Right Panel: Details & Actions -->
-                <Grid Grid.Column="1">
+                <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -127,7 +140,7 @@
                     <!-- App Details -->
                     <Border Grid.Row="0" Background="{StaticResource BgCardBrush}"
                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                            CornerRadius="8" Margin="8,0,0,0" Padding="16,12">
+                            CornerRadius="8" Margin="0,0,0,0" Padding="16,12">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -348,7 +361,7 @@
                     </Border>
 
                     <!-- Status Bar -->
-                    <Border Grid.Row="1" Margin="8,8,0,0">
+                    <Border Grid.Row="1" Margin="0,8,0,0">
                         <StackPanel Orientation="Horizontal">
                             <Border x:Name="StatusBadge" CornerRadius="4" Padding="8,2"
                                     Background="{StaticResource BgSecondaryBrush}">
@@ -362,7 +375,7 @@
                     <!-- Output Console -->
                     <Border Grid.Row="2" Background="#1C1917"
                             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
-                            CornerRadius="8" Margin="8,8,0,0" Padding="2">
+                            CornerRadius="8" Margin="0,8,0,0" Padding="2">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
