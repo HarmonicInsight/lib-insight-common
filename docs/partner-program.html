@@ -515,11 +515,244 @@
       grid-template-columns: 1fr;
     }
   }
+
+  /* ═══════════════════════════════════════════════════════
+     印刷 / PDF出力用
+     ブラウザの「印刷 → PDFに保存」で A4にきれいに出力
+     ═══════════════════════════════════════════════════════ */
+  @page {
+    size: A4;
+    margin: 12mm 14mm 14mm 14mm;
+  }
+
   @media print {
-    body { background: #fff; }
-    .hero { padding: 40px 24px; }
-    section { padding: 32px 0; }
-    .cta { padding: 40px 24px; }
+    /* 背景色・グラデーションを印刷する */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    body {
+      background: #fff !important;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* ─── ページ1: Hero + ハイライト ─── */
+    .hero {
+      padding: 48px 32px 40px;
+      background: linear-gradient(135deg, #1C1917 0%, #292524 50%, #1C1917 100%) !important;
+    }
+    .hero::before {
+      background: radial-gradient(ellipse at 50% 0%, rgba(184,148,47,0.15) 0%, transparent 60%) !important;
+    }
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 14px; }
+
+    .highlight-row {
+      margin-top: -32px;
+      margin-bottom: 0;
+      page-break-after: always;
+    }
+    .highlight-item {
+      box-shadow: none;
+      border: 1px solid #E7E2DA;
+    }
+
+    /* ─── コンテナ ─── */
+    .container {
+      max-width: 100%;
+      padding: 0;
+    }
+
+    /* ─── セクション共通 ─── */
+    section {
+      padding: 24px 0 16px;
+      border-top: none !important;
+    }
+    section + section {
+      border-top: 1px solid #E7E2DA !important;
+    }
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .section-desc {
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    /* ─── ページ2: ティアカード ─── */
+    .tier-grid {
+      gap: 12px;
+      page-break-inside: avoid;
+    }
+    .tier-card {
+      padding: 20px 16px;
+      border-radius: 8px;
+      box-shadow: none !important;
+      break-inside: avoid;
+    }
+    .tier-card.recommended {
+      border: 2px solid #B8942F !important;
+      box-shadow: none !important;
+    }
+    .tier-card.recommended::before {
+      background: #B8942F !important;
+      color: #fff !important;
+    }
+    .tier-name-ja { font-size: 16px; margin-bottom: 10px; }
+    .tier-discount { font-size: 32px; }
+    .tier-req {
+      background: #F5F2ED !important;
+    }
+    .tier-features li {
+      font-size: 11px;
+      padding: 4px 0;
+    }
+    .tier-features li::before {
+      background: #B8942F !important;
+    }
+
+    /* ─── ページ3: 製品一覧 ─── */
+    .product-grid {
+      gap: 10px;
+      page-break-before: always;
+    }
+    .product-card {
+      padding: 16px;
+      border-radius: 8px;
+      break-inside: avoid;
+    }
+    .product-name { font-size: 14px; }
+    .product-desc { font-size: 11px; margin-bottom: 8px; }
+    .product-code {
+      background: #F5F2ED !important;
+      color: #8A6F23 !important;
+    }
+    .note-box {
+      background: #FFFBEB !important;
+      border-color: #FDE68A !important;
+      font-size: 11px;
+      margin-top: 10px;
+      page-break-inside: avoid;
+    }
+
+    /* ─── ページ4: コミッション ─── */
+    .comm-table {
+      border-radius: 0;
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+    .comm-table th {
+      background: #292524 !important;
+      color: #fff !important;
+      font-size: 10px;
+      padding: 10px 12px;
+    }
+    .comm-table th.gold-header {
+      color: #D4B94E !important;
+    }
+    .comm-table td {
+      font-size: 11px;
+      padding: 10px 12px;
+    }
+    .comm-table .profit {
+      color: #8A6F23 !important;
+    }
+
+    .sim-grid {
+      gap: 10px;
+      page-break-inside: avoid;
+    }
+    .sim-card {
+      padding: 16px;
+      break-inside: avoid;
+    }
+    .sim-value {
+      font-size: 22px;
+      color: #8A6F23 !important;
+    }
+
+    /* ─── ページ5: 開始フロー + サポート + 条件 ─── */
+    .steps {
+      gap: 10px;
+      page-break-before: always;
+      page-break-inside: avoid;
+    }
+    .step {
+      padding: 16px 12px;
+      break-inside: avoid;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      font-size: 13px;
+      background: #B8942F !important;
+      color: #fff !important;
+    }
+    .step-title { font-size: 12px; }
+    .step-desc { font-size: 10px; }
+
+    .benefit-grid {
+      gap: 10px;
+      page-break-inside: avoid;
+    }
+    .benefit {
+      padding: 16px;
+      break-inside: avoid;
+    }
+    .benefit-icon { font-size: 22px; margin-bottom: 6px; }
+    .benefit-title { font-size: 13px; }
+    .benefit-desc { font-size: 10px; }
+
+    .terms-grid {
+      gap: 10px;
+      page-break-inside: avoid;
+    }
+    .term-item {
+      padding: 14px 16px;
+      break-inside: avoid;
+    }
+    .term-label {
+      color: #8A6F23 !important;
+    }
+
+    /* ─── CTA ─── */
+    .cta {
+      background: linear-gradient(135deg, #1C1917 0%, #292524 100%) !important;
+      padding: 36px 32px;
+      page-break-inside: avoid;
+    }
+    .cta h2 {
+      font-size: 22px;
+    }
+    .cta h2 span { color: #D4B94E !important; }
+    .cta p {
+      font-size: 12px;
+      color: #A8A29E !important;
+      margin-bottom: 20px;
+    }
+    .cta-btn {
+      background: #B8942F !important;
+      color: #fff !important;
+      font-size: 13px;
+      padding: 10px 32px;
+    }
+
+    .footer {
+      padding: 16px;
+      font-size: 10px;
+    }
+
+    /* ─── 汎用: ページ跨ぎ防止 ─── */
+    h2, h3 {
+      page-break-after: avoid;
+    }
+    table, .tier-card, .product-card, .sim-card, .step, .benefit, .term-item {
+      page-break-inside: avoid;
+    }
   }
 </style>
 </head>
@@ -527,7 +760,7 @@
 
 <!-- ══════════════════════════════════════════════ Hero ══════════════════════════════════════════════ -->
 <div class="hero">
-  <div class="hero-logo">HARMONIC INSIGHT</div>
+  <div class="hero-logo">HARMONIC insight</div>
   <div class="hero-badge">Partner Program</div>
   <h1>パートナープログラム<br><span>ご案内</span></h1>
   <p>Office業務を変革するソフトウェアを、御社の営業力で広げてください。<br>初期投資ゼロ・在庫リスクなし・販売した分だけ利益を得るモデルです。</p>
