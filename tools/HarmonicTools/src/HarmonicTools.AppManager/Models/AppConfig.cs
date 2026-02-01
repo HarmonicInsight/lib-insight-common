@@ -66,10 +66,10 @@ public class AppConfig
                     Name = "InsightBot",
                     ProductCode = "INBT",
                     BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
-                    SolutionPath = "InsightBot.sln",
-                    ProjectPath = "InsightBot/InsightBot.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = "InsightBot/bin/{config}/net8.0-windows/InsightBot.exe",
+                    SolutionPath = @"csharp\InsightBotRPA.sln",
+                    ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
+                    TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
+                    ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
                     Description = "AIを活用した業務最適化RPA製品"
                 },
                 new()
