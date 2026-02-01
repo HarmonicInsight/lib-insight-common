@@ -826,6 +826,35 @@ public partial class MainWindow : Window
         EditToggleBtn.Content = "閉じる";
     }
 
+    private void CopyApp_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+
+        var app = new AppDefinition
+        {
+            Name = _selectedApp.Name + " (コピー)",
+            ProductCode = _selectedApp.ProductCode,
+            Description = _selectedApp.Description,
+            BasePath = _selectedApp.BasePath,
+            SolutionPath = _selectedApp.SolutionPath,
+            ProjectPath = _selectedApp.ProjectPath,
+            TestProjectPath = _selectedApp.TestProjectPath,
+            ExeRelativePath = _selectedApp.ExeRelativePath,
+            BuildCommand = _selectedApp.BuildCommand,
+            InstallerDir = _selectedApp.InstallerDir,
+        };
+
+        _config.Apps.Add(app);
+        RefreshAppList();
+        AppListBox.SelectedItem = app;
+        SaveConfig();
+
+        // Auto-open edit panel for copied app
+        PopulateEditFields(app);
+        EditPanel.Visibility = Visibility.Visible;
+        EditToggleBtn.Content = "閉じる";
+    }
+
     private void RemoveApp_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedApp == null) return;
