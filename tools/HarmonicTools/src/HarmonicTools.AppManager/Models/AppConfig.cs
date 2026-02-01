@@ -105,7 +105,7 @@ public class AppConfig
                     SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
                     TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj",
-                    ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.App.exe",
+                    ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.exe",
                     Description = "提案金額シミュレーション・経営戦略策定Excel基盤"
                 },
                 new()
