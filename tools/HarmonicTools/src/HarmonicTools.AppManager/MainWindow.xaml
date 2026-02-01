@@ -320,6 +320,8 @@
                                                Foreground="{StaticResource TextTertiaryBrush}" Margin="2,0,6,8"/>
                                     <Button Content="③ チェック" Style="{StaticResource SecondaryButton}"
                                             Margin="0,0,4,8" Click="CheckRelease_Click"/>
+                                    <Button Content="📂 exe" Style="{StaticResource SecondaryButton}"
+                                            Margin="0,0,4,8" Click="OpenExeFolder_Click"/>
                                     <TextBlock Text="→" VerticalAlignment="Center"
                                                Foreground="{StaticResource TextTertiaryBrush}" Margin="2,0,6,8"/>
                                     <TextBlock Text="v" FontSize="13" FontWeight="SemiBold"

@@ -210,6 +210,36 @@ public partial class MainWindow : Window
         }
     }
 
+    // ── Open Exe Folder ──
+
+    private void OpenExeFolder_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ValidateSelection()) return;
+
+        // Publish exe (優先) → Release exe → Debug exe の順で探す
+        var paths = new[]
+        {
+            _selectedApp!.PublishExePath,
+            _selectedApp.ReleaseExePath,
+            _selectedApp.DebugExePath
+        };
+
+        foreach (var exePath in paths)
+        {
+            if (!string.IsNullOrEmpty(exePath))
+            {
+                var dir = Path.GetDirectoryName(exePath);
+                if (dir != null && Directory.Exists(dir))
+                {
+                    Process.Start("explorer.exe", dir);
+                    return;
+                }
+            }
+        }
+
+        AppendOutput("[情報] exe フォルダが見つかりません。先にビルドまたは Publish を実行してください。\n");
+    }
+
     // ── Release Check ──
 
     private void CheckRelease_Click(object sender, RoutedEventArgs e)
