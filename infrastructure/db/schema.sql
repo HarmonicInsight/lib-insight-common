@@ -23,12 +23,20 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS licenses (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    product_code TEXT NOT NULL,          -- INSS, INSP, INPY, FGIN
-    plan TEXT NOT NULL DEFAULT 'FREE',   -- FREE, STD, PRO, ENT
+    product_code TEXT NOT NULL,          -- INSS, INSP, INPY, FGIN, etc.
+    plan TEXT NOT NULL DEFAULT 'FREE',   -- FREE, TRIAL, STD, PRO, ENT
     license_key TEXT,
+    key_type TEXT DEFAULT 'production',  -- production, provisional, nfr, demo
     activated_at TIMESTAMPTZ,
     expires_at TIMESTAMPTZ,
     is_active BOOLEAN DEFAULT true,
+
+    -- 発行追跡（誰が発行したか）
+    issuance_channel TEXT,               -- direct_paddle, partner_reseller, etc.
+    issuer_type TEXT,                    -- system, admin, partner
+    issuer_id TEXT,                      -- 発行者のID
+    partner_id UUID,                    -- パートナー経由の場合
+
     created_at TIMESTAMPTZ DEFAULT now(),
 
     UNIQUE(user_id, product_code)
@@ -87,6 +95,141 @@ $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS users_updated_at ON users;
 CREATE TRIGGER users_updated_at
     BEFORE UPDATE ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
+
+-- =============================================
+-- ライセンス発行・パートナー管理テーブル
+-- =============================================
+
+-- パートナー（販売代理店）
+CREATE TABLE IF NOT EXISTS partners (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_name TEXT NOT NULL,
+    contact_name TEXT NOT NULL,
+    contact_email TEXT NOT NULL UNIQUE,
+    tier TEXT NOT NULL DEFAULT 'registered',  -- registered, silver, gold
+    partner_type TEXT NOT NULL DEFAULT 'reseller', -- reseller, referral, var
+    is_active BOOLEAN DEFAULT true,
+    contract_start_date TIMESTAMPTZ NOT NULL,
+    contract_end_date TIMESTAMPTZ NOT NULL,
+    regions TEXT[] DEFAULT '{}',              -- 対象地域: ['JP', 'US', ...]
+    authorized_products TEXT[] DEFAULT '{}',  -- 取扱製品: ['INSS', 'HMSH', ...]
+    nfr_remaining JSONB DEFAULT '{}',         -- NFR残数: {"INSS": 2, "HMSH": 2}
+    demo_remaining JSONB DEFAULT '{}',        -- デモ残数: {"INSS": 5, "HMSH": 5}
+    api_key_hash TEXT UNIQUE,                -- パートナーポータル認証用
+    api_key_prefix TEXT,                     -- 表示用 "hpk_abc..."
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 登録（メール認証 → 仮キー → 正式キーの追跡）
+CREATE TABLE IF NOT EXISTS registrations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT NOT NULL,
+    name TEXT NOT NULL,
+    company TEXT,
+    product_code TEXT NOT NULL,
+    requested_plan TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending_verification',
+    -- pending_verification, verified, pending_payment, active, expired, suspended
+    verification_token TEXT NOT NULL,
+    verification_expires_at TIMESTAMPTZ NOT NULL,
+    verified_at TIMESTAMPTZ,
+    provisional_key TEXT,
+    provisional_expires_at TIMESTAMPTZ,
+    production_key TEXT,
+    production_expires_at TIMESTAMPTZ,
+    payment_method TEXT,                     -- paddle, stripe, invoice, reseller
+    payment_id TEXT,
+    reseller_partner_id UUID REFERENCES partners(id),
+    locale TEXT DEFAULT 'ja',
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 発行ログ（全ライセンス発行の監査証跡）
+CREATE TABLE IF NOT EXISTS issuance_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    license_id UUID REFERENCES licenses(id) ON DELETE SET NULL,
+    license_key TEXT NOT NULL,
+    product_code TEXT NOT NULL,
+    plan TEXT NOT NULL,
+    key_type TEXT NOT NULL,                  -- production, provisional, nfr, demo
+
+    -- 発行チャネル
+    channel TEXT NOT NULL,                   -- direct_paddle, partner_reseller, etc.
+
+    -- 発行者情報（誰が発行したか）
+    issuer_type TEXT NOT NULL,               -- system, admin, partner
+    issuer_id TEXT NOT NULL,                 -- 発行者のID
+    partner_id UUID REFERENCES partners(id), -- パートナー経由の場合
+    partner_tier TEXT,                       -- 発行時点のパートナーティア
+
+    -- 顧客情報
+    customer_email TEXT NOT NULL,
+    customer_name TEXT NOT NULL,
+    customer_company TEXT,
+
+    -- 決済情報
+    payment_id TEXT,
+    payment_amount INTEGER,                  -- 金額（最小通貨単位）
+    payment_currency TEXT,                   -- JPY, USD, EUR
+
+    -- メタデータ
+    expires_at TIMESTAMPTZ NOT NULL,
+    email_sent BOOLEAN DEFAULT false,
+    notes TEXT,
+    issued_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- パートナーコミッション
+CREATE TABLE IF NOT EXISTS partner_commissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    partner_id UUID NOT NULL REFERENCES partners(id),
+    issuance_log_id UUID REFERENCES issuance_logs(id),
+    license_id UUID REFERENCES licenses(id),
+    commission_type TEXT NOT NULL,            -- first_year, renewal, referral
+    list_price INTEGER NOT NULL,             -- 定価（JPY）
+    wholesale_price INTEGER NOT NULL,        -- 卸値（JPY）
+    partner_profit INTEGER NOT NULL,         -- パートナー利益（JPY）
+    discount_rate NUMERIC(4,2) NOT NULL,     -- 値引率 (0.20, 0.30, 0.40)
+    status TEXT NOT NULL DEFAULT 'pending',  -- pending, approved, paid, cancelled
+    period_start TIMESTAMPTZ NOT NULL,
+    period_end TIMESTAMPTZ NOT NULL,
+    paid_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ライセンス発行・パートナー インデックス
+CREATE INDEX IF NOT EXISTS idx_partners_email ON partners(contact_email);
+CREATE INDEX IF NOT EXISTS idx_partners_tier ON partners(tier);
+CREATE INDEX IF NOT EXISTS idx_partners_api_key ON partners(api_key_hash);
+CREATE INDEX IF NOT EXISTS idx_registrations_email ON registrations(email);
+CREATE INDEX IF NOT EXISTS idx_registrations_token ON registrations(verification_token);
+CREATE INDEX IF NOT EXISTS idx_registrations_status ON registrations(status);
+CREATE INDEX IF NOT EXISTS idx_issuance_logs_license ON issuance_logs(license_id);
+CREATE INDEX IF NOT EXISTS idx_issuance_logs_partner ON issuance_logs(partner_id);
+CREATE INDEX IF NOT EXISTS idx_issuance_logs_channel ON issuance_logs(channel, issued_at DESC);
+CREATE INDEX IF NOT EXISTS idx_issuance_logs_customer ON issuance_logs(customer_email);
+CREATE INDEX IF NOT EXISTS idx_issuance_logs_issued_at ON issuance_logs(issued_at DESC);
+CREATE INDEX IF NOT EXISTS idx_commissions_partner ON partner_commissions(partner_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_commissions_status ON partner_commissions(status);
+CREATE INDEX IF NOT EXISTS idx_licenses_partner ON licenses(partner_id);
+CREATE INDEX IF NOT EXISTS idx_licenses_channel ON licenses(issuance_channel);
+
+-- パートナー updated_at トリガー
+DROP TRIGGER IF EXISTS partners_updated_at ON partners;
+CREATE TRIGGER partners_updated_at
+    BEFORE UPDATE ON partners
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
+
+-- 登録 updated_at トリガー
+DROP TRIGGER IF EXISTS registrations_updated_at ON registrations;
+CREATE TRIGGER registrations_updated_at
+    BEFORE UPDATE ON registrations
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at();
 

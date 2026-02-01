@@ -54,7 +54,7 @@
 │  insight-common (サブモジュール)                             │
 │  ├── standards/      # プラットフォーム別開発標準            │
 │  ├── brand/          # カラー・フォント・ロゴ               │
-│  ├── config/         # 製品・価格・販売戦略・リセラー        │
+│  ├── config/         # 製品・価格・販売戦略・リセラー・ライセンスサーバー │
 │  ├── infrastructure/ # 認証・DB・API Gateway              │
 │  ├── nlp/           # 日本語NLP (JBCA)                    │
 │  └── docs/          # プラットフォーム標準                 │
@@ -396,7 +396,105 @@ calculateWholesalePrice(49800, 'silver');
 └────────────────────────────────────┘
 ```
 
-## 9. 開発完了チェックリスト
+## 9. 統合ライセンスサーバー
+
+### アーキテクチャ
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  ライセンスサーバー (Railway + Hono)                               │
+│  https://license.harmonicinsight.com                             │
+│                                                                  │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │               統合発行エンジン (Issuance Engine)            │  │
+│  │                                                            │  │
+│  │   直販            パートナー          システム              │  │
+│  │  ┌──────────┐   ┌──────────────┐   ┌──────────────┐       │  │
+│  │  │ Paddle   │   │ パートナー   │   │ メール認証   │       │  │
+│  │  │ Stripe   │   │ ポータル     │   │ 自動更新     │       │  │
+│  │  │ MS Store │   │ 経由発行     │   │ バッチ処理   │       │  │
+│  │  │ 請求書   │   │              │   │              │       │  │
+│  │  └────┬─────┘   └──────┬───────┘   └──────┬───────┘       │  │
+│  │       └────────────────┼──────────────────┘               │  │
+│  │                        ▼                                  │  │
+│  │           ┌─────────────────────┐                         │  │
+│  │           │ 発行 + 監査ログ記録  │                         │  │
+│  │           │ 「誰が・いつ・どの   │                         │  │
+│  │           │   経路で・誰に」     │                         │  │
+│  │           └─────────────────────┘                         │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                                                                  │
+│  DB: Supabase  │  Auth: Firebase  │  Email: Resend              │
+│  Payment: Paddle/Stripe  │  Cron: Railway                       │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### 発行チャネル
+
+| チャネル | 説明 | キー種別 | 自動承認 |
+|---------|------|---------|:-------:|
+| `direct_paddle` | Paddle決済完了 | production | ✅ |
+| `direct_stripe` | Stripe決済完了 | production | ✅ |
+| `direct_msstore` | Microsoft Store | production | ✅ |
+| `direct_invoice` | 請求書払い | production | ❌（管理者承認） |
+| `partner_reseller` | パートナー経由 | production | ✅ |
+| `partner_referral` | パートナー紹介 | provisional | ✅ |
+| `system_trial` | メール認証後自動 | provisional | ✅ |
+| `system_renewal` | サブスク自動更新 | production | ✅ |
+| `system_nfr` | NFRキー（パートナー用） | nfr | ✅ |
+| `system_demo` | デモキー（パートナー用） | demo | ✅ |
+| `admin_manual` | 管理者手動発行 | 全種別 | ✅ |
+
+### パートナー発行フロー
+
+```
+パートナーポータル → ライセンス発行申請 → 統合発行エンジン
+  ↓                                          ↓
+顧客メール入力                         licenses テーブル登録
+製品・プラン選択                        issuance_logs に記録（発行者 = partner）
+  ↓                                    partner_commissions にコミッション計上
+発行ボタン                              顧客にメール送信（キー + DLリンク）
+```
+
+### DBテーブル構成
+
+| テーブル | 役割 |
+|---------|------|
+| `partners` | パートナー企業の管理（ティア・NFR残数・APIキー） |
+| `registrations` | メール認証〜仮キー〜正式キーの登録プロセス |
+| `licenses` | ライセンス本体（`issuer_type`, `partner_id` で発行者追跡） |
+| `issuance_logs` | 全発行の監査証跡（誰が・いつ・どのチャネルで） |
+| `partner_commissions` | パートナーコミッションの計上・支払管理 |
+
+### 使い方
+
+```typescript
+import {
+  validateIssuanceRequest,
+  getChannelRule,
+  canPartnerIssueSpecialKey,
+  LICENSE_SERVER_ENDPOINTS,
+} from '@/insight-common/config/license-server';
+
+// 発行リクエストのバリデーション
+const result = validateIssuanceRequest({
+  customerEmail: 'user@example.com',
+  customerName: '山田太郎',
+  productCode: 'INSS',
+  plan: 'STD',
+  keyType: 'production',
+  channel: 'partner_reseller',
+  issuer: { type: 'partner', id: 'partner-123', partnerId: 'partner-123', partnerTier: 'silver' },
+  sendEmail: true,
+  locale: 'ja',
+});
+
+// パートナーのNFRキー発行可否チェック
+canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
+// { allowed: true, remaining: 2 }
+```
+
+## 10. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
@@ -407,7 +505,7 @@ calculateWholesalePrice(49800, 'silver');
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 
-## 10. 困ったときは
+## 11. 困ったときは
 
 ```bash
 # 標準検証
