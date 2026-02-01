@@ -36,6 +36,7 @@
 - **React/Next.js**: `standards/REACT.md`
 - **Android**: `standards/ANDROID.md`
 - **iOS**: `standards/IOS.md`
+- **AI アシスタント**: `standards/AI_ASSISTANT.md`（InsightOffice 系アプリ共通）
 
 ### 検証スクリプト
 
@@ -149,6 +150,9 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | サードパーティキーを各アプリに直書き | `config/third-party-licenses.json` で共通管理 |
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
+| OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
+| 独自の AI ペルソナ定義 | `config/ai-assistant.ts` の標準 3 ペルソナを使用 |
+| AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
 
 ## 5. 製品コード一覧・価格戦略
 
@@ -362,6 +366,45 @@ calculateWholesalePrice(49800, 'silver');
 | AIアシスタント | ✅ | ❌ | ✅ | ✅ |
 | メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
 
+### InsightOffice AI アシスタント共通仕様
+
+> 詳細は `standards/AI_ASSISTANT.md` を参照
+
+**対象製品**: INSS / INSP / HMSH / HMDC / HMSL（全 InsightOffice 系アプリ）
+
+| 項目 | 仕様 |
+|------|------|
+| AI プロバイダー | **Claude (Anthropic) API** のみ |
+| API キーモデル | **BYOK**（ユーザーが自分のキーを入力） |
+| ライセンス制御 | TRIAL / PRO / ENT のみ（STD / FREE は不可） |
+| ペルソナ | 3 キャラクター（Claude俊=Haiku、Claude恵=Sonnet、Claude学=Opus） |
+| 機能キー | `ai_assistant`（products.ts で統一） |
+
+**ペルソナシステム:**
+
+| ID | 名前 | モデル | 用途 |
+|----|------|--------|------|
+| `shunsuke` | Claude 俊 | Haiku | 素早い確認・軽い修正 |
+| `megumi` | Claude 恵 | Sonnet | 編集・要約・翻訳（デフォルト） |
+| `manabu` | Claude 学 | Opus | レポート・精密文書 |
+
+```typescript
+import {
+  AI_PERSONAS,
+  getBaseSystemPrompt,
+  canUseAiAssistant,
+  SPREADSHEET_TOOLS,
+} from '@/insight-common/config/ai-assistant';
+
+// ライセンスチェック
+canUseAiAssistant('PRO');  // true
+canUseAiAssistant('STD');  // false
+
+// システムプロンプト取得
+getBaseSystemPrompt('HMSH', 'ja');  // HarmonicSheet用プロンプト
+getBaseSystemPrompt('INSS', 'ja');  // InsightSlide用プロンプト
+```
+
 ### ライセンスキー形式
 
 ```
@@ -503,6 +546,9 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **ライセンス**: ライセンス画面が Insight Slides 形式に準拠
 - [ ] **サードパーティ**: Syncfusion キーが `third-party-licenses.json` 経由で登録されている
 - [ ] **製品コード**: config/products.ts に登録されている
+- [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
+- [ ] **AI アシスタント**: ペルソナ 3 種（shunsuke / megumi / manabu）が実装されている
+- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/PRO/ENT のみ）が実装されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 
 ## 11. 困ったときは

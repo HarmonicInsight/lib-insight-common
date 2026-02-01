@@ -369,6 +369,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: '編集前の自動バックアップ作成',
     },
+    {
+      key: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AIアシスタント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるスライドテキストの校正・改善提案',
+    },
   ],
 
   // ========================================
@@ -685,12 +693,12 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'チーム向け掲示板機能',
     },
     {
-      key: 'ai_chat',
-      name: 'AI Chat',
+      key: 'ai_assistant',
+      name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIチャットによるExcel操作支援',
+      descriptionJa: 'AIチャットによるExcel操作支援（Tool Use対応）',
     },
     {
       key: 'send_message',
@@ -755,6 +763,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['PRO', 'ENT'],
       descriptionJa: 'VBAマクロの実行・変換',
     },
+    {
+      key: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AIアシスタント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるドキュメントの校正・要約・構成提案',
+    },
   ],
 
   // ========================================
@@ -809,6 +825,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['PRO', 'ENT'],
       descriptionJa: 'テンプレートからのスライド生成',
+    },
+    {
+      key: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AIアシスタント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるスライドの校正・構成アドバイス',
     },
   ],
 };
