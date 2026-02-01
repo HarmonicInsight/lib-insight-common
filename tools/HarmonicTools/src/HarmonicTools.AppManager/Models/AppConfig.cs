@@ -88,11 +88,11 @@ public class AppConfig
                     Name = "InsightPy",
                     ProductCode = "INPY",
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
-                    SolutionPath = "InsightPy.sln",
-                    ProjectPath = "InsightPy/InsightPy.csproj",
+                    SolutionPath = "",
+                    ProjectPath = "",
                     TestProjectPath = "",
-                    ExeRelativePath = "InsightPy/bin/{config}/net8.0-windows/InsightPy.exe",
-                    Description = "業務調査・データ収集のためのPython実行基盤"
+                    ExeRelativePath = "",
+                    Description = "業務調査・データ収集のためのPython実行基盤（Python）"
                 },
 
                 // ── Consulting & Requirements ──
@@ -101,10 +101,10 @@ public class AppConfig
                     Name = "InsightOfficeSheet",
                     ProductCode = "IOSH",
                     BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
-                    SolutionPath = "InsightOfficeSheet.sln",
-                    ProjectPath = "InsightOfficeSheet/InsightOfficeSheet.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = "InsightOfficeSheet/bin/{config}/net8.0-windows/InsightOfficeSheet.exe",
+                    SolutionPath = "HarmonicSheet.sln",
+                    ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
+                    TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj",
+                    ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.App.exe",
                     Description = "提案金額シミュレーション・経営戦略策定Excel基盤"
                 },
                 new()
@@ -112,10 +112,10 @@ public class AppConfig
                     Name = "InsightSlide",
                     ProductCode = "INSS",
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C"),
-                    SolutionPath = "InsightSlide.sln",
-                    ProjectPath = "InsightSlide/InsightSlide.csproj",
+                    SolutionPath = "InsightSlides.sln",
+                    ProjectPath = @"InsightSlides\InsightSlides.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = "InsightSlide/bin/{config}/net8.0-windows/InsightSlide.exe",
+                    ExeRelativePath = @"InsightSlides\bin\{config}\net8.0-windows\InsightSlides.exe",
                     Description = "クライアント資料からのAI業務分析"
                 },
                 new()
@@ -123,11 +123,11 @@ public class AppConfig
                     Name = "InterviewInsight",
                     ProductCode = "INIV",
                     BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
-                    SolutionPath = "InterviewInsight.sln",
-                    ProjectPath = "InterviewInsight/InterviewInsight.csproj",
+                    SolutionPath = "",
+                    ProjectPath = "",
                     TestProjectPath = "",
-                    ExeRelativePath = "InterviewInsight/bin/{config}/net8.0-windows/InterviewInsight.exe",
-                    Description = "AIステークホルダーヒアリング・業務調査支援"
+                    ExeRelativePath = "",
+                    Description = "AIステークホルダーヒアリング・業務調査支援（Web）"
                 },
 
                 // ── Content Creation ──
@@ -137,9 +137,9 @@ public class AppConfig
                     ProductCode = "INMV",
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie-gen-win-C"),
                     SolutionPath = "InsightMovie.sln",
-                    ProjectPath = "InsightMovie/InsightMovie.csproj",
+                    ProjectPath = @"InsightMovie\InsightMovie.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = "InsightMovie/bin/{config}/net8.0-windows/InsightMovie.exe",
+                    ExeRelativePath = @"InsightMovie\bin\{config}\net8.0-windows\InsightMovie.exe",
                     Description = "要件定義の質向上・ユーザー教育のためのAI動画"
                 },
                 new()
@@ -147,10 +147,10 @@ public class AppConfig
                     Name = "InsightImageGen",
                     ProductCode = "INIG",
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-image-gen-C"),
-                    SolutionPath = "InsightImageGen.sln",
-                    ProjectPath = "InsightImageGen/InsightImageGen.csproj",
+                    SolutionPath = "InsightMediaGenerator.sln",
+                    ProjectPath = @"InsightMediaGenerator\InsightMediaGenerator.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = "InsightImageGen/bin/{config}/net8.0-windows/InsightImageGen.exe",
+                    ExeRelativePath = @"InsightMediaGenerator\bin\{config}\net8.0-windows\InsightMediaGenerator.exe",
                     Description = "納品物向けAIビジュアル・音声生成"
                 },
             }
