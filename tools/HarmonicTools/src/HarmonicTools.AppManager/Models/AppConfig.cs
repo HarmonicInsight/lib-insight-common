@@ -48,6 +48,12 @@ public class AppConfig
     /// </summary>
     private const string DefaultDevRoot = @"C:\dev";
 
+    /// <summary>
+    /// 統合リリースリポジトリ（全製品共通）
+    /// タグ形式: {ProductCode}-v{Version} (例: HMSH-v1.0.0)
+    /// </summary>
+    public const string ReleaseRepo = "HarmonicInsight/releases";
+
     public static AppConfig CreateDefault()
     {
         return new AppConfig
@@ -60,7 +66,7 @@ public class AppConfig
                     Name = "HarmonicSheet",
                     ProductCode = "HMSH",
                     BasePath = Path.Combine(DefaultDevRoot, "app-harmonic-sheet"),
-                    PublicRepo = "HarmonicInsight/releases",
+
                     SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = "src/HarmonicSheet.App/HarmonicSheet.App.csproj",
                     TestProjectPath = "tests/HarmonicSheet.Core.Tests",
@@ -72,7 +78,7 @@ public class AppConfig
                     Name = "HarmonicDoc",
                     ProductCode = "HMDC",
                     BasePath = Path.Combine(DefaultDevRoot, "app-harmonic-doc"),
-                    PublicRepo = "HarmonicInsight/releases",
+
                     SolutionPath = "HarmonicDoc.sln",
                     ProjectPath = "src/HarmonicDoc.App/HarmonicDoc.App.csproj",
                     TestProjectPath = "",
@@ -84,7 +90,7 @@ public class AppConfig
                     Name = "HarmonicSlide",
                     ProductCode = "HMSL",
                     BasePath = Path.Combine(DefaultDevRoot, "app-harmonic-slide"),
-                    PublicRepo = "HarmonicInsight/releases",
+
                     SolutionPath = "HarmonicSlide.sln",
                     ProjectPath = "src/HarmonicSlide.App/HarmonicSlide.App.csproj",
                     TestProjectPath = "",
@@ -98,7 +104,7 @@ public class AppConfig
                     Name = "InsightNoCodeAnalyzer",
                     ProductCode = "INCA",
                     BasePath = Path.Combine(DefaultDevRoot, "app-nocode-analyzer-C"),
-                    PublicRepo = "HarmonicInsight/releases",
+
                     SolutionPath = "InsightNoCodeAnalyzer.sln",
                     ProjectPath = "InsightNoCodeAnalyzer/InsightNoCodeAnalyzer.csproj",
                     TestProjectPath = "",
@@ -110,7 +116,7 @@ public class AppConfig
                     Name = "InsightForguncy",
                     ProductCode = "FGIN",
                     BasePath = Path.Combine(DefaultDevRoot, "app-win-insight-forguncy"),
-                    PublicRepo = "HarmonicInsight/releases",
+
                     SolutionPath = "InsightForguncy.sln",
                     ProjectPath = "InsightForguncy/InsightForguncy.csproj",
                     TestProjectPath = "",
@@ -122,7 +128,7 @@ public class AppConfig
                     Name = "InsightMovie",
                     ProductCode = "INMV",
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie"),
-                    PublicRepo = "HarmonicInsight/releases",
+
                     SolutionPath = "InsightMovie.sln",
                     ProjectPath = "InsightMovie/InsightMovie.csproj",
                     TestProjectPath = "",
@@ -134,7 +140,7 @@ public class AppConfig
                     Name = "InsightImageGen",
                     ProductCode = "INIG",
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-imagegen"),
-                    PublicRepo = "HarmonicInsight/releases",
+
                     SolutionPath = "InsightImageGen.sln",
                     ProjectPath = "InsightImageGen/InsightImageGen.csproj",
                     TestProjectPath = "",

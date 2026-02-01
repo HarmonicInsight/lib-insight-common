@@ -216,11 +216,7 @@ public partial class MainWindow : Window
     {
         if (!ValidateSelection()) return;
 
-        if (string.IsNullOrEmpty(_selectedApp!.PublicRepo))
-        {
-            AppendOutput("[エラー] 公開リポジトリが設定されていません（編集ボタンから設定）。\n");
-            return;
-        }
+        var releaseRepo = AppConfig.ReleaseRepo;
 
         var version = VersionInput.Text.Trim();
         if (string.IsNullOrEmpty(version))
@@ -259,7 +255,7 @@ public partial class MainWindow : Window
             $"製品: {appName} ({productCode})\n" +
             $"1. dotnet publish (Release, {rid}, self-contained)\n" +
             $"2. publish フォルダを ZIP 圧縮\n" +
-            $"3. gh release create {tag} → {_selectedApp.PublicRepo}\n\n" +
+            $"3. gh release create {tag} → {releaseRepo}\n\n" +
             $"タグ: {tag}\n" +
             $"ZIP: {zipName}\n" +
             $"続行しますか？",
@@ -310,9 +306,9 @@ public partial class MainWindow : Window
         }
 
         // Step 3: gh release create
-        AppendOutput($"\n[3/3] gh release create {tag} → {_selectedApp.PublicRepo}\n");
+        AppendOutput($"\n[3/3] gh release create {tag} → {releaseRepo}\n");
         var releaseSuccess = await _runner.RunAsync("gh",
-            $"release create {tag} \"{zipPath}\" --repo {_selectedApp.PublicRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\"",
+            $"release create {tag} \"{zipPath}\" --repo {releaseRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\"",
             GetWorkingDir());
 
         // Cleanup temp zip
@@ -320,7 +316,7 @@ public partial class MainWindow : Window
 
         if (releaseSuccess)
         {
-            AppendOutput($"\n[完了] GitHub Release を作成しました: {_selectedApp.PublicRepo}/releases/tag/{tag}\n");
+            AppendOutput($"\n[完了] GitHub Release を作成しました: {releaseRepo}/releases/tag/{tag}\n");
         }
         else
         {
@@ -362,7 +358,6 @@ public partial class MainWindow : Window
         EditProjectPath.Text = app.ProjectPath;
         EditTestPath.Text = app.TestProjectPath;
         EditExePath.Text = app.ExeRelativePath;
-        EditPublicRepo.Text = app.PublicRepo;
         _suppressAutoFill = false;
     }
 
@@ -435,7 +430,6 @@ public partial class MainWindow : Window
         _selectedApp.ProjectPath = EditProjectPath.Text.Trim();
         _selectedApp.TestProjectPath = EditTestPath.Text.Trim();
         _selectedApp.ExeRelativePath = EditExePath.Text.Trim();
-        _selectedApp.PublicRepo = EditPublicRepo.Text.Trim();
 
         SaveConfig();
         UpdateAppDetails();
