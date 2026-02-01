@@ -156,6 +156,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="アプリ名:"
@@ -206,12 +207,17 @@
 
                                     <TextBlock Grid.Row="7" Grid.Column="0" Text="exe相対パス:"
                                                Style="{StaticResource EditLabel}"/>
-                                    <Grid Grid.Row="7" Grid.Column="1">
+                                    <TextBox x:Name="EditExePath" Grid.Row="7" Grid.Column="1"
+                                             Style="{StaticResource EditField}"/>
+
+                                    <TextBlock Grid.Row="8" Grid.Column="0" Text="公開リポジトリ:"
+                                               Style="{StaticResource EditLabel}"/>
+                                    <Grid Grid.Row="8" Grid.Column="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="EditExePath" Grid.Column="0"
+                                        <TextBox x:Name="EditPublicRepo" Grid.Column="0"
                                                  Style="{StaticResource EditField}"/>
                                         <Button Grid.Column="1" Content="保存"
                                                 Style="{StaticResource PrimaryButton}"
@@ -295,6 +301,24 @@
                                         Margin="0,0,8,8" Click="OpenFolder_Click"/>
                                 <Button x:Name="CancelBtn" Content="中断" Style="{StaticResource DangerButton}"
                                         Margin="0,0,8,8" Click="Cancel_Click" IsEnabled="False"/>
+
+                                <!-- Release separator -->
+                                <Border Width="1" Height="24" Background="{StaticResource BorderBrush}" Margin="4,0,12,8"/>
+
+                                <!-- Version input + GitHub Release button -->
+                                <TextBlock Text="v" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,2,8"
+                                           FontFamily="Consolas, Cascadia Code"/>
+                                <TextBox x:Name="VersionInput" Width="80"
+                                         Text="1.0.0" FontSize="12"
+                                         FontFamily="Consolas, Cascadia Code"
+                                         VerticalContentAlignment="Center"
+                                         Padding="4,3" Margin="0,0,8,8"
+                                         BorderBrush="{StaticResource BorderBrush}"/>
+                                <Button x:Name="ReleaseBtn" Content="GitHub Release"
+                                        Style="{StaticResource SecondaryButton}"
+                                        Margin="0,0,8,8" Click="Release_Click"/>
                             </WrapPanel>
                         </Grid>
                     </Border>

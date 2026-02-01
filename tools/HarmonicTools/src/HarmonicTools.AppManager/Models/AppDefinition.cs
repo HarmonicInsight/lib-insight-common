@@ -16,6 +16,13 @@ public class AppDefinition
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// 公開用リポジトリ名（GitHub Releases 配布先）
+    /// 例: "HarmonicInsight/harmonic-sheet"
+    /// 空の場合はリリース機能を使用不可
+    /// </summary>
+    public string PublicRepo { get; set; } = string.Empty;
+
+    /// <summary>
     /// 解決済みのソリューション絶対パス
     /// </summary>
     public string ResolvedSolutionPath => string.IsNullOrEmpty(BasePath)

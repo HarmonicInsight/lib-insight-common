@@ -210,6 +210,122 @@ public partial class MainWindow : Window
         }
     }
 
+    // ── GitHub Release ──
+
+    private async void Release_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ValidateSelection()) return;
+
+        if (string.IsNullOrEmpty(_selectedApp!.PublicRepo))
+        {
+            AppendOutput("[エラー] 公開リポジトリが設定されていません（編集ボタンから設定）。\n");
+            return;
+        }
+
+        var version = VersionInput.Text.Trim();
+        if (string.IsNullOrEmpty(version))
+        {
+            AppendOutput("[エラー] バージョンを入力してください。\n");
+            return;
+        }
+
+        var tag = version.StartsWith("v") ? version : $"v{version}";
+        var appName = _selectedApp.Name;
+        var publishDir = Path.Combine(_selectedApp.BasePath,
+            _selectedApp.ExeRelativePath
+                .Replace("{config}", "Release")
+                .Replace(Path.GetFileName(_selectedApp.ExeRelativePath), ""));
+
+        // Self-contained publish output directory
+        var rid = "win-x64";
+        var publishOutput = Path.Combine(
+            Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "",
+            "bin", "Release",
+            Path.GetFileName(Path.GetDirectoryName(_selectedApp.ExeRelativePath.Replace("{config}", "Release"))) ?? "net8.0-windows",
+            rid, "publish");
+
+        // Use a simpler approach: derive from project path
+        var projectDir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "";
+        var targetFramework = "net8.0-windows";
+        publishOutput = Path.Combine(projectDir, "bin", "Release", targetFramework, rid, "publish");
+
+        var zipName = $"{appName}-{tag}-{rid}.zip";
+        var zipPath = Path.Combine(Path.GetTempPath(), zipName);
+
+        var result = MessageBox.Show(
+            $"以下の手順でリリースします:\n\n" +
+            $"1. dotnet publish (Release, {rid}, self-contained)\n" +
+            $"2. publish フォルダを ZIP 圧縮\n" +
+            $"3. gh release create {tag} → {_selectedApp.PublicRepo}\n\n" +
+            $"ZIP: {zipName}\n" +
+            $"続行しますか？",
+            "GitHub Release 確認",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result != MessageBoxResult.Yes) return;
+
+        SetRunning(true);
+
+        // Step 1: dotnet publish
+        AppendOutput($"[1/3] dotnet publish -c Release -r {rid} --self-contained ...\n");
+        var publishSuccess = await _runner.RunAsync("dotnet",
+            $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r {rid} --self-contained",
+            GetWorkingDir());
+
+        if (!publishSuccess)
+        {
+            AppendOutput("[エラー] publish に失敗しました。リリースを中断します。\n");
+            SetRunning(false);
+            return;
+        }
+
+        // Step 2: ZIP
+        AppendOutput($"\n[2/3] ZIP 圧縮中: {zipName}\n");
+        try
+        {
+            if (File.Exists(zipPath))
+                File.Delete(zipPath);
+
+            if (!Directory.Exists(publishOutput))
+            {
+                AppendOutput($"[エラー] publish 出力フォルダが見つかりません: {publishOutput}\n");
+                SetRunning(false);
+                return;
+            }
+
+            System.IO.Compression.ZipFile.CreateFromDirectory(publishOutput, zipPath);
+            var zipSize = new FileInfo(zipPath).Length / (1024.0 * 1024.0);
+            AppendOutput($"  → {zipPath} ({zipSize:F1} MB)\n");
+        }
+        catch (Exception ex)
+        {
+            AppendOutput($"[エラー] ZIP 圧縮に失敗: {ex.Message}\n");
+            SetRunning(false);
+            return;
+        }
+
+        // Step 3: gh release create
+        AppendOutput($"\n[3/3] gh release create {tag} → {_selectedApp.PublicRepo}\n");
+        var releaseSuccess = await _runner.RunAsync("gh",
+            $"release create {tag} \"{zipPath}\" --repo {_selectedApp.PublicRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\"",
+            GetWorkingDir());
+
+        // Cleanup temp zip
+        try { File.Delete(zipPath); } catch { }
+
+        if (releaseSuccess)
+        {
+            AppendOutput($"\n[完了] GitHub Release を作成しました: {_selectedApp.PublicRepo}/releases/tag/{tag}\n");
+        }
+        else
+        {
+            AppendOutput($"\n[エラー] GitHub Release の作成に失敗しました。gh auth login を確認してください。\n");
+        }
+
+        SetRunning(false);
+    }
+
     // ── Edit ──
 
     private void EditToggle_Click(object sender, RoutedEventArgs e)
@@ -242,6 +358,7 @@ public partial class MainWindow : Window
         EditProjectPath.Text = app.ProjectPath;
         EditTestPath.Text = app.TestProjectPath;
         EditExePath.Text = app.ExeRelativePath;
+        EditPublicRepo.Text = app.PublicRepo;
         _suppressAutoFill = false;
     }
 
@@ -314,6 +431,7 @@ public partial class MainWindow : Window
         _selectedApp.ProjectPath = EditProjectPath.Text.Trim();
         _selectedApp.TestProjectPath = EditTestPath.Text.Trim();
         _selectedApp.ExeRelativePath = EditExePath.Text.Trim();
+        _selectedApp.PublicRepo = EditPublicRepo.Text.Trim();
 
         SaveConfig();
         UpdateAppDetails();
