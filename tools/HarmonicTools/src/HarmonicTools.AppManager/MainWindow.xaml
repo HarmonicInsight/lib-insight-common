@@ -181,6 +181,8 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="アプリ名:"
@@ -231,12 +233,22 @@
 
                                     <TextBlock Grid.Row="7" Grid.Column="0" Text="exe相対パス:"
                                                Style="{StaticResource EditLabel}"/>
-                                    <Grid Grid.Row="7" Grid.Column="1">
+                                    <TextBox x:Name="EditExePath" Grid.Row="7" Grid.Column="1"
+                                             Style="{StaticResource EditField}"/>
+
+                                    <TextBlock Grid.Row="8" Grid.Column="0" Text="ビルドスクリプト:"
+                                               Style="{StaticResource EditLabel}"/>
+                                    <TextBox x:Name="EditBuildCommand" Grid.Row="8" Grid.Column="1"
+                                             Style="{StaticResource EditField}"/>
+
+                                    <TextBlock Grid.Row="9" Grid.Column="0" Text="インストーラー先:"
+                                               Style="{StaticResource EditLabel}"/>
+                                    <Grid Grid.Row="9" Grid.Column="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="EditExePath" Grid.Column="0"
+                                        <TextBox x:Name="EditInstallerDir" Grid.Column="0"
                                                  Style="{StaticResource EditField}"/>
                                         <Button Grid.Column="1" Content="保存"
                                                 Style="{StaticResource PrimaryButton}"

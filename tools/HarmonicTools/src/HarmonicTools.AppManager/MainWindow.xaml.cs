@@ -159,7 +159,16 @@ public partial class MainWindow : Window
     {
         if (!ValidateSelection()) return;
         SetRunning(true);
-        if (!_selectedApp!.IsDotNet)
+
+        // build.ps1 がある場合はそれを使用（dotnet publish + Inno Setup インストーラー作成）
+        if (_selectedApp!.HasBuildScript)
+        {
+            AppendOutput($"[Publish] {_selectedApp.BuildCommand} を実行中...\n");
+            await RunBuildCommand();
+            return;
+        }
+
+        if (!_selectedApp.IsDotNet)
         {
             await RunBuildCommand();
             return;
@@ -213,18 +222,26 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// BuildCommand（build.bat 等）を実行
+    /// BuildCommand（build.ps1 / build.bat 等）を実行
     /// </summary>
-    private async Task RunBuildCommand()
+    private async Task<bool> RunBuildCommand(string? extraArgs = null)
     {
         if (string.IsNullOrEmpty(_selectedApp!.BuildCommand))
         {
             AppendOutput("[情報] ビルドコマンドが設定されていません。\n");
             SetRunning(false);
-            return;
+            return false;
         }
         var cmdPath = Path.Combine(_selectedApp.BasePath, _selectedApp.BuildCommand);
-        await _runner.RunAsync("cmd.exe", $"/c \"{cmdPath}\"", _selectedApp.BasePath);
+        var args = extraArgs ?? "";
+
+        if (_selectedApp.BuildCommand.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase))
+        {
+            return await _runner.RunAsync("powershell.exe",
+                $"-ExecutionPolicy Bypass -File \"{cmdPath}\" {args}".Trim(),
+                _selectedApp.BasePath);
+        }
+        return await _runner.RunAsync("cmd.exe", $"/c \"{cmdPath}\" {args}".Trim(), _selectedApp.BasePath);
     }
 
     private void OpenFolder_Click(object sender, RoutedEventArgs e)
@@ -263,8 +280,19 @@ public partial class MainWindow : Window
     {
         if (!ValidateSelection()) return;
 
+        // インストーラーディレクトリがあれば最優先で開く
+        if (!string.IsNullOrEmpty(_selectedApp!.InstallerDir))
+        {
+            var installerDir = _selectedApp.ResolvedInstallerDir;
+            if (Directory.Exists(installerDir))
+            {
+                Process.Start("explorer.exe", installerDir);
+                return;
+            }
+        }
+
         // 非 dotnet: DistExePath のフォルダを開く
-        if (!_selectedApp!.IsDotNet)
+        if (!_selectedApp.IsDotNet)
         {
             var distExe = _selectedApp.DistExePath;
             if (!string.IsNullOrEmpty(distExe))
@@ -312,12 +340,33 @@ public partial class MainWindow : Window
 
         AppendOutput($"═══ リリースチェック: {_selectedApp!.Name} ({_selectedApp.ProductCode}) ═══\n\n");
 
+        // ビルドスクリプト情報
+        if (_selectedApp.HasBuildScript)
+            AppendOutput($"── ビルドスクリプト ──\n  {_selectedApp.BuildCommand}\n\n");
+
+        // インストーラー状態
+        if (!string.IsNullOrEmpty(_selectedApp.InstallerDir))
+        {
+            var installer = _selectedApp.LatestInstallerExe;
+            if (installer != null)
+            {
+                var info = new FileInfo(installer);
+                AppendOutput($"── インストーラー ──\n");
+                AppendOutput($"  ✓ {Path.GetFileName(installer)}\n");
+                AppendOutput($"  サイズ: {info.Length / (1024.0 * 1024.0):F1} MB\n");
+                AppendOutput($"  更新日時: {info.LastWriteTime:yyyy/MM/dd HH:mm:ss}\n\n");
+            }
+            else
+            {
+                AppendOutput($"── インストーラー ──\n");
+                AppendOutput($"  ✗ {_selectedApp.ResolvedInstallerDir} にインストーラーが見つかりません\n\n");
+            }
+        }
+
         if (!_selectedApp.IsDotNet)
         {
             // 非 dotnet プロジェクト
             CheckExeStatus("配布 exe", _selectedApp.DistExePath);
-            if (!string.IsNullOrEmpty(_selectedApp.BuildCommand))
-                AppendOutput($"── ビルドコマンド ──\n  {_selectedApp.BuildCommand}\n\n");
         }
         else
         {
@@ -435,36 +484,34 @@ public partial class MainWindow : Window
         var appName = _selectedApp.Name;
         var rid = "win-x64";
 
-        // 配布対象のフォルダ/ファイルを決定
-        string publishOutput;
+        // build.ps1 + InstallerDir がある場合: インストーラー exe をアップロード
+        var useInstaller = _selectedApp.HasBuildScript && !string.IsNullOrEmpty(_selectedApp.InstallerDir);
+
         string buildStep;
-        if (!_selectedApp.IsDotNet)
+        string uploadDescription;
+        if (useInstaller)
         {
-            // 非 dotnet: exe が存在するフォルダをそのまま ZIP
-            var distExe = _selectedApp.DistExePath;
-            publishOutput = Path.GetDirectoryName(distExe) ?? "";
-            buildStep = string.IsNullOrEmpty(_selectedApp.BuildCommand)
-                ? "手動ビルド済み"
-                : _selectedApp.BuildCommand;
+            buildStep = $"{_selectedApp.BuildCommand}（publish + インストーラー作成）";
+            uploadDescription = $"インストーラー exe を Output/ から取得してアップロード";
+        }
+        else if (!_selectedApp.IsDotNet)
+        {
+            buildStep = string.IsNullOrEmpty(_selectedApp.BuildCommand) ? "手動ビルド済み" : _selectedApp.BuildCommand;
+            uploadDescription = "フォルダを ZIP 圧縮してアップロード";
         }
         else
         {
-            var projectDir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "";
-            publishOutput = Path.Combine(projectDir, "bin", "Release", "net8.0-windows", rid, "publish");
             buildStep = $"dotnet publish (Release, {rid}, self-contained)";
+            uploadDescription = "publish フォルダを ZIP 圧縮してアップロード";
         }
-
-        var zipName = $"{appName}-{versionPart}-{rid}.zip";
-        var zipPath = Path.Combine(Path.GetTempPath(), zipName);
 
         var result = MessageBox.Show(
             $"以下の手順でリリースします:\n\n" +
             $"製品: {appName} ({productCode})\n" +
             $"1. {buildStep}\n" +
-            $"2. フォルダを ZIP 圧縮\n" +
+            $"2. {uploadDescription}\n" +
             $"3. gh release create {tag} → {releaseRepo}\n\n" +
             $"タグ: {tag}\n" +
-            $"ZIP: {zipName}\n" +
             $"続行しますか？",
             "GitHub Release 確認",
             MessageBoxButton.YesNo,
@@ -475,13 +522,23 @@ public partial class MainWindow : Window
         SetRunning(true);
 
         // Step 1: ビルド
-        if (!_selectedApp.IsDotNet)
+        if (useInstaller || _selectedApp.HasBuildScript)
+        {
+            AppendOutput($"[1/3] {_selectedApp.BuildCommand} 実行中...\n");
+            var buildSuccess = await RunBuildCommand();
+            if (!buildSuccess)
+            {
+                AppendOutput("[エラー] ビルドに失敗しました。リリースを中断します。\n");
+                SetRunning(false);
+                return;
+            }
+        }
+        else if (!_selectedApp.IsDotNet)
         {
             if (!string.IsNullOrEmpty(_selectedApp.BuildCommand))
             {
                 AppendOutput($"[1/3] {_selectedApp.BuildCommand} 実行中...\n");
-                var cmdPath = Path.Combine(_selectedApp.BasePath, _selectedApp.BuildCommand);
-                var buildSuccess = await _runner.RunAsync("cmd.exe", $"/c \"{cmdPath}\"", _selectedApp.BasePath);
+                var buildSuccess = await RunBuildCommand();
                 if (!buildSuccess)
                 {
                     AppendOutput("[エラー] ビルドに失敗しました。リリースを中断します。\n");
@@ -509,39 +566,81 @@ public partial class MainWindow : Window
             }
         }
 
-        // Step 2: ZIP
-        AppendOutput($"\n[2/3] ZIP 圧縮中: {zipName}\n");
-        try
-        {
-            if (File.Exists(zipPath))
-                File.Delete(zipPath);
+        // Step 2: アップロード対象を決定
+        string uploadFile;
+        bool needsCleanup = false;
 
-            if (!Directory.Exists(publishOutput))
+        if (useInstaller)
+        {
+            // インストーラー exe をそのままアップロード
+            var installerExe = _selectedApp.LatestInstallerExe;
+            if (string.IsNullOrEmpty(installerExe))
             {
-                AppendOutput($"[エラー] 出力フォルダが見つかりません: {publishOutput}\n");
+                AppendOutput($"[エラー] インストーラーが見つかりません: {_selectedApp.ResolvedInstallerDir}\n");
+                SetRunning(false);
+                return;
+            }
+            uploadFile = installerExe;
+            var size = new FileInfo(installerExe).Length / (1024.0 * 1024.0);
+            AppendOutput($"\n[2/3] インストーラー検出: {Path.GetFileName(installerExe)} ({size:F1} MB)\n");
+        }
+        else
+        {
+            // ZIP 圧縮
+            string publishOutput;
+            if (!_selectedApp.IsDotNet)
+            {
+                var distExe = _selectedApp.DistExePath;
+                publishOutput = Path.GetDirectoryName(distExe) ?? "";
+            }
+            else
+            {
+                var projectDir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "";
+                publishOutput = Path.Combine(projectDir, "bin", "Release", "net8.0-windows", rid, "publish");
+            }
+
+            var zipName = $"{appName}-{versionPart}-{rid}.zip";
+            var zipPath = Path.Combine(Path.GetTempPath(), zipName);
+
+            AppendOutput($"\n[2/3] ZIP 圧縮中: {zipName}\n");
+            try
+            {
+                if (File.Exists(zipPath))
+                    File.Delete(zipPath);
+
+                if (!Directory.Exists(publishOutput))
+                {
+                    AppendOutput($"[エラー] 出力フォルダが見つかりません: {publishOutput}\n");
+                    SetRunning(false);
+                    return;
+                }
+
+                System.IO.Compression.ZipFile.CreateFromDirectory(publishOutput, zipPath);
+                var zipSize = new FileInfo(zipPath).Length / (1024.0 * 1024.0);
+                AppendOutput($"  → {zipPath} ({zipSize:F1} MB)\n");
+            }
+            catch (Exception ex)
+            {
+                AppendOutput($"[エラー] ZIP 圧縮に失敗: {ex.Message}\n");
                 SetRunning(false);
                 return;
             }
 
-            System.IO.Compression.ZipFile.CreateFromDirectory(publishOutput, zipPath);
-            var zipSize = new FileInfo(zipPath).Length / (1024.0 * 1024.0);
-            AppendOutput($"  → {zipPath} ({zipSize:F1} MB)\n");
-        }
-        catch (Exception ex)
-        {
-            AppendOutput($"[エラー] ZIP 圧縮に失敗: {ex.Message}\n");
-            SetRunning(false);
-            return;
+            uploadFile = zipPath;
+            needsCleanup = true;
         }
 
         // Step 3: gh release create
         AppendOutput($"\n[3/3] gh release create {tag} → {releaseRepo}\n");
         var releaseSuccess = await _runner.RunAsync("gh",
-            $"release create {tag} \"{zipPath}\" --repo {releaseRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\"",
+            $"release create {tag} \"{uploadFile}\" --repo {releaseRepo} --title \"{appName} {tag}\" --notes \"{appName} {tag} リリース\"",
             GetWorkingDir());
 
-        // Cleanup temp zip
-        try { File.Delete(zipPath); } catch { }
+        // Cleanup temp zip if needed
+        if (needsCleanup)
+        {
+            try { File.Delete(uploadFile); } catch { }
+        }
 
         if (releaseSuccess)
         {
@@ -590,6 +689,8 @@ public partial class MainWindow : Window
         EditProjectPath.Text = app.ProjectPath;
         EditTestPath.Text = app.TestProjectPath;
         EditExePath.Text = app.ExeRelativePath;
+        EditBuildCommand.Text = app.BuildCommand;
+        EditInstallerDir.Text = app.InstallerDir;
         _suppressAutoFill = false;
     }
 
@@ -662,6 +763,8 @@ public partial class MainWindow : Window
         _selectedApp.ProjectPath = EditProjectPath.Text.Trim();
         _selectedApp.TestProjectPath = EditTestPath.Text.Trim();
         _selectedApp.ExeRelativePath = EditExePath.Text.Trim();
+        _selectedApp.BuildCommand = EditBuildCommand.Text.Trim();
+        _selectedApp.InstallerDir = EditInstallerDir.Text.Trim();
 
         SaveConfig();
         UpdateAppDetails();

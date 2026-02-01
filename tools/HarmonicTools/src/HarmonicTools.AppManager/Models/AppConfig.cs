@@ -70,6 +70,8 @@ public class AppConfig
                     ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
                     TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
                     ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "AIを活用した業務最適化RPA製品"
                 },
                 new()
@@ -81,6 +83,8 @@ public class AppConfig
                     ProjectPath = "InsightNoCodeAnalyzer/InsightNoCodeAnalyzer.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = "InsightNoCodeAnalyzer/bin/{config}/net8.0-windows/InsightNoCodeAnalyzer.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "RPA・ローコードのマイグレーション自動化ツール"
                 },
                 new()
@@ -141,6 +145,8 @@ public class AppConfig
                     ProjectPath = @"InsightMovie\InsightMovie.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = @"InsightMovie\bin\{config}\net8.0-windows\InsightMovie.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "要件定義の質向上・ユーザー教育のためのAI動画"
                 },
                 new()
@@ -152,6 +158,8 @@ public class AppConfig
                     ProjectPath = @"InsightMediaGenerator\InsightMediaGenerator.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = @"InsightMediaGenerator\bin\{config}\net8.0-windows\InsightMediaGenerator.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "納品物向けAIビジュアル・音声生成"
                 },
             }
