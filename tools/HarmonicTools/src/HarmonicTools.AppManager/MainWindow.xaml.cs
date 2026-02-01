@@ -229,7 +229,9 @@ public partial class MainWindow : Window
             return;
         }
 
-        var tag = version.StartsWith("v") ? version : $"v{version}";
+        var versionPart = version.StartsWith("v") ? version : $"v{version}";
+        var productCode = _selectedApp.ProductCode;
+        var tag = $"{productCode}-{versionPart}";
         var appName = _selectedApp.Name;
         var publishDir = Path.Combine(_selectedApp.BasePath,
             _selectedApp.ExeRelativePath
@@ -249,14 +251,16 @@ public partial class MainWindow : Window
         var targetFramework = "net8.0-windows";
         publishOutput = Path.Combine(projectDir, "bin", "Release", targetFramework, rid, "publish");
 
-        var zipName = $"{appName}-{tag}-{rid}.zip";
+        var zipName = $"{appName}-{versionPart}-{rid}.zip";
         var zipPath = Path.Combine(Path.GetTempPath(), zipName);
 
         var result = MessageBox.Show(
             $"以下の手順でリリースします:\n\n" +
+            $"製品: {appName} ({productCode})\n" +
             $"1. dotnet publish (Release, {rid}, self-contained)\n" +
             $"2. publish フォルダを ZIP 圧縮\n" +
             $"3. gh release create {tag} → {_selectedApp.PublicRepo}\n\n" +
+            $"タグ: {tag}\n" +
             $"ZIP: {zipName}\n" +
             $"続行しますか？",
             "GitHub Release 確認",
