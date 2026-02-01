@@ -14,7 +14,7 @@
  * │  │  販売: 直販（コンサル案件内）                                 │     │
  * │  │  顧客: 大手〜中堅企業のIT部門・DX推進部門                    │     │
  * │  │  KPI: 案件あたり単価 × コンサル案件数                        │     │
- * │  │  INCA / INBT / FGIN / INMV / INIG                           │     │
+ * │  │  INCA / INBT / INMV / INIG                                  │     │
  * │  └──────────────────────────────────────────────────────────────┘     │
  * │                                                                        │
  * │  【B】グローバルスタンドアロン型                                       │
@@ -23,7 +23,7 @@
  * │  │  販売: オンライン（自社サイト + ストア + リセラー）           │     │
  * │  │  顧客: Office業務ユーザー（個人〜中小企業）                  │     │
  * │  │  KPI: MRR / ARR / チャーンレート / LTV                      │     │
- * │  │  INSS / INSP / INPY / HMSH / HMDC / HMSL                   │     │
+ * │  │  IOSH / IODC / IOSL / INPY                                  │     │
  * │  └──────────────────────────────────────────────────────────────┘     │
  * └────────────────────────────────────────────────────────────────────────┘
  */
@@ -346,7 +346,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       expectedConversionRate: 0.60,
       noCreditCardRequired: true,
     },
-    positioning: 'BizRobo/UiPath等のRPA移行アセスメントを自動化する唯一のツール。コンサル案件の提案精度と速度を劇的に向上。',
+    positioning: 'BizRobo/UiPath等のRPA移行アセスメント + Forguncy解析を自動化する唯一のツール。AI（Opus）搭載。',
   },
 
   INBT: {
@@ -361,20 +361,6 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       noCreditCardRequired: true,
     },
     positioning: 'Python × RPAで、既存のRPAツールでは実現できない柔軟な業務自動化を実現。コンサル案件の自動化基盤。',
-  },
-
-  FGIN: {
-    productCode: 'FGIN',
-    channel: 'consulting',
-    targetMarkets: CONSULTING_MARKETS,
-    customerSegments: CONSULTING_SEGMENTS,
-    marketingChannels: CONSULTING_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.50,
-      noCreditCardRequired: true,
-    },
-    positioning: 'Forguncy案件の解析・最適化に特化。Forguncy導入企業のリプレース・拡張コンサルとセット。',
   },
 
   INMV: {
@@ -409,32 +395,46 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
   // グローバルスタンドアロン型
   // =========================================================================
 
-  INSS: {
-    productCode: 'INSS',
+  IOSH: {
+    productCode: 'IOSH',
     channel: 'standalone',
     targetMarkets: STANDALONE_MARKETS,
     customerSegments: STANDALONE_SEGMENTS,
     marketingChannels: STANDALONE_MARKETING,
     trialStrategy: {
       durationDays: 30,
-      expectedConversionRate: 0.08,
+      expectedConversionRate: 0.10,
       noCreditCardRequired: true,
     },
-    positioning: 'PowerPointのコンテンツ抽出・一括更新を自動化。多言語スライドの翻訳更新等で時間を90%削減。',
+    positioning: 'Excelに「Gitのようなバージョン管理」を。セル単位の変更追跡・差分比較・チームコラボレーション。AI搭載。',
   },
 
-  INSP: {
-    productCode: 'INSP',
+  IODC: {
+    productCode: 'IODC',
     channel: 'standalone',
     targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS.filter(s => s.companySize !== 'individual'),
+    customerSegments: STANDALONE_SEGMENTS,
+    marketingChannels: STANDALONE_MARKETING,
+    trialStrategy: {
+      durationDays: 30,
+      expectedConversionRate: 0.07,
+      noCreditCardRequired: true,
+    },
+    positioning: 'Word操作を自動化。テンプレートからの大量文書生成、PDF変換、マクロ実行をワンストップで。AI搭載。',
+  },
+
+  IOSL: {
+    productCode: 'IOSL',
+    channel: 'standalone',
+    targetMarkets: STANDALONE_MARKETS,
+    customerSegments: STANDALONE_SEGMENTS,
     marketingChannels: STANDALONE_MARKETING,
     trialStrategy: {
       durationDays: 30,
       expectedConversionRate: 0.10,
       noCreditCardRequired: true,
     },
-    positioning: 'InsightSlideの全機能 + プロ向け高度機能。大量のPowerPoint資産を扱うプロフェッショナル向け。',
+    positioning: 'PowerPointのコンテンツ抽出・一括更新・プレゼンテーション自動化。多言語対応。AI搭載。',
   },
 
   INPY: {
@@ -448,49 +448,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       expectedConversionRate: 0.06,
       noCreditCardRequired: true,
     },
-    positioning: 'Windows業務をPythonで自動化する実行環境。環境構築不要で即座にPythonスクリプトを実行。',
-  },
-
-  HMSH: {
-    productCode: 'HMSH',
-    channel: 'standalone',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.10,
-      noCreditCardRequired: true,
-    },
-    positioning: 'Excelに「Gitのようなバージョン管理」を。誰が・いつ・何を変更したかを完全に追跡。チーム利用はPROで。',
-  },
-
-  HMDC: {
-    productCode: 'HMDC',
-    channel: 'standalone',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.07,
-      noCreditCardRequired: true,
-    },
-    positioning: 'Word操作を自動化。テンプレートからの大量文書生成、PDF変換、マクロ実行をワンストップで。',
-  },
-
-  HMSL: {
-    productCode: 'HMSL',
-    channel: 'standalone',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.07,
-      noCreditCardRequired: true,
-    },
-    positioning: 'PowerPoint操作を自動化。スライドの抽出・PDF変換・テンプレート適用を一括処理。',
+    positioning: 'Windows業務をPythonで自動化する実行環境。環境構築不要で即座にPythonスクリプトを実行。AI搭載。',
   },
 };
 

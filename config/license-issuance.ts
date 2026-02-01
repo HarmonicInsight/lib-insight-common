@@ -126,9 +126,9 @@ export interface LicenseRegistration {
  * デモキー:  {PRODUCT}-DEMO-{YYMM}-{HASH}-{SIG1}-{SIG2}
  *
  * 例:
- *   INSS-STD-2602-A3F1-B7C2-D9E4    （正式キー: STDプラン、2026年2月発行）
- *   INSS-TRIAL-2602-X1Y2-Z3W4-V5U6  （仮キー: 7日間）
- *   HMSH-NFR-2602-N1F2-R3P4-Q5S6    （NFRキー: パートナー用）
+ *   IOSL-STD-2602-A3F1-B7C2-D9E4    （正式キー: STDプラン、2026年2月発行）
+ *   IOSL-TRIAL-2602-X1Y2-Z3W4-V5U6  （仮キー: 7日間）
+ *   IOSH-NFR-2602-N1F2-R3P4-Q5S6    （NFRキー: パートナー用）
  */
 export interface LicenseKeyConfig {
   /** キー種別 */
@@ -305,17 +305,24 @@ export interface ProductDownloadLinks {
 
 /** 製品別ダウンロードリンク（テンプレート） */
 export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> = {
-  INSS: {
-    productCode: 'INSS',
-    productName: 'InsightSlide',
-    windows: 'https://download.harmonicinsight.com/insightslide/latest/windows',
-    documentation: 'https://docs.harmonicinsight.com/insightslide',
+  // ── 【B】スタンドアロン型 ─────────────────────────
+  IOSH: {
+    productCode: 'IOSH',
+    productName: 'InsightOfficeSheet',
+    windows: 'https://download.harmonicinsight.com/insightofficesheet/latest/windows',
+    documentation: 'https://docs.harmonicinsight.com/insightofficesheet',
   },
-  INSP: {
-    productCode: 'INSP',
-    productName: 'InsightSlide Pro',
-    windows: 'https://download.harmonicinsight.com/insightslidepro/latest/windows',
-    documentation: 'https://docs.harmonicinsight.com/insightslidepro',
+  IODC: {
+    productCode: 'IODC',
+    productName: 'InsightOfficeDoc',
+    windows: 'https://download.harmonicinsight.com/insightofficedoc/latest/windows',
+    documentation: 'https://docs.harmonicinsight.com/insightofficedoc',
+  },
+  IOSL: {
+    productCode: 'IOSL',
+    productName: 'InsightOfficeSlide',
+    windows: 'https://download.harmonicinsight.com/insightofficeslide/latest/windows',
+    documentation: 'https://docs.harmonicinsight.com/insightofficeslide',
   },
   INPY: {
     productCode: 'INPY',
@@ -323,24 +330,7 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
     windows: 'https://download.harmonicinsight.com/insightpy/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/insightpy',
   },
-  HMSH: {
-    productCode: 'HMSH',
-    productName: 'HarmonicSheet',
-    windows: 'https://download.harmonicinsight.com/harmonicsheet/latest/windows',
-    documentation: 'https://docs.harmonicinsight.com/harmonicsheet',
-  },
-  HMDC: {
-    productCode: 'HMDC',
-    productName: 'HarmonicDoc',
-    windows: 'https://download.harmonicinsight.com/harmonicdoc/latest/windows',
-    documentation: 'https://docs.harmonicinsight.com/harmonicdoc',
-  },
-  HMSL: {
-    productCode: 'HMSL',
-    productName: 'HarmonicSlide',
-    windows: 'https://download.harmonicinsight.com/harmonicslide/latest/windows',
-    documentation: 'https://docs.harmonicinsight.com/harmonicslide',
-  },
+  // ── 【A】コンサル連動型 ───────────────────────────
   INCA: {
     productCode: 'INCA',
     productName: 'InsightNoCodeAnalyzer',
@@ -352,12 +342,6 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
     productName: 'InsightBot',
     windows: 'https://download.harmonicinsight.com/insightbot/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/insightbot',
-  },
-  FGIN: {
-    productCode: 'FGIN',
-    productName: 'ForguncyInsight',
-    windows: 'https://download.harmonicinsight.com/forguncyinsight/latest/windows',
-    documentation: 'https://docs.harmonicinsight.com/forguncyinsight',
   },
   INMV: {
     productCode: 'INMV',

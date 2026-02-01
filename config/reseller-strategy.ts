@@ -6,7 +6,7 @@
  * ============================================================================
  *
  * ## 概要
- * グローバルスタンドアロン型製品（INSS/INSP/INPY/HMSH/HMDC/HMSL）を
+ * グローバルスタンドアロン型製品（IOSH/IODC/IOSL/INPY）を
  * 販売代理店（リセラー/VAR）経由で展開するためのパートナープログラム。
  *
  * ## なぜリセラーが必要か
@@ -251,28 +251,37 @@ export const STANDARD_AGREEMENT_TERMS: PartnerAgreementTerms = {
  * リセラーが販売可能な製品と条件
  *
  * 【方針】
- * - コンサル連動型（INCA/INBT等）: リセラー販売 不可（自社コンサルと一体）
+ * - コンサル連動型（INCA/INBT/INMV/INIG）: リセラー販売 不可（自社コンサルと一体）
  * - スタンドアロン型: リセラー販売 可能
  */
 export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> = {
   // スタンドアロン型 — リセラー販売可能
-  INSS: {
-    productCode: 'INSS',
+  IOSH: {
+    productCode: 'IOSH',
     resellerEnabled: true,
     pricingFlexibility: 'floor_price',
     minimumSellingPriceRatio: 0.80,
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'グローバル展開の主力。リセラー最も注力すべき製品。',
+    notes: 'Excel業務ユーザー向け。チーム導入案件はPROを推奨。',
   },
-  INSP: {
-    productCode: 'INSP',
+  IODC: {
+    productCode: 'IODC',
     resellerEnabled: true,
     pricingFlexibility: 'floor_price',
     minimumSellingPriceRatio: 0.80,
-    demoLicenses: 3,
+    demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'INSS上位版。法人向け提案に有効。',
+    notes: 'Word自動化。ドキュメント管理案件に有効。',
+  },
+  IOSL: {
+    productCode: 'IOSL',
+    resellerEnabled: true,
+    pricingFlexibility: 'floor_price',
+    minimumSellingPriceRatio: 0.80,
+    demoLicenses: 5,
+    nfrLicenses: 2,
+    notes: 'PowerPoint自動化。グローバル展開の主力製品。',
   },
   INPY: {
     productCode: 'INPY',
@@ -282,33 +291,6 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     demoLicenses: 5,
     nfrLicenses: 2,
     notes: 'Python自動化。技術系リセラーに適する。',
-  },
-  HMSH: {
-    productCode: 'HMSH',
-    resellerEnabled: true,
-    pricingFlexibility: 'floor_price',
-    minimumSellingPriceRatio: 0.80,
-    demoLicenses: 5,
-    nfrLicenses: 2,
-    notes: 'Excel業務ユーザー向け。チーム導入案件はPROを推奨。',
-  },
-  HMDC: {
-    productCode: 'HMDC',
-    resellerEnabled: true,
-    pricingFlexibility: 'floor_price',
-    minimumSellingPriceRatio: 0.80,
-    demoLicenses: 5,
-    nfrLicenses: 2,
-    notes: 'Word自動化。ドキュメント管理案件に有効。',
-  },
-  HMSL: {
-    productCode: 'HMSL',
-    resellerEnabled: true,
-    pricingFlexibility: 'floor_price',
-    minimumSellingPriceRatio: 0.80,
-    demoLicenses: 5,
-    nfrLicenses: 2,
-    notes: 'PowerPoint自動化。INSS/INSPとの組合せ提案も有効。',
   },
 
   // コンサル連動型 — リセラー販売不可
@@ -323,15 +305,6 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
   },
   INBT: {
     productCode: 'INBT',
-    resellerEnabled: false,
-    pricingFlexibility: 'fixed',
-    minimumSellingPriceRatio: 1.0,
-    demoLicenses: 0,
-    nfrLicenses: 0,
-    notes: 'コンサル案件と一体。リセラー販売不可。',
-  },
-  FGIN: {
-    productCode: 'FGIN',
     resellerEnabled: false,
     pricingFlexibility: 'fixed',
     minimumSellingPriceRatio: 1.0,
@@ -396,7 +369,7 @@ export const MEETING_PROPOSALS: MeetingProposal[] = [
   {
     name: 'スタンダード開始プラン',
     proposedTier: 'registered',
-    targetProducts: ['INSS', 'HMSH', 'HMDC', 'HMSL'],
+    targetProducts: ['IOSH', 'IODC', 'IOSL', 'INPY'],
     initialPackage: [
       'NFRライセンス各2本（パートナー社内利用）',
       'デモライセンス各5本（顧客デモ用）',
@@ -414,7 +387,7 @@ export const MEETING_PROPOSALS: MeetingProposal[] = [
   {
     name: 'アグレッシブ開始プラン',
     proposedTier: 'silver',
-    targetProducts: ['INSS', 'INSP', 'HMSH', 'HMDC', 'HMSL', 'INPY'],
+    targetProducts: ['IOSH', 'IODC', 'IOSL', 'INPY'],
     initialPackage: [
       'NFRライセンス全製品各2本',
       'デモライセンス全製品各5本',
@@ -440,7 +413,7 @@ export const MEETING_PROPOSALS: MeetingProposal[] = [
 /**
  * 仕入れ値引きモデルでのコミッション計算例
  *
- * 例: INSS STD（定価 ¥49,800/年）をSilverパートナーが販売
+ * 例: IOSL STD（定価 ¥49,800/年）をSilverパートナーが販売
  *
  *   定価:               ¥49,800
  *   仕入れ値（30%引き）: ¥34,860
@@ -449,7 +422,7 @@ export const MEETING_PROPOSALS: MeetingProposal[] = [
  *   月10件販売の場合:     ¥149,400 / 月 の粗利
  *   年間120件:            ¥1,792,800 / 年 の粗利
  *
- * 例: HMSH PRO（定価 ¥118,000/年）をGoldパートナーが5名チームに販売
+ * 例: IOSH PRO（定価 ¥118,000/年）をGoldパートナーが5名チームに販売
  *
  *   定価:               ¥118,000
  *   仕入れ値（40%引き）: ¥70,800
@@ -472,7 +445,7 @@ export interface CommissionExample {
 
 export const COMMISSION_EXAMPLES: CommissionExample[] = [
   {
-    productCode: 'INSS',
+    productCode: 'IOSL',
     plan: 'STD',
     listPrice: 49_800,
     tier: 'registered',
@@ -482,7 +455,7 @@ export const COMMISSION_EXAMPLES: CommissionExample[] = [
     scenario: '年間10件販売 → 粗利 ¥99,600',
   },
   {
-    productCode: 'INSS',
+    productCode: 'IOSL',
     plan: 'STD',
     listPrice: 49_800,
     tier: 'silver',
@@ -492,7 +465,7 @@ export const COMMISSION_EXAMPLES: CommissionExample[] = [
     scenario: '年間30件販売 → 粗利 ¥448,200',
   },
   {
-    productCode: 'HMSH',
+    productCode: 'IOSH',
     plan: 'PRO',
     listPrice: 118_000,
     tier: 'silver',
@@ -502,7 +475,7 @@ export const COMMISSION_EXAMPLES: CommissionExample[] = [
     scenario: '年間20件販売 → 粗利 ¥708,000',
   },
   {
-    productCode: 'HMSH',
+    productCode: 'IOSH',
     plan: 'PRO',
     listPrice: 118_000,
     tier: 'gold',
@@ -512,7 +485,7 @@ export const COMMISSION_EXAMPLES: CommissionExample[] = [
     scenario: '年間60件販売 → 粗利 ¥2,832,000',
   },
   {
-    productCode: 'INSP',
+    productCode: 'IODC',
     plan: 'PRO',
     listPrice: 148_000,
     tier: 'gold',

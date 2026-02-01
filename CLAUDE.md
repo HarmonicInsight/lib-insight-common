@@ -119,7 +119,7 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 {
   "syncfusion": {
     "licenseKey": "Ngo9BigBOggjHTQxAR8/...",
-    "usedBy": ["HMSH", "HMDC", "HMSL"]
+    "usedBy": ["IOSH", "IODC", "IOSL"]
   }
 }
 ```
@@ -152,65 +152,119 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ## 5. 製品コード一覧・価格戦略
 
-### 販売チャネルと価格帯
+### 製品ライン（全8製品）
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
 │  【A】コンサルティング連動型      年額 98万円〜398万円              │
 │  コンサル案件（数千万円規模）の一環として提供。少量・高単価。       │
-│  INCA / INBT / FGIN / INMV / INIG                                  │
+│  AI（Opus）込み・無制限。                                           │
+│  INCA / INBT / INMV / INIG                                         │
 ├──────────────────────────────────────────────────────────────────────┤
-│  【B】グローバルスタンドアロン型   年額 49,800円〜148,000円         │
-│  Office系汎用ツール。5〜10万円帯でグローバルに大量販売。            │
-│  INSS / INSP / INPY / HMSH / HMDC / HMSL                          │
+│  【B】グローバルスタンドアロン型   ¥49,800/年/人（横並び）          │
+│  Office系汎用ツール + InsightPy。ボリュームディスカウントあり。     │
+│  AI: 無料枠20回/月 + カウント追加購入（ゲーム課金モデル）           │
+│  IOSH / IODC / IOSL / INPY                                         │
 └──────────────────────────────────────────────────────────────────────┘
 ```
+
+### 廃止製品マッピング
+
+| 旧コード | 旧名 | → 新コード | 備考 |
+|---------|------|----------|------|
+| INSS | InsightSlide | → IOSL | IOSLに統合 |
+| INSP | InsightSlide Pro | → IOSL | IOSLに統合 |
+| FGIN | ForguncyInsight | → INCA | INCAに統合 |
+| HMSH | HarmonicSheet | → IOSH | リネーム |
+| HMDC | HarmonicDoc | → IODC | リネーム |
+| HMSL | HarmonicSlide | → IOSL | IOSLに統合 |
 
 ### 【A】コンサルティング連動型
 
 | コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
 |-------|-------|------|---------------|---------------|-----|
-| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
+| INCA | InsightNoCodeAnalyzer | RPA・ローコード・Forguncy解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
 | INBT | InsightBot | Python RPA自動化ボット | ¥1,480,000 | ¥2,980,000 | 個別見積 |
-| FGIN | ForguncyInsight | Forguncy連携 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
 | INMV | InsightMovie | 画像・PPTから動画作成 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
 | INIG | InsightImageGen | AI画像・音声生成 | ¥980,000 | ¥1,980,000 | 個別見積 |
 
-> **考え方**: コンサルティング開発案件（数千万円規模）の中で使用するツール。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。大量販売は不要。
+> **考え方**: コンサルティング開発案件（数千万円規模）の中で使用するツール。AI（Opus）込み・無制限。数百万〜数億の現場改善効果に対しての価格設定。
 
 ### 【B】グローバルスタンドアロン型
 
-| コード | 製品名 | 説明 | FREE | STD（税抜/年） | PRO（税抜/年） | USD STD | USD PRO |
-|-------|-------|------|------|---------------|---------------|---------|---------|
-| INSS | InsightSlide | PowerPointコンテンツ抽出・更新 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
-| INSP | InsightSlide Pro | プロ向けPowerPointツール | — | ¥79,800 | ¥148,000 | $530 | $980 |
-| INPY | InsightPy | Windows自動化Python実行環境 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
-| HMSH | HarmonicSheet | Excelバージョン管理・チームコラボ | — | ¥59,800 | ¥118,000 | $400 | $780 |
-| HMDC | HarmonicDoc | Wordドキュメント操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
-| HMSL | HarmonicSlide | PowerPoint操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| コード | 製品名 | 説明 | STD（税抜/年） | USD |
+|-------|-------|------|:-------------:|:---:|
+| IOSH | InsightOfficeSheet | Excelバージョン管理・差分比較・チームコラボ | ¥49,800 | $330 |
+| IODC | InsightOfficeDoc | Wordドキュメント操作・自動化 | ¥49,800 | $330 |
+| IOSL | InsightOfficeSlide | PowerPointコンテンツ抽出・更新・自動化 | ¥49,800 | $330 |
+| INPY | InsightPy | Windows自動化Python実行環境 | ¥49,800 | $330 |
 
-> **考え方**: Office系の汎用ツールとして単独でグローバル展開。5〜10万円帯で大量販売を目指す。全製品1ヶ月の無料トライアルあり。
+> **全製品横並び ¥49,800/年/人**。14日間の無料トライアル、クレジットカード不要で開始可能。
+
+### ボリュームディスカウント
+
+| ライセンス数 | 単価/年 | 割引率 | 想定 |
+|:----------:|-------:|:-----:|------|
+| 1人 | ¥49,800 | — | 個人 |
+| 10人〜 | ¥39,800 | 20%OFF | 小チーム |
+| 100人〜 | ¥29,800 | 40%OFF | 部署導入 |
+| 1,000人〜 | ¥19,800 | 60%OFF | 全社導入 |
+| 10,000人〜 | 個別見積 | — | ENT |
+
+### AIカウント課金（ゲーム課金モデル）
+
+**AI モデル: Claude Opus（全製品共通）**
+
+```
+┌─────────────────────────────────────────────────┐
+│  製品ライセンス ¥49,800/年                        │
+│  全機能使える。AIなくても価値がある。              │
+├─────────────────────────────────────────────────┤
+│  AI無料枠 月20回 Opus                             │
+│  → 「このAI賢い」を体感させる                     │
+├─────────────────────────────────────────────────┤
+│  AIカウント追加購入                                │
+│  ¥10,000 / 200回（基本パック）                     │
+│  ¥22,000 / 500回（12%OFF）                        │
+│  ¥40,000 / 1,000回（20%OFF）                      │
+│  チーム・エンタープライズパックもあり              │
+├─────────────────────────────────────────────────┤
+│  【A】コンサル連動型はAI込み・無制限              │
+└─────────────────────────────────────────────────┘
+```
 
 ### 価格定義ファイル
 
 ```typescript
-import { getPrice, getSalesChannel } from '@/insight-common/config/pricing';
+import { getPrice, getSalesChannel, getVolumePrice } from '@/insight-common/config/pricing';
+import { getAIPolicy, getCreditPacks } from '@/insight-common/config/ai-credits';
 
 // 製品の販売チャネルを確認
 getSalesChannel('INCA');  // 'consulting'
-getSalesChannel('INSS');  // 'standalone'
+getSalesChannel('IOSH');  // 'standalone'
 
 // 価格を取得
-getPrice('INSS', 'STD');  // { annualPrice: 49800, currency: 'JPY', monthlyEquivalent: 4150 }
+getPrice('IOSH', 'STD');  // { annualPrice: 49800, currency: 'JPY', monthlyEquivalent: 4150 }
 getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEquivalent: 331667 }
+
+// ボリュームディスカウント
+getVolumePrice('IOSH', 100);  // { pricePerLicense: 29800, totalPrice: 2980000, discountRate: 0.40 }
+
+// AI提供方針
+getAIPolicy('INCA');  // { type: 'included_unlimited', model: 'claude-opus-4-5' }
+getAIPolicy('IOSH');  // { type: 'free_quota_plus_purchase', model: 'claude-opus-4-5', freeQuota: { monthlyCredits: 20 } }
+
+// AIカウントパック一覧
+getCreditPacks('JPY', 'individual');  // 個人向けパック一覧
 ```
 
 **新規製品を追加する場合:**
 1. `config/products.ts` に登録
 2. `config/pricing.ts` に価格を設定
-3. `config/sales-strategy.ts` に販売戦略を設定
-4. この一覧に追加
-5. ライセンス機能マトリクスを定義
+3. `config/ai-credits.ts` にAI提供方針を設定
+4. `config/sales-strategy.ts` に販売戦略を設定
+5. この一覧に追加
+6. ライセンス機能マトリクスを定義
 
 ## 6. 販売戦略・マーケット展開
 
@@ -272,12 +326,12 @@ Phase 1（現在）   Phase 2（拡大）     Phase 3（成熟）
 import { getSalesStrategy, getProductsByRegion } from '@/insight-common/config/sales-strategy';
 
 // 製品の販売戦略を取得
-const strategy = getSalesStrategy('INSS');
+const strategy = getSalesStrategy('IOSL');
 strategy.targetMarkets;     // Phase別の展開マーケット
-strategy.positioning;       // 'PowerPointのコンテンツ抽出・一括更新を自動化...'
+strategy.positioning;       // 'PowerPoint操作・コンテンツ抽出・自動化。AI搭載。'
 
 // 地域で販売可能な製品を取得
-getProductsByRegion('US');   // ['INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL']
+getProductsByRegion('US');   // ['IOSH', 'IODC', 'IOSL', 'INPY']
 getProductsByRegion('JP');   // 全製品
 ```
 
@@ -309,9 +363,8 @@ getProductsByRegion('JP');   // 全製品
 
 | 製品 | リセラー販売 | 最低販売価格 | デモ | NFR |
 |------|:----------:|:----------:|:----:|:---:|
-| INSS / INSP / INPY | ✅ | 定価の80%以上 | 5本 | 2本 |
-| HMSH / HMDC / HMSL | ✅ | 定価の80%以上 | 5本 | 2本 |
-| INCA / INBT / FGIN / INMV / INIG | ❌ | — | — | — |
+| IOSH / IODC / IOSL / INPY | ✅ | 定価の80%以上 | 5本 | 2本 |
+| INCA / INBT / INMV / INIG | ❌ | — | — | — |
 
 > **コンサル連動型はリセラー販売不可**（自社コンサル案件と一体のため）。
 
@@ -327,9 +380,9 @@ getProductsByRegion('JP');   // 全製品
 import { calculateWholesalePrice, getResellerProducts } from '@/insight-common/config/reseller-strategy';
 
 // リセラー販売可能な製品
-getResellerProducts();  // ['INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL']
+getResellerProducts();  // ['IOSH', 'IODC', 'IOSL', 'INPY']
 
-// Silver パートナーがINSS STD（¥49,800）を販売した場合
+// Silver パートナーがIOSL STD（¥49,800）を販売した場合
 calculateWholesalePrice(49800, 'silver');
 // { wholesalePrice: 34860, partnerProfit: 14940, discount: 0.30 }
 ```
@@ -340,13 +393,13 @@ calculateWholesalePrice(49800, 'silver');
 
 | プラン | 説明 | 対象 | 有効期限 |
 |-------|------|------|---------|
-| FREE | 機能制限あり（※HMSHでは廃止、デフォルト=TRIAL） | — | 無期限 |
+| FREE | 機能制限あり（※IOSHでは廃止、デフォルト=TRIAL） | — | 無期限 |
 | TRIAL | 全機能利用可能（評価用） | 評価ユーザー | 14日間 |
 | STD | 標準機能（コラボレーション機能を除く） | 個人利用 | 365日 |
 | PRO | 全機能（コラボレーション含む） | 法人・チーム | 365日 |
 | ENT | カスタマイズ | 企業 | 要相談 |
 
-### HarmonicSheet (HMSH) 機能マトリクス
+### InsightOfficeSheet (IOSH) 機能マトリクス
 
 > **STD = 個人利用**（1人で数値を算出）、**PRO = 法人・チーム利用**（コラボレーション）
 
@@ -366,7 +419,7 @@ calculateWholesalePrice(49800, 'silver');
 
 ```
 {製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}
-例: INCA-STD-2601-XXXX-XXXX-XXXX
+例: IOSL-STD-2601-XXXX-XXXX-XXXX
 ```
 
 ### ライセンス画面（必須）
@@ -480,7 +533,7 @@ import {
 const result = validateIssuanceRequest({
   customerEmail: 'user@example.com',
   customerName: '山田太郎',
-  productCode: 'INSS',
+  productCode: 'IOSL',
   plan: 'STD',
   keyType: 'production',
   channel: 'partner_reseller',
@@ -490,7 +543,7 @@ const result = validateIssuanceRequest({
 });
 
 // パートナーのNFRキー発行可否チェック
-canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
+canPartnerIssueSpecialKey(partner, 'IOSL', 'nfr');
 // { allowed: true, remaining: 2 }
 ```
 

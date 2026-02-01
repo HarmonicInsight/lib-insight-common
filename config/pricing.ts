@@ -11,17 +11,17 @@
  * - コンサルティング案件（数千万円規模）の一部として提供
  * - 単体でも数百万円の価値がある業務ツール
  * - 大量販売は不要、コンサルフィーとの組み合わせで収益化
- * - 対象: RPA移行・ローコード解析・自動化ボット等
+ * - AI込み・無制限（別課金なし）
+ * - 対象: INCA / INBT / INMV / INIG
  *
  * ### B. グローバルスタンドアロン型（Global Standalone）
- * - 5〜10万円帯でグローバルに大量販売
- * - Office系ツール（Excel/Word/PowerPoint操作）
- * - 単独でソフトウェア製品として成立する汎用ツール
- * - 対象: InsightSlide、Harmonicシリーズ等
+ * - ¥49,800/年/人（全製品横並び）
+ * - ボリュームディスカウント: 10人〜¥39,800、100人〜¥29,800、1,000人〜¥19,800
+ * - AI: 無料枠20回/月 + カウント追加購入（ゲーム課金モデル）
+ * - 対象: IOSH / IODC / IOSL / INPY
  *
- * ## 価格設定根拠
- * - コンサル連動型: 移行アセスメント1件で数百万〜数千万の案件価値
- * - スタンドアロン型: グローバルSaaS/デスクトップツールの相場帯
+ * ## 廃止製品
+ * INSS, INSP, FGIN, HMSH, HMDC, HMSL → 新コードに移行
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -46,6 +46,18 @@ export interface PricingInfo {
   monthlyEquivalent: number;
 }
 
+/** ボリュームディスカウント段階 */
+export interface VolumeDiscount {
+  /** 最小ライセンス数 */
+  minLicenses: number;
+  /** 1ライセンスあたり年額（税抜） */
+  pricePerLicense: number;
+  /** 定価からの割引率 */
+  discountRate: number;
+  /** 備考 */
+  notes?: string;
+}
+
 /** 製品別価格定義 */
 export interface ProductPricing {
   /** 製品コード */
@@ -56,47 +68,78 @@ export interface ProductPricing {
   channelDescription: string;
   /** プラン別価格 */
   plans: Partial<Record<PlanCode, PricingInfo | null>>;
+  /** ボリュームディスカウント（スタンドアロン型のみ） */
+  volumeDiscounts?: VolumeDiscount[];
+  /** AI提供方針 */
+  aiPolicy: 'included_unlimited' | 'free_quota_plus_purchase';
   /** 備考 */
   notes?: string;
 }
 
 // =============================================================================
-// 価格定義
+// ボリュームディスカウント定義（スタンドアロン型共通）
 // =============================================================================
 
 /**
- * 製品別価格表
+ * ボリュームディスカウント段階
  *
- * 【価格体系の全体像】
- *
- * ┌──────────────────────────────────────────────────────────────────┐
- * │  コンサルティング連動型（数百万円〜）                              │
- * │  INCA / INBT / FGIN / INMV / INIG                               │
- * │  → コンサル案件と一括提供、少量・高単価                           │
- * ├──────────────────────────────────────────────────────────────────┤
- * │  グローバルスタンドアロン型（5〜10万円）                           │
- * │  INSS / INSP / INPY / HMSH / HMDC / HMSL                       │
- * │  → 単独販売、グローバル展開、大量販売                             │
- * └──────────────────────────────────────────────────────────────────┘
+ * 1人:      ¥49,800/年
+ * 10人〜:   ¥39,800/年（20%OFF）
+ * 100人〜:  ¥29,800/年（40%OFF） — 部署導入、部長決裁ライン
+ * 1,000人〜: ¥19,800/年（60%OFF） — 全社導入、役員決裁ライン（年2,000万弱）
+ * 10,000人〜: 個別見積（ENT）
  */
+export const VOLUME_DISCOUNTS: VolumeDiscount[] = [
+  {
+    minLicenses: 1,
+    pricePerLicense: 49_800,
+    discountRate: 0,
+    notes: '個人・小チーム',
+  },
+  {
+    minLicenses: 10,
+    pricePerLicense: 39_800,
+    discountRate: 0.20,
+    notes: '小チーム（10人〜）',
+  },
+  {
+    minLicenses: 100,
+    pricePerLicense: 29_800,
+    discountRate: 0.40,
+    notes: '部署導入（100人〜）',
+  },
+  {
+    minLicenses: 1_000,
+    pricePerLicense: 19_800,
+    discountRate: 0.60,
+    notes: '全社導入（1,000人〜）',
+  },
+  {
+    minLicenses: 10_000,
+    pricePerLicense: -1,  // 個別見積
+    discountRate: -1,
+    notes: '大企業（10,000人〜）→ ENT個別見積',
+  },
+];
+
+// =============================================================================
+// 価格定義
+// =============================================================================
+
 export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
 
   // =========================================================================
   // コンサルティング連動型（Consulting-Bundled）
+  // AI込み・無制限
   // =========================================================================
 
-  /**
-   * InsightNoCodeAnalyzer (INCA)
-   * - RPA・ローコード移行アセスメントの中核ツール
-   * - 移行案件1件あたり数千万円の案件価値に対する分析ツール
-   * - 最も高単価：解析・変換・アセスメントレポートの自動生成
-   */
   INCA: {
     productCode: 'INCA',
     channel: 'consulting',
-    channelDescription: 'RPA・ローコード移行コンサルティング案件と連動',
+    channelDescription: 'RPA・ローコード・Forguncy移行コンサルティング案件と連動（旧FGIN統合）',
+    aiPolicy: 'included_unlimited',
     plans: {
-      TRIAL: null, // 無料トライアル（1ヶ月）
+      TRIAL: null,
       STD: {
         annualPrice: 1_980_000,
         currency: 'JPY',
@@ -107,20 +150,16 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
         currency: 'JPY',
         monthlyEquivalent: 331_667,
       },
-      ENT: null, // 個別見積もり
+      ENT: null, // 個別見積
     },
-    notes: 'akaBot変換機能はPRO以上。移行アセスメント案件（数千万円規模）の分析ツールとして提供。',
+    notes: 'akaBot変換機能はPRO以上。移行アセスメント案件（数千万円規模）の分析ツール。AI（Opus）込み・無制限。',
   },
 
-  /**
-   * InsightBot (INBT)
-   * - Python RPA自動化ボット
-   * - 業務自動化コンサルティングの一環として提供
-   */
   INBT: {
     productCode: 'INBT',
     channel: 'consulting',
     channelDescription: '業務自動化コンサルティング案件と連動',
+    aiPolicy: 'included_unlimited',
     plans: {
       TRIAL: null,
       STD: {
@@ -135,44 +174,14 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'クラウド同期・JOB無制限はPRO以上。自動化コンサルとセットで提供。',
+    notes: 'クラウド同期・JOB無制限はPRO以上。自動化コンサルとセットで提供。AI（Opus）込み・無制限。',
   },
 
-  /**
-   * ForguncyInsight (FGIN)
-   * - Forguncy連携・分析ツール
-   * - Forguncy導入/移行コンサルティングの付帯ツール
-   */
-  FGIN: {
-    productCode: 'FGIN',
-    channel: 'consulting',
-    channelDescription: 'Forguncy導入・移行コンサルティング案件と連動',
-    plans: {
-      TRIAL: null,
-      STD: {
-        annualPrice: 1_480_000,
-        currency: 'JPY',
-        monthlyEquivalent: 123_333,
-      },
-      PRO: {
-        annualPrice: 2_980_000,
-        currency: 'JPY',
-        monthlyEquivalent: 248_333,
-      },
-      ENT: null,
-    },
-    notes: 'Forguncy案件の解析・最適化ツールとして提供。',
-  },
-
-  /**
-   * InsightMovie (INMV)
-   * - AI動画作成ツール
-   * - コンテンツ制作・研修動画作成コンサルの一環
-   */
   INMV: {
     productCode: 'INMV',
     channel: 'consulting',
     channelDescription: 'コンテンツ制作・研修動画コンサルティングと連動',
+    aiPolicy: 'included_unlimited',
     plans: {
       TRIAL: null,
       STD: {
@@ -187,18 +196,14 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: '4K出力・字幕カスタマイズ・トランジションはPRO以上。',
+    notes: '4K出力・字幕カスタマイズ・トランジションはPRO以上。AI（Opus）込み・無制限。',
   },
 
-  /**
-   * InsightImageGen (INIG)
-   * - AI画像・音声生成ツール
-   * - コンテンツ制作コンサルの付帯ツール
-   */
   INIG: {
     productCode: 'INIG',
     channel: 'consulting',
     channelDescription: 'AI活用・コンテンツ制作コンサルティングと連動',
+    aiPolicy: 'included_unlimited',
     plans: {
       TRIAL: null,
       STD: {
@@ -213,183 +218,84 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: '高解像度出力・クラウド同期はPRO以上。',
+    notes: '高解像度出力・クラウド同期はPRO以上。AI（Opus）込み・無制限。',
   },
 
   // =========================================================================
   // グローバルスタンドアロン型（Global Standalone）
+  // ¥49,800/年/人（横並び）+ AIカウント課金
   // =========================================================================
 
-  /**
-   * InsightSlide (INSS)
-   * - PowerPointコンテンツ抽出・更新ツール
-   * - グローバルで最も売れる可能性がある汎用ツール
-   */
-  INSS: {
-    productCode: 'INSS',
+  IOSH: {
+    productCode: 'IOSH',
     channel: 'standalone',
-    channelDescription: 'グローバル単独販売（PowerPointユーザー向け）',
+    channelDescription: 'グローバル単独販売（Excel業務ユーザー向け）',
+    aiPolicy: 'free_quota_plus_purchase',
     plans: {
-      FREE: {
-        annualPrice: 0,
+      TRIAL: null,  // 14日間全機能
+      STD: {
+        annualPrice: 49_800,
         currency: 'JPY',
-        monthlyEquivalent: 0,
+        monthlyEquivalent: 4_150,
       },
+      ENT: null,  // 個別見積
+    },
+    volumeDiscounts: VOLUME_DISCOUNTS,
+    notes: '旧HarmonicSheet(HMSH)。¥49,800/年/人。AI無料枠20回/月+カウント追加購入。',
+  },
+
+  IODC: {
+    productCode: 'IODC',
+    channel: 'standalone',
+    channelDescription: 'グローバル単独販売（Word業務ユーザー向け）',
+    aiPolicy: 'free_quota_plus_purchase',
+    plans: {
       TRIAL: null,
       STD: {
         annualPrice: 49_800,
         currency: 'JPY',
         monthlyEquivalent: 4_150,
       },
-      PRO: {
-        annualPrice: 98_000,
-        currency: 'JPY',
-        monthlyEquivalent: 8_167,
-      },
       ENT: null,
     },
-    notes: 'グローバル展開の主力製品。USD換算: STD $330/yr, PRO $650/yr',
+    volumeDiscounts: VOLUME_DISCOUNTS,
+    notes: '旧HarmonicDoc(HMDC)。¥49,800/年/人。AI無料枠20回/月+カウント追加購入。',
   },
 
-  /**
-   * InsightSlide Pro (INSP)
-   * - プロ向けPowerPointツール（INSSの全機能を継承）
-   */
-  INSP: {
-    productCode: 'INSP',
+  IOSL: {
+    productCode: 'IOSL',
     channel: 'standalone',
-    channelDescription: 'グローバル単独販売（PowerPointプロフェッショナル向け）',
+    channelDescription: 'グローバル単独販売（PowerPoint業務ユーザー向け）',
+    aiPolicy: 'free_quota_plus_purchase',
     plans: {
       TRIAL: null,
       STD: {
-        annualPrice: 79_800,
+        annualPrice: 49_800,
         currency: 'JPY',
-        monthlyEquivalent: 6_650,
-      },
-      PRO: {
-        annualPrice: 148_000,
-        currency: 'JPY',
-        monthlyEquivalent: 12_333,
+        monthlyEquivalent: 4_150,
       },
       ENT: null,
     },
-    notes: 'INSS上位版。USD換算: STD $530/yr, PRO $980/yr',
+    volumeDiscounts: VOLUME_DISCOUNTS,
+    notes: '旧HarmonicSlide(HMSL) + InsightSlide(INSS) + InsightSlide Pro(INSP)統合。¥49,800/年/人。',
   },
 
-  /**
-   * InsightPy (INPY)
-   * - Python実行環境（Windows自動化）
-   */
   INPY: {
     productCode: 'INPY',
     channel: 'standalone',
     channelDescription: 'グローバル単独販売（Windows自動化ユーザー向け）',
+    aiPolicy: 'free_quota_plus_purchase',
     plans: {
-      FREE: {
-        annualPrice: 0,
-        currency: 'JPY',
-        monthlyEquivalent: 0,
-      },
       TRIAL: null,
       STD: {
         annualPrice: 49_800,
         currency: 'JPY',
         monthlyEquivalent: 4_150,
       },
-      PRO: {
-        annualPrice: 98_000,
-        currency: 'JPY',
-        monthlyEquivalent: 8_167,
-      },
       ENT: null,
     },
-    notes: 'クラウド同期・スクリプト無制限はPRO以上。USD換算: STD $330/yr, PRO $650/yr',
-  },
-
-  /**
-   * HarmonicSheet (HMSH)
-   * - Excelバージョン管理・チームコラボレーション
-   * - STD=個人利用、PRO=法人・チーム利用
-   */
-  HMSH: {
-    productCode: 'HMSH',
-    channel: 'standalone',
-    channelDescription: 'グローバル単独販売（Excel業務ユーザー向け）',
-    plans: {
-      TRIAL: null, // デフォルトがTRIAL（FREE廃止）
-      STD: {
-        annualPrice: 59_800,
-        currency: 'JPY',
-        monthlyEquivalent: 4_983,
-      },
-      PRO: {
-        annualPrice: 118_000,
-        currency: 'JPY',
-        monthlyEquivalent: 9_833,
-      },
-      ENT: null,
-    },
-    notes: 'STD=個人（コラボなし）、PRO=法人（全コラボ機能）。USD換算: STD $400/yr, PRO $780/yr',
-  },
-
-  /**
-   * HarmonicDoc (HMDC)
-   * - Wordドキュメント操作・自動化
-   */
-  HMDC: {
-    productCode: 'HMDC',
-    channel: 'standalone',
-    channelDescription: 'グローバル単独販売（Word業務ユーザー向け）',
-    plans: {
-      FREE: {
-        annualPrice: 0,
-        currency: 'JPY',
-        monthlyEquivalent: 0,
-      },
-      TRIAL: null,
-      STD: {
-        annualPrice: 49_800,
-        currency: 'JPY',
-        monthlyEquivalent: 4_150,
-      },
-      PRO: {
-        annualPrice: 98_000,
-        currency: 'JPY',
-        monthlyEquivalent: 8_167,
-      },
-      ENT: null,
-    },
-    notes: 'バッチ処理・マクロ実行はPRO以上。USD換算: STD $330/yr, PRO $650/yr',
-  },
-
-  /**
-   * HarmonicSlide (HMSL)
-   * - PowerPointプレゼンテーション操作・自動化
-   */
-  HMSL: {
-    productCode: 'HMSL',
-    channel: 'standalone',
-    channelDescription: 'グローバル単独販売（PowerPoint業務ユーザー向け）',
-    plans: {
-      FREE: {
-        annualPrice: 0,
-        currency: 'JPY',
-        monthlyEquivalent: 0,
-      },
-      TRIAL: null,
-      STD: {
-        annualPrice: 49_800,
-        currency: 'JPY',
-        monthlyEquivalent: 4_150,
-      },
-      PRO: {
-        annualPrice: 98_000,
-        currency: 'JPY',
-        monthlyEquivalent: 8_167,
-      },
-      ENT: null,
-    },
-    notes: 'バッチ処理・テンプレートはPRO以上。USD換算: STD $330/yr, PRO $650/yr',
+    volumeDiscounts: VOLUME_DISCOUNTS,
+    notes: '¥49,800/年/人。AI無料枠20回/月+カウント追加購入。開発者はAIカウントをガンガン使う想定。',
   },
 };
 
@@ -401,13 +307,46 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
 export const USD_REFERENCE_RATE = 150;
 
 /** グローバル展開向けUSD価格表 */
-export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, Partial<Record<PlanCode, number>>>> = {
-  INSS: { STD: 330, PRO: 650 },
-  INSP: { STD: 530, PRO: 980 },
-  INPY: { STD: 330, PRO: 650 },
-  HMSH: { STD: 400, PRO: 780 },
-  HMDC: { STD: 330, PRO: 650 },
-  HMSL: { STD: 330, PRO: 650 },
+export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, {
+  STD: number;
+  volumeDiscounts: Array<{ minLicenses: number; pricePerLicense: number }>;
+}>> = {
+  IOSH: {
+    STD: 330,
+    volumeDiscounts: [
+      { minLicenses: 1, pricePerLicense: 330 },
+      { minLicenses: 10, pricePerLicense: 265 },
+      { minLicenses: 100, pricePerLicense: 200 },
+      { minLicenses: 1_000, pricePerLicense: 130 },
+    ],
+  },
+  IODC: {
+    STD: 330,
+    volumeDiscounts: [
+      { minLicenses: 1, pricePerLicense: 330 },
+      { minLicenses: 10, pricePerLicense: 265 },
+      { minLicenses: 100, pricePerLicense: 200 },
+      { minLicenses: 1_000, pricePerLicense: 130 },
+    ],
+  },
+  IOSL: {
+    STD: 330,
+    volumeDiscounts: [
+      { minLicenses: 1, pricePerLicense: 330 },
+      { minLicenses: 10, pricePerLicense: 265 },
+      { minLicenses: 100, pricePerLicense: 200 },
+      { minLicenses: 1_000, pricePerLicense: 130 },
+    ],
+  },
+  INPY: {
+    STD: 330,
+    volumeDiscounts: [
+      { minLicenses: 1, pricePerLicense: 330 },
+      { minLicenses: 10, pricePerLicense: 265 },
+      { minLicenses: 100, pricePerLicense: 200 },
+      { minLicenses: 1_000, pricePerLicense: 130 },
+    ],
+  },
 };
 
 // =============================================================================
@@ -431,6 +370,53 @@ export function getPrice(productCode: ProductCode, planCode: PlanCode): PricingI
 }
 
 /**
+ * ボリュームディスカウント適用後の1ライセンス単価を取得
+ */
+export function getVolumePrice(productCode: ProductCode, licenseCount: number): {
+  pricePerLicense: number;
+  totalPrice: number;
+  discountRate: number;
+  isEnterprise: boolean;
+} {
+  const pricing = PRODUCT_PRICING[productCode];
+  if (!pricing.volumeDiscounts) {
+    // コンサル連動型にはボリュームディスカウントなし
+    const stdPrice = pricing.plans.STD;
+    return {
+      pricePerLicense: stdPrice?.annualPrice ?? 0,
+      totalPrice: (stdPrice?.annualPrice ?? 0) * licenseCount,
+      discountRate: 0,
+      isEnterprise: false,
+    };
+  }
+
+  // 適用可能な最大の段階を探す
+  let applicableTier = pricing.volumeDiscounts[0];
+  for (const tier of pricing.volumeDiscounts) {
+    if (licenseCount >= tier.minLicenses) {
+      applicableTier = tier;
+    }
+  }
+
+  if (applicableTier.pricePerLicense === -1) {
+    // ENT個別見積
+    return {
+      pricePerLicense: -1,
+      totalPrice: -1,
+      discountRate: -1,
+      isEnterprise: true,
+    };
+  }
+
+  return {
+    pricePerLicense: applicableTier.pricePerLicense,
+    totalPrice: applicableTier.pricePerLicense * licenseCount,
+    discountRate: applicableTier.discountRate,
+    isEnterprise: false,
+  };
+}
+
+/**
  * 製品の価格一覧を取得（UI表示用）
  */
 export function getPricingTable(productCode: ProductCode): Array<{
@@ -444,7 +430,7 @@ export function getPricingTable(productCode: ProductCode): Array<{
   return entries.map(([plan, price]) => {
     let label: string;
     if (plan === 'TRIAL') {
-      label = '無料トライアル（1ヶ月）';
+      label = '無料トライアル（14日間）';
     } else if (plan === 'FREE') {
       label = '無料（機能制限あり）';
     } else if (plan === 'ENT') {
@@ -478,10 +464,19 @@ export function getStandaloneProducts(): ProductCode[] {
 /**
  * USD参考価格を取得（グローバル展開製品のみ）
  */
-export function getUsdPrice(productCode: ProductCode, planCode: PlanCode): number | null {
+export function getUsdPrice(productCode: ProductCode, licenseCount: number = 1): number | null {
   const usdPricing = GLOBAL_USD_PRICING[productCode];
   if (!usdPricing) return null;
-  return usdPricing[planCode] ?? null;
+
+  if (licenseCount <= 1) return usdPricing.STD;
+
+  let applicablePrice = usdPricing.STD;
+  for (const tier of usdPricing.volumeDiscounts) {
+    if (licenseCount >= tier.minLicenses) {
+      applicablePrice = tier.pricePerLicense;
+    }
+  }
+  return applicablePrice;
 }
 
 // =============================================================================
@@ -490,10 +485,12 @@ export function getUsdPrice(productCode: ProductCode, planCode: PlanCode): numbe
 
 export default {
   PRODUCT_PRICING,
+  VOLUME_DISCOUNTS,
   GLOBAL_USD_PRICING,
   USD_REFERENCE_RATE,
   getSalesChannel,
   getPrice,
+  getVolumePrice,
   getPricingTable,
   getConsultingProducts,
   getStandaloneProducts,

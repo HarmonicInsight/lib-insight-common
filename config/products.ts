@@ -5,25 +5,37 @@
  * 【重要】製品シリーズ共通のライセンス管理基盤
  * ============================================================================
  *
+ * ## 製品ライン（全8製品）
+ *
+ * ### 【A】コンサル連動型（4製品）
+ * INCA / INBT / INMV / INIG
+ * - コンサル案件と一体提供、¥98万〜398万/年
+ * - AI込み・無制限
+ *
+ * ### 【B】グローバルスタンドアロン型（4製品）
+ * IOSH / IODC / IOSL / INPY
+ * - ¥49,800/年/人（横並び）、ボリュームディスカウントあり
+ * - AI: 無料枠20回/月 + カウント追加購入（ゲーム課金モデル）
+ *
+ * ## 廃止製品
+ * - INSS (InsightSlide) → IOSLに統合
+ * - INSP (InsightSlide Pro) → IOSLに統合
+ * - FGIN (ForguncyInsight) → INCAに統合
+ * - HMSH (HarmonicSheet) → IOSHにリネーム
+ * - HMDC (HarmonicDoc) → IODCにリネーム
+ * - HMSL (HarmonicSlide) → IOSLにリネーム
+ *
  * ## 設計方針
  * 1. 機能は製品ごとに明確に定義（PRODUCT_FEATURES）
  * 2. 共通機能は COMMON として別管理（全製品で利用可能）
- * 3. 製品継承をサポート（例: INSP は INSS の機能を継承）
- * 4. 数値制限は limitValues で統一管理
- * 5. 型安全性を重視（製品・機能の組み合わせを保証）
+ * 3. 数値制限は limitValues で統一管理
+ * 4. 型安全性を重視（製品・機能の組み合わせを保証）
  *
  * ## 新製品追加手順
  * 1. ProductCode に製品コードを追加
  * 2. PRODUCTS に製品情報を追加
  * 3. PRODUCT_FEATURES に機能定義を追加
- * 4. 必要に応じて PRODUCT_INHERITANCE に継承関係を追加
- * 5. 製品固有の PlanLimits が必要なら PRODUCT_PLAN_LIMITS に追加
- *
- * ## 新機能追加手順
- * 1. PRODUCT_FEATURES の該当製品に機能定義を追加
- * 2. type: 'boolean' または 'limit' を指定
- * 3. allowedPlans で利用可能プランを指定
- * 4. type: 'limit' の場合は limitValues でプラン別制限値を指定
+ * 4. 製品固有の PlanLimits が必要なら PRODUCT_PLAN_LIMITS に追加
  */
 
 // =============================================================================
@@ -31,7 +43,20 @@
 // =============================================================================
 
 /** 製品コード */
-export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'HMSH' | 'HMDC' | 'HMSL';
+export type ProductCode =
+  // 【B】スタンドアロン型
+  | 'IOSH'   // InsightOfficeSheet（旧HMSH）
+  | 'IODC'   // InsightOfficeDoc（旧HMDC）
+  | 'IOSL'   // InsightOfficeSlide（旧HMSL + INSS + INSP統合）
+  | 'INPY'   // InsightPy
+  // 【A】コンサル連動型
+  | 'INCA'   // InsightNoCodeAnalyzer（旧FGIN統合）
+  | 'INBT'   // InsightBot
+  | 'INMV'   // InsightMovie
+  | 'INIG';  // InsightImageGen
+
+/** 廃止製品コード（移行マッピング用） */
+export type DeprecatedProductCode = 'INSS' | 'INSP' | 'FGIN' | 'HMSH' | 'HMDC' | 'HMSL';
 
 /** プランコード */
 export type PlanCode = 'FREE' | 'TRIAL' | 'STD' | 'PRO' | 'ENT';
@@ -46,8 +71,6 @@ export interface ProductInfo {
   nameJa: string;
   description: string;
   descriptionJa: string;
-  /** 継承元の製品（この製品の機能をすべて含む） */
-  inheritsFrom?: ProductCode;
 }
 
 /** プラン情報 */
@@ -72,7 +95,7 @@ export interface PlanInfo {
  *   name: 'Subtitle',
  *   nameJa: '字幕',
  *   type: 'boolean',
- *   allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+ *   allowedPlans: ['TRIAL', 'STD', 'ENT'],
  * }
  *
  * @example 数値制限機能
@@ -81,8 +104,8 @@ export interface PlanInfo {
  *   name: 'Script Storage',
  *   nameJa: 'スクリプト保存数',
  *   type: 'limit',
- *   allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
- *   limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+ *   allowedPlans: ['FREE', 'TRIAL', 'STD', 'ENT'],
+ *   limitValues: { FREE: 3, TRIAL: -1, STD: 50, ENT: -1 },
  * }
  */
 export interface FeatureDefinition {
@@ -123,24 +146,63 @@ export interface PlanLimits {
 }
 
 // =============================================================================
+// 廃止製品マッピング
+// =============================================================================
+
+/**
+ * 廃止製品から新製品への移行マッピング
+ * 既存ライセンスキーの互換性維持に使用
+ */
+export const DEPRECATED_PRODUCT_MAPPING: Record<DeprecatedProductCode, ProductCode> = {
+  INSS: 'IOSL',
+  INSP: 'IOSL',
+  FGIN: 'INCA',
+  HMSH: 'IOSH',
+  HMDC: 'IODC',
+  HMSL: 'IOSL',
+};
+
+/**
+ * 廃止製品コードを新コードに変換
+ */
+export function migrateProductCode(code: string): ProductCode | null {
+  if (code in DEPRECATED_PRODUCT_MAPPING) {
+    return DEPRECATED_PRODUCT_MAPPING[code as DeprecatedProductCode];
+  }
+  // 新コードならそのまま返す
+  const allCodes: string[] = ['IOSH', 'IODC', 'IOSL', 'INPY', 'INCA', 'INBT', 'INMV', 'INIG'];
+  if (allCodes.includes(code)) {
+    return code as ProductCode;
+  }
+  return null;
+}
+
+// =============================================================================
 // 製品定義
 // =============================================================================
 
 export const PRODUCTS: Record<ProductCode, ProductInfo> = {
-  INSS: {
-    code: 'INSS',
-    name: 'InsightSlide',
-    nameJa: 'InsightSlide',
-    description: 'PowerPoint content extraction and update tool',
-    descriptionJa: 'PowerPointコンテンツ抽出・更新ツール',
+  // ── 【B】スタンドアロン型 ─────────────────────────
+  IOSH: {
+    code: 'IOSH',
+    name: 'InsightOfficeSheet',
+    nameJa: 'InsightOfficeSheet',
+    description: 'Excel version control, diff comparison, and team collaboration tool',
+    descriptionJa: 'Excelバージョン管理・差分比較・チームコラボレーションツール',
   },
-  INSP: {
-    code: 'INSP',
-    name: 'InsightSlide Pro',
-    nameJa: 'InsightSlide プロ',
-    description: 'Advanced PowerPoint tool with professional features',
-    descriptionJa: 'プロ向け機能搭載のPowerPointツール',
-    inheritsFrom: 'INSS',  // INSSの全機能を継承
+  IODC: {
+    code: 'IODC',
+    name: 'InsightOfficeDoc',
+    nameJa: 'InsightOfficeDoc',
+    description: 'Word document operations, automation, and format conversion tool',
+    descriptionJa: 'Wordドキュメント操作・自動化・フォーマット変換ツール',
+  },
+  IOSL: {
+    code: 'IOSL',
+    name: 'InsightOfficeSlide',
+    nameJa: 'InsightOfficeSlide',
+    description: 'PowerPoint content extraction, update, presentation automation tool',
+    descriptionJa: 'PowerPointコンテンツ抽出・更新・プレゼンテーション自動化ツール',
   },
   INPY: {
     code: 'INPY',
@@ -149,19 +211,14 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     description: 'Python execution environment for Windows automation',
     descriptionJa: 'Windows自動化のためのPython実行環境',
   },
-  FGIN: {
-    code: 'FGIN',
-    name: 'ForguncyInsight',
-    nameJa: 'ForguncyInsight',
-    description: 'Forguncy integration and analytics',
-    descriptionJa: 'Forguncy連携・分析ツール',
-  },
-  INMV: {
-    code: 'INMV',
-    name: 'InsightMovie',
-    nameJa: 'InsightMovie',
-    description: 'AI video creation from images, text, and PowerPoint',
-    descriptionJa: '画像・テキスト・PPTからAI動画作成',
+
+  // ── 【A】コンサル連動型 ───────────────────────────
+  INCA: {
+    code: 'INCA',
+    name: 'InsightNoCodeAnalyzer',
+    nameJa: 'InsightNoCodeAnalyzer',
+    description: 'RPA, low-code, and Forguncy platform analyzer for migration assessment',
+    descriptionJa: 'RPA・ローコード・Forguncy解析・移行アセスメントツール',
   },
   INBT: {
     code: 'INBT',
@@ -170,12 +227,12 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     description: 'Python-based RPA bot for Windows automation',
     descriptionJa: 'Python RPA自動化ボット',
   },
-  INCA: {
-    code: 'INCA',
-    name: 'InsightNoCodeAnalyzer',
-    nameJa: 'InsightNoCodeAnalyzer',
-    description: 'RPA and low-code platform analyzer for migration assessment',
-    descriptionJa: 'RPA・ローコードプラットフォーム解析・移行アセスメントツール',
+  INMV: {
+    code: 'INMV',
+    name: 'InsightMovie',
+    nameJa: 'InsightMovie',
+    description: 'AI video creation from images, text, and PowerPoint',
+    descriptionJa: '画像・テキスト・PPTからAI動画作成',
   },
   INIG: {
     code: 'INIG',
@@ -183,27 +240,6 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightImageGen',
     description: 'AI image and audio generation tool with Stable Diffusion and VOICEVOX',
     descriptionJa: 'Stable Diffusion・VOICEVOXを活用したAI画像・音声生成ツール',
-  },
-  HMSH: {
-    code: 'HMSH',
-    name: 'HarmonicSheet',
-    nameJa: 'HarmonicSheet',
-    description: 'Excel version control and team collaboration tool (STD: individual, PRO: corporate/team)',
-    descriptionJa: 'Excelバージョン管理・チームコラボレーションツール（STD: 個人, PRO: 法人）',
-  },
-  HMDC: {
-    code: 'HMDC',
-    name: 'HarmonicDoc',
-    nameJa: 'HarmonicDoc',
-    description: 'Word document operations and automation tool',
-    descriptionJa: 'Wordドキュメント操作・自動化ツール',
-  },
-  HMSL: {
-    code: 'HMSL',
-    name: 'HarmonicSlide',
-    nameJa: 'HarmonicSlide',
-    description: 'PowerPoint presentation operations and automation tool',
-    descriptionJa: 'PowerPointプレゼンテーション操作・自動化ツール',
   },
 };
 
@@ -235,8 +271,8 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Standard',
     nameJa: 'スタンダード',
     priority: 2,
-    description: 'Standard features for individual use (365 days)',
-    descriptionJa: '個人向け標準機能（365日）',
+    description: 'All features for individual use (365 days)',
+    descriptionJa: '全機能（365日）',
     defaultDurationDays: 365,
   },
   PRO: {
@@ -254,7 +290,7 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     nameJa: 'エンタープライズ',
     priority: 4,
     description: 'Custom features and dedicated support',
-    descriptionJa: 'カスタマイズ（要相談）',
+    descriptionJa: 'カスタマイズ（個別見積）',
     defaultDurationDays: -1,
   },
 };
@@ -263,11 +299,6 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
 // 共通機能（全製品で利用可能）
 // =============================================================================
 
-/**
- * 全製品共通の機能
- * - Enterprise専用機能など、製品に依存しない機能を定義
- * - checkCommonFeature() でチェック可能
- */
 export const COMMON_FEATURES: FeatureDefinition[] = [
   {
     key: 'api_access',
@@ -301,333 +332,25 @@ export const COMMON_FEATURES: FeatureDefinition[] = [
     allowedPlans: ['PRO', 'ENT'],
     descriptionJa: '優先的なサポート対応',
   },
+  {
+    key: 'ai_chat',
+    name: 'AI Assistant',
+    nameJa: 'AIアシスタント',
+    type: 'boolean',
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    descriptionJa: 'Claude Opus搭載AIアシスタント（無料枠20回/月、追加カウント購入可）',
+  },
 ];
 
 // =============================================================================
 // 製品別機能定義
 // =============================================================================
 
-/**
- * 製品固有の機能定義
- *
- * 【注意】
- * - 各機能の key は製品内で一意であること
- * - allowedPlans には必ず該当するプランを列挙すること
- * - type: 'limit' の場合は limitValues を必ず設定すること
- */
 export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // ========================================
-  // InsightSlide (INSS)
+  // InsightOfficeSheet (IOSH) — 旧HMSH
   // ========================================
-  INSS: [
-    {
-      key: 'extract',
-      name: 'Content Extraction',
-      nameJa: 'コンテンツ抽出',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'PowerPointからテキスト・画像を抽出',
-    },
-    {
-      key: 'update',
-      name: 'Content Update',
-      nameJa: 'コンテンツ更新',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'スライドの一括更新（FREEは3枚まで）',
-    },
-    {
-      key: 'json',
-      name: 'JSON I/O',
-      nameJa: 'JSON入出力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'JSON形式でのデータ入出力',
-    },
-    {
-      key: 'batch',
-      name: 'Batch Processing',
-      nameJa: 'フォルダ一括処理',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '複数ファイルの一括処理',
-    },
-    {
-      key: 'compare',
-      name: 'File Compare',
-      nameJa: '2ファイル比較',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '2つのPowerPointファイルの差分比較',
-    },
-    {
-      key: 'auto_backup',
-      name: 'Auto Backup',
-      nameJa: '自動バックアップ',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '編集前の自動バックアップ作成',
-    },
-  ],
-
-  // ========================================
-  // InsightSlide Pro (INSP)
-  // INSSの機能を継承 + Pro専用機能
-  // ========================================
-  INSP: [
-    // Pro専用機能をここに追加
-    // INSSの機能は inheritsFrom により自動継承
-  ],
-
-  // ========================================
-  // InsightPy (INPY)
-  // ========================================
-  INPY: [
-    {
-      key: 'execute',
-      name: 'Code Execution',
-      nameJa: 'コード実行',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'Pythonコードの実行',
-    },
-    {
-      key: 'presets',
-      name: 'Presets',
-      nameJa: 'プリセット利用',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '定義済みスクリプトテンプレートの利用',
-    },
-    {
-      key: 'scripts',
-      name: 'Script Storage',
-      nameJa: 'スクリプト保存数',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
-      descriptionJa: '保存可能なスクリプト数',
-    },
-    {
-      key: 'cloud_sync',
-      name: 'Cloud Sync',
-      nameJa: 'クラウド同期',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'スクリプトのクラウド同期',
-    },
-  ],
-
-  // ========================================
-  // ForguncyInsight (FGIN)
-  // ========================================
-  FGIN: [
-    // 機能定義を追加予定
-  ],
-
-  // ========================================
-  // InsightBot (INBT)
-  // ========================================
-  INBT: [
-    {
-      key: 'execute',
-      name: 'Script Execution',
-      nameJa: 'スクリプト実行',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'RPAスクリプトの実行',
-    },
-    {
-      key: 'presets',
-      name: 'Presets',
-      nameJa: 'プリセット利用',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '定義済みスクリプトテンプレートの利用',
-    },
-    {
-      key: 'jobs',
-      name: 'Job Storage',
-      nameJa: 'JOB保存数',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
-      descriptionJa: '保存可能なJOB数',
-    },
-    {
-      key: 'cloud_sync',
-      name: 'Cloud Sync',
-      nameJa: 'クラウド同期',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'JOBのクラウド同期',
-    },
-  ],
-
-  // ========================================
-  // InsightNoCodeAnalyzer (INCA)
-  // ========================================
-  INCA: [
-    {
-      key: 'rpa_analysis',
-      name: 'RPA Analysis',
-      nameJa: 'RPA解析',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'BizRobo等のRPAソース解析',
-    },
-    {
-      key: 'lowcode_analysis',
-      name: 'Low-code Analysis',
-      nameJa: 'ローコード解析',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'Forguncy等のローコードツール解析',
-    },
-    {
-      key: 'migration_assessment',
-      name: 'Migration Assessment',
-      nameJa: '移行アセスメント',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '工数見積もり・複雑度分析',
-    },
-    {
-      key: 'akabot_conversion',
-      name: 'akaBot Conversion',
-      nameJa: 'akaBot変換',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'BizRoboからakaBotへの変換',
-    },
-    {
-      key: 'export_json',
-      name: 'JSON Export',
-      nameJa: 'JSON出力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '解析結果のJSON形式出力',
-    },
-    {
-      key: 'export_markdown',
-      name: 'Markdown Export',
-      nameJa: 'Markdown出力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '解析結果のMarkdown形式出力',
-    },
-  ],
-
-  // ========================================
-  // InsightImageGen (INIG)
-  // ========================================
-  INIG: [
-    {
-      key: 'generate_image',
-      name: 'Image Generation',
-      nameJa: '画像生成',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'Stable Diffusionによる画像生成',
-    },
-    {
-      key: 'batch_image',
-      name: 'Batch Image Generation',
-      nameJa: 'バッチ画像生成',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '複数画像の一括生成',
-    },
-    {
-      key: 'generate_audio',
-      name: 'Audio Generation',
-      nameJa: '音声生成',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'VOICEVOXによる音声生成',
-    },
-    {
-      key: 'character_prompts',
-      name: 'Character Prompts',
-      nameJa: 'キャラクタープロンプト',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: 20, PRO: -1, ENT: -1 },
-      descriptionJa: '保存可能なキャラクタープロンプト数',
-    },
-    {
-      key: 'hi_res',
-      name: 'High Resolution',
-      nameJa: '高解像度出力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '高解像度画像の生成',
-    },
-    {
-      key: 'cloud_sync',
-      name: 'Cloud Sync',
-      nameJa: 'クラウド同期',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'プロンプト・設定のクラウド同期',
-    },
-  ],
-
-  // ========================================
-  // InsightMovie (INMV)
-  // ========================================
-  INMV: [
-    {
-      key: 'generate',
-      name: 'Video Generation',
-      nameJa: '動画生成',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '画像・テキストから動画を生成',
-    },
-    {
-      key: 'subtitle',
-      name: 'Subtitle',
-      nameJa: '字幕',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '動画への字幕追加',
-    },
-    {
-      key: 'subtitle_style',
-      name: 'Subtitle Style',
-      nameJa: '字幕スタイル選択',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '字幕のフォント・色・位置のカスタマイズ',
-    },
-    {
-      key: 'transition',
-      name: 'Transition',
-      nameJa: 'トランジション',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'シーン間のトランジション効果',
-    },
-    {
-      key: 'pptx_import',
-      name: 'PPTX Import',
-      nameJa: 'PPTX取込',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'PowerPointファイルからの素材取込',
-    },
-  ],
-
-  // ========================================
-  // HarmonicSheet (HMSH)
-  // ========================================
-  // プラン体系: FREE廃止（デフォルト=TRIAL）
-  //   TRIAL: 全機能（評価期間）
-  //   STD: 個人利用 — 掲示板・AI・変更者表示・メッセージ送信を除く
-  //   PRO: 法人・チーム利用 — 全機能（コラボレーション）
-  HMSH: [
+  IOSH: [
     {
       key: 'read_excel',
       name: 'Read Excel',
@@ -673,55 +396,46 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Show Author',
       nameJa: '変更者表示',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'セル変更ログで変更者（誰が変更したか）を表示（チーム利用向け）',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セル変更ログで変更者を表示',
     },
     {
       key: 'board',
       name: 'Board',
       nameJa: '掲示板',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'チーム向け掲示板機能',
-    },
-    {
-      key: 'ai_chat',
-      name: 'AI Chat',
-      nameJa: 'AIアシスタント',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIチャットによるExcel操作支援',
     },
     {
       key: 'send_message',
       name: 'Send Message',
       nameJa: 'メッセージ送信',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'チームメンバーへのメッセージ送信',
     },
   ],
 
   // ========================================
-  // HarmonicDoc (HMDC)
+  // InsightOfficeDoc (IODC) — 旧HMDC
   // ========================================
-  HMDC: [
+  IODC: [
     {
       key: 'read_doc',
       name: 'Read Document',
       nameJa: 'ドキュメント読取',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'Wordドキュメントの読み取り',
     },
     {
       key: 'write_doc',
       name: 'Write Document',
       nameJa: 'ドキュメント書込',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'Wordドキュメントへの書き込み（FREEは3ページまで）',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Wordドキュメントへの書き込み',
     },
     {
       key: 'convert',
@@ -736,7 +450,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Template',
       nameJa: 'テンプレート',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'テンプレートからのドキュメント生成',
     },
     {
@@ -744,7 +458,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Batch Processing',
       nameJa: 'バッチ処理',
       type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '複数ドキュメントの一括処理',
     },
     {
@@ -752,31 +466,62 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Macro Execution',
       nameJa: 'マクロ実行',
       type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'VBAマクロの実行・変換',
     },
   ],
 
   // ========================================
-  // HarmonicSlide (HMSL)
+  // InsightOfficeSlide (IOSL) — 旧HMSL + INSS + INSP統合
   // ========================================
-  HMSL: [
+  IOSL: [
     {
       key: 'read_pptx',
       name: 'Read PPTX',
       nameJa: 'PPTX読取',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'PowerPointファイルの読み取り',
     },
     {
       key: 'write_pptx',
       name: 'Write PPTX',
       nameJa: 'PPTX書込',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'PowerPointファイルへの書き込み（FREEは3スライドまで）',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'PowerPointファイルへの書き込み',
+    },
+    {
+      key: 'extract',
+      name: 'Content Extraction',
+      nameJa: 'コンテンツ抽出',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'PowerPointからテキスト・画像を抽出（旧InsightSlide機能）',
+    },
+    {
+      key: 'update',
+      name: 'Content Update',
+      nameJa: 'コンテンツ一括更新',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライドの一括更新（旧InsightSlide機能）',
+    },
+    {
+      key: 'json',
+      name: 'JSON I/O',
+      nameJa: 'JSON入出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'JSON形式でのデータ入出力（旧InsightSlide機能）',
+    },
+    {
+      key: 'compare',
+      name: 'File Compare',
+      nameJa: '2ファイル比較',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '2つのPowerPointファイルの差分比較',
     },
     {
       key: 'extract_slides',
@@ -791,7 +536,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Generate PDF',
       nameJa: 'PDF生成',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'スライドからPDFの生成',
     },
     {
@@ -799,7 +544,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Batch Processing',
       nameJa: 'バッチ処理',
       type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '複数PPTXファイルの一括処理',
     },
     {
@@ -807,8 +552,257 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Template',
       nameJa: 'テンプレート',
       type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'テンプレートからのスライド生成',
+    },
+    {
+      key: 'auto_backup',
+      name: 'Auto Backup',
+      nameJa: '自動バックアップ',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '編集前の自動バックアップ作成（旧InsightSlide機能）',
+    },
+  ],
+
+  // ========================================
+  // InsightPy (INPY)
+  // ========================================
+  INPY: [
+    {
+      key: 'execute',
+      name: 'Code Execution',
+      nameJa: 'コード実行',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Pythonコードの実行',
+    },
+    {
+      key: 'presets',
+      name: 'Presets',
+      nameJa: 'プリセット利用',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '定義済みスクリプトテンプレートの利用',
+    },
+    {
+      key: 'scripts',
+      name: 'Script Storage',
+      nameJa: 'スクリプト保存数',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      descriptionJa: '保存可能なスクリプト数（無制限）',
+    },
+    {
+      key: 'cloud_sync',
+      name: 'Cloud Sync',
+      nameJa: 'クラウド同期',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スクリプトのクラウド同期',
+    },
+  ],
+
+  // ========================================
+  // InsightNoCodeAnalyzer (INCA) — 旧FGIN統合
+  // ========================================
+  INCA: [
+    {
+      key: 'rpa_analysis',
+      name: 'RPA Analysis',
+      nameJa: 'RPA解析',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'BizRobo等のRPAソース解析',
+    },
+    {
+      key: 'lowcode_analysis',
+      name: 'Low-code Analysis',
+      nameJa: 'ローコード解析',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Forguncy等のローコードツール解析',
+    },
+    {
+      key: 'forguncy_analysis',
+      name: 'Forguncy Analysis',
+      nameJa: 'Forguncy解析',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Forguncy連携・解析（旧ForguncyInsight機能）',
+    },
+    {
+      key: 'migration_assessment',
+      name: 'Migration Assessment',
+      nameJa: '移行アセスメント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '工数見積もり・複雑度分析',
+    },
+    {
+      key: 'akabot_conversion',
+      name: 'akaBot Conversion',
+      nameJa: 'akaBot変換',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'BizRoboからakaBotへの変換',
+    },
+    {
+      key: 'export_json',
+      name: 'JSON Export',
+      nameJa: 'JSON出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '解析結果のJSON形式出力',
+    },
+    {
+      key: 'export_markdown',
+      name: 'Markdown Export',
+      nameJa: 'Markdown出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '解析結果のMarkdown形式出力',
+    },
+  ],
+
+  // ========================================
+  // InsightBot (INBT)
+  // ========================================
+  INBT: [
+    {
+      key: 'execute',
+      name: 'Script Execution',
+      nameJa: 'スクリプト実行',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'RPAスクリプトの実行',
+    },
+    {
+      key: 'presets',
+      name: 'Presets',
+      nameJa: 'プリセット利用',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '定義済みスクリプトテンプレートの利用',
+    },
+    {
+      key: 'jobs',
+      name: 'Job Storage',
+      nameJa: 'JOB保存数',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+      descriptionJa: '保存可能なJOB数',
+    },
+    {
+      key: 'cloud_sync',
+      name: 'Cloud Sync',
+      nameJa: 'クラウド同期',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'JOBのクラウド同期',
+    },
+  ],
+
+  // ========================================
+  // InsightMovie (INMV)
+  // ========================================
+  INMV: [
+    {
+      key: 'generate',
+      name: 'Video Generation',
+      nameJa: '動画生成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '画像・テキストから動画を生成',
+    },
+    {
+      key: 'subtitle',
+      name: 'Subtitle',
+      nameJa: '字幕',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '動画への字幕追加',
+    },
+    {
+      key: 'subtitle_style',
+      name: 'Subtitle Style',
+      nameJa: '字幕スタイル選択',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '字幕のフォント・色・位置のカスタマイズ',
+    },
+    {
+      key: 'transition',
+      name: 'Transition',
+      nameJa: 'トランジション',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'シーン間のトランジション効果',
+    },
+    {
+      key: 'pptx_import',
+      name: 'PPTX Import',
+      nameJa: 'PPTX取込',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'PowerPointファイルからの素材取込',
+    },
+  ],
+
+  // ========================================
+  // InsightImageGen (INIG)
+  // ========================================
+  INIG: [
+    {
+      key: 'generate_image',
+      name: 'Image Generation',
+      nameJa: '画像生成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Stable Diffusionによる画像生成',
+    },
+    {
+      key: 'batch_image',
+      name: 'Batch Image Generation',
+      nameJa: 'バッチ画像生成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '複数画像の一括生成',
+    },
+    {
+      key: 'generate_audio',
+      name: 'Audio Generation',
+      nameJa: '音声生成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'VOICEVOXによる音声生成',
+    },
+    {
+      key: 'character_prompts',
+      name: 'Character Prompts',
+      nameJa: 'キャラクタープロンプト',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 20, PRO: -1, ENT: -1 },
+      descriptionJa: '保存可能なキャラクタープロンプト数',
+    },
+    {
+      key: 'hi_res',
+      name: 'High Resolution',
+      nameJa: '高解像度出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '高解像度画像の生成',
+    },
+    {
+      key: 'cloud_sync',
+      name: 'Cloud Sync',
+      nameJa: 'クラウド同期',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'プロンプト・設定のクラウド同期',
     },
   ],
 };
@@ -841,9 +835,9 @@ export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   },
   STD: {
     monthlyLimit: -1,
-    maxFileSizeMB: 100,
-    maxStorageItems: 50,
-    maxResolution: '1080p',
+    maxFileSizeMB: -1,
+    maxStorageItems: -1,
+    maxResolution: '4K',
     hasWatermark: false,
     batchEnabled: true,
     apiEnabled: false,
@@ -946,22 +940,10 @@ export function getPlanLimits(productCode: ProductCode, planCode: PlanCode): Pla
 }
 
 /**
- * 製品の機能一覧を取得（継承機能を含む）
+ * 製品の機能一覧を取得
  */
 export function getProductFeatures(product: ProductCode): FeatureDefinition[] {
-  const productInfo = PRODUCTS[product];
-  const ownFeatures = PRODUCT_FEATURES[product] || [];
-
-  // 継承元がある場合は継承元の機能も含める
-  if (productInfo.inheritsFrom) {
-    const inheritedFeatures = getProductFeatures(productInfo.inheritsFrom);
-    // 継承元の機能 + 自身の機能（重複キーは自身が優先）
-    const ownKeys = new Set(ownFeatures.map(f => f.key));
-    const merged = inheritedFeatures.filter(f => !ownKeys.has(f.key));
-    return [...merged, ...ownFeatures];
-  }
-
-  return ownFeatures;
+  return PRODUCT_FEATURES[product] || [];
 }
 
 /**
@@ -981,20 +963,10 @@ export function getCommonFeatureDefinition(featureKey: string): FeatureDefinitio
 
 /**
  * 製品固有の機能が利用可能かチェック
- *
- * @param product 製品コード
- * @param featureKey 機能キー
- * @param plan プランコード
- * @returns 利用可能かどうか
- *
- * @example
- * checkProductFeature('INMV', 'subtitle', 'PRO')  // true
- * checkProductFeature('INMV', 'subtitle', 'FREE') // false
  */
 export function checkProductFeature(product: ProductCode, featureKey: string, plan: PlanCode): boolean {
   const feature = getFeatureDefinition(product, featureKey);
   if (!feature) {
-    // 未定義の機能はエラーを記録して拒否（安全側）
     console.error(`[License] Unknown product feature: ${product}/${featureKey}`);
     return false;
   }
@@ -1003,14 +975,6 @@ export function checkProductFeature(product: ProductCode, featureKey: string, pl
 
 /**
  * 共通機能が利用可能かチェック
- *
- * @param featureKey 機能キー
- * @param plan プランコード
- * @returns 利用可能かどうか
- *
- * @example
- * checkCommonFeature('api_access', 'ENT')  // true
- * checkCommonFeature('api_access', 'PRO')  // false
  */
 export function checkCommonFeature(featureKey: string, plan: PlanCode): boolean {
   const feature = getCommonFeatureDefinition(featureKey);
@@ -1023,33 +987,24 @@ export function checkCommonFeature(featureKey: string, plan: PlanCode): boolean 
 
 /**
  * 機能が利用可能かチェック（製品固有 + 共通を自動判定）
- *
- * @param product 製品コード
- * @param featureKey 機能キー
- * @param plan プランコード
- * @returns 利用可能かどうか
  */
 export function checkFeature(product: ProductCode, featureKey: string, plan: PlanCode): boolean {
-  // まず製品固有の機能を確認
   const productFeature = getFeatureDefinition(product, featureKey);
   if (productFeature) {
     return productFeature.allowedPlans.includes(plan);
   }
 
-  // 次に共通機能を確認
   const commonFeature = getCommonFeatureDefinition(featureKey);
   if (commonFeature) {
     return commonFeature.allowedPlans.includes(plan);
   }
 
-  // どちらにも見つからない
   console.error(`[License] Unknown feature: ${product}/${featureKey}`);
   return false;
 }
 
 /**
  * 機能の数値制限を取得
- *
  * @returns 制限値（-1 = 無制限、null = 制限機能ではない）
  */
 export function getFeatureLimit(product: ProductCode, featureKey: string, plan: PlanCode): number | null {
@@ -1062,10 +1017,6 @@ export function getFeatureLimit(product: ProductCode, featureKey: string, plan: 
 
 /**
  * 製品の機能可否一覧を取得（UI表示用）
- *
- * @param product 製品コード
- * @param plan プランコード
- * @param includeCommon 共通機能を含めるか（デフォルト: true）
  */
 export function getProductFeatureMatrix(
   product: ProductCode,
@@ -1106,8 +1057,6 @@ export function getProductFeatureMatrix(
 
 /**
  * プランが別のプラン以上かチェック
- *
- * 注意: TRIALは全機能使えるため特殊扱い（常にtrue）
  */
 export function isPlanAtLeast(userPlan: PlanCode, requiredPlan: PlanCode): boolean {
   if (userPlan === 'TRIAL') {
@@ -1143,55 +1092,9 @@ export function getRequiredPlan(product: ProductCode, featureKey: string): PlanC
     return null;
   }
 
-  // priority が最小のプランを返す
   return feature.allowedPlans.reduce((min, plan) => {
     return PLANS[plan].priority < PLANS[min].priority ? plan : min;
   });
-}
-
-// =============================================================================
-// 後方互換性（非推奨）
-// =============================================================================
-
-/**
- * フラットな機能マトリクス
- * @deprecated 新規実装では checkProductFeature / checkCommonFeature を使用
- */
-export const FEATURE_MATRIX: Record<string, PlanCode[]> = (() => {
-  const matrix: Record<string, PlanCode[]> = {};
-
-  // 共通機能を追加
-  for (const feature of COMMON_FEATURES) {
-    matrix[feature.key] = [...feature.allowedPlans];
-  }
-
-  // 製品別機能を追加
-  for (const [productCode, features] of Object.entries(PRODUCT_FEATURES)) {
-    for (const feature of features) {
-      // プレフィックス付き: inmv_subtitle
-      const prefixedKey = `${productCode.toLowerCase()}_${feature.key}`;
-      matrix[prefixedKey] = [...feature.allowedPlans];
-
-      // プレフィックスなし（後方互換性）
-      if (!matrix[feature.key]) {
-        matrix[feature.key] = [...feature.allowedPlans];
-      }
-    }
-  }
-
-  return matrix;
-})();
-
-/**
- * @deprecated 新規実装では checkProductFeature / checkCommonFeature を使用
- */
-export function canAccessFeature(feature: string, planCode: PlanCode): boolean {
-  const allowedPlans = FEATURE_MATRIX[feature];
-  if (!allowedPlans) {
-    console.warn(`[License] Unknown feature: ${feature}`);
-    return false;
-  }
-  return allowedPlans.includes(planCode);
 }
 
 // =============================================================================
@@ -1207,6 +1110,10 @@ export default {
   DEFAULT_PLAN_LIMITS,
   PRODUCT_PLAN_LIMITS,
 
+  // 廃止製品
+  DEPRECATED_PRODUCT_MAPPING,
+  migrateProductCode,
+
   // 推奨API
   checkFeature,
   checkProductFeature,
@@ -1221,8 +1128,4 @@ export default {
   isPlanAtLeast,
   getPlanDisplayName,
   getProductDisplayName,
-
-  // 後方互換（非推奨）
-  FEATURE_MATRIX,
-  canAccessFeature,
 };
