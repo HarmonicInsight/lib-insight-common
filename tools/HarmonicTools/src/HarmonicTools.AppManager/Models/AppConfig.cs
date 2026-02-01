@@ -65,7 +65,7 @@ public class AppConfig
                 {
                     Name = "InsightBot",
                     ProductCode = "INBT",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-bot"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
                     SolutionPath = "InsightBot.sln",
                     ProjectPath = "InsightBot/InsightBot.csproj",
                     TestProjectPath = "",
