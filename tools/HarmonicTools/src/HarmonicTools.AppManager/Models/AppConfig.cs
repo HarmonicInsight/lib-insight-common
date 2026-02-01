@@ -54,12 +54,12 @@ public class AppConfig
         {
             Apps = new List<AppDefinition>
             {
-                // ── Harmonic シリーズ（app-Insight-excel リポジトリ）──
+                // ── Harmonic シリーズ（各製品が独立リポジトリ）──
                 new()
                 {
                     Name = "HarmonicSheet",
                     ProductCode = "HMSH",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-harmonic-sheet"),
                     PublicRepo = "HarmonicInsight/harmonic-sheet",
                     SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = "src/HarmonicSheet.App/HarmonicSheet.App.csproj",
@@ -71,9 +71,9 @@ public class AppConfig
                 {
                     Name = "HarmonicDoc",
                     ProductCode = "HMDC",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-harmonic-doc"),
                     PublicRepo = "HarmonicInsight/harmonic-doc",
-                    SolutionPath = "HarmonicSheet.sln",
+                    SolutionPath = "HarmonicDoc.sln",
                     ProjectPath = "src/HarmonicDoc.App/HarmonicDoc.App.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = "src/HarmonicDoc.App/bin/{config}/net8.0-windows/HarmonicDoc.App.exe",
@@ -83,9 +83,9 @@ public class AppConfig
                 {
                     Name = "HarmonicSlide",
                     ProductCode = "HMSL",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-harmonic-slide"),
                     PublicRepo = "HarmonicInsight/harmonic-slide",
-                    SolutionPath = "HarmonicSheet.sln",
+                    SolutionPath = "HarmonicSlide.sln",
                     ProjectPath = "src/HarmonicSlide.App/HarmonicSlide.App.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = "src/HarmonicSlide.App/bin/{config}/net8.0-windows/HarmonicSlide.App.exe",
