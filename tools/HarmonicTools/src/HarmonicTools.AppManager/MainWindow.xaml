@@ -82,14 +82,26 @@
                                  FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Margin="4,6">
-                                        <TextBlock Text="{Binding Name}"
-                                                   FontSize="13" FontWeight="SemiBold"
-                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
-                                        <TextBlock Text="{Binding Description}"
-                                                   FontSize="11"
-                                                   Foreground="{StaticResource TextSecondaryBrush}"/>
-                                    </StackPanel>
+                                    <Grid Margin="4,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </StackPanel>
+                                        <TextBlock x:Name="StatusIcon" Grid.Column="1"
+                                                   Text="{Binding StatusIcon}"
+                                                   FontSize="11" VerticalAlignment="Center"
+                                                   FontFamily="Segoe UI Variable, Segoe UI"
+                                                   Foreground="{StaticResource TextTertiaryBrush}"
+                                                   Margin="4,0,0,0"/>
+                                    </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -277,25 +289,61 @@
                                            MouseLeftButtonDown="ExePath_Click"/>
                             </Grid>
 
-                            <!-- Action Buttons -->
-                            <WrapPanel Grid.Row="3" Margin="0,12,0,0">
-                                <Button Content="Build (Debug)" Style="{StaticResource PrimaryButton}"
-                                        Margin="0,0,8,8" Click="BuildDebug_Click"/>
-                                <Button Content="Build (Release)" Style="{StaticResource PrimaryButton}"
-                                        Margin="0,0,8,8" Click="BuildRelease_Click"/>
-                                <Button Content="Publish (自己完結型)" Style="{StaticResource SecondaryButton}"
-                                        Margin="0,0,8,8" Click="Publish_Click"/>
-                                <Button Content="Run" Style="{StaticResource SecondaryButton}"
-                                        Margin="0,0,8,8" Click="Run_Click"/>
-                                <Button Content="Test" Style="{StaticResource SecondaryButton}"
-                                        Margin="0,0,8,8" Click="Test_Click"/>
-                                <Button Content="Build All (sln)" Style="{StaticResource SecondaryButton}"
-                                        Margin="0,0,8,8" Click="BuildAll_Click"/>
-                                <Button Content="フォルダを開く" Style="{StaticResource SecondaryButton}"
-                                        Margin="0,0,8,8" Click="OpenFolder_Click"/>
-                                <Button x:Name="CancelBtn" Content="中断" Style="{StaticResource DangerButton}"
-                                        Margin="0,0,8,8" Click="Cancel_Click" IsEnabled="False"/>
-                            </WrapPanel>
+                            <!-- リリースパイプライン -->
+                            <StackPanel Grid.Row="3" Margin="0,12,0,0">
+                                <!-- Pipeline: ① → ② → ③ → ④ -->
+                                <TextBlock Text="リリース手順"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                <WrapPanel>
+                                    <Button Content="① ビルド" Style="{StaticResource PrimaryButton}"
+                                            Margin="0,0,4,8" Click="BuildRelease_Click"/>
+                                    <TextBlock Text="→" VerticalAlignment="Center"
+                                               Foreground="{StaticResource TextTertiaryBrush}" Margin="2,0,6,8"/>
+                                    <Button Content="② Publish" Style="{StaticResource PrimaryButton}"
+                                            Margin="0,0,4,8" Click="Publish_Click"/>
+                                    <TextBlock Text="→" VerticalAlignment="Center"
+                                               Foreground="{StaticResource TextTertiaryBrush}" Margin="2,0,6,8"/>
+                                    <Button Content="③ チェック" Style="{StaticResource SecondaryButton}"
+                                            Margin="0,0,4,8" Click="CheckRelease_Click"/>
+                                    <TextBlock Text="→" VerticalAlignment="Center"
+                                               Foreground="{StaticResource TextTertiaryBrush}" Margin="2,0,6,8"/>
+                                    <TextBlock Text="v" FontSize="13" FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center" Margin="0,0,2,8"
+                                               FontFamily="Consolas, Cascadia Code"/>
+                                    <TextBox x:Name="VersionInput" Width="72"
+                                             Text="1.0.0" FontSize="12"
+                                             FontFamily="Consolas, Cascadia Code"
+                                             VerticalContentAlignment="Center"
+                                             Padding="4,3" Margin="0,0,4,8"
+                                             BorderBrush="{StaticResource BorderBrush}"/>
+                                    <Button x:Name="ReleaseBtn" Content="④ GitHub Release"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Margin="0,0,0,8" Click="Release_Click"/>
+                                </WrapPanel>
+
+                                <!-- 開発ツール -->
+                                <TextBlock Text="開発ツール"
+                                           FontFamily="Segoe UI Variable, Segoe UI, Yu Gothic UI"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextTertiaryBrush}" Margin="0,4,0,6"/>
+                                <WrapPanel>
+                                    <Button Content="Run" Style="{StaticResource SecondaryButton}"
+                                            Margin="0,0,8,8" Click="Run_Click"/>
+                                    <Button Content="Debug Build" Style="{StaticResource SecondaryButton}"
+                                            Margin="0,0,8,8" Click="BuildDebug_Click"/>
+                                    <Button Content="Test" Style="{StaticResource SecondaryButton}"
+                                            Margin="0,0,8,8" Click="Test_Click"/>
+                                    <Button Content="Build All" Style="{StaticResource SecondaryButton}"
+                                            Margin="0,0,8,8" Click="BuildAll_Click"/>
+                                    <Button Content="フォルダ" Style="{StaticResource SecondaryButton}"
+                                            Margin="0,0,8,8" Click="OpenFolder_Click"/>
+                                    <Button x:Name="CancelBtn" Content="中断" Style="{StaticResource DangerButton}"
+                                            Margin="0,0,8,8" Click="Cancel_Click" IsEnabled="False"/>
+                                </WrapPanel>
+                            </StackPanel>
                         </Grid>
                     </Border>
 

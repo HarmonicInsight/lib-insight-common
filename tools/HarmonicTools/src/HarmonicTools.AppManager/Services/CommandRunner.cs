@@ -25,12 +25,12 @@ public class CommandRunner
         }
     }
 
-    public async Task RunAsync(string command, string arguments, string workingDirectory)
+    public async Task<bool> RunAsync(string command, string arguments, string workingDirectory)
     {
         if (IsRunning)
         {
             OutputReceived?.Invoke("[エラー] 別のコマンドが実行中です。\n");
-            return;
+            return false;
         }
 
         OutputReceived?.Invoke($"$ {command} {arguments}\n");
@@ -86,11 +86,13 @@ public class CommandRunner
                 : $"[失敗] 終了コード: {exitCode}\n\n");
 
             CommandCompleted?.Invoke(success, success ? "コマンド完了" : $"終了コード: {exitCode}");
+            return success;
         }
         catch (Exception ex)
         {
             OutputReceived?.Invoke($"[エラー] {ex.Message}\n\n");
             CommandCompleted?.Invoke(false, ex.Message);
+            return false;
         }
         finally
         {
