@@ -124,9 +124,9 @@ public class AppConfig
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie"),
                     PublicRepo = "HarmonicInsight/insight-movie",
                     SolutionPath = "InsightMovie.sln",
-                    ProjectPath = "src/InsightMovie.App/InsightMovie.App.csproj",
+                    ProjectPath = "InsightMovie/InsightMovie.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = "src/InsightMovie.App/bin/{config}/net8.0-windows/InsightMovie.App.exe",
+                    ExeRelativePath = "InsightMovie/bin/{config}/net8.0-windows/InsightMovie.exe",
                     Description = "画像・テキスト・PPT から AI 動画作成"
                 },
                 new()
@@ -136,9 +136,9 @@ public class AppConfig
                     BasePath = Path.Combine(DefaultDevRoot, "app-insight-imagegen"),
                     PublicRepo = "HarmonicInsight/insight-imagegen",
                     SolutionPath = "InsightImageGen.sln",
-                    ProjectPath = "src/InsightImageGen.App/InsightImageGen.App.csproj",
+                    ProjectPath = "InsightImageGen/InsightImageGen.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = "src/InsightImageGen.App/bin/{config}/net8.0-windows/InsightImageGen.App.exe",
+                    ExeRelativePath = "InsightImageGen/bin/{config}/net8.0-windows/InsightImageGen.exe",
                     Description = "Stable Diffusion・VOICEVOX AI 画像・音声生成ツール"
                 },
             }
