@@ -39,6 +39,26 @@
         ]
       },
       {
+        "id": "insight-slide-c2",
+        "code": "SLIDE",
+        "name": "InsightSlide C2",
+        "displayName": "InsightSlide C2",
+        "description": "クライアント資料からのAI業務分析（次期正式版）",
+        "category": "presentation",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "development",
+        "repository": "HarmonicInsight/app-insight-slide-win-C2",
+        "releasesRepository": "HarmonicInsight/releases",
+        "features": [
+          "content-extraction",
+          "content-update",
+          "file-compare",
+          "batch-processing",
+          "json-io"
+        ]
+      },
+      {
         "id": "insight-py",
         "code": "PY",
         "name": "InsightPy",
