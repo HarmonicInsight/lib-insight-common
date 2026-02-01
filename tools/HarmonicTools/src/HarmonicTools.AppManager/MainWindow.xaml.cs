@@ -210,6 +210,75 @@ public partial class MainWindow : Window
         }
     }
 
+    // ── Release Check ──
+
+    private void CheckRelease_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ValidateSelection()) return;
+
+        AppendOutput($"═══ リリースチェック: {_selectedApp!.Name} ({_selectedApp.ProductCode}) ═══\n\n");
+
+        // 1. Debug exe
+        var debugExe = _selectedApp.DebugExePath;
+        CheckExeStatus("Debug exe", debugExe);
+
+        // 2. Release exe
+        var releaseExe = _selectedApp.ReleaseExePath;
+        CheckExeStatus("Release exe", releaseExe);
+
+        // 3. Self-contained publish (win-x64)
+        var projectDir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "";
+        var publishExe = Path.Combine(projectDir, "bin", "Release", "net8.0-windows", "win-x64", "publish",
+            Path.GetFileName(_selectedApp.ExeRelativePath.Replace("{config}", "Release")));
+        CheckExeStatus("Publish exe (win-x64)", publishExe);
+
+        // 4. gh CLI
+        AppendOutput("── gh CLI ──\n");
+        try
+        {
+            var psi = new ProcessStartInfo("gh", "--version")
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            var proc = Process.Start(psi);
+            var ghVersion = proc?.StandardOutput.ReadToEnd().Trim() ?? "";
+            proc?.WaitForExit();
+            AppendOutput($"  ✓ {ghVersion}\n");
+        }
+        catch
+        {
+            AppendOutput("  ✗ gh CLI が見つかりません（winget install GitHub.cli）\n");
+        }
+
+        // 5. Release repo
+        AppendOutput($"\n── リリース先 ──\n");
+        AppendOutput($"  リポジトリ: {AppConfig.ReleaseRepo}\n");
+        var version = VersionInput.Text.Trim();
+        var versionPart = string.IsNullOrEmpty(version) ? "v?.?.?" :
+            (version.StartsWith("v") ? version : $"v{version}");
+        AppendOutput($"  タグ: {_selectedApp.ProductCode}-{versionPart}\n\n");
+    }
+
+    private void CheckExeStatus(string label, string exePath)
+    {
+        AppendOutput($"── {label} ──\n");
+        AppendOutput($"  パス: {exePath}\n");
+        if (File.Exists(exePath))
+        {
+            var info = new FileInfo(exePath);
+            AppendOutput($"  ✓ 存在します\n");
+            AppendOutput($"  サイズ: {info.Length / (1024.0 * 1024.0):F1} MB\n");
+            AppendOutput($"  作成日時: {info.CreationTime:yyyy/MM/dd HH:mm:ss}\n");
+            AppendOutput($"  更新日時: {info.LastWriteTime:yyyy/MM/dd HH:mm:ss}\n\n");
+        }
+        else
+        {
+            AppendOutput($"  ✗ 見つかりません\n\n");
+        }
+    }
+
     // ── GitHub Release ──
 
     private async void Release_Click(object sender, RoutedEventArgs e)
