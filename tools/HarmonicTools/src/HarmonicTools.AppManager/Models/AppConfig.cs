@@ -100,9 +100,9 @@ public class AppConfig
                     BasePath = Path.Combine(DefaultDevRoot, "app-nocode-analyzer-C"),
                     PublicRepo = "HarmonicInsight/insight-nocode-analyzer",
                     SolutionPath = "InsightNoCodeAnalyzer.sln",
-                    ProjectPath = "src/InsightNoCodeAnalyzer.App/InsightNoCodeAnalyzer.App.csproj",
-                    TestProjectPath = "tests/InsightNoCodeAnalyzer.Core.Tests",
-                    ExeRelativePath = "src/InsightNoCodeAnalyzer.App/bin/{config}/net8.0-windows/InsightNoCodeAnalyzer.App.exe",
+                    ProjectPath = "InsightNoCodeAnalyzer/InsightNoCodeAnalyzer.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = "InsightNoCodeAnalyzer/bin/{config}/net8.0-windows/InsightNoCodeAnalyzer.exe",
                     Description = "RPA・ローコード解析・移行アセスメントツール"
                 },
                 new()
@@ -112,9 +112,9 @@ public class AppConfig
                     BasePath = Path.Combine(DefaultDevRoot, "app-win-insight-forguncy"),
                     PublicRepo = "HarmonicInsight/insight-forguncy",
                     SolutionPath = "InsightForguncy.sln",
-                    ProjectPath = "src/InsightForguncy.App/InsightForguncy.App.csproj",
+                    ProjectPath = "InsightForguncy/InsightForguncy.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = "src/InsightForguncy.App/bin/{config}/net8.0-windows/InsightForguncy.App.exe",
+                    ExeRelativePath = "InsightForguncy/bin/{config}/net8.0-windows/InsightForguncy.exe",
                     Description = "Forguncy 連携・AI 開発支援ツール"
                 },
                 new()
