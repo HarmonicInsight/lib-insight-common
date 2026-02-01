@@ -16,6 +16,17 @@ public class AppDefinition
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// dotnet 以外のビルドコマンド（例: "build.bat"）。空なら dotnet build を使用。
+    /// </summary>
+    public string BuildCommand { get; set; } = string.Empty;
+
+    /// <summary>
+    /// dotnet プロジェクトかどうか
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool IsDotNet => !string.IsNullOrEmpty(ProjectPath);
+
+    /// <summary>
     /// 解決済みのソリューション絶対パス
     /// </summary>
     public string ResolvedSolutionPath => string.IsNullOrEmpty(BasePath)
@@ -73,11 +84,30 @@ public class AppDefinition
     /// <summary>
     /// 左パネル表示用ステータスアイコン
     /// </summary>
+    /// <summary>
+    /// 配布用 exe パス（dotnet: PublishExePath, 非dotnet: ExeRelativePath ベース）
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string DistExePath
+    {
+        get
+        {
+            if (IsDotNet) return PublishExePath;
+            if (string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(ExeRelativePath)) return string.Empty;
+            return Path.Combine(BasePath, ExeRelativePath);
+        }
+    }
+
     [System.Text.Json.Serialization.JsonIgnore]
     public string StatusIcon
     {
         get
         {
+            if (!IsDotNet)
+            {
+                var hasDist = !string.IsNullOrEmpty(DistExePath) && File.Exists(DistExePath);
+                return hasDist ? "● 配布可" : "○ 未ビルド";
+            }
             var hasPublish = !string.IsNullOrEmpty(PublishExePath) && File.Exists(PublishExePath);
             var hasRelease = !string.IsNullOrEmpty(ReleaseExePath) && File.Exists(ReleaseExePath);
 

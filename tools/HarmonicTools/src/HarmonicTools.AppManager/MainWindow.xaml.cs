@@ -135,22 +135,37 @@ public partial class MainWindow : Window
     {
         if (!ValidateSelection()) return;
         SetRunning(true);
-        await _runner.RunAsync("dotnet", $"build \"{_selectedApp!.ResolvedProjectPath}\"", GetWorkingDir());
+        if (!_selectedApp!.IsDotNet)
+        {
+            await RunBuildCommand();
+            return;
+        }
+        await _runner.RunAsync("dotnet", $"build \"{_selectedApp.ResolvedProjectPath}\"", GetWorkingDir());
     }
 
     private async void BuildRelease_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
         SetRunning(true);
-        await _runner.RunAsync("dotnet", $"build \"{_selectedApp!.ResolvedProjectPath}\" -c Release", GetWorkingDir());
+        if (!_selectedApp!.IsDotNet)
+        {
+            await RunBuildCommand();
+            return;
+        }
+        await _runner.RunAsync("dotnet", $"build \"{_selectedApp.ResolvedProjectPath}\" -c Release", GetWorkingDir());
     }
 
     private async void Publish_Click(object sender, RoutedEventArgs e)
     {
         if (!ValidateSelection()) return;
         SetRunning(true);
+        if (!_selectedApp!.IsDotNet)
+        {
+            await RunBuildCommand();
+            return;
+        }
         await _runner.RunAsync("dotnet",
-            $"publish \"{_selectedApp!.ResolvedProjectPath}\" -c Release -r win-x64 --self-contained",
+            $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r win-x64 --self-contained",
             GetWorkingDir());
     }
 
@@ -158,7 +173,19 @@ public partial class MainWindow : Window
     {
         if (!ValidateSelection()) return;
         SetRunning(true);
-        await _runner.RunAsync("dotnet", $"run --project \"{_selectedApp!.ResolvedProjectPath}\"", GetWorkingDir());
+        if (!_selectedApp!.IsDotNet)
+        {
+            var exePath = _selectedApp.DistExePath;
+            if (!string.IsNullOrEmpty(exePath) && File.Exists(exePath))
+            {
+                await _runner.RunAsync(exePath, "", _selectedApp.BasePath);
+                return;
+            }
+            AppendOutput("[情報] exe が見つかりません。先にビルドしてください。\n");
+            SetRunning(false);
+            return;
+        }
+        await _runner.RunAsync("dotnet", $"run --project \"{_selectedApp.ResolvedProjectPath}\"", GetWorkingDir());
     }
 
     private async void Test_Click(object sender, RoutedEventArgs e)
@@ -177,7 +204,27 @@ public partial class MainWindow : Window
     {
         if (!ValidateSelection()) return;
         SetRunning(true);
-        await _runner.RunAsync("dotnet", $"build \"{_selectedApp!.ResolvedSolutionPath}\"", GetWorkingDir());
+        if (!_selectedApp!.IsDotNet)
+        {
+            await RunBuildCommand();
+            return;
+        }
+        await _runner.RunAsync("dotnet", $"build \"{_selectedApp.ResolvedSolutionPath}\"", GetWorkingDir());
+    }
+
+    /// <summary>
+    /// BuildCommand（build.bat 等）を実行
+    /// </summary>
+    private async Task RunBuildCommand()
+    {
+        if (string.IsNullOrEmpty(_selectedApp!.BuildCommand))
+        {
+            AppendOutput("[情報] ビルドコマンドが設定されていません。\n");
+            SetRunning(false);
+            return;
+        }
+        var cmdPath = Path.Combine(_selectedApp.BasePath, _selectedApp.BuildCommand);
+        await _runner.RunAsync("cmd.exe", $"/c \"{cmdPath}\"", _selectedApp.BasePath);
     }
 
     private void OpenFolder_Click(object sender, RoutedEventArgs e)
@@ -216,10 +263,27 @@ public partial class MainWindow : Window
     {
         if (!ValidateSelection()) return;
 
-        // Publish exe (優先) → Release exe → Debug exe の順で探す
+        // 非 dotnet: DistExePath のフォルダを開く
+        if (!_selectedApp!.IsDotNet)
+        {
+            var distExe = _selectedApp.DistExePath;
+            if (!string.IsNullOrEmpty(distExe))
+            {
+                var dir = Path.GetDirectoryName(distExe);
+                if (dir != null && Directory.Exists(dir))
+                {
+                    Process.Start("explorer.exe", dir);
+                    return;
+                }
+            }
+            AppendOutput("[情報] exe フォルダが見つかりません。先にビルドを実行してください。\n");
+            return;
+        }
+
+        // dotnet: Publish exe (優先) → Release exe → Debug exe の順で探す
         var paths = new[]
         {
-            _selectedApp!.PublishExePath,
+            _selectedApp.PublishExePath,
             _selectedApp.ReleaseExePath,
             _selectedApp.DebugExePath
         };
@@ -248,16 +312,24 @@ public partial class MainWindow : Window
 
         AppendOutput($"═══ リリースチェック: {_selectedApp!.Name} ({_selectedApp.ProductCode}) ═══\n\n");
 
-        // 1. Debug exe
-        var debugExe = _selectedApp.DebugExePath;
-        CheckExeStatus("Debug exe", debugExe);
+        if (!_selectedApp.IsDotNet)
+        {
+            // 非 dotnet プロジェクト
+            CheckExeStatus("配布 exe", _selectedApp.DistExePath);
+            if (!string.IsNullOrEmpty(_selectedApp.BuildCommand))
+                AppendOutput($"── ビルドコマンド ──\n  {_selectedApp.BuildCommand}\n\n");
+        }
+        else
+        {
+            // 1. Debug exe
+            CheckExeStatus("Debug exe", _selectedApp.DebugExePath);
 
-        // 2. Release exe
-        var releaseExe = _selectedApp.ReleaseExePath;
-        CheckExeStatus("Release exe", releaseExe);
+            // 2. Release exe
+            CheckExeStatus("Release exe", _selectedApp.ReleaseExePath);
 
-        // 3. Self-contained publish (win-x64)
-        CheckExeStatus("Publish exe (win-x64)", _selectedApp.PublishExePath);
+            // 3. Self-contained publish (win-x64)
+            CheckExeStatus("Publish exe (win-x64)", _selectedApp.PublishExePath);
+        }
 
         // 4. gh CLI
         AppendOutput("── gh CLI ──\n");
@@ -325,23 +397,26 @@ public partial class MainWindow : Window
         var productCode = _selectedApp.ProductCode;
         var tag = $"{productCode}-{versionPart}";
         var appName = _selectedApp.Name;
-        var publishDir = Path.Combine(_selectedApp.BasePath,
-            _selectedApp.ExeRelativePath
-                .Replace("{config}", "Release")
-                .Replace(Path.GetFileName(_selectedApp.ExeRelativePath), ""));
-
-        // Self-contained publish output directory
         var rid = "win-x64";
-        var publishOutput = Path.Combine(
-            Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "",
-            "bin", "Release",
-            Path.GetFileName(Path.GetDirectoryName(_selectedApp.ExeRelativePath.Replace("{config}", "Release"))) ?? "net8.0-windows",
-            rid, "publish");
 
-        // Use a simpler approach: derive from project path
-        var projectDir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "";
-        var targetFramework = "net8.0-windows";
-        publishOutput = Path.Combine(projectDir, "bin", "Release", targetFramework, rid, "publish");
+        // 配布対象のフォルダ/ファイルを決定
+        string publishOutput;
+        string buildStep;
+        if (!_selectedApp.IsDotNet)
+        {
+            // 非 dotnet: exe が存在するフォルダをそのまま ZIP
+            var distExe = _selectedApp.DistExePath;
+            publishOutput = Path.GetDirectoryName(distExe) ?? "";
+            buildStep = string.IsNullOrEmpty(_selectedApp.BuildCommand)
+                ? "手動ビルド済み"
+                : _selectedApp.BuildCommand;
+        }
+        else
+        {
+            var projectDir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath) ?? "";
+            publishOutput = Path.Combine(projectDir, "bin", "Release", "net8.0-windows", rid, "publish");
+            buildStep = $"dotnet publish (Release, {rid}, self-contained)";
+        }
 
         var zipName = $"{appName}-{versionPart}-{rid}.zip";
         var zipPath = Path.Combine(Path.GetTempPath(), zipName);
@@ -349,8 +424,8 @@ public partial class MainWindow : Window
         var result = MessageBox.Show(
             $"以下の手順でリリースします:\n\n" +
             $"製品: {appName} ({productCode})\n" +
-            $"1. dotnet publish (Release, {rid}, self-contained)\n" +
-            $"2. publish フォルダを ZIP 圧縮\n" +
+            $"1. {buildStep}\n" +
+            $"2. フォルダを ZIP 圧縮\n" +
             $"3. gh release create {tag} → {releaseRepo}\n\n" +
             $"タグ: {tag}\n" +
             $"ZIP: {zipName}\n" +
@@ -363,17 +438,39 @@ public partial class MainWindow : Window
 
         SetRunning(true);
 
-        // Step 1: dotnet publish
-        AppendOutput($"[1/3] dotnet publish -c Release -r {rid} --self-contained ...\n");
-        var publishSuccess = await _runner.RunAsync("dotnet",
-            $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r {rid} --self-contained",
-            GetWorkingDir());
-
-        if (!publishSuccess)
+        // Step 1: ビルド
+        if (!_selectedApp.IsDotNet)
         {
-            AppendOutput("[エラー] publish に失敗しました。リリースを中断します。\n");
-            SetRunning(false);
-            return;
+            if (!string.IsNullOrEmpty(_selectedApp.BuildCommand))
+            {
+                AppendOutput($"[1/3] {_selectedApp.BuildCommand} 実行中...\n");
+                var cmdPath = Path.Combine(_selectedApp.BasePath, _selectedApp.BuildCommand);
+                var buildSuccess = await _runner.RunAsync("cmd.exe", $"/c \"{cmdPath}\"", _selectedApp.BasePath);
+                if (!buildSuccess)
+                {
+                    AppendOutput("[エラー] ビルドに失敗しました。リリースを中断します。\n");
+                    SetRunning(false);
+                    return;
+                }
+            }
+            else
+            {
+                AppendOutput("[1/3] ビルドコマンドなし — 既存 exe を使用\n");
+            }
+        }
+        else
+        {
+            AppendOutput($"[1/3] dotnet publish -c Release -r {rid} --self-contained ...\n");
+            var publishSuccess = await _runner.RunAsync("dotnet",
+                $"publish \"{_selectedApp.ResolvedProjectPath}\" -c Release -r {rid} --self-contained",
+                GetWorkingDir());
+
+            if (!publishSuccess)
+            {
+                AppendOutput("[エラー] publish に失敗しました。リリースを中断します。\n");
+                SetRunning(false);
+                return;
+            }
         }
 
         // Step 2: ZIP
@@ -385,7 +482,7 @@ public partial class MainWindow : Window
 
             if (!Directory.Exists(publishOutput))
             {
-                AppendOutput($"[エラー] publish 出力フォルダが見つかりません: {publishOutput}\n");
+                AppendOutput($"[エラー] 出力フォルダが見つかりません: {publishOutput}\n");
                 SetRunning(false);
                 return;
             }

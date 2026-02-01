@@ -91,8 +91,9 @@ public class AppConfig
                     SolutionPath = "",
                     ProjectPath = "",
                     TestProjectPath = "",
-                    ExeRelativePath = "",
-                    Description = "業務調査・データ収集のためのPython実行基盤（Python）"
+                    ExeRelativePath = @"dist\InsightPy.exe",
+                    BuildCommand = "build.bat",
+                    Description = "業務調査・データ収集のためのPython実行基盤（PyInstaller）"
                 },
 
                 // ── Consulting & Requirements ──
