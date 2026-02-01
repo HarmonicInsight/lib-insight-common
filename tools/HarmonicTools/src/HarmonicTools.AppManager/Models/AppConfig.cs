@@ -125,6 +125,17 @@ public class AppConfig
                 },
                 new()
                 {
+                    Name = "InsightSlide C2",
+                    ProductCode = "INSS",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C2"),
+                    SolutionPath = "InsightSlides.sln",
+                    ProjectPath = @"InsightSlides\InsightSlides.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"InsightSlides\bin\{config}\net8.0-windows\InsightSlides.exe",
+                    Description = "クライアント資料からのAI業務分析（次期正式版）"
+                },
+                new()
+                {
                     Name = "InterviewInsight",
                     ProductCode = "INIV",
                     BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
