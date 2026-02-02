@@ -748,6 +748,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: '音声認識によるハンズフリー入力',
     },
+    {
+      key: 'vrm_avatar',
+      name: 'VRM Avatar',
+      nameJa: 'VRMアバター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
+    },
   ],
 
   // ========================================
@@ -835,6 +843,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: '音声認識によるハンズフリー入力',
     },
+    {
+      key: 'vrm_avatar',
+      name: 'VRM Avatar',
+      nameJa: 'VRMアバター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
+    },
   ],
 
   // ========================================
@@ -921,6 +937,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: '音声認識によるハンズフリー入力',
+    },
+    {
+      key: 'vrm_avatar',
+      name: 'VRM Avatar',
+      nameJa: 'VRMアバター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
   ],
 };
