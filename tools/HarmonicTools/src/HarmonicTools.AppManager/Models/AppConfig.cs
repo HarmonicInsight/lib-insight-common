@@ -60,20 +60,7 @@ public class AppConfig
         {
             Apps = new List<AppDefinition>
             {
-                // ── Automation & Delivery ──
-                new()
-                {
-                    Name = "InsightBot",
-                    ProductCode = "INBT",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
-                    SolutionPath = @"csharp\InsightBotRPA.sln",
-                    ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
-                    TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
-                    ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
-                    BuildCommand = "build.ps1",
-                    InstallerDir = "Output",
-                    Description = "AIを活用した業務最適化RPA製品"
-                },
+                // ── 【A】コンサルティング連動型 ──
                 new()
                 {
                     Name = "InsightNoCodeAnalyzer",
@@ -85,68 +72,32 @@ public class AppConfig
                     ExeRelativePath = "InsightNoCodeAnalyzer/bin/{config}/net8.0-windows/InsightNoCodeAnalyzer.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "RPA・ローコードのマイグレーション自動化ツール"
+                    Description = "RPA・ローコード解析・移行アセスメントツール"
                 },
                 new()
                 {
-                    Name = "InsightPy",
-                    ProductCode = "INPY",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
-                    SolutionPath = "",
-                    ProjectPath = "",
+                    Name = "InsightBot",
+                    ProductCode = "INBT",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
+                    SolutionPath = @"csharp\InsightBotRPA.sln",
+                    ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
+                    TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
+                    ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
+                    Description = "Python RPA自動化ボット"
+                },
+                new()
+                {
+                    Name = "ForguncyInsight",
+                    ProductCode = "FGIN",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-win-insight-forguncy"),
+                    SolutionPath = "ForguncyInsight.sln",
+                    ProjectPath = @"ForguncyInsight\ForguncyInsight.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = @"dist\InsightPy.exe",
-                    BuildCommand = "build.bat",
-                    Description = "業務調査・データ収集のためのPython実行基盤（PyInstaller）"
+                    ExeRelativePath = @"ForguncyInsight\bin\{config}\net8.0-windows\ForguncyInsight.exe",
+                    Description = "Forguncy連携・分析ツール"
                 },
-
-                // ── Harmonic Office Suite（各製品は独立リポ + 共通ライブラリ）──
-                new()
-                {
-                    Name = "HarmonicSheet",
-                    ProductCode = "HMSH",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
-                    SolutionPath = "HarmonicSheet.sln",
-                    ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
-                    TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj",
-                    ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.exe",
-                    Description = "AI版管理付きスプレッドシート（Sheet専用リポ）"
-                },
-                new()
-                {
-                    Name = "HarmonicDoc",
-                    ProductCode = "HMDC",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-doc"),
-                    SolutionPath = "HarmonicDoc.sln",
-                    ProjectPath = @"src\HarmonicDoc.App\HarmonicDoc.App.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"src\HarmonicDoc.App\bin\{config}\net8.0-windows\HarmonicDoc.exe",
-                    Description = "AIドキュメント校正・バージョン管理（Doc専用リポ）"
-                },
-                new()
-                {
-                    Name = "InsightSlide",
-                    ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
-                    SolutionPath = "InsightOfficeSlide.sln",
-                    ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
-                    Description = "AIスライドレビュー・バージョン管理（Slide専用リポ）"
-                },
-                new()
-                {
-                    Name = "InterviewInsight",
-                    ProductCode = "INIV",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
-                    SolutionPath = "",
-                    ProjectPath = "",
-                    TestProjectPath = "",
-                    ExeRelativePath = "",
-                    Description = "AIステークホルダーヒアリング・業務調査支援（Web）"
-                },
-
-                // ── Content Creation ──
                 new()
                 {
                     Name = "InsightMovie",
@@ -158,7 +109,7 @@ public class AppConfig
                     ExeRelativePath = @"InsightMovie\bin\{config}\net8.0-windows\InsightMovie.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "要件定義の質向上・ユーザー教育のためのAI動画"
+                    Description = "画像・テキスト・PPTからAI動画作成"
                 },
                 new()
                 {
@@ -171,7 +122,78 @@ public class AppConfig
                     ExeRelativePath = @"InsightMediaGenerator\bin\{config}\net8.0-windows\InsightMediaGenerator.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "納品物向けAIビジュアル・音声生成"
+                    Description = "AI画像・音声生成ツール（Stable Diffusion・VOICEVOX）"
+                },
+
+                // ── 【B】グローバルスタンドアロン型 ──
+
+                // Harmonic Office Suite（各製品は独立リポ + 共通ライブラリ）
+                new()
+                {
+                    Name = "InsightSlide",
+                    ProductCode = "INSS",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
+                    SolutionPath = "InsightOfficeSlide.sln",
+                    ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
+                    Description = "PowerPointコンテンツ抽出・更新ツール"
+                },
+                new()
+                {
+                    Name = "InsightSlide Pro",
+                    ProductCode = "INSP",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide-pro"),
+                    SolutionPath = "InsightSlidePro.sln",
+                    ProjectPath = @"src\InsightSlidePro\InsightSlidePro.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"src\InsightSlidePro\bin\{config}\net8.0-windows\InsightSlidePro.exe",
+                    Description = "プロ向け機能搭載のPowerPointツール"
+                },
+                new()
+                {
+                    Name = "InsightPy",
+                    ProductCode = "INPY",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
+                    SolutionPath = "",
+                    ProjectPath = "",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"dist\InsightPy.exe",
+                    BuildCommand = "build.bat",
+                    Description = "Windows自動化のためのPython実行環境（PyInstaller）"
+                },
+                new()
+                {
+                    Name = "HarmonicSheet",
+                    ProductCode = "HMSH",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
+                    SolutionPath = "HarmonicSheet.sln",
+                    ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
+                    TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj",
+                    ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.exe",
+                    Description = "Excelバージョン管理・チームコラボレーションツール"
+                },
+                new()
+                {
+                    Name = "HarmonicDoc",
+                    ProductCode = "HMDC",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-doc"),
+                    SolutionPath = "HarmonicDoc.sln",
+                    ProjectPath = @"src\HarmonicDoc.App\HarmonicDoc.App.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"src\HarmonicDoc.App\bin\{config}\net8.0-windows\HarmonicDoc.exe",
+                    Description = "Wordドキュメント操作・自動化ツール"
+                },
+                new()
+                {
+                    Name = "HarmonicSlide",
+                    ProductCode = "HMSL",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide-harmonic"),
+                    SolutionPath = "HarmonicSlide.sln",
+                    ProjectPath = @"src\HarmonicSlide.App\HarmonicSlide.App.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"src\HarmonicSlide.App\bin\{config}\net8.0-windows\HarmonicSlide.exe",
+                    Description = "PowerPointプレゼンテーション操作・自動化ツール"
                 },
             }
         };

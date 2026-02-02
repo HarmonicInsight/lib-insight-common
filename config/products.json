@@ -1,24 +1,171 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Insight Series 製品定義",
-  "version": "1.0.0",
+  "description": "Harmonic Insight 製品定義（products.ts と同期）",
+  "version": "2.0.0",
   "products": {
     "desktop": [
       {
-        "id": "sales-insight",
-        "code": "SALES",
-        "name": "SalesInsight",
-        "displayName": "SalesInsight",
-        "description": "AI営業支援アシスタント",
-        "category": "sales",
-        "platform": ["windows", "macos"],
-        "framework": "tauri",
+        "id": "insight-nocode-analyzer",
+        "code": "INCA",
+        "name": "InsightNoCodeAnalyzer",
+        "displayName": "InsightNoCodeAnalyzer",
+        "description": "RPA・ローコード解析・移行アセスメントツール",
+        "category": "consulting",
+        "salesChannel": "consulting",
+        "platform": ["windows"],
+        "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/SalesInsight",
+        "repository": "HarmonicInsight/app-nocode-analyzer-C",
+        "releasesRepository": "HarmonicInsight/releases",
         "features": [
-          "realtime-analysis",
-          "talk-optimization",
-          "crm-integration"
+          "rpa-analysis",
+          "migration-assessment",
+          "code-analysis"
+        ]
+      },
+      {
+        "id": "insight-bot",
+        "code": "INBT",
+        "name": "InsightBot",
+        "displayName": "InsightBot",
+        "description": "Python RPA自動化ボット",
+        "category": "consulting",
+        "salesChannel": "consulting",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/app-Insight-bot-C",
+        "releasesRepository": "HarmonicInsight/releases",
+        "features": [
+          "rpa-automation",
+          "python-scripting",
+          "task-scheduling"
+        ]
+      },
+      {
+        "id": "insight-forguncy",
+        "code": "FGIN",
+        "name": "ForguncyInsight",
+        "displayName": "ForguncyInsight",
+        "description": "Forguncy連携・分析ツール",
+        "category": "consulting",
+        "salesChannel": "consulting",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "development",
+        "repository": "HarmonicInsight/app-win-insight-forguncy",
+        "releasesRepository": "HarmonicInsight/releases",
+        "features": [
+          "forguncy-integration",
+          "formula-assistance",
+          "analytics"
+        ]
+      },
+      {
+        "id": "insight-movie",
+        "code": "INMV",
+        "name": "InsightMovie",
+        "displayName": "InsightMovie",
+        "description": "画像・テキスト・PPTからAI動画作成",
+        "category": "consulting",
+        "salesChannel": "consulting",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/app-insight-movie-gen-win-C",
+        "releasesRepository": "HarmonicInsight/releases",
+        "features": [
+          "video-generation",
+          "ppt-to-video",
+          "ai-narration"
+        ]
+      },
+      {
+        "id": "insight-image-gen",
+        "code": "INIG",
+        "name": "InsightImageGen",
+        "displayName": "InsightImageGen",
+        "description": "AI画像・音声生成ツール（Stable Diffusion・VOICEVOX活用）",
+        "category": "consulting",
+        "salesChannel": "consulting",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/app-insight-image-gen-C",
+        "releasesRepository": "HarmonicInsight/releases",
+        "features": [
+          "generate-image",
+          "batch-image",
+          "generate-audio",
+          "character-prompts",
+          "hi-res",
+          "cloud-sync"
+        ]
+      },
+      {
+        "id": "insight-slide",
+        "code": "INSS",
+        "name": "InsightSlide",
+        "displayName": "InsightSlide",
+        "description": "PowerPointコンテンツ抽出・更新ツール",
+        "category": "office",
+        "salesChannel": "standalone",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/app-Insight-slide",
+        "releasesRepository": "HarmonicInsight/releases",
+        "sharedLibrary": "HarmonicInsight.Common",
+        "features": [
+          "pptx-read-write",
+          "version-control",
+          "diff-compare",
+          "ai-assistant",
+          "batch-replace"
+        ]
+      },
+      {
+        "id": "insight-slide-pro",
+        "code": "INSP",
+        "name": "InsightSlide Pro",
+        "displayName": "InsightSlide Pro",
+        "description": "プロ向け機能搭載のPowerPointツール",
+        "category": "office",
+        "salesChannel": "standalone",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/app-Insight-slide-pro",
+        "releasesRepository": "HarmonicInsight/releases",
+        "sharedLibrary": "HarmonicInsight.Common",
+        "inheritsFrom": "INSS",
+        "features": [
+          "pptx-read-write",
+          "version-control",
+          "diff-compare",
+          "ai-assistant",
+          "batch-replace",
+          "advanced-editing",
+          "template-management"
+        ]
+      },
+      {
+        "id": "insight-py",
+        "code": "INPY",
+        "name": "InsightPy",
+        "displayName": "InsightPy",
+        "description": "Windows自動化のためのPython実行環境",
+        "category": "tools",
+        "salesChannel": "standalone",
+        "platform": ["windows"],
+        "framework": "python",
+        "status": "active",
+        "repository": "HarmonicInsight/app-insight-py-win",
+        "releasesRepository": "HarmonicInsight/releases",
+        "features": [
+          "python-execution",
+          "windows-automation",
+          "script-management"
         ]
       },
       {
@@ -26,8 +173,9 @@
         "code": "HMSH",
         "name": "HarmonicSheet",
         "displayName": "HarmonicSheet",
-        "description": "AI版管理付きスプレッドシート",
+        "description": "Excelバージョン管理・チームコラボレーションツール",
         "category": "office",
+        "salesChannel": "standalone",
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
@@ -48,8 +196,9 @@
         "code": "HMDC",
         "name": "HarmonicDoc",
         "displayName": "HarmonicDoc",
-        "description": "AIドキュメント校正・バージョン管理",
+        "description": "Wordドキュメント操作・自動化ツール",
         "category": "office",
+        "salesChannel": "standalone",
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
@@ -65,16 +214,17 @@
         ]
       },
       {
-        "id": "insight-slide",
-        "code": "INSS",
-        "name": "InsightSlide",
-        "displayName": "InsightSlide",
-        "description": "AIスライドレビュー・バージョン管理",
+        "id": "harmonic-slide",
+        "code": "HMSL",
+        "name": "HarmonicSlide",
+        "displayName": "HarmonicSlide",
+        "description": "PowerPointプレゼンテーション操作・自動化ツール",
         "category": "office",
+        "salesChannel": "standalone",
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/app-Insight-slide",
+        "repository": "HarmonicInsight/app-Insight-slide-harmonic",
         "releasesRepository": "HarmonicInsight/releases",
         "sharedLibrary": "HarmonicInsight.Common",
         "features": [
@@ -86,84 +236,13 @@
         ]
       },
       {
-        "id": "insight-py",
-        "code": "PY",
-        "name": "InsightPy",
-        "displayName": "InsightPy",
-        "description": "Pythonデータ分析支援",
-        "category": "data-analysis",
-        "platform": ["windows", "macos", "linux"],
-        "framework": "python",
-        "status": "planned",
-        "repository": "HarmonicInsight/InsightPy",
-        "features": [
-          "code-generation",
-          "data-visualization",
-          "report-creation"
-        ]
-      },
-      {
-        "id": "interview-insight",
-        "code": "INTV",
-        "name": "InterviewInsight",
-        "displayName": "InterviewInsight",
-        "description": "AI採用面接支援",
-        "category": "hr",
-        "platform": ["windows", "macos"],
-        "framework": "tauri",
-        "status": "planned",
-        "repository": "HarmonicInsight/InterviewInsight",
-        "features": [
-          "interview-evaluation",
-          "question-suggestion",
-          "bias-detection"
-        ]
-      },
-      {
-        "id": "insight-forguncy",
-        "code": "FORG",
-        "name": "InsightForguncy",
-        "displayName": "InsightForguncy",
-        "description": "Forguncy AI開発支援",
-        "category": "development",
-        "platform": ["windows"],
-        "framework": "tauri",
-        "status": "development",
-        "repository": "HarmonicInsight/app-win-insight-forguncy",
-        "features": [
-          "code-generation",
-          "formula-assistance",
-          "ui-optimization"
-        ]
-      },
-      {
-        "id": "insight-image-gen",
-        "code": "INIG",
-        "name": "InsightImageGen",
-        "displayName": "InsightImageGen",
-        "description": "AI画像・音声生成ツール（Stable Diffusion・VOICEVOX活用）",
-        "category": "media",
-        "platform": ["windows"],
-        "framework": "wpf",
-        "status": "active",
-        "repository": "HarmonicInsight/app-insight-image-gen-C",
-        "features": [
-          "generate-image",
-          "batch-image",
-          "generate-audio",
-          "character-prompts",
-          "hi-res",
-          "cloud-sync"
-        ]
-      },
-      {
         "id": "insight-suite",
         "code": "ALL",
         "name": "Insight Suite",
         "displayName": "Insight Suite",
         "description": "全製品バンドル",
         "category": "bundle",
-        "platform": ["windows", "macos"],
+        "platform": ["windows"],
         "framework": "mixed",
         "status": "active",
         "repository": null,
@@ -171,15 +250,6 @@
       }
     ],
     "mobile": [
-      {
-        "id": "sales-insight-mobile",
-        "code": "SALES-M",
-        "name": "SalesInsight Mobile",
-        "parentProduct": "sales-insight",
-        "platform": ["ios", "android"],
-        "framework": "react-native",
-        "status": "planned"
-      },
       {
         "id": "insight-slide-mobile",
         "code": "SLIDE-M",
@@ -192,11 +262,21 @@
     ]
   },
   "tiers": {
+    "FREE": {
+      "name": "Free",
+      "duration": null,
+      "durationUnit": "perpetual",
+      "features": ["basic"],
+      "limits": {
+        "apiCalls": 0,
+        "storage": "0"
+      }
+    },
     "TRIAL": {
       "name": "Trial",
       "duration": 14,
       "durationUnit": "days",
-      "features": ["basic"],
+      "features": ["basic", "standard", "professional"],
       "limits": {
         "apiCalls": 100,
         "storage": "100MB"
