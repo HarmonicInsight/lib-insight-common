@@ -59,15 +59,15 @@ def parse_args():
   IOSD  - InsightOfficeDoc
   INPY  - InsightPy
   INMV  - InsightMovie
+  INIG  - InsightImageGen
   INBT  - InsightBot
   INCA  - InsightNoCodeAnalyzer
-  INIG  - InsightImageGen
   IVIN  - InterviewInsight
 
 プラン:
   TRIAL  - トライアル（14日間）
   STD    - Standard
-  PRO    - Pro
+  PRO    - Professional
 '''
     )
 
@@ -75,7 +75,7 @@ def parse_args():
         '-p', '--product',
         type=str,
         required=True,
-        choices=['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INBT', 'INCA', 'INIG', 'IVIN'],
+        choices=['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INIG', 'INBT', 'INCA', 'IVIN'],
         help='製品コード'
     )
 
