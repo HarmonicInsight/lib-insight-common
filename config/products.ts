@@ -425,6 +425,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'スクリプトのクラウド同期',
     },
+    {
+      key: 'ai_editor',
+      name: 'AI Code Editor',
+      nameJa: 'AIコードエディター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援',
+    },
   ],
 
   // ========================================
@@ -470,6 +478,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'JOBのクラウド同期',
+    },
+    {
+      key: 'ai_editor',
+      name: 'AI Code Editor',
+      nameJa: 'AIコードエディター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援',
     },
   ],
 

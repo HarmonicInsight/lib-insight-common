@@ -211,7 +211,7 @@ export const MAX_TOOL_USE_ITERATIONS = 10;
 // =============================================================================
 
 /** 製品別 AI コンテキストタイプ */
-export type AiContextType = 'slide' | 'spreadsheet' | 'document';
+export type AiContextType = 'slide' | 'spreadsheet' | 'document' | 'code';
 
 /** 製品から AI コンテキストタイプを取得 */
 export function getAiContextType(product: ProductCode): AiContextType | null {
@@ -221,6 +221,8 @@ export function getAiContextType(product: ProductCode): AiContextType | null {
     HMSL: 'slide',
     HMSH: 'spreadsheet',
     HMDC: 'document',
+    INPY: 'code',
+    INBT: 'code',
   };
   return contextMap[product] ?? null;
 }
@@ -238,6 +240,49 @@ export function getBaseSystemPrompt(product: ProductCode, locale: 'ja' | 'en' = 
 
   if (locale === 'ja') {
     switch (contextType) {
+      case 'code':
+        return `あなたは${product === 'INPY' ? 'InsightPy' : 'InsightBot'}のAIコードエディターアシスタントです。
+Pythonコードの作成・編集・デバッグを支援します。
+ユーザーのメッセージと同じ言語で回答してください。
+
+【Python 実行保証ルール — 厳守】
+1. 生成・編集するコードは必ず Python 3.10+ で実行可能であること。
+2. コード出力前に内部で以下を検証すること:
+   - 構文エラー（SyntaxError）がないこと
+   - インデントが一貫していること（スペース4つ）
+   - 未定義変数・未インポートモジュールがないこと
+   - 型ヒントを使用する場合は正しい構文であること
+3. 外部ライブラリを使用する場合:
+   - 必ず import 文を含めること
+   - pip install が必要なパッケージは冒頭コメントで明記すること
+   - 例: # requires: pip install pandas openpyxl
+4. Windows 固有のパス区切り文字に注意:
+   - os.path.join() または pathlib.Path を使用すること
+   - バックスラッシュのハードコードは禁止（raw文字列リテラルも非推奨）
+5. エンコーディング:
+   - ファイル操作時は encoding='utf-8' を明示すること
+6. コード提案時は必ず完全な実行可能コードを返すこと（断片禁止）。
+7. エラーが発生しそうな箇所には適切な try-except を追加すること。
+
+【validate_python_syntax ツールの活用】
+コードを生成・修正したら、必ず validate_python_syntax ツールで構文検証してください。
+検証が通らないコードをユーザーに提案してはいけません。
+
+${product === 'INBT' ? `【InsightBot 固有】
+- RPA ジョブとしてスケジュール実行されるコンテキストを考慮すること
+- ログ出力（logging モジュール）を含めること
+- 実行結果のステータスを返す構造にすること（exit code 0/1）
+` : `【InsightPy 固有】
+- インタラクティブ実行とスクリプト実行の両方を考慮すること
+- Windows 自動化（pyautogui, pywinauto 等）のコードは安全なガードを含めること
+`}
+主な機能:
+- Python コードの生成・補完
+- 構文エラー・実行時エラーの診断と修正
+- コードリファクタリング・最適化
+- ライブラリの使い方の提案
+- Windows 自動化スクリプトの作成支援`;
+
       case 'slide':
         return `あなたはPowerPointプレゼンテーションの内容を分析・修正するAIアシスタントです。
 日本語で回答してください。
@@ -281,6 +326,49 @@ Respond in the same language as the user's message.`;
 
   // English
   switch (contextType) {
+    case 'code':
+      return `You are an AI code editor assistant for ${product === 'INPY' ? 'InsightPy' : 'InsightBot'}.
+You help create, edit, and debug Python code.
+Respond in the same language as the user's message.
+
+PYTHON EXECUTION GUARANTEE RULES — STRICTLY ENFORCED:
+1. All generated/edited code MUST be executable on Python 3.10+.
+2. Before outputting code, internally verify:
+   - No SyntaxError
+   - Consistent indentation (4 spaces)
+   - No undefined variables or unimported modules
+   - Correct type hint syntax if used
+3. When using external libraries:
+   - Always include import statements
+   - Specify required pip packages in a header comment
+   - Example: # requires: pip install pandas openpyxl
+4. Windows-specific path handling:
+   - Use os.path.join() or pathlib.Path
+   - Never hardcode backslashes (raw string literals also discouraged)
+5. Encoding:
+   - Always specify encoding='utf-8' for file operations
+6. Always return complete, executable code (no fragments).
+7. Add appropriate try-except blocks for error-prone sections.
+
+USE THE validate_python_syntax TOOL:
+After generating or modifying code, always validate with the validate_python_syntax tool.
+Never propose code that fails validation.
+
+${product === 'INBT' ? `InsightBot specifics:
+- Consider RPA job scheduling context
+- Include logging (logging module)
+- Return execution status (exit code 0/1)
+` : `InsightPy specifics:
+- Consider both interactive and script execution
+- Include safety guards for Windows automation (pyautogui, pywinauto, etc.)
+`}
+Key capabilities:
+- Python code generation and completion
+- Syntax and runtime error diagnosis and fixes
+- Code refactoring and optimization
+- Library usage suggestions
+- Windows automation script assistance`;
+
     case 'slide':
       return `You are an AI assistant for analyzing and improving PowerPoint presentations.
 
@@ -540,6 +628,205 @@ export const SPREADSHEET_TOOLS: ToolDefinition[] = [
 ];
 
 // =============================================================================
+// コードエディター Tool Use 定義（INPY / INBT 共通）
+// =============================================================================
+
+/**
+ * InsightPy / InsightBot 用のコードエディターツール定義
+ *
+ * 【設計方針】
+ * - Python コードの構文検証を AI ループ内で実行し、壊れたコードをユーザーに返さない
+ * - ホストアプリ（Python / C#）が実際のツール実行を担当
+ * - このツール定義は Claude API の tools パラメータにそのまま渡せる形式
+ *
+ * 使い方:
+ * ```typescript
+ * import { CODE_EDITOR_TOOLS } from '@/insight-common/config/ai-assistant';
+ * const tools = CODE_EDITOR_TOOLS.map(t => ({
+ *   name: t.name,
+ *   description: t.description,
+ *   input_schema: t.input_schema,
+ * }));
+ * ```
+ */
+export const CODE_EDITOR_TOOLS: ToolDefinition[] = [
+  {
+    name: 'validate_python_syntax',
+    description:
+      'Validate Python code for syntax errors using ast.parse(). ' +
+      'Returns { valid: true } or { valid: false, error, line, offset }. ' +
+      'MUST be called before proposing any code to the user.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+          description: 'Complete Python source code to validate',
+        },
+      },
+      required: ['code'],
+    },
+  },
+  {
+    name: 'run_python_code',
+    description:
+      'Execute Python code in a sandboxed subprocess with a timeout. ' +
+      'Returns stdout, stderr, and exit_code. ' +
+      'Use this to test code before presenting results to the user.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+          description: 'Python source code to execute',
+        },
+        timeout_seconds: {
+          type: 'number',
+          description: 'Execution timeout in seconds (default: 30, max: 120)',
+        },
+        working_directory: {
+          type: 'string',
+          description: 'Working directory for execution. Defaults to the project directory.',
+        },
+      },
+      required: ['code'],
+    },
+  },
+  {
+    name: 'lint_python_code',
+    description:
+      'Run linting checks (pyflakes-level) on Python code. ' +
+      'Detects: unused imports, undefined names, redefined unused variables, missing imports. ' +
+      'Returns an array of { line, column, message, severity } diagnostics.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+          description: 'Python source code to lint',
+        },
+      },
+      required: ['code'],
+    },
+  },
+  {
+    name: 'get_script_content',
+    description:
+      'Read the content of the currently open script or a specified script file. ' +
+      'Returns the full source code as a string.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        file_path: {
+          type: 'string',
+          description: 'Path to the script file. If omitted, reads the currently active editor content.',
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'replace_script_content',
+    description:
+      'Replace the full content of the currently open script. ' +
+      'The code MUST have been validated with validate_python_syntax first. ' +
+      'Returns { success: true } or { success: false, reason }.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+          description: 'New complete Python source code to set in the editor',
+        },
+        description: {
+          type: 'string',
+          description: 'Brief description of what was changed (shown in undo history)',
+        },
+      },
+      required: ['code', 'description'],
+    },
+  },
+  {
+    name: 'insert_code_at_cursor',
+    description:
+      'Insert code at the current cursor position or at a specified line. ' +
+      'The inserted code MUST have been validated in context with validate_python_syntax.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+          description: 'Python code to insert',
+        },
+        line: {
+          type: 'number',
+          description: 'Line number to insert at (1-based). If omitted, inserts at cursor position.',
+        },
+      },
+      required: ['code'],
+    },
+  },
+];
+
+/**
+ * Python 構文検証のホストアプリ側リファレンス実装
+ *
+ * ホストアプリ（Python 側）で validate_python_syntax ツールを処理する際の実装例。
+ * この関数自体は TypeScript の型定義のみで、実際の実行は各アプリが行う。
+ *
+ * ```python
+ * # Python 側の実装例（InsightPy / InsightBot 共通）
+ * import ast
+ * import json
+ *
+ * def validate_python_syntax(code: str) -> dict:
+ *     """AI ツールコール validate_python_syntax のハンドラ"""
+ *     try:
+ *         ast.parse(code)
+ *         return {"valid": True}
+ *     except SyntaxError as e:
+ *         return {
+ *             "valid": False,
+ *             "error": str(e.msg),
+ *             "line": e.lineno,
+ *             "offset": e.offset,
+ *         }
+ * ```
+ *
+ * ```csharp
+ * // C# (InsightBot WPF) 側の実装例
+ * // Python を子プロセスで呼び出して構文チェック
+ * public static async Task<ValidationResult> ValidatePythonSyntax(string code)
+ * {
+ *     var script = $"import ast, json, sys; " +
+ *         $"code = sys.stdin.read(); " +
+ *         $"try:\n  ast.parse(code)\n  print(json.dumps({{'valid': True}}))" +
+ *         $"\nexcept SyntaxError as e:\n  print(json.dumps({{'valid': False, 'error': e.msg, 'line': e.lineno, 'offset': e.offset}}))";
+ *     // ProcessHelper.RunPython(script, stdin: code) ...
+ * }
+ * ```
+ */
+export type ValidatePythonSyntaxResult =
+  | { valid: true }
+  | { valid: false; error: string; line: number | null; offset: number | null };
+
+/** lint_python_code の結果型 */
+export interface PythonLintDiagnostic {
+  line: number;
+  column: number;
+  message: string;
+  severity: 'error' | 'warning' | 'info';
+}
+
+/** run_python_code の結果型 */
+export interface PythonExecutionResult {
+  stdout: string;
+  stderr: string;
+  exit_code: number;
+  timed_out: boolean;
+}
+
+// =============================================================================
 // AI 対応製品の機能キー
 // =============================================================================
 
@@ -559,6 +846,50 @@ export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'PRO', 'ENT'];
  */
 export function canUseAiAssistant(plan: PlanCode): boolean {
   return AI_ALLOWED_PLANS.includes(plan);
+}
+
+// =============================================================================
+// デフォルトエクスポート
+// =============================================================================
+
+/** AI エディター機能のフィーチャーキー */
+export const AI_EDITOR_FEATURE_KEY = 'ai_editor';
+
+/** AI エディターが利用可能なプラン */
+export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'PRO', 'ENT'];
+
+/** AI エディターが利用可能かチェック */
+export function canUseAiEditor(plan: PlanCode): boolean {
+  return AI_EDITOR_ALLOWED_PLANS.includes(plan);
+}
+
+/** コードエディター対応製品かチェック */
+export function isCodeEditorProduct(product: ProductCode): boolean {
+  return getAiContextType(product) === 'code';
+}
+
+/**
+ * 製品に応じたツール定義を取得
+ *
+ * @example
+ * ```typescript
+ * const tools = getToolsForProduct('INPY');
+ * // → CODE_EDITOR_TOOLS（Python コードエディター用）
+ *
+ * const tools = getToolsForProduct('HMSH');
+ * // → SPREADSHEET_TOOLS（スプレッドシート用）
+ * ```
+ */
+export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
+  const contextType = getAiContextType(product);
+  switch (contextType) {
+    case 'code':
+      return CODE_EDITOR_TOOLS;
+    case 'spreadsheet':
+      return SPREADSHEET_TOOLS;
+    default:
+      return [];
+  }
 }
 
 // =============================================================================
@@ -590,9 +921,17 @@ export default {
 
   // ツール定義
   SPREADSHEET_TOOLS,
+  CODE_EDITOR_TOOLS,
+  getToolsForProduct,
 
-  // ライセンス
+  // ライセンス — AI アシスタント
   AI_FEATURE_KEY,
   AI_ALLOWED_PLANS,
   canUseAiAssistant,
+
+  // ライセンス — AI エディター
+  AI_EDITOR_FEATURE_KEY,
+  AI_EDITOR_ALLOWED_PLANS,
+  canUseAiEditor,
+  isCodeEditorProduct,
 };
