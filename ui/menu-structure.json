@@ -177,14 +177,7 @@
     ]
   },
   "productSpecific": {
-    "salesInsight": {
-      "tools": [
-        { "id": "analysis", "label": { "ja": "商談分析", "en": "Deal Analysis" }, "icon": "TrendingUp" },
-        { "id": "scripts", "label": { "ja": "トークスクリプト", "en": "Talk Scripts" }, "icon": "FileText" },
-        { "id": "suggestions", "label": { "ja": "提案作成", "en": "Proposals" }, "icon": "Lightbulb" }
-      ]
-    },
-    "insightSlide": {
+    "insightOfficeSlide": {
       "tools": [
         { "id": "slides", "label": { "ja": "スライド作成", "en": "Create Slides" }, "icon": "Presentation" },
         { "id": "templates", "label": { "ja": "テンプレート", "en": "Templates" }, "icon": "Layout" },
@@ -205,7 +198,7 @@
         { "id": "questions", "label": { "ja": "質問集", "en": "Questions" }, "icon": "MessageSquare" }
       ]
     },
-    "harmonicSheet": {
+    "insightOfficeSheet": {
       "tools": [
         { "id": "open-excel", "label": { "ja": "Excelファイルを開く", "en": "Open Excel File" }, "icon": "FileSpreadsheet", "shortcut": "Ctrl+O" },
         { "id": "read-sheet", "label": { "ja": "シート読取", "en": "Read Sheet" }, "icon": "Table", "shortcut": "Ctrl+R" },
@@ -222,7 +215,7 @@
         { "id": "history-files", "label": { "ja": "履歴ファイルについて", "en": "About History Files" }, "icon": "Archive", "path": "/help/history-files" },
         { "id": "faq", "label": { "ja": "よくある質問", "en": "FAQ" }, "icon": "HelpCircle", "path": "/help/faq" },
         { "id": "keyboard-shortcuts", "label": { "ja": "ショートカットキー一覧", "en": "Keyboard Shortcuts" }, "icon": "Keyboard", "path": "/help/shortcuts" },
-        { "id": "about", "label": { "ja": "HarmonicSheetについて", "en": "About HarmonicSheet" }, "icon": "Info", "path": "/help/about" }
+        { "id": "about", "label": { "ja": "InsightOfficeSheetについて", "en": "About InsightOfficeSheet" }, "icon": "Info", "path": "/help/about" }
       ]
     }
   },

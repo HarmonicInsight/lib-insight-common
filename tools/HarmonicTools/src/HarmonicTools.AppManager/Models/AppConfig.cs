@@ -100,32 +100,32 @@ public class AppConfig
                     Description = "業務調査・データ収集のためのPython実行基盤（PyInstaller）"
                 },
 
-                // ── Harmonic Office Suite（各製品は独立リポ + 共通ライブラリ）──
+                // ── InsightOffice Suite（各製品は独立リポ + 共通ライブラリ）──
                 new()
                 {
-                    Name = "HarmonicSheet",
-                    ProductCode = "HMSH",
+                    Name = "InsightOfficeSheet",
+                    ProductCode = "IOSH",
                     BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
-                    SolutionPath = "HarmonicSheet.sln",
-                    ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
-                    TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj",
-                    ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.exe",
+                    SolutionPath = "InsightOfficeSheet.sln",
+                    ProjectPath = @"src\InsightOfficeSheet.App\InsightOfficeSheet.App.csproj",
+                    TestProjectPath = @"tests\InsightOfficeSheet.Core.Tests\InsightOfficeSheet.Core.Tests.csproj",
+                    ExeRelativePath = @"src\InsightOfficeSheet.App\bin\{config}\net8.0-windows\InsightOfficeSheet.exe",
                     Description = "AI版管理付きスプレッドシート（Sheet専用リポ）"
                 },
                 new()
                 {
-                    Name = "HarmonicDoc",
-                    ProductCode = "HMDC",
+                    Name = "InsightOfficeDoc",
+                    ProductCode = "IOSD",
                     BasePath = Path.Combine(DefaultDevRoot, "app-Insight-doc"),
-                    SolutionPath = "HarmonicDoc.sln",
-                    ProjectPath = @"src\HarmonicDoc.App\HarmonicDoc.App.csproj",
+                    SolutionPath = "InsightOfficeDoc.sln",
+                    ProjectPath = @"src\InsightOfficeDoc.App\InsightOfficeDoc.App.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = @"src\HarmonicDoc.App\bin\{config}\net8.0-windows\HarmonicDoc.exe",
+                    ExeRelativePath = @"src\InsightOfficeDoc.App\bin\{config}\net8.0-windows\InsightOfficeDoc.exe",
                     Description = "AIドキュメント校正・バージョン管理（Doc専用リポ）"
                 },
                 new()
                 {
-                    Name = "InsightSlide",
+                    Name = "InsightOfficeSlide",
                     ProductCode = "INSS",
                     BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
                     SolutionPath = "InsightOfficeSlide.sln",
@@ -137,7 +137,7 @@ public class AppConfig
                 new()
                 {
                     Name = "InterviewInsight",
-                    ProductCode = "INIV",
+                    ProductCode = "IVIN",
                     BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
                     SolutionPath = "",
                     ProjectPath = "",

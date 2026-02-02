@@ -40,7 +40,7 @@ import {
   getFeatureLimits,
 } from '@insight/license';
 
-const CURRENT_PRODUCT: ProductCode = 'INTV';
+const CURRENT_PRODUCT: ProductCode = 'IVIN';
 
 class AppLicenseManager {
   private validator = new LicenseValidator();
@@ -86,7 +86,7 @@ from insight_common.license import (
     get_feature_limits,
 )
 
-CURRENT_PRODUCT = ProductCode.INTV
+CURRENT_PRODUCT = ProductCode.IVIN
 
 class AppLicenseManager:
     def __init__(self):
@@ -137,7 +137,7 @@ git push
 ## 補足情報
 
 ### InterviewInsight の製品コード
-- `INTV` (ライセンスキー: `INS-INTV-XXX-XXXX-XXXX-XX`)
+- `IVIN` (ライセンスキー: `INS-IVIN-XXX-XXXX-XXXX-XX`)
 - `ALL` も使用可能（全製品バンドル）
 
 ### 参照ドキュメント

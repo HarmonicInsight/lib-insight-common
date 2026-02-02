@@ -8,7 +8,7 @@
  * ## 設計方針
  * 1. 機能は製品ごとに明確に定義（PRODUCT_FEATURES）
  * 2. 共通機能は COMMON として別管理（全製品で利用可能）
- * 3. 製品継承をサポート（例: INSP は INSS の機能を継承）
+ * 3. 製品継承をサポート（inheritsFrom で親製品の機能を引き継ぎ可能）
  * 4. 数値制限は limitValues で統一管理
  * 5. 型安全性を重視（製品・機能の組み合わせを保証）
  *
@@ -31,7 +31,7 @@
 // =============================================================================
 
 /** 製品コード */
-export type ProductCode = 'INSS' | 'INSP' | 'INPY' | 'FGIN' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'HMSH' | 'HMDC' | 'HMSL';
+export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'INPY' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'IVIN';
 
 /** プランコード */
 export type PlanCode = 'FREE' | 'TRIAL' | 'STD' | 'PRO' | 'ENT';
@@ -127,83 +127,74 @@ export interface PlanLimits {
 // =============================================================================
 
 export const PRODUCTS: Record<ProductCode, ProductInfo> = {
+  // ========================================
+  // 個人向け（ダウンロード＆インストール型）
+  // ========================================
   INSS: {
     code: 'INSS',
-    name: 'InsightSlide',
-    nameJa: 'InsightSlide',
-    description: 'PowerPoint content extraction and update tool',
-    descriptionJa: 'PowerPointコンテンツ抽出・更新ツール',
+    name: 'InsightOfficeSlide',
+    nameJa: 'InsightOfficeSlide',
+    description: 'AI-powered PowerPoint text extraction and review tool',
+    descriptionJa: 'AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール',
   },
-  INSP: {
-    code: 'INSP',
-    name: 'InsightSlide Pro',
-    nameJa: 'InsightSlide プロ',
-    description: 'Advanced PowerPoint tool with professional features',
-    descriptionJa: 'プロ向け機能搭載のPowerPointツール',
-    inheritsFrom: 'INSS',  // INSSの全機能を継承
+  IOSH: {
+    code: 'IOSH',
+    name: 'InsightOfficeSheet',
+    nameJa: 'InsightOfficeSheet',
+    description: 'AI-powered business planning, budget management, and simulation tool',
+    descriptionJa: 'AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション',
+  },
+  IOSD: {
+    code: 'IOSD',
+    name: 'InsightOfficeDoc',
+    nameJa: 'InsightOfficeDoc',
+    description: 'AI-powered Word document management with reference materials',
+    descriptionJa: 'AIアシスタント搭載 — 参照資料付きWord文書管理ツール',
   },
   INPY: {
     code: 'INPY',
     name: 'InsightPy',
     nameJa: 'InsightPy',
-    description: 'Python execution environment for Windows automation',
-    descriptionJa: 'Windows自動化のためのPython実行環境',
-  },
-  FGIN: {
-    code: 'FGIN',
-    name: 'ForguncyInsight',
-    nameJa: 'ForguncyInsight',
-    description: 'Forguncy integration and analytics',
-    descriptionJa: 'Forguncy連携・分析ツール',
+    description: 'AI editor-equipped Python execution platform for business research and data collection',
+    descriptionJa: 'AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤',
   },
   INMV: {
     code: 'INMV',
     name: 'InsightMovie',
     nameJa: 'InsightMovie',
-    description: 'AI video creation from images, text, and PowerPoint',
-    descriptionJa: '画像・テキスト・PPTからAI動画作成',
-  },
-  INBT: {
-    code: 'INBT',
-    name: 'InsightBot',
-    nameJa: 'InsightBot',
-    description: 'Python-based RPA bot for Windows automation',
-    descriptionJa: 'Python RPA自動化ボット',
-  },
-  INCA: {
-    code: 'INCA',
-    name: 'InsightNoCodeAnalyzer',
-    nameJa: 'InsightNoCodeAnalyzer',
-    description: 'RPA and low-code platform analyzer for migration assessment',
-    descriptionJa: 'RPA・ローコードプラットフォーム解析・移行アセスメントツール',
+    description: 'Automated video creation from images and text',
+    descriptionJa: '画像とテキストから動画を自動作成',
   },
   INIG: {
     code: 'INIG',
     name: 'InsightImageGen',
     nameJa: 'InsightImageGen',
-    description: 'AI image and audio generation tool with Stable Diffusion and VOICEVOX',
-    descriptionJa: 'Stable Diffusion・VOICEVOXを活用したAI画像・音声生成ツール',
+    description: 'AI bulk image generation tool for business materials',
+    descriptionJa: '業務資料向けAI画像の大量自動生成ツール',
   },
-  HMSH: {
-    code: 'HMSH',
-    name: 'HarmonicSheet',
-    nameJa: 'HarmonicSheet',
-    description: 'Excel version control and team collaboration tool (STD: individual, PRO: corporate/team)',
-    descriptionJa: 'Excelバージョン管理・チームコラボレーションツール（STD: 個人, PRO: 法人）',
+  // ========================================
+  // 法人向け（コンサルティング連動型）
+  // ========================================
+  INBT: {
+    code: 'INBT',
+    name: 'InsightBot',
+    nameJa: 'InsightBot',
+    description: 'AI editor-equipped RPA product for business optimization',
+    descriptionJa: 'AIエディタ搭載 — 業務最適化RPA製品',
   },
-  HMDC: {
-    code: 'HMDC',
-    name: 'HarmonicDoc',
-    nameJa: 'HarmonicDoc',
-    description: 'Word document operations and automation tool',
-    descriptionJa: 'Wordドキュメント操作・自動化ツール',
+  INCA: {
+    code: 'INCA',
+    name: 'InsightNoCodeAnalyzer',
+    nameJa: 'InsightNoCodeAnalyzer',
+    description: 'RPA and low-code migration automation tool',
+    descriptionJa: 'RPA・ローコードのマイグレーション自動化ツール',
   },
-  HMSL: {
-    code: 'HMSL',
-    name: 'HarmonicSlide',
-    nameJa: 'HarmonicSlide',
-    description: 'PowerPoint presentation operations and automation tool',
-    descriptionJa: 'PowerPointプレゼンテーション操作・自動化ツール',
+  IVIN: {
+    code: 'IVIN',
+    name: 'InterviewInsight',
+    nameJa: 'InterviewInsight',
+    description: 'Automated hearing and business research support',
+    descriptionJa: '自動ヒアリング・業務調査支援',
   },
 };
 
@@ -317,7 +308,8 @@ export const COMMON_FEATURES: FeatureDefinition[] = [
  */
 export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // ========================================
-  // InsightSlide (INSS)
+  // InsightOfficeSlide (INSS)
+  // 旧 InsightSlide — AIアシスタント搭載PowerPointツール
   // ========================================
   INSS: [
     {
@@ -374,18 +366,248 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるスライドテキストの校正・改善提案（FREE: 20回, PRO: 100回）',
+    },
+    {
+      key: 'ai_editor',
+      name: 'AI Code Editor',
+      nameJa: 'AIコードエディター',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるPythonコードの生成・編集でPowerPointを自動処理',
+    },
+    {
+      key: 'reference_materials',
+      name: 'Reference Materials',
+      nameJa: '参考資料',
+      type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるスライドテキストの校正・改善提案',
+      descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
+    },
+    {
+      key: 'voice_input',
+      name: 'Voice Input',
+      nameJa: '音声入力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '音声認識によるハンズフリー入力',
+    },
+    {
+      key: 'vrm_avatar',
+      name: 'VRM Avatar',
+      nameJa: 'VRMアバター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
   ],
 
   // ========================================
-  // InsightSlide Pro (INSP)
-  // INSSの機能を継承 + Pro専用機能
+  // InsightOfficeSheet (IOSH)
+  // 旧 HarmonicSheet (HMSH) — AIアシスタント搭載Excel管理ツール
   // ========================================
-  INSP: [
-    // Pro専用機能をここに追加
-    // INSSの機能は inheritsFrom により自動継承
+  IOSH: [
+    {
+      key: 'read_excel',
+      name: 'Read Excel',
+      nameJa: 'Excel読み込み・編集',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Excelファイルの読み込み・編集',
+    },
+    {
+      key: 'version_control',
+      name: 'Version Control',
+      nameJa: 'バージョン管理',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'ファイルのバージョン管理・履歴保持',
+    },
+    {
+      key: 'diff_compare',
+      name: 'Diff Compare',
+      nameJa: '差分比較',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'バージョン間のセル差分比較',
+    },
+    {
+      key: 'change_log',
+      name: 'Change Log',
+      nameJa: 'セル変更ログ',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セル単位の変更履歴の記録・表示',
+    },
+    {
+      key: 'export',
+      name: 'Export',
+      nameJa: 'エクスポート',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '変更履歴・差分のエクスポート出力',
+    },
+    {
+      key: 'show_author',
+      name: 'Show Author',
+      nameJa: '変更者表示',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'セル変更ログで変更者（誰が変更したか）を表示（チーム利用向け）',
+    },
+    {
+      key: 'board',
+      name: 'Board',
+      nameJa: '掲示板',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'チーム向け掲示板機能',
+    },
+    {
+      key: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AIアシスタント',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIチャットによるExcel操作支援（FREE: 20回, PRO: 100回）',
+    },
+    {
+      key: 'send_message',
+      name: 'Send Message',
+      nameJa: 'メッセージ送信',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'チームメンバーへのメッセージ送信',
+    },
+    {
+      key: 'ai_editor',
+      name: 'AI Code Editor',
+      nameJa: 'AIコードエディター',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるPythonコードの生成・編集でExcelを自動処理',
+    },
+    {
+      key: 'reference_materials',
+      name: 'Reference Materials',
+      nameJa: '参考資料',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
+    },
+    {
+      key: 'voice_input',
+      name: 'Voice Input',
+      nameJa: '音声入力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '音声認識によるハンズフリー入力',
+    },
+    {
+      key: 'vrm_avatar',
+      name: 'VRM Avatar',
+      nameJa: 'VRMアバター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
+    },
+  ],
+
+  // ========================================
+  // InsightOfficeDoc (IOSD)
+  // 旧 HarmonicDoc (HMDC) — AIアシスタント搭載Word管理ツール
+  // ========================================
+  IOSD: [
+    {
+      key: 'read_doc',
+      name: 'Read Document',
+      nameJa: 'ドキュメント読取',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Wordドキュメントの読み取り',
+    },
+    {
+      key: 'write_doc',
+      name: 'Write Document',
+      nameJa: 'ドキュメント書込',
+      type: 'limit',
+      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      descriptionJa: 'Wordドキュメントへの書き込み（FREEは3ページまで）',
+    },
+    {
+      key: 'convert',
+      name: 'Convert Format',
+      nameJa: 'フォーマット変換',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'PDF・HTML等へのフォーマット変換',
+    },
+    {
+      key: 'template',
+      name: 'Template',
+      nameJa: 'テンプレート',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'テンプレートからのドキュメント生成',
+    },
+    {
+      key: 'batch',
+      name: 'Batch Processing',
+      nameJa: 'バッチ処理',
+      type: 'boolean',
+      allowedPlans: ['PRO', 'ENT'],
+      descriptionJa: '複数ドキュメントの一括処理',
+    },
+    {
+      key: 'macro',
+      name: 'Macro Execution',
+      nameJa: 'マクロ実行',
+      type: 'boolean',
+      allowedPlans: ['PRO', 'ENT'],
+      descriptionJa: 'VBAマクロの実行・変換',
+    },
+    {
+      key: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AIアシスタント',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるドキュメントの校正・要約・構成提案（FREE: 20回, PRO: 100回）',
+    },
+    {
+      key: 'ai_editor',
+      name: 'AI Code Editor',
+      nameJa: 'AIコードエディター',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるPythonコードの生成・編集でWordを自動処理',
+    },
+    {
+      key: 'reference_materials',
+      name: 'Reference Materials',
+      nameJa: '参考資料',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
+    },
+    {
+      key: 'voice_input',
+      name: 'Voice Input',
+      nameJa: '音声入力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '音声認識によるハンズフリー入力',
+    },
+    {
+      key: 'vrm_avatar',
+      name: 'VRM Avatar',
+      nameJa: 'VRMアバター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
+    },
   ],
 
   // ========================================
@@ -433,13 +655,6 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援',
     },
-  ],
-
-  // ========================================
-  // ForguncyInsight (FGIN)
-  // ========================================
-  FGIN: [
-    // 機能定義を追加予定
   ],
 
   // ========================================
@@ -645,307 +860,11 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // HarmonicSheet (HMSH)
+  // InterviewInsight (IVIN)
+  // 自動ヒアリング・業務調査支援
   // ========================================
-  // プラン体系: FREE廃止（デフォルト=TRIAL）
-  //   TRIAL: 全機能（評価期間）
-  //   STD: 個人利用 — 掲示板・AI・変更者表示・メッセージ送信を除く
-  //   PRO: 法人・チーム利用 — 全機能（コラボレーション）
-  HMSH: [
-    {
-      key: 'read_excel',
-      name: 'Read Excel',
-      nameJa: 'Excel読み込み・編集',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'Excelファイルの読み込み・編集',
-    },
-    {
-      key: 'version_control',
-      name: 'Version Control',
-      nameJa: 'バージョン管理',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'ファイルのバージョン管理・履歴保持',
-    },
-    {
-      key: 'diff_compare',
-      name: 'Diff Compare',
-      nameJa: '差分比較',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'バージョン間のセル差分比較',
-    },
-    {
-      key: 'change_log',
-      name: 'Change Log',
-      nameJa: 'セル変更ログ',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'セル単位の変更履歴の記録・表示',
-    },
-    {
-      key: 'export',
-      name: 'Export',
-      nameJa: 'エクスポート',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '変更履歴・差分のエクスポート出力',
-    },
-    {
-      key: 'show_author',
-      name: 'Show Author',
-      nameJa: '変更者表示',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'セル変更ログで変更者（誰が変更したか）を表示（チーム利用向け）',
-    },
-    {
-      key: 'board',
-      name: 'Board',
-      nameJa: '掲示板',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'チーム向け掲示板機能',
-    },
-    {
-      key: 'ai_assistant',
-      name: 'AI Assistant',
-      nameJa: 'AIアシスタント',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIチャットによるExcel操作支援（Tool Use対応）',
-    },
-    {
-      key: 'send_message',
-      name: 'Send Message',
-      nameJa: 'メッセージ送信',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'チームメンバーへのメッセージ送信',
-    },
-    {
-      key: 'ai_editor',
-      name: 'AI Code Editor',
-      nameJa: 'AIコードエディター',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるPythonコードの生成・編集でExcelを自動処理',
-    },
-    {
-      key: 'reference_materials',
-      name: 'Reference Materials',
-      nameJa: '参考資料',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
-    },
-    {
-      key: 'voice_input',
-      name: 'Voice Input',
-      nameJa: '音声入力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '音声認識によるハンズフリー入力',
-    },
-    {
-      key: 'vrm_avatar',
-      name: 'VRM Avatar',
-      nameJa: 'VRMアバター',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
-    },
-  ],
-
-  // ========================================
-  // HarmonicDoc (HMDC)
-  // ========================================
-  HMDC: [
-    {
-      key: 'read_doc',
-      name: 'Read Document',
-      nameJa: 'ドキュメント読取',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'Wordドキュメントの読み取り',
-    },
-    {
-      key: 'write_doc',
-      name: 'Write Document',
-      nameJa: 'ドキュメント書込',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'Wordドキュメントへの書き込み（FREEは3ページまで）',
-    },
-    {
-      key: 'convert',
-      name: 'Convert Format',
-      nameJa: 'フォーマット変換',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'PDF・HTML等へのフォーマット変換',
-    },
-    {
-      key: 'template',
-      name: 'Template',
-      nameJa: 'テンプレート',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'テンプレートからのドキュメント生成',
-    },
-    {
-      key: 'batch',
-      name: 'Batch Processing',
-      nameJa: 'バッチ処理',
-      type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
-      descriptionJa: '複数ドキュメントの一括処理',
-    },
-    {
-      key: 'macro',
-      name: 'Macro Execution',
-      nameJa: 'マクロ実行',
-      type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
-      descriptionJa: 'VBAマクロの実行・変換',
-    },
-    {
-      key: 'ai_assistant',
-      name: 'AI Assistant',
-      nameJa: 'AIアシスタント',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるドキュメントの校正・要約・構成提案',
-    },
-    {
-      key: 'ai_editor',
-      name: 'AI Code Editor',
-      nameJa: 'AIコードエディター',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるPythonコードの生成・編集でWordを自動処理',
-    },
-    {
-      key: 'reference_materials',
-      name: 'Reference Materials',
-      nameJa: '参考資料',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
-    },
-    {
-      key: 'voice_input',
-      name: 'Voice Input',
-      nameJa: '音声入力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '音声認識によるハンズフリー入力',
-    },
-    {
-      key: 'vrm_avatar',
-      name: 'VRM Avatar',
-      nameJa: 'VRMアバター',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
-    },
-  ],
-
-  // ========================================
-  // HarmonicSlide (HMSL)
-  // ========================================
-  HMSL: [
-    {
-      key: 'read_pptx',
-      name: 'Read PPTX',
-      nameJa: 'PPTX読取',
-      type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'PowerPointファイルの読み取り',
-    },
-    {
-      key: 'write_pptx',
-      name: 'Write PPTX',
-      nameJa: 'PPTX書込',
-      type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'PowerPointファイルへの書き込み（FREEは3スライドまで）',
-    },
-    {
-      key: 'extract_slides',
-      name: 'Extract Slides',
-      nameJa: 'スライド抽出',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'スライドの個別抽出・分割',
-    },
-    {
-      key: 'generate_pdf',
-      name: 'Generate PDF',
-      nameJa: 'PDF生成',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'スライドからPDFの生成',
-    },
-    {
-      key: 'batch',
-      name: 'Batch Processing',
-      nameJa: 'バッチ処理',
-      type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
-      descriptionJa: '複数PPTXファイルの一括処理',
-    },
-    {
-      key: 'template',
-      name: 'Template',
-      nameJa: 'テンプレート',
-      type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
-      descriptionJa: 'テンプレートからのスライド生成',
-    },
-    {
-      key: 'ai_assistant',
-      name: 'AI Assistant',
-      nameJa: 'AIアシスタント',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるスライドの校正・構成アドバイス',
-    },
-    {
-      key: 'ai_editor',
-      name: 'AI Code Editor',
-      nameJa: 'AIコードエディター',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるPythonコードの生成・編集でPowerPointを自動処理',
-    },
-    {
-      key: 'reference_materials',
-      name: 'Reference Materials',
-      nameJa: '参考資料',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
-    },
-    {
-      key: 'voice_input',
-      name: 'Voice Input',
-      nameJa: '音声入力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: '音声認識によるハンズフリー入力',
-    },
-    {
-      key: 'vrm_avatar',
-      name: 'VRM Avatar',
-      nameJa: 'VRMアバター',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
-    },
+  IVIN: [
+    // 機能定義は開発進行に合わせて追加予定
   ],
 };
 

@@ -48,7 +48,7 @@ Border:           #E7E2DA (Warm Gray)
 **プラン体系:**
 | プラン | 説明 | 対象 |
 |-------|------|------|
-| FREE | 基本機能のみ（※HMSHでは廃止、デフォルト=TRIAL） | — |
+| FREE | 基本機能のみ（※IOSHでは廃止、デフォルト=TRIAL） | — |
 | TRIAL | 全機能利用可能（評価用、14日間） | 評価ユーザー |
 | STD | 標準機能（コラボレーション機能を除く、365日） | 個人利用 |
 | PRO | 全機能（コラボレーション含む、365日） | 法人・チーム |
@@ -60,16 +60,15 @@ Border:           #E7E2DA (Warm Gray)
 
 | コード | 製品名 | 備考 |
 |-------|-------|------|
-| INSS | InsightSlide | |
-| INSP | InsightSlide Pro | |
+| INSS | InsightOfficeSlide | |
+| IOSH | InsightOfficeSheet | STD: 個人, PRO: 法人 |
+| IOSD | InsightOfficeDoc | |
 | INPY | InsightPy | |
-| FGIN | ForguncyInsight | |
 | INMV | InsightMovie | |
+| INIG | InsightImageGen | |
 | INBT | InsightBot | |
 | INCA | InsightNoCodeAnalyzer | |
-| HMSH | HarmonicSheet | STD: 個人, PRO: 法人（FREE廃止） |
-| HMDC | HarmonicDoc | |
-| HMSL | HarmonicSlide | |
+| IVIN | InterviewInsight | |
 
 ### 4. UI パターン
 

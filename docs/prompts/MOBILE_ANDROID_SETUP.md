@@ -57,7 +57,7 @@ enum class ProductCode(val code: String, val displayName: String) {
     SALES("SALES", "SalesInsight"),
     SLIDE("SLIDE", "InsightSlide"),
     PY("PY", "InsightPy"),
-    INTV("INTV", "InterviewInsight"),
+    IVIN("IVIN", "InterviewInsight"),
     ALL("ALL", "All Products")
 }
 
@@ -137,7 +137,7 @@ class LicenseValidator {
 
     companion object {
         private val LICENSE_PATTERN = Regex(
-            """^INS-(SALES|SLIDE|PY|INTV|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"""
+            """^INS-(SALES|SLIDE|PY|IVIN|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"""
         )
 
         private val PRODUCT_MAP = ProductCode.values().associateBy { it.code }

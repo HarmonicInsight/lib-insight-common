@@ -1,6 +1,6 @@
 """
 Harmonic Insight App Icon Generator
-Generates ICO files for HarmonicSheet, HarmonicDoc, HarmonicSlide
+Generates ICO files for InsightOfficeSheet, InsightOfficeDoc, InsightOfficeSlide
 Brand: Ivory & Gold Theme (#B8942F primary)
 """
 
@@ -35,8 +35,8 @@ def draw_rounded_rect(draw, xy, radius, fill=None, outline=None, width=1):
     draw.rectangle([x1-r, y0+r, x1, y1-r], fill=fill)
 
 
-def create_harmonic_sheet_icon(size):
-    """HarmonicSheet: Gold spreadsheet grid icon with 'H' accent."""
+def create_insight_office_sheet_icon(size):
+    """InsightOfficeSheet: Gold spreadsheet grid icon with 'H' accent."""
     img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
@@ -84,8 +84,8 @@ def create_harmonic_sheet_icon(size):
     return img
 
 
-def create_harmonic_doc_icon(size):
-    """HarmonicDoc: Gold document icon with lines."""
+def create_insight_office_doc_icon(size):
+    """InsightOfficeDoc: Gold document icon with lines."""
     img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
@@ -137,8 +137,8 @@ def create_harmonic_doc_icon(size):
     return img
 
 
-def create_harmonic_slide_icon(size):
-    """HarmonicSlide: Gold presentation/slide icon."""
+def create_insight_office_slide_icon(size):
+    """InsightOfficeSlide: Gold presentation/slide icon."""
     img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
 
@@ -262,9 +262,9 @@ if __name__ == "__main__":
     base = "/tmp/app-Insight-excel"
 
     apps = [
-        ("HarmonicSheet", create_harmonic_sheet_icon, f"{base}/src/HarmonicSheet.App/Resources"),
-        ("HarmonicDoc", create_harmonic_doc_icon, f"{base}/src/HarmonicDoc.App/Resources"),
-        ("HarmonicSlide", create_harmonic_slide_icon, f"{base}/src/HarmonicSlide.App/Resources"),
+        ("InsightOfficeSheet", create_insight_office_sheet_icon, f"{base}/src/InsightOfficeSheet.App/Resources"),
+        ("InsightOfficeDoc", create_insight_office_doc_icon, f"{base}/src/InsightOfficeDoc.App/Resources"),
+        ("InsightOfficeSlide", create_insight_office_slide_icon, f"{base}/src/InsightOfficeSlide.App/Resources"),
     ]
 
     for name, func, out_dir in apps:

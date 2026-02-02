@@ -1,6 +1,6 @@
-# HarmonicSheet (HMSH) セットアップガイド
+# InsightOfficeSheet (IOSH) セットアップガイド
 
-> Excel操作・自動化ツール「HarmonicSheet」の開発セットアップ手順
+> Excel操作・自動化ツール「InsightOfficeSheet」の開発セットアップ手順
 
 ---
 
@@ -8,8 +8,8 @@
 
 | 項目 | 内容 |
 |------|------|
-| 製品コード | HMSH |
-| 製品名 | HarmonicSheet |
+| 製品コード | IOSH |
+| 製品名 | InsightOfficeSheet |
 | 説明 | Excel操作・自動化ツール |
 | プラットフォーム | Windows (WPF / C#) |
 | 対応Excel形式 | .xlsx, .xls, .xlsm, .xlsb |
@@ -49,7 +49,7 @@ git submodule update --init --recursive
 
 ### 3. サードパーティライセンス（Syncfusion）
 
-HarmonicSheet は Syncfusion SfSpreadsheet を使用しています。ライセンスキーは `insight-common/config/third-party-licenses.json` で全製品共通管理されています。
+InsightOfficeSheet は Syncfusion SfSpreadsheet を使用しています。ライセンスキーは `insight-common/config/third-party-licenses.json` で全製品共通管理されています。
 
 ```csharp
 // App.xaml.cs の OnStartup 冒頭
@@ -60,7 +60,7 @@ if (string.IsNullOrEmpty(licenseKey))
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 ```
 
-キー更新時は `insight-common/config/third-party-licenses.json` の `syncfusion.licenseKey` を書き換えるだけで HMSH/HMDC/HMSL すべてに反映されます。
+キー更新時は `insight-common/config/third-party-licenses.json` の `syncfusion.licenseKey` を書き換えるだけで IOSH/IOSD/INSS すべてに反映されます。
 
 ### 4. Insight ライセンス統合
 
@@ -68,12 +68,12 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 using InsightCommon.License;
 
 // ライセンスマネージャーの初期化
-var licenseManager = new InsightLicenseManager("HMSH");
+var licenseManager = new InsightLicenseManager("IOSH");
 ```
 
 ### 5. メニュー構造
 
-`insight-common/ui/menu-structure.json` の `harmonicSheet` セクションに定義されたメニューを実装してください。
+`insight-common/ui/menu-structure.json` の `insightOfficeSheet` セクションに定義されたメニューを実装してください。
 
 #### 必須メニュー項目
 
@@ -93,7 +93,7 @@ var licenseManager = new InsightLicenseManager("HMSH");
 - 履歴ファイルについて
 - よくある質問 (FAQ)
 - ショートカットキー一覧
-- HarmonicSheetについて
+- InsightOfficeSheetについて
 
 ### 6. ヘルプシステム
 
@@ -111,7 +111,7 @@ var licenseManager = new InsightLicenseManager("HMSH");
 
 ### 7. 履歴ファイル（.hsheet）
 
-HarmonicSheet は変更履歴を `.hsheet` ファイル（ZIP アーカイブ）として保存します。
+InsightOfficeSheet は変更履歴を `.hsheet` ファイル（ZIP アーカイブ）として保存します。
 
 ```
 元ファイル: C:\Users\data\売上.xlsx
@@ -145,7 +145,7 @@ HarmonicSheet は変更履歴を `.hsheet` ファイル（ZIP アーカイブ）
 - [ ] Ivory (#FAF8F5) が背景色として使用されている
 - [ ] 青色がプライマリとして使用されていない
 - [ ] Syncfusion キーが ThirdPartyLicenses 経由で登録されている
-- [ ] InsightLicenseManager が "HMSH" で初期化されている
+- [ ] InsightLicenseManager が "IOSH" で初期化されている
 - [ ] ライセンス画面が Insight Slides 形式に準拠
 - [ ] メニュー構造が menu-structure.json に準拠
 - [ ] ヘルプメニューから各ガイドにアクセスできる

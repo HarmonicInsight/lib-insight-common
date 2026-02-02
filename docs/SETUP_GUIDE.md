@@ -8,14 +8,19 @@ Insight Series の各リポジトリに insight-common を組み込む手順で�
 
 | リポジトリ | 技術スタック | 製品コード |
 |-----------|-------------|-----------|
-| SalesInsight | Tauri + React + TypeScript | `SALES` |
-| InsightSlide | Python + Tkinter | `SLIDE` |
-| InsightPy | Python | `PY` |
-| InterviewInsight | Tauri + React + TypeScript | `INTV` |
+| InsightOfficeSlide | Python + Tkinter | `INSS` |
+| InsightOfficeSheet | C# + WPF | `IOSH` |
+| InsightOfficeDoc | C# + WPF | `IOSD` |
+| InsightPy | Python | `INPY` |
+| InsightMovie | Python | `INMV` |
+| InsightImageGen | Python | `INIG` |
+| InsightBot | Python | `INBT` |
+| InsightNoCodeAnalyzer | Tauri + React + TypeScript | `INCA` |
+| InterviewInsight | Tauri + React + TypeScript | `IVIN` |
 
 ---
 
-## TypeScript 製品 (SalesInsight, InterviewInsight)
+## TypeScript 製品 (InsightNoCodeAnalyzer, InterviewInsight)
 
 ### Step 1: Submodule 追加
 
@@ -88,7 +93,7 @@ export default defineConfig({
 ```typescript
 import { LicenseValidator, getFeatureLimits, type LicenseTier, type FeatureLimits } from '@insight/license';
 
-const PRODUCT_CODE = 'SALES'; // 製品に合わせて変更
+const PRODUCT_CODE = 'INCA'; // 製品に合わせて変更
 const LICENSE_STORAGE_KEY = 'insight_license_key';
 
 class LicenseManager {
@@ -252,7 +257,7 @@ export default App;
 
 ---
 
-## Python 製品 (InsightSlide, InsightPy)
+## Python 製品 (InsightOfficeSlide, InsightPy)
 
 ### Step 1: Submodule 追加
 
@@ -284,7 +289,7 @@ from pathlib import Path
 from typing import Optional
 from license.python import LicenseValidator, get_feature_limits, LicenseTier
 
-PRODUCT_CODE = 'SLIDE'  # 製品に合わせて変更
+PRODUCT_CODE = 'INSS'  # 製品に合わせて変更
 LICENSE_FILE = Path.home() / '.insight' / 'license.json'
 
 class LicenseManager:
@@ -414,7 +419,7 @@ from src.i18n_helper import _
 from src.decorators import require_license, require_feature
 
 # ライセンス有効化
-result = license_manager.activate('INS-SLIDE-PRO-2501-1534-A7')
+result = license_manager.activate('INS-INSS-PRO-2501-1534-A7')
 print(result['message'])
 
 # 翻訳
@@ -437,7 +442,7 @@ def sync_to_cloud():
 ### TypeScript 製品
 
 ```
-SalesInsight/
+InsightNoCodeAnalyzer/
 ├── apps/
 │   └── desktop/
 │       ├── src/
@@ -460,7 +465,7 @@ SalesInsight/
 ### Python 製品
 
 ```
-InsightSlide/
+InsightOfficeSlide/
 ├── src/
 │   ├── __init__.py             ← パス設定
 │   ├── license_manager.py

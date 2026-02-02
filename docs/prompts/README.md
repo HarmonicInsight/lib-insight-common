@@ -52,7 +52,7 @@ claude
 | SalesInsight | [SALESINSIGHT_SETUP.md](./SALESINSIGHT_SETUP.md) | `SALES` | Tauri + React + TypeScript |
 | InsightSlide | [INSIGHTSLIDE_SETUP.md](./INSIGHTSLIDE_SETUP.md) | `SLIDE` | Python + Tkinter |
 | InsightPy | [INSIGHTPY_SETUP.md](./INSIGHTPY_SETUP.md) | `PY` | Python |
-| InterviewInsight | [INTERVIEWINSIGHT_SETUP.md](./INTERVIEWINSIGHT_SETUP.md) | `INTV` | Tauri + React + TypeScript |
+| InterviewInsight | [INTERVIEWINSIGHT_SETUP.md](./INTERVIEWINSIGHT_SETUP.md) | `IVIN` | Tauri + React + TypeScript |
 
 ### 環境構築
 

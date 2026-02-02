@@ -24,12 +24,15 @@ from typing import Optional, Dict, Any
 
 class ProductCode(Enum):
     """製品コード（4文字）"""
-    INSS = "INSS"  # InsightSlide Standard
-    INSP = "INSP"  # InsightSlide Pro
-    INPY = "INPY"  # InsightPy Standard
-    FGIN = "FGIN"  # ForguncyInsight Standard
+    INSS = "INSS"  # InsightOfficeSlide
+    IOSH = "IOSH"  # InsightOfficeSheet
+    IOSD = "IOSD"  # InsightOfficeDoc
+    INPY = "INPY"  # InsightPy
     INMV = "INMV"  # InsightMovie
     INBT = "INBT"  # InsightBot (RPA)
+    INCA = "INCA"  # InsightNoCodeAnalyzer
+    INIG = "INIG"  # InsightImageGen
+    IVIN = "IVIN"  # InterviewInsight
 
 
 class Plan(Enum):
@@ -40,12 +43,15 @@ class Plan(Enum):
 
 
 PRODUCT_NAMES: Dict[ProductCode, str] = {
-    ProductCode.INSS: "InsightSlide Standard",
-    ProductCode.INSP: "InsightSlide Pro",
+    ProductCode.INSS: "InsightOfficeSlide",
+    ProductCode.IOSH: "InsightOfficeSheet",
+    ProductCode.IOSD: "InsightOfficeDoc",
     ProductCode.INPY: "InsightPy",
-    ProductCode.FGIN: "ForguncyInsight",
     ProductCode.INMV: "InsightMovie",
     ProductCode.INBT: "InsightBot",
+    ProductCode.INCA: "InsightNoCodeAnalyzer",
+    ProductCode.INIG: "InsightImageGen",
+    ProductCode.IVIN: "InterviewInsight",
 }
 
 PLAN_NAMES: Dict[Plan, str] = {
@@ -56,11 +62,15 @@ PLAN_NAMES: Dict[Plan, str] = {
 
 # 製品と対応プラン
 PRODUCT_PLANS: Dict[str, list] = {
-    "InsightSlide": [ProductCode.INSS, ProductCode.INSP],
+    "InsightOfficeSlide": [ProductCode.INSS],
+    "InsightOfficeSheet": [ProductCode.IOSH],
+    "InsightOfficeDoc": [ProductCode.IOSD],
     "InsightPy": [ProductCode.INPY],
-    "ForguncyInsight": [ProductCode.FGIN],
     "InsightMovie": [ProductCode.INMV],
     "InsightBot": [ProductCode.INBT],
+    "InsightNoCodeAnalyzer": [ProductCode.INCA],
+    "InsightImageGen": [ProductCode.INIG],
+    "InterviewInsight": [ProductCode.IVIN],
 }
 
 # トライアル期間（日）
@@ -69,7 +79,7 @@ TRIAL_DAYS = 14
 # ライセンスキー正規表現
 # 形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 LICENSE_KEY_REGEX = re.compile(
-    r"^(INSS|INSP|INPY|FGIN|INMV|INBT)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+    r"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
 )
 
 
@@ -170,7 +180,7 @@ class LicenseManager:
     def __init__(self, product: str, config_dir: Optional[Path] = None):
         """
         Args:
-            product: 製品名（InsightSlide, InsightPy, ForguncyInsight）
+            product: 製品名（InsightOfficeSlide, InsightPy, InterviewInsight, etc.）
             config_dir: 設定保存ディレクトリ（省略時はデフォルト）
         """
         self.product = product

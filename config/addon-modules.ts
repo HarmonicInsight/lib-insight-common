@@ -5,7 +5,7 @@
  * 【設計方針】
  * ============================================================================
  *
- * InsightOffice 系アプリ（HMSH/HMDC/HMSL）は、コア機能に加えて
+ * InsightOffice 系アプリ（IOSH/IOSD）は、コア機能に加えて
  * アドインモジュールを追加・削除できるプラグインアーキテクチャを持つ。
  *
  * ## モジュールの種類
@@ -1110,7 +1110,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
  * - defaultEnabled: 初回起動時にデフォルトで ON になるモジュール
  */
 export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupport>> = {
-  HMSH: {
+  IOSH: {
     supportedModules: [
       'ai_assistant',
       'python_runtime',
@@ -1124,7 +1124,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
     ],
     defaultEnabled: ['ai_assistant', 'board', 'messaging'],
   },
-  HMDC: {
+  IOSD: {
     supportedModules: [
       'ai_assistant',
       'python_runtime',
@@ -1135,18 +1135,6 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'vrm_avatar',
     ],
     defaultEnabled: ['ai_assistant', 'reference_materials'],
-  },
-  HMSL: {
-    supportedModules: [
-      'ai_assistant',
-      'python_runtime',
-      'ai_code_editor',
-      'python_scripts',
-      'reference_materials',
-      'voice_input',
-      'vrm_avatar',
-    ],
-    defaultEnabled: ['ai_assistant'],
   },
   // INPY / INBT はアドインではなくコア機能として提供
   // InsightOffice 系のみがアドイン対象
@@ -1454,7 +1442,7 @@ export function getDependencyChecks(moduleId: string): ExternalDependency[] {
  * @example
  * ```typescript
  * const enabledModules = ['ai_assistant', 'python_runtime', 'reference_materials'];
- * const allTools = getToolsForEnabledModules('HMSH', enabledModules);
+ * const allTools = getToolsForEnabledModules('IOSH', enabledModules);
  * // → SPREADSHEET_TOOLS + python_runtime tools + reference_materials tools
  * ```
  */
