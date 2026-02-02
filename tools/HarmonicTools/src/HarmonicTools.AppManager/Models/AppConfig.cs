@@ -127,7 +127,7 @@ public class AppConfig
                 {
                     Name = "InsightSlide",
                     ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C2"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
                     SolutionPath = "InsightOfficeSlide.sln",
                     ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
                     TestProjectPath = "",

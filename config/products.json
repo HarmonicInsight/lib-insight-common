@@ -74,7 +74,7 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/app-insight-slide-win-C2",
+        "repository": "HarmonicInsight/app-Insight-slide",
         "releasesRepository": "HarmonicInsight/releases",
         "sharedLibrary": "HarmonicInsight.Common",
         "features": [
