@@ -14,10 +14,15 @@ git submodule add https://github.com/HarmonicInsight/insight-common.git
 
 | アプリ | コード |
 |--------|--------|
-| SalesInsight | `SALES` |
-| InsightSlide | `SLIDE` |
-| InsightPy | `PY` |
-| InterviewInsight | `INTV` |
+| InsightOfficeSlide | `INSS` |
+| InsightOfficeSheet | `IOSH` |
+| InsightOfficeDoc | `IOSD` |
+| InsightPy | `INPY` |
+| InsightMovie | `INMV` |
+| InsightImageGen | `INIG` |
+| InsightBot | `INBT` |
+| InsightNoCodeAnalyzer | `INCA` |
+| InterviewInsight | `IVIN` |
 
 ## 3. ライセンス検証を実装
 
@@ -27,7 +32,7 @@ git submodule add https://github.com/HarmonicInsight/insight-common.git
 import { LicenseValidator, getFeatureLimits } from './insight-common/license/typescript';
 
 const validator = new LicenseValidator();
-const PRODUCT = 'SALES'; // あなたの製品コード
+const PRODUCT = 'INSS'; // あなたの製品コード
 
 // 検証
 const result = validator.validate(licenseKey, expiresAt);
@@ -43,7 +48,7 @@ if (result.isValid && validator.isProductCovered(result, PRODUCT)) {
 from insight_common.license import LicenseValidator, ProductCode, get_feature_limits
 
 validator = LicenseValidator()
-PRODUCT = ProductCode.SLIDE  # あなたの製品コード
+PRODUCT = ProductCode.INSS  # あなたの製品コード
 
 # 検証
 result = validator.validate(license_key, expires_at)
@@ -58,11 +63,11 @@ if result.is_valid and validator.is_product_covered(result, PRODUCT):
 import colors from './insight-common/brand/colors.json';
 
 // 共通カラー
-const primary = colors.brand.primary.main;      // #2563EB
-const success = colors.semantic.success.main;   // #10B981
+const primary = colors.brand.primary.main;      // #B8942F
+const success = colors.semantic.success.main;   // #16A34A
 
 // 製品固有カラー
-const productColor = colors.products.salesInsight.primary;
+const productColor = colors.products.insightOfficeSlide.primary;
 ```
 
 ## 5. 法務文書をリンク

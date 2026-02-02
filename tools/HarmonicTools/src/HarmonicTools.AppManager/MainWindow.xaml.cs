@@ -726,7 +726,7 @@ public partial class MainWindow : Window
         var name = EditName.Text.Trim();
         if (string.IsNullOrEmpty(name)) return;
 
-        // Generate product code from name (e.g. "HarmonicSheet" -> "HMSH")
+        // Generate product code from name (e.g. "InsightOfficeSheet" -> "IOSH")
         EditProductCode.Text = GenerateProductCode(name);
 
         // Auto-fill paths using the convention:
@@ -744,7 +744,7 @@ public partial class MainWindow : Window
     private static string GenerateProductCode(string name)
     {
         // Extract uppercase letters or word starts to make a short code
-        // e.g. "HarmonicSheet" -> "HS", then pad to 4 chars -> "HMSH"
+        // e.g. "InsightOfficeSheet" -> "IOS", then pad to 4 chars -> "IOSH"
         // Strategy: take first 2 chars of each PascalCase word
         var words = new List<string>();
         var current = "";

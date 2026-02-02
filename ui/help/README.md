@@ -1,6 +1,6 @@
-# HarmonicSheet ヘルプコンテンツ
+# InsightOfficeSheet ヘルプコンテンツ
 
-> このフォルダには、HarmonicSheet のアプリ内ヘルプとして表示するドキュメントが含まれています。
+> このフォルダには、InsightOfficeSheet のアプリ内ヘルプとして表示するドキュメントが含まれています。
 
 ---
 
@@ -24,7 +24,7 @@
   ├── 履歴ファイルについて   → HISTORY_FILES.md
   ├── よくある質問           → FAQ.md
   ├── ショートカットキー一覧 → QUICK_START.md#ショートカットキー一覧
-  └── HarmonicSheetについて  → About ダイアログ（アプリ内実装）
+  └── InsightOfficeSheetについて  → About ダイアログ（アプリ内実装）
 ```
 
 ---

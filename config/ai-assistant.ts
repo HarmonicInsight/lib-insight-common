@@ -1,7 +1,7 @@
 /**
  * AI アシスタント 共通設定
  *
- * InsightOffice 系アプリ（INSS/INSP/HMSH/HMDC/HMSL）で共有する
+ * InsightOffice 系アプリ（INSS/IOSH/IOSD/INPY/INBT）で共有する
  * AI アシスタントのペルソナ・プロンプト・ツール定義・型定義
  *
  * 詳細仕様: standards/AI_ASSISTANT.md
@@ -217,10 +217,8 @@ export type AiContextType = 'slide' | 'spreadsheet' | 'document' | 'code';
 export function getAiContextType(product: ProductCode): AiContextType | null {
   const contextMap: Partial<Record<ProductCode, AiContextType>> = {
     INSS: 'slide',
-    INSP: 'slide',
-    HMSL: 'slide',
-    HMSH: 'spreadsheet',
-    HMDC: 'document',
+    IOSH: 'spreadsheet',
+    IOSD: 'document',
     INPY: 'code',
     INBT: 'code',
   };
@@ -301,14 +299,14 @@ ${product === 'INBT' ? `【InsightBot 固有】
 ユーザーの質問や要望に丁寧に回答してください。`;
 
       case 'spreadsheet':
-        return `You are an AI assistant for HarmonicSheet, an Excel version control application.
+        return `You are an AI assistant for InsightOfficeSheet, an Excel version control application.
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
 Respond in the same language as the user's message.`;
 
       case 'document':
-        return `あなたはHarmonicDocのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
+        return `あなたはInsightOfficeDocのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
 ユーザーのメッセージと同じ言語で回答してください。
 
 主な機能：
@@ -386,14 +384,14 @@ Key capabilities:
 Please respond helpfully to user questions and requests.`;
 
     case 'spreadsheet':
-      return `You are an AI assistant for HarmonicSheet, an Excel version control application.
+      return `You are an AI assistant for InsightOfficeSheet, an Excel version control application.
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
 Respond in the same language as the user's message.`;
 
     case 'document':
-      return `You are an AI assistant for HarmonicDoc, a Word document operations and automation tool.
+      return `You are an AI assistant for InsightOfficeDoc, a Word document operations and automation tool.
 Respond in the same language as the user's message.
 
 Key capabilities:
@@ -465,11 +463,11 @@ Return an empty array [] if no corrections are needed.`;
 }
 
 // =============================================================================
-// スプレッドシート Tool Use 定義（HMSH 標準）
+// スプレッドシート Tool Use 定義（IOSH 標準）
 // =============================================================================
 
 /**
- * HarmonicSheet 用のスプレッドシートツール定義
+ * InsightOfficeSheet 用のスプレッドシートツール定義
  *
  * 使い方:
  * ```typescript
@@ -839,7 +837,7 @@ export const AI_FEATURE_KEY = 'ai_assistant';
 /**
  * AI アシスタントが利用可能なプラン
  */
-export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'PRO', 'ENT'];
+export const AI_ALLOWED_PLANS: PlanCode[] = ['FREE', 'TRIAL', 'PRO', 'ENT'];
 
 /**
  * AI アシスタントが利用可能かチェック
@@ -856,7 +854,7 @@ export function canUseAiAssistant(plan: PlanCode): boolean {
 export const AI_EDITOR_FEATURE_KEY = 'ai_editor';
 
 /** AI エディターが利用可能なプラン */
-export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'PRO', 'ENT'];
+export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['FREE', 'TRIAL', 'PRO', 'ENT'];
 
 /** AI エディターが利用可能かチェック */
 export function canUseAiEditor(plan: PlanCode): boolean {
@@ -876,7 +874,7 @@ export function isCodeEditorProduct(product: ProductCode): boolean {
  * const tools = getToolsForProduct('INPY');
  * // → CODE_EDITOR_TOOLS（Python コードエディター用）
  *
- * const tools = getToolsForProduct('HMSH');
+ * const tools = getToolsForProduct('IOSH');
  * // → SPREADSHEET_TOOLS（スプレッドシート用）
  * ```
  */

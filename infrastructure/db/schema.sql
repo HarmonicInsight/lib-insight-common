@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS licenses (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    product_code TEXT NOT NULL,          -- INSS, INSP, INPY, FGIN, etc.
+    product_code TEXT NOT NULL,          -- INSS, IOSH, IOSD, INPY, INMV, INBT, INCA, INIG, IVIN
     plan TEXT NOT NULL DEFAULT 'FREE',   -- FREE, TRIAL, STD, PRO, ENT
     license_key TEXT,
     key_type TEXT DEFAULT 'production',  -- production, provisional, nfr, demo
@@ -114,9 +114,9 @@ CREATE TABLE IF NOT EXISTS partners (
     contract_start_date TIMESTAMPTZ NOT NULL,
     contract_end_date TIMESTAMPTZ NOT NULL,
     regions TEXT[] DEFAULT '{}',              -- 対象地域: ['JP', 'US', ...]
-    authorized_products TEXT[] DEFAULT '{}',  -- 取扱製品: ['INSS', 'HMSH', ...]
-    nfr_remaining JSONB DEFAULT '{}',         -- NFR残数: {"INSS": 2, "HMSH": 2}
-    demo_remaining JSONB DEFAULT '{}',        -- デモ残数: {"INSS": 5, "HMSH": 5}
+    authorized_products TEXT[] DEFAULT '{}',  -- 取扱製品: ['INSS', 'IOSH', ...]
+    nfr_remaining JSONB DEFAULT '{}',         -- NFR残数: {"INSS": 2, "IOSH": 2}
+    demo_remaining JSONB DEFAULT '{}',        -- デモ残数: {"INSS": 5, "IOSH": 5}
     api_key_hash TEXT UNIQUE,                -- パートナーポータル認証用
     api_key_prefix TEXT,                     -- 表示用 "hpk_abc..."
     notes TEXT,

@@ -5,24 +5,27 @@ Insight Series製品群の共通ライセンス管理モジュールです。
 ## ライセンスキー形式
 
 ```
-INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
+PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
 例:
-INS-ALL-TRIAL-A1B2-C3D4-X9     # 全製品トライアル
-INS-ALL-PRO-E5F6-G7H8-Y0       # 全製品Professional
-INS-SALES-STD-I9J0-K1L2-Z1     # SalesInsight Standard
+INSS-TRIAL-2701-A1B2-C3D4-X9Z1   # InsightOfficeSlide トライアル
+IOSH-PRO-2701-E5F6-G7H8-Y0W2     # InsightOfficeSheet Professional
+IVIN-STD-2701-I9J0-K1L2-Z1A3     # InterviewInsight Standard
 ```
 
 ## 製品コード
 
 | コード | 製品名 | 説明 |
 |--------|--------|------|
-| `SALES` | SalesInsight | 営業支援 |
-| `SLIDE` | InsightSlide | プレゼン支援 |
-| `PY` | InsightPy | Python開発支援 |
-| `INTV` | InterviewInsight | 面接支援 |
-| `FORG` | InsightForguncy | Forguncy開発支援 |
-| `ALL` | Insight Series Bundle | 全製品バンドル |
+| `INSS` | InsightOfficeSlide | プレゼン支援 |
+| `IOSH` | InsightOfficeSheet | スプレッドシート支援 |
+| `IOSD` | InsightOfficeDoc | ドキュメント支援 |
+| `INPY` | InsightPy | Python開発支援 |
+| `INMV` | InsightMovie | 動画作成 |
+| `INBT` | InsightBot | RPA自動化 |
+| `INCA` | InsightNoCodeAnalyzer | ローコード解析 |
+| `INIG` | InsightImageGen | AI画像・音声生成 |
+| `IVIN` | InterviewInsight | 面接支援 |
 
 ## ティア
 
@@ -110,25 +113,26 @@ if info.is_valid:
 
 ```
 Phase 1: リリース初期
-  → INS-ALL-TRIAL-XXXX-XXXX-XX  (期限指定でトライアル配布)
+  → INSS-TRIAL-2701-XXXX-XXXX-XXXX  (期限指定でトライアル配布)
 
 Phase 2: 正式販売
-  → INS-ALL-STD-XXXX-XXXX-XX   (Standard版)
-  → INS-ALL-PRO-XXXX-XXXX-XX   (Professional版)
+  → INSS-STD-2701-XXXX-XXXX-XXXX   (Standard版)
+  → INSS-PRO-2701-XXXX-XXXX-XXXX   (Professional版)
 
-Phase 3: 製品別販売（将来）
-  → INS-SALES-PRO-XXXX-XXXX-XX  (製品別に分離)
+Phase 3: 全製品展開
+  → IOSH-PRO-2701-XXXX-XXXX-XXXX  (InsightOfficeSheet)
+  → IVIN-STD-2701-XXXX-XXXX-XXXX  (InterviewInsight)
 ```
 
 ## キー構成
 
 | 部分 | 説明 |
 |------|------|
-| `INS` | Insight Series固定プレフィックス |
-| `[PRODUCT]` | 製品コード |
-| `[TIER]` | ライセンスティア |
-| `[XXXX]-[XXXX]` | 8桁のランダム英数字 |
-| `[CC]` | 2桁のチェックサム |
+| `PPPP` | 製品コード（4文字） |
+| `PLAN` | プラン（TRIAL/STD/PRO） |
+| `YYMM` | 有効期限（年月） |
+| `HASH` | メールハッシュ（SHA256 Base32 先頭4文字） |
+| `SIG1-SIG2` | HMAC-SHA256署名（Base32 先頭8文字） |
 
 ## 機能
 

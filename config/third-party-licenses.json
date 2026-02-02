@@ -13,6 +13,6 @@
     "issuedDate": "2026-01-31",
     "expiresDate": "2026-02-07",
     "envVar": "SYNCFUSION_LICENSE_KEY",
-    "usedBy": ["HMSH", "HMDC", "HMSL"]
+    "usedBy": ["IOSH", "IOSD"]
   }
 }

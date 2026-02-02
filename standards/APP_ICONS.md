@@ -57,13 +57,13 @@
 ```xml
 <!-- .csproj -->
 <PropertyGroup>
-  <ApplicationIcon>Resources\HarmonicSheet.ico</ApplicationIcon>
+  <ApplicationIcon>Resources\InsightOfficeSheet.ico</ApplicationIcon>
 </PropertyGroup>
 ```
 
 ```xml
 <!-- MainWindow.xaml -->
-<Window Icon="Resources/HarmonicSheet.ico" ... >
+<Window Icon="Resources/InsightOfficeSheet.ico" ... >
 ```
 
 ### React / Next.js (Web)
@@ -131,16 +131,15 @@ export const metadata = {
 
 | 製品コード | 製品名 | シンボル | 説明 |
 |-----------|--------|---------|------|
-| HMSH | HarmonicSheet | スプレッドシートグリッド | ヘッダー行 + 行列グリッド |
-| HMDC | HarmonicDoc | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
-| HMSL | HarmonicSlide | プレゼン画面 + スタンド | スクリーン + コンテンツブロック |
-| INSS | InsightSlide | スライド + 矢印 | プレゼン + 抽出を示す矢印 |
-| INSP | InsightSlide Pro | スライド + 星 | プレゼン + Pro星マーク |
+| INSS | InsightOfficeSlide | スライド + 矢印 | プレゼン + 抽出を示す矢印 |
+| IOSH | InsightOfficeSheet | スプレッドシートグリッド | ヘッダー行 + 行列グリッド |
+| IOSD | InsightOfficeDoc | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
 | INPY | InsightPy | Python ロゴ風 | ヘビ or Py文字 |
+| INMV | InsightMovie | 再生ボタン | フィルムストリップ + 再生 |
+| INIG | InsightImageGen | 画像生成 | ブラシ + 画像フレーム |
 | INBT | InsightBot | ロボット | ロボットヘッド |
 | INCA | InsightNoCodeAnalyzer | 解析グラフ | フローチャート + 虫眼鏡 |
-| INMV | InsightMovie | 再生ボタン | フィルムストリップ + 再生 |
-| FGIN | ForguncyInsight | 連携矢印 | 双方向矢印 |
+| IVIN | InterviewInsight | インタビュー | マイク + 吹き出し |
 
 ---
 
@@ -155,7 +154,7 @@ export const metadata = {
 pip install Pillow
 
 # 使用例
-python scripts/generate-app-icon.py --product HarmonicSheet --output ./Resources/
+python scripts/generate-app-icon.py --product InsightOfficeSheet --output ./Resources/
 ```
 
 **生成フロー:**

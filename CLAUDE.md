@@ -120,7 +120,7 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 {
   "syncfusion": {
     "licenseKey": "Ngo9BigBOggjHTQxAR8/...",
-    "usedBy": ["HMSH", "HMDC", "HMSL"]
+    "usedBy": ["INSS", "IOSH", "IOSD"]
   }
 }
 ```
@@ -160,40 +160,39 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│  【A】コンサルティング連動型      年額 98万円〜398万円              │
+│  【A】法人向け（コンサルティング連動型）  年額 98万円〜398万円       │
 │  コンサル案件（数千万円規模）の一環として提供。少量・高単価。       │
-│  INCA / INBT / FGIN / INMV / INIG                                  │
+│  INCA / INBT / IVIN / INMV / INIG                                  │
 ├──────────────────────────────────────────────────────────────────────┤
-│  【B】グローバルスタンドアロン型   年額 49,800円〜148,000円         │
-│  Office系汎用ツール。5〜10万円帯でグローバルに大量販売。            │
-│  INSS / INSP / INPY / HMSH / HMDC / HMSL                          │
+│  【B】個人向け（ダウンロード＆インストール型）                       │
+│  FREE(AI20回) / STD ¥39,800 / PRO ¥49,800(AI100回)                │
+│  INSS / IOSH / IOSD / INPY / INMV / INIG                          │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-### 【A】コンサルティング連動型
+### 【A】法人向け（コンサルティング連動型）
 
 | コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
 |-------|-------|------|---------------|---------------|-----|
 | INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
-| INBT | InsightBot | Python RPA自動化ボット | ¥1,480,000 | ¥2,980,000 | 個別見積 |
-| FGIN | ForguncyInsight | Forguncy連携 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
-| INMV | InsightMovie | 画像・PPTから動画作成 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
-| INIG | InsightImageGen | AI画像・音声生成 | ¥980,000 | ¥1,980,000 | 個別見積 |
+| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| IVIN | InterviewInsight | 自動ヒアリング・業務調査支援 | 個別見積 | 個別見積 | 個別見積 |
+| INMV | InsightMovie | 画像・テキストから動画作成 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| INIG | InsightImageGen | 業務資料向けAI画像の大量自動生成 | ¥980,000 | ¥1,980,000 | 個別見積 |
 
 > **考え方**: コンサルティング開発案件（数千万円規模）の中で使用するツール。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。大量販売は不要。
 
-### 【B】グローバルスタンドアロン型
+### 【B】個人向け（ダウンロード＆インストール型）
 
-| コード | 製品名 | 説明 | FREE | STD（税抜/年） | PRO（税抜/年） | USD STD | USD PRO |
-|-------|-------|------|------|---------------|---------------|---------|---------|
-| INSS | InsightSlide | PowerPointコンテンツ抽出・更新 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
-| INSP | InsightSlide Pro | プロ向けPowerPointツール | — | ¥79,800 | ¥148,000 | $530 | $980 |
-| INPY | InsightPy | Windows自動化Python実行環境 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
-| HMSH | HarmonicSheet | Excelバージョン管理・チームコラボ | — | ¥59,800 | ¥118,000 | $400 | $780 |
-| HMDC | HarmonicDoc | Wordドキュメント操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
-| HMSL | HarmonicSlide | PowerPoint操作・自動化 | ✅ | ¥49,800 | ¥98,000 | $330 | $650 |
+| コード | 製品名 | 説明 | FREE | STD（税抜/年） | PRO（税抜/年） |
+|-------|-------|------|------|---------------|---------------|
+| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
+| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
+| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
+| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
 
-> **考え方**: Office系の汎用ツールとして単独でグローバル展開。5〜10万円帯で大量販売を目指す。全製品1ヶ月の無料トライアルあり。
+> **AI使用回数追加**: ¥10,000 / 200回（Opus含む全モデル対応）
+> **考え方**: FREE版でOpusのAI体験を提供し、PRO版への転換を促す。AIオプション＋AI使用料で収益化。
 
 ### 価格定義ファイル
 
@@ -202,10 +201,10 @@ import { getPrice, getSalesChannel } from '@/insight-common/config/pricing';
 
 // 製品の販売チャネルを確認
 getSalesChannel('INCA');  // 'consulting'
-getSalesChannel('INSS');  // 'standalone'
+getSalesChannel('INSS');  // 'individual'
 
 // 価格を取得
-getPrice('INSS', 'STD');  // { annualPrice: 49800, currency: 'JPY', monthlyEquivalent: 4150 }
+getPrice('INSS', 'STD');  // { annualPrice: 39800, currency: 'JPY', monthlyEquivalent: 3317 }
 getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEquivalent: 331667 }
 ```
 
@@ -281,7 +280,7 @@ strategy.targetMarkets;     // Phase別の展開マーケット
 strategy.positioning;       // 'PowerPointのコンテンツ抽出・一括更新を自動化...'
 
 // 地域で販売可能な製品を取得
-getProductsByRegion('US');   // ['INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL']
+getProductsByRegion('US');   // ['INSS', 'IOSH', 'IOSD', 'INPY']
 getProductsByRegion('JP');   // 全製品
 ```
 
@@ -313,9 +312,8 @@ getProductsByRegion('JP');   // 全製品
 
 | 製品 | リセラー販売 | 最低販売価格 | デモ | NFR |
 |------|:----------:|:----------:|:----:|:---:|
-| INSS / INSP / INPY | ✅ | 定価の80%以上 | 5本 | 2本 |
-| HMSH / HMDC / HMSL | ✅ | 定価の80%以上 | 5本 | 2本 |
-| INCA / INBT / FGIN / INMV / INIG | ❌ | — | — | — |
+| INSS / IOSH / IOSD / INPY | ✅ | 定価の80%以上 | 5本 | 2本 |
+| INCA / INBT / IVIN / INMV / INIG | ❌ | — | — | — |
 
 > **コンサル連動型はリセラー販売不可**（自社コンサル案件と一体のため）。
 
@@ -331,11 +329,11 @@ getProductsByRegion('JP');   // 全製品
 import { calculateWholesalePrice, getResellerProducts } from '@/insight-common/config/reseller-strategy';
 
 // リセラー販売可能な製品
-getResellerProducts();  // ['INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL']
+getResellerProducts();  // ['INSS', 'IOSH', 'IOSD', 'INPY']
 
-// Silver パートナーがINSS STD（¥49,800）を販売した場合
-calculateWholesalePrice(49800, 'silver');
-// { wholesalePrice: 34860, partnerProfit: 14940, discount: 0.30 }
+// Silver パートナーがINSS STD（¥39,800）を販売した場合
+calculateWholesalePrice(39800, 'silver');
+// { wholesalePrice: 27860, partnerProfit: 11940, discount: 0.30 }
 ```
 
 ## 8. ライセンスシステム
@@ -344,39 +342,41 @@ calculateWholesalePrice(49800, 'silver');
 
 | プラン | 説明 | 対象 | 有効期限 |
 |-------|------|------|---------|
-| FREE | 機能制限あり（※HMSHでは廃止、デフォルト=TRIAL） | — | 無期限 |
+| FREE | AI 20回付き無料版 | 全ユーザー | 無期限 |
 | TRIAL | 全機能利用可能（評価用） | 評価ユーザー | 14日間 |
 | STD | 標準機能（コラボレーション機能を除く） | 個人利用 | 365日 |
 | PRO | 全機能（コラボレーション含む） | 法人・チーム | 365日 |
 | ENT | カスタマイズ | 企業 | 要相談 |
 
-### HarmonicSheet (HMSH) 機能マトリクス
+### InsightOfficeSheet (IOSH) 機能マトリクス
 
-> **STD = 個人利用**（1人で数値を算出）、**PRO = 法人・チーム利用**（コラボレーション）
+> **FREE = AI 20回付き無料版**、**STD = AIなし**、**PRO = AI 100回付き（Opus対応）**
 
-| 機能 | TRIAL | STD | PRO | ENT |
-|------|:-----:|:---:|:---:|:---:|
-| Excel読み込み・編集 | ✅ | ✅ | ✅ | ✅ |
-| バージョン管理 | ✅ | ✅ | ✅ | ✅ |
-| 差分比較 | ✅ | ✅ | ✅ | ✅ |
-| セル変更ログ | ✅ | ✅ | ✅ | ✅ |
-| エクスポート | ✅ | ✅ | ✅ | ✅ |
-| 変更者表示 | ✅ | ❌ | ✅ | ✅ |
-| 掲示板 | ✅ | ❌ | ✅ | ✅ |
-| AIアシスタント | ✅ | ❌ | ✅ | ✅ |
-| メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
+| 機能 | FREE | TRIAL | STD | PRO | ENT |
+|------|:----:|:-----:|:---:|:---:|:---:|
+| Excel読み込み・編集 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| バージョン管理 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 差分比較 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| セル変更ログ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| エクスポート | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 変更者表示 | ❌ | ✅ | ❌ | ✅ | ✅ |
+| 掲示板 | ❌ | ✅ | ❌ | ✅ | ✅ |
+| AIアシスタント | ✅(20回) | ✅ | ❌ | ✅(100回) | ✅ |
+| AIコードエディター | ✅(20回) | ✅ | ❌ | ✅(100回) | ✅ |
+| メッセージ送信 | ❌ | ✅ | ❌ | ✅ | ✅ |
 
 ### InsightOffice AI アシスタント共通仕様
 
 > 詳細は `standards/AI_ASSISTANT.md` を参照
 
-**対象製品**: INSS / INSP / HMSH / HMDC / HMSL（全 InsightOffice 系アプリ）
+**対象製品**: INSS / IOSH / IOSD（全 InsightOffice 系アプリ）+ INPY / INBT
 
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
-| API キーモデル | **BYOK**（ユーザーが自分のキーを入力） |
-| ライセンス制御 | TRIAL / PRO / ENT のみ（STD / FREE は不可） |
+| AI モデル | **Opus** 含む全モデル（FREE/PRO 共通） |
+| ライセンス制御 | FREE: 20回 / PRO: 100回 / ENT: 無制限（STD は AI なし） |
+| 追加パック | ¥10,000 / 200回 |
 | ペルソナ | 3 キャラクター（Claude俊=Haiku、Claude恵=Sonnet、Claude学=Opus） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
@@ -397,12 +397,13 @@ import {
 } from '@/insight-common/config/ai-assistant';
 
 // ライセンスチェック
-canUseAiAssistant('PRO');  // true
-canUseAiAssistant('STD');  // false
+canUseAiAssistant('PRO');   // true
+canUseAiAssistant('FREE');  // true（20回制限）
+canUseAiAssistant('STD');   // false
 
 // システムプロンプト取得
-getBaseSystemPrompt('HMSH', 'ja');  // HarmonicSheet用プロンプト
-getBaseSystemPrompt('INSS', 'ja');  // InsightSlide用プロンプト
+getBaseSystemPrompt('IOSH', 'ja');  // InsightOfficeSheet用プロンプト
+getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
 ```
 
 ### ライセンスキー形式

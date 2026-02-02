@@ -22,7 +22,7 @@ const supabase = createClient(
 );
 
 // ライセンスキー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
-const LICENSE_KEY_REGEX = /^(INSS|INSP|INPY|FGIN|INMV)-(STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+const LICENSE_KEY_REGEX = /^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN)-(STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
 interface ActivateRequest {
   license_key: string;

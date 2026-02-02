@@ -672,6 +672,6 @@ protected override void OnStartup(StartupEventArgs e)
 
 ## 参考実装
 
-- **HarmonicSheet**: `app-Insight-excel` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
+- **InsightOfficeSheet**: `app-Insight-excel` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
 - **InsightNoCodeAnalyzer**: `app-nocode-analyzer-C` リポジトリ
 - **InsightSlide**: ライセンス画面のリファレンス実装

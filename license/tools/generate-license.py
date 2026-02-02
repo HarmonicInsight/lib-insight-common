@@ -5,7 +5,7 @@
 キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
 使用方法:
-  python generate-license.py --product INSP --plan PRO --email user@example.com --expires 2027-01-31
+  python generate-license.py --product INSS --plan PRO --email user@example.com --expires 2027-01-31
   python generate-license.py --product INSS --trial --email user@example.com
 """
 
@@ -35,17 +35,14 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 例:
-  # InsightSlide Pro（2027年1月まで）
-  python generate-license.py -p INSP --plan PRO -e user@example.com --expires 2027-01-31
+  # InsightOfficeSlide Pro（2027年1月まで）
+  python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-01-31
 
-  # InsightSlide Standard（12ヶ月）
+  # InsightOfficeSlide Standard（12ヶ月）
   python generate-license.py -p INSS --plan STD -e user@example.com -m 12
 
   # InsightPy トライアル（14日間）
   python generate-license.py -p INPY --trial -e user@example.com
-
-  # ForguncyInsight Standard
-  python generate-license.py -p FGIN --plan STD -e user@example.com -m 12
 
   # InsightMovie Pro（12ヶ月）
   python generate-license.py -p INMV --plan PRO -e user@example.com -m 12
@@ -53,16 +50,19 @@ def parse_args():
   # InsightBot Pro（12ヶ月）
   python generate-license.py -p INBT --plan PRO -e user@example.com -m 12
 
-  # 10個一括発行（同じメールで複数キーは発行不可、異なるメールが必要）
-  python generate-license.py -p INSS --plan STD -e user@example.com -m 12
+  # InterviewInsight Standard（12ヶ月）
+  python generate-license.py -p IVIN --plan STD -e user@example.com -m 12
 
 製品コード:
-  INSS  - InsightSlide Standard
-  INSP  - InsightSlide Pro
+  INSS  - InsightOfficeSlide
+  IOSH  - InsightOfficeSheet
+  IOSD  - InsightOfficeDoc
   INPY  - InsightPy
-  FGIN  - ForguncyInsight
   INMV  - InsightMovie
   INBT  - InsightBot
+  INCA  - InsightNoCodeAnalyzer
+  INIG  - InsightImageGen
+  IVIN  - InterviewInsight
 
 プラン:
   TRIAL  - トライアル（14日間）
@@ -75,7 +75,7 @@ def parse_args():
         '-p', '--product',
         type=str,
         required=True,
-        choices=['INSS', 'INSP', 'INPY', 'FGIN', 'INMV', 'INBT'],
+        choices=['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INBT', 'INCA', 'INIG', 'IVIN'],
         help='製品コード'
     )
 

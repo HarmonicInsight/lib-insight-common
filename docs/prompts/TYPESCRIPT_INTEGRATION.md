@@ -10,7 +10,7 @@
 以下の手順で insight-common を統合してください。
 
 ## 製品情報
-- 製品コード: SALES (または INTV)
+- 製品コード: SALES (または IVIN)
 - 技術スタック: Tauri + React + TypeScript
 
 ## 実行手順

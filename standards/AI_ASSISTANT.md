@@ -1,6 +1,6 @@
 # AI アシスタント 標準仕様
 
-> InsightOffice 系アプリ（INSS/INSP/HMSH/HMDC/HMSL）共通の AI アシスタント実装ガイド
+> InsightOffice 系アプリ（INSS/IOSH/IOSD）共通の AI アシスタント実装ガイド
 
 ---
 
@@ -13,18 +13,16 @@ InsightOffice 系アプリには、Claude API を利用した AI アシスタン
 
 | コード | 製品名 | AI の役割 |
 |--------|--------|-----------|
-| INSS | InsightSlide | スライドテキストの校正・改善提案 |
-| INSP | InsightSlide Pro | INSS の機能を継承 |
-| HMSH | HarmonicSheet | Excel データの操作・分析・書式設定（Tool Use） |
-| HMDC | HarmonicDoc | Word ドキュメントの校正・要約・構成提案 |
-| HMSL | HarmonicSlide | スライドの校正・構成アドバイス |
+| INSS | InsightOfficeSlide | スライドテキストの校正・改善提案 |
+| IOSH | InsightOfficeSheet | Excel データの操作・分析・書式設定（Tool Use） |
+| IOSD | InsightOfficeDoc | Word ドキュメントの校正・要約・構成提案 |
 
 ### 設計原則
 
 1. **BYOK（Bring Your Own Key）モデル** — ユーザーが自身の Claude API キーを入力
 2. **ペルソナシステム** — 3 つの AI キャラクターでモデルを使い分け
 3. **プロダクトコンテキスト** — 開いているファイルの内容を AI に自動提供
-4. **ライセンス制御** — TRIAL / PRO / ENT のみ利用可能（STD は不可）
+4. **ライセンス制御** — FREE（20クレジット）/ TRIAL / PRO / ENT で利用可能（STD は不可）
 5. **Tool Use 対応** — スプレッドシート等で AI がデータを直接操作可能
 
 ---
@@ -206,7 +204,7 @@ anthropic-version: 2023-06-01
 }
 ```
 
-### 4.3 Tool Use 対応（HMSH など）
+### 4.3 Tool Use 対応（IOSH など）
 
 スプレッドシートやドキュメント操作が必要な製品では Tool Use を使用する。
 
@@ -262,7 +260,7 @@ anthropic-version: 2023-06-01
 
 ### 5.3 製品別プロンプト
 
-#### InsightSlide (INSS / INSP / HMSL)
+#### InsightOfficeSlide (INSS)
 
 ```
 あなたはPowerPointプレゼンテーションの内容を分析・修正するAIアシスタントです。
@@ -282,20 +280,20 @@ anthropic-version: 2023-06-01
 ユーザーの質問や要望に丁寧に回答してください。
 ```
 
-#### HarmonicSheet (HMSH)
+#### InsightOfficeSheet (IOSH)
 
 ```
-You are an AI assistant for HarmonicSheet, an Excel version control application.
+You are an AI assistant for InsightOfficeSheet, an Excel version control application.
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
 Respond in the same language as the user's message.
 ```
 
-#### HarmonicDoc (HMDC)
+#### InsightOfficeDoc (IOSD)
 
 ```
-あなたはHarmonicDocのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
+あなたはInsightOfficeDocのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
 ユーザーのメッセージと同じ言語で回答してください。
 
 主な機能：
@@ -311,7 +309,7 @@ Respond in the same language as the user's message.
 
 システムプロンプトの末尾に、開いているファイルの内容を動的に追加する。
 
-**スライド系（INSS / INSP / HMSL）:**
+**スライド系（INSS）:**
 ```
 現在開いているPowerPointの内容：
 === スライド 1 ===
@@ -319,7 +317,7 @@ row=1, slideNumber=1, shapeId="Title1", text="プレゼンタイトル"
 row=2, slideNumber=1, shapeId="Body1", text="本文テキスト"
 ```
 
-**シート系（HMSH）:**
+**シート系（IOSH）:**
 ```
 現在のワークブック情報:
 - ファイル名: example.xlsx
@@ -366,9 +364,9 @@ A	B	C	...
 
 ---
 
-## 7. Tool Use 定義（HMSH 標準）
+## 7. Tool Use 定義（IOSH 標準）
 
-HarmonicSheet で利用する 6 つの標準ツール:
+InsightOfficeSheet で利用する 6 つの標準ツール:
 
 ### 7.1 ツール一覧
 
@@ -392,7 +390,7 @@ HarmonicSheet で利用する 6 つの標準ツール:
 
 ### 7.3 他製品への Tool Use 拡張
 
-HMDC（Word 操作）向けに、以下のツールを将来追加予定:
+IOSD（Word 操作）向けに、以下のツールを将来追加予定:
 
 | ツール名 | 説明 |
 |---------|------|
@@ -416,7 +414,7 @@ HMDC（Word 操作）向けに、以下のツールを将来追加予定:
   name: 'AI Assistant',
   nameJa: 'AIアシスタント',
   type: 'boolean',
-  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+  allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
   descriptionJa: 'AIチャットによるファイル操作支援',
 }
 ```
@@ -425,7 +423,7 @@ HMDC（Word 操作）向けに、以下のツールを将来追加予定:
 
 | プラン | AI アシスタント | 理由 |
 |--------|:----------:|------|
-| FREE | ❌ | 無料枠では提供しない |
+| FREE | ✅（20クレジット） | 無料枠で体験提供 |
 | TRIAL | ✅ | 全機能評価のため |
 | STD | ❌ | 個人利用プラン（AI は PRO の訴求ポイント） |
 | PRO | ✅ | 法人・チーム向け全機能 |
@@ -449,7 +447,7 @@ private void AiToggle_Click(object sender, RoutedEventArgs e)
 
 // PlanCode 拡張メソッド
 public static bool HasAiFeature(this PlanCode plan) =>
-    plan is PlanCode.Trial or PlanCode.Pro or PlanCode.Ent;
+    plan is PlanCode.Free or PlanCode.Trial or PlanCode.Pro or PlanCode.Ent;
 ```
 
 **TypeScript:**
@@ -465,7 +463,7 @@ if (!checkFeature(productCode, 'ai_assistant', userPlan)) {
 
 ### 8.4 アップグレードダイアログ
 
-AI ボタン押下時に STD/FREE ユーザーに表示するダイアログ:
+AI ボタン押下時に STD ユーザーに表示するダイアログ:
 
 ```
 ┌────────────────────────────────────────┐
@@ -652,7 +650,7 @@ public class ToolResultBlock
 - [ ] 入力エリア（可変高さ TextBox、アドバイス/チェックボタン）
 - [ ] 処理中インジケーター（ペルソナアイコン + 「が考え中...」）
 - [ ] キャンセル機能（CancellationToken）
-- [ ] ライセンスゲート（TRIAL / PRO / ENT のみ、STD でアップグレード促進）
+- [ ] ライセンスゲート（FREE（20クレジット）/ TRIAL / PRO / ENT、STD でアップグレード促進）
 - [ ] チャット履歴永続化（JSON ファイル）
 - [ ] 設定永続化（API キー、ペルソナ、モデル）
 - [ ] エラーハンドリング（401 / 429 / 500 / タイムアウト）
@@ -660,19 +658,19 @@ public class ToolResultBlock
 
 ### 製品固有
 
-**スライド系（INSS / INSP / HMSL）:**
+**スライド系（INSS）:**
 - [ ] 構造化出力（内容チェック → JSON 修正提案）
 - [ ] 提案の `row` ベースマッチング
 - [ ] 提案の選択・一括反映・Undo
 
-**シート系（HMSH）:**
+**シート系（IOSH）:**
 - [ ] Tool Use 対応（6 ツール定義）
 - [ ] Tool Use ループ（最大 10 イテレーション）
 - [ ] ツール実行ステータス表示
 - [ ] 使用量トラッキング（コール数、トークン数、推定コスト）
 - [ ] Syncfusion SfSpreadsheet との連携（Dispatcher 経由）
 
-**ドキュメント系（HMDC）:**
+**ドキュメント系（IOSD）:**
 - [ ] 将来の Tool Use 対応準備（get_paragraphs 等）
 
 ---

@@ -204,7 +204,7 @@
 │                 │                               │                               │                              │
 │                 ▼                               ▼                               ▼                              │
 │  ┌─────────────────────────┐    ┌─────────────────────────┐    ┌─────────────────────────┐                     │
-│  │   harmonic-mart-gen     │    │   insight-slide (INSS)  │    │   insight-py (INSP)     │                     │
+│  │   harmonic-mart-gen     │    │   insight-slide (INSS)  │    │   insight-py (INPY)     │                     │
 │  │   (HMG)                 │    │                         │    │                         │                     │
 │  │   知識マート生成         │    │   スライド自動生成       │    │   Python学習支援         │                     │
 │  │   ├─ PDF/音声取り込み   │    │   ├─ 資料作成           │    │   ├─ 対話型学習          │                     │

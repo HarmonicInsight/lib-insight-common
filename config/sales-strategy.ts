@@ -14,16 +14,16 @@
  * │  │  販売: 直販（コンサル案件内）                                 │     │
  * │  │  顧客: 大手〜中堅企業のIT部門・DX推進部門                    │     │
  * │  │  KPI: 案件あたり単価 × コンサル案件数                        │     │
- * │  │  INCA / INBT / FGIN / INMV / INIG                           │     │
+ * │  │  INCA / INBT / INMV / INIG / IVIN                           │     │
  * │  └──────────────────────────────────────────────────────────────┘     │
  * │                                                                        │
- * │  【B】グローバルスタンドアロン型                                       │
+ * │  【B】グローバル個人向け型                                       │
  * │  ┌──────────────────────────────────────────────────────────────┐     │
  * │  │  市場: 日本 → 北米 → 欧州 → アジア                          │     │
  * │  │  販売: オンライン（自社サイト + ストア + リセラー）           │     │
  * │  │  顧客: Office業務ユーザー（個人〜中小企業）                  │     │
  * │  │  KPI: MRR / ARR / チャーンレート / LTV                      │     │
- * │  │  INSS / INSP / INPY / HMSH / HMDC / HMSL                   │     │
+ * │  │  INSS / IOSH / IOSD / INPY                   │     │
  * │  └──────────────────────────────────────────────────────────────┘     │
  * └────────────────────────────────────────────────────────────────────────┘
  */
@@ -196,7 +196,7 @@ const CONSULTING_MARKETING: MarketingChannel[] = [
 ];
 
 // =============================================================================
-// 【B】グローバルスタンドアロン型 — 販売戦略
+// 【B】グローバル個人向け型 — 販売戦略
 // =============================================================================
 
 const STANDALONE_MARKETS: TargetMarket[] = [
@@ -363,20 +363,6 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     positioning: 'Python × RPAで、既存のRPAツールでは実現できない柔軟な業務自動化を実現。コンサル案件の自動化基盤。',
   },
 
-  FGIN: {
-    productCode: 'FGIN',
-    channel: 'consulting',
-    targetMarkets: CONSULTING_MARKETS,
-    customerSegments: CONSULTING_SEGMENTS,
-    marketingChannels: CONSULTING_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.50,
-      noCreditCardRequired: true,
-    },
-    positioning: 'Forguncy案件の解析・最適化に特化。Forguncy導入企業のリプレース・拡張コンサルとセット。',
-  },
-
   INMV: {
     productCode: 'INMV',
     channel: 'consulting',
@@ -405,13 +391,27 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     positioning: 'Stable Diffusion + VOICEVOXを業務利用可能な形でパッケージ化。コンテンツ制作の内製化を支援。',
   },
 
+  IVIN: {
+    productCode: 'IVIN',
+    channel: 'consulting',
+    targetMarkets: CONSULTING_MARKETS,
+    customerSegments: CONSULTING_SEGMENTS,
+    marketingChannels: CONSULTING_MARKETING,
+    trialStrategy: {
+      durationDays: 30,
+      expectedConversionRate: 0.50,
+      noCreditCardRequired: true,
+    },
+    positioning: '面接プロセスをAIで解析・最適化。採用コンサルティング案件の中核ツールとして活用。',
+  },
+
   // =========================================================================
-  // グローバルスタンドアロン型
+  // グローバル個人向け型
   // =========================================================================
 
   INSS: {
     productCode: 'INSS',
-    channel: 'standalone',
+    channel: 'individual',
     targetMarkets: STANDALONE_MARKETS,
     customerSegments: STANDALONE_SEGMENTS,
     marketingChannels: STANDALONE_MARKETING,
@@ -423,23 +423,9 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     positioning: 'PowerPointのコンテンツ抽出・一括更新を自動化。多言語スライドの翻訳更新等で時間を90%削減。',
   },
 
-  INSP: {
-    productCode: 'INSP',
-    channel: 'standalone',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS.filter(s => s.companySize !== 'individual'),
-    marketingChannels: STANDALONE_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.10,
-      noCreditCardRequired: true,
-    },
-    positioning: 'InsightSlideの全機能 + プロ向け高度機能。大量のPowerPoint資産を扱うプロフェッショナル向け。',
-  },
-
   INPY: {
     productCode: 'INPY',
-    channel: 'standalone',
+    channel: 'individual',
     targetMarkets: STANDALONE_MARKETS,
     customerSegments: STANDALONE_SEGMENTS,
     marketingChannels: STANDALONE_MARKETING,
@@ -451,9 +437,9 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     positioning: 'Windows業務をPythonで自動化する実行環境。環境構築不要で即座にPythonスクリプトを実行。',
   },
 
-  HMSH: {
-    productCode: 'HMSH',
-    channel: 'standalone',
+  IOSH: {
+    productCode: 'IOSH',
+    channel: 'individual',
     targetMarkets: STANDALONE_MARKETS,
     customerSegments: STANDALONE_SEGMENTS,
     marketingChannels: STANDALONE_MARKETING,
@@ -465,9 +451,9 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     positioning: 'Excelに「Gitのようなバージョン管理」を。誰が・いつ・何を変更したかを完全に追跡。チーム利用はPROで。',
   },
 
-  HMDC: {
-    productCode: 'HMDC',
-    channel: 'standalone',
+  IOSD: {
+    productCode: 'IOSD',
+    channel: 'individual',
     targetMarkets: STANDALONE_MARKETS,
     customerSegments: STANDALONE_SEGMENTS,
     marketingChannels: STANDALONE_MARKETING,
@@ -477,20 +463,6 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       noCreditCardRequired: true,
     },
     positioning: 'Word操作を自動化。テンプレートからの大量文書生成、PDF変換、マクロ実行をワンストップで。',
-  },
-
-  HMSL: {
-    productCode: 'HMSL',
-    channel: 'standalone',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.07,
-      noCreditCardRequired: true,
-    },
-    positioning: 'PowerPoint操作を自動化。スライドの抽出・PDF変換・テンプレート適用を一括処理。',
   },
 };
 

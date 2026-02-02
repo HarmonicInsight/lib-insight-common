@@ -61,7 +61,7 @@ public enum ProductCode: String, CaseIterable {
     case sales = "SALES"
     case slide = "SLIDE"
     case py = "PY"
-    case interview = "INTV"
+    case interview = "IVIN"
     case all = "ALL"
 
     public var displayName: String {
@@ -169,7 +169,7 @@ public struct LicenseValidationResult {
 public class LicenseValidator {
 
     private static let licensePattern = try! NSRegularExpression(
-        pattern: "^INS-(SALES|SLIDE|PY|INTV|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"
+        pattern: "^INS-(SALES|SLIDE|PY|IVIN|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"
     )
 
     public init() {}
