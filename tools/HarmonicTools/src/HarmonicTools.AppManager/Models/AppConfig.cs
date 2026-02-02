@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace HarmonicTools.AppManager.Models;
@@ -8,6 +10,15 @@ namespace HarmonicTools.AppManager.Models;
 /// </summary>
 public class AppConfig
 {
+    /// <summary>
+    /// 設定バージョン。製品一覧が更新された際にインクリメントする。
+    /// バージョン不一致時はデフォルトのアプリ一覧で上書きされる。
+    /// </summary>
+    public int ConfigVersion { get; set; }
+
+    /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
+    private const int CurrentConfigVersion = 2;
+
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
 
@@ -24,11 +35,60 @@ public class AppConfig
             if (File.Exists(ConfigFile))
             {
                 var json = File.ReadAllText(ConfigFile);
-                return JsonSerializer.Deserialize<AppConfig>(json) ?? CreateDefault();
+                var config = JsonSerializer.Deserialize<AppConfig>(json);
+                if (config != null)
+                {
+                    if (config.ConfigVersion < CurrentConfigVersion)
+                    {
+                        config = MigrateApps(config);
+                        config.Save();
+                    }
+                    return config;
+                }
             }
         }
         catch { }
         return CreateDefault();
+    }
+
+    /// <summary>
+    /// 古い設定のアプリ一覧を最新のデフォルトで更新する。
+    /// ユーザーが追加したアプリ（デフォルトに含まれない ProductCode）は保持する。
+    /// ユーザーが変更した BasePath・LastReleasedTag も保持する。
+    /// </summary>
+    private static AppConfig MigrateApps(AppConfig old)
+    {
+        var defaults = CreateDefault();
+
+        // 旧設定からユーザー固有の値を引き継ぐ
+        var oldByCode = old.Apps
+            .GroupBy(a => a.ProductCode)
+            .ToDictionary(g => g.Key, g => g.First());
+
+        for (var i = 0; i < defaults.Apps.Count; i++)
+        {
+            var app = defaults.Apps[i];
+            if (oldByCode.TryGetValue(app.ProductCode, out var oldApp))
+            {
+                // ユーザーが変更した可能性のあるフィールドを保持
+                if (!string.IsNullOrEmpty(oldApp.BasePath))
+                    app.BasePath = oldApp.BasePath;
+                if (!string.IsNullOrEmpty(oldApp.LastReleasedTag))
+                    app.LastReleasedTag = oldApp.LastReleasedTag;
+                defaults.Apps[i] = app;
+            }
+        }
+
+        // デフォルトに含まれないユーザー追加アプリを末尾に追加
+        var defaultCodes = new HashSet<string>(defaults.Apps.Select(a => a.ProductCode));
+        foreach (var app in old.Apps)
+        {
+            if (!defaultCodes.Contains(app.ProductCode))
+                defaults.Apps.Add(app);
+        }
+
+        defaults.LastSelectedApp = old.LastSelectedApp;
+        return defaults;
     }
 
     public void Save()
@@ -58,6 +118,7 @@ public class AppConfig
     {
         return new AppConfig
         {
+            ConfigVersion = CurrentConfigVersion,
             Apps = new List<AppDefinition>
             {
                 // ── InsightOffice Suite（個人向け・各製品は独立リポ + 共通ライブラリ）──
