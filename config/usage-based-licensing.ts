@@ -617,6 +617,130 @@ export const DB_SCHEMA_REFERENCE = {
 } as const;
 
 // =============================================================================
+// Supabase RPC 関数定義（参考 SQL）
+// =============================================================================
+
+/**
+ * AI クレジット管理用の Supabase RPC 関数
+ *
+ * ServerAiUsageManager から呼び出される。
+ * アトミックなクレジット消費を保証するため、DB 側の関数として実装する。
+ */
+export const RPC_FUNCTIONS_REFERENCE = {
+  /**
+   * 基本クレジットの使用数をインクリメント（upsert）
+   *
+   * ai_usage_summary テーブルが存在しない場合は新規作成し、
+   * 存在する場合は base_credits_used を +1 する。
+   */
+  increment_ai_base_usage: `
+    CREATE OR REPLACE FUNCTION increment_ai_base_usage(
+      p_user_id UUID,
+      p_product_code TEXT,
+      p_base_total INTEGER
+    ) RETURNS VOID AS $$
+    BEGIN
+      INSERT INTO ai_usage_summary (user_id, product_code, base_credits_used, base_credits_total, updated_at)
+      VALUES (p_user_id, p_product_code, 1, p_base_total, NOW())
+      ON CONFLICT (user_id, product_code)
+      DO UPDATE SET
+        base_credits_used = ai_usage_summary.base_credits_used + 1,
+        base_credits_total = p_base_total,
+        updated_at = NOW();
+    END;
+    $$ LANGUAGE plpgsql;
+  `,
+
+  /**
+   * アドオンパックからクレジットを1消費
+   *
+   * remaining_credits を -1 し、used_credits を +1 する。
+   * remaining_credits が 0 になったら is_active を false に更新する。
+   */
+  consume_ai_addon_credit: `
+    CREATE OR REPLACE FUNCTION consume_ai_addon_credit(
+      p_pack_id UUID
+    ) RETURNS VOID AS $$
+    BEGIN
+      UPDATE ai_addon_packs
+      SET
+        used_credits = used_credits + 1,
+        remaining_credits = remaining_credits - 1,
+        is_active = CASE WHEN remaining_credits - 1 <= 0 THEN FALSE ELSE TRUE END
+      WHERE id = p_pack_id
+        AND is_active = TRUE
+        AND remaining_credits > 0
+        AND expires_at > NOW();
+
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'Addon pack not available: %', p_pack_id;
+      END IF;
+    END;
+    $$ LANGUAGE plpgsql;
+  `,
+
+  /**
+   * ライセンス更新時に基本クレジットをリセット
+   *
+   * annual プランの更新時に呼び出す。
+   * base_credits_used を 0 にリセットし、新しい期間を設定する。
+   */
+  reset_ai_base_credits: `
+    CREATE OR REPLACE FUNCTION reset_ai_base_credits(
+      p_user_id UUID,
+      p_product_code TEXT,
+      p_base_total INTEGER,
+      p_period_start TIMESTAMPTZ,
+      p_period_end TIMESTAMPTZ
+    ) RETURNS VOID AS $$
+    BEGIN
+      INSERT INTO ai_usage_summary (user_id, product_code, base_credits_used, base_credits_total, period_start, period_end, updated_at)
+      VALUES (p_user_id, p_product_code, 0, p_base_total, p_period_start, p_period_end, NOW())
+      ON CONFLICT (user_id, product_code)
+      DO UPDATE SET
+        base_credits_used = 0,
+        base_credits_total = p_base_total,
+        period_start = p_period_start,
+        period_end = p_period_end,
+        updated_at = NOW();
+    END;
+    $$ LANGUAGE plpgsql;
+  `,
+
+  /**
+   * Stripe 決済完了時にアドオンパックを登録
+   *
+   * checkout.session.completed (purchase_type: addon) のハンドラーから呼び出す。
+   */
+  provision_ai_addon_pack: `
+    CREATE OR REPLACE FUNCTION provision_ai_addon_pack(
+      p_user_id UUID,
+      p_product_code TEXT,
+      p_pack_id TEXT,
+      p_credits INTEGER,
+      p_valid_days INTEGER,
+      p_payment_method TEXT,
+      p_payment_id TEXT
+    ) RETURNS UUID AS $$
+    DECLARE
+      v_pack_uuid UUID;
+    BEGIN
+      INSERT INTO ai_addon_packs (
+        user_id, product_code, pack_id, credits, used_credits, remaining_credits,
+        purchased_at, expires_at, is_active, payment_method, payment_id
+      ) VALUES (
+        p_user_id, p_product_code, p_pack_id, p_credits, 0, p_credits,
+        NOW(), NOW() + (p_valid_days || ' days')::INTERVAL, TRUE, p_payment_method, p_payment_id
+      )
+      RETURNING id INTO v_pack_uuid;
+
+      RETURN v_pack_uuid;
+    END;
+    $$ LANGUAGE plpgsql;
+  `,
+} as const;
+
+// =============================================================================
 // ライセンスサーバー API エンドポイント定義
 // =============================================================================
 
@@ -647,6 +771,7 @@ export default {
   AI_ADDON_PACKS_USD,
   USAGE_API_ENDPOINTS,
   DB_SCHEMA_REFERENCE,
+  RPC_FUNCTIONS_REFERENCE,
 
   // クレジット計算
   getAiQuota,
