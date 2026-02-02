@@ -53,45 +53,58 @@ public class AppConfig
 
     /// <summary>
     /// 古い設定のアプリ一覧を最新のデフォルトで更新する。
-    /// ユーザーが追加したアプリ（デフォルトに含まれない ProductCode）は保持する。
-    /// ユーザーが変更した BasePath・LastReleasedTag も保持する。
+    ///
+    /// 方針:
+    /// - Name・Description のみデフォルトから更新（製品名・説明の変更を反映）
+    /// - パス系（BasePath, SolutionPath, ProjectPath, ExeRelativePath 等）は
+    ///   ユーザー環境固有のためすべて保持
+    /// - デフォルトに存在しない新製品は末尾に追加
+    /// - 廃止された製品コードは除外
     /// </summary>
     private static AppConfig MigrateApps(AppConfig old)
     {
         var defaults = CreateDefault();
-
-        // 旧設定からユーザー固有の値を引き継ぐ
-        var oldByCode = old.Apps
-            .GroupBy(a => a.ProductCode)
-            .ToDictionary(g => g.Key, g => g.First());
-
-        for (var i = 0; i < defaults.Apps.Count; i++)
-        {
-            var app = defaults.Apps[i];
-            if (oldByCode.TryGetValue(app.ProductCode, out var oldApp))
-            {
-                // ユーザーが変更した可能性のあるフィールドを保持
-                if (!string.IsNullOrEmpty(oldApp.BasePath))
-                    app.BasePath = oldApp.BasePath;
-                if (!string.IsNullOrEmpty(oldApp.LastReleasedTag))
-                    app.LastReleasedTag = oldApp.LastReleasedTag;
-                defaults.Apps[i] = app;
-            }
-        }
+        var defaultsByCode = defaults.Apps.ToDictionary(a => a.ProductCode);
 
         // 廃止された製品コード（リネーム・統合で不要になったもの）
         var removedCodes = new HashSet<string> { "FGIN", "IODX", "HMSH", "HMDC", "INSL" };
 
-        // デフォルトに含まれないユーザー追加アプリを末尾に追加（廃止コードは除外）
-        var defaultCodes = new HashSet<string>(defaults.Apps.Select(a => a.ProductCode));
+        // 既存アプリの Name・Description を更新（パス系はそのまま保持）
+        var migratedApps = new List<AppDefinition>();
+        var seenCodes = new HashSet<string>();
         foreach (var app in old.Apps)
         {
-            if (!defaultCodes.Contains(app.ProductCode) && !removedCodes.Contains(app.ProductCode))
-                defaults.Apps.Add(app);
+            // 廃止コードはスキップ
+            if (removedCodes.Contains(app.ProductCode))
+                continue;
+
+            // 同一 ProductCode の重複はスキップ（最初の1つだけ保持）
+            if (!seenCodes.Add(app.ProductCode))
+                continue;
+
+            if (defaultsByCode.TryGetValue(app.ProductCode, out var def))
+            {
+                // デフォルトに存在する製品 → Name・Description だけ更新
+                app.Name = def.Name;
+                app.Description = def.Description;
+            }
+
+            migratedApps.Add(app);
         }
 
-        defaults.LastSelectedApp = old.LastSelectedApp;
-        return defaults;
+        // デフォルトにあるが旧設定に存在しなかった新製品を末尾に追加
+        foreach (var def in defaults.Apps)
+        {
+            if (!seenCodes.Contains(def.ProductCode))
+                migratedApps.Add(def);
+        }
+
+        return new AppConfig
+        {
+            ConfigVersion = CurrentConfigVersion,
+            Apps = migratedApps,
+            LastSelectedApp = old.LastSelectedApp,
+        };
     }
 
     public void Save()
