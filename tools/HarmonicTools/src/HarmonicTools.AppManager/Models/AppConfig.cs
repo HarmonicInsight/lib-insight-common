@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 2;
+    private const int CurrentConfigVersion = 3;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -79,11 +79,14 @@ public class AppConfig
             }
         }
 
-        // デフォルトに含まれないユーザー追加アプリを末尾に追加
+        // 廃止された製品コード（リネーム・統合で不要になったもの）
+        var removedCodes = new HashSet<string> { "FGIN", "IODX", "HMSH", "HMDC", "INSL" };
+
+        // デフォルトに含まれないユーザー追加アプリを末尾に追加（廃止コードは除外）
         var defaultCodes = new HashSet<string>(defaults.Apps.Select(a => a.ProductCode));
         foreach (var app in old.Apps)
         {
-            if (!defaultCodes.Contains(app.ProductCode))
+            if (!defaultCodes.Contains(app.ProductCode) && !removedCodes.Contains(app.ProductCode))
                 defaults.Apps.Add(app);
         }
 
@@ -126,7 +129,7 @@ public class AppConfig
                 {
                     Name = "InsightOfficeSlide",
                     ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C"),
                     SolutionPath = "InsightOfficeSlide.sln",
                     ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
                     TestProjectPath = "",
