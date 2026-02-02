@@ -57,17 +57,25 @@ def parse_args():
   python generate-license.py -p INSS --plan STD -e user@example.com -m 12
 
 製品コード:
-  INSS  - InsightSlide Standard
-  INSP  - InsightSlide Pro
-  INPY  - InsightPy
+  【A】コンサルティング連動型:
+  INCA  - InsightNoCodeAnalyzer
+  INBT  - InsightBot
   FGIN  - ForguncyInsight
   INMV  - InsightMovie
-  INBT  - InsightBot
+  INIG  - InsightImageGen
+
+  【B】グローバルスタンドアロン型:
+  INSS  - InsightSlide
+  INSP  - InsightSlide Pro
+  INPY  - InsightPy
+  HMSH  - HarmonicSheet
+  HMDC  - HarmonicDoc
+  HMSL  - HarmonicSlide
 
 プラン:
   TRIAL  - トライアル（14日間）
   STD    - Standard
-  PRO    - Pro
+  PRO    - Professional
 '''
     )
 
@@ -75,7 +83,7 @@ def parse_args():
         '-p', '--product',
         type=str,
         required=True,
-        choices=['INSS', 'INSP', 'INPY', 'FGIN', 'INMV', 'INBT'],
+        choices=['INCA', 'INBT', 'FGIN', 'INMV', 'INIG', 'INSS', 'INSP', 'INPY', 'HMSH', 'HMDC', 'HMSL'],
         help='製品コード'
     )
 
