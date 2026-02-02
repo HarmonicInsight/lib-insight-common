@@ -100,39 +100,39 @@ public class AppConfig
                     Description = "業務調査・データ収集のためのPython実行基盤（PyInstaller）"
                 },
 
-                // ── Consulting & Requirements ──
+                // ── Harmonic Office Suite（各製品は独立リポ + 共通ライブラリ）──
                 new()
                 {
-                    Name = "InsightOfficeSheet",
-                    ProductCode = "IOSH",
+                    Name = "HarmonicSheet",
+                    ProductCode = "HMSH",
                     BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
                     SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
                     TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj",
                     ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.exe",
-                    Description = "提案金額シミュレーション・経営戦略策定Excel基盤"
+                    Description = "AI版管理付きスプレッドシート（Sheet専用リポ）"
+                },
+                new()
+                {
+                    Name = "HarmonicDoc",
+                    ProductCode = "HMDC",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-doc"),
+                    SolutionPath = "HarmonicDoc.sln",
+                    ProjectPath = @"src\HarmonicDoc.App\HarmonicDoc.App.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"src\HarmonicDoc.App\bin\{config}\net8.0-windows\HarmonicDoc.exe",
+                    Description = "AIドキュメント校正・バージョン管理（Doc専用リポ）"
                 },
                 new()
                 {
                     Name = "InsightSlide",
                     ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C"),
-                    SolutionPath = "InsightSlides.sln",
-                    ProjectPath = @"InsightSlides\InsightSlides.csproj",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
+                    SolutionPath = "InsightOfficeSlide.sln",
+                    ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = @"InsightSlides\bin\{config}\net8.0-windows\InsightSlides.exe",
-                    Description = "クライアント資料からのAI業務分析"
-                },
-                new()
-                {
-                    Name = "InsightSlide C2",
-                    ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C2"),
-                    SolutionPath = "InsightSlides.sln",
-                    ProjectPath = @"InsightSlides\InsightSlides.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"InsightSlides\bin\{config}\net8.0-windows\InsightSlides.exe",
-                    Description = "クライアント資料からのAI業務分析（次期正式版）"
+                    ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
+                    Description = "AIスライドレビュー・バージョン管理（Slide専用リポ）"
                 },
                 new()
                 {
