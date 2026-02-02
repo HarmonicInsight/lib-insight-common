@@ -1,0 +1,21 @@
+<Project>
+  <!-- Harmonic Insight 共通ビルド設定テンプレート -->
+  <!-- 各アプリのルートにコピーして使用 -->
+
+  <PropertyGroup>
+    <!-- .NET 静的解析を有効化 -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+
+    <!-- ビルド時にコードスタイルを検証 -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- Release ビルドでは警告をエラーとして扱う -->
+    <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+
+    <!-- Nullable 参照型を有効化 -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
