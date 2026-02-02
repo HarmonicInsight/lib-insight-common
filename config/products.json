@@ -11,6 +11,7 @@
         "displayName": "InsightOfficeSlide",
         "description": "AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール",
         "category": "office",
+        "salesChannel": "standalone",
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",

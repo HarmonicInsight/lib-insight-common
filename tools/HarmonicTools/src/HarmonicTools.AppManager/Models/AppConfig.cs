@@ -60,20 +60,7 @@ public class AppConfig
         {
             Apps = new List<AppDefinition>
             {
-                // ── Automation & Delivery ──
-                new()
-                {
-                    Name = "InsightBot",
-                    ProductCode = "INBT",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
-                    SolutionPath = @"csharp\InsightBotRPA.sln",
-                    ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
-                    TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
-                    ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
-                    BuildCommand = "build.ps1",
-                    InstallerDir = "Output",
-                    Description = "AIを活用した業務最適化RPA製品"
-                },
+                // ── 【A】コンサルティング連動型 ──
                 new()
                 {
                     Name = "InsightNoCodeAnalyzer",
@@ -85,19 +72,70 @@ public class AppConfig
                     ExeRelativePath = "InsightNoCodeAnalyzer/bin/{config}/net8.0-windows/InsightNoCodeAnalyzer.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "RPA・ローコードのマイグレーション自動化ツール"
+                    Description = "RPA・ローコード解析・移行アセスメントツール"
                 },
                 new()
                 {
-                    Name = "InsightPy",
-                    ProductCode = "INPY",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
+                    Name = "InsightBot",
+                    ProductCode = "INBT",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
+                    SolutionPath = @"csharp\InsightBotRPA.sln",
+                    ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
+                    TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
+                    ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
+                    Description = "Python RPA自動化ボット"
+                },
+                new()
+                {
+                    Name = "ForguncyInsight",
+                    ProductCode = "FGIN",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-win-insight-forguncy"),
+                    SolutionPath = "ForguncyInsight.sln",
+                    ProjectPath = @"ForguncyInsight\ForguncyInsight.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"ForguncyInsight\bin\{config}\net8.0-windows\ForguncyInsight.exe",
+                    Description = "Forguncy連携・分析ツール"
+                },
+                new()
+                {
+                    Name = "InterviewInsight",
+                    ProductCode = "IVIN",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
                     SolutionPath = "",
                     ProjectPath = "",
                     TestProjectPath = "",
-                    ExeRelativePath = @"dist\InsightPy.exe",
-                    BuildCommand = "build.bat",
-                    Description = "業務調査・データ収集のためのPython実行基盤（PyInstaller）"
+                    ExeRelativePath = "",
+                    Description = "AIステークホルダーヒアリング・業務調査支援（Web）"
+                },
+
+                // ── Content Creation ──
+                new()
+                {
+                    Name = "InsightMovie",
+                    ProductCode = "INMV",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie-gen-win-C"),
+                    SolutionPath = "InsightMovie.sln",
+                    ProjectPath = @"InsightMovie\InsightMovie.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"InsightMovie\bin\{config}\net8.0-windows\InsightMovie.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
+                    Description = "画像・テキスト・PPTからAI動画作成"
+                },
+                new()
+                {
+                    Name = "InsightImageGen",
+                    ProductCode = "INIG",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-image-gen-C"),
+                    SolutionPath = "InsightMediaGenerator.sln",
+                    ProjectPath = @"InsightMediaGenerator\InsightMediaGenerator.csproj",
+                    TestProjectPath = "",
+                    ExeRelativePath = @"InsightMediaGenerator\bin\{config}\net8.0-windows\InsightMediaGenerator.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
+                    Description = "AI画像・音声生成ツール（Stable Diffusion・VOICEVOX）"
                 },
 
                 // ── InsightOffice Suite（各製品は独立リポ + 共通ライブラリ）──
@@ -134,44 +172,19 @@ public class AppConfig
                     ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
                     Description = "AIスライドレビュー・バージョン管理（Slide専用リポ）"
                 },
+
+                // ── Automation ──
                 new()
                 {
-                    Name = "InterviewInsight",
-                    ProductCode = "IVIN",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
+                    Name = "InsightPy",
+                    ProductCode = "INPY",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
                     SolutionPath = "",
                     ProjectPath = "",
                     TestProjectPath = "",
-                    ExeRelativePath = "",
-                    Description = "AIステークホルダーヒアリング・業務調査支援（Web）"
-                },
-
-                // ── Content Creation ──
-                new()
-                {
-                    Name = "InsightMovie",
-                    ProductCode = "INMV",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie-gen-win-C"),
-                    SolutionPath = "InsightMovie.sln",
-                    ProjectPath = @"InsightMovie\InsightMovie.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"InsightMovie\bin\{config}\net8.0-windows\InsightMovie.exe",
-                    BuildCommand = "build.ps1",
-                    InstallerDir = "Output",
-                    Description = "要件定義の質向上・ユーザー教育のためのAI動画"
-                },
-                new()
-                {
-                    Name = "InsightImageGen",
-                    ProductCode = "INIG",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-image-gen-C"),
-                    SolutionPath = "InsightMediaGenerator.sln",
-                    ProjectPath = @"InsightMediaGenerator\InsightMediaGenerator.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"InsightMediaGenerator\bin\{config}\net8.0-windows\InsightMediaGenerator.exe",
-                    BuildCommand = "build.ps1",
-                    InstallerDir = "Output",
-                    Description = "納品物向けAIビジュアル・音声生成"
+                    ExeRelativePath = @"dist\InsightPy.exe",
+                    BuildCommand = "build.bat",
+                    Description = "Windows自動化のためのPython実行環境（PyInstaller）"
                 },
             }
         };
