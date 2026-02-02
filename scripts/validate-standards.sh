@@ -166,7 +166,7 @@ check_license_format
 print_section "3" "製品コード検証"
 
 check_product_code() {
-    local product_codes="INSS|INSP|INPY|FGIN|INMV|INBT|INCA"
+    local product_codes="INSS|INSP|INPY|FGIN|INMV|INBT|INCA|INIG|HMSH|HMDC|HMSL"
     local found_code=$(grep -rE "($product_codes)" "$PROJECT_DIR" --include="*.cs" --include="*.ts" --include="*.py" --include="*.swift" --include="*.kt" --include="*.json" 2>/dev/null | grep -v node_modules | head -1)
 
     if [ -z "$found_code" ]; then
