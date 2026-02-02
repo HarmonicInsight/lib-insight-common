@@ -60,57 +60,56 @@ public class AppConfig
         {
             Apps = new List<AppDefinition>
             {
-                // ── 【A】コンサルティング連動型 ──
+                // ── InsightOffice Suite（個人向け・各製品は独立リポ + 共通ライブラリ）──
                 new()
                 {
-                    Name = "InsightNoCodeAnalyzer",
-                    ProductCode = "INCA",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-nocode-analyzer-C"),
-                    SolutionPath = "InsightNoCodeAnalyzer.sln",
-                    ProjectPath = "InsightNoCodeAnalyzer/InsightNoCodeAnalyzer.csproj",
+                    Name = "InsightOfficeSlide",
+                    ProductCode = "INSS",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
+                    SolutionPath = "InsightOfficeSlide.sln",
+                    ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = "InsightNoCodeAnalyzer/bin/{config}/net8.0-windows/InsightNoCodeAnalyzer.exe",
-                    BuildCommand = "build.ps1",
-                    InstallerDir = "Output",
-                    Description = "RPA・ローコード解析・移行アセスメントツール"
+                    ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
+                    Description = "AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール"
                 },
                 new()
                 {
-                    Name = "InsightBot",
-                    ProductCode = "INBT",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
-                    SolutionPath = @"csharp\InsightBotRPA.sln",
-                    ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
-                    TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
-                    ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
-                    BuildCommand = "build.ps1",
-                    InstallerDir = "Output",
-                    Description = "Python RPA自動化ボット"
+                    Name = "InsightOfficeSheet",
+                    ProductCode = "IOSH",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
+                    SolutionPath = "InsightOfficeSheet.sln",
+                    ProjectPath = @"src\InsightOfficeSheet.App\InsightOfficeSheet.App.csproj",
+                    TestProjectPath = @"tests\InsightOfficeSheet.Core.Tests\InsightOfficeSheet.Core.Tests.csproj",
+                    ExeRelativePath = @"src\InsightOfficeSheet.App\bin\{config}\net8.0-windows\InsightOfficeSheet.exe",
+                    Description = "AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション"
                 },
                 new()
                 {
-                    Name = "ForguncyInsight",
-                    ProductCode = "FGIN",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-win-insight-forguncy"),
-                    SolutionPath = "ForguncyInsight.sln",
-                    ProjectPath = @"ForguncyInsight\ForguncyInsight.csproj",
+                    Name = "InsightOfficeDoc",
+                    ProductCode = "IOSD",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-doc"),
+                    SolutionPath = "InsightOfficeDoc.sln",
+                    ProjectPath = @"src\InsightOfficeDoc.App\InsightOfficeDoc.App.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = @"ForguncyInsight\bin\{config}\net8.0-windows\ForguncyInsight.exe",
-                    Description = "Forguncy連携・分析ツール"
+                    ExeRelativePath = @"src\InsightOfficeDoc.App\bin\{config}\net8.0-windows\InsightOfficeDoc.exe",
+                    Description = "AIアシスタント搭載 — 参照資料付きWord文書管理ツール"
                 },
+
+                // ── Automation（個人向け）──
                 new()
                 {
-                    Name = "InterviewInsight",
-                    ProductCode = "IVIN",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
+                    Name = "InsightPy",
+                    ProductCode = "INPY",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
                     SolutionPath = "",
                     ProjectPath = "",
                     TestProjectPath = "",
-                    ExeRelativePath = "",
-                    Description = "AIステークホルダーヒアリング・業務調査支援（Web）"
+                    ExeRelativePath = @"dist\InsightPy.exe",
+                    BuildCommand = "build.bat",
+                    Description = "AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤"
                 },
 
-                // ── Content Creation ──
+                // ── Content Creation（個人向け）──
                 new()
                 {
                     Name = "InsightMovie",
@@ -122,7 +121,7 @@ public class AppConfig
                     ExeRelativePath = @"InsightMovie\bin\{config}\net8.0-windows\InsightMovie.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "画像・テキスト・PPTからAI動画作成"
+                    Description = "画像とテキストから動画を自動作成"
                 },
                 new()
                 {
@@ -135,56 +134,46 @@ public class AppConfig
                     ExeRelativePath = @"InsightMediaGenerator\bin\{config}\net8.0-windows\InsightMediaGenerator.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "AI画像・音声生成ツール（Stable Diffusion・VOICEVOX）"
+                    Description = "業務資料向けAI画像の大量自動生成ツール"
                 },
 
-                // ── InsightOffice Suite（各製品は独立リポ + 共通ライブラリ）──
+                // ── 法人向け（コンサルティング連動型）──
                 new()
                 {
-                    Name = "InsightOfficeSheet",
-                    ProductCode = "IOSH",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
-                    SolutionPath = "InsightOfficeSheet.sln",
-                    ProjectPath = @"src\InsightOfficeSheet.App\InsightOfficeSheet.App.csproj",
-                    TestProjectPath = @"tests\InsightOfficeSheet.Core.Tests\InsightOfficeSheet.Core.Tests.csproj",
-                    ExeRelativePath = @"src\InsightOfficeSheet.App\bin\{config}\net8.0-windows\InsightOfficeSheet.exe",
-                    Description = "AI版管理付きスプレッドシート（Sheet専用リポ）"
+                    Name = "InsightBot",
+                    ProductCode = "INBT",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
+                    SolutionPath = @"csharp\InsightBotRPA.sln",
+                    ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
+                    TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
+                    ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
+                    Description = "AIエディタ搭載 — 業務最適化RPA製品"
                 },
                 new()
                 {
-                    Name = "InsightOfficeDoc",
-                    ProductCode = "IOSD",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-doc"),
-                    SolutionPath = "InsightOfficeDoc.sln",
-                    ProjectPath = @"src\InsightOfficeDoc.App\InsightOfficeDoc.App.csproj",
+                    Name = "InsightNoCodeAnalyzer",
+                    ProductCode = "INCA",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-nocode-analyzer-C"),
+                    SolutionPath = "InsightNoCodeAnalyzer.sln",
+                    ProjectPath = "InsightNoCodeAnalyzer/InsightNoCodeAnalyzer.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = @"src\InsightOfficeDoc.App\bin\{config}\net8.0-windows\InsightOfficeDoc.exe",
-                    Description = "AIドキュメント校正・バージョン管理（Doc専用リポ）"
+                    ExeRelativePath = "InsightNoCodeAnalyzer/bin/{config}/net8.0-windows/InsightNoCodeAnalyzer.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
+                    Description = "RPA・ローコードのマイグレーション自動化ツール"
                 },
                 new()
                 {
-                    Name = "InsightOfficeSlide",
-                    ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-slide"),
-                    SolutionPath = "InsightOfficeSlide.sln",
-                    ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
-                    Description = "AIスライドレビュー・バージョン管理（Slide専用リポ）"
-                },
-
-                // ── Automation ──
-                new()
-                {
-                    Name = "InsightPy",
-                    ProductCode = "INPY",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
+                    Name = "InterviewInsight",
+                    ProductCode = "IVIN",
+                    BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
                     SolutionPath = "",
                     ProjectPath = "",
                     TestProjectPath = "",
-                    ExeRelativePath = @"dist\InsightPy.exe",
-                    BuildCommand = "build.bat",
-                    Description = "Windows自動化のためのPython実行環境（PyInstaller）"
+                    ExeRelativePath = "",
+                    Description = "自動ヒアリング・業務調査支援"
                 },
             }
         };
