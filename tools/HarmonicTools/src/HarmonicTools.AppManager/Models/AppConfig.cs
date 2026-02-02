@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 3;
+    private const int CurrentConfigVersion = 4;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -84,9 +84,20 @@ public class AppConfig
 
             if (defaultsByCode.TryGetValue(app.ProductCode, out var def))
             {
-                // デフォルトに存在する製品 → Name・Description だけ更新
+                // デフォルトに存在する製品 → Name・Description・Type を更新
                 app.Name = def.Name;
                 app.Description = def.Description;
+                app.Type = def.Type;
+
+                // Web App 固有フィールドはデフォルトから補完（ユーザー未設定の場合のみ）
+                if (def.IsWebApp)
+                {
+                    if (string.IsNullOrEmpty(app.Framework)) app.Framework = def.Framework;
+                    if (string.IsNullOrEmpty(app.DevCommand)) app.DevCommand = def.DevCommand;
+                    if (string.IsNullOrEmpty(app.WebBuildCommand)) app.WebBuildCommand = def.WebBuildCommand;
+                    if (string.IsNullOrEmpty(app.DevUrl)) app.DevUrl = def.DevUrl;
+                    if (string.IsNullOrEmpty(app.ProductionUrl)) app.ProductionUrl = def.ProductionUrl;
+                }
             }
 
             migratedApps.Add(app);
@@ -245,12 +256,106 @@ public class AppConfig
                 {
                     Name = "InterviewInsight",
                     ProductCode = "IVIN",
+                    Type = AppType.WebApp,
                     BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
-                    SolutionPath = "",
-                    ProjectPath = "",
-                    TestProjectPath = "",
-                    ExeRelativePath = "",
-                    Description = "自動ヒアリング・業務調査支援"
+                    Description = "自動ヒアリング・業務調査支援",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3000",
+                },
+
+                // ── Webサイト ──
+                new()
+                {
+                    Name = "Harmonic Insight",
+                    ProductCode = "WEB-HOME",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "web-home"),
+                    Description = "コーポレートサイト",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3000",
+                    ProductionUrl = "https://h-insight.jp",
+                },
+                new()
+                {
+                    Name = "Insight Series",
+                    ProductCode = "WEB-INSIGHT",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "web-insight"),
+                    Description = "Insight Series 製品ページ",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3001",
+                    ProductionUrl = "https://insight.h-insight.jp",
+                },
+                new()
+                {
+                    Name = "Framework",
+                    ProductCode = "WEB-FW",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "web-framework"),
+                    Description = "ビジネスフレームワーク集",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3002",
+                    ProductionUrl = "https://framework.h-insight.jp",
+                },
+                new()
+                {
+                    Name = "Blog",
+                    ProductCode = "WEB-BLOG",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "web-blog"),
+                    Description = "技術・ビジネスブログ",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3003",
+                    ProductionUrl = "https://blog.h-insight.jp",
+                },
+                new()
+                {
+                    Name = "Documentation",
+                    ProductCode = "WEB-DOCS",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "web-docs"),
+                    Description = "製品マニュアル・APIリファレンス",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3004",
+                    ProductionUrl = "https://docs.h-insight.jp",
+                },
+                new()
+                {
+                    Name = "Support",
+                    ProductCode = "WEB-SUP",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "web-support"),
+                    Description = "お問い合わせ・ヘルプセンター",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3005",
+                    ProductionUrl = "https://support.h-insight.jp",
+                },
+                new()
+                {
+                    Name = "License Server",
+                    ProductCode = "WEB-LIC",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "app-license-server"),
+                    Description = "統合ライセンスサーバー (Hono)",
+                    Framework = "Hono",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:8787",
+                    ProductionUrl = "https://license.harmonicinsight.com",
                 },
             }
         };
