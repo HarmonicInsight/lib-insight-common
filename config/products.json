@@ -137,6 +137,26 @@
         ]
       },
       {
+        "id": "insight-image-gen",
+        "code": "INIG",
+        "name": "InsightImageGen",
+        "displayName": "InsightImageGen",
+        "description": "AI画像・音声生成ツール（Stable Diffusion・VOICEVOX活用）",
+        "category": "media",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/app-insight-image-gen-C",
+        "features": [
+          "generate-image",
+          "batch-image",
+          "generate-audio",
+          "character-prompts",
+          "hi-res",
+          "cloud-sync"
+        ]
+      },
+      {
         "id": "insight-suite",
         "code": "ALL",
         "name": "Insight Suite",
