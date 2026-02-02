@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -14,6 +15,7 @@ public partial class MainWindow : Window
     private readonly AppConfig _config;
     private readonly CommandRunner _runner = new();
     private AppDefinition? _selectedApp;
+    private bool _showWebApps;
 
     public MainWindow()
     {
@@ -50,14 +52,53 @@ public partial class MainWindow : Window
             : WindowState.Maximized;
     }
 
+    // ── Tab Switching ──
+
+    private void DesktopTab_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_showWebApps) return;
+        _showWebApps = false;
+        UpdateTabStyles();
+        RefreshAppList();
+    }
+
+    private void WebTab_Click(object sender, RoutedEventArgs e)
+    {
+        if (_showWebApps) return;
+        _showWebApps = true;
+        UpdateTabStyles();
+        RefreshAppList();
+    }
+
+    private void UpdateTabStyles()
+    {
+        if (_showWebApps)
+        {
+            DesktopTabBtn.Background = (Brush)FindResource("BgSecondaryBrush");
+            DesktopTabBtn.Foreground = (Brush)FindResource("TextSecondaryBrush");
+            WebTabBtn.Background = (Brush)FindResource("PrimaryBrush");
+            WebTabBtn.Foreground = Brushes.White;
+        }
+        else
+        {
+            DesktopTabBtn.Background = (Brush)FindResource("PrimaryBrush");
+            DesktopTabBtn.Foreground = Brushes.White;
+            WebTabBtn.Background = (Brush)FindResource("BgSecondaryBrush");
+            WebTabBtn.Foreground = (Brush)FindResource("TextSecondaryBrush");
+        }
+    }
+
     // ── App List ──
 
     private void RefreshAppList()
     {
         AppListBox.ItemsSource = null;
-        AppListBox.ItemsSource = _config.Apps;
+        var filtered = _config.Apps
+            .Where(a => _showWebApps ? a.IsWebApp : !a.IsWebApp)
+            .ToList();
+        AppListBox.ItemsSource = filtered;
 
-        if (_config.Apps.Count > 0 && AppListBox.SelectedIndex < 0)
+        if (filtered.Count > 0 && AppListBox.SelectedIndex < 0)
             AppListBox.SelectedIndex = 0;
     }
 
@@ -66,8 +107,9 @@ public partial class MainWindow : Window
         _selectedApp = AppListBox.SelectedItem as AppDefinition;
         UpdateAppDetails();
 
-        // Close edit panel on selection change
+        // Close edit panels on selection change
         EditPanel.Visibility = Visibility.Collapsed;
+        WebEditPanel.Visibility = Visibility.Collapsed;
         EditToggleBtn.Content = "編集";
     }
 
@@ -81,29 +123,60 @@ public partial class MainWindow : Window
             ProjectPathText.Text = "";
             DebugExeText.Text = "";
             ReleaseExeText.Text = "";
+            DesktopPathInfo.Visibility = Visibility.Visible;
+            WebPathInfo.Visibility = Visibility.Collapsed;
+            DesktopActions.Visibility = Visibility.Visible;
+            WebActions.Visibility = Visibility.Collapsed;
             return;
         }
 
         SelectedAppName.Text = _selectedApp.Name;
-        BasePathText.Text = string.IsNullOrEmpty(_selectedApp.BasePath) ? "(未設定)" : _selectedApp.BasePath;
-        BasePathText.Foreground = string.IsNullOrEmpty(_selectedApp.BasePath)
-            ? (Brush)FindResource("ErrorBrush")
-            : (Brush)FindResource("TextPrimaryBrush");
-        SolutionPathText.Text = _selectedApp.ResolvedSolutionPath;
-        ProjectPathText.Text = _selectedApp.ResolvedProjectPath;
 
-        var debugExe = _selectedApp.DebugExePath;
-        var releaseExe = _selectedApp.ReleaseExePath;
+        if (_selectedApp.IsWebApp)
+        {
+            // Web app details
+            DesktopPathInfo.Visibility = Visibility.Collapsed;
+            WebPathInfo.Visibility = Visibility.Visible;
+            DesktopActions.Visibility = Visibility.Collapsed;
+            WebActions.Visibility = Visibility.Visible;
 
-        DebugExeText.Text = debugExe;
-        DebugExeText.Foreground = File.Exists(debugExe)
-            ? (Brush)FindResource("SuccessBrush")
-            : (Brush)FindResource("TextTertiaryBrush");
+            WebBasePathText.Text = string.IsNullOrEmpty(_selectedApp.BasePath) ? "(未設定)" : _selectedApp.BasePath;
+            WebBasePathText.Foreground = string.IsNullOrEmpty(_selectedApp.BasePath)
+                ? (Brush)FindResource("ErrorBrush")
+                : (Brush)FindResource("TextPrimaryBrush");
+            WebFrameworkText.Text = _selectedApp.Framework;
+            WebDevUrlText.Text = _selectedApp.DevUrl;
+            WebProductionUrlText.Text = _selectedApp.ProductionUrl;
+            WebDevCommandText.Text = _selectedApp.DevCommand;
+        }
+        else
+        {
+            // Desktop app details
+            DesktopPathInfo.Visibility = Visibility.Visible;
+            WebPathInfo.Visibility = Visibility.Collapsed;
+            DesktopActions.Visibility = Visibility.Visible;
+            WebActions.Visibility = Visibility.Collapsed;
 
-        ReleaseExeText.Text = releaseExe;
-        ReleaseExeText.Foreground = File.Exists(releaseExe)
-            ? (Brush)FindResource("SuccessBrush")
-            : (Brush)FindResource("TextTertiaryBrush");
+            BasePathText.Text = string.IsNullOrEmpty(_selectedApp.BasePath) ? "(未設定)" : _selectedApp.BasePath;
+            BasePathText.Foreground = string.IsNullOrEmpty(_selectedApp.BasePath)
+                ? (Brush)FindResource("ErrorBrush")
+                : (Brush)FindResource("TextPrimaryBrush");
+            SolutionPathText.Text = _selectedApp.ResolvedSolutionPath;
+            ProjectPathText.Text = _selectedApp.ResolvedProjectPath;
+
+            var debugExe = _selectedApp.DebugExePath;
+            var releaseExe = _selectedApp.ReleaseExePath;
+
+            DebugExeText.Text = debugExe;
+            DebugExeText.Foreground = File.Exists(debugExe)
+                ? (Brush)FindResource("SuccessBrush")
+                : (Brush)FindResource("TextTertiaryBrush");
+
+            ReleaseExeText.Text = releaseExe;
+            ReleaseExeText.Foreground = File.Exists(releaseExe)
+                ? (Brush)FindResource("SuccessBrush")
+                : (Brush)FindResource("TextTertiaryBrush");
+        }
     }
 
     // ── Base Path ──
@@ -121,11 +194,125 @@ public partial class MainWindow : Window
         }
     }
 
+    private void BrowseWebEditBasePath_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
+        {
+            Title = "リポジトリフォルダを選択"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            WebEditBasePath.Text = dialog.FolderName;
+        }
+    }
+
     private void BasePathText_Click(object sender, MouseButtonEventArgs e)
     {
         if (_selectedApp != null && !string.IsNullOrEmpty(_selectedApp.BasePath) && Directory.Exists(_selectedApp.BasePath))
         {
             Process.Start("explorer.exe", _selectedApp.BasePath);
+        }
+    }
+
+    // ── Web App URL Click ──
+
+    private void WebUrl_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is System.Windows.Controls.TextBlock tb && !string.IsNullOrEmpty(tb.Text))
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo(tb.Text) { UseShellExecute = true });
+            }
+            catch { }
+        }
+    }
+
+    // ── Web App Commands ──
+
+    private void WebDevServer_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ValidateSelection()) return;
+        if (string.IsNullOrEmpty(_selectedApp!.DevCommand))
+        {
+            AppendOutput("[情報] Dev コマンドが設定されていません。\n");
+            return;
+        }
+
+        var title = $"{_selectedApp.Name} - Dev Server";
+        var parts = _selectedApp.DevCommand.Split(' ', 2);
+        var cmd = parts[0];
+        var args = parts.Length > 1 ? parts[1] : "";
+
+        _runner.RunInExternalConsole(title, "cmd.exe",
+            $"/c title {title} && {_selectedApp.DevCommand}",
+            _selectedApp.BasePath);
+
+        AppendOutput($"[Dev Server] {_selectedApp.Name} を起動しました: {_selectedApp.DevUrl}\n");
+    }
+
+    private void WebOpenBrowser_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+        var url = _selectedApp.DevUrl;
+        if (string.IsNullOrEmpty(url))
+        {
+            AppendOutput("[情報] Dev URL が設定されていません。\n");
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            AppendOutput($"[ブラウザ] {url} を開きました\n");
+        }
+        catch (Exception ex)
+        {
+            AppendOutput($"[エラー] ブラウザ起動失敗: {ex.Message}\n");
+        }
+    }
+
+    private void WebBuild_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ValidateSelection()) return;
+        var buildCmd = _selectedApp!.WebBuildCommand;
+        if (string.IsNullOrEmpty(buildCmd))
+            buildCmd = "npm run build";
+
+        var title = $"{_selectedApp.Name} - Build";
+        _runner.RunInExternalConsole(title, "cmd.exe",
+            $"/c title {title} && {buildCmd} & echo. & echo ──────────────────────────── & echo 完了しました。何かキーを押すと閉じます。 & pause > nul",
+            _selectedApp.BasePath);
+    }
+
+    private void WebInstall_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ValidateSelection()) return;
+        var title = $"{_selectedApp!.Name} - npm install";
+        _runner.RunInExternalConsole(title, "cmd.exe",
+            $"/c title {title} && npm install & echo. & echo ──────────────────────────── & echo 完了しました。何かキーを押すと閉じます。 & pause > nul",
+            _selectedApp.BasePath);
+    }
+
+    private void WebOpenProduction_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+        var url = _selectedApp.ProductionUrl;
+        if (string.IsNullOrEmpty(url))
+        {
+            AppendOutput("[情報] 本番 URL が設定されていません。\n");
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            AppendOutput($"[ブラウザ] {url} を開きました\n");
+        }
+        catch (Exception ex)
+        {
+            AppendOutput($"[エラー] ブラウザ起動失敗: {ex.Message}\n");
         }
     }
 
@@ -268,6 +455,15 @@ public partial class MainWindow : Window
     private void OpenFolder_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedApp == null) return;
+
+        // Web app: always open base path
+        if (_selectedApp.IsWebApp)
+        {
+            if (!string.IsNullOrEmpty(_selectedApp.BasePath) && Directory.Exists(_selectedApp.BasePath))
+                Process.Start("explorer.exe", _selectedApp.BasePath);
+            return;
+        }
+
         var dir = Path.GetDirectoryName(_selectedApp.ResolvedProjectPath);
         if (dir != null && Directory.Exists(dir))
         {
@@ -688,15 +884,30 @@ public partial class MainWindow : Window
     {
         if (_selectedApp == null) return;
 
-        if (EditPanel.Visibility == Visibility.Collapsed)
+        var isCurrentlyOpen = _selectedApp.IsWebApp
+            ? WebEditPanel.Visibility == Visibility.Visible
+            : EditPanel.Visibility == Visibility.Visible;
+
+        if (!isCurrentlyOpen)
         {
-            PopulateEditFields(_selectedApp);
-            EditPanel.Visibility = Visibility.Visible;
+            if (_selectedApp.IsWebApp)
+            {
+                PopulateWebEditFields(_selectedApp);
+                WebEditPanel.Visibility = Visibility.Visible;
+                EditPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                PopulateEditFields(_selectedApp);
+                EditPanel.Visibility = Visibility.Visible;
+                WebEditPanel.Visibility = Visibility.Collapsed;
+            }
             EditToggleBtn.Content = "閉じる";
         }
         else
         {
             EditPanel.Visibility = Visibility.Collapsed;
+            WebEditPanel.Visibility = Visibility.Collapsed;
             EditToggleBtn.Content = "編集";
         }
     }
@@ -717,6 +928,18 @@ public partial class MainWindow : Window
         EditBuildCommand.Text = app.BuildCommand;
         EditInstallerDir.Text = app.InstallerDir;
         _suppressAutoFill = false;
+    }
+
+    private void PopulateWebEditFields(AppDefinition app)
+    {
+        WebEditName.Text = app.Name;
+        WebEditProductCode.Text = app.ProductCode;
+        WebEditDescription.Text = app.Description;
+        WebEditBasePath.Text = app.BasePath;
+        WebEditFramework.Text = app.Framework;
+        WebEditDevCommand.Text = app.DevCommand;
+        WebEditDevUrl.Text = app.DevUrl;
+        WebEditProductionUrl.Text = app.ProductionUrl;
     }
 
     private void EditName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -804,26 +1027,78 @@ public partial class MainWindow : Window
         AppendOutput($"[保存] {_selectedApp.Name} の設定を保存しました。\n");
     }
 
+    private void SaveWebEdit_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+
+        _selectedApp.Name = WebEditName.Text.Trim();
+        _selectedApp.ProductCode = WebEditProductCode.Text.Trim();
+        _selectedApp.Description = WebEditDescription.Text.Trim();
+        _selectedApp.BasePath = WebEditBasePath.Text.Trim();
+        _selectedApp.Framework = WebEditFramework.Text.Trim();
+        _selectedApp.DevCommand = WebEditDevCommand.Text.Trim();
+        _selectedApp.DevUrl = WebEditDevUrl.Text.Trim();
+        _selectedApp.ProductionUrl = WebEditProductionUrl.Text.Trim();
+
+        SaveConfig();
+        UpdateAppDetails();
+
+        var saved = _selectedApp;
+        RefreshAppList();
+        AppListBox.SelectedItem = saved;
+
+        WebEditPanel.Visibility = Visibility.Collapsed;
+        EditToggleBtn.Content = "編集";
+
+        AppendOutput($"[保存] {_selectedApp.Name} の設定を保存しました。\n");
+    }
+
     // ── Add/Remove ──
 
     private void AddApp_Click(object sender, RoutedEventArgs e)
     {
-        var app = new AppDefinition
+        if (_showWebApps)
         {
-            Name = "新規アプリ",
-            ProductCode = "NEW",
-            Description = "説明を入力"
-        };
+            var app = new AppDefinition
+            {
+                Name = "新規Webアプリ",
+                ProductCode = "WEB-NEW",
+                Type = AppType.WebApp,
+                Description = "説明を入力",
+                Framework = "Next.js",
+                DevCommand = "npm run dev",
+                WebBuildCommand = "npm run build",
+                DevUrl = "http://localhost:3000",
+            };
 
-        _config.Apps.Add(app);
-        RefreshAppList();
-        AppListBox.SelectedItem = app;
-        SaveConfig();
+            _config.Apps.Add(app);
+            RefreshAppList();
+            AppListBox.SelectedItem = app;
+            SaveConfig();
 
-        // Auto-open edit panel for new app
-        PopulateEditFields(app);
-        EditPanel.Visibility = Visibility.Visible;
-        EditToggleBtn.Content = "閉じる";
+            PopulateWebEditFields(app);
+            WebEditPanel.Visibility = Visibility.Visible;
+            EditToggleBtn.Content = "閉じる";
+        }
+        else
+        {
+            var app = new AppDefinition
+            {
+                Name = "新規アプリ",
+                ProductCode = "NEW",
+                Description = "説明を入力"
+            };
+
+            _config.Apps.Add(app);
+            RefreshAppList();
+            AppListBox.SelectedItem = app;
+            SaveConfig();
+
+            // Auto-open edit panel for new app
+            PopulateEditFields(app);
+            EditPanel.Visibility = Visibility.Visible;
+            EditToggleBtn.Content = "閉じる";
+        }
     }
 
     private void CopyApp_Click(object sender, RoutedEventArgs e)
@@ -834,6 +1109,7 @@ public partial class MainWindow : Window
         {
             Name = _selectedApp.Name + " (コピー)",
             ProductCode = _selectedApp.ProductCode,
+            Type = _selectedApp.Type,
             Description = _selectedApp.Description,
             BasePath = _selectedApp.BasePath,
             SolutionPath = _selectedApp.SolutionPath,
@@ -842,6 +1118,11 @@ public partial class MainWindow : Window
             ExeRelativePath = _selectedApp.ExeRelativePath,
             BuildCommand = _selectedApp.BuildCommand,
             InstallerDir = _selectedApp.InstallerDir,
+            Framework = _selectedApp.Framework,
+            DevCommand = _selectedApp.DevCommand,
+            WebBuildCommand = _selectedApp.WebBuildCommand,
+            DevUrl = _selectedApp.DevUrl,
+            ProductionUrl = _selectedApp.ProductionUrl,
         };
 
         _config.Apps.Add(app);
@@ -850,8 +1131,16 @@ public partial class MainWindow : Window
         SaveConfig();
 
         // Auto-open edit panel for copied app
-        PopulateEditFields(app);
-        EditPanel.Visibility = Visibility.Visible;
+        if (app.IsWebApp)
+        {
+            PopulateWebEditFields(app);
+            WebEditPanel.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            PopulateEditFields(app);
+            EditPanel.Visibility = Visibility.Visible;
+        }
         EditToggleBtn.Content = "閉じる";
     }
 
@@ -944,6 +1233,7 @@ public partial class MainWindow : Window
     private void SetRunning(bool running)
     {
         CancelBtn.IsEnabled = running;
+        WebCancelBtn.IsEnabled = running;
         if (running)
         {
             StatusText.Text = "実行中...";
@@ -969,8 +1259,7 @@ public partial class MainWindow : Window
     private void RefreshStatusIcons()
     {
         var selected = AppListBox.SelectedItem;
-        AppListBox.ItemsSource = null;
-        AppListBox.ItemsSource = _config.Apps;
+        RefreshAppList();
         if (selected != null) AppListBox.SelectedItem = selected;
     }
 

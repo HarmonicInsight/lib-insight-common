@@ -1,7 +1,19 @@
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace HarmonicTools.AppManager.Models;
+
+/// <summary>
+/// アプリの種別
+/// </summary>
+public enum AppType
+{
+    /// <summary>デスクトップアプリ（WPF / Python 等）</summary>
+    Desktop,
+    /// <summary>Webアプリ（Next.js / React 等）</summary>
+    WebApp
+}
 
 /// <summary>
 /// 管理対象アプリの定義
@@ -15,6 +27,12 @@ public class AppDefinition
     public string TestProjectPath { get; set; } = string.Empty;
     public string ExeRelativePath { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// アプリの種別（Desktop / WebApp）
+    /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public AppType Type { get; set; } = AppType.Desktop;
 
     /// <summary>
     /// dotnet 以外のビルドコマンド（例: "build.bat"）。空なら dotnet build を使用。
@@ -32,11 +50,44 @@ public class AppDefinition
     /// </summary>
     public string InstallerDir { get; set; } = string.Empty;
 
+    // ── Web App 専用フィールド ──
+
+    /// <summary>
+    /// 開発サーバー起動コマンド（例: "npm run dev"）
+    /// </summary>
+    public string DevCommand { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 開発サーバーURL（例: "http://localhost:3000"）
+    /// </summary>
+    public string DevUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// ビルドコマンド（Web用、例: "npm run build"）
+    /// </summary>
+    public string WebBuildCommand { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 本番URL（例: "https://h-insight.jp"）
+    /// </summary>
+    public string ProductionUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// フレームワーク（例: "Next.js", "React"）
+    /// </summary>
+    public string Framework { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Webアプリかどうか
+    /// </summary>
+    [JsonIgnore]
+    public bool IsWebApp => Type == AppType.WebApp;
+
     /// <summary>
     /// dotnet プロジェクトかどうか
     /// </summary>
-    [System.Text.Json.Serialization.JsonIgnore]
-    public bool IsDotNet => !string.IsNullOrEmpty(ProjectPath);
+    [JsonIgnore]
+    public bool IsDotNet => !string.IsNullOrEmpty(ProjectPath) && !IsWebApp;
 
     /// <summary>
     /// 解決済みのソリューション絶対パス
@@ -96,13 +147,13 @@ public class AppDefinition
     /// <summary>
     /// build.ps1 等のビルドスクリプトがあるか
     /// </summary>
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public bool HasBuildScript => !string.IsNullOrEmpty(BuildCommand);
 
     /// <summary>
     /// インストーラー出力ディレクトリの絶対パス
     /// </summary>
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public string ResolvedInstallerDir => string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(InstallerDir)
         ? string.Empty
         : Path.Combine(BasePath, InstallerDir);
@@ -110,7 +161,7 @@ public class AppDefinition
     /// <summary>
     /// インストーラー exe を検索して最新のものを返す
     /// </summary>
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public string? LatestInstallerExe
     {
         get
@@ -128,7 +179,7 @@ public class AppDefinition
     /// <summary>
     /// 配布用 exe パス（dotnet: PublishExePath, 非dotnet: ExeRelativePath ベース）
     /// </summary>
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public string DistExePath
     {
         get
@@ -139,39 +190,53 @@ public class AppDefinition
         }
     }
 
-    [System.Text.Json.Serialization.JsonIgnore]
+    [JsonIgnore]
     public string StatusIcon
     {
         get
         {
             var released = !string.IsNullOrEmpty(LastReleasedTag);
+
+            // Web アプリの場合
+            if (IsWebApp)
+            {
+                var hasUrl = !string.IsNullOrEmpty(ProductionUrl);
+                string status;
+                if (released) status = "★ デプロイ済";
+                else if (hasUrl) status = "● 公開中";
+                else status = "○ 開発中";
+
+                var version = released ? LastReleasedTag : ProductCode;
+                return $"{version}  {status}";
+            }
+
             var hasInstaller = LatestInstallerExe != null;
 
             // ビルド状態を判定
-            string status;
+            string desktopStatus;
             if (!IsDotNet)
             {
                 var hasDist = !string.IsNullOrEmpty(DistExePath) && File.Exists(DistExePath);
-                if (released) status = "★ リリース済";
-                else if (hasInstaller) status = "● インストーラー有";
-                else if (hasDist) status = "● 配布可";
-                else status = "○ 未ビルド";
+                if (released) desktopStatus = "★ リリース済";
+                else if (hasInstaller) desktopStatus = "● インストーラー有";
+                else if (hasDist) desktopStatus = "● 配布可";
+                else desktopStatus = "○ 未ビルド";
             }
             else
             {
                 var hasPublish = !string.IsNullOrEmpty(PublishExePath) && File.Exists(PublishExePath);
                 var hasRelease = !string.IsNullOrEmpty(ReleaseExePath) && File.Exists(ReleaseExePath);
 
-                if (released) status = "★ リリース済";
-                else if (hasInstaller) status = "● インストーラー有";
-                else if (hasPublish) status = "● 配布可";
-                else if (hasRelease) status = "◐ ビルド済";
-                else status = "○ 未ビルド";
+                if (released) desktopStatus = "★ リリース済";
+                else if (hasInstaller) desktopStatus = "● インストーラー有";
+                else if (hasPublish) desktopStatus = "● 配布可";
+                else if (hasRelease) desktopStatus = "◐ ビルド済";
+                else desktopStatus = "○ 未ビルド";
             }
 
             // バージョン表示: リリース済みならタグ、それ以外は製品コード
-            var version = released ? LastReleasedTag : ProductCode;
-            return $"{version}  {status}";
+            var version2 = released ? LastReleasedTag : ProductCode;
+            return $"{version2}  {desktopStatus}";
         }
     }
 
