@@ -350,6 +350,44 @@ export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, Partial<Record<Plan
 };
 
 // =============================================================================
+// AI アドオンパック価格
+// =============================================================================
+
+/**
+ * AI クレジット アドオンパック価格
+ *
+ * 全プランで購入可能（STD でもアドオン購入で AI 利用可能に）
+ * 詳細定義は config/usage-based-licensing.ts を参照
+ */
+export const AI_ADDON_PRICING = {
+  /** 200回パック（JPY） */
+  ai_credits_200: {
+    price: 10_000,
+    currency: 'JPY' as Currency,
+    credits: 200,
+    pricePerCredit: 50,
+    descriptionJa: 'AIクレジット 200回パック（Opus含む全モデル対応）',
+    descriptionEn: '200 AI Credits Pack (all models including Opus)',
+  },
+} as const;
+
+/** AI アドオンパック USD 参考価格 */
+export const AI_ADDON_USD_PRICING: Record<string, number> = {
+  ai_credits_200: 67,
+};
+
+/**
+ * AI アドオンパック価格を取得
+ */
+export function getAddonPrice(packId: string, currency: Currency = 'JPY'): number | null {
+  if (currency === 'USD') {
+    return AI_ADDON_USD_PRICING[packId] ?? null;
+  }
+  const pack = AI_ADDON_PRICING[packId as keyof typeof AI_ADDON_PRICING];
+  return pack?.price ?? null;
+}
+
+// =============================================================================
 // ヘルパー関数
 // =============================================================================
 
@@ -431,10 +469,13 @@ export default {
   PRODUCT_PRICING,
   GLOBAL_USD_PRICING,
   USD_REFERENCE_RATE,
+  AI_ADDON_PRICING,
+  AI_ADDON_USD_PRICING,
   getSalesChannel,
   getPrice,
   getPricingTable,
   getConsultingProducts,
   getIndividualProducts,
   getUsdPrice,
+  getAddonPrice,
 };
