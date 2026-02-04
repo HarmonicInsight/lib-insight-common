@@ -8,6 +8,7 @@
  */
 
 import type { ProductCode, PlanCode } from './products';
+import { AI_QUOTA_BY_PLAN, type CreditBalance } from './usage-based-licensing';
 
 // =============================================================================
 // 型定義
@@ -91,14 +92,29 @@ export interface AiUsageStats {
   estimatedCostUsd: number;
 }
 
+/**
+ * ペルソナ選択は常にシステム自動（ユーザーには非公開）
+ *
+ * タスク内容に応じて inferTaskContext → getRecommendedPersona で最適モデルを決定。
+ * ユーザーはモデル名やペルソナ名を意識しない。
+ * モデル変更（新モデルリリース等）時もユーザー影響なし。
+ */
+
 /** AI アシスタント設定 */
 export interface AiAssistantSettings {
   claudeApiKey: string;
-  selectedPersonaId: string;
   selectedModel: string;
   language: 'ja' | 'en';
   chatPanelWidth: number;
 }
+
+/** デフォルト設定値 */
+export const DEFAULT_AI_SETTINGS: AiAssistantSettings = {
+  claudeApiKey: '',
+  selectedModel: 'claude-sonnet-4-20250514',
+  language: 'ja',
+  chatPanelWidth: 400,
+};
 
 // =============================================================================
 // ペルソナ定義
@@ -623,6 +639,93 @@ export const SPREADSHEET_TOOLS: ToolDefinition[] = [
       required: ['search_text'],
     },
   },
+
+  // =========================================================================
+  // 2ファイル比較ツール（file_compare 機能連動）
+  // =========================================================================
+
+  {
+    name: 'get_compare_files',
+    description:
+      'Get information about the two files currently loaded in file compare mode. ' +
+      'Returns file names, sheet lists, and used ranges for both File A (left) and File B (right). ' +
+      'Call this first to understand the structure of both files before reading data.',
+    input_schema: {
+      type: 'object',
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'get_compare_cell_range',
+    description:
+      'Read cell values from either File A or File B in file compare mode. ' +
+      'Use "A" for the left file and "B" for the right file. ' +
+      'Works the same as get_cell_range but targets a specific file in the comparison.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          enum: ['A', 'B'],
+          description: 'Which file to read: "A" (left/old) or "B" (right/new)',
+        },
+        range: {
+          type: 'string',
+          description: 'Cell range in A1 notation (e.g., "A1:F20")',
+        },
+        sheet_name: {
+          type: 'string',
+          description: 'Sheet name. Defaults to active sheet if omitted.',
+        },
+      },
+      required: ['file', 'range'],
+    },
+  },
+  {
+    name: 'get_compare_diff',
+    description:
+      'Get cell-level differences between File A and File B for a given range. ' +
+      'Returns an array of changed cells with: cell address, value in A, value in B, and change type ' +
+      '(added, removed, modified, type_changed). ' +
+      'If no range is specified, compares the entire used range of the active sheet.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        range: {
+          type: 'string',
+          description: 'Cell range to compare (e.g., "A1:F20"). If omitted, compares entire used range.',
+        },
+        sheet_name: {
+          type: 'string',
+          description: 'Sheet name to compare. Defaults to active sheet.',
+        },
+        include_unchanged: {
+          type: 'boolean',
+          description: 'Include unchanged cells in the result. Defaults to false (only differences).',
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'get_compare_summary',
+    description:
+      'Get a high-level summary of all differences between File A and File B. ' +
+      'Returns: total cells compared, cells added, cells removed, cells modified, ' +
+      'sheets only in A, sheets only in B, and per-sheet change counts. ' +
+      'Use this for an overview before diving into specific ranges with get_compare_diff.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        sheet_name: {
+          type: 'string',
+          description: 'Specific sheet to summarize. If omitted, summarizes all sheets.',
+        },
+      },
+      required: [],
+    },
+  },
 ];
 
 // =============================================================================
@@ -825,6 +928,423 @@ export interface PythonExecutionResult {
 }
 
 // =============================================================================
+// タスクコンテキスト別モデル推奨
+// =============================================================================
+
+/**
+ * AI タスクのコンテキスト分類
+ *
+ * ユーザーのリクエスト内容に応じて、最適なペルソナ（モデル）を推奨する。
+ * アプリは自動選択 or ユーザーへの推奨表示に利用可能。
+ */
+export type TaskContext =
+  | 'simple_chat'         // 軽い質問・コマンド確認・ヘルプ
+  | 'cell_edit'           // セルの編集・数式入力・書式設定
+  | 'data_analysis'       // 統計・集計・データ分析
+  | 'sheet_compare'       // シート単位の比較（file_compare）
+  | 'full_document_compare' // 全シート横断の比較分析
+  | 'code_generation'     // Pythonコード生成・修正（INPY/INBT）
+  | 'document_review'     // 文書校正・レビュー（INSS/IOSD）
+  | 'report_generation';  // レポート・精密文書の生成
+
+/** タスクコンテキスト → 推奨ペルソナのマッピング */
+const TASK_PERSONA_MAP: Record<TaskContext, {
+  recommended: string;
+  minimum: string;
+  reasonJa: string;
+  reasonEn: string;
+}> = {
+  simple_chat: {
+    recommended: 'shunsuke',
+    minimum: 'shunsuke',
+    reasonJa: '軽い質問やコマンド確認には俊（Haiku）で十分です',
+    reasonEn: 'Shun (Haiku) is sufficient for quick questions and command lookups',
+  },
+  cell_edit: {
+    recommended: 'shunsuke',
+    minimum: 'shunsuke',
+    reasonJa: 'セルの編集・数式入力には俊（Haiku）で対応できます',
+    reasonEn: 'Shun (Haiku) can handle cell editing and formula input',
+  },
+  data_analysis: {
+    recommended: 'megumi',
+    minimum: 'shunsuke',
+    reasonJa: 'データ分析には恵（Sonnet）がおすすめです',
+    reasonEn: 'Megumi (Sonnet) is recommended for data analysis',
+  },
+  sheet_compare: {
+    recommended: 'megumi',
+    minimum: 'megumi',
+    reasonJa: 'シート比較には恵（Sonnet）以上が必要です。多数のセル差分を正確に処理します',
+    reasonEn: 'Sheet comparison requires Megumi (Sonnet) or above for accurate cell diff processing',
+  },
+  full_document_compare: {
+    recommended: 'manabu',
+    minimum: 'megumi',
+    reasonJa: '全シート横断の比較分析には学（Opus）がおすすめです。大量データの俯瞰的分析が得意です',
+    reasonEn: 'Manabu (Opus) is recommended for full document comparison with cross-sheet analysis',
+  },
+  code_generation: {
+    recommended: 'megumi',
+    minimum: 'shunsuke',
+    reasonJa: 'コード生成には恵（Sonnet）がおすすめです',
+    reasonEn: 'Megumi (Sonnet) is recommended for code generation',
+  },
+  document_review: {
+    recommended: 'megumi',
+    minimum: 'shunsuke',
+    reasonJa: '文書校正には恵（Sonnet）がおすすめです',
+    reasonEn: 'Megumi (Sonnet) is recommended for document review',
+  },
+  report_generation: {
+    recommended: 'manabu',
+    minimum: 'megumi',
+    reasonJa: 'レポート・精密文書には学（Opus）がおすすめです。深い分析と正確な文章生成が得意です',
+    reasonEn: 'Manabu (Opus) is recommended for reports requiring deep analysis and precise writing',
+  },
+};
+
+/** モデルの性能ランク（推奨チェック用） */
+const MODEL_RANK: Record<string, number> = {
+  shunsuke: 1,  // Haiku
+  megumi: 2,    // Sonnet
+  manabu: 3,    // Opus
+};
+
+/**
+ * タスクコンテキストに応じた推奨ペルソナを取得
+ *
+ * @example
+ * ```typescript
+ * const rec = getRecommendedPersona('sheet_compare');
+ * // { persona: AiPersona, reason: '...' }
+ * ```
+ */
+export function getRecommendedPersona(
+  context: TaskContext,
+  locale: 'ja' | 'en' = 'ja'
+): { persona: AiPersona; reason: string } {
+  const mapping = TASK_PERSONA_MAP[context];
+  const persona = getPersona(mapping.recommended)!;
+  return {
+    persona,
+    reason: locale === 'ja' ? mapping.reasonJa : mapping.reasonEn,
+  };
+}
+
+/**
+ * 現在選択中のペルソナがタスクに十分かチェック
+ *
+ * 不十分な場合、推奨ペルソナとメッセージを返す。
+ * アプリ側で「この分析にはClaude恵（Sonnet）以上をお勧めします」のような
+ * ガイダンスを表示するために使用。
+ *
+ * @example
+ * ```typescript
+ * const check = checkPersonaForTask('shunsuke', 'full_document_compare', 'ja');
+ * if (!check.sufficient) {
+ *   showGuidance(check.message); // 「全シート横断の比較分析には学（Opus）がおすすめです」
+ * }
+ * ```
+ */
+export function checkPersonaForTask(
+  currentPersonaId: string,
+  context: TaskContext,
+  locale: 'ja' | 'en' = 'ja'
+): {
+  sufficient: boolean;
+  message?: string;
+  recommendedPersona?: AiPersona;
+} {
+  const mapping = TASK_PERSONA_MAP[context];
+  const currentRank = MODEL_RANK[currentPersonaId] ?? 0;
+  const minimumRank = MODEL_RANK[mapping.minimum] ?? 0;
+
+  if (currentRank >= minimumRank) {
+    return { sufficient: true };
+  }
+
+  const recommended = getPersona(mapping.recommended)!;
+  const minimum = getPersona(mapping.minimum)!;
+
+  const message = locale === 'ja'
+    ? `このタスクには${minimum.nameJa}（${minimum.model.includes('haiku') ? 'Haiku' : minimum.model.includes('sonnet') ? 'Sonnet' : 'Opus'}）以上をお勧めします`
+    : `We recommend ${minimum.nameEn} or above for this task`;
+
+  return {
+    sufficient: false,
+    message,
+    recommendedPersona: recommended,
+  };
+}
+
+/**
+ * タスクコンテキストを自動判定するヒント
+ *
+ * アプリが UI 操作やユーザーメッセージからコンテキストを推定するための
+ * キーワードマッピング。完全な判定はアプリ側で行う。
+ */
+export const TASK_CONTEXT_HINTS: Record<TaskContext, {
+  keywordsJa: string[];
+  keywordsEn: string[];
+  toolNames: string[];
+}> = {
+  simple_chat: {
+    keywordsJa: ['教えて', 'とは', 'ヘルプ', '使い方', 'どうやって'],
+    keywordsEn: ['help', 'how to', 'what is', 'explain'],
+    toolNames: [],
+  },
+  cell_edit: {
+    keywordsJa: ['入力', 'セル', '書式', 'フォント', '色'],
+    keywordsEn: ['cell', 'format', 'font', 'color', 'enter'],
+    toolNames: ['set_cell_values', 'set_cell_formulas', 'set_cell_styles'],
+  },
+  data_analysis: {
+    keywordsJa: ['分析', '集計', '統計', '合計', '平均', 'グラフ'],
+    keywordsEn: ['analyze', 'statistics', 'sum', 'average', 'chart', 'aggregate'],
+    toolNames: ['analyze_data', 'get_cell_range'],
+  },
+  sheet_compare: {
+    keywordsJa: ['比較', '差分', '違い', '変更点'],
+    keywordsEn: ['compare', 'diff', 'difference', 'changes'],
+    toolNames: ['get_compare_diff', 'get_compare_cell_range'],
+  },
+  full_document_compare: {
+    keywordsJa: ['全体比較', '全シート', 'サマリー', '概要', '全体的'],
+    keywordsEn: ['full compare', 'all sheets', 'summary', 'overview', 'overall'],
+    toolNames: ['get_compare_summary', 'get_compare_files'],
+  },
+  code_generation: {
+    keywordsJa: ['コード', 'スクリプト', 'プログラム', '実装', '関数'],
+    keywordsEn: ['code', 'script', 'program', 'implement', 'function'],
+    toolNames: ['validate_python_syntax', 'run_python_code', 'replace_script_content'],
+  },
+  document_review: {
+    keywordsJa: ['校正', 'チェック', 'レビュー', '修正', '誤字'],
+    keywordsEn: ['proofread', 'check', 'review', 'correct', 'typo'],
+    toolNames: [],
+  },
+  report_generation: {
+    keywordsJa: ['レポート', '報告書', '資料作成', 'まとめ', '文書作成'],
+    keywordsEn: ['report', 'document', 'create', 'generate', 'write up'],
+    toolNames: [],
+  },
+};
+
+// =============================================================================
+// 製品別タスクコンテキスト対応表
+// =============================================================================
+
+/**
+ * 製品ごとに利用可能なタスクコンテキストの一覧
+ *
+ * アプリは起動時にこのマッピングを取得し、ユーザーのメッセージを
+ * TASK_CONTEXT_HINTS と照合してコンテキストを推定する。
+ */
+const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
+  // InsightOfficeSheet: スプレッドシート系 + 比較 + レポート
+  IOSH: [
+    'simple_chat',
+    'cell_edit',
+    'data_analysis',
+    'sheet_compare',
+    'full_document_compare',
+    'report_generation',
+  ],
+  // InsightOfficeSlide: 文書校正 + レポート
+  INSS: [
+    'simple_chat',
+    'document_review',
+    'report_generation',
+  ],
+  // InsightOfficeDoc: 文書校正 + レポート
+  IOSD: [
+    'simple_chat',
+    'document_review',
+    'report_generation',
+  ],
+  // InsightPy: コード生成 + データ分析
+  INPY: [
+    'simple_chat',
+    'code_generation',
+    'data_analysis',
+    'report_generation',
+  ],
+  // InsightBot: コード生成
+  INBT: [
+    'simple_chat',
+    'code_generation',
+    'report_generation',
+  ],
+};
+
+/**
+ * 製品で利用可能なタスクコンテキスト一覧を取得
+ *
+ * @example
+ * ```typescript
+ * getTaskContextsForProduct('IOSH');
+ * // ['simple_chat', 'cell_edit', 'data_analysis', 'sheet_compare', 'full_document_compare', 'report_generation']
+ * ```
+ */
+export function getTaskContextsForProduct(product: ProductCode): TaskContext[] {
+  return PRODUCT_TASK_CONTEXTS[product] ?? ['simple_chat'];
+}
+
+/**
+ * ユーザーメッセージからタスクコンテキストを推定
+ *
+ * 製品で利用可能なコンテキストに絞り、キーワードマッチで判定する。
+ * マッチしない場合は 'simple_chat' を返す。
+ *
+ * @example
+ * ```typescript
+ * // InsightOfficeSheet で「2つのファイルの違いを全体的にまとめて」
+ * inferTaskContext('IOSH', '2つのファイルの違いを全体的にまとめて', 'ja');
+ * // 'full_document_compare'
+ *
+ * // InsightOfficeSlide で「誤字をチェックして」
+ * inferTaskContext('INSS', '誤字をチェックして', 'ja');
+ * // 'document_review'
+ * ```
+ */
+export function inferTaskContext(
+  product: ProductCode,
+  userMessage: string,
+  locale: 'ja' | 'en' = 'ja',
+): TaskContext {
+  const availableContexts = getTaskContextsForProduct(product);
+  const messageLower = userMessage.toLowerCase();
+
+  // 優先度: 特殊コンテキスト → 汎用コンテキスト（simple_chat は最後）
+  // full_document_compare を sheet_compare より先に判定（キーワードが包含関係にある）
+  const priorityOrder: TaskContext[] = [
+    'full_document_compare',
+    'sheet_compare',
+    'report_generation',
+    'code_generation',
+    'document_review',
+    'data_analysis',
+    'cell_edit',
+    'simple_chat',
+  ];
+
+  for (const context of priorityOrder) {
+    if (!availableContexts.includes(context)) continue;
+    if (context === 'simple_chat') continue; // フォールバック用
+
+    const hints = TASK_CONTEXT_HINTS[context];
+    const keywords = locale === 'ja' ? hints.keywordsJa : hints.keywordsEn;
+
+    for (const keyword of keywords) {
+      if (messageLower.includes(keyword.toLowerCase())) {
+        return context;
+      }
+    }
+  }
+
+  return 'simple_chat';
+}
+
+/**
+ * メッセージ送信前にペルソナ推奨チェックを実行し、
+ * ガイダンスメッセージを返す統合ヘルパー
+ *
+ * アプリはこの関数を AI チャット送信前に呼び出し、
+ * result.guidance がある場合にトースト or バナーで表示する。
+ *
+ * @example
+ * ```typescript
+ * // IOSH アプリでの使用例（C# から呼び出す想定の TypeScript 定義）
+ * const result = getPersonaGuidance('IOSH', 'shunsuke', '2ファイルの全体的な違いをまとめて', 'ja');
+ * // {
+ * //   detectedContext: 'full_document_compare',
+ * //   currentSufficient: false,
+ * //   guidance: 'このタスクにはClaude 恵（Sonnet）以上をお勧めします',
+ * //   recommendedPersona: { id: 'manabu', nameJa: 'Claude 学', ... },
+ * // }
+ *
+ * if (result.guidance) {
+ *   showToast(result.guidance);  // ユーザーにガイダンス表示
+ * }
+ * ```
+ */
+export function getPersonaGuidance(
+  product: ProductCode,
+  currentPersonaId: string,
+  userMessage: string,
+  locale: 'ja' | 'en' = 'ja',
+): {
+  detectedContext: TaskContext;
+  currentSufficient: boolean;
+  guidance?: string;
+  recommendedPersona?: AiPersona;
+} {
+  const detectedContext = inferTaskContext(product, userMessage, locale);
+  const check = checkPersonaForTask(currentPersonaId, detectedContext, locale);
+
+  return {
+    detectedContext,
+    currentSufficient: check.sufficient,
+    guidance: check.message,
+    recommendedPersona: check.recommendedPersona,
+  };
+}
+
+// =============================================================================
+// メッセージ送信時のモデル自動解決
+// =============================================================================
+
+/**
+ * メッセージ送信時に使用するペルソナ（モデル）を自動決定
+ *
+ * ユーザーのメッセージ内容からタスクコンテキストを推定し、
+ * 最適なモデルを自動選択する。ユーザーにはモデル名を見せない。
+ *
+ * アプリはこの関数を Claude API 呼び出し前に必ず実行する。
+ *
+ * @example
+ * ```typescript
+ * const result = resolvePersonaForMessage({
+ *   product: 'IOSH',
+ *   userMessage: '2ファイルの全体的な違いをまとめて',
+ *   locale: 'ja',
+ * });
+ * // {
+ * //   persona: { id: 'manabu', model: 'claude-opus-4-20250514', ... },
+ * //   detectedContext: 'full_document_compare',
+ * // }
+ *
+ * // 軽い質問 → Haiku が自動選択される
+ * const result2 = resolvePersonaForMessage({
+ *   product: 'IOSH',
+ *   userMessage: 'SUM関数の使い方は？',
+ * });
+ * // {
+ * //   persona: { id: 'shunsuke', model: 'claude-haiku-4-5-20251001', ... },
+ * //   detectedContext: 'simple_chat',
+ * // }
+ * ```
+ */
+export function resolvePersonaForMessage(params: {
+  product: ProductCode;
+  userMessage: string;
+  locale?: 'ja' | 'en';
+}): {
+  persona: AiPersona;
+  detectedContext: TaskContext;
+} {
+  const { product, userMessage, locale = 'ja' } = params;
+  const detectedContext = inferTaskContext(product, userMessage, locale);
+  const rec = getRecommendedPersona(detectedContext, locale);
+
+  return {
+    persona: rec.persona,
+    detectedContext,
+  };
+}
+
+// =============================================================================
 // AI 対応製品の機能キー
 // =============================================================================
 
@@ -837,28 +1357,88 @@ export const AI_FEATURE_KEY = 'ai_assistant';
 /**
  * AI アシスタントが利用可能なプラン
  */
-export const AI_ALLOWED_PLANS: PlanCode[] = ['FREE', 'TRIAL', 'PRO', 'ENT'];
+export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
 
 /**
- * AI アシスタントが利用可能かチェック
+ * AI アシスタントが利用可能かチェック（プランのみ）
+ *
+ * 注意: これはプランレベルのチェックのみ。
+ * クレジット残量を含めた完全なチェックは usage-based-licensing.ts の
+ * checkAiUsage() または ServerAiUsageManager.checkUsage() を使用。
  */
 export function canUseAiAssistant(plan: PlanCode): boolean {
   return AI_ALLOWED_PLANS.includes(plan);
 }
 
+/**
+ * AI アシスタントのクレジット上限を取得
+ * @returns クレジット数（-1 = 無制限、0 = 利用不可）
+ */
+export function getAiAssistantCredits(plan: PlanCode): number {
+  return AI_QUOTA_BY_PLAN[plan].baseCredits;
+}
+
 // =============================================================================
-// デフォルトエクスポート
+// AI エディター
 // =============================================================================
 
 /** AI エディター機能のフィーチャーキー */
 export const AI_EDITOR_FEATURE_KEY = 'ai_editor';
 
 /** AI エディターが利用可能なプラン */
-export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['FREE', 'TRIAL', 'PRO', 'ENT'];
+export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
 
-/** AI エディターが利用可能かチェック */
+/**
+ * AI エディターが利用可能かチェック（プランのみ）
+ *
+ * 注意: ai_assistant と ai_editor は共通クレジットプールを共有。
+ * クレジット残量チェックは checkAiUsage() を使用。
+ */
 export function canUseAiEditor(plan: PlanCode): boolean {
   return AI_EDITOR_ALLOWED_PLANS.includes(plan);
+}
+
+// =============================================================================
+// クレジット表示ヘルパー
+// =============================================================================
+
+/**
+ * AI ペルソナ選択時のクレジット状態メッセージを取得
+ *
+ * チャットUIのペルソナ選択欄に残量を表示するためのヘルパー。
+ *
+ * @example
+ * ```typescript
+ * const msg = getPersonaCreditLabel('megumi', 'PRO', credits);
+ * // → "Claude 恵（Sonnet）— 残り 85回"
+ * ```
+ */
+export function getPersonaCreditLabel(
+  personaId: string,
+  plan: PlanCode,
+  credits: CreditBalance | null,
+  locale: 'ja' | 'en' = 'ja',
+): string {
+  const persona = getPersona(personaId);
+  if (!persona) return '';
+
+  const name = locale === 'ja' ? persona.nameJa : persona.nameEn;
+
+  if (!credits || credits.totalRemaining === -1) {
+    return locale === 'ja'
+      ? `${name}（無制限）`
+      : `${name} (Unlimited)`;
+  }
+
+  if (credits.totalRemaining <= 0) {
+    return locale === 'ja'
+      ? `${name}（クレジット不足）`
+      : `${name} (No credits)`;
+  }
+
+  return locale === 'ja'
+    ? `${name} — 残り ${credits.totalRemaining}回`
+    : `${name} — ${credits.totalRemaining} credits left`;
 }
 
 /** コードエディター対応製品かチェック */
@@ -895,9 +1475,10 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
 // =============================================================================
 
 export default {
-  // ペルソナ
+  // ペルソナ・設定
   AI_PERSONAS,
   DEFAULT_PERSONA_ID,
+  DEFAULT_AI_SETTINGS,
   getPersona,
   getDefaultPersona,
 
@@ -926,10 +1507,27 @@ export default {
   AI_FEATURE_KEY,
   AI_ALLOWED_PLANS,
   canUseAiAssistant,
+  getAiAssistantCredits,
 
   // ライセンス — AI エディター
   AI_EDITOR_FEATURE_KEY,
   AI_EDITOR_ALLOWED_PLANS,
   canUseAiEditor,
   isCodeEditorProduct,
+
+  // タスクコンテキスト別モデル推奨
+  TASK_CONTEXT_HINTS,
+  getRecommendedPersona,
+  checkPersonaForTask,
+
+  // 製品別タスクコンテキスト統合
+  getTaskContextsForProduct,
+  inferTaskContext,
+  getPersonaGuidance,
+
+  // メッセージ送信時のペルソナ解決
+  resolvePersonaForMessage,
+
+  // クレジット表示
+  getPersonaCreditLabel,
 };

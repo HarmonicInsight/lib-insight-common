@@ -151,60 +151,70 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
-| 独自の AI ペルソナ定義 | `config/ai-assistant.ts` の標準 3 ペルソナを使用 |
+| 独自のモデル選択 UI | `resolvePersonaForMessage()` でシステム自動選択（ユーザーにモデル名を見せない） |
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
 
 ## 5. 製品コード一覧・価格戦略
 
-### 販売チャネルと価格帯
+### 販売チャネルと価格帯（全製品 法人向け B2B Only）
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│  【A】法人向け（コンサルティング連動型）  年額 98万円〜398万円       │
-│  コンサル案件（数千万円規模）の一環として提供。少量・高単価。       │
-│  INCA / INBT / IVIN / INMV / INIG                                  │
-├──────────────────────────────────────────────────────────────────────┤
-│  【B】個人向け（ダウンロード＆インストール型）                       │
-│  FREE(AI20回) / STD ¥39,800 / PRO ¥49,800(AI100回)                │
-│  INSS / IOSH / IOSD / INPY / INMV / INIG                          │
-└──────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│  Tier 1: 業務変革ツール（高単価）                                │
+│  INCA / INBT / IVIN                                            │
+│  年額 98万円〜398万円                                           │
+├──────────────────────────────────────────────────────────────────┤
+│  Tier 2: AI活用ツール（中単価）                                  │
+│  INMV / INIG                                                    │
+│  年額 48万円〜198万円                                           │
+├──────────────────────────────────────────────────────────────────┤
+│  Tier 3: InsightOffice Suite（導入ツール）                       │
+│  INSS / IOSH / IOSD / INPY                                     │
+│  年額 ¥39,800〜¥49,800（1ユーザー/年）                          │
+│  コンサル案件のクライアントに業務ツールとして導入                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-### 【A】法人向け（コンサルティング連動型）
+> 全製品をコンサルティング案件の一環として法人向けに提供。
+> 個人向け（B2C）販売は行わない。決済は Stripe（自社サイト）/ 請求書払い。
+
+### Tier 1: 業務変革ツール
 
 | コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
 |-------|-------|------|---------------|---------------|-----|
 | INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
-| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA + Orchestrator | ¥1,480,000 | ¥2,980,000 | 個別見積 |
 | IVIN | InterviewInsight | 自動ヒアリング・業務調査支援 | 個別見積 | 個別見積 | 個別見積 |
-| INMV | InsightMovie | 画像・テキストから動画作成 | ¥1,480,000 | ¥2,980,000 | 個別見積 |
-| INIG | InsightImageGen | 業務資料向けAI画像の大量自動生成 | ¥980,000 | ¥1,980,000 | 個別見積 |
 
-> **考え方**: コンサルティング開発案件（数千万円規模）の中で使用するツール。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。大量販売は不要。
+### Tier 2: AI活用ツール
 
-### 【B】個人向け（ダウンロード＆インストール型）
+| コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
+|-------|-------|------|---------------|---------------|-----|
+| INMV | InsightMovie | 画像・テキストから動画作成 | ¥980,000 | ¥1,980,000 | 個別見積 |
+| INIG | InsightImageGen | 業務資料向けAI画像の大量自動生成 | ¥480,000 | ¥980,000 | 個別見積 |
 
-| コード | 製品名 | 説明 | FREE | STD（税抜/年） | PRO（税抜/年） |
-|-------|-------|------|------|---------------|---------------|
-| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
-| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
-| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
-| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
+### Tier 3: InsightOffice Suite
 
-> **AI使用回数追加**: ¥10,000 / 200回（Opus含む全モデル対応）
-> **考え方**: FREE版でOpusのAI体験を提供し、PRO版への転換を促す。AIオプション＋AI使用料で収益化。
+| コード | 製品名 | 説明 | STD（税抜/人/年） | PRO（税抜/人/年） | ENT |
+|-------|-------|------|------------------|------------------|-----|
+| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー | ¥39,800 | ¥49,800 | 個別見積 |
+| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 | ¥39,800 | ¥49,800 | 個別見積 |
+| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 | ¥39,800 | ¥49,800 | 個別見積 |
+| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 | ¥39,800 | ¥49,800 | 個別見積 |
+
+> **考え方**: 全製品コンサルティング案件の一環として提供。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。パートナー（代理店）経由での販売も可能。
 
 ### 価格定義ファイル
 
 ```typescript
 import { getPrice, getSalesChannel } from '@/insight-common/config/pricing';
 
-// 製品の販売チャネルを確認
+// 製品の販売チャネルを確認（全製品 consulting）
 getSalesChannel('INCA');  // 'consulting'
-getSalesChannel('INSS');  // 'individual'
+getSalesChannel('INSS');  // 'consulting'
 
 // 価格を取得
-getPrice('INSS', 'STD');  // { annualPrice: 39800, currency: 'JPY', monthlyEquivalent: 3317 }
+getPrice('INSS', 'STD');  // { annualPrice: 39800, currency: 'JPY', monthlyEquivalent: 3317, unit: 'per_user' }
 getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEquivalent: 331667 }
 ```
 
@@ -222,54 +232,32 @@ getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEqu
 ```
 Phase 1（現在）   Phase 2（拡大）     Phase 3（成熟）
 ┌──────────┐    ┌──────────────┐    ┌──────────────┐
-│  日本市場  │ →  │ 北米・欧州    │ →  │ 韓国・東南ア  │
-│  実績構築  │    │ グローバル展開 │    │ リセラー展開  │
+│  日本市場  │ →  │ 東南アジア    │ →  │ 韓国・その他  │
+│  実績構築  │    │ パートナー展開 │    │ パートナー拡大 │
 └──────────┘    └──────────────┘    └──────────────┘
 ```
 
-### 【A】コンサルティング連動型の販売戦略
+### 販売戦略（全製品共通）
 
 | 項目 | 内容 |
 |------|------|
-| **主要市場** | 日本国内（Phase 1） → 東南アジア（Phase 2） |
-| **販売方法** | コンサル案件内での直接提案（営業コスト最小） |
+| **主要市場** | 日本国内（Phase 1） → 東南アジア（Phase 2） → 韓国（Phase 3） |
+| **販売方法** | コンサル案件内での直接提案 + パートナー（代理店）経由 |
 | **顧客層** | 大手〜中堅企業のIT部門・DX推進部門 |
 | **決済** | Stripe（自社サイト）/ 請求書払い |
-| **KPI** | 案件あたり単価 × コンサル案件数 |
+| **KPI** | 案件あたり単価 × コンサル案件数 × パートナー件数 |
 
-> **ポイント**: 新規マーケティング不要。既存コンサル案件のクライアントへの追加提案が最もROIが高い。
-
-### 【B】グローバルスタンドアロン型の販売戦略
-
-| 項目 | 内容 |
-|------|------|
-| **主要市場** | 日本 → 北米・欧州 → 韓国・東南アジア |
-| **販売方法** | 自社サイト + Paddle（MoR） + Microsoft Store |
-| **顧客層** | Office業務ユーザー（個人〜中小企業） |
-| **決済** | Paddle（グローバル税務代行） / Microsoft Store |
-| **KPI** | MRR / ARR / トライアル転換率 / チャーンレート / LTV |
+> **ポイント**: 新規マーケティング不要。既存コンサル案件のクライアントへの追加提案が最もROIが高い。パートナー経由で営業範囲を拡大。
 
 **マーケティングチャネル（優先順）:**
 
 | 優先度 | チャネル | 種別 | 対象地域 |
 |:------:|---------|------|---------|
-| 1 | SEO / コンテンツマーケティング | Organic | 全地域 |
-| 2 | YouTube 製品デモ | Organic | 日本・北米 |
-| 3 | Product Hunt / Hacker News | Organic | 北米 |
-| 4 | Microsoft Store | Organic | 北米・欧州 |
-| 5 | Google Ads（検索連動） | Paid | 日本・北米 |
-| 6 | SNS（X / LinkedIn） | Organic | 全地域 |
-| 7 | リセラー・VAR | Partner | 日本・韓国・東南アジア |
-
-**決済プラットフォーム:**
-
-| プラットフォーム | 役割 | 手数料 | MoR | 備考 |
-|----------------|------|:------:|:---:|------|
-| Paddle | グローバル主力 | ~5% | ✅ | VAT/消費税の申告・納付を代行 |
-| Microsoft Store | Windows流入 | ~12% | ✅ | デスクトップアプリの自然流入 |
-| Stripe | 日本国内 | ~3.6% | — | 自社サイト決済・コンサル連動型 |
-
-> **全製品共通**: 1ヶ月の無料トライアル、クレジットカード不要で開始可能。
+| 1 | 既存クライアントアップセル | Direct | 日本 |
+| 2 | セミナー・ウェビナー | Direct | 日本・東南アジア |
+| 3 | パートナー紹介・共同提案 | Partner | 日本・東南アジア・韓国 |
+| 4 | SEO / コンテンツマーケティング | Organic | 全地域 |
+| 5 | LinkedIn / SNS | Organic | 全地域 |
 
 ```typescript
 import { getSalesStrategy, getProductsByRegion } from '@/insight-common/config/sales-strategy';
@@ -280,8 +268,8 @@ strategy.targetMarkets;     // Phase別の展開マーケット
 strategy.positioning;       // 'PowerPointのコンテンツ抽出・一括更新を自動化...'
 
 // 地域で販売可能な製品を取得
-getProductsByRegion('US');   // ['INSS', 'IOSH', 'IOSD', 'INPY']
 getProductsByRegion('JP');   // 全製品
+getProductsByRegion('SEA');  // 全製品
 ```
 
 ## 7. 販売代理店（リセラー）パートナープログラム
@@ -308,14 +296,15 @@ getProductsByRegion('JP');   // 全製品
 | Silver | 30% | 30% | 15% | 20% |
 | Gold | 40% | 40% | 20% | 25% |
 
-### リセラー対象製品
+### リセラー対象製品（ティア別）
 
-| 製品 | リセラー販売 | 最低販売価格 | デモ | NFR |
-|------|:----------:|:----------:|:----:|:---:|
-| INSS / IOSH / IOSD / INPY | ✅ | 定価の80%以上 | 5本 | 2本 |
-| INCA / INBT / IVIN / INMV / INIG | ❌ | — | — | — |
+| 製品 | 最低ティア | 最低販売価格 | デモ | NFR |
+|------|:--------:|:----------:|:----:|:---:|
+| INSS / IOSH / IOSD / INPY（Tier 3） | Registered | 定価の80%以上 | 5本 | 2本 |
+| INMV / INIG（Tier 2） | Silver | 定価の80%以上 | 3本 | 1本 |
+| INCA / INBT / IVIN（Tier 1） | Gold | 定価の85%以上 | 2本 | 1本 |
 
-> **コンサル連動型はリセラー販売不可**（自社コンサル案件と一体のため）。
+> **全製品がパートナー経由で販売可能**。ただし高単価製品はティア制限あり。
 
 ### 契約条件
 
@@ -328,42 +317,46 @@ getProductsByRegion('JP');   // 全製品
 ```typescript
 import { calculateWholesalePrice, getResellerProducts } from '@/insight-common/config/reseller-strategy';
 
-// リセラー販売可能な製品
-getResellerProducts();  // ['INSS', 'IOSH', 'IOSD', 'INPY']
+// ティア別の販売可能製品
+getResellerProducts('registered');  // ['INSS', 'IOSH', 'IOSD', 'INPY']
+getResellerProducts('silver');      // ['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INIG']
+getResellerProducts('gold');        // 全製品
 
-// Silver パートナーがINSS STD（¥39,800）を販売した場合
+// Silver パートナーがINSS STD（¥39,800/人/年）を販売した場合
 calculateWholesalePrice(39800, 'silver');
 // { wholesalePrice: 27860, partnerProfit: 11940, discount: 0.30 }
 ```
 
 ## 8. ライセンスシステム
 
-### プラン体系
+### プラン体系（全製品 法人向け — FREE廃止）
 
 | プラン | 説明 | 対象 | 有効期限 |
 |-------|------|------|---------|
-| FREE | AI 20回付き無料版 | 全ユーザー | 無期限 |
-| TRIAL | 全機能利用可能（評価用） | 評価ユーザー | 14日間 |
-| STD | 標準機能（コラボレーション機能を除く） | 個人利用 | 365日 |
-| PRO | 全機能（コラボレーション含む） | 法人・チーム | 365日 |
-| ENT | カスタマイズ | 企業 | 要相談 |
+| TRIAL | 全機能利用可能（評価用） | 評価企業 | 14日間 |
+| STD | 法人向け標準機能 | 法人利用 | 365日 |
+| PRO | 法人向け全機能（AI月200回・コラボレーション） | 法人・チーム | 365日 |
+| ENT | カスタマイズ | 大企業 | 要相談 |
 
 ### InsightOfficeSheet (IOSH) 機能マトリクス
 
-> **FREE = AI 20回付き無料版**、**STD = AIなし**、**PRO = AI 100回付き（Opus対応）**
+> **STD = 基本機能+AI（月50回）**、**PRO = 全機能+AI月200回+コラボレーション**、**ENT = AI無制限**
 
-| 機能 | FREE | TRIAL | STD | PRO | ENT |
-|------|:----:|:-----:|:---:|:---:|:---:|
-| Excel読み込み・編集 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| バージョン管理 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 差分比較 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| セル変更ログ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| エクスポート | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 変更者表示 | ❌ | ✅ | ❌ | ✅ | ✅ |
-| 掲示板 | ❌ | ✅ | ❌ | ✅ | ✅ |
-| AIアシスタント | ✅(20回) | ✅ | ❌ | ✅(100回) | ✅ |
-| AIコードエディター | ✅(20回) | ✅ | ❌ | ✅(100回) | ✅ |
-| メッセージ送信 | ❌ | ✅ | ❌ | ✅ | ✅ |
+| 機能 | TRIAL | STD | PRO | ENT |
+|------|:-----:|:---:|:---:|:---:|
+| Excel読み込み・編集 | ✅ | ✅ | ✅ | ✅ |
+| バージョン管理 | ✅ | ✅ | ✅ | ✅ |
+| 差分比較 | ✅ | ✅ | ✅ | ✅ |
+| セル変更ログ | ✅ | ✅ | ✅ | ✅ |
+| エクスポート | ✅ | ✅ | ✅ | ✅ |
+| 2ファイル比較 | ✅ | ✅ | ✅ | ✅ |
+| 変更者表示 | ✅ | ❌ | ✅ | ✅ |
+| 掲示板 | ✅ | ❌ | ✅ | ✅ |
+| 付箋 | ✅ | ✅ | ✅ | ✅ |
+| AIアシスタント | ✅ | ✅(50回) | ✅(200回) | ✅ |
+| AIコードエディター | ✅ | ❌ | ✅(200回) | ✅ |
+| Pythonスクリプト | ✅ | ❌ | ✅ | ✅ |
+| メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
 
 ### InsightOffice AI アシスタント共通仕様
 
@@ -374,36 +367,81 @@ calculateWholesalePrice(39800, 'silver');
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
-| AI モデル | **Opus** 含む全モデル（FREE/PRO 共通） |
-| ライセンス制御 | FREE: 20回 / PRO: 100回 / ENT: 無制限（STD は AI なし） |
-| 追加パック | ¥10,000 / 200回 |
-| ペルソナ | 3 キャラクター（Claude俊=Haiku、Claude恵=Sonnet、Claude学=Opus） |
+| AI モデル | **Opus** 含む全モデル |
+| ライセンス制御 | TRIAL: 全機能 / STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
+| 追加パック | ¥10,000 / 100回 |
+| モデル選択 | **システム自動選択**（タスク内容に応じて最適モデルを自動決定、ユーザーには非公開） |
+| 内部モデル | Haiku（軽量タスク）/ Sonnet（標準タスク）/ Opus（高度な分析） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
-**ペルソナシステム:**
+**タスク別モデル自動選択ルール（内部ロジック）:**
 
-| ID | 名前 | モデル | 用途 |
-|----|------|--------|------|
-| `shunsuke` | Claude 俊 | Haiku | 素早い確認・軽い修正 |
-| `megumi` | Claude 恵 | Sonnet | 編集・要約・翻訳（デフォルト） |
-| `manabu` | Claude 学 | Opus | レポート・精密文書 |
+| タスク | 自動選択モデル | 用途例 |
+|--------|:----------:|--------|
+| 簡単な質問・ヘルプ | Haiku | 「SUM関数の使い方は？」 |
+| セル編集・数式入力 | Haiku | 「A1にSUM入れて」 |
+| データ分析・集計 | Sonnet | 「売上の月別推移を分析」 |
+| シート比較 | Sonnet | 「Sheet1のB列の差分を出して」 |
+| 全シート横断比較 | Opus | 「2ファイルの全体的な違いをまとめて」 |
+| コード生成 | Sonnet | 「CSVを読み込むスクリプト」 |
+| 文書校正 | Sonnet | 「誤字脱字をチェック」 |
+| レポート生成 | Opus | 「比較結果から報告書を作成」 |
+
+> アプリは `resolvePersonaForMessage()` を呼び出すだけで、タスクに最適なモデルが自動選択される。ユーザーにモデル名は表示しない。
+
+**製品別タスクコンテキスト対応:**
+
+| 製品 | 利用可能なコンテキスト |
+|------|----------------------|
+| IOSH | 簡単な質問、セル編集、データ分析、シート比較、全シート横断比較、レポート生成 |
+| INSS | 簡単な質問、文書校正、レポート生成 |
+| IOSD | 簡単な質問、文書校正、レポート生成 |
+| INPY | 簡単な質問、コード生成、データ分析、レポート生成 |
+| INBT | 簡単な質問、コード生成、レポート生成 |
 
 ```typescript
 import {
-  AI_PERSONAS,
   getBaseSystemPrompt,
   canUseAiAssistant,
   SPREADSHEET_TOOLS,
+  resolvePersonaForMessage,
+  inferTaskContext,
 } from '@/insight-common/config/ai-assistant';
 
 // ライセンスチェック
-canUseAiAssistant('PRO');   // true
-canUseAiAssistant('FREE');  // true（20回制限）
-canUseAiAssistant('STD');   // false
+canUseAiAssistant('PRO');   // true（月200回）
+canUseAiAssistant('STD');   // true（月50回）
+canUseAiAssistant('TRIAL'); // true（全機能）
 
 // システムプロンプト取得
 getBaseSystemPrompt('IOSH', 'ja');  // InsightOfficeSheet用プロンプト
 getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
+
+// ======================================
+// モデル自動選択（アプリ組み込み用）
+// ======================================
+
+// IOSH: 「2ファイルの全体的な違いをまとめて」→ Opus が自動選択
+const result = resolvePersonaForMessage({
+  product: 'IOSH',
+  userMessage: '2ファイルの全体的な違いをまとめて',
+  locale: 'ja',
+});
+// { persona: { id: 'manabu', model: 'claude-opus-4-20250514', ... }, detectedContext: 'full_document_compare' }
+
+// Claude API 呼び出し時に result.persona.model を使用
+const model = result.persona.model;  // 'claude-opus-4-20250514'
+
+// IOSH: 「SUM関数の使い方は？」→ Haiku が自動選択
+const result2 = resolvePersonaForMessage({
+  product: 'IOSH',
+  userMessage: 'SUM関数の使い方は？',
+});
+// { persona: { id: 'shunsuke', model: 'claude-haiku-4-5-20251001', ... }, detectedContext: 'simple_chat' }
+
+// タスクコンテキストだけ取得したい場合
+inferTaskContext('IOSH', '売上の月別推移を分析して', 'ja');  // 'data_analysis'
+inferTaskContext('INSS', 'レポートを作成して', 'ja');        // 'report_generation'
 ```
 
 ### ライセンスキー形式
@@ -454,10 +492,10 @@ getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
 │  │                                                            │  │
 │  │   直販            パートナー          システム              │  │
 │  │  ┌──────────┐   ┌──────────────┐   ┌──────────────┐       │  │
-│  │  │ Paddle   │   │ パートナー   │   │ メール認証   │       │  │
-│  │  │ Stripe   │   │ ポータル     │   │ 自動更新     │       │  │
-│  │  │ MS Store │   │ 経由発行     │   │ バッチ処理   │       │  │
-│  │  │ 請求書   │   │              │   │              │       │  │
+│  │  │ Stripe   │   │ パートナー   │   │ メール認証   │       │  │
+│  │  │ 請求書   │   │ ポータル     │   │ 自動更新     │       │  │
+│  │  │          │   │ 経由発行     │   │ バッチ処理   │       │  │
+│  │  │          │   │              │   │              │       │  │
 │  │  └────┬─────┘   └──────┬───────┘   └──────┬───────┘       │  │
 │  │       └────────────────┼──────────────────┘               │  │
 │  │                        ▼                                  │  │
@@ -469,7 +507,7 @@ getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
 │  └────────────────────────────────────────────────────────────┘  │
 │                                                                  │
 │  DB: Supabase  │  Auth: Firebase  │  Email: Resend              │
-│  Payment: Paddle/Stripe  │  Cron: Railway                       │
+│  Payment: Stripe  │  Cron: Railway                              │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -477,9 +515,7 @@ getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
 
 | チャネル | 説明 | キー種別 | 自動承認 |
 |---------|------|---------|:-------:|
-| `direct_paddle` | Paddle決済完了 | production | ✅ |
 | `direct_stripe` | Stripe決済完了 | production | ✅ |
-| `direct_msstore` | Microsoft Store | production | ✅ |
 | `direct_invoice` | 請求書払い | production | ❌（管理者承認） |
 | `partner_reseller` | パートナー経由 | production | ✅ |
 | `partner_referral` | パートナー紹介 | provisional | ✅ |
@@ -538,7 +574,187 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 // { allowed: true, remaining: 2 }
 ```
 
-## 10. 開発完了チェックリスト
+## 10. プロジェクトファイル（独自拡張子 + コンテキストメニュー）
+
+### ファイル関連付け
+
+InsightOffice 各アプリは独自のプロジェクトファイル形式を持つ。
+ダブルクリックでアプリが自動起動し、右クリックから「〜で開く」も可能。
+
+| 製品 | 独自拡張子 | 内包形式 | 右クリック対象 |
+|------|----------|---------|--------------|
+| INSS | `.inss` | .pptx + メタデータ | .pptx, .ppt |
+| IOSH | `.iosh` | .xlsx + メタデータ | .xlsx, .xls, .csv |
+| IOSD | `.iosd` | .docx + メタデータ | .docx, .doc |
+
+### プロジェクトファイル構造（ZIP 形式）
+
+```
+report.iosh
+├── document.xlsx          # 元の Office ファイル
+├── metadata.json          # バージョン、作成者、最終更新日
+├── history/               # バージョン履歴
+├── sticky_notes.json      # 付箋データ
+├── references/            # 参考資料
+├── scripts/               # Python スクリプト
+└── ai_chat_history.json   # AI チャット履歴
+```
+
+### API
+
+```typescript
+import {
+  resolveProductByExtension,
+  getContextMenuProducts,
+  getFileAssociationInfo,
+} from '@/insight-common/config/products';
+
+// 独自拡張子 → 製品解決
+resolveProductByExtension('iosh');  // 'IOSH'
+
+// コンテキストメニュー対象
+getContextMenuProducts('xlsx');  // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
+
+// インストーラー用ファイル関連付け情報
+getFileAssociationInfo('IOSH');
+// { progId: 'HarmonicInsight.InsightOfficeSheet', extension: '.iosh', ... }
+```
+
+## 11. InsightBot Orchestrator / Agent アーキテクチャ
+
+### 概要
+
+InsightBot を UiPath Orchestrator 相当の中央管理サーバーとして位置付け、
+InsightOffice 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）として
+リモート JOB 配信・実行監視を実現する。
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  InsightBot (Orchestrator) — PRO/ENT                     │
+│  ├ JOB 作成・編集（AI エディター）                         │
+│  ├ Agent ダッシュボード（登録・状態監視）                   │
+│  ├ スケジューラー（cron 相当の定期実行）                    │
+│  └ 実行ログ集約                                          │
+│                     WebSocket / REST                      │
+├──────────────────────┼───────────────────────────────────┤
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
+│  │ Agent A  │  │ Agent B  │  │ Agent C  │  ← InsightOffice│
+│  │ IOSH     │  │ INSS     │  │ IOSD     │    + bot_agent │
+│  │ 経理PC   │  │ 営業PC   │  │ 法務PC   │    モジュール   │
+│  └──────────┘  └──────────┘  └──────────┘               │
+└─────────────────────────────────────────────────────────┘
+```
+
+### UiPath との差別化
+
+UiPath はファイルを「外から」UI オートメーションで操作する。
+InsightBot + InsightOffice はドキュメントを「中から」直接操作する。
+ファイルロック・UI 遅延の問題がなく、セル・スライド・段落を高速に処理。
+
+### プラン別制限（INBT）
+
+| 機能 | STD | PRO | ENT |
+|------|:---:|:---:|:---:|
+| Orchestrator | ❌ | ✅ | ✅ |
+| Agent 管理数 | - | 50台 | 無制限 |
+| スケジューラー | ❌ | ✅ | ✅ |
+| 同時 JOB 配信 | - | 10 | 無制限 |
+| ログ保持期間 | - | 90日 | 365日 |
+
+### API
+
+```typescript
+import {
+  canUseOrchestrator,
+  canAddAgent,
+  ORCHESTRATOR_API,
+} from '@/insight-common/config/orchestrator';
+
+// Orchestrator 利用可否
+canUseOrchestrator('PRO');  // true
+canUseOrchestrator('STD');  // false
+
+// Agent 追加可否
+canAddAgent('PRO', 45);     // true（50台まで）
+canAddAgent('PRO', 50);     // false（上限到達）
+
+// API エンドポイント
+ORCHESTRATOR_API.defaultPort;           // 9400
+ORCHESTRATOR_API.endpoints.jobs.dispatch;  // { method: 'POST', path: '/api/jobs/:jobId/dispatch' }
+```
+
+### InsightOffice 側（Agent モジュール）
+
+```typescript
+// addon-modules.ts の bot_agent モジュールを有効化
+// → InsightBot Orchestrator からの JOB 受信が可能に
+canEnableModule('IOSH', 'bot_agent', 'PRO', ['python_runtime']);  // { allowed: true }
+```
+
+### ワークフロー（バッチ処理 / BPO パターン）
+
+Orchestrator は単一 JOB 配信だけでなく、**複数ファイルの順次処理（ワークフロー）**をサポートする。
+BPO（業務プロセス外注）での大量書類作成に対応。
+
+```
+ワークフロー実行フロー:
+┌─────────────────────────────────────────────────────────┐
+│  Orchestrator                                            │
+│  ワークフロー定義:                                        │
+│    Step 1: 売上.xlsx → 集計スクリプト                      │
+│    Step 2: 経費.xlsx → 経費チェックスクリプト               │
+│    Step 3: 報告書.docx → レポート生成スクリプト             │
+│                                                          │
+│  → Agent に一括配信                                      │
+├──────────────────────────────────────────────────────────┤
+│  Agent (InsightOffice)                                    │
+│  Step 1: 売上.xlsx を開く → スクリプト実行 → 保存して閉じる │
+│  Step 2: 経費.xlsx を開く → スクリプト実行 → 保存して閉じる │
+│  Step 3: 報告書.docx を開く → スクリプト実行 → 保存して閉じる│
+│  → 全ステップ完了を Orchestrator に報告                    │
+└──────────────────────────────────────────────────────────┘
+```
+
+### 利用パターン別機能マトリクス
+
+| パターン | 対象ユーザー | プラン | 機能 |
+|---------|------------|--------|------|
+| **個人 AI 利用** | 一般ユーザー | STD | AI チャット + 基本機能 |
+| **市民開発** | パワーユーザー | PRO | Python + AI エディター + ローカルワークフロー |
+| **リモート RPA** | BPO / IT 部門 | PRO/ENT (INBT) | Orchestrator + Agent + スケジューラー |
+
+### ローカルワークフロー（PRO InsightOffice）
+
+PRO の InsightOffice ユーザーは Orchestrator なしで、ローカル PC 上の簡易自動化が可能。
+
+```typescript
+import { canEnableModule } from '@/insight-common/config/addon-modules';
+
+// PRO ユーザーはローカルワークフローを有効化可能
+canEnableModule('IOSH', 'local_workflow', 'PRO', ['python_runtime', 'python_scripts']);
+// { allowed: true }
+
+// STD ユーザーは不可
+canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scripts']);
+// { allowed: false, reasonJa: 'ローカルワークフローには TRIAL/PRO/ENT プランが必要です' }
+```
+
+### Orchestrator ワークフロー API
+
+```typescript
+import {
+  canUseOrchestrator,
+  canDispatchJob,
+  ORCHESTRATOR_API,
+} from '@/insight-common/config/orchestrator';
+
+// ワークフロー作成・配信
+ORCHESTRATOR_API.endpoints.workflows.create;    // POST /api/workflows
+ORCHESTRATOR_API.endpoints.workflows.dispatch;   // POST /api/workflows/:workflowId/dispatch
+ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflowId/executions
+```
+
+## 12. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
@@ -548,11 +764,16 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **サードパーティ**: Syncfusion キーが `third-party-licenses.json` 経由で登録されている
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
-- [ ] **AI アシスタント**: ペルソナ 3 種（shunsuke / megumi / manabu）が実装されている
-- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/PRO/ENT のみ）が実装されている
+- [ ] **AI アシスタント**: `resolvePersonaForMessage()` でタスク別モデル自動選択が実装されている
+- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
+- [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
+- [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている
+- [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
+- [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT PRO+ のみ）
+- [ ] **ローカルワークフロー**: PRO InsightOffice でローカル連続処理が動作する（PRO+ のみ）
 - [ ] **検証**: `validate-standards.sh` が成功する
 
-## 11. 困ったときは
+## 13. 困ったときは
 
 ```bash
 # 標準検証

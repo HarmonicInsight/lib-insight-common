@@ -5,7 +5,7 @@
  * 【設計方針】
  * ============================================================================
  *
- * InsightOffice 系アプリ（IOSH/IOSD）は、コア機能に加えて
+ * InsightOffice 系アプリ（INSS/IOSH/IOSD）は、コア機能に加えて
  * アドインモジュールを追加・削除できるプラグインアーキテクチャを持つ。
  *
  * ## モジュールの種類
@@ -21,23 +21,26 @@
  * ## ホストアプリとの連携
  *
  * ```
- * ┌─────────────────────────────────────────────────────┐
- * │  InsightOffice ホストアプリ (C# WPF)                 │
- * │                                                     │
- * │  ┌─────────┐  ┌─────────┐  ┌─────────┐            │
- * │  │コア機能  │  │コア機能  │  │コア機能  │            │
- * │  │(読込)   │  │(編集)   │  │(保存)   │            │
- * │  └─────────┘  └─────────┘  └─────────┘            │
- * │                                                     │
- * │  ┌───────────────────────────────────────────────┐  │
- * │  │  アドインマネージャー (AddonManager)            │  │
- * │  │                                               │  │
- * │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐      │  │
- * │  │  │AI ｱｼｽﾀﾝﾄ│ │Python実行│ │参考資料  │ ... │  │
- * │  │  │(bundled) │ │(extension)│ │(bundled) │      │  │
- * │  │  └──────────┘ └──────────┘ └──────────┘      │  │
- * │  └───────────────────────────────────────────────┘  │
- * └─────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │  InsightOffice ホストアプリ (C# WPF)                          │
+ * │                                                              │
+ * │  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │
+ * │  │コア機能  │  │コア機能  │  │コア機能  │                     │
+ * │  │(読込)   │  │(編集)   │  │(保存)   │                     │
+ * │  └─────────┘  └─────────┘  └─────────┘                     │
+ * │                                                              │
+ * │  ┌────────────────────────────────────────────────────────┐  │
+ * │  │  アドインマネージャー (AddonManager)                     │  │
+ * │  │                                                        │  │
+ * │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ │  │
+ * │  │  │AI ｱｼｽﾀﾝﾄ│ │Pythonｽｸﾘ│ │AI ｺｰﾄﾞ  │ │参考資料  │ │  │
+ * │  │  │(右ﾍﾟｲﾝ) │ │ﾌﾟﾄ一覧  │ │ｴﾃﾞｨﾀｰ  │ │(bundled) │ │  │
+ * │  │  │(bundled) │ │(右ﾍﾟｲﾝ) │ │(下ﾍﾟｲﾝ) │ │          │ │  │
+ * │  │  └──────────┘ └────┬─────┘ └────▲─────┘ └──────────┘ │  │
+ * │  │                     │ ﾀﾞﾌﾞﾙｸﾘｯｸ │ ｴﾃﾞｨﾀｰで開く      │  │
+ * │  │                     └───────────┘                      │  │
+ * │  └────────────────────────────────────────────────────────┘  │
+ * └──────────────────────────────────────────────────────────────┘
  * ```
  *
  * ## ファイル連携プロトコル（Python モジュール）
@@ -68,7 +71,7 @@ import type { ProductCode, PlanCode } from './products';
 export type AddonDistributionType = 'bundled' | 'extension';
 
 /** モジュール UI の配置場所 */
-export type AddonPanelPosition = 'right' | 'bottom' | 'dialog' | 'tab';
+export type AddonPanelPosition = 'right' | 'bottom' | 'dialog' | 'tab' | 'none';
 
 /** モジュールの状態 */
 export type AddonState = 'not_installed' | 'installed' | 'enabled' | 'disabled' | 'update_available';
@@ -251,7 +254,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'ai_assistant',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -262,10 +265,9 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
         input: [
           { key: 'message', type: 'string', description: 'ユーザーのメッセージ', required: true },
           { key: 'document_context', type: 'json', description: '現在のドキュメント内容（選択範囲 or 全体）', required: false },
-          { key: 'persona_id', type: 'string', description: 'ペルソナ ID (shunsuke/megumi/manabu)', required: false, example: 'megumi' },
           { key: 'conversation_history', type: 'json', description: '過去の会話履歴', required: false },
         ],
-        process: 'Claude API にメッセージ + ドキュメントコンテキストを送信。Tool Use でドキュメント操作を実行。',
+        process: 'resolvePersonaForMessage() でタスクに最適なモデルを自動選択 → Claude API に送信。Tool Use でドキュメント操作を実行。',
         output: [
           { key: 'response_text', type: 'string', description: 'AI の応答テキスト', required: true },
           { key: 'tool_results', type: 'json', description: '実行されたツール操作の結果', required: false },
@@ -306,19 +308,6 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
         type: 'string',
         defaultValue: '',
         descriptionJa: 'Claude API キー（BYOK）',
-      },
-      {
-        key: 'default_persona',
-        name: 'Default Persona',
-        nameJa: 'デフォルトペルソナ',
-        type: 'select',
-        defaultValue: 'megumi',
-        options: [
-          { value: 'shunsuke', label: 'Claude Shun (Haiku)', labelJa: 'Claude 俊（Haiku）' },
-          { value: 'megumi', label: 'Claude Meg (Sonnet)', labelJa: 'Claude 恵（Sonnet）' },
-          { value: 'manabu', label: 'Claude Manabu (Opus)', labelJa: 'Claude 学（Opus）' },
-        ],
-        descriptionJa: 'デフォルトで使用するAIペルソナ',
       },
     ],
   },
@@ -583,7 +572,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'reference_materials',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -788,7 +777,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'dialog',
     requiredFeatureKey: 'voice_input',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -848,11 +837,11 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     id: 'python_scripts',
     name: 'Python Script Runner',
     nameJa: 'Python スクリプト',
-    description: 'Browse, manage, and run Python scripts from a categorized list. Equivalent to InsightPy script management embedded in InsightOffice. Admins can preload scripts for end users.',
-    descriptionJa: 'Pythonスクリプトの一覧表示・管理・実行。InsightPyのスクリプト管理をInsightOfficeに組み込んだもの。管理者が業務スクリプトを事前配布可能。',
+    description: 'Browse, manage, and run Python scripts from a categorized list pane (like AI Assistant). Double-click opens the shared AI Code Editor. Equivalent to InsightPy embedded in InsightOffice. Admins can preload scripts for end users.',
+    descriptionJa: 'AIアシスタントと同様の右ペインにPythonスクリプト一覧を表示。ダブルクリックで共通のPythonエディターが開く。InsightPyをInsightOfficeに組み込んだもの。管理者が業務スクリプトを事前配布可能。',
     version: '1.0.0',
     distribution: 'bundled',
-    panelPosition: 'tab',
+    panelPosition: 'right',
     requiredFeatureKey: 'ai_editor',
     allowedPlans: ['TRIAL', 'PRO', 'ENT'],
     dependencies: [],
@@ -893,6 +882,24 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
         ],
         transport: 'subprocess',
         async: true,
+        streaming: false,
+      },
+      {
+        id: 'open_in_editor',
+        name: 'Open in Editor',
+        nameJa: 'エディターで開く',
+        description: 'Open a script in the AI Code Editor for viewing and editing. Triggered by double-clicking a script in the list pane.',
+        input: [
+          { key: 'script_id', type: 'string', description: '開くスクリプトの ID', required: true },
+        ],
+        process: 'スクリプト一覧から該当スクリプトを取得 → ai_code_editor パネルを開き、コードをロード。readOnly スクリプトはエディター側で編集不可にする。',
+        output: [
+          { key: 'opened', type: 'boolean', description: 'エディターが開けたか', required: true },
+          { key: 'script_name', type: 'string', description: '開いたスクリプト名', required: true },
+          { key: 'read_only', type: 'boolean', description: '読み取り専用か（管理者スクリプト等）', required: true },
+        ],
+        transport: 'in_process',
+        async: false,
         streaming: false,
       },
       {
@@ -1038,7 +1045,6 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
           { key: 'audio', type: 'audio_stream', description: 'ユーザーの音声', required: true },
           { key: 'conversation_history', type: 'json', description: '過去の会話履歴', required: false },
           { key: 'document_context', type: 'json', description: '現在のドキュメント内容', required: false },
-          { key: 'persona_id', type: 'string', description: 'AI ペルソナ', required: false, example: 'megumi' },
         ],
         process: '① STT で音声→テキスト → ② Claude API でAI応答生成 → ③ TTS でテキスト→音声 → ④ アバターがリップシンクで読み上げ',
         output: [
@@ -1096,6 +1102,12 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
       },
     ],
   },
+
+  // =========================================================================
+  // InsightBot Agent（Orchestrator 連携 — 詳細は BOT_AGENT_MODULE を参照）
+  // =========================================================================
+  // ※ 定義は PRODUCT_ADDON_SUPPORT の後に BOT_AGENT_MODULE として配置
+  // ※ ここでは参照のみ（初期化順序の都合で後から代入）
 };
 
 // =============================================================================
@@ -1110,6 +1122,20 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
  * - defaultEnabled: 初回起動時にデフォルトで ON になるモジュール
  */
 export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupport>> = {
+  INSS: {
+    supportedModules: [
+      'ai_assistant',
+      'python_runtime',
+      'ai_code_editor',
+      'python_scripts',
+      'reference_materials',
+      'voice_input',
+      'vrm_avatar',
+      'bot_agent',
+      'local_workflow',
+    ],
+    defaultEnabled: ['ai_assistant'],
+  },
   IOSH: {
     supportedModules: [
       'ai_assistant',
@@ -1121,6 +1147,8 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'messaging',
       'voice_input',
       'vrm_avatar',
+      'bot_agent',
+      'local_workflow',
     ],
     defaultEnabled: ['ai_assistant', 'board', 'messaging'],
   },
@@ -1133,12 +1161,370 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'reference_materials',
       'voice_input',
       'vrm_avatar',
+      'bot_agent',
+      'local_workflow',
     ],
     defaultEnabled: ['ai_assistant', 'reference_materials'],
   },
   // INPY / INBT はアドインではなくコア機能として提供
   // InsightOffice 系のみがアドイン対象
+  // ただし InsightOffice に Agent 機能を組み込むことで INBT の Orchestrator と連携可能
 };
+
+// =============================================================================
+// InsightBot Agent モジュール（InsightOffice に組み込む Agent 機能）
+// =============================================================================
+
+/**
+ * InsightBot Orchestrator から JOB を受信して実行する Agent モジュール。
+ *
+ * InsightOffice 各アプリ（INSS/IOSH/IOSD）にこのモジュールを有効化すると、
+ * InsightBot（Orchestrator）からリモートで Python スクリプトを配信・実行できる。
+ *
+ * UiPath の Orchestrator ↔ Agent 関係に相当。
+ * 詳細は config/orchestrator.ts を参照。
+ */
+export const BOT_AGENT_MODULE: AddonModuleDefinition = {
+  id: 'bot_agent',
+  name: 'InsightBot Agent',
+  nameJa: 'InsightBot Agent',
+  description: 'Receive and execute JOBs from InsightBot Orchestrator. Enables remote Python script execution, scheduling, and centralized monitoring.',
+  descriptionJa: 'InsightBot（Orchestrator）から JOB を受信して実行する Agent 機能。リモートでの Python スクリプト実行・スケジュール実行・集中監視を実現。',
+  version: '1.0.0',
+  distribution: 'bundled',
+  panelPosition: 'none',
+  requiredFeatureKey: 'ai_editor',
+  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+  dependencies: [],
+  ioContracts: [
+    {
+      id: 'agent_connect',
+      name: 'Connect to Orchestrator',
+      nameJa: 'Orchestrator に接続',
+      description: 'Establish WebSocket connection to InsightBot Orchestrator for JOB dispatch and monitoring.',
+      input: [
+        { key: 'orchestrator_url', type: 'string', description: 'Orchestrator の URL（例: ws://192.168.1.100:9400/ws/agent）', required: true },
+        { key: 'display_name', type: 'string', description: 'Agent 表示名', required: true },
+        { key: 'tags', type: 'json', description: 'Agent タグ（グルーピング用）', required: false },
+      ],
+      process: 'WebSocket 接続 → Agent 登録 → ハートビート開始。接続中は Orchestrator からの JOB dispatch を受け付ける。',
+      output: [
+        { key: 'connected', type: 'boolean', description: '接続成功したか', required: true },
+        { key: 'agent_id', type: 'string', description: '割り当てられた Agent ID', required: true },
+      ],
+      transport: 'websocket',
+      async: true,
+      streaming: true,
+    },
+    {
+      id: 'agent_execute_job',
+      name: 'Execute Dispatched JOB',
+      nameJa: '配信された JOB を実行',
+      description: 'Execute a JOB received from Orchestrator using the local Python runtime and open document.',
+      input: [
+        { key: 'execution_id', type: 'string', description: '実行 ID', required: true },
+        { key: 'script', type: 'string', description: 'Python スクリプト', required: true },
+        { key: 'parameters', type: 'json', description: 'JOB パラメータ', required: false },
+        { key: 'timeout_seconds', type: 'number', description: 'タイムアウト（秒）', required: true },
+      ],
+      process: 'python_runtime でスクリプトを実行。実行中のログは WebSocket 経由で Orchestrator にリアルタイム送信。完了後に結果を通知。',
+      output: [
+        { key: 'status', type: 'string', description: '実行結果（completed / failed / timeout）', required: true },
+        { key: 'exit_code', type: 'number', description: '終了コード', required: true },
+        { key: 'stdout', type: 'string', description: '標準出力', required: true },
+        { key: 'stderr', type: 'string', description: '標準エラー', required: true },
+        { key: 'document_modified', type: 'boolean', description: 'ドキュメントが変更されたか', required: true },
+        { key: 'duration_ms', type: 'number', description: '実行時間（ミリ秒）', required: true },
+      ],
+      transport: 'subprocess',
+      async: true,
+      streaming: true,
+    },
+    {
+      id: 'agent_status',
+      name: 'Get Agent Status',
+      nameJa: 'Agent ステータス取得',
+      description: 'Get current agent status including running jobs and open documents.',
+      input: [],
+      process: 'ローカルの Agent 状態を取得（接続状態、実行中 JOB、開いているドキュメント一覧）',
+      output: [
+        { key: 'connected', type: 'boolean', description: 'Orchestrator に接続中か', required: true },
+        { key: 'orchestrator_url', type: 'string', description: '接続先 Orchestrator URL', required: true },
+        { key: 'running_jobs', type: 'number', description: '実行中 JOB 数', required: true },
+        { key: 'open_documents', type: 'json', description: '開いているドキュメント一覧', required: true },
+      ],
+      transport: 'in_process',
+      async: false,
+      streaming: false,
+    },
+    {
+      id: 'open_document',
+      name: 'Open Document',
+      nameJa: 'ドキュメントを開く',
+      description: 'Open a document file in the host application. Used by Orchestrator Workflow to open files before processing.',
+      input: [
+        { key: 'execution_id', type: 'string', description: '実行 ID（ワークフローステップ追跡用）', required: true },
+        { key: 'document_path', type: 'file_path', description: '開くドキュメントのファイルパス（.xlsx, .pptx, .docx, .iosh 等）', required: true },
+        { key: 'read_only', type: 'boolean', description: '読み取り専用で開くか', required: false },
+      ],
+      process: 'ホストアプリのドキュメントオープン API を呼び出し。プロジェクトファイル（.iosh 等）の場合は ZIP 展開 → 内包ドキュメントを読み込み。',
+      output: [
+        { key: 'success', type: 'boolean', description: 'ドキュメントを開けたか', required: true },
+        { key: 'document_path', type: 'file_path', description: '開いたドキュメントのパス', required: true },
+        { key: 'error', type: 'string', description: 'エラーメッセージ（失敗時）', required: false },
+      ],
+      transport: 'in_process',
+      async: true,
+      streaming: false,
+    },
+    {
+      id: 'close_document',
+      name: 'Close Document',
+      nameJa: 'ドキュメントを閉じる',
+      description: 'Close the currently open document, optionally saving changes. Used by Orchestrator Workflow after processing.',
+      input: [
+        { key: 'execution_id', type: 'string', description: '実行 ID', required: true },
+        { key: 'save', type: 'boolean', description: '閉じる前に保存するか（デフォルト: true）', required: false },
+        { key: 'save_as_path', type: 'file_path', description: '別名で保存する場合のパス', required: false },
+      ],
+      process: '保存フラグに応じてドキュメントを保存 → ホストアプリのドキュメントクローズ API を呼び出し。',
+      output: [
+        { key: 'success', type: 'boolean', description: 'ドキュメントを閉じられたか', required: true },
+        { key: 'saved_path', type: 'file_path', description: '保存先パス', required: false },
+        { key: 'error', type: 'string', description: 'エラーメッセージ（失敗時）', required: false },
+      ],
+      transport: 'in_process',
+      async: true,
+      streaming: false,
+    },
+    {
+      id: 'execute_workflow',
+      name: 'Execute Workflow',
+      nameJa: 'ワークフロー実行',
+      description: 'Execute a multi-step workflow: open document → run script → close → next. Orchestrator dispatches the full workflow definition and Agent executes steps sequentially.',
+      input: [
+        { key: 'workflow_execution_id', type: 'string', description: 'ワークフロー実行 ID', required: true },
+        { key: 'steps', type: 'json', description: 'ワークフローステップ配列 [{ stepIndex, name, jobId, script, documentPath, parameters, timeoutSeconds, onError }]', required: true },
+      ],
+      process: 'ステップ配列を順番に実行: ① open_document → ② execute_job（Python スクリプト実行）→ ③ close_document → 次のステップへ。各ステップの結果は WebSocket で Orchestrator にリアルタイム報告。onError に応じて stop/skip/retry。',
+      output: [
+        { key: 'status', type: 'string', description: 'ワークフロー全体の結果（completed / partial / failed）', required: true },
+        { key: 'completed_steps', type: 'number', description: '完了したステップ数', required: true },
+        { key: 'total_steps', type: 'number', description: '全ステップ数', required: true },
+        { key: 'step_results', type: 'json', description: '各ステップの実行結果 [{ stepIndex, status, exitCode, documentModified, durationMs }]', required: true },
+        { key: 'total_duration_ms', type: 'number', description: '全体の実行時間（ミリ秒）', required: true },
+      ],
+      transport: 'websocket',
+      async: true,
+      streaming: true,
+    },
+  ],
+  tools: [],
+  settingsSchema: [
+    {
+      key: 'orchestrator_url',
+      name: 'Orchestrator URL',
+      nameJa: 'Orchestrator URL',
+      type: 'string',
+      defaultValue: '',
+      descriptionJa: 'InsightBot Orchestrator の接続先 URL（例: 192.168.1.100:9400）',
+    },
+    {
+      key: 'auto_connect',
+      name: 'Auto Connect',
+      nameJa: '自動接続',
+      type: 'boolean',
+      defaultValue: false,
+      descriptionJa: 'アプリ起動時に Orchestrator へ自動接続',
+    },
+    {
+      key: 'display_name',
+      name: 'Agent Display Name',
+      nameJa: 'Agent 表示名',
+      type: 'string',
+      defaultValue: '',
+      descriptionJa: 'Orchestrator ダッシュボードに表示される名前',
+    },
+    {
+      key: 'heartbeat_interval',
+      name: 'Heartbeat Interval (seconds)',
+      nameJa: 'ハートビート間隔（秒）',
+      type: 'number',
+      defaultValue: 30,
+      descriptionJa: 'Orchestrator にステータスを送信する間隔',
+    },
+    {
+      key: 'max_concurrent_jobs',
+      name: 'Max Concurrent JOBs',
+      nameJa: '最大同時実行 JOB 数',
+      type: 'number',
+      defaultValue: 1,
+      descriptionJa: '同時に実行できる JOB の上限',
+    },
+  ],
+  requiresModules: ['python_runtime'],
+  icon: 'Robot',
+  themeColor: '#6366F1',
+};
+
+// BOT_AGENT_MODULE を ADDON_MODULES に登録
+ADDON_MODULES.bot_agent = BOT_AGENT_MODULE;
+
+// =============================================================================
+// ローカルワークフロー（PRO InsightOffice のローカル自動化機能）
+// =============================================================================
+
+/**
+ * ローカルワークフローモジュール
+ *
+ * Orchestrator なしで PRO InsightOffice ユーザーが使えるローカル自動化機能。
+ * スクリプトの連続実行や、フォルダ内ファイルの一括処理を実現する。
+ *
+ * ## Orchestrator との違い
+ *
+ * | 項目 | ローカルワークフロー | Orchestrator |
+ * |------|---------------------|-------------|
+ * | 実行場所 | 自分の PC のみ | リモート Agent に配信 |
+ * | スケジュール | なし（手動起動） | cron 相当の定期実行 |
+ * | 監視 | ローカル UI のみ | ダッシュボードで集約 |
+ * | 対象 | PRO InsightOffice | PRO/ENT INBT |
+ *
+ * ## ユースケース
+ *
+ * - 「このフォルダの Excel 全部にスクリプト A → スクリプト B を実行」
+ * - 「月末に売上データ 10 ファイルを順番に集計」
+ * - 市民開発者が簡易 RPA 的に使う
+ */
+export const LOCAL_WORKFLOW_MODULE: AddonModuleDefinition = {
+  id: 'local_workflow',
+  name: 'Local Workflow',
+  nameJa: 'ローカルワークフロー',
+  description: 'Local automation for PRO users: run scripts sequentially on multiple files without Orchestrator. Lightweight RPA for citizen developers.',
+  descriptionJa: 'Orchestrator 不要のローカル自動化。複数ファイルへのスクリプト連続実行。市民開発者向けの簡易 RPA。',
+  version: '1.0.0',
+  distribution: 'bundled',
+  panelPosition: 'dialog',
+  requiredFeatureKey: 'ai_editor',
+  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+  dependencies: [],
+  ioContracts: [
+    {
+      id: 'create_workflow',
+      name: 'Create Local Workflow',
+      nameJa: 'ワークフロー作成',
+      description: 'Define a local workflow: select target files/folder + scripts to run in sequence.',
+      input: [
+        { key: 'name', type: 'string', description: 'ワークフロー名', required: true },
+        { key: 'target_files', type: 'json', description: '対象ファイルパスの配列、またはフォルダパス + フィルター', required: true },
+        { key: 'steps', type: 'json', description: 'スクリプトステップ [{ scriptId, parameters, onError }]', required: true },
+      ],
+      process: 'ワークフロー定義を検証 → ローカルストレージに保存。対象ファイルの存在確認。',
+      output: [
+        { key: 'workflow_id', type: 'string', description: 'ワークフロー ID', required: true },
+        { key: 'valid', type: 'boolean', description: '定義が有効か', required: true },
+        { key: 'file_count', type: 'number', description: '対象ファイル数', required: true },
+      ],
+      transport: 'in_process',
+      async: false,
+      streaming: false,
+    },
+    {
+      id: 'run_workflow',
+      name: 'Run Local Workflow',
+      nameJa: 'ワークフロー実行',
+      description: 'Execute a local workflow: open each file → run scripts → close → next file.',
+      input: [
+        { key: 'workflow_id', type: 'string', description: '実行するワークフロー ID', required: true },
+        { key: 'dry_run', type: 'boolean', description: 'ドライラン（ファイルを開くだけで実行しない）', required: false },
+      ],
+      process: '対象ファイルを順番に処理: ① ファイルを開く → ② ステップ順にスクリプト実行 → ③ 保存して閉じる → ④ 次のファイルへ。進捗はリアルタイムで UI に表示。',
+      output: [
+        { key: 'status', type: 'string', description: '全体の結果（completed / partial / failed）', required: true },
+        { key: 'files_processed', type: 'number', description: '処理済みファイル数', required: true },
+        { key: 'files_total', type: 'number', description: '全ファイル数', required: true },
+        { key: 'results', type: 'json', description: 'ファイルごとの結果 [{ filePath, status, stepsCompleted, error? }]', required: true },
+        { key: 'total_duration_ms', type: 'number', description: '全体の実行時間', required: true },
+      ],
+      transport: 'in_process',
+      async: true,
+      streaming: true,
+    },
+    {
+      id: 'list_workflows',
+      name: 'List Local Workflows',
+      nameJa: 'ワークフロー一覧',
+      description: 'List all saved local workflows.',
+      input: [],
+      process: 'ローカルストレージから保存済みワークフロー一覧を取得。',
+      output: [
+        { key: 'workflows', type: 'json', description: 'ワークフロー一覧 [{ id, name, fileCount, stepCount, lastRunAt }]', required: true },
+      ],
+      transport: 'in_process',
+      async: false,
+      streaming: false,
+    },
+  ],
+  tools: [
+    {
+      name: 'create_local_workflow',
+      description: 'Create a local workflow to process multiple files with scripts',
+      input_schema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', description: 'Workflow name' },
+          target_folder: { type: 'string', description: 'Folder path containing target files' },
+          file_filter: { type: 'string', description: 'File extension filter (e.g., "*.xlsx")' },
+          script_ids: { type: 'array', items: { type: 'string' }, description: 'Script IDs to run in order' },
+        },
+        required: ['name', 'target_folder', 'script_ids'],
+      },
+    },
+    {
+      name: 'run_local_workflow',
+      description: 'Run a saved local workflow',
+      input_schema: {
+        type: 'object',
+        properties: {
+          workflow_id: { type: 'string', description: 'Workflow ID to execute' },
+          dry_run: { type: 'boolean', description: 'Dry run mode (preview only)' },
+        },
+        required: ['workflow_id'],
+      },
+    },
+  ],
+  requiresModules: ['python_runtime', 'python_scripts'],
+  icon: 'Flow',
+  themeColor: '#7C3AED',
+  settingsSchema: [
+    {
+      key: 'max_files_per_workflow',
+      name: 'Max Files per Workflow',
+      nameJa: '1ワークフローの最大ファイル数',
+      type: 'number',
+      defaultValue: 100,
+      descriptionJa: '1回のワークフローで処理できるファイルの上限',
+    },
+    {
+      key: 'auto_save',
+      name: 'Auto Save After Each File',
+      nameJa: 'ファイル処理後に自動保存',
+      type: 'boolean',
+      defaultValue: true,
+      descriptionJa: '各ファイルの処理完了後に自動で保存する',
+    },
+    {
+      key: 'stop_on_error',
+      name: 'Stop on Error',
+      nameJa: 'エラー時停止',
+      type: 'boolean',
+      defaultValue: false,
+      descriptionJa: 'エラーが発生した場合にワークフロー全体を停止する',
+    },
+  ],
+};
+
+// LOCAL_WORKFLOW_MODULE を ADDON_MODULES に登録
+ADDON_MODULES.local_workflow = LOCAL_WORKFLOW_MODULE;
 
 // =============================================================================
 // 管理者プロファイル — コンサル/SIer が現場に合わせてモジュール構成を制御
@@ -1496,6 +1882,8 @@ export function resolveModuleOrder(moduleIds: string[]): string[] {
 export default {
   // 定義
   ADDON_MODULES,
+  BOT_AGENT_MODULE,
+  LOCAL_WORKFLOW_MODULE,
   PRODUCT_ADDON_SUPPORT,
   ADMIN_PROFILE_TEMPLATES,
 
