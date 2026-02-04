@@ -377,13 +377,85 @@ export function getConsultingProducts(): ProductCode[] {
 }
 
 // =============================================================================
+// USD 参考価格（グローバル展開用）
+// =============================================================================
+
+/** USD 換算レート（参考） */
+export const USD_REFERENCE_RATE = 150; // 1 USD = 150 JPY
+
+/** グローバル USD 参考価格 */
+export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, Partial<Record<PlanCode, number>>>> = {
+  INSS: { STD: 265, PRO: 332 },  // ¥39,800 / 150, ¥49,800 / 150
+  IOSH: { STD: 265, PRO: 332 },
+  IOSD: { STD: 265, PRO: 332 },
+  INPY: { STD: 265, PRO: 332 },
+};
+
+/** USD 価格を取得（参考価格） */
+export function getUsdPrice(product: ProductCode, plan: PlanCode): number | null {
+  return GLOBAL_USD_PRICING[product]?.[plan] ?? null;
+}
+
+// =============================================================================
+// AI アドオンパック価格（pricing 側の参照定義）
+// =============================================================================
+
+/**
+ * AI クレジット アドオンパック価格（2ティア制）
+ *
+ * - Standard: ¥10,000 / 200回（Sonnet まで）
+ * - Premium: ¥20,000 / 200回（Opus 対応）
+ * - 全プランで購入可能（STD でもアドオン購入で AI 利用可能に）
+ * 詳細定義は config/usage-based-licensing.ts を参照
+ */
+export const AI_ADDON_PRICING = {
+  /** Standard 200回パック — Sonnet まで */
+  ai_credits_200_standard: {
+    price: 10_000,
+    currency: 'JPY' as Currency,
+    credits: 200,
+    pricePerCredit: 50,
+    modelTier: 'standard' as const,
+    descriptionJa: 'AI標準パック 200回（Sonnetまで）',
+    descriptionEn: '200 AI Credits - Standard (up to Sonnet)',
+  },
+  /** Premium 200回パック — Opus 対応 */
+  ai_credits_200_premium: {
+    price: 20_000,
+    currency: 'JPY' as Currency,
+    credits: 200,
+    pricePerCredit: 100,
+    modelTier: 'premium' as const,
+    descriptionJa: 'AIプレミアムパック 200回（Opus対応）',
+    descriptionEn: '200 AI Credits - Premium (including Opus)',
+  },
+} as const;
+
+/** AI アドオンパック USD 参考価格 */
+export const AI_ADDON_USD_PRICING: Record<string, number> = {
+  ai_credits_200_standard: 67,
+  ai_credits_200_premium: 133,
+};
+
+/** アドオン価格を取得 */
+export function getAddonPrice(packId: string): typeof AI_ADDON_PRICING[keyof typeof AI_ADDON_PRICING] | null {
+  return (AI_ADDON_PRICING as Record<string, any>)[packId] ?? null;
+}
+
+// =============================================================================
 // エクスポート
 // =============================================================================
 
 export default {
   PRODUCT_PRICING,
+  GLOBAL_USD_PRICING,
+  USD_REFERENCE_RATE,
+  AI_ADDON_PRICING,
+  AI_ADDON_USD_PRICING,
   getSalesChannel,
   getPrice,
   getPricingTable,
   getConsultingProducts,
+  getUsdPrice,
+  getAddonPrice,
 };
