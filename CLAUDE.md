@@ -380,12 +380,30 @@ calculateWholesalePrice(480000, 'silver');
 | `megumi` | Claude 恵 | Sonnet | 編集・要約・翻訳（デフォルト） |
 | `manabu` | Claude 学 | Opus | レポート・精密文書 |
 
+**タスク別モデル推奨ガイドライン:**
+
+| タスク | 推奨ペルソナ | 最低ペルソナ | 用途例 |
+|--------|:----------:|:----------:|--------|
+| 簡単な質問・ヘルプ | 俊 (Haiku) | 俊 | 「SUM関数の使い方は？」 |
+| セル編集・数式入力 | 俊 (Haiku) | 俊 | 「A1にSUM入れて」 |
+| データ分析・集計 | 恵 (Sonnet) | 俊 | 「売上の月別推移を分析」 |
+| シート比較 | 恵 (Sonnet) | 恵 | 「Sheet1のB列の差分を出して」 |
+| 全シート横断比較 | 学 (Opus) | 恵 | 「2ファイルの全体的な違いをまとめて」 |
+| コード生成 | 恵 (Sonnet) | 俊 | 「CSVを読み込むスクリプト」 |
+| 文書校正 | 恵 (Sonnet) | 俊 | 「誤字脱字をチェック」 |
+| レポート生成 | 学 (Opus) | 恵 | 「比較結果から報告書を作成」 |
+
+> アプリは `checkPersonaForTask()` を使い、選択中のペルソナがタスクに不十分な場合に
+> 「この分析にはClaude恵（Sonnet）以上をお勧めします」のようなガイダンスを表示できる。
+
 ```typescript
 import {
   AI_PERSONAS,
   getBaseSystemPrompt,
   canUseAiAssistant,
   SPREADSHEET_TOOLS,
+  getRecommendedPersona,
+  checkPersonaForTask,
 } from '@/insight-common/config/ai-assistant';
 
 // ライセンスチェック
@@ -396,6 +414,14 @@ canUseAiAssistant('TRIAL'); // true（全機能）
 // システムプロンプト取得
 getBaseSystemPrompt('IOSH', 'ja');  // InsightOfficeSheet用プロンプト
 getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
+
+// タスク別モデル推奨
+const rec = getRecommendedPersona('sheet_compare', 'ja');
+// { persona: { id: 'megumi', ... }, reason: 'シート比較には恵（Sonnet）以上が必要です...' }
+
+// 現在のペルソナがタスクに十分かチェック
+const check = checkPersonaForTask('shunsuke', 'full_document_compare', 'ja');
+// { sufficient: false, message: 'このタスクにはClaude恵以上をお勧めします', recommendedPersona: ... }
 ```
 
 ### ライセンスキー形式
@@ -539,6 +565,7 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
 - [ ] **AI アシスタント**: ペルソナ 3 種（shunsuke / megumi / manabu）が実装されている
+- [ ] **AI アシスタント**: タスク別モデル推奨（`checkPersonaForTask`）でガイダンスを表示している
 - [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回）が実装されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 

@@ -912,6 +912,210 @@ export interface PythonExecutionResult {
 }
 
 // =============================================================================
+// タスクコンテキスト別モデル推奨
+// =============================================================================
+
+/**
+ * AI タスクのコンテキスト分類
+ *
+ * ユーザーのリクエスト内容に応じて、最適なペルソナ（モデル）を推奨する。
+ * アプリは自動選択 or ユーザーへの推奨表示に利用可能。
+ */
+export type TaskContext =
+  | 'simple_chat'         // 軽い質問・コマンド確認・ヘルプ
+  | 'cell_edit'           // セルの編集・数式入力・書式設定
+  | 'data_analysis'       // 統計・集計・データ分析
+  | 'sheet_compare'       // シート単位の比較（file_compare）
+  | 'full_document_compare' // 全シート横断の比較分析
+  | 'code_generation'     // Pythonコード生成・修正（INPY/INBT）
+  | 'document_review'     // 文書校正・レビュー（INSS/IOSD）
+  | 'report_generation';  // レポート・精密文書の生成
+
+/** タスクコンテキスト → 推奨ペルソナのマッピング */
+const TASK_PERSONA_MAP: Record<TaskContext, {
+  recommended: string;
+  minimum: string;
+  reasonJa: string;
+  reasonEn: string;
+}> = {
+  simple_chat: {
+    recommended: 'shunsuke',
+    minimum: 'shunsuke',
+    reasonJa: '軽い質問やコマンド確認には俊（Haiku）で十分です',
+    reasonEn: 'Shun (Haiku) is sufficient for quick questions and command lookups',
+  },
+  cell_edit: {
+    recommended: 'shunsuke',
+    minimum: 'shunsuke',
+    reasonJa: 'セルの編集・数式入力には俊（Haiku）で対応できます',
+    reasonEn: 'Shun (Haiku) can handle cell editing and formula input',
+  },
+  data_analysis: {
+    recommended: 'megumi',
+    minimum: 'shunsuke',
+    reasonJa: 'データ分析には恵（Sonnet）がおすすめです',
+    reasonEn: 'Megumi (Sonnet) is recommended for data analysis',
+  },
+  sheet_compare: {
+    recommended: 'megumi',
+    minimum: 'megumi',
+    reasonJa: 'シート比較には恵（Sonnet）以上が必要です。多数のセル差分を正確に処理します',
+    reasonEn: 'Sheet comparison requires Megumi (Sonnet) or above for accurate cell diff processing',
+  },
+  full_document_compare: {
+    recommended: 'manabu',
+    minimum: 'megumi',
+    reasonJa: '全シート横断の比較分析には学（Opus）がおすすめです。大量データの俯瞰的分析が得意です',
+    reasonEn: 'Manabu (Opus) is recommended for full document comparison with cross-sheet analysis',
+  },
+  code_generation: {
+    recommended: 'megumi',
+    minimum: 'shunsuke',
+    reasonJa: 'コード生成には恵（Sonnet）がおすすめです',
+    reasonEn: 'Megumi (Sonnet) is recommended for code generation',
+  },
+  document_review: {
+    recommended: 'megumi',
+    minimum: 'shunsuke',
+    reasonJa: '文書校正には恵（Sonnet）がおすすめです',
+    reasonEn: 'Megumi (Sonnet) is recommended for document review',
+  },
+  report_generation: {
+    recommended: 'manabu',
+    minimum: 'megumi',
+    reasonJa: 'レポート・精密文書には学（Opus）がおすすめです。深い分析と正確な文章生成が得意です',
+    reasonEn: 'Manabu (Opus) is recommended for reports requiring deep analysis and precise writing',
+  },
+};
+
+/** モデルの性能ランク（推奨チェック用） */
+const MODEL_RANK: Record<string, number> = {
+  shunsuke: 1,  // Haiku
+  megumi: 2,    // Sonnet
+  manabu: 3,    // Opus
+};
+
+/**
+ * タスクコンテキストに応じた推奨ペルソナを取得
+ *
+ * @example
+ * ```typescript
+ * const rec = getRecommendedPersona('sheet_compare');
+ * // { persona: AiPersona, reason: '...' }
+ * ```
+ */
+export function getRecommendedPersona(
+  context: TaskContext,
+  locale: 'ja' | 'en' = 'ja'
+): { persona: AiPersona; reason: string } {
+  const mapping = TASK_PERSONA_MAP[context];
+  const persona = getPersona(mapping.recommended)!;
+  return {
+    persona,
+    reason: locale === 'ja' ? mapping.reasonJa : mapping.reasonEn,
+  };
+}
+
+/**
+ * 現在選択中のペルソナがタスクに十分かチェック
+ *
+ * 不十分な場合、推奨ペルソナとメッセージを返す。
+ * アプリ側で「この分析にはClaude恵（Sonnet）以上をお勧めします」のような
+ * ガイダンスを表示するために使用。
+ *
+ * @example
+ * ```typescript
+ * const check = checkPersonaForTask('shunsuke', 'full_document_compare', 'ja');
+ * if (!check.sufficient) {
+ *   showGuidance(check.message); // 「全シート横断の比較分析には学（Opus）がおすすめです」
+ * }
+ * ```
+ */
+export function checkPersonaForTask(
+  currentPersonaId: string,
+  context: TaskContext,
+  locale: 'ja' | 'en' = 'ja'
+): {
+  sufficient: boolean;
+  message?: string;
+  recommendedPersona?: AiPersona;
+} {
+  const mapping = TASK_PERSONA_MAP[context];
+  const currentRank = MODEL_RANK[currentPersonaId] ?? 0;
+  const minimumRank = MODEL_RANK[mapping.minimum] ?? 0;
+
+  if (currentRank >= minimumRank) {
+    return { sufficient: true };
+  }
+
+  const recommended = getPersona(mapping.recommended)!;
+  const minimum = getPersona(mapping.minimum)!;
+
+  const message = locale === 'ja'
+    ? `このタスクには${minimum.nameJa}（${minimum.model.includes('haiku') ? 'Haiku' : minimum.model.includes('sonnet') ? 'Sonnet' : 'Opus'}）以上をお勧めします`
+    : `We recommend ${minimum.nameEn} or above for this task`;
+
+  return {
+    sufficient: false,
+    message,
+    recommendedPersona: recommended,
+  };
+}
+
+/**
+ * タスクコンテキストを自動判定するヒント
+ *
+ * アプリが UI 操作やユーザーメッセージからコンテキストを推定するための
+ * キーワードマッピング。完全な判定はアプリ側で行う。
+ */
+export const TASK_CONTEXT_HINTS: Record<TaskContext, {
+  keywordsJa: string[];
+  keywordsEn: string[];
+  toolNames: string[];
+}> = {
+  simple_chat: {
+    keywordsJa: ['教えて', 'とは', 'ヘルプ', '使い方', 'どうやって'],
+    keywordsEn: ['help', 'how to', 'what is', 'explain'],
+    toolNames: [],
+  },
+  cell_edit: {
+    keywordsJa: ['入力', 'セル', '書式', 'フォント', '色'],
+    keywordsEn: ['cell', 'format', 'font', 'color', 'enter'],
+    toolNames: ['set_cell_values', 'set_cell_formulas', 'set_cell_styles'],
+  },
+  data_analysis: {
+    keywordsJa: ['分析', '集計', '統計', '合計', '平均', 'グラフ'],
+    keywordsEn: ['analyze', 'statistics', 'sum', 'average', 'chart', 'aggregate'],
+    toolNames: ['analyze_data', 'get_cell_range'],
+  },
+  sheet_compare: {
+    keywordsJa: ['比較', '差分', '違い', '変更点'],
+    keywordsEn: ['compare', 'diff', 'difference', 'changes'],
+    toolNames: ['get_compare_diff', 'get_compare_cell_range'],
+  },
+  full_document_compare: {
+    keywordsJa: ['全体比較', '全シート', 'サマリー', '概要', '全体的'],
+    keywordsEn: ['full compare', 'all sheets', 'summary', 'overview', 'overall'],
+    toolNames: ['get_compare_summary', 'get_compare_files'],
+  },
+  code_generation: {
+    keywordsJa: ['コード', 'スクリプト', 'プログラム', '実装', '関数'],
+    keywordsEn: ['code', 'script', 'program', 'implement', 'function'],
+    toolNames: ['validate_python_syntax', 'run_python_code', 'replace_script_content'],
+  },
+  document_review: {
+    keywordsJa: ['校正', 'チェック', 'レビュー', '修正', '誤字'],
+    keywordsEn: ['proofread', 'check', 'review', 'correct', 'typo'],
+    toolNames: [],
+  },
+  report_generation: {
+    keywordsJa: ['レポート', '報告書', '資料作成', 'まとめ', '文書作成'],
+    keywordsEn: ['report', 'document', 'create', 'generate', 'write up'],
+    toolNames: [],
+  },
+};
+
+// =============================================================================
 // AI 対応製品の機能キー
 // =============================================================================
 
@@ -1019,4 +1223,9 @@ export default {
   AI_EDITOR_ALLOWED_PLANS,
   canUseAiEditor,
   isCodeEditorProduct,
+
+  // タスクコンテキスト別モデル推奨
+  TASK_CONTEXT_HINTS,
+  getRecommendedPersona,
+  checkPersonaForTask,
 };
