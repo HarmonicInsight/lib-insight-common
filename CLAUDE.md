@@ -151,7 +151,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
-| 独自の AI ペルソナ定義 | `config/ai-assistant.ts` の標準 3 ペルソナを使用 |
+| 独自のモデル選択 UI | `resolvePersonaForMessage()` でシステム自動選択（ユーザーにモデル名を見せない） |
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
 
 ## 5. 製品コード一覧・価格戦略
@@ -369,32 +369,24 @@ calculateWholesalePrice(39800, 'silver');
 | AI モデル | **Opus** 含む全モデル |
 | ライセンス制御 | TRIAL: 全機能 / STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
 | 追加パック | ¥10,000 / 100回 |
-| ペルソナ選択 | **自動選択**（デフォルト）/ 手動3ペルソナ（カスタマイズ時） |
-| ペルソナ | 3 キャラクター（Claude俊=Haiku、Claude恵=Sonnet、Claude学=Opus） |
+| モデル選択 | **システム自動選択**（タスク内容に応じて最適モデルを自動決定、ユーザーには非公開） |
+| 内部モデル | Haiku（軽量タスク）/ Sonnet（標準タスク）/ Opus（高度な分析） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
-**ペルソナシステム:**
+**タスク別モデル自動選択ルール（内部ロジック）:**
 
-| ID | 名前 | モデル | 用途 |
-|----|------|--------|------|
-| `shunsuke` | Claude 俊 | Haiku | 素早い確認・軽い修正 |
-| `megumi` | Claude 恵 | Sonnet | 編集・要約・翻訳（デフォルト） |
-| `manabu` | Claude 学 | Opus | レポート・精密文書 |
+| タスク | 自動選択モデル | 用途例 |
+|--------|:----------:|--------|
+| 簡単な質問・ヘルプ | Haiku | 「SUM関数の使い方は？」 |
+| セル編集・数式入力 | Haiku | 「A1にSUM入れて」 |
+| データ分析・集計 | Sonnet | 「売上の月別推移を分析」 |
+| シート比較 | Sonnet | 「Sheet1のB列の差分を出して」 |
+| 全シート横断比較 | Opus | 「2ファイルの全体的な違いをまとめて」 |
+| コード生成 | Sonnet | 「CSVを読み込むスクリプト」 |
+| 文書校正 | Sonnet | 「誤字脱字をチェック」 |
+| レポート生成 | Opus | 「比較結果から報告書を作成」 |
 
-**タスク別モデル推奨ガイドライン:**
-
-| タスク | 推奨ペルソナ | 最低ペルソナ | 用途例 |
-|--------|:----------:|:----------:|--------|
-| 簡単な質問・ヘルプ | 俊 (Haiku) | 俊 | 「SUM関数の使い方は？」 |
-| セル編集・数式入力 | 俊 (Haiku) | 俊 | 「A1にSUM入れて」 |
-| データ分析・集計 | 恵 (Sonnet) | 俊 | 「売上の月別推移を分析」 |
-| シート比較 | 恵 (Sonnet) | 恵 | 「Sheet1のB列の差分を出して」 |
-| 全シート横断比較 | 学 (Opus) | 恵 | 「2ファイルの全体的な違いをまとめて」 |
-| コード生成 | 恵 (Sonnet) | 俊 | 「CSVを読み込むスクリプト」 |
-| 文書校正 | 恵 (Sonnet) | 俊 | 「誤字脱字をチェック」 |
-| レポート生成 | 学 (Opus) | 恵 | 「比較結果から報告書を作成」 |
-
-> アプリは `getPersonaGuidance()` を使い、メッセージ送信前にペルソナ推奨チェックを一括実行できる。
+> アプリは `resolvePersonaForMessage()` を呼び出すだけで、タスクに最適なモデルが自動選択される。ユーザーにモデル名は表示しない。
 
 **製品別タスクコンテキスト対応:**
 
@@ -408,11 +400,10 @@ calculateWholesalePrice(39800, 'silver');
 
 ```typescript
 import {
-  AI_PERSONAS,
   getBaseSystemPrompt,
   canUseAiAssistant,
   SPREADSHEET_TOOLS,
-  getPersonaGuidance,
+  resolvePersonaForMessage,
   inferTaskContext,
 } from '@/insight-common/config/ai-assistant';
 
@@ -426,26 +417,28 @@ getBaseSystemPrompt('IOSH', 'ja');  // InsightOfficeSheet用プロンプト
 getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
 
 // ======================================
-// 統合ガイダンス（アプリ組み込み用）
+// モデル自動選択（アプリ組み込み用）
 // ======================================
 
-// IOSH: 俊（Haiku）選択中に「2ファイルの全体的な違いをまとめて」
-const result = getPersonaGuidance('IOSH', 'shunsuke', '2ファイルの全体的な違いをまとめて', 'ja');
-// {
-//   detectedContext: 'full_document_compare',
-//   currentSufficient: false,
-//   guidance: 'このタスクにはClaude 恵（Sonnet）以上をお勧めします',
-//   recommendedPersona: { id: 'manabu', nameJa: 'Claude 学', ... },
-// }
-if (result.guidance) {
-  showToast(result.guidance);  // ユーザーにガイダンス表示
-}
+// IOSH: 「2ファイルの全体的な違いをまとめて」→ Opus が自動選択
+const result = resolvePersonaForMessage({
+  product: 'IOSH',
+  userMessage: '2ファイルの全体的な違いをまとめて',
+  locale: 'ja',
+});
+// { persona: { id: 'manabu', model: 'claude-opus-4-20250514', ... }, detectedContext: 'full_document_compare' }
 
-// INSS: 恵（Sonnet）選択中に「誤字をチェックして」→ 十分なので guidance なし
-const slideResult = getPersonaGuidance('INSS', 'megumi', '誤字をチェックして', 'ja');
-// { detectedContext: 'document_review', currentSufficient: true }
+// Claude API 呼び出し時に result.persona.model を使用
+const model = result.persona.model;  // 'claude-opus-4-20250514'
 
-// タスクコンテキストだけ取得（推奨チェック不要な場合）
+// IOSH: 「SUM関数の使い方は？」→ Haiku が自動選択
+const result2 = resolvePersonaForMessage({
+  product: 'IOSH',
+  userMessage: 'SUM関数の使い方は？',
+});
+// { persona: { id: 'shunsuke', model: 'claude-haiku-4-5-20251001', ... }, detectedContext: 'simple_chat' }
+
+// タスクコンテキストだけ取得したい場合
 inferTaskContext('IOSH', '売上の月別推移を分析して', 'ja');  // 'data_analysis'
 inferTaskContext('INSS', 'レポートを作成して', 'ja');        // 'report_generation'
 ```
@@ -590,8 +583,7 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **サードパーティ**: Syncfusion キーが `third-party-licenses.json` 経由で登録されている
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
-- [ ] **AI アシスタント**: ペルソナ 3 種（shunsuke / megumi / manabu）が実装されている
-- [ ] **AI アシスタント**: タスク別モデル推奨（`checkPersonaForTask`）でガイダンスを表示している
+- [ ] **AI アシスタント**: `resolvePersonaForMessage()` でタスク別モデル自動選択が実装されている
 - [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 

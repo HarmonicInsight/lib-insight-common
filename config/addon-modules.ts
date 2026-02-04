@@ -262,10 +262,9 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
         input: [
           { key: 'message', type: 'string', description: 'ユーザーのメッセージ', required: true },
           { key: 'document_context', type: 'json', description: '現在のドキュメント内容（選択範囲 or 全体）', required: false },
-          { key: 'persona_id', type: 'string', description: 'ペルソナ ID (shunsuke/megumi/manabu)', required: false, example: 'megumi' },
           { key: 'conversation_history', type: 'json', description: '過去の会話履歴', required: false },
         ],
-        process: 'Claude API にメッセージ + ドキュメントコンテキストを送信。Tool Use でドキュメント操作を実行。',
+        process: 'resolvePersonaForMessage() でタスクに最適なモデルを自動選択 → Claude API に送信。Tool Use でドキュメント操作を実行。',
         output: [
           { key: 'response_text', type: 'string', description: 'AI の応答テキスト', required: true },
           { key: 'tool_results', type: 'json', description: '実行されたツール操作の結果', required: false },
@@ -306,31 +305,6 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
         type: 'string',
         defaultValue: '',
         descriptionJa: 'Claude API キー（BYOK）',
-      },
-      {
-        key: 'persona_selection_mode',
-        name: 'Persona Selection Mode',
-        nameJa: 'モデル選択モード',
-        type: 'select',
-        defaultValue: 'auto',
-        options: [
-          { value: 'auto', label: 'Auto (recommended)', labelJa: '自動選択（推奨）' },
-          { value: 'manual', label: 'Manual (3 personas)', labelJa: '手動選択（3ペルソナ）' },
-        ],
-        descriptionJa: '自動: タスクに応じて最適なモデルを自動選択 / 手動: 3ペルソナから選択',
-      },
-      {
-        key: 'default_persona',
-        name: 'Default Persona (Manual Mode)',
-        nameJa: 'デフォルトペルソナ（手動モード時）',
-        type: 'select',
-        defaultValue: 'megumi',
-        options: [
-          { value: 'shunsuke', label: 'Claude Shun (Haiku)', labelJa: 'Claude 俊（Haiku）' },
-          { value: 'megumi', label: 'Claude Meg (Sonnet)', labelJa: 'Claude 恵（Sonnet）' },
-          { value: 'manabu', label: 'Claude Manabu (Opus)', labelJa: 'Claude 学（Opus）' },
-        ],
-        descriptionJa: '手動モード時にデフォルトで使用するペルソナ',
       },
     ],
   },
@@ -1050,7 +1024,6 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
           { key: 'audio', type: 'audio_stream', description: 'ユーザーの音声', required: true },
           { key: 'conversation_history', type: 'json', description: '過去の会話履歴', required: false },
           { key: 'document_context', type: 'json', description: '現在のドキュメント内容', required: false },
-          { key: 'persona_id', type: 'string', description: 'AI ペルソナ', required: false, example: 'megumi' },
         ],
         process: '① STT で音声→テキスト → ② Claude API でAI応答生成 → ③ TTS でテキスト→音声 → ④ アバターがリップシンクで読み上げ',
         output: [

@@ -92,22 +92,16 @@ export interface AiUsageStats {
 }
 
 /**
- * ペルソナ選択モード
+ * ペルソナ選択は常にシステム自動（ユーザーには非公開）
  *
- * - 'auto': タスク内容に応じてモデルを自動選択（デフォルト）
- *   ユーザーはペルソナを意識せず、システムが inferTaskContext → getRecommendedPersona で最適モデルを決定
- * - 'manual': 3ペルソナ（俊・恵・学）から手動選択
- *   導入時のカスタマイズやパワーユーザー向け
+ * タスク内容に応じて inferTaskContext → getRecommendedPersona で最適モデルを決定。
+ * ユーザーはモデル名やペルソナ名を意識しない。
+ * モデル変更（新モデルリリース等）時もユーザー影響なし。
  */
-export type PersonaSelectionMode = 'auto' | 'manual';
 
 /** AI アシスタント設定 */
 export interface AiAssistantSettings {
   claudeApiKey: string;
-  /** ペルソナ選択モード（デフォルト: 'auto'） */
-  personaSelectionMode: PersonaSelectionMode;
-  /** 手動モード時の選択ペルソナ ID */
-  selectedPersonaId: string;
   selectedModel: string;
   language: 'ja' | 'en';
   chatPanelWidth: number;
@@ -116,8 +110,6 @@ export interface AiAssistantSettings {
 /** デフォルト設定値 */
 export const DEFAULT_AI_SETTINGS: AiAssistantSettings = {
   claudeApiKey: '',
-  personaSelectionMode: 'auto',
-  selectedPersonaId: 'megumi',
   selectedModel: 'claude-sonnet-4-20250514',
   language: 'ja',
   chatPanelWidth: 400,
@@ -1299,80 +1291,55 @@ export function getPersonaGuidance(
 }
 
 // =============================================================================
-// メッセージ送信時のペルソナ解決（auto / manual 統合）
+// メッセージ送信時のモデル自動解決
 // =============================================================================
 
 /**
- * メッセージ送信時に使用するペルソナとモデルを決定
+ * メッセージ送信時に使用するペルソナ（モデル）を自動決定
  *
- * auto モード: タスク推定 → 推奨ペルソナを自動選択
- * manual モード: ユーザーが選択したペルソナをそのまま使用（ガイダンス付き）
+ * ユーザーのメッセージ内容からタスクコンテキストを推定し、
+ * 最適なモデルを自動選択する。ユーザーにはモデル名を見せない。
  *
  * アプリはこの関数を Claude API 呼び出し前に必ず実行する。
  *
  * @example
  * ```typescript
- * // auto モード（デフォルト）
  * const result = resolvePersonaForMessage({
  *   product: 'IOSH',
- *   settings: DEFAULT_AI_SETTINGS,  // personaSelectionMode: 'auto'
  *   userMessage: '2ファイルの全体的な違いをまとめて',
  *   locale: 'ja',
  * });
  * // {
  * //   persona: { id: 'manabu', model: 'claude-opus-4-20250514', ... },
  * //   detectedContext: 'full_document_compare',
- * //   autoSelected: true,
  * // }
  *
- * // manual モード（俊を選択中に重い分析を要求）
- * const result = resolvePersonaForMessage({
+ * // 軽い質問 → Haiku が自動選択される
+ * const result2 = resolvePersonaForMessage({
  *   product: 'IOSH',
- *   settings: { ...DEFAULT_AI_SETTINGS, personaSelectionMode: 'manual', selectedPersonaId: 'shunsuke' },
- *   userMessage: '2ファイルの全体的な違いをまとめて',
- *   locale: 'ja',
+ *   userMessage: 'SUM関数の使い方は？',
  * });
  * // {
- * //   persona: { id: 'shunsuke', ... },
- * //   detectedContext: 'full_document_compare',
- * //   autoSelected: false,
- * //   guidance: 'このタスクにはClaude 恵（Sonnet）以上をお勧めします',
+ * //   persona: { id: 'shunsuke', model: 'claude-haiku-4-5-20251001', ... },
+ * //   detectedContext: 'simple_chat',
  * // }
  * ```
  */
 export function resolvePersonaForMessage(params: {
   product: ProductCode;
-  settings: Pick<AiAssistantSettings, 'personaSelectionMode' | 'selectedPersonaId'>;
   userMessage: string;
   locale?: 'ja' | 'en';
 }): {
   persona: AiPersona;
   detectedContext: TaskContext;
-  autoSelected: boolean;
-  guidance?: string;
 } {
-  const { product, settings, userMessage, locale = 'ja' } = params;
+  const { product, userMessage, locale = 'ja' } = params;
   const detectedContext = inferTaskContext(product, userMessage, locale);
-
-  if (settings.personaSelectionMode === 'auto') {
-    // auto: タスクに最適なペルソナを自動選択
-    const rec = getRecommendedPersona(detectedContext, locale);
-    return {
-      persona: rec.persona,
-      detectedContext,
-      autoSelected: true,
-    };
-  }
-
-  // manual: ユーザー選択のペルソナを使用、不十分ならガイダンスを返す
-  const persona = getPersona(settings.selectedPersonaId) ?? getDefaultPersona();
-  const check = checkPersonaForTask(persona.id, detectedContext, locale);
+  const rec = getRecommendedPersona(detectedContext, locale);
 
   return {
-    persona,
+    persona: rec.persona,
     detectedContext,
-    autoSelected: false,
-    guidance: check.message,
   };
 }
 
