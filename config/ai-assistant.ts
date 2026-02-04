@@ -1116,6 +1116,166 @@ export const TASK_CONTEXT_HINTS: Record<TaskContext, {
 };
 
 // =============================================================================
+// 製品別タスクコンテキスト対応表
+// =============================================================================
+
+/**
+ * 製品ごとに利用可能なタスクコンテキストの一覧
+ *
+ * アプリは起動時にこのマッピングを取得し、ユーザーのメッセージを
+ * TASK_CONTEXT_HINTS と照合してコンテキストを推定する。
+ */
+const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
+  // InsightOfficeSheet: スプレッドシート系 + 比較 + レポート
+  IOSH: [
+    'simple_chat',
+    'cell_edit',
+    'data_analysis',
+    'sheet_compare',
+    'full_document_compare',
+    'report_generation',
+  ],
+  // InsightOfficeSlide: 文書校正 + レポート
+  INSS: [
+    'simple_chat',
+    'document_review',
+    'report_generation',
+  ],
+  // InsightOfficeDoc: 文書校正 + レポート
+  IOSD: [
+    'simple_chat',
+    'document_review',
+    'report_generation',
+  ],
+  // InsightPy: コード生成 + データ分析
+  INPY: [
+    'simple_chat',
+    'code_generation',
+    'data_analysis',
+    'report_generation',
+  ],
+  // InsightBot: コード生成
+  INBT: [
+    'simple_chat',
+    'code_generation',
+    'report_generation',
+  ],
+};
+
+/**
+ * 製品で利用可能なタスクコンテキスト一覧を取得
+ *
+ * @example
+ * ```typescript
+ * getTaskContextsForProduct('IOSH');
+ * // ['simple_chat', 'cell_edit', 'data_analysis', 'sheet_compare', 'full_document_compare', 'report_generation']
+ * ```
+ */
+export function getTaskContextsForProduct(product: ProductCode): TaskContext[] {
+  return PRODUCT_TASK_CONTEXTS[product] ?? ['simple_chat'];
+}
+
+/**
+ * ユーザーメッセージからタスクコンテキストを推定
+ *
+ * 製品で利用可能なコンテキストに絞り、キーワードマッチで判定する。
+ * マッチしない場合は 'simple_chat' を返す。
+ *
+ * @example
+ * ```typescript
+ * // InsightOfficeSheet で「2つのファイルの違いを全体的にまとめて」
+ * inferTaskContext('IOSH', '2つのファイルの違いを全体的にまとめて', 'ja');
+ * // 'full_document_compare'
+ *
+ * // InsightOfficeSlide で「誤字をチェックして」
+ * inferTaskContext('INSS', '誤字をチェックして', 'ja');
+ * // 'document_review'
+ * ```
+ */
+export function inferTaskContext(
+  product: ProductCode,
+  userMessage: string,
+  locale: 'ja' | 'en' = 'ja',
+): TaskContext {
+  const availableContexts = getTaskContextsForProduct(product);
+  const messageLower = userMessage.toLowerCase();
+
+  // 優先度: 特殊コンテキスト → 汎用コンテキスト（simple_chat は最後）
+  // full_document_compare を sheet_compare より先に判定（キーワードが包含関係にある）
+  const priorityOrder: TaskContext[] = [
+    'full_document_compare',
+    'sheet_compare',
+    'report_generation',
+    'code_generation',
+    'document_review',
+    'data_analysis',
+    'cell_edit',
+    'simple_chat',
+  ];
+
+  for (const context of priorityOrder) {
+    if (!availableContexts.includes(context)) continue;
+    if (context === 'simple_chat') continue; // フォールバック用
+
+    const hints = TASK_CONTEXT_HINTS[context];
+    const keywords = locale === 'ja' ? hints.keywordsJa : hints.keywordsEn;
+
+    for (const keyword of keywords) {
+      if (messageLower.includes(keyword.toLowerCase())) {
+        return context;
+      }
+    }
+  }
+
+  return 'simple_chat';
+}
+
+/**
+ * メッセージ送信前にペルソナ推奨チェックを実行し、
+ * ガイダンスメッセージを返す統合ヘルパー
+ *
+ * アプリはこの関数を AI チャット送信前に呼び出し、
+ * result.guidance がある場合にトースト or バナーで表示する。
+ *
+ * @example
+ * ```typescript
+ * // IOSH アプリでの使用例（C# から呼び出す想定の TypeScript 定義）
+ * const result = getPersonaGuidance('IOSH', 'shunsuke', '2ファイルの全体的な違いをまとめて', 'ja');
+ * // {
+ * //   detectedContext: 'full_document_compare',
+ * //   currentSufficient: false,
+ * //   guidance: 'このタスクにはClaude 恵（Sonnet）以上をお勧めします',
+ * //   recommendedPersona: { id: 'manabu', nameJa: 'Claude 学', ... },
+ * // }
+ *
+ * if (result.guidance) {
+ *   showToast(result.guidance);  // ユーザーにガイダンス表示
+ * }
+ * ```
+ */
+export function getPersonaGuidance(
+  product: ProductCode,
+  currentPersonaId: string,
+  userMessage: string,
+  locale: 'ja' | 'en' = 'ja',
+): {
+  detectedContext: TaskContext;
+  currentSufficient: boolean;
+  guidance?: string;
+  recommendedPersona?: AiPersona;
+} {
+  const detectedContext = inferTaskContext(product, userMessage, locale);
+  const check = checkPersonaForTask(currentPersonaId, detectedContext, locale);
+
+  return {
+    detectedContext,
+    currentSufficient: check.sufficient,
+    guidance: check.message,
+    recommendedPersona: check.recommendedPersona,
+  };
+}
+
+// =============================================================================
 // AI 対応製品の機能キー
 // =============================================================================
 
@@ -1228,4 +1388,9 @@ export default {
   TASK_CONTEXT_HINTS,
   getRecommendedPersona,
   checkPersonaForTask,
+
+  // 製品別タスクコンテキスト統合
+  getTaskContextsForProduct,
+  inferTaskContext,
+  getPersonaGuidance,
 };

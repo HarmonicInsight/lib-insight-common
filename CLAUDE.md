@@ -393,8 +393,17 @@ calculateWholesalePrice(480000, 'silver');
 | 文書校正 | 恵 (Sonnet) | 俊 | 「誤字脱字をチェック」 |
 | レポート生成 | 学 (Opus) | 恵 | 「比較結果から報告書を作成」 |
 
-> アプリは `checkPersonaForTask()` を使い、選択中のペルソナがタスクに不十分な場合に
-> 「この分析にはClaude恵（Sonnet）以上をお勧めします」のようなガイダンスを表示できる。
+> アプリは `getPersonaGuidance()` を使い、メッセージ送信前にペルソナ推奨チェックを一括実行できる。
+
+**製品別タスクコンテキスト対応:**
+
+| 製品 | 利用可能なコンテキスト |
+|------|----------------------|
+| IOSH | 簡単な質問、セル編集、データ分析、シート比較、全シート横断比較、レポート生成 |
+| INSS | 簡単な質問、文書校正、レポート生成 |
+| IOSD | 簡単な質問、文書校正、レポート生成 |
+| INPY | 簡単な質問、コード生成、データ分析、レポート生成 |
+| INBT | 簡単な質問、コード生成、レポート生成 |
 
 ```typescript
 import {
@@ -402,8 +411,8 @@ import {
   getBaseSystemPrompt,
   canUseAiAssistant,
   SPREADSHEET_TOOLS,
-  getRecommendedPersona,
-  checkPersonaForTask,
+  getPersonaGuidance,
+  inferTaskContext,
 } from '@/insight-common/config/ai-assistant';
 
 // ライセンスチェック
@@ -415,13 +424,29 @@ canUseAiAssistant('TRIAL'); // true（全機能）
 getBaseSystemPrompt('IOSH', 'ja');  // InsightOfficeSheet用プロンプト
 getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
 
-// タスク別モデル推奨
-const rec = getRecommendedPersona('sheet_compare', 'ja');
-// { persona: { id: 'megumi', ... }, reason: 'シート比較には恵（Sonnet）以上が必要です...' }
+// ======================================
+// 統合ガイダンス（アプリ組み込み用）
+// ======================================
 
-// 現在のペルソナがタスクに十分かチェック
-const check = checkPersonaForTask('shunsuke', 'full_document_compare', 'ja');
-// { sufficient: false, message: 'このタスクにはClaude恵以上をお勧めします', recommendedPersona: ... }
+// IOSH: 俊（Haiku）選択中に「2ファイルの全体的な違いをまとめて」
+const result = getPersonaGuidance('IOSH', 'shunsuke', '2ファイルの全体的な違いをまとめて', 'ja');
+// {
+//   detectedContext: 'full_document_compare',
+//   currentSufficient: false,
+//   guidance: 'このタスクにはClaude 恵（Sonnet）以上をお勧めします',
+//   recommendedPersona: { id: 'manabu', nameJa: 'Claude 学', ... },
+// }
+if (result.guidance) {
+  showToast(result.guidance);  // ユーザーにガイダンス表示
+}
+
+// INSS: 恵（Sonnet）選択中に「誤字をチェックして」→ 十分なので guidance なし
+const slideResult = getPersonaGuidance('INSS', 'megumi', '誤字をチェックして', 'ja');
+// { detectedContext: 'document_review', currentSufficient: true }
+
+// タスクコンテキストだけ取得（推奨チェック不要な場合）
+inferTaskContext('IOSH', '売上の月別推移を分析して', 'ja');  // 'data_analysis'
+inferTaskContext('INSS', 'レポートを作成して', 'ja');        // 'report_generation'
 ```
 
 ### ライセンスキー形式
