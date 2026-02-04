@@ -2,28 +2,37 @@
  * Harmonic Insight 販売戦略定義
  *
  * ============================================================================
- * 【販売戦略の全体像】
+ * 【販売戦略の全体像】全製品 法人向け（B2B Only）
  * ============================================================================
+ *
+ * 全製品をコンサルティング案件の一環として法人向けに提供。
+ * コンサルタントがクライアント企業に導入するツール群。
+ * 直販またはパートナー（代理店）経由で販売。
+ * 個人向け（B2C）販売は行わない。
  *
  * ┌────────────────────────────────────────────────────────────────────────┐
  * │                         販売マーケット                                 │
  * │                                                                        │
- * │  【A】コンサルティング連動型                                           │
+ * │  Tier 1: 業務変革ツール（高単価）                                     │
  * │  ┌──────────────────────────────────────────────────────────────┐     │
- * │  │  市場: 日本国内 → 東南アジア（ベトナム等）                    │     │
- * │  │  販売: 直販（コンサル案件内）                                 │     │
- * │  │  顧客: 大手〜中堅企業のIT部門・DX推進部門                    │     │
- * │  │  KPI: 案件あたり単価 × コンサル案件数                        │     │
- * │  │  INCA / INBT / INMV / INIG / IVIN                           │     │
+ * │  │  INCA / INBT / IVIN                                        │     │
+ * │  │  コンサル案件（数千万円規模）の中核分析・自動化ツール        │     │
+ * │  │  年額 98万円〜398万円                                       │     │
  * │  └──────────────────────────────────────────────────────────────┘     │
  * │                                                                        │
- * │  【B】グローバル個人向け型                                       │
+ * │  Tier 2: AI活用ツール（中単価）                                       │
  * │  ┌──────────────────────────────────────────────────────────────┐     │
- * │  │  市場: 日本 → 北米 → 欧州 → アジア                          │     │
- * │  │  販売: オンライン（自社サイト + ストア + リセラー）           │     │
- * │  │  顧客: Office業務ユーザー（個人〜中小企業）                  │     │
- * │  │  KPI: MRR / ARR / チャーンレート / LTV                      │     │
- * │  │  INSS / IOSH / IOSD / INPY                   │     │
+ * │  │  INMV / INIG                                                │     │
+ * │  │  コンテンツ制作・研修動画作成コンサルの一環                  │     │
+ * │  │  年額 48万円〜198万円                                       │     │
+ * │  └──────────────────────────────────────────────────────────────┘     │
+ * │                                                                        │
+ * │  Tier 3: InsightOffice Suite（コンサル導入ツール）                     │
+ * │  ┌──────────────────────────────────────────────────────────────┐     │
+ * │  │  INSS / IOSH / IOSD / INPY                                 │     │
+ * │  │  コンサル案件のクライアントに業務ツールとして導入            │     │
+ * │  │  年額 48万円〜98万円                                        │     │
+ * │  │  パートナー（代理店）経由での販売も可能                     │     │
  * │  └──────────────────────────────────────────────────────────────┘     │
  * └────────────────────────────────────────────────────────────────────────┘
  */
@@ -38,21 +47,14 @@ import type { SalesChannel } from './pricing';
 /** 対象マーケット（地域） */
 export type MarketRegion =
   | 'JP'       // 日本
-  | 'US'       // 北米
-  | 'EU'       // 欧州
   | 'SEA'      // 東南アジア（ベトナム・タイ等）
-  | 'CN'       // 中国
   | 'KR'       // 韓国
   | 'GLOBAL';  // グローバル共通
 
 /** 販売方法 */
 export type SalesMethod =
   | 'direct_consulting'     // コンサル案件内での直接販売
-  | 'own_website'           // 自社Webサイト（harmonicinsight.com）
-  | 'microsoft_store'       // Microsoft Store
-  | 'payment_platform'      // Paddle / Gumroad / FastSpring 等
-  | 'reseller'              // リセラー・代理店
-  | 'marketplace';          // その他マーケットプレイス
+  | 'partner_reseller';     // パートナー（代理店）経由
 
 /** マーケット展開フェーズ */
 export type RolloutPhase = 1 | 2 | 3;
@@ -82,9 +84,9 @@ export interface CustomerSegment {
   /** 説明 */
   description: string;
   /** ターゲット企業規模 */
-  companySize: 'individual' | 'small' | 'medium' | 'large' | 'enterprise';
+  companySize: 'medium' | 'large' | 'enterprise';
   /** 推奨プラン */
-  recommendedPlan: 'FREE' | 'STD' | 'PRO' | 'ENT';
+  recommendedPlan: 'STD' | 'PRO' | 'ENT';
 }
 
 /** マーケティングチャネル */
@@ -125,52 +127,68 @@ export interface ProductSalesStrategy {
 }
 
 // =============================================================================
-// 【A】コンサルティング連動型 — 販売戦略
+// 共通マーケット・セグメント・マーケティングチャネル定義
 // =============================================================================
 
+/**
+ * 全製品共通のターゲットマーケット
+ * Phase 1: 日本国内で実績構築
+ * Phase 2: 東南アジア（ベトナムオフショア経由）
+ * Phase 3: 韓国・その他アジア
+ */
 const CONSULTING_MARKETS: TargetMarket[] = [
   {
     region: 'JP',
     phase: 1,
     languages: ['ja'],
     currencies: ['JPY'],
-    salesMethods: ['direct_consulting'],
-    notes: '既存コンサル案件のクライアントに直接提案。新規営業コスト最小。',
+    salesMethods: ['direct_consulting', 'partner_reseller'],
+    notes: '既存コンサル案件のクライアントに直接提案。パートナー経由での法人導入も推進。',
   },
   {
     region: 'SEA',
     phase: 2,
     languages: ['en', 'vi'],
     currencies: ['USD', 'VND'],
-    salesMethods: ['direct_consulting', 'reseller'],
-    notes: 'ベトナム等のオフショア開発拠点経由。RPA移行需要が高い。',
+    salesMethods: ['direct_consulting', 'partner_reseller'],
+    notes: 'ベトナム等のオフショア開発拠点経由。RPA移行需要・業務効率化需要が高い。',
+  },
+  {
+    region: 'KR',
+    phase: 3,
+    languages: ['ko', 'en'],
+    currencies: ['USD', 'KRW'],
+    salesMethods: ['partner_reseller'],
+    notes: 'Office利用率が高い市場。現地パートナー経由での法人導入。',
   },
 ];
 
+/** 全製品共通の顧客セグメント */
 const CONSULTING_SEGMENTS: CustomerSegment[] = [
   {
     name: 'Enterprise IT Department',
     nameJa: '大手企業IT部門',
-    description: '既存RPA・ローコードの移行・最適化を検討している大手企業',
+    description: '既存RPA・ローコードの移行・最適化、または業務効率化を推進する大手企業',
     companySize: 'enterprise',
     recommendedPlan: 'ENT',
   },
   {
     name: 'Mid-size DX Division',
     nameJa: '中堅企業DX推進部門',
-    description: 'DX推進の一環でRPA・自動化を導入・拡大したい中堅企業',
+    description: 'DX推進の一環でツール導入・業務効率化を進めたい中堅企業',
     companySize: 'medium',
     recommendedPlan: 'PRO',
   },
   {
-    name: 'SI Partner',
-    nameJa: 'SIパートナー',
-    description: '自社のコンサル案件でツールを活用したいSIer・パートナー',
+    name: 'SI Partner / Consulting Firm',
+    nameJa: 'SIパートナー・コンサルファーム',
+    description: '自社のコンサル案件でクライアントにツールを導入したいSIer・コンサルファーム',
     companySize: 'large',
     recommendedPlan: 'PRO',
   },
 ];
 
+/** 全製品共通のマーケティングチャネル */
 const CONSULTING_MARKETING: MarketingChannel[] = [
   {
     name: 'Existing Client Upsell',
@@ -184,155 +202,39 @@ const CONSULTING_MARKETING: MarketingChannel[] = [
     type: 'direct',
     targetRegions: ['JP', 'SEA'],
     priority: 2,
-    description: 'RPA移行・DX関連セミナーでの製品デモ・事例紹介',
+    description: 'RPA移行・DX・業務効率化関連セミナーでの製品デモ・事例紹介',
   },
   {
     name: 'Partner Referral',
     type: 'partner',
-    targetRegions: ['JP', 'SEA'],
+    targetRegions: ['JP', 'SEA', 'KR'],
     priority: 3,
-    description: 'SIer・コンサルパートナーからの紹介・共同提案',
+    description: 'SIer・コンサルパートナー・代理店からの紹介・共同提案',
   },
-];
-
-// =============================================================================
-// 【B】グローバル個人向け型 — 販売戦略
-// =============================================================================
-
-const STANDALONE_MARKETS: TargetMarket[] = [
-  {
-    region: 'JP',
-    phase: 1,
-    languages: ['ja'],
-    currencies: ['JPY'],
-    salesMethods: ['own_website', 'payment_platform'],
-    notes: '自社サイト + Paddle/Gumroad。日本市場でまず実績を作る。',
-  },
-  {
-    region: 'US',
-    phase: 2,
-    languages: ['en'],
-    currencies: ['USD'],
-    salesMethods: ['own_website', 'payment_platform', 'microsoft_store'],
-    notes: 'Paddle（MoR）でUSの税務処理を委託。Microsoft Store経由でも展開。',
-  },
-  {
-    region: 'EU',
-    phase: 2,
-    languages: ['en', 'de', 'fr'],
-    currencies: ['USD', 'EUR'],
-    salesMethods: ['own_website', 'payment_platform'],
-    notes: 'EU VAT処理はPaddle（MoR）に委託。英語UIで初期展開。',
-  },
-  {
-    region: 'KR',
-    phase: 3,
-    languages: ['ko', 'en'],
-    currencies: ['USD', 'KRW'],
-    salesMethods: ['own_website', 'payment_platform', 'reseller'],
-    notes: 'Office利用率が高い市場。韓国語ローカライズで差別化。',
-  },
-  {
-    region: 'SEA',
-    phase: 3,
-    languages: ['en'],
-    currencies: ['USD'],
-    salesMethods: ['own_website', 'payment_platform'],
-    notes: '英語圏として展開。価格帯は同一（USD基準）。',
-  },
-];
-
-const STANDALONE_SEGMENTS: CustomerSegment[] = [
-  {
-    name: 'Individual Power User',
-    nameJa: '個人パワーユーザー',
-    description: 'Office業務を効率化したい個人ユーザー・フリーランス',
-    companySize: 'individual',
-    recommendedPlan: 'STD',
-  },
-  {
-    name: 'Small Team',
-    nameJa: '小規模チーム',
-    description: '5〜20人規模のチームでOffice業務を効率化したい企業',
-    companySize: 'small',
-    recommendedPlan: 'PRO',
-  },
-  {
-    name: 'Corporate Department',
-    nameJa: '法人部門導入',
-    description: '部門単位でツールを導入したい中堅〜大手企業',
-    companySize: 'medium',
-    recommendedPlan: 'PRO',
-  },
-  {
-    name: 'Enterprise Volume',
-    nameJa: 'エンタープライズ一括',
-    description: '全社導入・API連携を含む大規模展開',
-    companySize: 'enterprise',
-    recommendedPlan: 'ENT',
-  },
-];
-
-const STANDALONE_MARKETING: MarketingChannel[] = [
   {
     name: 'SEO / Content Marketing',
     type: 'organic',
-    targetRegions: ['JP', 'US', 'EU', 'GLOBAL'],
-    priority: 1,
-    description: 'Office操作・自動化のハウツー記事・ブログ。長期的なリード獲得の基盤。',
-  },
-  {
-    name: 'YouTube Product Demo',
-    type: 'organic',
-    targetRegions: ['JP', 'US', 'GLOBAL'],
-    priority: 2,
-    description: '製品デモ動画・チュートリアル。視覚的な訴求で転換率向上。',
-  },
-  {
-    name: 'Product Hunt / Hacker News',
-    type: 'organic',
-    targetRegions: ['US', 'GLOBAL'],
-    priority: 3,
-    description: 'ローンチ時の初期ユーザー獲得。テックコミュニティでの認知拡大。',
-  },
-  {
-    name: 'Microsoft Store',
-    type: 'organic',
-    targetRegions: ['US', 'EU', 'GLOBAL'],
+    targetRegions: ['JP', 'GLOBAL'],
     priority: 4,
-    description: 'Microsoft Store経由の自然流入。Windowsユーザーへの直接リーチ。',
+    description: '業務効率化・RPA移行のハウツー記事。法人向けリード獲得の基盤。',
   },
   {
-    name: 'Google Ads / Search Ads',
-    type: 'paid',
-    targetRegions: ['JP', 'US'],
-    priority: 5,
-    description: '「PowerPoint 自動化」「Excel バージョン管理」等のキーワード広告。',
-  },
-  {
-    name: 'SNS (X / LinkedIn)',
+    name: 'LinkedIn / SNS',
     type: 'organic',
-    targetRegions: ['JP', 'US', 'GLOBAL'],
-    priority: 6,
-    description: '製品アップデート・ユースケース紹介。LinkedInは法人向けリード獲得に有効。',
-  },
-  {
-    name: 'Reseller / VAR Partner',
-    type: 'partner',
-    targetRegions: ['JP', 'KR', 'SEA'],
-    priority: 7,
-    description: '現地リセラー・VAR経由の販売。ローカルサポート提供。',
+    targetRegions: ['JP', 'GLOBAL'],
+    priority: 5,
+    description: '法人向けリード獲得。事例紹介・製品アップデート情報の発信。',
   },
 ];
 
 // =============================================================================
-// 製品別販売戦略
+// 製品別販売戦略（全製品コンサルティング連動型）
 // =============================================================================
 
 export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> = {
 
   // =========================================================================
-  // コンサルティング連動型
+  // Tier 1: 業務変革ツール（高単価）
   // =========================================================================
 
   INCA: {
@@ -363,6 +265,24 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     positioning: 'Python × RPAで、既存のRPAツールでは実現できない柔軟な業務自動化を実現。コンサル案件の自動化基盤。',
   },
 
+  IVIN: {
+    productCode: 'IVIN',
+    channel: 'consulting',
+    targetMarkets: CONSULTING_MARKETS,
+    customerSegments: CONSULTING_SEGMENTS,
+    marketingChannels: CONSULTING_MARKETING,
+    trialStrategy: {
+      durationDays: 30,
+      expectedConversionRate: 0.50,
+      noCreditCardRequired: true,
+    },
+    positioning: '面接プロセスをAIで解析・最適化。採用コンサルティング案件の中核ツールとして活用。',
+  },
+
+  // =========================================================================
+  // Tier 2: AI活用ツール（中単価）
+  // =========================================================================
+
   INMV: {
     productCode: 'INMV',
     channel: 'consulting',
@@ -391,83 +311,70 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     positioning: 'Stable Diffusion + VOICEVOXを業務利用可能な形でパッケージ化。コンテンツ制作の内製化を支援。',
   },
 
-  IVIN: {
-    productCode: 'IVIN',
+  // =========================================================================
+  // Tier 3: InsightOffice Suite（コンサル導入ツール）
+  // パートナー（代理店）経由での販売も可能
+  // =========================================================================
+
+  INSS: {
+    productCode: 'INSS',
     channel: 'consulting',
     targetMarkets: CONSULTING_MARKETS,
     customerSegments: CONSULTING_SEGMENTS,
     marketingChannels: CONSULTING_MARKETING,
     trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.50,
+      durationDays: 14,
+      expectedConversionRate: 0.40,
       noCreditCardRequired: true,
     },
-    positioning: '面接プロセスをAIで解析・最適化。採用コンサルティング案件の中核ツールとして活用。',
-  },
-
-  // =========================================================================
-  // グローバル個人向け型
-  // =========================================================================
-
-  INSS: {
-    productCode: 'INSS',
-    channel: 'individual',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.08,
-      noCreditCardRequired: true,
-    },
-    positioning: 'PowerPointのコンテンツ抽出・一括更新を自動化。多言語スライドの翻訳更新等で時間を90%削減。',
-  },
-
-  INPY: {
-    productCode: 'INPY',
-    channel: 'individual',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
-    trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.06,
-      noCreditCardRequired: true,
-    },
-    positioning: 'Windows業務をPythonで自動化する実行環境。環境構築不要で即座にPythonスクリプトを実行。',
+    positioning: 'PowerPointのコンテンツ抽出・一括更新を自動化。コンサル案件でクライアントのOffice業務を効率化するツール。',
   },
 
   IOSH: {
     productCode: 'IOSH',
-    channel: 'individual',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
+    channel: 'consulting',
+    targetMarkets: CONSULTING_MARKETS,
+    customerSegments: CONSULTING_SEGMENTS,
+    marketingChannels: CONSULTING_MARKETING,
     trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.10,
+      durationDays: 14,
+      expectedConversionRate: 0.45,
       noCreditCardRequired: true,
     },
-    positioning: 'Excelに「Gitのようなバージョン管理」を。誰が・いつ・何を変更したかを完全に追跡。チーム利用はPROで。',
+    positioning: 'Excelに「Gitのようなバージョン管理」を。コンサル案件でクライアントの経営数値管理・予実管理を効率化。',
   },
 
   IOSD: {
     productCode: 'IOSD',
-    channel: 'individual',
-    targetMarkets: STANDALONE_MARKETS,
-    customerSegments: STANDALONE_SEGMENTS,
-    marketingChannels: STANDALONE_MARKETING,
+    channel: 'consulting',
+    targetMarkets: CONSULTING_MARKETS,
+    customerSegments: CONSULTING_SEGMENTS,
+    marketingChannels: CONSULTING_MARKETING,
     trialStrategy: {
-      durationDays: 30,
-      expectedConversionRate: 0.07,
+      durationDays: 14,
+      expectedConversionRate: 0.40,
       noCreditCardRequired: true,
     },
-    positioning: 'Word操作を自動化。テンプレートからの大量文書生成、PDF変換、マクロ実行をワンストップで。',
+    positioning: 'Word操作を自動化。コンサル案件でクライアントのドキュメント管理・テンプレート活用を効率化。',
+  },
+
+  INPY: {
+    productCode: 'INPY',
+    channel: 'consulting',
+    targetMarkets: CONSULTING_MARKETS,
+    customerSegments: CONSULTING_SEGMENTS,
+    marketingChannels: CONSULTING_MARKETING,
+    trialStrategy: {
+      durationDays: 14,
+      expectedConversionRate: 0.40,
+      noCreditCardRequired: true,
+    },
+    positioning: 'Windows業務をPythonで自動化する実行環境。コンサル案件でクライアントの業務調査・データ収集を自動化。',
   },
 };
 
 // =============================================================================
-// 決済プラットフォーム設定
+// 決済プラットフォーム設定（法人向け）
 // =============================================================================
 
 /** 決済プラットフォーム */
@@ -475,49 +382,29 @@ export interface PaymentPlatform {
   /** プラットフォーム名 */
   name: string;
   /** 種別 */
-  type: 'mor' | 'payment_gateway' | 'store';
+  type: 'payment_gateway' | 'invoice';
   /** 対応地域 */
   regions: MarketRegion[];
   /** 手数料率（概算） */
   feeRate: number;
-  /** Merchant of Record（税務処理代行）か */
-  isMerchantOfRecord: boolean;
   /** 備考 */
   notes: string;
 }
 
 export const PAYMENT_PLATFORMS: PaymentPlatform[] = [
   {
-    name: 'Paddle',
-    type: 'mor',
-    regions: ['JP', 'US', 'EU', 'GLOBAL'],
-    feeRate: 0.05,
-    isMerchantOfRecord: true,
-    notes: 'グローバル展開の主力。MoRとしてVAT/消費税の申告・納付を代行。サブスクリプション管理機能あり。',
-  },
-  {
-    name: 'Gumroad',
-    type: 'mor',
-    regions: ['US', 'GLOBAL'],
-    feeRate: 0.10,
-    isMerchantOfRecord: true,
-    notes: '初期展開・テスト販売向け。手数料は高いがセットアップが簡単。',
-  },
-  {
-    name: 'Microsoft Store',
-    type: 'store',
-    regions: ['US', 'EU', 'GLOBAL'],
-    feeRate: 0.12,
-    isMerchantOfRecord: true,
-    notes: 'Windowsデスクトップアプリの自然流入チャネル。ストア手数料12%。',
-  },
-  {
     name: 'Stripe',
     type: 'payment_gateway',
-    regions: ['JP'],
+    regions: ['JP', 'GLOBAL'],
     feeRate: 0.036,
-    isMerchantOfRecord: false,
-    notes: '日本国内向け自社サイト決済。税務処理は自社対応。コンサル連動型にも使用。',
+    notes: '自社サイト決済。法人向けクレジットカード・銀行振込対応。',
+  },
+  {
+    name: '請求書払い',
+    type: 'invoice',
+    regions: ['JP'],
+    feeRate: 0,
+    notes: '法人向け請求書払い。大手企業・官公庁向け。',
   },
 ];
 
@@ -557,6 +444,13 @@ export function getPositioning(productCode: ProductCode): string {
   return PRODUCT_SALES_STRATEGY[productCode].positioning;
 }
 
+/**
+ * 全製品一覧を取得（全製品コンサルティング連動型）
+ */
+export function getConsultingProducts(): ProductCode[] {
+  return Object.keys(PRODUCT_SALES_STRATEGY) as ProductCode[];
+}
+
 // =============================================================================
 // エクスポート
 // =============================================================================
@@ -568,4 +462,5 @@ export default {
   getProductsByRegion,
   getMarketsByPhase,
   getPositioning,
+  getConsultingProducts,
 };

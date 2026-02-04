@@ -33,8 +33,8 @@
 /** 製品コード */
 export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'INPY' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'IVIN';
 
-/** プランコード */
-export type PlanCode = 'FREE' | 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+/** プランコード（全製品 法人向け — FREE廃止） */
+export type PlanCode = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
 
 /** 製品または共通を示す型 */
 export type ProductOrCommon = ProductCode | 'COMMON';
@@ -81,8 +81,8 @@ export interface PlanInfo {
  *   name: 'Script Storage',
  *   nameJa: 'スクリプト保存数',
  *   type: 'limit',
- *   allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
- *   limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+ *   allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+ *   limitValues: { TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
  * }
  */
 export interface FeatureDefinition {
@@ -127,37 +127,37 @@ export interface PlanLimits {
 // =============================================================================
 
 export const PRODUCTS: Record<ProductCode, ProductInfo> = {
-  // ========================================
-  // 個人向け（ダウンロード＆インストール型）
-  // ========================================
-  INSS: {
-    code: 'INSS',
-    name: 'InsightOfficeSlide',
-    nameJa: 'InsightOfficeSlide',
-    description: 'AI-powered PowerPoint text extraction and review tool',
-    descriptionJa: 'AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール',
+
+  // =========================================================================
+  // Tier 1: 業務変革ツール（高単価）
+  // =========================================================================
+
+  INCA: {
+    code: 'INCA',
+    name: 'InsightNoCodeAnalyzer',
+    nameJa: 'InsightNoCodeAnalyzer',
+    description: 'RPA and low-code migration automation tool',
+    descriptionJa: 'RPA・ローコードのマイグレーション自動化ツール',
   },
-  IOSH: {
-    code: 'IOSH',
-    name: 'InsightOfficeSheet',
-    nameJa: 'InsightOfficeSheet',
-    description: 'AI-powered business planning, budget management, and simulation tool',
-    descriptionJa: 'AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション',
+  INBT: {
+    code: 'INBT',
+    name: 'InsightBot',
+    nameJa: 'InsightBot',
+    description: 'AI editor-equipped RPA product for business optimization',
+    descriptionJa: 'AIエディタ搭載 — 業務最適化RPA製品',
   },
-  IOSD: {
-    code: 'IOSD',
-    name: 'InsightOfficeDoc',
-    nameJa: 'InsightOfficeDoc',
-    description: 'AI-powered Word document management with reference materials',
-    descriptionJa: 'AIアシスタント搭載 — 参照資料付きWord文書管理ツール',
+  IVIN: {
+    code: 'IVIN',
+    name: 'InterviewInsight',
+    nameJa: 'InterviewInsight',
+    description: 'Automated hearing and business research support',
+    descriptionJa: '自動ヒアリング・業務調査支援',
   },
-  INPY: {
-    code: 'INPY',
-    name: 'InsightPy',
-    nameJa: 'InsightPy',
-    description: 'AI editor-equipped Python execution platform for business research and data collection',
-    descriptionJa: 'AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤',
-  },
+
+  // =========================================================================
+  // Tier 2: AI活用ツール（中単価）
+  // =========================================================================
+
   INMV: {
     code: 'INMV',
     name: 'InsightMovie',
@@ -172,29 +172,38 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     description: 'AI bulk image generation tool for business materials',
     descriptionJa: '業務資料向けAI画像の大量自動生成ツール',
   },
-  // ========================================
-  // 法人向け（コンサルティング連動型）
-  // ========================================
-  INBT: {
-    code: 'INBT',
-    name: 'InsightBot',
-    nameJa: 'InsightBot',
-    description: 'AI editor-equipped RPA product for business optimization',
-    descriptionJa: 'AIエディタ搭載 — 業務最適化RPA製品',
+
+  // =========================================================================
+  // Tier 3: InsightOffice Suite（コンサル導入ツール）
+  // =========================================================================
+
+  INSS: {
+    code: 'INSS',
+    name: 'InsightOfficeSlide',
+    nameJa: 'InsightOfficeSlide',
+    description: 'AI-powered PowerPoint text extraction and review tool for enterprise',
+    descriptionJa: 'AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール',
   },
-  INCA: {
-    code: 'INCA',
-    name: 'InsightNoCodeAnalyzer',
-    nameJa: 'InsightNoCodeAnalyzer',
-    description: 'RPA and low-code migration automation tool',
-    descriptionJa: 'RPA・ローコードのマイグレーション自動化ツール',
+  IOSH: {
+    code: 'IOSH',
+    name: 'InsightOfficeSheet',
+    nameJa: 'InsightOfficeSheet',
+    description: 'AI-powered business planning, budget management, and simulation tool for enterprise',
+    descriptionJa: 'AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション',
   },
-  IVIN: {
-    code: 'IVIN',
-    name: 'InterviewInsight',
-    nameJa: 'InterviewInsight',
-    description: 'Automated hearing and business research support',
-    descriptionJa: '自動ヒアリング・業務調査支援',
+  IOSD: {
+    code: 'IOSD',
+    name: 'InsightOfficeDoc',
+    nameJa: 'InsightOfficeDoc',
+    description: 'AI-powered Word document management with reference materials for enterprise',
+    descriptionJa: 'AIアシスタント搭載 — 参照資料付きWord文書管理ツール',
+  },
+  INPY: {
+    code: 'INPY',
+    name: 'InsightPy',
+    nameJa: 'InsightPy',
+    description: 'AI editor-equipped Python execution platform for business automation',
+    descriptionJa: 'AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤',
   },
 };
 
@@ -203,15 +212,6 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
 // =============================================================================
 
 export const PLANS: Record<PlanCode, PlanInfo> = {
-  FREE: {
-    code: 'FREE',
-    name: 'Free',
-    nameJa: 'フリー',
-    priority: 0,
-    description: 'Basic features with limitations',
-    descriptionJa: '機能制限あり',
-    defaultDurationDays: -1,
-  },
   TRIAL: {
     code: 'TRIAL',
     name: 'Trial',
@@ -226,8 +226,8 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Standard',
     nameJa: 'スタンダード',
     priority: 2,
-    description: 'Standard features for individual use (365 days)',
-    descriptionJa: '個人向け標準機能（365日）',
+    description: 'Standard features for corporate use (365 days)',
+    descriptionJa: '法人向け標準機能（365日）',
     defaultDurationDays: 365,
   },
   PRO: {
@@ -235,8 +235,8 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Pro',
     nameJa: 'プロ',
     priority: 3,
-    description: 'All features for business/team use (365 days)',
-    descriptionJa: '法人・チーム向け全機能（365日）',
+    description: 'All features including AI and collaboration (365 days)',
+    descriptionJa: '法人向け全機能 — AI無制限・コラボレーション（365日）',
     defaultDurationDays: 365,
   },
   ENT: {
@@ -308,8 +308,8 @@ export const COMMON_FEATURES: FeatureDefinition[] = [
  */
 export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // ========================================
-  // InsightOfficeSlide (INSS)
-  // 旧 InsightSlide — AIアシスタント搭載PowerPointツール
+  // InsightOfficeSlide (INSS) — Tier 3
+  // AIアシスタント搭載PowerPointツール
   // ========================================
   INSS: [
     {
@@ -317,7 +317,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Content Extraction',
       nameJa: 'コンテンツ抽出',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'PowerPointからテキスト・画像を抽出',
     },
     {
@@ -325,9 +325,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Content Update',
       nameJa: 'コンテンツ更新',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'スライドの一括更新（FREEは3枚まで）',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      descriptionJa: 'スライドの一括更新',
     },
     {
       key: 'json',
@@ -366,15 +366,15 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるスライドテキストの校正・改善提案（FREE: 20回, PRO: 100回）',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるスライドテキストの校正・改善提案（PRO: 無制限）',
     },
     {
       key: 'ai_editor',
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'AIによるPythonコードの生成・編集でPowerPointを自動処理',
     },
     {
@@ -404,8 +404,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // InsightOfficeSheet (IOSH)
-  // 旧 HarmonicSheet (HMSH) — AIアシスタント搭載Excel管理ツール
+  // InsightOfficeSheet (IOSH) — Tier 3
+  // AIアシスタント搭載Excel管理ツール
   // ========================================
   IOSH: [
     {
@@ -413,7 +413,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Read Excel',
       nameJa: 'Excel読み込み・編集',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'Excelファイルの読み込み・編集',
     },
     {
@@ -421,7 +421,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Version Control',
       nameJa: 'バージョン管理',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'ファイルのバージョン管理・履歴保持',
     },
     {
@@ -429,7 +429,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Diff Compare',
       nameJa: '差分比較',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'バージョン間のセル差分比較',
     },
     {
@@ -437,7 +437,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Change Log',
       nameJa: 'セル変更ログ',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'セル単位の変更履歴の記録・表示',
     },
     {
@@ -445,7 +445,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Export',
       nameJa: 'エクスポート',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '変更履歴・差分のエクスポート出力',
     },
     {
@@ -469,8 +469,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIチャットによるExcel操作支援（FREE: 20回, PRO: 100回）',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIチャットによるExcel操作支援（PRO: 無制限）',
     },
     {
       key: 'send_message',
@@ -485,7 +485,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'AIによるPythonコードの生成・編集でExcelを自動処理',
     },
     {
@@ -515,8 +515,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // InsightOfficeDoc (IOSD)
-  // 旧 HarmonicDoc (HMDC) — AIアシスタント搭載Word管理ツール
+  // InsightOfficeDoc (IOSD) — Tier 3
+  // AIアシスタント搭載Word管理ツール
   // ========================================
   IOSD: [
     {
@@ -524,7 +524,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Read Document',
       nameJa: 'ドキュメント読取',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'Wordドキュメントの読み取り',
     },
     {
@@ -532,9 +532,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Write Document',
       nameJa: 'ドキュメント書込',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'Wordドキュメントへの書き込み（FREEは3ページまで）',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      descriptionJa: 'Wordドキュメントへの書き込み',
     },
     {
       key: 'convert',
@@ -573,15 +573,15 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'AIによるドキュメントの校正・要約・構成提案（FREE: 20回, PRO: 100回）',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'AIによるドキュメントの校正・要約・構成提案（PRO: 無制限）',
     },
     {
       key: 'ai_editor',
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'AIによるPythonコードの生成・編集でWordを自動処理',
     },
     {
@@ -619,7 +619,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Code Execution',
       nameJa: 'コード実行',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'Pythonコードの実行',
     },
     {
@@ -627,7 +627,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Presets',
       nameJa: 'プリセット利用',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '定義済みスクリプトテンプレートの利用',
     },
     {
@@ -635,8 +635,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Script Storage',
       nameJa: 'スクリプト保存数',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
       descriptionJa: '保存可能なスクリプト数',
     },
     {
@@ -666,7 +666,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Script Execution',
       nameJa: 'スクリプト実行',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'RPAスクリプトの実行',
     },
     {
@@ -674,7 +674,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Presets',
       nameJa: 'プリセット利用',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '定義済みスクリプトテンプレートの利用',
     },
     {
@@ -682,8 +682,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Job Storage',
       nameJa: 'JOB保存数',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
       descriptionJa: '保存可能なJOB数',
     },
     {
@@ -713,7 +713,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'RPA Analysis',
       nameJa: 'RPA解析',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'BizRobo等のRPAソース解析',
     },
     {
@@ -721,7 +721,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Low-code Analysis',
       nameJa: 'ローコード解析',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'Forguncy等のローコードツール解析',
     },
     {
@@ -767,7 +767,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Image Generation',
       nameJa: '画像生成',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'Stable Diffusionによる画像生成',
     },
     {
@@ -783,7 +783,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Audio Generation',
       nameJa: '音声生成',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'VOICEVOXによる音声生成',
     },
     {
@@ -791,8 +791,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Character Prompts',
       nameJa: 'キャラクタープロンプト',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { FREE: 3, TRIAL: -1, STD: 20, PRO: -1, ENT: -1 },
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 20, PRO: -1, ENT: -1 },
       descriptionJa: '保存可能なキャラクタープロンプト数',
     },
     {
@@ -822,7 +822,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Video Generation',
       nameJa: '動画生成',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '画像・テキストから動画を生成',
     },
     {
@@ -874,16 +874,6 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
 
 /** デフォルトのプラン別制限 */
 export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
-  FREE: {
-    monthlyLimit: -1,
-    maxFileSizeMB: 10,
-    maxStorageItems: 5,
-    maxResolution: '720p',
-    hasWatermark: false,
-    batchEnabled: false,
-    apiEnabled: false,
-    priorityProcessing: false,
-  },
   TRIAL: {
     monthlyLimit: -1,
     maxFileSizeMB: -1,
@@ -928,16 +918,6 @@ export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
 
 /** InsightMovie 専用のプラン別制限 */
 export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
-  FREE: {
-    monthlyLimit: -1,
-    maxFileSizeMB: 100,
-    maxStorageItems: -1,
-    maxResolution: '1080p',
-    hasWatermark: false,
-    batchEnabled: false,
-    apiEnabled: false,
-    priorityProcessing: false,
-  },
   TRIAL: {
     monthlyLimit: -1,
     maxFileSizeMB: -1,

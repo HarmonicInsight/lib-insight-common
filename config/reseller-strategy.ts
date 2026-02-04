@@ -2,18 +2,18 @@
  * Harmonic Insight リセラー・販売代理店パートナープログラム
  *
  * ============================================================================
- * 【パートナープログラムの設計方針】
+ * 【パートナープログラムの設計方針】全製品 法人向け（B2B Only）
  * ============================================================================
  *
  * ## 概要
- * グローバル個人向け型製品（INSS/IOSH/IOSD/INPY）を
- * 販売代理店（リセラー/VAR）経由で展開するためのパートナープログラム。
+ * 全製品を販売代理店（リセラー/VAR）経由で法人向けに展開するためのパートナープログラム。
+ * コンサルティング案件と連動した法人向け販売を補完するチャネル。
  *
  * ## なぜリセラーが必要か
  * - 自社だけでは到達できない地域・業界へのリーチ拡大
  * - 現地語でのサポート・導入支援の提供
  * - 営業コストを変動費化（売れた分だけコミッション）
- * - ベンチャー企業との連携で営業力を補完
+ * - パートナー企業との連携で営業力を補完
  *
  * ## パートナー種別
  *
@@ -25,6 +25,10 @@
  * │  非独占            非独占            地域独占可               │
  * │  セルフサーブ      専任担当          専任担当+共同マーケ      │
  * └───────────────────────────────────────────────────────────────┘
+ *
+ * ## リセラー対象製品
+ * 全製品がパートナー経由で販売可能。
+ * ただし Tier 1（INCA/INBT/IVIN）は Gold パートナーのみ。
  */
 
 import type { ProductCode } from './products';
@@ -40,8 +44,7 @@ export type PartnerTier = 'registered' | 'silver' | 'gold';
 export type PartnerType =
   | 'reseller'        // リセラー（仕入れ→再販）
   | 'referral'        // 紹介パートナー（リード紹介のみ）
-  | 'var'             // VAR: Value Added Reseller（再販+導入支援）
-  | 'white_label';    // ホワイトラベル（自社ブランドで販売）
+  | 'var';            // VAR: Value Added Reseller（再販+導入支援）
 
 /** コミッションモデル */
 export type CommissionModel =
@@ -109,6 +112,8 @@ export interface ResellerProductTerms {
   productCode: ProductCode;
   /** リセラー販売可能か */
   resellerEnabled: boolean;
+  /** 販売に必要な最低パートナーティア */
+  minimumTier: PartnerTier;
   /** 推奨小売価格（エンド価格）の設定自由度 */
   pricingFlexibility: 'fixed' | 'floor_price' | 'free';
   /** 最低販売価格（定価の何%以上） */
@@ -130,8 +135,8 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierDefinition> = {
   /**
    * Registered パートナー
    * - 参加障壁: なし（申請→審査→承認）
-   * - 想定: 小規模IT企業、フリーランス、副業エンジニア
-   * - まずはここから始めて実績を積む
+   * - 想定: 中小IT企業、フリーランスコンサルタント
+   * - InsightOffice Suite（Tier 3）のみ販売可能
    */
   registered: {
     tier: 'registered',
@@ -150,59 +155,59 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierDefinition> = {
     portalAccess: true,
     trainingIncluded: true,
     demoEnvironment: true,
-    description: '誰でも参加可能。20%の仕入れ値引き。パートナーポータル・デモ環境・トレーニング提供。',
+    description: '誰でも参加可能。20%の仕入れ値引き。Tier 3製品（InsightOffice Suite）のみ販売可能。',
   },
 
   /**
    * Silver パートナー
-   * - 参加障壁: 年間5件以上 or 年間100万円以上の販売実績
-   * - 想定: 中小IT企業、Office導入支援企業
-   * - 専任担当がつき、リードも共有
+   * - 参加障壁: 年間5件以上 or 年間500万円以上の販売実績
+   * - 想定: 中堅IT企業、コンサルファーム
+   * - InsightOffice Suite + Tier 2（INMV/INIG）が販売可能
    */
   silver: {
     tier: 'silver',
     name: 'Silver Partner',
     nameJa: 'シルバーパートナー',
     minAnnualDeals: 5,
-    minAnnualRevenue: 1_000_000,
+    minAnnualRevenue: 5_000_000,
     wholesaleDiscount: 0.30,
     referralCommission: 0.20,
     firstYearCommission: 0.30,
     renewalCommission: 0.15,
     exclusivityAvailable: false,
     dedicatedManager: true,
-    coMarketingBudget: 200_000,
+    coMarketingBudget: 500_000,
     leadSharing: true,
     portalAccess: true,
     trainingIncluded: true,
     demoEnvironment: true,
-    description: '年間5件以上の実績で昇格。30%仕入れ値引き。専任担当・リード共有・共同マーケ予算あり。',
+    description: '年間5件以上で昇格。30%仕入れ値引き。Tier 2+3製品が販売可能。専任担当・リード共有・共同マーケ予算あり。',
   },
 
   /**
    * Gold パートナー
-   * - 参加障壁: 年間20件以上 or 年間500万円以上の販売実績
-   * - 想定: 中堅IT企業、Office専門VAR
-   * - 地域独占権の付与可能、共同マーケティング予算大
+   * - 参加障壁: 年間20件以上 or 年間2,000万円以上の販売実績
+   * - 想定: 大手SIer、コンサルファーム
+   * - 全製品（Tier 1含む）が販売可能、地域独占権あり
    */
   gold: {
     tier: 'gold',
     name: 'Gold Partner',
     nameJa: 'ゴールドパートナー',
     minAnnualDeals: 20,
-    minAnnualRevenue: 5_000_000,
+    minAnnualRevenue: 20_000_000,
     wholesaleDiscount: 0.40,
     referralCommission: 0.25,
     firstYearCommission: 0.40,
     renewalCommission: 0.20,
     exclusivityAvailable: true,
     dedicatedManager: true,
-    coMarketingBudget: 1_000_000,
+    coMarketingBudget: 2_000_000,
     leadSharing: true,
     portalAccess: true,
     trainingIncluded: true,
     demoEnvironment: true,
-    description: '年間20件以上で昇格。40%仕入れ値引き。地域独占権・大型共同マーケ予算。',
+    description: '年間20件以上で昇格。40%仕入れ値引き。全製品販売可能。地域独占権・大型共同マーケ予算。',
   },
 };
 
@@ -210,18 +215,6 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierDefinition> = {
 // 契約条件
 // =============================================================================
 
-/**
- * パートナー契約の標準条件
- *
- * 【ベンチャー社長とのミーティングで合意すべき主要ポイント】
- *
- * 1. コミッション構造（仕入れ値引き or レベニューシェア）
- * 2. 最低販売コミットメント（ノルマの有無）
- * 3. 独占権の範囲（地域・業種）
- * 4. サポート責任分担（1次/2次）
- * 5. 顧客データの所有権
- * 6. 契約期間と解約条件
- */
 export const STANDARD_AGREEMENT_TERMS: PartnerAgreementTerms = {
   contractDurationMonths: 12,
   autoRenewal: true,
@@ -248,129 +241,131 @@ export const STANDARD_AGREEMENT_TERMS: PartnerAgreementTerms = {
 // =============================================================================
 
 /**
- * リセラーが販売可能な製品と条件
+ * 全製品のリセラー販売条件
  *
  * 【方針】
- * - コンサル連動型（INCA/INBT/INMV/INIG/IVIN）: リセラー販売 不可（自社コンサルと一体）
- * - 個人向け型: リセラー販売 可能
+ * - Tier 1（INCA/INBT/IVIN）: Gold パートナーのみ販売可能
+ * - Tier 2（INMV/INIG）: Silver 以上で販売可能
+ * - Tier 3（INSS/IOSH/IOSD/INPY）: 全パートナーが販売可能
  */
 export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> = {
-  // 個人向け型 — リセラー販売可能
+
+  // =========================================================================
+  // Tier 1: 業務変革ツール — Gold パートナーのみ
+  // =========================================================================
+
+  INCA: {
+    productCode: 'INCA',
+    resellerEnabled: true,
+    minimumTier: 'gold',
+    pricingFlexibility: 'floor_price',
+    minimumSellingPriceRatio: 0.85,
+    demoLicenses: 2,
+    nfrLicenses: 1,
+    notes: 'RPA移行アセスメントツール。Goldパートナーのみ。コンサル案件と連動した提案が前提。',
+  },
+  INBT: {
+    productCode: 'INBT',
+    resellerEnabled: true,
+    minimumTier: 'gold',
+    pricingFlexibility: 'floor_price',
+    minimumSellingPriceRatio: 0.85,
+    demoLicenses: 2,
+    nfrLicenses: 1,
+    notes: '業務自動化RPAツール。Goldパートナーのみ。自動化コンサルとセットでの提案が前提。',
+  },
+  IVIN: {
+    productCode: 'IVIN',
+    resellerEnabled: true,
+    minimumTier: 'gold',
+    pricingFlexibility: 'fixed',
+    minimumSellingPriceRatio: 1.0,
+    demoLicenses: 1,
+    nfrLicenses: 1,
+    notes: '面接分析・採用支援ツール。Goldパートナーのみ。全プラン個別見積もり。',
+  },
+
+  // =========================================================================
+  // Tier 2: AI活用ツール — Silver 以上
+  // =========================================================================
+
+  INMV: {
+    productCode: 'INMV',
+    resellerEnabled: true,
+    minimumTier: 'silver',
+    pricingFlexibility: 'floor_price',
+    minimumSellingPriceRatio: 0.80,
+    demoLicenses: 3,
+    nfrLicenses: 1,
+    notes: 'AI動画作成ツール。Silver以上のパートナーが販売可能。研修・マニュアル動画案件に有効。',
+  },
+  INIG: {
+    productCode: 'INIG',
+    resellerEnabled: true,
+    minimumTier: 'silver',
+    pricingFlexibility: 'floor_price',
+    minimumSellingPriceRatio: 0.80,
+    demoLicenses: 3,
+    nfrLicenses: 1,
+    notes: 'AI画像・音声生成ツール。Silver以上のパートナーが販売可能。',
+  },
+
+  // =========================================================================
+  // Tier 3: InsightOffice Suite — 全パートナーが販売可能
+  // =========================================================================
+
   INSS: {
     productCode: 'INSS',
     resellerEnabled: true,
+    minimumTier: 'registered',
     pricingFlexibility: 'floor_price',
     minimumSellingPriceRatio: 0.80,
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'グローバル展開の主力。リセラー最も注力すべき製品。',
-  },
-  INPY: {
-    productCode: 'INPY',
-    resellerEnabled: true,
-    pricingFlexibility: 'floor_price',
-    minimumSellingPriceRatio: 0.80,
-    demoLicenses: 5,
-    nfrLicenses: 2,
-    notes: 'Python自動化。技術系リセラーに適する。',
+    notes: 'PowerPointツール。全パートナーが販売可能。法人導入の主力製品。',
   },
   IOSH: {
     productCode: 'IOSH',
     resellerEnabled: true,
+    minimumTier: 'registered',
     pricingFlexibility: 'floor_price',
     minimumSellingPriceRatio: 0.80,
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'Excel業務ユーザー向け。チーム導入案件はPROを推奨。',
+    notes: 'Excel管理ツール。全パートナーが販売可能。チーム導入案件はPROを推奨。',
   },
   IOSD: {
     productCode: 'IOSD',
     resellerEnabled: true,
+    minimumTier: 'registered',
     pricingFlexibility: 'floor_price',
     minimumSellingPriceRatio: 0.80,
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'Word自動化。ドキュメント管理案件に有効。',
+    notes: 'Word文書管理ツール。全パートナーが販売可能。ドキュメント管理案件に有効。',
   },
-
-  // コンサル連動型 — リセラー販売不可
-  INCA: {
-    productCode: 'INCA',
-    resellerEnabled: false,
-    pricingFlexibility: 'fixed',
-    minimumSellingPriceRatio: 1.0,
-    demoLicenses: 0,
-    nfrLicenses: 0,
-    notes: 'コンサル案件と一体。リセラー販売不可。',
-  },
-  INBT: {
-    productCode: 'INBT',
-    resellerEnabled: false,
-    pricingFlexibility: 'fixed',
-    minimumSellingPriceRatio: 1.0,
-    demoLicenses: 0,
-    nfrLicenses: 0,
-    notes: 'コンサル案件と一体。リセラー販売不可。',
-  },
-  INMV: {
-    productCode: 'INMV',
-    resellerEnabled: false,
-    pricingFlexibility: 'fixed',
-    minimumSellingPriceRatio: 1.0,
-    demoLicenses: 0,
-    nfrLicenses: 0,
-    notes: 'コンサル案件と一体。リセラー販売不可。',
-  },
-  INIG: {
-    productCode: 'INIG',
-    resellerEnabled: false,
-    pricingFlexibility: 'fixed',
-    minimumSellingPriceRatio: 1.0,
-    demoLicenses: 0,
-    nfrLicenses: 0,
-    notes: 'コンサル案件と一体。リセラー販売不可。',
-  },
-  IVIN: {
-    productCode: 'IVIN',
-    resellerEnabled: false,
-    pricingFlexibility: 'fixed',
-    minimumSellingPriceRatio: 1.0,
-    demoLicenses: 0,
-    nfrLicenses: 0,
-    notes: 'コンサル案件と一体。リセラー販売不可。',
+  INPY: {
+    productCode: 'INPY',
+    resellerEnabled: true,
+    minimumTier: 'registered',
+    pricingFlexibility: 'floor_price',
+    minimumSellingPriceRatio: 0.80,
+    demoLicenses: 5,
+    nfrLicenses: 2,
+    notes: 'Python実行基盤。全パートナーが販売可能。業務自動化案件に有効。',
   },
 };
 
 // =============================================================================
-// ベンチャー社長ミーティング向け — 提案シナリオ
+// パートナー提案シナリオ
 // =============================================================================
 
-/**
- * 初回ミーティングでの提案パッケージ
- *
- * 【想定シナリオ】
- * ベンチャー企業が自社の営業チャネルを使ってHarmonic Insight製品を
- * 再販したいケース。まずはRegistered or Silverで開始。
- *
- * 【提案のポイント】
- * 1. 初期投資ゼロ — 在庫リスクなし（ライセンスキー発行モデル）
- * 2. 初年度はノルマなし — まず売ってみて手応えを確認
- * 3. 20〜30%の仕入れ値引き — 十分な利益率を確保
- * 4. NFR + デモライセンス提供 — 自社で使って価値を体感してから販売
- * 5. トレーニング・販促素材の提供 — 営業をすぐ開始できる
- */
 export interface MeetingProposal {
-  /** シナリオ名 */
   name: string;
-  /** 提案ティア */
   proposedTier: PartnerTier;
-  /** 対象製品 */
   targetProducts: ProductCode[];
-  /** 初期提供内容 */
   initialPackage: string[];
-  /** 期待成果（初年度） */
   firstYearExpectation: string;
-  /** エスカレーションパス（成功時の次ステップ） */
   escalationPath: string;
 }
 
@@ -388,58 +383,36 @@ export const MEETING_PROPOSALS: MeetingProposal[] = [
       '仕入れ値引き: 20%',
     ],
     firstYearExpectation:
-      '3〜5件の販売（¥150,000〜¥500,000の売上）。' +
+      '3〜5件の販売（¥150万〜¥500万の売上）。' +
       '製品理解を深め、顧客の反応を確認するフェーズ。',
     escalationPath:
-      '5件達成でSilverに昇格 → 値引き30%・専任担当・リード共有開始。',
+      '5件達成でSilverに昇格 → 値引き30%・専任担当・Tier 2製品も販売可能に。',
   },
   {
     name: 'アグレッシブ開始プラン',
     proposedTier: 'silver',
-    targetProducts: ['INSS', 'IOSH', 'IOSD', 'INPY'],
+    targetProducts: ['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INIG'],
     initialPackage: [
-      'NFRライセンス全製品各2本',
-      'デモライセンス全製品各5本',
+      'NFRライセンス全Tier 2+3製品各1〜2本',
+      'デモライセンス各3〜5本',
       '販売トレーニング（対面、半日）',
       '技術トレーニング（オンライン、4時間）',
       '販促資料一式 + 共同ブランド資料作成',
-      '仕入れ値引き: 30%（初年度特別）',
-      '共同マーケティング予算: ¥200,000',
+      '仕入れ値引き: 30%',
+      '共同マーケティング予算: ¥500,000',
       '専任パートナーマネージャー',
     ],
     firstYearExpectation:
-      '10〜15件の販売（¥500,000〜¥1,500,000の売上）。' +
-      '初年度からSilverティアで本格的に営業。5件のコミットメント。',
+      '10〜15件の販売（¥500万〜¥1,500万の売上）。' +
+      '初年度からSilverティアで本格的に法人営業。',
     escalationPath:
-      '20件達成でGoldに昇格 → 値引き40%・地域独占権の協議開始。',
+      '20件達成でGoldに昇格 → 値引き40%・全製品販売可能・地域独占権の協議開始。',
   },
 ];
 
 // =============================================================================
-// コミッション計算例
+// コミッション計算例（法人向け価格ベース）
 // =============================================================================
-
-/**
- * 仕入れ値引きモデルでのコミッション計算例
- *
- * 例: INSS STD（定価 ¥49,800/年）をSilverパートナーが販売
- *
- *   定価:               ¥49,800
- *   仕入れ値（30%引き）: ¥34,860
- *   パートナー利益:      ¥14,940 / 件
- *
- *   月10件販売の場合:     ¥149,400 / 月 の粗利
- *   年間120件:            ¥1,792,800 / 年 の粗利
- *
- * 例: IOSH PRO（定価 ¥118,000/年）をGoldパートナーが5名チームに販売
- *
- *   定価:               ¥118,000
- *   仕入れ値（40%引き）: ¥70,800
- *   パートナー利益:      ¥47,200 / 件
- *
- *   月5件販売の場合:      ¥236,000 / 月 の粗利
- *   年間60件:             ¥2,832,000 / 年 の粗利
- */
 
 export interface CommissionExample {
   productCode: ProductCode;
@@ -456,42 +429,42 @@ export const COMMISSION_EXAMPLES: CommissionExample[] = [
   {
     productCode: 'INSS',
     plan: 'STD',
-    listPrice: 49_800,
+    listPrice: 480_000,
     tier: 'registered',
     discount: 0.20,
-    wholesalePrice: 39_840,
-    partnerProfit: 9_960,
-    scenario: '年間10件販売 → 粗利 ¥99,600',
+    wholesalePrice: 384_000,
+    partnerProfit: 96_000,
+    scenario: '年間10件販売 → 粗利 ¥960,000',
   },
   {
     productCode: 'INSS',
+    plan: 'PRO',
+    listPrice: 980_000,
+    tier: 'silver',
+    discount: 0.30,
+    wholesalePrice: 686_000,
+    partnerProfit: 294_000,
+    scenario: '年間10件販売 → 粗利 ¥2,940,000',
+  },
+  {
+    productCode: 'INMV',
     plan: 'STD',
-    listPrice: 49_800,
+    listPrice: 980_000,
     tier: 'silver',
     discount: 0.30,
-    wholesalePrice: 34_860,
-    partnerProfit: 14_940,
-    scenario: '年間30件販売 → 粗利 ¥448,200',
+    wholesalePrice: 686_000,
+    partnerProfit: 294_000,
+    scenario: '年間5件販売 → 粗利 ¥1,470,000',
   },
   {
-    productCode: 'IOSH',
-    plan: 'PRO',
-    listPrice: 118_000,
-    tier: 'silver',
-    discount: 0.30,
-    wholesalePrice: 82_600,
-    partnerProfit: 35_400,
-    scenario: '年間20件販売 → 粗利 ¥708,000',
-  },
-  {
-    productCode: 'IOSH',
-    plan: 'PRO',
-    listPrice: 118_000,
+    productCode: 'INCA',
+    plan: 'STD',
+    listPrice: 1_980_000,
     tier: 'gold',
     discount: 0.40,
-    wholesalePrice: 70_800,
-    partnerProfit: 47_200,
-    scenario: '年間60件販売 → 粗利 ¥2,832,000',
+    wholesalePrice: 1_188_000,
+    partnerProfit: 792_000,
+    scenario: '年間5件販売 → 粗利 ¥3,960,000',
   },
 ];
 
@@ -507,11 +480,21 @@ export function getPartnerTier(tier: PartnerTier): PartnerTierDefinition {
 }
 
 /**
- * リセラー販売可能な製品一覧を取得
+ * 指定ティアで販売可能な製品一覧を取得
  */
-export function getResellerProducts(): ProductCode[] {
-  return (Object.keys(RESELLER_PRODUCT_TERMS) as ProductCode[])
-    .filter(code => RESELLER_PRODUCT_TERMS[code].resellerEnabled);
+export function getResellerProducts(tier?: PartnerTier): ProductCode[] {
+  const tierPriority: Record<PartnerTier, number> = {
+    registered: 0,
+    silver: 1,
+    gold: 2,
+  };
+
+  return (Object.keys(RESELLER_PRODUCT_TERMS) as ProductCode[]).filter(code => {
+    const terms = RESELLER_PRODUCT_TERMS[code];
+    if (!terms.resellerEnabled) return false;
+    if (!tier) return true;
+    return tierPriority[tier] >= tierPriority[terms.minimumTier];
+  });
 }
 
 /**

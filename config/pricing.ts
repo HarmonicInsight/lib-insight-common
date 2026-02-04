@@ -2,26 +2,33 @@
  * Harmonic Insight 価格戦略定義
  *
  * ============================================================================
- * 【価格設計方針】
+ * 【価格設計方針】全製品 法人向け（B2B Only）
  * ============================================================================
  *
- * ## 2つの販売チャネル
+ * 全製品をコンサルティング案件の一環として法人向けに提供。
+ * コンサルタントがクライアント企業に導入するツール群。
+ * 直販またはパートナー（代理店）経由で販売。
+ * 個人向け（B2C）販売は行わない。
  *
- * ### A. コンサルティング連動型（Consulting-Bundled）
- * - コンサルティング案件（数千万円規模）の一部として提供
- * - 単体でも数百万円の価値がある業務ツール
- * - 大量販売は不要、コンサルフィーとの組み合わせで収益化
- * - 対象: RPA移行・ローコード解析・自動化ボット・面接分析等
+ * ## 製品ティア
  *
- * ### B. 個人・法人向け型（Individual）
- * - 3〜5万円帯でグローバルに大量販売
- * - Office系ツール（Excel/Word/PowerPoint操作）
- * - 単独でソフトウェア製品として成立する汎用ツール
- * - 対象: InsightOfficeSlide、InsightOfficeSheet、InsightOfficeDoc、InsightPy等
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │  Tier 1: 業務変革ツール（高単価）                                │
+ * │  INCA / INBT / IVIN                                            │
+ * │  年額 98万円〜398万円                                           │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │  Tier 2: AI活用ツール（中単価）                                  │
+ * │  INMV / INIG                                                    │
+ * │  年額 48万円〜198万円                                           │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │  Tier 3: InsightOffice Suite（導入ツール）                       │
+ * │  INSS / IOSH / IOSD / INPY                                     │
+ * │  年額 48万円〜98万円                                            │
+ * │  コンサル案件のクライアントに業務ツールとして導入                  │
+ * └──────────────────────────────────────────────────────────────────┘
  *
- * ## 価格設定根拠
- * - コンサル連動型: 移行アセスメント1件で数百万〜数千万の案件価値
- * - 個人・法人向け型: グローバルSaaS/デスクトップツールの相場帯
+ * ## 決済
+ * - Stripe（自社サイト）/ 請求書払い
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -30,8 +37,8 @@ import type { ProductCode, PlanCode } from './products';
 // 型定義
 // =============================================================================
 
-/** 販売チャネル */
-export type SalesChannel = 'consulting' | 'individual';
+/** 販売チャネル — 全製品 consulting */
+export type SalesChannel = 'consulting';
 
 /** 通貨 */
 export type Currency = 'JPY' | 'USD';
@@ -61,42 +68,26 @@ export interface ProductPricing {
 }
 
 // =============================================================================
-// 価格定義
+// 価格定義（全製品 法人向けコンサルティング連動型）
 // =============================================================================
 
-/**
- * 製品別価格表
- *
- * 【価格体系の全体像】
- *
- * ┌──────────────────────────────────────────────────────────────────┐
- * │  コンサルティング連動型（数百万円〜）                              │
- * │  INCA / INBT / INMV / INIG / IVIN                              │
- * │  → コンサル案件と一括提供、少量・高単価                           │
- * ├──────────────────────────────────────────────────────────────────┤
- * │  個人・法人向け型（3〜5万円）                                     │
- * │  INSS / INPY / IOSH / IOSD                                     │
- * │  → 単独販売、グローバル展開、大量販売                             │
- * └──────────────────────────────────────────────────────────────────┘
- */
 export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
 
   // =========================================================================
-  // コンサルティング連動型（Consulting-Bundled）
+  // Tier 1: 業務変革ツール（高単価）
   // =========================================================================
 
   /**
    * InsightNoCodeAnalyzer (INCA)
    * - RPA・ローコード移行アセスメントの中核ツール
    * - 移行案件1件あたり数千万円の案件価値に対する分析ツール
-   * - 最も高単価：解析・変換・アセスメントレポートの自動生成
    */
   INCA: {
     productCode: 'INCA',
     channel: 'consulting',
     channelDescription: 'RPA・ローコード移行コンサルティング案件と連動',
     plans: {
-      TRIAL: null, // 無料トライアル（1ヶ月）
+      TRIAL: null,
       STD: {
         annualPrice: 1_980_000,
         currency: 'JPY',
@@ -107,9 +98,9 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
         currency: 'JPY',
         monthlyEquivalent: 331_667,
       },
-      ENT: null, // 個別見積もり
+      ENT: null,
     },
-    notes: 'akaBot変換機能はPRO以上。移行アセスメント案件（数千万円規模）の分析ツールとして提供。',
+    notes: 'akaBot変換機能はPRO以上。移行アセスメント案件の分析ツールとして提供。',
   },
 
   /**
@@ -139,6 +130,28 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
   },
 
   /**
+   * InterviewInsight (IVIN)
+   * - 面接分析・採用支援ツール
+   * - 採用コンサルティングの一環として提供
+   */
+  IVIN: {
+    productCode: 'IVIN',
+    channel: 'consulting',
+    channelDescription: '採用・面接コンサルティング案件と連動',
+    plans: {
+      TRIAL: null,
+      STD: null,
+      PRO: null,
+      ENT: null,
+    },
+    notes: '全プラン個別見積もり。採用コンサルとセットで提供。',
+  },
+
+  // =========================================================================
+  // Tier 2: AI活用ツール（中単価）
+  // =========================================================================
+
+  /**
    * InsightMovie (INMV)
    * - AI動画作成ツール
    * - コンテンツ制作・研修動画作成コンサルの一環
@@ -147,32 +160,6 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
     productCode: 'INMV',
     channel: 'consulting',
     channelDescription: 'コンテンツ制作・研修動画コンサルティングと連動',
-    plans: {
-      TRIAL: null,
-      STD: {
-        annualPrice: 1_480_000,
-        currency: 'JPY',
-        monthlyEquivalent: 123_333,
-      },
-      PRO: {
-        annualPrice: 2_980_000,
-        currency: 'JPY',
-        monthlyEquivalent: 248_333,
-      },
-      ENT: null,
-    },
-    notes: '4K出力・字幕カスタマイズ・トランジションはPRO以上。',
-  },
-
-  /**
-   * InsightImageGen (INIG)
-   * - AI画像・音声生成ツール
-   * - コンテンツ制作コンサルの付帯ツール
-   */
-  INIG: {
-    productCode: 'INIG',
-    channel: 'consulting',
-    channelDescription: 'AI活用・コンテンツ制作コンサルティングと連動',
     plans: {
       TRIAL: null,
       STD: {
@@ -187,166 +174,138 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: '高解像度出力・クラウド同期はPRO以上。',
+    notes: '4K出力・字幕カスタマイズ・トランジションはPRO以上。',
   },
 
   /**
-   * InterviewInsight (IVIN)
-   * - 面接分析・採用支援ツール
-   * - 採用コンサルティングの一環として提供
+   * InsightImageGen (INIG)
+   * - AI画像・音声生成ツール
    */
-  IVIN: {
-    productCode: 'IVIN',
+  INIG: {
+    productCode: 'INIG',
     channel: 'consulting',
-    channelDescription: '採用・面接コンサルティング案件と連動',
+    channelDescription: 'AI活用・コンテンツ制作コンサルティングと連動',
     plans: {
       TRIAL: null,
-      STD: null, // 個別見積もり
-      PRO: null, // 個別見積もり
-      ENT: null, // 個別見積もり
+      STD: {
+        annualPrice: 480_000,
+        currency: 'JPY',
+        monthlyEquivalent: 40_000,
+      },
+      PRO: {
+        annualPrice: 980_000,
+        currency: 'JPY',
+        monthlyEquivalent: 81_667,
+      },
+      ENT: null,
     },
-    notes: '全プラン個別見積もり。採用コンサルとセットで提供。',
+    notes: '高解像度出力・クラウド同期はPRO以上。',
   },
 
   // =========================================================================
-  // 個人・法人向け型（Individual）
+  // Tier 3: InsightOffice Suite（コンサル導入ツール）
   // =========================================================================
 
   /**
    * InsightOfficeSlide (INSS)
-   * - PowerPointコンテンツ抽出・更新ツール
-   * - グローバルで最も売れる可能性がある汎用ツール
+   * - PowerPointコンテンツ抽出・レビュー・AIアシスタント
+   * - コンサル案件でクライアントに業務ツールとして導入
    */
   INSS: {
     productCode: 'INSS',
-    channel: 'individual',
-    channelDescription: 'グローバル単独販売（InsightOfficeSlide - PowerPointユーザー向け）',
+    channel: 'consulting',
+    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     plans: {
-      FREE: {
-        annualPrice: 0,
-        currency: 'JPY',
-        monthlyEquivalent: 0,
-      },
       TRIAL: null,
       STD: {
-        annualPrice: 39_800,
+        annualPrice: 480_000,
         currency: 'JPY',
-        monthlyEquivalent: 3_317,
+        monthlyEquivalent: 40_000,
       },
       PRO: {
-        annualPrice: 49_800,
+        annualPrice: 980_000,
         currency: 'JPY',
-        monthlyEquivalent: 4_150,
+        monthlyEquivalent: 81_667,
       },
       ENT: null,
     },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。グローバル展開の主力製品。',
-  },
-
-  /**
-   * InsightPy (INPY)
-   * - Python実行環境（Windows自動化）
-   */
-  INPY: {
-    productCode: 'INPY',
-    channel: 'individual',
-    channelDescription: 'グローバル単独販売（Windows自動化ユーザー向け）',
-    plans: {
-      FREE: {
-        annualPrice: 0,
-        currency: 'JPY',
-        monthlyEquivalent: 0,
-      },
-      TRIAL: null,
-      STD: {
-        annualPrice: 39_800,
-        currency: 'JPY',
-        monthlyEquivalent: 3_317,
-      },
-      PRO: {
-        annualPrice: 49_800,
-        currency: 'JPY',
-        monthlyEquivalent: 4_150,
-      },
-      ENT: null,
-    },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。',
+    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限+コラボレーション。パートナー販売可。',
   },
 
   /**
    * InsightOfficeSheet (IOSH)
-   * - Excelバージョン管理・チームコラボレーション
+   * - Excel バージョン管理・予実管理・AIアシスタント
    */
   IOSH: {
     productCode: 'IOSH',
-    channel: 'individual',
-    channelDescription: 'グローバル単独販売（Excel業務ユーザー向け）',
+    channel: 'consulting',
+    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     plans: {
-      FREE: {
-        annualPrice: 0,
-        currency: 'JPY',
-        monthlyEquivalent: 0,
-      },
       TRIAL: null,
       STD: {
-        annualPrice: 39_800,
+        annualPrice: 480_000,
         currency: 'JPY',
-        monthlyEquivalent: 3_317,
+        monthlyEquivalent: 40_000,
       },
       PRO: {
-        annualPrice: 49_800,
+        annualPrice: 980_000,
         currency: 'JPY',
-        monthlyEquivalent: 4_150,
+        monthlyEquivalent: 81_667,
       },
       ENT: null,
     },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。',
+    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限+コラボレーション。パートナー販売可。',
   },
 
   /**
    * InsightOfficeDoc (IOSD)
-   * - Wordドキュメント操作・自動化
+   * - Word文書管理・参照資料・AIアシスタント
    */
   IOSD: {
     productCode: 'IOSD',
-    channel: 'individual',
-    channelDescription: 'グローバル単独販売（Word業務ユーザー向け）',
+    channel: 'consulting',
+    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     plans: {
-      FREE: {
-        annualPrice: 0,
-        currency: 'JPY',
-        monthlyEquivalent: 0,
-      },
       TRIAL: null,
       STD: {
-        annualPrice: 39_800,
+        annualPrice: 480_000,
         currency: 'JPY',
-        monthlyEquivalent: 3_317,
+        monthlyEquivalent: 40_000,
       },
       PRO: {
-        annualPrice: 49_800,
+        annualPrice: 980_000,
         currency: 'JPY',
-        monthlyEquivalent: 4_150,
+        monthlyEquivalent: 81_667,
       },
       ENT: null,
     },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。',
+    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限+コラボレーション。パートナー販売可。',
   },
-};
 
-// =============================================================================
-// USD参考価格（グローバル展開用）
-// =============================================================================
-
-/** USD参考レート（1 USD = 150 JPY で算出） */
-export const USD_REFERENCE_RATE = 150;
-
-/** グローバル展開向けUSD価格表 */
-export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, Partial<Record<PlanCode, number>>>> = {
-  INSS: { STD: 265, PRO: 332 },
-  INPY: { STD: 265, PRO: 332 },
-  IOSH: { STD: 265, PRO: 332 },
-  IOSD: { STD: 265, PRO: 332 },
+  /**
+   * InsightPy (INPY)
+   * - Python実行基盤・業務調査・データ収集
+   */
+  INPY: {
+    productCode: 'INPY',
+    channel: 'consulting',
+    channelDescription: 'コンサル案件のクライアントに業務自動化ツールとして導入',
+    plans: {
+      TRIAL: null,
+      STD: {
+        annualPrice: 480_000,
+        currency: 'JPY',
+        monthlyEquivalent: 40_000,
+      },
+      PRO: {
+        annualPrice: 980_000,
+        currency: 'JPY',
+        monthlyEquivalent: 81_667,
+      },
+      ENT: null,
+    },
+    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限。パートナー販売可。',
+  },
 };
 
 // =============================================================================
@@ -354,7 +313,7 @@ export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, Partial<Record<Plan
 // =============================================================================
 
 /**
- * 製品の販売チャネルを取得
+ * 製品の販売チャネルを取得（全製品 consulting）
  */
 export function getSalesChannel(productCode: ProductCode): SalesChannel {
   return PRODUCT_PRICING[productCode].channel;
@@ -383,15 +342,13 @@ export function getPricingTable(productCode: ProductCode): Array<{
   return entries.map(([plan, price]) => {
     let label: string;
     if (plan === 'TRIAL') {
-      label = '無料トライアル（1ヶ月）';
-    } else if (plan === 'FREE') {
-      label = '無料（機能制限あり）';
+      label = '無料トライアル（14日間）';
     } else if (plan === 'ENT') {
       label = '個別見積もり';
     } else if (price) {
       label = `¥${price.annualPrice.toLocaleString()}/年`;
     } else {
-      label = '—';
+      label = '個別見積もり';
     }
 
     return { plan, price, label };
@@ -399,28 +356,10 @@ export function getPricingTable(productCode: ProductCode): Array<{
 }
 
 /**
- * コンサルティング連動型の製品一覧を取得
+ * 全製品一覧を取得（全製品コンサルティング連動型）
  */
 export function getConsultingProducts(): ProductCode[] {
-  return (Object.keys(PRODUCT_PRICING) as ProductCode[])
-    .filter(code => PRODUCT_PRICING[code].channel === 'consulting');
-}
-
-/**
- * 個人・法人向け型の製品一覧を取得
- */
-export function getIndividualProducts(): ProductCode[] {
-  return (Object.keys(PRODUCT_PRICING) as ProductCode[])
-    .filter(code => PRODUCT_PRICING[code].channel === 'individual');
-}
-
-/**
- * USD参考価格を取得（グローバル展開製品のみ）
- */
-export function getUsdPrice(productCode: ProductCode, planCode: PlanCode): number | null {
-  const usdPricing = GLOBAL_USD_PRICING[productCode];
-  if (!usdPricing) return null;
-  return usdPricing[planCode] ?? null;
+  return Object.keys(PRODUCT_PRICING) as ProductCode[];
 }
 
 // =============================================================================
@@ -429,12 +368,8 @@ export function getUsdPrice(productCode: ProductCode, planCode: PlanCode): numbe
 
 export default {
   PRODUCT_PRICING,
-  GLOBAL_USD_PRICING,
-  USD_REFERENCE_RATE,
   getSalesChannel,
   getPrice,
   getPricingTable,
   getConsultingProducts,
-  getIndividualProducts,
-  getUsdPrice,
 };
