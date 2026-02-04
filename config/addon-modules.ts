@@ -572,7 +572,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'reference_materials',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -777,7 +777,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'dialog',
     requiredFeatureKey: 'voice_input',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -1363,6 +1363,8 @@ export const BOT_AGENT_MODULE: AddonModuleDefinition = {
     },
   ],
   requiresModules: ['python_runtime'],
+  icon: 'Robot',
+  themeColor: '#6366F1',
 };
 
 // BOT_AGENT_MODULE を ADDON_MODULES に登録

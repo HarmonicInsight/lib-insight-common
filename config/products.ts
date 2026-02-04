@@ -1274,6 +1274,9 @@ export function getProductDisplayName(product: ProductCode, locale: 'en' | 'ja' 
 
 /**
  * 機能に必要な最低プランを取得
+ *
+ * TRIAL は評価用の特殊プランのため除外し、購入可能なプラン（STD/PRO/ENT）から
+ * 最低要件を返す。TRIAL のみで利用可能な機能は 'TRIAL' を返す。
  */
 export function getRequiredPlan(product: ProductCode, featureKey: string): PlanCode | null {
   const feature = getFeatureDefinition(product, featureKey)
@@ -1283,8 +1286,14 @@ export function getRequiredPlan(product: ProductCode, featureKey: string): PlanC
     return null;
   }
 
-  // priority が最小のプランを返す
-  return feature.allowedPlans.reduce((min, plan) => {
+  // TRIAL を除外した購入可能プランで最低 priority を探す
+  const purchasablePlans = feature.allowedPlans.filter(p => p !== 'TRIAL');
+  if (purchasablePlans.length === 0) {
+    // TRIAL のみで利用可能な機能（通常はないが安全側で対応）
+    return 'TRIAL';
+  }
+
+  return purchasablePlans.reduce((min, plan) => {
     return PLANS[plan].priority < PLANS[min].priority ? plan : min;
   });
 }
