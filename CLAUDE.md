@@ -183,7 +183,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
 |-------|-------|------|---------------|---------------|-----|
 | INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
-| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA | ¥1,480,000 | ¥2,980,000 | 個別見積 |
+| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA + Orchestrator | ¥1,480,000 | ¥2,980,000 | 個別見積 |
 | IVIN | InterviewInsight | 自動ヒアリング・業務調査支援 | 個別見積 | 個別見積 | 個別見積 |
 
 ### Tier 2: AI活用ツール
@@ -574,7 +574,124 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 // { allowed: true, remaining: 2 }
 ```
 
-## 10. 開発完了チェックリスト
+## 10. プロジェクトファイル（独自拡張子 + コンテキストメニュー）
+
+### ファイル関連付け
+
+InsightOffice 各アプリは独自のプロジェクトファイル形式を持つ。
+ダブルクリックでアプリが自動起動し、右クリックから「〜で開く」も可能。
+
+| 製品 | 独自拡張子 | 内包形式 | 右クリック対象 |
+|------|----------|---------|--------------|
+| INSS | `.inss` | .pptx + メタデータ | .pptx, .ppt |
+| IOSH | `.iosh` | .xlsx + メタデータ | .xlsx, .xls, .csv |
+| IOSD | `.iosd` | .docx + メタデータ | .docx, .doc |
+
+### プロジェクトファイル構造（ZIP 形式）
+
+```
+report.iosh
+├── document.xlsx          # 元の Office ファイル
+├── metadata.json          # バージョン、作成者、最終更新日
+├── history/               # バージョン履歴
+├── sticky_notes.json      # 付箋データ
+├── references/            # 参考資料
+├── scripts/               # Python スクリプト
+└── ai_chat_history.json   # AI チャット履歴
+```
+
+### API
+
+```typescript
+import {
+  resolveProductByExtension,
+  getContextMenuProducts,
+  getFileAssociationInfo,
+} from '@/insight-common/config/products';
+
+// 独自拡張子 → 製品解決
+resolveProductByExtension('iosh');  // 'IOSH'
+
+// コンテキストメニュー対象
+getContextMenuProducts('xlsx');  // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
+
+// インストーラー用ファイル関連付け情報
+getFileAssociationInfo('IOSH');
+// { progId: 'HarmonicInsight.InsightOfficeSheet', extension: '.iosh', ... }
+```
+
+## 11. InsightBot Orchestrator / Agent アーキテクチャ
+
+### 概要
+
+InsightBot を UiPath Orchestrator 相当の中央管理サーバーとして位置付け、
+InsightOffice 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）として
+リモート JOB 配信・実行監視を実現する。
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  InsightBot (Orchestrator) — PRO/ENT                     │
+│  ├ JOB 作成・編集（AI エディター）                         │
+│  ├ Agent ダッシュボード（登録・状態監視）                   │
+│  ├ スケジューラー（cron 相当の定期実行）                    │
+│  └ 実行ログ集約                                          │
+│                     WebSocket / REST                      │
+├──────────────────────┼───────────────────────────────────┤
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
+│  │ Agent A  │  │ Agent B  │  │ Agent C  │  ← InsightOffice│
+│  │ IOSH     │  │ INSS     │  │ IOSD     │    + bot_agent │
+│  │ 経理PC   │  │ 営業PC   │  │ 法務PC   │    モジュール   │
+│  └──────────┘  └──────────┘  └──────────┘               │
+└─────────────────────────────────────────────────────────┘
+```
+
+### UiPath との差別化
+
+UiPath はファイルを「外から」UI オートメーションで操作する。
+InsightBot + InsightOffice はドキュメントを「中から」直接操作する。
+ファイルロック・UI 遅延の問題がなく、セル・スライド・段落を高速に処理。
+
+### プラン別制限（INBT）
+
+| 機能 | STD | PRO | ENT |
+|------|:---:|:---:|:---:|
+| Orchestrator | ❌ | ✅ | ✅ |
+| Agent 管理数 | - | 50台 | 無制限 |
+| スケジューラー | ❌ | ✅ | ✅ |
+| 同時 JOB 配信 | - | 10 | 無制限 |
+| ログ保持期間 | - | 90日 | 365日 |
+
+### API
+
+```typescript
+import {
+  canUseOrchestrator,
+  canAddAgent,
+  ORCHESTRATOR_API,
+} from '@/insight-common/config/orchestrator';
+
+// Orchestrator 利用可否
+canUseOrchestrator('PRO');  // true
+canUseOrchestrator('STD');  // false
+
+// Agent 追加可否
+canAddAgent('PRO', 45);     // true（50台まで）
+canAddAgent('PRO', 50);     // false（上限到達）
+
+// API エンドポイント
+ORCHESTRATOR_API.defaultPort;           // 9400
+ORCHESTRATOR_API.endpoints.jobs.dispatch;  // { method: 'POST', path: '/api/jobs/:jobId/dispatch' }
+```
+
+### InsightOffice 側（Agent モジュール）
+
+```typescript
+// addon-modules.ts の bot_agent モジュールを有効化
+// → InsightBot Orchestrator からの JOB 受信が可能に
+canEnableModule('IOSH', 'bot_agent', 'PRO', ['python_runtime']);  // { allowed: true }
+```
+
+## 12. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
@@ -586,9 +703,12 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
 - [ ] **AI アシスタント**: `resolvePersonaForMessage()` でタスク別モデル自動選択が実装されている
 - [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
+- [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
+- [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている
+- [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
 - [ ] **検証**: `validate-standards.sh` が成功する
 
-## 11. 困ったときは
+## 13. 困ったときは
 
 ```bash
 # 標準検証

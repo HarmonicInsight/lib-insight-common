@@ -1102,6 +1102,12 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
       },
     ],
   },
+
+  // =========================================================================
+  // InsightBot Agent（Orchestrator 連携 — 詳細は BOT_AGENT_MODULE を参照）
+  // =========================================================================
+  // ※ 定義は PRODUCT_ADDON_SUPPORT の後に BOT_AGENT_MODULE として配置
+  // ※ ここでは参照のみ（初期化順序の都合で後から代入）
 };
 
 // =============================================================================
@@ -1125,6 +1131,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'reference_materials',
       'voice_input',
       'vrm_avatar',
+      'bot_agent',
     ],
     defaultEnabled: ['ai_assistant'],
   },
@@ -1139,6 +1146,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'messaging',
       'voice_input',
       'vrm_avatar',
+      'bot_agent',
     ],
     defaultEnabled: ['ai_assistant', 'board', 'messaging'],
   },
@@ -1151,12 +1159,150 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'reference_materials',
       'voice_input',
       'vrm_avatar',
+      'bot_agent',
     ],
     defaultEnabled: ['ai_assistant', 'reference_materials'],
   },
   // INPY / INBT はアドインではなくコア機能として提供
   // InsightOffice 系のみがアドイン対象
+  // ただし InsightOffice に Agent 機能を組み込むことで INBT の Orchestrator と連携可能
 };
+
+// =============================================================================
+// InsightBot Agent モジュール（InsightOffice に組み込む Agent 機能）
+// =============================================================================
+
+/**
+ * InsightBot Orchestrator から JOB を受信して実行する Agent モジュール。
+ *
+ * InsightOffice 各アプリ（INSS/IOSH/IOSD）にこのモジュールを有効化すると、
+ * InsightBot（Orchestrator）からリモートで Python スクリプトを配信・実行できる。
+ *
+ * UiPath の Orchestrator ↔ Agent 関係に相当。
+ * 詳細は config/orchestrator.ts を参照。
+ */
+export const BOT_AGENT_MODULE: AddonModuleDefinition = {
+  id: 'bot_agent',
+  name: 'InsightBot Agent',
+  nameJa: 'InsightBot Agent',
+  description: 'Receive and execute JOBs from InsightBot Orchestrator. Enables remote Python script execution, scheduling, and centralized monitoring.',
+  descriptionJa: 'InsightBot（Orchestrator）から JOB を受信して実行する Agent 機能。リモートでの Python スクリプト実行・スケジュール実行・集中監視を実現。',
+  version: '1.0.0',
+  distribution: 'bundled',
+  panelPosition: 'none',
+  requiredFeatureKey: 'ai_editor',
+  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+  dependencies: [],
+  ioContracts: [
+    {
+      id: 'agent_connect',
+      name: 'Connect to Orchestrator',
+      nameJa: 'Orchestrator に接続',
+      description: 'Establish WebSocket connection to InsightBot Orchestrator for JOB dispatch and monitoring.',
+      input: [
+        { key: 'orchestrator_url', type: 'string', description: 'Orchestrator の URL（例: ws://192.168.1.100:9400/ws/agent）', required: true },
+        { key: 'display_name', type: 'string', description: 'Agent 表示名', required: true },
+        { key: 'tags', type: 'json', description: 'Agent タグ（グルーピング用）', required: false },
+      ],
+      process: 'WebSocket 接続 → Agent 登録 → ハートビート開始。接続中は Orchestrator からの JOB dispatch を受け付ける。',
+      output: [
+        { key: 'connected', type: 'boolean', description: '接続成功したか', required: true },
+        { key: 'agent_id', type: 'string', description: '割り当てられた Agent ID', required: true },
+      ],
+      transport: 'websocket',
+      async: true,
+      streaming: true,
+    },
+    {
+      id: 'agent_execute_job',
+      name: 'Execute Dispatched JOB',
+      nameJa: '配信された JOB を実行',
+      description: 'Execute a JOB received from Orchestrator using the local Python runtime and open document.',
+      input: [
+        { key: 'execution_id', type: 'string', description: '実行 ID', required: true },
+        { key: 'script', type: 'string', description: 'Python スクリプト', required: true },
+        { key: 'parameters', type: 'json', description: 'JOB パラメータ', required: false },
+        { key: 'timeout_seconds', type: 'number', description: 'タイムアウト（秒）', required: true },
+      ],
+      process: 'python_runtime でスクリプトを実行。実行中のログは WebSocket 経由で Orchestrator にリアルタイム送信。完了後に結果を通知。',
+      output: [
+        { key: 'status', type: 'string', description: '実行結果（completed / failed / timeout）', required: true },
+        { key: 'exit_code', type: 'number', description: '終了コード', required: true },
+        { key: 'stdout', type: 'string', description: '標準出力', required: true },
+        { key: 'stderr', type: 'string', description: '標準エラー', required: true },
+        { key: 'document_modified', type: 'boolean', description: 'ドキュメントが変更されたか', required: true },
+        { key: 'duration_ms', type: 'number', description: '実行時間（ミリ秒）', required: true },
+      ],
+      transport: 'subprocess',
+      async: true,
+      streaming: true,
+    },
+    {
+      id: 'agent_status',
+      name: 'Get Agent Status',
+      nameJa: 'Agent ステータス取得',
+      description: 'Get current agent status including running jobs and open documents.',
+      input: [],
+      process: 'ローカルの Agent 状態を取得（接続状態、実行中 JOB、開いているドキュメント一覧）',
+      output: [
+        { key: 'connected', type: 'boolean', description: 'Orchestrator に接続中か', required: true },
+        { key: 'orchestrator_url', type: 'string', description: '接続先 Orchestrator URL', required: true },
+        { key: 'running_jobs', type: 'number', description: '実行中 JOB 数', required: true },
+        { key: 'open_documents', type: 'json', description: '開いているドキュメント一覧', required: true },
+      ],
+      transport: 'in_process',
+      async: false,
+      streaming: false,
+    },
+  ],
+  tools: [],
+  settings: [
+    {
+      key: 'orchestrator_url',
+      name: 'Orchestrator URL',
+      nameJa: 'Orchestrator URL',
+      type: 'string',
+      defaultValue: '',
+      descriptionJa: 'InsightBot Orchestrator の接続先 URL（例: 192.168.1.100:9400）',
+    },
+    {
+      key: 'auto_connect',
+      name: 'Auto Connect',
+      nameJa: '自動接続',
+      type: 'boolean',
+      defaultValue: false,
+      descriptionJa: 'アプリ起動時に Orchestrator へ自動接続',
+    },
+    {
+      key: 'display_name',
+      name: 'Agent Display Name',
+      nameJa: 'Agent 表示名',
+      type: 'string',
+      defaultValue: '',
+      descriptionJa: 'Orchestrator ダッシュボードに表示される名前',
+    },
+    {
+      key: 'heartbeat_interval',
+      name: 'Heartbeat Interval (seconds)',
+      nameJa: 'ハートビート間隔（秒）',
+      type: 'number',
+      defaultValue: 30,
+      descriptionJa: 'Orchestrator にステータスを送信する間隔',
+    },
+    {
+      key: 'max_concurrent_jobs',
+      name: 'Max Concurrent JOBs',
+      nameJa: '最大同時実行 JOB 数',
+      type: 'number',
+      defaultValue: 1,
+      descriptionJa: '同時に実行できる JOB の上限',
+    },
+  ],
+  requiresModules: ['python_runtime'],
+};
+
+// BOT_AGENT_MODULE を ADDON_MODULES に登録
+ADDON_MODULES.bot_agent = BOT_AGENT_MODULE;
 
 // =============================================================================
 // 管理者プロファイル — コンサル/SIer が現場に合わせてモジュール構成を制御
@@ -1514,6 +1660,7 @@ export function resolveModuleOrder(moduleIds: string[]): string[] {
 export default {
   // 定義
   ADDON_MODULES,
+  BOT_AGENT_MODULE,
   PRODUCT_ADDON_SUPPORT,
   ADMIN_PROFILE_TEMPLATES,
 

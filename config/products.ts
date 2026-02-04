@@ -39,6 +39,27 @@ export type PlanCode = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
 /** 製品または共通を示す型 */
 export type ProductOrCommon = ProductCode | 'COMMON';
 
+/** プロジェクトファイル定義 */
+export interface ProjectFileConfig {
+  /** 独自拡張子（ドットなし） */
+  extension: string;
+  /** MIME タイプ */
+  mimeType: string;
+  /** ファイルタイプの説明（英語） */
+  description: string;
+  /** ファイルタイプの説明（日本語） */
+  descriptionJa: string;
+  /** アイコンファイル名 */
+  iconFileName: string;
+  /** 内包するドキュメント形式（.xlsx, .pptx, .docx） */
+  innerDocumentFormat: string;
+  /** コンテキストメニュー表示名（「{appName} で開く」） */
+  contextMenuLabel: string;
+  contextMenuLabelJa: string;
+  /** コンテキストメニューに登録する対象拡張子（ドットなし） */
+  contextMenuTargetExtensions: string[];
+}
+
 /** 製品情報 */
 export interface ProductInfo {
   code: ProductCode;
@@ -48,6 +69,8 @@ export interface ProductInfo {
   descriptionJa: string;
   /** 継承元の製品（この製品の機能をすべて含む） */
   inheritsFrom?: ProductCode;
+  /** プロジェクトファイル設定（対応製品のみ） */
+  projectFile?: ProjectFileConfig;
 }
 
 /** プラン情報 */
@@ -183,6 +206,17 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightOfficeSlide',
     description: 'AI-powered PowerPoint text extraction and review tool for enterprise',
     descriptionJa: 'AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール',
+    projectFile: {
+      extension: 'inss',
+      mimeType: 'application/x-insightoffice-slide',
+      description: 'InsightOfficeSlide Project',
+      descriptionJa: 'InsightOfficeSlide プロジェクト',
+      iconFileName: 'inss-file.ico',
+      innerDocumentFormat: '.pptx',
+      contextMenuLabel: 'Open with InsightOfficeSlide',
+      contextMenuLabelJa: 'InsightOfficeSlide で開く',
+      contextMenuTargetExtensions: ['pptx', 'ppt'],
+    },
   },
   IOSH: {
     code: 'IOSH',
@@ -190,6 +224,17 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightOfficeSheet',
     description: 'AI-powered business planning, budget management, and simulation tool for enterprise',
     descriptionJa: 'AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション',
+    projectFile: {
+      extension: 'iosh',
+      mimeType: 'application/x-insightoffice-sheet',
+      description: 'InsightOfficeSheet Project',
+      descriptionJa: 'InsightOfficeSheet プロジェクト',
+      iconFileName: 'iosh-file.ico',
+      innerDocumentFormat: '.xlsx',
+      contextMenuLabel: 'Open with InsightOfficeSheet',
+      contextMenuLabelJa: 'InsightOfficeSheet で開く',
+      contextMenuTargetExtensions: ['xlsx', 'xls', 'csv'],
+    },
   },
   IOSD: {
     code: 'IOSD',
@@ -197,6 +242,17 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightOfficeDoc',
     description: 'AI-powered Word document management with reference materials for enterprise',
     descriptionJa: 'AIアシスタント搭載 — 参照資料付きWord文書管理ツール',
+    projectFile: {
+      extension: 'iosd',
+      mimeType: 'application/x-insightoffice-doc',
+      description: 'InsightOfficeDoc Project',
+      descriptionJa: 'InsightOfficeDoc プロジェクト',
+      iconFileName: 'iosd-file.ico',
+      innerDocumentFormat: '.docx',
+      contextMenuLabel: 'Open with InsightOfficeDoc',
+      contextMenuLabelJa: 'InsightOfficeDoc で開く',
+      contextMenuTargetExtensions: ['docx', 'doc'],
+    },
   },
   INPY: {
     code: 'INPY',
@@ -726,6 +782,31 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
       descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
     },
+    {
+      key: 'orchestrator',
+      name: 'Orchestrator',
+      nameJa: 'オーケストレーター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'InsightOffice Agent の集中管理・JOB配信・実行監視',
+    },
+    {
+      key: 'agents',
+      name: 'Agent Management',
+      nameJa: 'Agent管理',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      limitValues: { TRIAL: 5, PRO: 50, ENT: -1 },
+      descriptionJa: '管理可能な Agent（InsightOffice 端末）数（PRO: 50台 / ENT: 無制限）',
+    },
+    {
+      key: 'scheduler',
+      name: 'Job Scheduler',
+      nameJa: 'JOBスケジューラー',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'JOBの定期実行スケジュール設定（cron 相当）',
+    },
   ],
 
   // ========================================
@@ -1209,6 +1290,116 @@ export function getRequiredPlan(product: ProductCode, featureKey: string): PlanC
 }
 
 // =============================================================================
+// プロジェクトファイル
+// =============================================================================
+
+/**
+ * 拡張子からプロジェクトファイル対応製品を解決
+ *
+ * @param extension 拡張子（ドットなし）
+ * @returns 対応する製品コード、または null
+ *
+ * @example
+ * resolveProductByExtension('iosh')  // 'IOSH'
+ * resolveProductByExtension('xlsx')  // null（独自拡張子ではない）
+ */
+export function resolveProductByExtension(extension: string): ProductCode | null {
+  const ext = extension.toLowerCase().replace(/^\./, '');
+  for (const [code, product] of Object.entries(PRODUCTS)) {
+    if (product.projectFile?.extension === ext) {
+      return code as ProductCode;
+    }
+  }
+  return null;
+}
+
+/**
+ * コンテキストメニュー対象の拡張子から対応製品を検索
+ *
+ * @param extension ファイルの拡張子（ドットなし）
+ * @returns 「〜で開く」を表示すべき製品一覧
+ *
+ * @example
+ * getContextMenuProducts('xlsx')  // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
+ * getContextMenuProducts('pptx')  // [{ product: 'INSS', label: 'InsightOfficeSlide で開く' }]
+ */
+export function getContextMenuProducts(
+  extension: string,
+  locale: 'en' | 'ja' = 'ja',
+): Array<{ product: ProductCode; label: string }> {
+  const ext = extension.toLowerCase().replace(/^\./, '');
+  const results: Array<{ product: ProductCode; label: string }> = [];
+
+  for (const [code, product] of Object.entries(PRODUCTS)) {
+    const pf = product.projectFile;
+    if (pf && pf.contextMenuTargetExtensions.includes(ext)) {
+      results.push({
+        product: code as ProductCode,
+        label: locale === 'ja' ? pf.contextMenuLabelJa : pf.contextMenuLabel,
+      });
+    }
+  }
+  return results;
+}
+
+/**
+ * 製品のプロジェクトファイル設定を取得
+ */
+export function getProjectFileConfig(product: ProductCode): ProjectFileConfig | null {
+  return PRODUCTS[product].projectFile ?? null;
+}
+
+/**
+ * Windows レジストリに登録すべきファイル関連付け情報を生成
+ *
+ * インストーラー（Inno Setup / WiX 等）での利用を想定。
+ *
+ * @example
+ * const reg = getFileAssociationInfo('IOSH');
+ * // {
+ * //   progId: 'HarmonicInsight.InsightOfficeSheet',
+ * //   extension: '.iosh',
+ * //   mimeType: 'application/x-insightoffice-sheet',
+ * //   description: 'InsightOfficeSheet プロジェクト',
+ * //   iconFileName: 'iosh-file.ico',
+ * //   openCommand: '"%INSTALL_DIR%\\InsightOfficeSheet.exe" "%1"',
+ * //   contextMenu: {
+ * //     targetExtensions: ['.xlsx', '.xls', '.csv'],
+ * //     label: 'InsightOfficeSheet で開く',
+ * //   },
+ * // }
+ */
+export function getFileAssociationInfo(
+  product: ProductCode,
+  locale: 'en' | 'ja' = 'ja',
+): {
+  progId: string;
+  extension: string;
+  mimeType: string;
+  description: string;
+  iconFileName: string;
+  openCommand: string;
+  contextMenu: { targetExtensions: string[]; label: string };
+} | null {
+  const productInfo = PRODUCTS[product];
+  const pf = productInfo.projectFile;
+  if (!pf) return null;
+
+  return {
+    progId: `HarmonicInsight.${productInfo.name}`,
+    extension: `.${pf.extension}`,
+    mimeType: pf.mimeType,
+    description: locale === 'ja' ? pf.descriptionJa : pf.description,
+    iconFileName: pf.iconFileName,
+    openCommand: `"%INSTALL_DIR%\\${productInfo.name}.exe" "%1"`,
+    contextMenu: {
+      targetExtensions: pf.contextMenuTargetExtensions.map(e => `.${e}`),
+      label: locale === 'ja' ? pf.contextMenuLabelJa : pf.contextMenuLabel,
+    },
+  };
+}
+
+// =============================================================================
 // 後方互換性（非推奨）
 // =============================================================================
 
@@ -1280,6 +1471,12 @@ export default {
   isPlanAtLeast,
   getPlanDisplayName,
   getProductDisplayName,
+
+  // プロジェクトファイル
+  resolveProductByExtension,
+  getContextMenuProducts,
+  getProjectFileConfig,
+  getFileAssociationInfo,
 
   // 後方互換（非推奨）
   FEATURE_MATRIX,
