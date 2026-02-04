@@ -451,6 +451,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: '変更履歴・差分のエクスポート出力',
     },
     {
+      key: 'file_compare',
+      name: 'File Compare',
+      nameJa: '2ファイル比較',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '2つのExcelファイルのセル単位差分比較',
+    },
+    {
       key: 'show_author',
       name: 'Show Author',
       nameJa: '変更者表示',
