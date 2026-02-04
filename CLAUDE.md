@@ -151,7 +151,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
-| 独自の AI ペルソナ定義 | `config/ai-assistant.ts` の標準 3 ペルソナを使用 |
+| 独自のモデル選択UI | モデルはティア（Standard/Premium）で自動決定 |
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
 
 ## 5. 製品コード一覧・価格戦略
@@ -191,7 +191,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
 | INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 | AI 20回 | ¥39,800（AIなし） | ¥49,800（AI 100回） |
 
-> **AI使用回数追加**: ¥10,000 / 200回（Opus含む全モデル対応）
+> **AI使用回数追加**: Standard ¥10,000 / 200回（Sonnetまで）、Premium ¥20,000 / 200回（Opus対応）
 > **考え方**: FREE版でOpusのAI体験を提供し、PRO版への転換を促す。AIオプション＋AI使用料で収益化。
 
 ### 価格定義ファイル
@@ -374,36 +374,43 @@ calculateWholesalePrice(39800, 'silver');
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
-| AI モデル | **Opus** 含む全モデル（FREE/PRO 共通） |
+| モデル選択 | ティアで自動決定（ユーザーは選べない） |
+| Standard ティア | Sonnet（基本プラン / Standard アドオン） |
+| Premium ティア | Opus（Premium アドオン / TRIAL / ENT） |
 | ライセンス制御 | FREE: 20回 / PRO: 100回 / ENT: 無制限（STD は AI なし） |
-| 追加パック | ¥10,000 / 200回 |
-| ペルソナ | 3 キャラクター（Claude俊=Haiku、Claude恵=Sonnet、Claude学=Opus） |
+| 追加パック | Standard ¥10,000 / 200回、Premium ¥20,000 / 200回 |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
-**ペルソナシステム:**
+**モデルティア:**
 
-| ID | 名前 | モデル | 用途 |
-|----|------|--------|------|
-| `shunsuke` | Claude 俊 | Haiku | 素早い確認・軽い修正 |
-| `megumi` | Claude 恵 | Sonnet | 編集・要約・翻訳（デフォルト） |
-| `manabu` | Claude 学 | Opus | レポート・精密文書 |
+| ティア | モデル | 利用条件 |
+|--------|--------|---------|
+| Standard | Sonnet | 基本プラン（FREE/PRO）、Standard アドオン |
+| Premium | Opus | Premium アドオン購入、TRIAL、ENT |
 
 ```typescript
 import {
-  AI_PERSONAS,
+  getModelForTier,
   getBaseSystemPrompt,
   canUseAiAssistant,
+  getAiCreditLabel,
   SPREADSHEET_TOOLS,
 } from '@/insight-common/config/ai-assistant';
+import { calculateCreditBalance } from '@/insight-common/config/usage-based-licensing';
 
 // ライセンスチェック
 canUseAiAssistant('PRO');   // true
 canUseAiAssistant('FREE');  // true（20回制限）
 canUseAiAssistant('STD');   // false
 
-// システムプロンプト取得
-getBaseSystemPrompt('IOSH', 'ja');  // InsightOfficeSheet用プロンプト
-getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
+// モデル決定（ティアから自動）
+const balance = calculateCreditBalance('PRO', 10, addonPacks);
+const model = getModelForTier(balance.effectiveModelTier);
+// → 'claude-sonnet-4-20250514'（Premium アドオンがあれば 'claude-opus-4-20250514'）
+
+// クレジット表示
+getAiCreditLabel(balance, 'ja');
+// → "AIアシスタント（スタンダード（Sonnet））— 残り 90回"
 ```
 
 ### ライセンスキー形式
@@ -548,7 +555,7 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **サードパーティ**: Syncfusion キーが `third-party-licenses.json` 経由で登録されている
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
-- [ ] **AI アシスタント**: ペルソナ 3 種（shunsuke / megumi / manabu）が実装されている
+- [ ] **AI アシスタント**: モデルティア（Standard/Premium）制御が実装されている
 - [ ] **AI アシスタント**: ライセンスゲート（TRIAL/PRO/ENT のみ）が実装されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 

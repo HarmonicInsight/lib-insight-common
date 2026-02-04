@@ -92,6 +92,8 @@ export interface StripeCheckoutMetadata {
   purchase_type: 'license' | 'addon';
   /** アドオンパック ID（addon の場合） */
   addon_pack_id?: string;
+  /** アドオンモデルティア（addon の場合） */
+  addon_model_tier?: 'standard' | 'premium';
   /** 顧客名 */
   customer_name: string;
   /** 会社名（任意） */
@@ -232,15 +234,24 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     description: 'InsightPy Professional (Annual)',
   },
 
-  // --- AI アドオンパック（全製品共通、one-time） ---
+  // --- AI アドオンパック（全製品共通、one-time、2ティア） ---
   {
     productCode: 'INSS',
     plan: 'STD', // プランに関係なく購入可能（metadata で制御）
-    stripeProductIdEnvKey: 'STRIPE_AI_ADDON_200_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_AI_ADDON_200_PRICE_ID',
+    stripeProductIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRICE_ID',
     priceJpy: 10_000,
     billingType: 'one_time',
-    description: 'AI Credits Pack - 200 credits (all models including Opus)',
+    description: 'AI Credits - Standard 200 (up to Sonnet)',
+  },
+  {
+    productCode: 'INSS',
+    plan: 'STD', // プランに関係なく購入可能（metadata で制御）
+    stripeProductIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRICE_ID',
+    priceJpy: 20_000,
+    billingType: 'one_time',
+    description: 'AI Credits - Premium 200 (including Opus)',
   },
 ];
 

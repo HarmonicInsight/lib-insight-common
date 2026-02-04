@@ -240,7 +240,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。グローバル展開の主力製品。',
+    notes: 'FREE=AI 20回付(Sonnet)、STD=AIなし、PRO=AI 100回付(Sonnet)、Premiumアドオンで Opus利用可。グローバル展開の主力製品。',
   },
 
   /**
@@ -270,7 +270,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。',
+    notes: 'FREE=AI 20回付(Sonnet)、STD=AIなし、PRO=AI 100回付(Sonnet)、Premiumアドオンで Opus利用可。',
   },
 
   /**
@@ -300,7 +300,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。',
+    notes: 'FREE=AI 20回付(Sonnet)、STD=AIなし、PRO=AI 100回付(Sonnet)、Premiumアドオンで Opus利用可。',
   },
 
   /**
@@ -330,7 +330,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'FREE=AI 20回付、STD=AIなし、PRO=AI 100回付(Opus)。',
+    notes: 'FREE=AI 20回付(Sonnet)、STD=AIなし、PRO=AI 100回付(Sonnet)、Premiumアドオンで Opus利用可。',
   },
 };
 
@@ -354,26 +354,40 @@ export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, Partial<Record<Plan
 // =============================================================================
 
 /**
- * AI クレジット アドオンパック価格
+ * AI クレジット アドオンパック価格（2ティア制）
  *
- * 全プランで購入可能（STD でもアドオン購入で AI 利用可能に）
+ * - Standard: ¥10,000 / 200回（Sonnet まで）
+ * - Premium: ¥20,000 / 200回（Opus 対応）
+ * - 全プランで購入可能（STD でもアドオン購入で AI 利用可能に）
  * 詳細定義は config/usage-based-licensing.ts を参照
  */
 export const AI_ADDON_PRICING = {
-  /** 200回パック（JPY） */
-  ai_credits_200: {
+  /** Standard 200回パック — Sonnet まで */
+  ai_credits_200_standard: {
     price: 10_000,
     currency: 'JPY' as Currency,
     credits: 200,
     pricePerCredit: 50,
-    descriptionJa: 'AIクレジット 200回パック（Opus含む全モデル対応）',
-    descriptionEn: '200 AI Credits Pack (all models including Opus)',
+    modelTier: 'standard' as const,
+    descriptionJa: 'AI標準パック 200回（Sonnetまで）',
+    descriptionEn: '200 AI Credits - Standard (up to Sonnet)',
+  },
+  /** Premium 200回パック — Opus 対応 */
+  ai_credits_200_premium: {
+    price: 20_000,
+    currency: 'JPY' as Currency,
+    credits: 200,
+    pricePerCredit: 100,
+    modelTier: 'premium' as const,
+    descriptionJa: 'AIプレミアムパック 200回（Opus対応）',
+    descriptionEn: '200 AI Credits - Premium (including Opus)',
   },
 } as const;
 
 /** AI アドオンパック USD 参考価格 */
 export const AI_ADDON_USD_PRICING: Record<string, number> = {
-  ai_credits_200: 67,
+  ai_credits_200_standard: 67,
+  ai_credits_200_premium: 133,
 };
 
 /**

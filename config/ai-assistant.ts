@@ -2,13 +2,26 @@
  * AI アシスタント 共通設定
  *
  * InsightOffice 系アプリ（INSS/IOSH/IOSD/INPY/INBT）で共有する
- * AI アシスタントのペルソナ・プロンプト・ツール定義・型定義
+ * AI アシスタントのプロンプト・ツール定義・モデル選択・型定義
+ *
+ * 【設計方針】
+ * - ペルソナ（3キャラクター）は廃止。AIアシスタントは1つ。
+ * - モデルはユーザーが選ぶのではなく、購入パックのティアで決まる。
+ *   - Standard（基本プラン/Standardアドオン）: Sonnet を使用
+ *   - Premium（Premiumアドオン/TRIAL/ENT）: Opus を使用
+ * - UIには「AIアシスタント」のみ表示。モデル名は出さない。
  *
  * 詳細仕様: standards/AI_ASSISTANT.md
  */
 
 import type { ProductCode, PlanCode } from './products';
-import { AI_QUOTA_BY_PLAN, type CreditBalance } from './usage-based-licensing';
+import {
+  AI_QUOTA_BY_PLAN,
+  type AiModelTier,
+  type CreditBalance,
+  getAllowedModels,
+  isModelAllowedForTier,
+} from './usage-based-licensing';
 
 // =============================================================================
 // 型定義
@@ -25,19 +38,6 @@ export interface AiMessage {
   createdAt: string; // ISO 8601
   isStreaming?: boolean;
   isToolStatus?: boolean;
-}
-
-/** AI ペルソナ定義 */
-export interface AiPersona {
-  id: string;
-  nameJa: string;
-  nameEn: string;
-  model: string;
-  themeColor: string;
-  descriptionJa: string;
-  descriptionEn: string;
-  icon32: string; // 相対パス: Assets/Personas/{id}_32.png
-  icon48: string; // 相対パス: Assets/Personas/{id}_48.png
 }
 
 /** テキスト修正提案（スライド系） */
@@ -95,71 +95,46 @@ export interface AiUsageStats {
 /** AI アシスタント設定 */
 export interface AiAssistantSettings {
   claudeApiKey: string;
-  selectedPersonaId: string;
-  selectedModel: string;
   language: 'ja' | 'en';
   chatPanelWidth: number;
 }
 
 // =============================================================================
-// ペルソナ定義
+// モデル選択（ティアベース）
 // =============================================================================
 
 /**
- * 標準 AI ペルソナ（全製品共通）
+ * ティアに応じた使用モデルを決定
  *
- * 3 キャラクターで Claude モデルを使い分ける:
- * - shunsuke (俊): Haiku — 素早く簡潔
- * - megumi   (恵): Sonnet — 万能で丁寧（デフォルト）
- * - manabu   (学): Opus — 深い思考力
+ * ユーザーはモデルを選ばない。購入パック（Standard/Premium）のティアで
+ * 使用モデルが自動的に決まる。
+ *
+ * | ティア    | 使用モデル   |
+ * |----------|-------------|
+ * | standard | Sonnet      |
+ * | premium  | Opus        |
  */
-export const AI_PERSONAS: AiPersona[] = [
-  {
-    id: 'shunsuke',
-    nameJa: 'Claude 俊',
-    nameEn: 'Claude Shun',
-    model: 'claude-haiku-4-5-20251001',
-    themeColor: '#4696DC',
-    descriptionJa: '素早く簡潔。軽い確認・ちょっとした修正に最適',
-    descriptionEn: 'Quick and concise. Best for quick checks and light edits.',
-    icon32: 'Assets/Personas/shunsuke_32.png',
-    icon48: 'Assets/Personas/shunsuke_48.png',
-  },
-  {
-    id: 'megumi',
-    nameJa: 'Claude 恵',
-    nameEn: 'Claude Megumi',
-    model: 'claude-sonnet-4-20250514',
-    themeColor: '#B8942F',
-    descriptionJa: '万能で丁寧。編集・要約・翻訳のバランス型',
-    descriptionEn: 'Versatile and thorough. Great for editing, summaries, translations.',
-    icon32: 'Assets/Personas/megumi_32.png',
-    icon48: 'Assets/Personas/megumi_48.png',
-  },
-  {
-    id: 'manabu',
-    nameJa: 'Claude 学',
-    nameEn: 'Claude Manabu',
-    model: 'claude-opus-4-20250514',
-    themeColor: '#8C64C8',
-    descriptionJa: '深い思考力。レポート・精密な文書に最適',
-    descriptionEn: 'Deep thinker. Best for reports and documents requiring precision.',
-    icon32: 'Assets/Personas/manabu_32.png',
-    icon48: 'Assets/Personas/manabu_48.png',
-  },
-];
-
-/** デフォルトペルソナ ID */
-export const DEFAULT_PERSONA_ID = 'megumi';
-
-/** ペルソナを ID で取得 */
-export function getPersona(id: string): AiPersona | undefined {
-  return AI_PERSONAS.find(p => p.id === id);
+export function getModelForTier(tier: AiModelTier): string {
+  switch (tier) {
+    case 'premium':
+      return 'claude-opus-4-20250514';
+    case 'standard':
+    default:
+      return 'claude-sonnet-4-20250514';
+  }
 }
 
-/** デフォルトペルソナを取得 */
-export function getDefaultPersona(): AiPersona {
-  return AI_PERSONAS.find(p => p.id === DEFAULT_PERSONA_ID)!;
+/**
+ * ティアの表示名を取得
+ */
+export function getModelTierLabel(
+  tier: AiModelTier,
+  locale: 'ja' | 'en' = 'ja',
+): string {
+  if (tier === 'premium') {
+    return locale === 'ja' ? 'プレミアム（Opus）' : 'Premium (Opus)';
+  }
+  return locale === 'ja' ? 'スタンダード（Sonnet）' : 'Standard (Sonnet)';
 }
 
 // =============================================================================
@@ -884,26 +859,22 @@ export function canUseAiEditor(plan: PlanCode): boolean {
 // =============================================================================
 
 /**
- * AI ペルソナ選択時のクレジット状態メッセージを取得
+ * AI アシスタントのクレジット状態メッセージを取得
  *
- * チャットUIのペルソナ選択欄に残量を表示するためのヘルパー。
+ * チャットUIの残量表示に使用するヘルパー。
  *
  * @example
  * ```typescript
- * const msg = getPersonaCreditLabel('megumi', 'PRO', credits);
- * // → "Claude 恵（Sonnet）— 残り 85回"
+ * const msg = getAiCreditLabel(credits, 'ja');
+ * // → "AIアシスタント（Sonnet）— 残り 85回"
+ * // → "AIアシスタント（Opus）— 残り 150回"
  * ```
  */
-export function getPersonaCreditLabel(
-  personaId: string,
-  plan: PlanCode,
+export function getAiCreditLabel(
   credits: CreditBalance | null,
   locale: 'ja' | 'en' = 'ja',
 ): string {
-  const persona = getPersona(personaId);
-  if (!persona) return '';
-
-  const name = locale === 'ja' ? persona.nameJa : persona.nameEn;
+  const name = locale === 'ja' ? 'AIアシスタント' : 'AI Assistant';
 
   if (!credits || credits.totalRemaining === -1) {
     return locale === 'ja'
@@ -917,9 +888,10 @@ export function getPersonaCreditLabel(
       : `${name} (No credits)`;
   }
 
+  const tierLabel = getModelTierLabel(credits.effectiveModelTier, locale);
   return locale === 'ja'
-    ? `${name} — 残り ${credits.totalRemaining}回`
-    : `${name} — ${credits.totalRemaining} credits left`;
+    ? `${name}（${tierLabel}）— 残り ${credits.totalRemaining}回`
+    : `${name} (${tierLabel}) — ${credits.totalRemaining} credits left`;
 }
 
 /** コードエディター対応製品かチェック */
@@ -956,11 +928,9 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
 // =============================================================================
 
 export default {
-  // ペルソナ
-  AI_PERSONAS,
-  DEFAULT_PERSONA_ID,
-  getPersona,
-  getDefaultPersona,
+  // モデル選択
+  getModelForTier,
+  getModelTierLabel,
 
   // API 設定
   CLAUDE_API_CONFIG,
@@ -996,5 +966,5 @@ export default {
   isCodeEditorProduct,
 
   // クレジット表示
-  getPersonaCreditLabel,
+  getAiCreditLabel,
 };
