@@ -5,7 +5,7 @@
  * 【設計方針】
  * ============================================================================
  *
- * InsightOffice 系アプリ（IOSH/IOSD）は、コア機能に加えて
+ * InsightOffice 系アプリ（INSS/IOSH/IOSD）は、コア機能に加えて
  * アドインモジュールを追加・削除できるプラグインアーキテクチャを持つ。
  *
  * ## モジュールの種類
@@ -21,23 +21,26 @@
  * ## ホストアプリとの連携
  *
  * ```
- * ┌─────────────────────────────────────────────────────┐
- * │  InsightOffice ホストアプリ (C# WPF)                 │
- * │                                                     │
- * │  ┌─────────┐  ┌─────────┐  ┌─────────┐            │
- * │  │コア機能  │  │コア機能  │  │コア機能  │            │
- * │  │(読込)   │  │(編集)   │  │(保存)   │            │
- * │  └─────────┘  └─────────┘  └─────────┘            │
- * │                                                     │
- * │  ┌───────────────────────────────────────────────┐  │
- * │  │  アドインマネージャー (AddonManager)            │  │
- * │  │                                               │  │
- * │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐      │  │
- * │  │  │AI ｱｼｽﾀﾝﾄ│ │Python実行│ │参考資料  │ ... │  │
- * │  │  │(bundled) │ │(extension)│ │(bundled) │      │  │
- * │  │  └──────────┘ └──────────┘ └──────────┘      │  │
- * │  └───────────────────────────────────────────────┘  │
- * └─────────────────────────────────────────────────────┘
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │  InsightOffice ホストアプリ (C# WPF)                          │
+ * │                                                              │
+ * │  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │
+ * │  │コア機能  │  │コア機能  │  │コア機能  │                     │
+ * │  │(読込)   │  │(編集)   │  │(保存)   │                     │
+ * │  └─────────┘  └─────────┘  └─────────┘                     │
+ * │                                                              │
+ * │  ┌────────────────────────────────────────────────────────┐  │
+ * │  │  アドインマネージャー (AddonManager)                     │  │
+ * │  │                                                        │  │
+ * │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ │  │
+ * │  │  │AI ｱｼｽﾀﾝﾄ│ │Pythonｽｸﾘ│ │AI ｺｰﾄﾞ  │ │参考資料  │ │  │
+ * │  │  │(右ﾍﾟｲﾝ) │ │ﾌﾟﾄ一覧  │ │ｴﾃﾞｨﾀｰ  │ │(bundled) │ │  │
+ * │  │  │(bundled) │ │(右ﾍﾟｲﾝ) │ │(下ﾍﾟｲﾝ) │ │          │ │  │
+ * │  │  └──────────┘ └────┬─────┘ └────▲─────┘ └──────────┘ │  │
+ * │  │                     │ ﾀﾞﾌﾞﾙｸﾘｯｸ │ ｴﾃﾞｨﾀｰで開く      │  │
+ * │  │                     └───────────┘                      │  │
+ * │  └────────────────────────────────────────────────────────┘  │
+ * └──────────────────────────────────────────────────────────────┘
  * ```
  *
  * ## ファイル連携プロトコル（Python モジュール）
@@ -834,11 +837,11 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     id: 'python_scripts',
     name: 'Python Script Runner',
     nameJa: 'Python スクリプト',
-    description: 'Browse, manage, and run Python scripts from a categorized list. Equivalent to InsightPy script management embedded in InsightOffice. Admins can preload scripts for end users.',
-    descriptionJa: 'Pythonスクリプトの一覧表示・管理・実行。InsightPyのスクリプト管理をInsightOfficeに組み込んだもの。管理者が業務スクリプトを事前配布可能。',
+    description: 'Browse, manage, and run Python scripts from a categorized list pane (like AI Assistant). Double-click opens the shared AI Code Editor. Equivalent to InsightPy embedded in InsightOffice. Admins can preload scripts for end users.',
+    descriptionJa: 'AIアシスタントと同様の右ペインにPythonスクリプト一覧を表示。ダブルクリックで共通のPythonエディターが開く。InsightPyをInsightOfficeに組み込んだもの。管理者が業務スクリプトを事前配布可能。',
     version: '1.0.0',
     distribution: 'bundled',
-    panelPosition: 'tab',
+    panelPosition: 'right',
     requiredFeatureKey: 'ai_editor',
     allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
@@ -879,6 +882,24 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
         ],
         transport: 'subprocess',
         async: true,
+        streaming: false,
+      },
+      {
+        id: 'open_in_editor',
+        name: 'Open in Editor',
+        nameJa: 'エディターで開く',
+        description: 'Open a script in the AI Code Editor for viewing and editing. Triggered by double-clicking a script in the list pane.',
+        input: [
+          { key: 'script_id', type: 'string', description: '開くスクリプトの ID', required: true },
+        ],
+        process: 'スクリプト一覧から該当スクリプトを取得 → ai_code_editor パネルを開き、コードをロード。readOnly スクリプトはエディター側で編集不可にする。',
+        output: [
+          { key: 'opened', type: 'boolean', description: 'エディターが開けたか', required: true },
+          { key: 'script_name', type: 'string', description: '開いたスクリプト名', required: true },
+          { key: 'read_only', type: 'boolean', description: '読み取り専用か（管理者スクリプト等）', required: true },
+        ],
+        transport: 'in_process',
+        async: false,
         streaming: false,
       },
       {
@@ -1095,6 +1116,18 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
  * - defaultEnabled: 初回起動時にデフォルトで ON になるモジュール
  */
 export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupport>> = {
+  INSS: {
+    supportedModules: [
+      'ai_assistant',
+      'python_runtime',
+      'ai_code_editor',
+      'python_scripts',
+      'reference_materials',
+      'voice_input',
+      'vrm_avatar',
+    ],
+    defaultEnabled: ['ai_assistant'],
+  },
   IOSH: {
     supportedModules: [
       'ai_assistant',
