@@ -837,7 +837,7 @@ export const AI_FEATURE_KEY = 'ai_assistant';
 /**
  * AI アシスタントが利用可能なプラン
  */
-export const AI_ALLOWED_PLANS: PlanCode[] = ['FREE', 'TRIAL', 'PRO', 'ENT'];
+export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
 
 /**
  * AI アシスタントが利用可能かチェック
@@ -854,7 +854,7 @@ export function canUseAiAssistant(plan: PlanCode): boolean {
 export const AI_EDITOR_FEATURE_KEY = 'ai_editor';
 
 /** AI エディターが利用可能なプラン */
-export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['FREE', 'TRIAL', 'PRO', 'ENT'];
+export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
 
 /** AI エディターが利用可能かチェック */
 export function canUseAiEditor(plan: PlanCode): boolean {
