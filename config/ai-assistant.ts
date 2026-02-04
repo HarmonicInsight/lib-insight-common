@@ -623,6 +623,93 @@ export const SPREADSHEET_TOOLS: ToolDefinition[] = [
       required: ['search_text'],
     },
   },
+
+  // =========================================================================
+  // 2ファイル比較ツール（file_compare 機能連動）
+  // =========================================================================
+
+  {
+    name: 'get_compare_files',
+    description:
+      'Get information about the two files currently loaded in file compare mode. ' +
+      'Returns file names, sheet lists, and used ranges for both File A (left) and File B (right). ' +
+      'Call this first to understand the structure of both files before reading data.',
+    input_schema: {
+      type: 'object',
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'get_compare_cell_range',
+    description:
+      'Read cell values from either File A or File B in file compare mode. ' +
+      'Use "A" for the left file and "B" for the right file. ' +
+      'Works the same as get_cell_range but targets a specific file in the comparison.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          enum: ['A', 'B'],
+          description: 'Which file to read: "A" (left/old) or "B" (right/new)',
+        },
+        range: {
+          type: 'string',
+          description: 'Cell range in A1 notation (e.g., "A1:F20")',
+        },
+        sheet_name: {
+          type: 'string',
+          description: 'Sheet name. Defaults to active sheet if omitted.',
+        },
+      },
+      required: ['file', 'range'],
+    },
+  },
+  {
+    name: 'get_compare_diff',
+    description:
+      'Get cell-level differences between File A and File B for a given range. ' +
+      'Returns an array of changed cells with: cell address, value in A, value in B, and change type ' +
+      '(added, removed, modified, type_changed). ' +
+      'If no range is specified, compares the entire used range of the active sheet.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        range: {
+          type: 'string',
+          description: 'Cell range to compare (e.g., "A1:F20"). If omitted, compares entire used range.',
+        },
+        sheet_name: {
+          type: 'string',
+          description: 'Sheet name to compare. Defaults to active sheet.',
+        },
+        include_unchanged: {
+          type: 'boolean',
+          description: 'Include unchanged cells in the result. Defaults to false (only differences).',
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'get_compare_summary',
+    description:
+      'Get a high-level summary of all differences between File A and File B. ' +
+      'Returns: total cells compared, cells added, cells removed, cells modified, ' +
+      'sheets only in A, sheets only in B, and per-sheet change counts. ' +
+      'Use this for an overview before diving into specific ranges with get_compare_diff.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        sheet_name: {
+          type: 'string',
+          description: 'Specific sheet to summarize. If omitted, summarizes all sheets.',
+        },
+      },
+      required: [],
+    },
+  },
 ];
 
 // =============================================================================
