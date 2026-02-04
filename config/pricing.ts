@@ -23,7 +23,7 @@
  * ├──────────────────────────────────────────────────────────────────┤
  * │  Tier 3: InsightOffice Suite（導入ツール）                       │
  * │  INSS / IOSH / IOSD / INPY                                     │
- * │  年額 48万円〜98万円                                            │
+ * │  年額 ¥39,800〜¥49,800（1ユーザー/年）                          │
  * │  コンサル案件のクライアントに業務ツールとして導入                  │
  * └──────────────────────────────────────────────────────────────────┘
  *
@@ -43,6 +43,9 @@ export type SalesChannel = 'consulting';
 /** 通貨 */
 export type Currency = 'JPY' | 'USD';
 
+/** 価格単位 */
+export type PricingUnit = 'per_company' | 'per_user';
+
 /** 価格情報 */
 export interface PricingInfo {
   /** 年間ライセンス価格（税抜） */
@@ -51,6 +54,8 @@ export interface PricingInfo {
   currency: Currency;
   /** 月額換算（参考値） */
   monthlyEquivalent: number;
+  /** 価格単位（デフォルト: per_company） */
+  unit?: PricingUnit;
 }
 
 /** 製品別価格定義 */
@@ -218,18 +223,20 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
     plans: {
       TRIAL: null,
       STD: {
-        annualPrice: 480_000,
+        annualPrice: 39_800,
         currency: 'JPY',
-        monthlyEquivalent: 40_000,
+        monthlyEquivalent: 3_317,
+        unit: 'per_user',
       },
       PRO: {
-        annualPrice: 980_000,
+        annualPrice: 49_800,
         currency: 'JPY',
-        monthlyEquivalent: 81_667,
+        monthlyEquivalent: 4_150,
+        unit: 'per_user',
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。',
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。1ユーザー/年。パートナー販売可。',
   },
 
   /**
@@ -243,18 +250,20 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
     plans: {
       TRIAL: null,
       STD: {
-        annualPrice: 480_000,
+        annualPrice: 39_800,
         currency: 'JPY',
-        monthlyEquivalent: 40_000,
+        monthlyEquivalent: 3_317,
+        unit: 'per_user',
       },
       PRO: {
-        annualPrice: 980_000,
+        annualPrice: 49_800,
         currency: 'JPY',
-        monthlyEquivalent: 81_667,
+        monthlyEquivalent: 4_150,
+        unit: 'per_user',
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。',
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。1ユーザー/年。パートナー販売可。',
   },
 
   /**
@@ -268,18 +277,20 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
     plans: {
       TRIAL: null,
       STD: {
-        annualPrice: 480_000,
+        annualPrice: 39_800,
         currency: 'JPY',
-        monthlyEquivalent: 40_000,
+        monthlyEquivalent: 3_317,
+        unit: 'per_user',
       },
       PRO: {
-        annualPrice: 980_000,
+        annualPrice: 49_800,
         currency: 'JPY',
-        monthlyEquivalent: 81_667,
+        monthlyEquivalent: 4_150,
+        unit: 'per_user',
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。',
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。1ユーザー/年。パートナー販売可。',
   },
 
   /**
@@ -293,18 +304,20 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
     plans: {
       TRIAL: null,
       STD: {
-        annualPrice: 480_000,
+        annualPrice: 39_800,
         currency: 'JPY',
-        monthlyEquivalent: 40_000,
+        monthlyEquivalent: 3_317,
+        unit: 'per_user',
       },
       PRO: {
-        annualPrice: 980_000,
+        annualPrice: 49_800,
         currency: 'JPY',
-        monthlyEquivalent: 81_667,
+        monthlyEquivalent: 4_150,
+        unit: 'per_user',
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回。パートナー販売可。',
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回。1ユーザー/年。パートナー販売可。',
   },
 };
 
@@ -346,7 +359,8 @@ export function getPricingTable(productCode: ProductCode): Array<{
     } else if (plan === 'ENT') {
       label = '個別見積もり';
     } else if (price) {
-      label = `¥${price.annualPrice.toLocaleString()}/年`;
+      const unitSuffix = price.unit === 'per_user' ? '/人/年' : '/年';
+      label = `¥${price.annualPrice.toLocaleString()}${unitSuffix}`;
     } else {
       label = '個別見積もり';
     }

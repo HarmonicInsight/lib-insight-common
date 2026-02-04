@@ -170,7 +170,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 ├──────────────────────────────────────────────────────────────────┤
 │  Tier 3: InsightOffice Suite（導入ツール）                       │
 │  INSS / IOSH / IOSD / INPY                                     │
-│  年額 48万円〜98万円                                            │
+│  年額 ¥39,800〜¥49,800（1ユーザー/年）                          │
 │  コンサル案件のクライアントに業務ツールとして導入                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -195,12 +195,12 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ### Tier 3: InsightOffice Suite
 
-| コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
-|-------|-------|------|---------------|---------------|-----|
-| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー | ¥480,000 | ¥980,000 | 個別見積 |
-| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 | ¥480,000 | ¥980,000 | 個別見積 |
-| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 | ¥480,000 | ¥980,000 | 個別見積 |
-| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 | ¥480,000 | ¥980,000 | 個別見積 |
+| コード | 製品名 | 説明 | STD（税抜/人/年） | PRO（税抜/人/年） | ENT |
+|-------|-------|------|------------------|------------------|-----|
+| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー | ¥39,800 | ¥49,800 | 個別見積 |
+| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 | ¥39,800 | ¥49,800 | 個別見積 |
+| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 | ¥39,800 | ¥49,800 | 個別見積 |
+| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 | ¥39,800 | ¥49,800 | 個別見積 |
 
 > **考え方**: 全製品コンサルティング案件の一環として提供。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。パートナー（代理店）経由での販売も可能。
 
@@ -214,7 +214,7 @@ getSalesChannel('INCA');  // 'consulting'
 getSalesChannel('INSS');  // 'consulting'
 
 // 価格を取得
-getPrice('INSS', 'STD');  // { annualPrice: 480000, currency: 'JPY', monthlyEquivalent: 40000 }
+getPrice('INSS', 'STD');  // { annualPrice: 39800, currency: 'JPY', monthlyEquivalent: 3317, unit: 'per_user' }
 getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEquivalent: 331667 }
 ```
 
@@ -322,9 +322,9 @@ getResellerProducts('registered');  // ['INSS', 'IOSH', 'IOSD', 'INPY']
 getResellerProducts('silver');      // ['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INIG']
 getResellerProducts('gold');        // 全製品
 
-// Silver パートナーがINSS STD（¥480,000）を販売した場合
-calculateWholesalePrice(480000, 'silver');
-// { wholesalePrice: 336000, partnerProfit: 144000, discount: 0.30 }
+// Silver パートナーがINSS STD（¥39,800/人/年）を販売した場合
+calculateWholesalePrice(39800, 'silver');
+// { wholesalePrice: 27860, partnerProfit: 11940, discount: 0.30 }
 ```
 
 ## 8. ライセンスシステム
