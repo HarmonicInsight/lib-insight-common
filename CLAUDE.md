@@ -369,6 +369,7 @@ calculateWholesalePrice(480000, 'silver');
 | AI モデル | **Opus** 含む全モデル |
 | ライセンス制御 | TRIAL: 全機能 / STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
 | 追加パック | ¥10,000 / 100回 |
+| ペルソナ選択 | **自動選択**（デフォルト）/ 手動3ペルソナ（カスタマイズ時） |
 | ペルソナ | 3 キャラクター（Claude俊=Haiku、Claude恵=Sonnet、Claude学=Opus） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 

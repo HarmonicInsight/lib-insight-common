@@ -251,7 +251,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'ai_assistant',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -308,9 +308,21 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
         descriptionJa: 'Claude API キー（BYOK）',
       },
       {
+        key: 'persona_selection_mode',
+        name: 'Persona Selection Mode',
+        nameJa: 'モデル選択モード',
+        type: 'select',
+        defaultValue: 'auto',
+        options: [
+          { value: 'auto', label: 'Auto (recommended)', labelJa: '自動選択（推奨）' },
+          { value: 'manual', label: 'Manual (3 personas)', labelJa: '手動選択（3ペルソナ）' },
+        ],
+        descriptionJa: '自動: タスクに応じて最適なモデルを自動選択 / 手動: 3ペルソナから選択',
+      },
+      {
         key: 'default_persona',
-        name: 'Default Persona',
-        nameJa: 'デフォルトペルソナ',
+        name: 'Default Persona (Manual Mode)',
+        nameJa: 'デフォルトペルソナ（手動モード時）',
         type: 'select',
         defaultValue: 'megumi',
         options: [
@@ -318,7 +330,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
           { value: 'megumi', label: 'Claude Meg (Sonnet)', labelJa: 'Claude 恵（Sonnet）' },
           { value: 'manabu', label: 'Claude Manabu (Opus)', labelJa: 'Claude 学（Opus）' },
         ],
-        descriptionJa: 'デフォルトで使用するAIペルソナ',
+        descriptionJa: '手動モード時にデフォルトで使用するペルソナ',
       },
     ],
   },
@@ -336,7 +348,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'extension',
     panelPosition: 'bottom',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [
       {
         name: 'Python',
@@ -523,7 +535,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'bottom',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -854,7 +866,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'tab',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
