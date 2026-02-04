@@ -351,6 +351,7 @@ calculateWholesalePrice(480000, 'silver');
 | エクスポート | ✅ | ✅ | ✅ | ✅ |
 | 変更者表示 | ✅ | ❌ | ✅ | ✅ |
 | 掲示板 | ✅ | ❌ | ✅ | ✅ |
+| 付箋 | ✅ | ✅ | ✅ | ✅ |
 | AIアシスタント | ✅ | ✅(50回) | ✅ | ✅ |
 | AIコードエディター | ✅ | ✅(50回) | ✅ | ✅ |
 | メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
@@ -537,7 +538,7 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
 - [ ] **AI アシスタント**: ペルソナ 3 種（shunsuke / megumi / manabu）が実装されている
-- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/PRO/ENT — STDはAIなし）が実装されている
+- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回）が実装されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 
 ## 11. 困ったときは

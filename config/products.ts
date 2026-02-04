@@ -476,6 +476,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'AIチャットによるExcel操作支援（STD: 月50回 / PRO: 無制限）',
     },
     {
+      key: 'sticky_notes',
+      name: 'Sticky Notes',
+      nameJa: '付箋',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セルに付箋（メモ）を貼り付け。色分け・バージョン管理連動',
+    },
+    {
       key: 'send_message',
       name: 'Send Message',
       nameJa: 'メッセージ送信',

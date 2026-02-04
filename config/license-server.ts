@@ -17,10 +17,10 @@
  * │  │  ① 直販        │  │  ② パートナー  │  │  ③ システム    │          │
  * │  │  (Direct)      │  │  (Partner)     │  │  (System)      │          │
  * │  ├────────────────┤  ├────────────────┤  ├────────────────┤          │
- * │  │ Paddle決済     │  │ パートナー     │  │ メール認証後   │          │
- * │  │ Stripe決済     │  │ ポータルから   │  │ 仮キー自動発行 │          │
- * │  │ MS Store       │  │ ライセンス     │  │ 更新時自動発行 │          │
- * │  │ 請求書払い     │  │ 発行申請       │  │ バッチ処理     │          │
+ * │  │ Stripe決済     │  │ パートナー     │  │ メール認証後   │          │
+ * │  │ 請求書払い     │  │ ポータルから   │  │ 仮キー自動発行 │          │
+ * │  │               │  │ ライセンス     │  │ 更新時自動発行 │          │
+ * │  │               │  │ 発行申請       │  │ バッチ処理     │          │
  * │  └───────┬────────┘  └───────┬────────┘  └───────┬────────┘          │
  * │          │                    │                    │                   │
  * │          └────────────────────┼────────────────────┘                   │
@@ -76,11 +76,9 @@ import type { PartnerTier } from './reseller-strategy';
 // 型定義: 発行チャネル・発行者
 // =============================================================================
 
-/** ライセンス発行チャネル */
+/** ライセンス発行チャネル（B2B: Stripe + 請求書 + パートナー） */
 export type IssuanceChannel =
-  | 'direct_paddle'     // 直販: Paddle経由
   | 'direct_stripe'     // 直販: Stripe経由
-  | 'direct_msstore'    // 直販: Microsoft Store経由
   | 'direct_invoice'    // 直販: 請求書払い
   | 'partner_reseller'  // パートナー: リセラー経由
   | 'partner_referral'  // パートナー: 紹介経由
@@ -363,14 +361,6 @@ export const LICENSE_SERVER_ENDPOINTS = {
     description: '新規ライセンスを発行。全チャネル共通。',
   },
 
-  /** Paddle Webhook（決済完了通知） */
-  webhookPaddle: {
-    method: 'POST' as const,
-    path: '/api/v1/webhooks/paddle',
-    auth: 'webhook_signature',
-    description: 'Paddle決済完了時に自動でライセンス発行。',
-  },
-
   /** Stripe Webhook（決済完了通知） */
   webhookStripe: {
     method: 'POST' as const,
@@ -504,7 +494,7 @@ export const LICENSE_SERVER_ENDPOINTS = {
     method: 'POST' as const,
     path: '/api/v1/batch/process-renewals',
     auth: 'cron_secret',
-    description: 'Paddle/Stripeの自動更新を処理。',
+    description: 'Stripeの自動更新を処理。',
   },
 } as const;
 
@@ -532,16 +522,6 @@ export interface ChannelIssuanceRule {
 }
 
 export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule> = {
-  direct_paddle: {
-    channel: 'direct_paddle',
-    allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO', 'ENT'],
-    requiresPayment: true,
-    requiresPartner: false,
-    autoApprove: true,
-    requiresEmail: true,
-    description: 'Paddle Webhook経由。決済完了で自動発行。',
-  },
   direct_stripe: {
     channel: 'direct_stripe',
     allowedKeyTypes: ['production'],
@@ -551,16 +531,6 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
     autoApprove: true,
     requiresEmail: true,
     description: 'Stripe Webhook経由。決済完了で自動発行。',
-  },
-  direct_msstore: {
-    channel: 'direct_msstore',
-    allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO'],
-    requiresPayment: true,
-    requiresPartner: false,
-    autoApprove: true,
-    requiresEmail: false,
-    description: 'Microsoft Store経由。ストア内で完結。',
   },
   direct_invoice: {
     channel: 'direct_invoice',
@@ -671,7 +641,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
  * │  - Supabase (PostgreSQL)                                    │
  * │  - Firebase Auth                                             │
  * │  - Resend (Email)                                           │
- * │  - Paddle / Stripe (Payments)                               │
+ * │  - Stripe (Payments)                                        │
  * └──────────────────────────────────────────────────────────────┘
  */
 export const RAILWAY_CONFIG = {
@@ -691,7 +661,6 @@ export const RAILWAY_CONFIG = {
         'SUPABASE_SERVICE_ROLE_KEY',
         'FIREBASE_PROJECT_ID',
         'FIREBASE_SERVICE_ACCOUNT_JSON',
-        'PADDLE_WEBHOOK_SECRET',
         'STRIPE_WEBHOOK_SECRET',
         'RESEND_API_KEY',
         'PARTNER_API_SIGNING_KEY',
@@ -867,9 +836,7 @@ export function getChannelDisplayName(
   locale: 'ja' | 'en' = 'ja',
 ): string {
   const names: Record<IssuanceChannel, { ja: string; en: string }> = {
-    direct_paddle: { ja: '直販（Paddle）', en: 'Direct (Paddle)' },
     direct_stripe: { ja: '直販（Stripe）', en: 'Direct (Stripe)' },
-    direct_msstore: { ja: '直販（Microsoft Store）', en: 'Direct (Microsoft Store)' },
     direct_invoice: { ja: '直販（請求書）', en: 'Direct (Invoice)' },
     partner_reseller: { ja: 'パートナー経由', en: 'Partner (Reseller)' },
     partner_referral: { ja: 'パートナー紹介', en: 'Partner (Referral)' },
