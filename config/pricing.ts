@@ -229,7 +229,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限+コラボレーション。パートナー販売可。',
+    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。',
   },
 
   /**
@@ -254,7 +254,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限+コラボレーション。パートナー販売可。',
+    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。',
   },
 
   /**
@@ -279,7 +279,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限+コラボレーション。パートナー販売可。',
+    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。',
   },
 
   /**
@@ -304,7 +304,7 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
       },
       ENT: null,
     },
-    notes: 'STD=基本機能+AI、PRO=全機能+AI無制限。パートナー販売可。',
+    notes: 'STD=基本機能+AI、PRO=全機能+AI月200回。パートナー販売可。',
   },
 };
 

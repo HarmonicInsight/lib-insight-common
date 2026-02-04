@@ -335,12 +335,12 @@ calculateWholesalePrice(480000, 'silver');
 |-------|------|------|---------|
 | TRIAL | 全機能利用可能（評価用） | 評価企業 | 14日間 |
 | STD | 法人向け標準機能 | 法人利用 | 365日 |
-| PRO | 法人向け全機能（AI無制限・コラボレーション） | 法人・チーム | 365日 |
+| PRO | 法人向け全機能（AI月200回・コラボレーション） | 法人・チーム | 365日 |
 | ENT | カスタマイズ | 大企業 | 要相談 |
 
 ### InsightOfficeSheet (IOSH) 機能マトリクス
 
-> **STD = 基本機能+AI（月50回）**、**PRO = 全機能+AI無制限+コラボレーション**
+> **STD = 基本機能+AI（月50回）**、**PRO = 全機能+AI月200回+コラボレーション**、**ENT = AI無制限**
 
 | 機能 | TRIAL | STD | PRO | ENT |
 |------|:-----:|:---:|:---:|:---:|
@@ -353,8 +353,8 @@ calculateWholesalePrice(480000, 'silver');
 | 変更者表示 | ✅ | ❌ | ✅ | ✅ |
 | 掲示板 | ✅ | ❌ | ✅ | ✅ |
 | 付箋 | ✅ | ✅ | ✅ | ✅ |
-| AIアシスタント | ✅ | ✅(50回) | ✅ | ✅ |
-| AIコードエディター | ✅ | ✅(50回) | ✅ | ✅ |
+| AIアシスタント | ✅ | ✅(50回) | ✅(200回) | ✅ |
+| AIコードエディター | ✅ | ✅(50回) | ✅(200回) | ✅ |
 | メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
 
 ### InsightOffice AI アシスタント共通仕様
@@ -367,7 +367,7 @@ calculateWholesalePrice(480000, 'silver');
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
 | AI モデル | **Opus** 含む全モデル |
-| ライセンス制御 | TRIAL: 全機能 / STD: 月50回 / PRO: 無制限 / ENT: 無制限 |
+| ライセンス制御 | TRIAL: 全機能 / STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
 | 追加パック | ¥10,000 / 100回 |
 | ペルソナ | 3 キャラクター（Claude俊=Haiku、Claude恵=Sonnet、Claude学=Opus） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
@@ -416,7 +416,7 @@ import {
 } from '@/insight-common/config/ai-assistant';
 
 // ライセンスチェック
-canUseAiAssistant('PRO');   // true（無制限）
+canUseAiAssistant('PRO');   // true（月200回）
 canUseAiAssistant('STD');   // true（月50回）
 canUseAiAssistant('TRIAL'); // true（全機能）
 
@@ -591,7 +591,7 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
 - [ ] **AI アシスタント**: ペルソナ 3 種（shunsuke / megumi / manabu）が実装されている
 - [ ] **AI アシスタント**: タスク別モデル推奨（`checkPersonaForTask`）でガイダンスを表示している
-- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回）が実装されている
+- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
 - [ ] **検証**: `validate-standards.sh` が成功する
 
 ## 11. 困ったときは
