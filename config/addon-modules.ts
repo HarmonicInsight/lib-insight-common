@@ -325,7 +325,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'extension',
     panelPosition: 'bottom',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
     dependencies: [
       {
         name: 'Python',
@@ -512,7 +512,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'bottom',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -843,7 +843,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
