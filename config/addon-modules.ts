@@ -71,7 +71,7 @@ import type { ProductCode, PlanCode } from './products';
 export type AddonDistributionType = 'bundled' | 'extension';
 
 /** モジュール UI の配置場所 */
-export type AddonPanelPosition = 'right' | 'bottom' | 'dialog' | 'tab';
+export type AddonPanelPosition = 'right' | 'bottom' | 'dialog' | 'tab' | 'none';
 
 /** モジュールの状態 */
 export type AddonState = 'not_installed' | 'installed' | 'enabled' | 'disabled' | 'update_available';
@@ -1132,6 +1132,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'voice_input',
       'vrm_avatar',
       'bot_agent',
+      'local_workflow',
     ],
     defaultEnabled: ['ai_assistant'],
   },
@@ -1147,6 +1148,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'voice_input',
       'vrm_avatar',
       'bot_agent',
+      'local_workflow',
     ],
     defaultEnabled: ['ai_assistant', 'board', 'messaging'],
   },
@@ -1160,6 +1162,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'voice_input',
       'vrm_avatar',
       'bot_agent',
+      'local_workflow',
     ],
     defaultEnabled: ['ai_assistant', 'reference_materials'],
   },
@@ -1254,9 +1257,70 @@ export const BOT_AGENT_MODULE: AddonModuleDefinition = {
       async: false,
       streaming: false,
     },
+    {
+      id: 'open_document',
+      name: 'Open Document',
+      nameJa: 'ドキュメントを開く',
+      description: 'Open a document file in the host application. Used by Orchestrator Workflow to open files before processing.',
+      input: [
+        { key: 'execution_id', type: 'string', description: '実行 ID（ワークフローステップ追跡用）', required: true },
+        { key: 'document_path', type: 'file_path', description: '開くドキュメントのファイルパス（.xlsx, .pptx, .docx, .iosh 等）', required: true },
+        { key: 'read_only', type: 'boolean', description: '読み取り専用で開くか', required: false },
+      ],
+      process: 'ホストアプリのドキュメントオープン API を呼び出し。プロジェクトファイル（.iosh 等）の場合は ZIP 展開 → 内包ドキュメントを読み込み。',
+      output: [
+        { key: 'success', type: 'boolean', description: 'ドキュメントを開けたか', required: true },
+        { key: 'document_path', type: 'file_path', description: '開いたドキュメントのパス', required: true },
+        { key: 'error', type: 'string', description: 'エラーメッセージ（失敗時）', required: false },
+      ],
+      transport: 'in_process',
+      async: true,
+      streaming: false,
+    },
+    {
+      id: 'close_document',
+      name: 'Close Document',
+      nameJa: 'ドキュメントを閉じる',
+      description: 'Close the currently open document, optionally saving changes. Used by Orchestrator Workflow after processing.',
+      input: [
+        { key: 'execution_id', type: 'string', description: '実行 ID', required: true },
+        { key: 'save', type: 'boolean', description: '閉じる前に保存するか（デフォルト: true）', required: false },
+        { key: 'save_as_path', type: 'file_path', description: '別名で保存する場合のパス', required: false },
+      ],
+      process: '保存フラグに応じてドキュメントを保存 → ホストアプリのドキュメントクローズ API を呼び出し。',
+      output: [
+        { key: 'success', type: 'boolean', description: 'ドキュメントを閉じられたか', required: true },
+        { key: 'saved_path', type: 'file_path', description: '保存先パス', required: false },
+        { key: 'error', type: 'string', description: 'エラーメッセージ（失敗時）', required: false },
+      ],
+      transport: 'in_process',
+      async: true,
+      streaming: false,
+    },
+    {
+      id: 'execute_workflow',
+      name: 'Execute Workflow',
+      nameJa: 'ワークフロー実行',
+      description: 'Execute a multi-step workflow: open document → run script → close → next. Orchestrator dispatches the full workflow definition and Agent executes steps sequentially.',
+      input: [
+        { key: 'workflow_execution_id', type: 'string', description: 'ワークフロー実行 ID', required: true },
+        { key: 'steps', type: 'json', description: 'ワークフローステップ配列 [{ stepIndex, name, jobId, script, documentPath, parameters, timeoutSeconds, onError }]', required: true },
+      ],
+      process: 'ステップ配列を順番に実行: ① open_document → ② execute_job（Python スクリプト実行）→ ③ close_document → 次のステップへ。各ステップの結果は WebSocket で Orchestrator にリアルタイム報告。onError に応じて stop/skip/retry。',
+      output: [
+        { key: 'status', type: 'string', description: 'ワークフロー全体の結果（completed / partial / failed）', required: true },
+        { key: 'completed_steps', type: 'number', description: '完了したステップ数', required: true },
+        { key: 'total_steps', type: 'number', description: '全ステップ数', required: true },
+        { key: 'step_results', type: 'json', description: '各ステップの実行結果 [{ stepIndex, status, exitCode, documentModified, durationMs }]', required: true },
+        { key: 'total_duration_ms', type: 'number', description: '全体の実行時間（ミリ秒）', required: true },
+      ],
+      transport: 'websocket',
+      async: true,
+      streaming: true,
+    },
   ],
   tools: [],
-  settings: [
+  settingsSchema: [
     {
       key: 'orchestrator_url',
       name: 'Orchestrator URL',
@@ -1303,6 +1367,162 @@ export const BOT_AGENT_MODULE: AddonModuleDefinition = {
 
 // BOT_AGENT_MODULE を ADDON_MODULES に登録
 ADDON_MODULES.bot_agent = BOT_AGENT_MODULE;
+
+// =============================================================================
+// ローカルワークフロー（PRO InsightOffice のローカル自動化機能）
+// =============================================================================
+
+/**
+ * ローカルワークフローモジュール
+ *
+ * Orchestrator なしで PRO InsightOffice ユーザーが使えるローカル自動化機能。
+ * スクリプトの連続実行や、フォルダ内ファイルの一括処理を実現する。
+ *
+ * ## Orchestrator との違い
+ *
+ * | 項目 | ローカルワークフロー | Orchestrator |
+ * |------|---------------------|-------------|
+ * | 実行場所 | 自分の PC のみ | リモート Agent に配信 |
+ * | スケジュール | なし（手動起動） | cron 相当の定期実行 |
+ * | 監視 | ローカル UI のみ | ダッシュボードで集約 |
+ * | 対象 | PRO InsightOffice | PRO/ENT INBT |
+ *
+ * ## ユースケース
+ *
+ * - 「このフォルダの Excel 全部にスクリプト A → スクリプト B を実行」
+ * - 「月末に売上データ 10 ファイルを順番に集計」
+ * - 市民開発者が簡易 RPA 的に使う
+ */
+export const LOCAL_WORKFLOW_MODULE: AddonModuleDefinition = {
+  id: 'local_workflow',
+  name: 'Local Workflow',
+  nameJa: 'ローカルワークフロー',
+  description: 'Local automation for PRO users: run scripts sequentially on multiple files without Orchestrator. Lightweight RPA for citizen developers.',
+  descriptionJa: 'Orchestrator 不要のローカル自動化。複数ファイルへのスクリプト連続実行。市民開発者向けの簡易 RPA。',
+  version: '1.0.0',
+  distribution: 'bundled',
+  panelPosition: 'dialog',
+  requiredFeatureKey: 'ai_editor',
+  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+  dependencies: [],
+  ioContracts: [
+    {
+      id: 'create_workflow',
+      name: 'Create Local Workflow',
+      nameJa: 'ワークフロー作成',
+      description: 'Define a local workflow: select target files/folder + scripts to run in sequence.',
+      input: [
+        { key: 'name', type: 'string', description: 'ワークフロー名', required: true },
+        { key: 'target_files', type: 'json', description: '対象ファイルパスの配列、またはフォルダパス + フィルター', required: true },
+        { key: 'steps', type: 'json', description: 'スクリプトステップ [{ scriptId, parameters, onError }]', required: true },
+      ],
+      process: 'ワークフロー定義を検証 → ローカルストレージに保存。対象ファイルの存在確認。',
+      output: [
+        { key: 'workflow_id', type: 'string', description: 'ワークフロー ID', required: true },
+        { key: 'valid', type: 'boolean', description: '定義が有効か', required: true },
+        { key: 'file_count', type: 'number', description: '対象ファイル数', required: true },
+      ],
+      transport: 'in_process',
+      async: false,
+      streaming: false,
+    },
+    {
+      id: 'run_workflow',
+      name: 'Run Local Workflow',
+      nameJa: 'ワークフロー実行',
+      description: 'Execute a local workflow: open each file → run scripts → close → next file.',
+      input: [
+        { key: 'workflow_id', type: 'string', description: '実行するワークフロー ID', required: true },
+        { key: 'dry_run', type: 'boolean', description: 'ドライラン（ファイルを開くだけで実行しない）', required: false },
+      ],
+      process: '対象ファイルを順番に処理: ① ファイルを開く → ② ステップ順にスクリプト実行 → ③ 保存して閉じる → ④ 次のファイルへ。進捗はリアルタイムで UI に表示。',
+      output: [
+        { key: 'status', type: 'string', description: '全体の結果（completed / partial / failed）', required: true },
+        { key: 'files_processed', type: 'number', description: '処理済みファイル数', required: true },
+        { key: 'files_total', type: 'number', description: '全ファイル数', required: true },
+        { key: 'results', type: 'json', description: 'ファイルごとの結果 [{ filePath, status, stepsCompleted, error? }]', required: true },
+        { key: 'total_duration_ms', type: 'number', description: '全体の実行時間', required: true },
+      ],
+      transport: 'in_process',
+      async: true,
+      streaming: true,
+    },
+    {
+      id: 'list_workflows',
+      name: 'List Local Workflows',
+      nameJa: 'ワークフロー一覧',
+      description: 'List all saved local workflows.',
+      input: [],
+      process: 'ローカルストレージから保存済みワークフロー一覧を取得。',
+      output: [
+        { key: 'workflows', type: 'json', description: 'ワークフロー一覧 [{ id, name, fileCount, stepCount, lastRunAt }]', required: true },
+      ],
+      transport: 'in_process',
+      async: false,
+      streaming: false,
+    },
+  ],
+  tools: [
+    {
+      name: 'create_local_workflow',
+      description: 'Create a local workflow to process multiple files with scripts',
+      input_schema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', description: 'Workflow name' },
+          target_folder: { type: 'string', description: 'Folder path containing target files' },
+          file_filter: { type: 'string', description: 'File extension filter (e.g., "*.xlsx")' },
+          script_ids: { type: 'array', items: { type: 'string' }, description: 'Script IDs to run in order' },
+        },
+        required: ['name', 'target_folder', 'script_ids'],
+      },
+    },
+    {
+      name: 'run_local_workflow',
+      description: 'Run a saved local workflow',
+      input_schema: {
+        type: 'object',
+        properties: {
+          workflow_id: { type: 'string', description: 'Workflow ID to execute' },
+          dry_run: { type: 'boolean', description: 'Dry run mode (preview only)' },
+        },
+        required: ['workflow_id'],
+      },
+    },
+  ],
+  requiresModules: ['python_runtime', 'python_scripts'],
+  icon: 'Flow',
+  themeColor: '#7C3AED',
+  settingsSchema: [
+    {
+      key: 'max_files_per_workflow',
+      name: 'Max Files per Workflow',
+      nameJa: '1ワークフローの最大ファイル数',
+      type: 'number',
+      defaultValue: 100,
+      descriptionJa: '1回のワークフローで処理できるファイルの上限',
+    },
+    {
+      key: 'auto_save',
+      name: 'Auto Save After Each File',
+      nameJa: 'ファイル処理後に自動保存',
+      type: 'boolean',
+      defaultValue: true,
+      descriptionJa: '各ファイルの処理完了後に自動で保存する',
+    },
+    {
+      key: 'stop_on_error',
+      name: 'Stop on Error',
+      nameJa: 'エラー時停止',
+      type: 'boolean',
+      defaultValue: false,
+      descriptionJa: 'エラーが発生した場合にワークフロー全体を停止する',
+    },
+  ],
+};
+
+// LOCAL_WORKFLOW_MODULE を ADDON_MODULES に登録
+ADDON_MODULES.local_workflow = LOCAL_WORKFLOW_MODULE;
 
 // =============================================================================
 // 管理者プロファイル — コンサル/SIer が現場に合わせてモジュール構成を制御
@@ -1661,6 +1881,7 @@ export default {
   // 定義
   ADDON_MODULES,
   BOT_AGENT_MODULE,
+  LOCAL_WORKFLOW_MODULE,
   PRODUCT_ADDON_SUPPORT,
   ADMIN_PROFILE_TEMPLATES,
 

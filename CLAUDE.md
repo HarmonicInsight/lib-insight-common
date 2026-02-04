@@ -691,6 +691,69 @@ ORCHESTRATOR_API.endpoints.jobs.dispatch;  // { method: 'POST', path: '/api/jobs
 canEnableModule('IOSH', 'bot_agent', 'PRO', ['python_runtime']);  // { allowed: true }
 ```
 
+### ワークフロー（バッチ処理 / BPO パターン）
+
+Orchestrator は単一 JOB 配信だけでなく、**複数ファイルの順次処理（ワークフロー）**をサポートする。
+BPO（業務プロセス外注）での大量書類作成に対応。
+
+```
+ワークフロー実行フロー:
+┌─────────────────────────────────────────────────────────┐
+│  Orchestrator                                            │
+│  ワークフロー定義:                                        │
+│    Step 1: 売上.xlsx → 集計スクリプト                      │
+│    Step 2: 経費.xlsx → 経費チェックスクリプト               │
+│    Step 3: 報告書.docx → レポート生成スクリプト             │
+│                                                          │
+│  → Agent に一括配信                                      │
+├──────────────────────────────────────────────────────────┤
+│  Agent (InsightOffice)                                    │
+│  Step 1: 売上.xlsx を開く → スクリプト実行 → 保存して閉じる │
+│  Step 2: 経費.xlsx を開く → スクリプト実行 → 保存して閉じる │
+│  Step 3: 報告書.docx を開く → スクリプト実行 → 保存して閉じる│
+│  → 全ステップ完了を Orchestrator に報告                    │
+└──────────────────────────────────────────────────────────┘
+```
+
+### 利用パターン別機能マトリクス
+
+| パターン | 対象ユーザー | プラン | 機能 |
+|---------|------------|--------|------|
+| **個人 AI 利用** | 一般ユーザー | STD | AI チャット + 基本機能 |
+| **市民開発** | パワーユーザー | PRO | Python + AI エディター + ローカルワークフロー |
+| **リモート RPA** | BPO / IT 部門 | PRO/ENT (INBT) | Orchestrator + Agent + スケジューラー |
+
+### ローカルワークフロー（PRO InsightOffice）
+
+PRO の InsightOffice ユーザーは Orchestrator なしで、ローカル PC 上の簡易自動化が可能。
+
+```typescript
+import { canEnableModule } from '@/insight-common/config/addon-modules';
+
+// PRO ユーザーはローカルワークフローを有効化可能
+canEnableModule('IOSH', 'local_workflow', 'PRO', ['python_runtime', 'python_scripts']);
+// { allowed: true }
+
+// STD ユーザーは不可
+canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scripts']);
+// { allowed: false, reasonJa: 'ローカルワークフローには TRIAL/PRO/ENT プランが必要です' }
+```
+
+### Orchestrator ワークフロー API
+
+```typescript
+import {
+  canUseOrchestrator,
+  canDispatchJob,
+  ORCHESTRATOR_API,
+} from '@/insight-common/config/orchestrator';
+
+// ワークフロー作成・配信
+ORCHESTRATOR_API.endpoints.workflows.create;    // POST /api/workflows
+ORCHESTRATOR_API.endpoints.workflows.dispatch;   // POST /api/workflows/:workflowId/dispatch
+ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflowId/executions
+```
+
 ## 12. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
@@ -706,6 +769,8 @@ canEnableModule('IOSH', 'bot_agent', 'PRO', ['python_runtime']);  // { allowed: 
 - [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
 - [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている
 - [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
+- [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT PRO+ のみ）
+- [ ] **ローカルワークフロー**: PRO InsightOffice でローカル連続処理が動作する（PRO+ のみ）
 - [ ] **検証**: `validate-standards.sh` が成功する
 
 ## 13. 困ったときは

@@ -200,6 +200,134 @@ export interface JobTargetAgent {
 }
 
 // =============================================================================
+// ワークフロー定義（BPO パターン対応）
+// =============================================================================
+
+/**
+ * ワークフロー（Workflow）
+ *
+ * 複数の JOB を順序付きで実行するパイプライン定義。
+ *
+ * ## ユースケース
+ *
+ * ### BPO パターン（書類作成の外注）
+ * 1つの案件で複数のドキュメントを順番に処理する。
+ * - Step 1: 売上データ.xlsx を開いて集計スクリプトを実行
+ * - Step 2: 月次レポート.docx を開いてテンプレートに集計結果を注入
+ * - Step 3: 報告書.pptx を開いてグラフを生成
+ *
+ * ### 市民開発パターン
+ * ユーザーが GUI でステップを組み立てて、日次/週次で自動実行。
+ *
+ * ## 実行フロー
+ *
+ * ```
+ * Orchestrator                        Agent (InsightOffice)
+ * ──────────                          ─────────────────────
+ * workflow_dispatch ──────────────→
+ *   step[0]: open 売上データ.xlsx
+ *            run  aggregate.py
+ *            close
+ *                 ←──────────────── step_completed (0)
+ *   step[1]: open 月次レポート.docx
+ *            run  fill_template.py
+ *            close
+ *                 ←──────────────── step_completed (1)
+ *   step[2]: open 報告書.pptx
+ *            run  gen_charts.py
+ *            close
+ *                 ←──────────────── step_completed (2)
+ * workflow_completed ←────────────── all steps done
+ * ```
+ */
+
+/** ワークフローのステップ */
+export interface WorkflowStep {
+  /** ステップ番号（0 始まり） */
+  stepIndex: number;
+  /** ステップ名 */
+  name: string;
+  /** 使用する JOB ID（既存の JOB を参照） */
+  jobId: string;
+  /** 操作対象のドキュメントパス（Agent 側のローカルパス） */
+  documentPath: string;
+  /** JOB パラメータの上書き */
+  parameterOverrides?: Record<string, string | number | boolean>;
+  /** 前ステップの出力をこのステップの入力に渡すマッピング */
+  inputMapping?: Record<string, string>;
+  /** エラー時の挙動 */
+  onError: 'stop' | 'skip' | 'retry';
+  /** タイムアウト（秒）、省略時は JOB のデフォルトを使用 */
+  timeoutSeconds?: number;
+}
+
+/** ワークフロー定義 */
+export interface WorkflowDefinition {
+  /** ワークフロー ID (UUID) */
+  workflowId: string;
+  /** ワークフロー名 */
+  name: string;
+  /** 説明 */
+  description: string;
+  /** カテゴリ */
+  category: string;
+  /** 実行ステップ（順序付き） */
+  steps: WorkflowStep[];
+  /** 対象 Agent */
+  targetAgent: JobTargetAgent;
+  /** トリガー */
+  trigger: JobTriggerType;
+  /** スケジュール */
+  schedule?: JobSchedule;
+  /** 全ステップ完了後に実行する通知/アクション */
+  onComplete?: {
+    /** 出力ファイルのコピー先フォルダ */
+    outputFolder?: string;
+    /** 通知先（メール等、将来拡張） */
+    notify?: string[];
+  };
+  /** 作成者 */
+  createdBy: string;
+  /** 作成日 (ISO 8601) */
+  createdAt: string;
+  /** 最終更新日 (ISO 8601) */
+  updatedAt: string;
+}
+
+/** ワークフロー実行ログ */
+export interface WorkflowExecutionLog {
+  /** ワークフロー実行 ID (UUID) */
+  workflowExecutionId: string;
+  /** ワークフロー ID */
+  workflowId: string;
+  /** Agent ID */
+  agentId: string;
+  /** 全体ステータス */
+  status: JobExecutionStatus;
+  /** 各ステップの実行結果 */
+  stepResults: Array<{
+    stepIndex: number;
+    executionId: string;
+    status: JobExecutionStatus;
+    documentPath: string;
+    documentModified: boolean;
+    durationMs: number;
+    exitCode: number;
+    /** このステップの出力（次ステップに渡される） */
+    output?: Record<string, string>;
+  }>;
+  /** 開始日時 (ISO 8601) */
+  startedAt: string;
+  /** 完了日時 (ISO 8601) */
+  completedAt?: string;
+  /** 全体実行時間（ミリ秒） */
+  totalDurationMs?: number;
+  /** 処理したファイル数 */
+  filesProcessed: number;
+  triggeredBy: JobTriggerType;
+}
+
+// =============================================================================
 // JOB 実行記録
 // =============================================================================
 
@@ -262,6 +390,38 @@ export interface OrchestratorJobCancel {
   executionId: string;
 }
 
+/** Orchestrator → Agent: ワークフロー実行指示 */
+export interface OrchestratorWorkflowDispatch {
+  type: 'workflow_dispatch';
+  workflowExecutionId: string;
+  workflowId: string;
+  steps: Array<{
+    stepIndex: number;
+    name: string;
+    jobId: string;
+    script: string;
+    documentPath: string;
+    parameters: Record<string, string | number | boolean>;
+    timeoutSeconds: number;
+    onError: 'stop' | 'skip' | 'retry';
+  }>;
+}
+
+/** Orchestrator → Agent: ドキュメントを開く指示 */
+export interface OrchestratorOpenDocument {
+  type: 'open_document';
+  executionId: string;
+  documentPath: string;
+}
+
+/** Orchestrator → Agent: ドキュメントを閉じる指示 */
+export interface OrchestratorCloseDocument {
+  type: 'close_document';
+  executionId: string;
+  /** 変更を保存するか */
+  save: boolean;
+}
+
 /** Agent → Orchestrator: ハートビート */
 export interface AgentHeartbeat {
   type: 'heartbeat';
@@ -306,9 +466,62 @@ export interface AgentJobCompleted {
   durationMs: number;
 }
 
+/** Agent → Orchestrator: ワークフロー ステップ完了通知 */
+export interface AgentWorkflowStepCompleted {
+  type: 'workflow_step_completed';
+  workflowExecutionId: string;
+  stepIndex: number;
+  executionId: string;
+  agentId: string;
+  status: 'completed' | 'failed' | 'timeout';
+  exitCode: number;
+  documentPath: string;
+  documentModified: boolean;
+  durationMs: number;
+  /** このステップの出力値（次ステップの inputMapping に使用） */
+  output?: Record<string, string>;
+}
+
+/** Agent → Orchestrator: ワークフロー全体完了通知 */
+export interface AgentWorkflowCompleted {
+  type: 'workflow_completed';
+  workflowExecutionId: string;
+  agentId: string;
+  status: 'completed' | 'failed';
+  completedSteps: number;
+  totalSteps: number;
+  filesProcessed: number;
+  totalDurationMs: number;
+  completedAt: string;
+}
+
+/** Agent → Orchestrator: ドキュメント操作結果 */
+export interface AgentDocumentResult {
+  type: 'document_result';
+  executionId: string;
+  agentId: string;
+  action: 'opened' | 'closed';
+  documentPath: string;
+  success: boolean;
+  error?: string;
+}
+
 /** 全メッセージタイプのユニオン */
-export type OrchestratorMessage = OrchestratorJobDispatch | OrchestratorJobCancel;
-export type AgentMessage = AgentHeartbeat | AgentJobStarted | AgentJobLog | AgentJobCompleted;
+export type OrchestratorMessage =
+  | OrchestratorJobDispatch
+  | OrchestratorJobCancel
+  | OrchestratorWorkflowDispatch
+  | OrchestratorOpenDocument
+  | OrchestratorCloseDocument;
+
+export type AgentMessage =
+  | AgentHeartbeat
+  | AgentJobStarted
+  | AgentJobLog
+  | AgentJobCompleted
+  | AgentWorkflowStepCompleted
+  | AgentWorkflowCompleted
+  | AgentDocumentResult;
 
 // =============================================================================
 // REST API エンドポイント定義
@@ -351,6 +564,16 @@ export const ORCHESTRATOR_API = {
       list: { method: 'GET' as const, path: '/api/executions' },
       get: { method: 'GET' as const, path: '/api/executions/:executionId' },
       logs: { method: 'GET' as const, path: '/api/executions/:executionId/logs' },
+    },
+    // ワークフロー
+    workflows: {
+      list: { method: 'GET' as const, path: '/api/workflows' },
+      create: { method: 'POST' as const, path: '/api/workflows' },
+      get: { method: 'GET' as const, path: '/api/workflows/:workflowId' },
+      update: { method: 'PUT' as const, path: '/api/workflows/:workflowId' },
+      delete: { method: 'DELETE' as const, path: '/api/workflows/:workflowId' },
+      dispatch: { method: 'POST' as const, path: '/api/workflows/:workflowId/dispatch' },
+      cancel: { method: 'POST' as const, path: '/api/workflows/:workflowId/cancel' },
     },
     // スケジュール
     schedules: {
