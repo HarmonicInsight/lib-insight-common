@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 4;
+    private const int CurrentConfigVersion = 5;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -158,6 +158,8 @@ public class AppConfig
                     ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール"
                 },
                 new()
@@ -169,6 +171,8 @@ public class AppConfig
                     ProjectPath = @"src\InsightOfficeSheet.App\InsightOfficeSheet.App.csproj",
                     TestProjectPath = @"tests\InsightOfficeSheet.Core.Tests\InsightOfficeSheet.Core.Tests.csproj",
                     ExeRelativePath = @"src\InsightOfficeSheet.App\bin\{config}\net8.0-windows\InsightOfficeSheet.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション"
                 },
                 new()
@@ -180,6 +184,8 @@ public class AppConfig
                     ProjectPath = @"src\InsightOfficeDoc.App\InsightOfficeDoc.App.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = @"src\InsightOfficeDoc.App\bin\{config}\net8.0-windows\InsightOfficeDoc.exe",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "AIアシスタント搭載 — 参照資料付きWord文書管理ツール"
                 },
 
@@ -193,7 +199,8 @@ public class AppConfig
                     ProjectPath = "",
                     TestProjectPath = "",
                     ExeRelativePath = @"dist\InsightPy.exe",
-                    BuildCommand = "build.bat",
+                    BuildCommand = "build.ps1",
+                    InstallerDir = "Output",
                     Description = "AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤"
                 },
 
