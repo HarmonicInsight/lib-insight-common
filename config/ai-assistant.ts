@@ -8,6 +8,7 @@
  */
 
 import type { ProductCode, PlanCode } from './products';
+import { AI_QUOTA_BY_PLAN, type CreditBalance } from './usage-based-licensing';
 
 // =============================================================================
 // 型定義
@@ -1359,14 +1360,26 @@ export const AI_FEATURE_KEY = 'ai_assistant';
 export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
 
 /**
- * AI アシスタントが利用可能かチェック
+ * AI アシスタントが利用可能かチェック（プランのみ）
+ *
+ * 注意: これはプランレベルのチェックのみ。
+ * クレジット残量を含めた完全なチェックは usage-based-licensing.ts の
+ * checkAiUsage() または ServerAiUsageManager.checkUsage() を使用。
  */
 export function canUseAiAssistant(plan: PlanCode): boolean {
   return AI_ALLOWED_PLANS.includes(plan);
 }
 
+/**
+ * AI アシスタントのクレジット上限を取得
+ * @returns クレジット数（-1 = 無制限、0 = 利用不可）
+ */
+export function getAiAssistantCredits(plan: PlanCode): number {
+  return AI_QUOTA_BY_PLAN[plan].baseCredits;
+}
+
 // =============================================================================
-// デフォルトエクスポート
+// AI エディター
 // =============================================================================
 
 /** AI エディター機能のフィーチャーキー */
@@ -1375,9 +1388,57 @@ export const AI_EDITOR_FEATURE_KEY = 'ai_editor';
 /** AI エディターが利用可能なプラン */
 export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
 
-/** AI エディターが利用可能かチェック */
+/**
+ * AI エディターが利用可能かチェック（プランのみ）
+ *
+ * 注意: ai_assistant と ai_editor は共通クレジットプールを共有。
+ * クレジット残量チェックは checkAiUsage() を使用。
+ */
 export function canUseAiEditor(plan: PlanCode): boolean {
   return AI_EDITOR_ALLOWED_PLANS.includes(plan);
+}
+
+// =============================================================================
+// クレジット表示ヘルパー
+// =============================================================================
+
+/**
+ * AI ペルソナ選択時のクレジット状態メッセージを取得
+ *
+ * チャットUIのペルソナ選択欄に残量を表示するためのヘルパー。
+ *
+ * @example
+ * ```typescript
+ * const msg = getPersonaCreditLabel('megumi', 'PRO', credits);
+ * // → "Claude 恵（Sonnet）— 残り 85回"
+ * ```
+ */
+export function getPersonaCreditLabel(
+  personaId: string,
+  plan: PlanCode,
+  credits: CreditBalance | null,
+  locale: 'ja' | 'en' = 'ja',
+): string {
+  const persona = getPersona(personaId);
+  if (!persona) return '';
+
+  const name = locale === 'ja' ? persona.nameJa : persona.nameEn;
+
+  if (!credits || credits.totalRemaining === -1) {
+    return locale === 'ja'
+      ? `${name}（無制限）`
+      : `${name} (Unlimited)`;
+  }
+
+  if (credits.totalRemaining <= 0) {
+    return locale === 'ja'
+      ? `${name}（クレジット不足）`
+      : `${name} (No credits)`;
+  }
+
+  return locale === 'ja'
+    ? `${name} — 残り ${credits.totalRemaining}回`
+    : `${name} — ${credits.totalRemaining} credits left`;
 }
 
 /** コードエディター対応製品かチェック */
@@ -1446,6 +1507,7 @@ export default {
   AI_FEATURE_KEY,
   AI_ALLOWED_PLANS,
   canUseAiAssistant,
+  getAiAssistantCredits,
 
   // ライセンス — AI エディター
   AI_EDITOR_FEATURE_KEY,
@@ -1465,4 +1527,7 @@ export default {
 
   // メッセージ送信時のペルソナ解決
   resolvePersonaForMessage,
+
+  // クレジット表示
+  getPersonaCreditLabel,
 };
