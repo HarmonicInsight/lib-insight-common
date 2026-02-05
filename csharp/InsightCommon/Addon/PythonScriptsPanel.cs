@@ -56,23 +56,12 @@ public class PythonScriptsPanel : UserControl
         mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(120) });
 
-        // ヘッダー
+        // ヘッダー（右側要素を先に追加して、タイトルが残りスペースを使うようにする）
         var headerPanel = new DockPanel { Margin = new Thickness(12, 8, 12, 8) };
-
-        var titleText = new TextBlock
-        {
-            Text = "Python スクリプト",
-            FontSize = 14,
-            FontWeight = FontWeights.SemiBold,
-            Foreground = InsightColors.ToBrush(InsightColors.Light.TextPrimary),
-            VerticalAlignment = VerticalAlignment.Center,
-        };
-        DockPanel.SetDock(titleText, Dock.Left);
-        headerPanel.Children.Add(titleText);
 
         _categoryFilter = new ComboBox
         {
-            Width = 150,
+            Width = 120,
             Margin = new Thickness(8, 0, 0, 0),
             VerticalAlignment = VerticalAlignment.Center,
         };
@@ -85,13 +74,24 @@ public class PythonScriptsPanel : UserControl
         var addButton = new Button
         {
             Content = "＋ 新規",
-            Padding = new Thickness(12, 4, 12, 4),
-            Margin = new Thickness(0, 0, 8, 0),
+            Padding = new Thickness(8, 4, 8, 4),
+            Margin = new Thickness(0, 0, 4, 0),
             VerticalAlignment = VerticalAlignment.Center,
         };
         addButton.Click += (_, _) => OnAddScript();
         DockPanel.SetDock(addButton, Dock.Right);
         headerPanel.Children.Add(addButton);
+
+        var titleText = new TextBlock
+        {
+            Text = "Python スクリプト",
+            FontSize = 14,
+            FontWeight = FontWeights.SemiBold,
+            Foreground = InsightColors.ToBrush(InsightColors.Light.TextPrimary),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        // タイトルは最後に追加し、残りのスペースを使う
+        headerPanel.Children.Add(titleText);
 
         Grid.SetRow(headerPanel, 0);
         mainGrid.Children.Add(headerPanel);
