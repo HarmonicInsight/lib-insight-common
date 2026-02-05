@@ -236,6 +236,27 @@ public class PythonScriptsPanel : UserControl
             CornerRadius = new CornerRadius(6),
             Margin = new Thickness(0, 0, 0, 6),
             Padding = new Thickness(12, 8, 12, 8),
+            Cursor = System.Windows.Input.Cursors.Hand,
+        };
+
+        // ダブルクリックでエディターを開く
+        var scriptCapture = script;
+        card.MouseLeftButtonDown += (_, e) =>
+        {
+            if (e.ClickCount == 2)
+            {
+                EditRequested?.Invoke(this, new ScriptEditRequestEventArgs
+                {
+                    IsNew = false,
+                    Id = scriptCapture.Id,
+                    Name = scriptCapture.Name,
+                    Category = scriptCapture.Category,
+                    Description = scriptCapture.Description,
+                    Code = scriptCapture.Code,
+                    ReadOnly = scriptCapture.ReadOnly,
+                });
+                e.Handled = true;
+            }
         };
 
         var grid = new Grid();
@@ -287,28 +308,99 @@ public class PythonScriptsPanel : UserControl
         Grid.SetColumn(infoPanel, 0);
         grid.Children.Add(infoPanel);
 
-        // 実行ボタン
+        // ボタン群
         var buttonPanel = new StackPanel
         {
             Orientation = Orientation.Horizontal,
             VerticalAlignment = VerticalAlignment.Center,
         };
 
+        // 編集ボタン
+        var editButton = new Button
+        {
+            Content = "編集",
+            Padding = new Thickness(8, 4, 8, 4),
+            Margin = new Thickness(4, 0, 0, 0),
+            Background = System.Windows.Media.Brushes.Transparent,
+            BorderThickness = new Thickness(1),
+            BorderBrush = InsightColors.ToBrush(InsightColors.Light.Border),
+        };
+        editButton.Click += (_, e) =>
+        {
+            EditRequested?.Invoke(this, new ScriptEditRequestEventArgs
+            {
+                IsNew = false,
+                Id = scriptCapture.Id,
+                Name = scriptCapture.Name,
+                Category = scriptCapture.Category,
+                Description = scriptCapture.Description,
+                Code = scriptCapture.Code,
+                ReadOnly = scriptCapture.ReadOnly,
+            });
+            e.Handled = true;
+        };
+        buttonPanel.Children.Add(editButton);
+
+        // 実行ボタン
         var runButton = new Button
         {
             Content = "▶ 実行",
             Padding = new Thickness(10, 4, 10, 4),
-            Margin = new Thickness(8, 0, 0, 0),
+            Margin = new Thickness(4, 0, 0, 0),
         };
-        var scriptCapture = script;
-        runButton.Click += async (_, _) => await OnRunScript(scriptCapture);
+        runButton.Click += async (_, e) =>
+        {
+            await OnRunScript(scriptCapture);
+            e.Handled = true;
+        };
         buttonPanel.Children.Add(runButton);
+
+        // 削除ボタン（ユーザースクリプトのみ）
+        if (script.Source == ScriptSource.User)
+        {
+            var deleteButton = new Button
+            {
+                Content = "×",
+                Padding = new Thickness(6, 4, 6, 4),
+                Margin = new Thickness(4, 0, 0, 0),
+                Foreground = InsightColors.ToBrush(InsightColors.Light.Error),
+                Background = System.Windows.Media.Brushes.Transparent,
+                BorderThickness = new Thickness(1),
+                BorderBrush = InsightColors.ToBrush(InsightColors.Light.Border),
+                ToolTip = "削除",
+            };
+            deleteButton.Click += (_, e) =>
+            {
+                OnDeleteScript(scriptCapture);
+                e.Handled = true;
+            };
+            buttonPanel.Children.Add(deleteButton);
+        }
 
         Grid.SetColumn(buttonPanel, 1);
         grid.Children.Add(buttonPanel);
 
         card.Child = grid;
         return card;
+    }
+
+    private void OnDeleteScript(ScriptItem script)
+    {
+        var result = MessageBox.Show(
+            $"スクリプト「{script.Name}」を削除しますか？",
+            "削除確認",
+            MessageBoxButton.OKCancel,
+            MessageBoxImage.Warning);
+        if (result != MessageBoxResult.OK) return;
+
+        var filePath = System.IO.Path.Combine(_userScriptsDir, $"{script.Id}.json");
+        if (System.IO.File.Exists(filePath))
+        {
+            System.IO.File.Delete(filePath);
+        }
+
+        LoadScripts();
+        ScriptDeleted?.Invoke(this, script.Id);
     }
 
     private async Task OnRunScript(ScriptItem script)
@@ -366,12 +458,14 @@ public class PythonScriptsPanel : UserControl
 
     private void OnAddScript()
     {
-        // 新規スクリプト作成ダイアログ
-        ScriptCreated?.Invoke(this, EventArgs.Empty);
+        EditRequested?.Invoke(this, new ScriptEditRequestEventArgs { IsNew = true });
     }
 
-    /// <summary>新規スクリプト作成が要求されたときに発火</summary>
-    public event EventHandler? ScriptCreated;
+    /// <summary>スクリプト編集が要求されたときに発火（新規作成・既存編集共通）</summary>
+    public event EventHandler<ScriptEditRequestEventArgs>? EditRequested;
+
+    /// <summary>スクリプト削除後に発火</summary>
+    public event EventHandler<string>? ScriptDeleted;
 
     /// <summary>
     /// ユーザースクリプトを保存
@@ -419,4 +513,94 @@ internal class UserScriptData
     public string Category { get; set; } = "";
     public string Code { get; set; } = "";
     public string Description { get; set; } = "";
+}
+
+/// <summary>スクリプト編集リクエストイベント引数</summary>
+public class ScriptEditRequestEventArgs : EventArgs
+{
+    /// <summary>新規作成の場合 true</summary>
+    public bool IsNew { get; set; }
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Category { get; set; } = "";
+    public string Description { get; set; } = "";
+    public string Code { get; set; } = "";
+    public bool ReadOnly { get; set; }
+}
+
+/// <summary>
+/// Python スクリプト管理コンテナ（一覧 ↔ エディター切替）
+///
+/// PythonScriptsPanel（一覧）と PythonScriptEditorPanel（エディター）を
+/// 内包し、画面遷移を管理する。ホストアプリはこのコンテナを配置するだけで
+/// スクリプト管理機能が使える。
+///
+/// 使用例:
+/// <code>
+/// var container = new PythonScriptManagerContainer(addonManager, pythonRunner, "HarmonicSheet");
+/// rightPanelHost.RegisterPanel("python_scripts", container);
+/// </code>
+/// </summary>
+public class PythonScriptManagerContainer : UserControl
+{
+    private readonly PythonScriptsPanel _listPanel;
+    private readonly PythonScriptEditorPanel _editorPanel;
+    private readonly Grid _container;
+
+    public PythonScriptManagerContainer(
+        AddonManager addonManager,
+        PythonScriptRunner pythonRunner,
+        string productName)
+    {
+        _listPanel = new PythonScriptsPanel(addonManager, pythonRunner, productName);
+        _editorPanel = new PythonScriptEditorPanel(addonManager, pythonRunner);
+
+        _container = new Grid();
+        _container.Children.Add(_listPanel);
+        _container.Children.Add(_editorPanel);
+
+        // 初期状態: 一覧を表示
+        _editorPanel.Visibility = Visibility.Collapsed;
+
+        // 一覧 → エディター
+        _listPanel.EditRequested += (_, args) =>
+        {
+            if (args.IsNew)
+                _editorPanel.OpenNew();
+            else
+                _editorPanel.OpenForEdit(args.Id, args.Name, args.Category, args.Description, args.Code, args.ReadOnly);
+
+            _listPanel.Visibility = Visibility.Collapsed;
+            _editorPanel.Visibility = Visibility.Visible;
+        };
+
+        // エディター → 一覧（戻る）
+        _editorPanel.BackRequested += (_, _) => ShowList();
+
+        // エディター → 保存 → 一覧
+        _editorPanel.SaveRequested += (_, args) =>
+        {
+            _listPanel.SaveUserScript(args.Id, args.Name, args.Category, args.Code, args.Description);
+            ShowList();
+        };
+
+        Content = _container;
+    }
+
+    /// <summary>ドキュメント処理実行のデリゲート（ホストアプリが設定）</summary>
+    public Func<string, string, Task<DocumentProcessingResult>>? OnExecuteOnDocument
+    {
+        get => _listPanel.OnExecuteOnDocument;
+        set => _listPanel.OnExecuteOnDocument = value;
+    }
+
+    /// <summary>一覧画面を表示</summary>
+    public void ShowList()
+    {
+        _editorPanel.Visibility = Visibility.Collapsed;
+        _listPanel.Visibility = Visibility.Visible;
+    }
+
+    /// <summary>スクリプト一覧を再読み込み</summary>
+    public void ReloadScripts() => _listPanel.LoadScripts();
 }
