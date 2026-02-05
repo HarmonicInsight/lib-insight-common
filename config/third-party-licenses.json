@@ -6,13 +6,30 @@
 
   "syncfusion": {
     "provider": "Syncfusion",
-    "description": "Essential Studio® - UI コンポーネントスイート（SfSpreadsheet, SfRichTextBoxAdv 等）",
+    "description": "Essential Studio® - UI コンポーネントスイート",
     "licenseUrl": "https://www.syncfusion.com/products/communitylicense",
     "licenseKey": "Ngo9BigBOggjHTQxAR8/V1JGaF5cXGpCfExxWmFZfVhgd19EaFZQRGYuP1ZhSXxVdkRgWH9dcnxURmheWUB9XEA=",
     "type": "essentialStudio7Day",
     "issuedDate": "2026-01-31",
     "expiresDate": "2026-02-07",
     "envVar": "SYNCFUSION_LICENSE_KEY",
-    "usedBy": ["IOSH", "IOSD"]
+    "usedBy": ["IOSH", "IOSD", "INSS"],
+    "components": {
+      "IOSH": {
+        "name": "XlsIO + SfSpreadsheet",
+        "description": "Excel (.xlsx/.xls) の読み書き・表示",
+        "packages": ["Syncfusion.SfSpreadsheet.WPF", "Syncfusion.XlsIO.WPF"]
+      },
+      "IOSD": {
+        "name": "DocIO + SfRichTextBoxAdv",
+        "description": "Word (.docx/.doc) の読み書き・表示",
+        "packages": ["Syncfusion.SfRichTextBoxAdv.WPF", "Syncfusion.DocIO.WPF", "Syncfusion.DocToPDFConverter.WPF"]
+      },
+      "INSS": {
+        "name": "Presentation",
+        "description": "PowerPoint (.pptx/.ppt) の読み書き",
+        "packages": ["Syncfusion.Presentation.WPF"]
+      }
+    }
   }
 }
