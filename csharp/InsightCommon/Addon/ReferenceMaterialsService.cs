@@ -205,7 +205,7 @@ public class ReferenceMaterialsService
 
         foreach (var result in results)
         {
-            sb.AppendLine($"\n### {result.Title}（関連度: {result.Relevance:P0}）");
+            sb.AppendLine(System.Globalization.CultureInfo.InvariantCulture, $"\n### {result.Title}（関連度: {result.Relevance:P0}）");
             sb.AppendLine(result.Snippet);
         }
 
@@ -364,7 +364,7 @@ public class ReferenceMaterialsService
             TextLength = d.ExtractedText.Length,
         }).ToList();
 
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(data, JsonOptions.WriteIndented);
         File.WriteAllText(_indexPath, json);
     }
 
@@ -376,7 +376,7 @@ public class ReferenceMaterialsService
         {
             var json = File.ReadAllText(_indexPath);
             var entries = JsonSerializer.Deserialize<List<ReferenceIndexEntry>>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                JsonOptions.CaseInsensitive);
             if (entries == null) return;
 
             foreach (var entry in entries)

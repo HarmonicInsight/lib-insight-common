@@ -253,7 +253,7 @@ public class InsightLicenseManager
             email = CurrentLicense.Email,
             expires = CurrentLicense.ExpiresAt?.ToString("O")
         };
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(data, JsonOptions.WriteIndented);
         File.WriteAllText(_licenseFile, json);
     }
 

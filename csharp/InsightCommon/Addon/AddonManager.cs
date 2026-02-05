@@ -350,7 +350,7 @@ public class AddonManager
                     Settings = kv.Value.Settings,
                 });
 
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(data, JsonOptions.WriteIndented);
         File.WriteAllText(_settingsPath, json);
     }
 
@@ -396,7 +396,7 @@ public class AddonManager
         {
             var json = File.ReadAllText(_adminProfilePath);
             _adminProfile = JsonSerializer.Deserialize<AdminDeployProfile>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                JsonOptions.CaseInsensitive);
 
             if (_adminProfile == null) return;
 

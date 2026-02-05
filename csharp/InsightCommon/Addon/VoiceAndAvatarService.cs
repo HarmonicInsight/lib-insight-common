@@ -75,7 +75,7 @@ public class VoiceAndAvatarService
     private async Task<SpeakResult> SpeakWithVoiceVoxAsync(string text, SpeakOptions options)
     {
         var speakerId = options.VoiceId ?? _addonManager.GetModuleSetting<int>(
-            "vrm_avatar", "voicevox_speaker_id", 3).ToString();
+            "vrm_avatar", "voicevox_speaker_id", 3).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
         try
         {

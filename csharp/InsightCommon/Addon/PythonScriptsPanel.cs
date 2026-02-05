@@ -164,7 +164,7 @@ public class PythonScriptsPanel : UserControl
                 {
                     var json = File.ReadAllText(file);
                     var script = JsonSerializer.Deserialize<UserScriptData>(json,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        JsonOptions.CaseInsensitive);
                     if (script != null)
                     {
                         _allScripts.Add(new ScriptItem
@@ -387,7 +387,7 @@ public class PythonScriptsPanel : UserControl
             Description = description ?? "",
         };
 
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(data, JsonOptions.WriteIndented);
         File.WriteAllText(Path.Combine(_userScriptsDir, $"{data.Id}.json"), json);
 
         LoadScripts();
