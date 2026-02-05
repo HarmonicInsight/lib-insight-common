@@ -73,10 +73,12 @@ public class PythonScriptsPanel : UserControl
 
         var addButton = new Button
         {
-            Content = "＋ 新規",
+            Content = "＋",
             Padding = new Thickness(8, 4, 8, 4),
             Margin = new Thickness(0, 0, 4, 0),
             VerticalAlignment = VerticalAlignment.Center,
+            FontWeight = FontWeights.Bold,
+            ToolTip = "新規スクリプト作成",
         };
         addButton.Click += (_, _) => OnAddScript();
         DockPanel.SetDock(addButton, Dock.Right);
@@ -218,7 +220,7 @@ public class PythonScriptsPanel : UserControl
         {
             _scriptList.Children.Add(new TextBlock
             {
-                Text = "スクリプトがありません。「＋ 新規」から追加できます。",
+                Text = "スクリプトがありません。「＋」から追加できます。",
                 Foreground = InsightColors.ToBrush(InsightColors.Light.TextTertiary),
                 Margin = new Thickness(0, 20, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -287,20 +289,33 @@ public class PythonScriptsPanel : UserControl
         Grid.SetColumn(infoPanel, 0);
         grid.Children.Add(infoPanel);
 
-        // 実行ボタン
+        // ボタンパネル
         var buttonPanel = new StackPanel
         {
             Orientation = Orientation.Horizontal,
             VerticalAlignment = VerticalAlignment.Center,
         };
 
+        var scriptCapture = script;
+
+        // 編集ボタン
+        var editButton = new Button
+        {
+            Content = "✏",
+            Padding = new Thickness(6, 4, 6, 4),
+            Margin = new Thickness(8, 0, 0, 0),
+            ToolTip = "編集",
+        };
+        editButton.Click += (_, _) => OnEditScript(scriptCapture);
+        buttonPanel.Children.Add(editButton);
+
+        // 実行ボタン
         var runButton = new Button
         {
             Content = "▶ 実行",
             Padding = new Thickness(10, 4, 10, 4),
-            Margin = new Thickness(8, 0, 0, 0),
+            Margin = new Thickness(4, 0, 0, 0),
         };
-        var scriptCapture = script;
         runButton.Click += async (_, _) => await OnRunScript(scriptCapture);
         buttonPanel.Children.Add(runButton);
 
@@ -370,8 +385,17 @@ public class PythonScriptsPanel : UserControl
         ScriptCreated?.Invoke(this, EventArgs.Empty);
     }
 
+    private void OnEditScript(ScriptItem script)
+    {
+        // スクリプト編集をエディターで開く
+        ScriptEditRequested?.Invoke(this, new ScriptEditEventArgs(script.Id, script.Name, script.Category, script.Code));
+    }
+
     /// <summary>新規スクリプト作成が要求されたときに発火</summary>
     public event EventHandler? ScriptCreated;
+
+    /// <summary>スクリプト編集が要求されたときに発火</summary>
+    public event EventHandler<ScriptEditEventArgs>? ScriptEditRequested;
 
     /// <summary>
     /// ユーザースクリプトを保存
@@ -419,4 +443,21 @@ internal sealed class UserScriptData
     public string Category { get; set; } = "";
     public string Code { get; set; } = "";
     public string Description { get; set; } = "";
+}
+
+/// <summary>スクリプト編集イベントの引数</summary>
+public sealed class ScriptEditEventArgs : EventArgs
+{
+    public string Id { get; }
+    public string Name { get; }
+    public string Category { get; }
+    public string Code { get; }
+
+    public ScriptEditEventArgs(string id, string name, string category, string code)
+    {
+        Id = id;
+        Name = name;
+        Category = category;
+        Code = code;
+    }
 }
