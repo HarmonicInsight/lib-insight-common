@@ -73,13 +73,29 @@
 import type { ProductCode, PlanCode } from './products';
 
 // =============================================================================
+// サーバー定数
+// =============================================================================
+
+/** Orchestrator デフォルトポート */
+export const ORCHESTRATOR_PORT = 9400;
+
+/** Orchestrator ベース URL（ローカル開発用） */
+export const ORCHESTRATOR_BASE_URL = `http://localhost:${ORCHESTRATOR_PORT}`;
+
+/** ハートビート間隔 (ms) */
+export const HEARTBEAT_INTERVAL_MS = 30_000;
+
+/** ハートビートタイムアウト (ms) — この時間ハートビートが無ければ切断扱い */
+export const HEARTBEAT_TIMEOUT_MS = 90_000;
+
+// =============================================================================
 // Agent 定義
 // =============================================================================
 
 /** Agent の状態 */
 export type AgentStatus = 'online' | 'offline' | 'busy' | 'error';
 
-/** Agent 情報 */
+/** Agent 情報（設計レベル） */
 export interface AgentInfo {
   /** Agent 固有 ID（UUID） */
   agentId: string;
@@ -107,6 +123,40 @@ export interface AgentInfo {
   tags: string[];
 }
 
+/** Agent 登録リクエスト（REST API 用） */
+export interface AgentRegisterRequest {
+  /** Agent 表示名 */
+  name: string;
+  /** マシンのホスト名 */
+  hostname: string;
+  /** Agent バージョン */
+  version: string;
+  /** 対応機能タグ（例: ['ui-automation', 'excel', 'web'] */
+  capabilities: string[];
+  /** テナントID（マルチテナント時） */
+  tenant_id?: string;
+}
+
+/** Agent レコード（DB + API レスポンス） */
+export interface AgentRecord {
+  id: string;
+  name: string;
+  hostname: string;
+  version: string;
+  capabilities: string[];
+  status: AgentStatus;
+  tenant_id: string | null;
+  last_heartbeat_at: string | null;
+  connected_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Agent ステータス更新リクエスト */
+export interface AgentStatusUpdateRequest {
+  status: AgentStatus;
+}
+
 // =============================================================================
 // JOB 定義
 // =============================================================================
@@ -124,6 +174,12 @@ export type JobExecutionStatus =
   | 'cancelled'   // キャンセル
   | 'timeout';    // タイムアウト
 
+/** Job ステータス（REST API 用、pending を含む） */
+export type JobStatus = 'pending' | 'queued' | 'dispatched' | 'running' | 'completed' | 'failed' | 'cancelled';
+
+/** Job 優先度 */
+export type JobPriority = 'low' | 'normal' | 'high' | 'urgent';
+
 /** スケジュール定義 */
 export interface JobSchedule {
   /** スケジュール種別 */
@@ -140,7 +196,7 @@ export interface JobSchedule {
   timezone: string;
 }
 
-/** JOB 定義 */
+/** JOB 定義（設計レベル） */
 export interface JobDefinition {
   /** JOB ID (UUID) */
   jobId: string;
@@ -197,6 +253,42 @@ export interface JobTargetAgent {
   product?: ProductCode;
   /** タグ（type='by_tag'） */
   tags?: string[];
+}
+
+/** Job 作成リクエスト（REST API 用） */
+export interface JobCreateRequest {
+  /** Job 名 */
+  name: string;
+  /** Job 定義 JSON（InsightBot Studio の JobDefinition 形式） */
+  definition: Record<string, unknown>;
+  /** 優先度 */
+  priority?: JobPriority;
+  /** 対象 Agent ID（指定なしで自動割当） */
+  target_agent_id?: string;
+  /** 要求する機能タグ（Agent の capabilities とマッチ） */
+  required_capabilities?: string[];
+  /** テナントID */
+  tenant_id?: string;
+  /** 作成者 ユーザーID */
+  created_by?: string;
+}
+
+/** Job レコード（DB + API レスポンス） */
+export interface JobRecord {
+  id: string;
+  name: string;
+  definition: Record<string, unknown>;
+  status: JobStatus;
+  priority: JobPriority;
+  target_agent_id: string | null;
+  assigned_agent_id: string | null;
+  required_capabilities: string[];
+  tenant_id: string | null;
+  created_by: string | null;
+  dispatched_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 // =============================================================================
@@ -362,7 +454,43 @@ export interface JobExecutionLog {
 }
 
 // =============================================================================
-// 通信プロトコル
+// Execution 型定義（DB レコード用）
+// =============================================================================
+
+/** Execution ステータス */
+export type ExecutionStatus = 'running' | 'completed' | 'failed' | 'cancelled';
+
+/** Execution レコード（DB + API レスポンス） */
+export interface ExecutionRecord {
+  id: string;
+  job_id: string;
+  agent_id: string;
+  status: ExecutionStatus;
+  /** ブロック単位の進捗 (0-100) */
+  progress: number;
+  /** 実行ログ */
+  logs: ExecutionLog[];
+  /** 実行結果 */
+  result: Record<string, unknown> | null;
+  /** エラー情報 */
+  error: string | null;
+  started_at: string;
+  finished_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** 実行ログエントリ */
+export interface ExecutionLog {
+  timestamp: string;
+  level: 'info' | 'warn' | 'error' | 'debug';
+  message: string;
+  block_id?: string;
+  block_name?: string;
+}
+
+// =============================================================================
+// 通信プロトコル（低レベル メッセージ型）
 // =============================================================================
 
 /**
@@ -506,7 +634,7 @@ export interface AgentDocumentResult {
   error?: string;
 }
 
-/** 全メッセージタイプのユニオン */
+/** 全メッセージタイプのユニオン（低レベルプロトコル） */
 export type OrchestratorMessage =
   | OrchestratorJobDispatch
   | OrchestratorJobCancel
@@ -522,6 +650,144 @@ export type AgentMessage =
   | AgentWorkflowStepCompleted
   | AgentWorkflowCompleted
   | AgentDocumentResult;
+
+// =============================================================================
+// WebSocket メッセージ型（サーバー実装用 — 型付き WS プロトコル）
+// =============================================================================
+
+/** WebSocket メッセージ種別 */
+export type WsMessageType =
+  // Agent → Orchestrator
+  | 'agent:auth'
+  | 'agent:heartbeat'
+  | 'agent:status'
+  | 'agent:job:accept'
+  | 'agent:job:reject'
+  | 'agent:job:progress'
+  | 'agent:job:complete'
+  | 'agent:job:fail'
+  // Orchestrator → Agent
+  | 'server:welcome'
+  | 'server:heartbeat_ack'
+  | 'server:job:dispatch'
+  | 'server:job:cancel'
+  | 'server:error';
+
+/** WebSocket メッセージ基底型 */
+export interface WsMessageBase {
+  type: WsMessageType;
+  timestamp: string;
+}
+
+// --- Agent → Orchestrator ---
+
+export interface WsAgentAuth extends WsMessageBase {
+  type: 'agent:auth';
+  agent_id: string;
+  /** 認証トークン（将来用） */
+  token?: string;
+}
+
+export interface WsAgentHeartbeat extends WsMessageBase {
+  type: 'agent:heartbeat';
+  agent_id: string;
+  /** CPU 使用率 (0-100) */
+  cpu_usage?: number;
+  /** メモリ使用率 (0-100) */
+  memory_usage?: number;
+}
+
+export interface WsAgentStatus extends WsMessageBase {
+  type: 'agent:status';
+  agent_id: string;
+  status: AgentStatus;
+}
+
+export interface WsAgentJobAccept extends WsMessageBase {
+  type: 'agent:job:accept';
+  job_id: string;
+  execution_id: string;
+}
+
+export interface WsAgentJobReject extends WsMessageBase {
+  type: 'agent:job:reject';
+  job_id: string;
+  reason: string;
+}
+
+export interface WsAgentJobProgress extends WsMessageBase {
+  type: 'agent:job:progress';
+  job_id: string;
+  execution_id: string;
+  progress: number;
+  current_block?: string;
+  log?: ExecutionLog;
+}
+
+export interface WsAgentJobComplete extends WsMessageBase {
+  type: 'agent:job:complete';
+  job_id: string;
+  execution_id: string;
+  result: Record<string, unknown>;
+}
+
+export interface WsAgentJobFail extends WsMessageBase {
+  type: 'agent:job:fail';
+  job_id: string;
+  execution_id: string;
+  error: string;
+}
+
+// --- Orchestrator → Agent ---
+
+export interface WsServerWelcome extends WsMessageBase {
+  type: 'server:welcome';
+  agent_id: string;
+  server_version: string;
+  heartbeat_interval_ms: number;
+}
+
+export interface WsServerHeartbeatAck extends WsMessageBase {
+  type: 'server:heartbeat_ack';
+}
+
+export interface WsServerJobDispatch extends WsMessageBase {
+  type: 'server:job:dispatch';
+  job_id: string;
+  execution_id: string;
+  definition: Record<string, unknown>;
+}
+
+export interface WsServerJobCancel extends WsMessageBase {
+  type: 'server:job:cancel';
+  job_id: string;
+  reason?: string;
+}
+
+export interface WsServerError extends WsMessageBase {
+  type: 'server:error';
+  code: string;
+  message: string;
+}
+
+/** Agent → Orchestrator メッセージ Union */
+export type WsAgentMessage =
+  | WsAgentAuth
+  | WsAgentHeartbeat
+  | WsAgentStatus
+  | WsAgentJobAccept
+  | WsAgentJobReject
+  | WsAgentJobProgress
+  | WsAgentJobComplete
+  | WsAgentJobFail;
+
+/** Orchestrator → Agent メッセージ Union */
+export type WsServerMessage =
+  | WsServerWelcome
+  | WsServerHeartbeatAck
+  | WsServerJobDispatch
+  | WsServerJobCancel
+  | WsServerError;
 
 // =============================================================================
 // REST API エンドポイント定義
@@ -540,14 +806,18 @@ export const ORCHESTRATOR_API = {
   /** WebSocket エンドポイント */
   ws: '/ws/agent',
 
-  /** REST エンドポイント */
+  /** REST エンドポイント（ネスト構造） */
   endpoints: {
+    // Health check
+    health: { method: 'GET' as const, path: '/api/health' },
     // Agent 管理
     agents: {
       list: { method: 'GET' as const, path: '/api/agents' },
-      register: { method: 'POST' as const, path: '/api/agents/register' },
+      register: { method: 'POST' as const, path: '/api/agents' },
+      get: { method: 'GET' as const, path: '/api/agents/:agentId' },
       unregister: { method: 'DELETE' as const, path: '/api/agents/:agentId' },
       status: { method: 'GET' as const, path: '/api/agents/:agentId/status' },
+      updateStatus: { method: 'PATCH' as const, path: '/api/agents/:agentId/status' },
     },
     // JOB 管理
     jobs: {
@@ -558,6 +828,7 @@ export const ORCHESTRATOR_API = {
       delete: { method: 'DELETE' as const, path: '/api/jobs/:jobId' },
       dispatch: { method: 'POST' as const, path: '/api/jobs/:jobId/dispatch' },
       cancel: { method: 'POST' as const, path: '/api/jobs/:jobId/cancel' },
+      executions: { method: 'GET' as const, path: '/api/jobs/:jobId/executions' },
     },
     // 実行ログ
     executions: {
@@ -574,6 +845,7 @@ export const ORCHESTRATOR_API = {
       delete: { method: 'DELETE' as const, path: '/api/workflows/:workflowId' },
       dispatch: { method: 'POST' as const, path: '/api/workflows/:workflowId/dispatch' },
       cancel: { method: 'POST' as const, path: '/api/workflows/:workflowId/cancel' },
+      executions: { method: 'GET' as const, path: '/api/workflows/:workflowId/executions' },
     },
     // スケジュール
     schedules: {
@@ -583,7 +855,38 @@ export const ORCHESTRATOR_API = {
       disable: { method: 'POST' as const, path: '/api/schedules/:jobId/disable' },
     },
   },
+
+  // --- フラット参照（サーバー実装で直接利用） ---
+  HEALTH: '/api/health',
+  AGENT_REGISTER:      '/api/agents',
+  AGENT_LIST:          '/api/agents',
+  AGENT_GET:           '/api/agents/:id',
+  AGENT_UPDATE_STATUS: '/api/agents/:id/status',
+  AGENT_DELETE:        '/api/agents/:id',
+  JOB_CREATE:   '/api/jobs',
+  JOB_LIST:     '/api/jobs',
+  JOB_GET:      '/api/jobs/:id',
+  JOB_DISPATCH: '/api/jobs/:id/dispatch',
+  JOB_CANCEL:   '/api/jobs/:id/cancel',
+  EXECUTION_LIST:       '/api/jobs/:id/executions',
+  EXECUTION_GET:        '/api/executions/:id',
+  WS_AGENT: '/ws/agent',
 } as const;
+
+/** API レスポンス共通ラッパー */
+export interface OrchestratorApiResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+  };
+  meta?: {
+    total?: number;
+    page?: number;
+    per_page?: number;
+  };
+}
 
 // =============================================================================
 // Agent 設定（InsightOffice 側）
@@ -626,6 +929,12 @@ export const ORCHESTRATOR_LIMITS: Record<PlanCode, {
   maxConcurrentDispatches: number;
   logRetentionDays: number;
 }> = {
+  FREE: {
+    maxAgents: 0,
+    schedulerEnabled: false,
+    maxConcurrentDispatches: 0,
+    logRetentionDays: 0,
+  },
   TRIAL: {
     maxAgents: 5,
     schedulerEnabled: true,
@@ -683,6 +992,10 @@ export function canDispatchJob(plan: PlanCode, currentRunningJobs: number): bool
 
 export default {
   // 定数
+  ORCHESTRATOR_PORT,
+  ORCHESTRATOR_BASE_URL,
+  HEARTBEAT_INTERVAL_MS,
+  HEARTBEAT_TIMEOUT_MS,
   ORCHESTRATOR_API,
   ORCHESTRATOR_LIMITS,
   DEFAULT_AGENT_CONFIG,
