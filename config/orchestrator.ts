@@ -871,6 +871,34 @@ export const ORCHESTRATOR_API = {
   EXECUTION_LIST:       '/api/jobs/:id/executions',
   EXECUTION_GET:        '/api/executions/:id',
   WS_AGENT: '/ws/agent',
+  // Schedules
+  SCHEDULE_LIST:   '/api/schedules',
+  SCHEDULE_CREATE: '/api/schedules',
+  SCHEDULE_GET:    '/api/schedules/:id',
+  SCHEDULE_UPDATE: '/api/schedules/:id',
+  SCHEDULE_DELETE: '/api/schedules/:id',
+  // Workflows
+  WORKFLOW_LIST:     '/api/workflows',
+  WORKFLOW_CREATE:   '/api/workflows',
+  WORKFLOW_GET:      '/api/workflows/:id',
+  WORKFLOW_UPDATE:   '/api/workflows/:id',
+  WORKFLOW_DELETE:   '/api/workflows/:id',
+  WORKFLOW_DISPATCH: '/api/workflows/:id/dispatch',
+  // Alerts
+  ALERT_LIST:   '/api/alerts',
+  ALERT_CREATE: '/api/alerts',
+  ALERT_GET:    '/api/alerts/:id',
+  ALERT_UPDATE: '/api/alerts/:id',
+  ALERT_DELETE: '/api/alerts/:id',
+  ALERT_HISTORY: '/api/alerts/:id/history',
+  // Assets
+  ASSET_LIST:   '/api/assets',
+  ASSET_CREATE: '/api/assets',
+  ASSET_GET:    '/api/assets/:id',
+  ASSET_UPDATE: '/api/assets/:id',
+  ASSET_DELETE: '/api/assets/:id',
+  // Dashboard
+  DASHBOARD_STATS: '/api/dashboard/stats',
 } as const;
 
 /** API レスポンス共通ラッパー */
@@ -984,6 +1012,226 @@ export function canDispatchJob(plan: PlanCode, currentRunningJobs: number): bool
   const limit = ORCHESTRATOR_LIMITS[plan].maxConcurrentDispatches;
   if (limit === -1) return true;
   return currentRunningJobs < limit;
+}
+
+// =============================================================================
+// Schedule 定義（サーバー DB レコード用）
+// =============================================================================
+
+/** スケジュール種別 */
+export type ScheduleType = 'once' | 'cron' | 'interval';
+
+/** スケジュールレコード（DB + API レスポンス） */
+export interface ScheduleRecord {
+  id: string;
+  job_id: string;
+  type: ScheduleType;
+  cron_expression: string | null;
+  interval_minutes: number | null;
+  execute_at: string | null;
+  enabled: boolean;
+  timezone: string;
+  last_run_at: string | null;
+  next_run_at: string | null;
+  tenant_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** スケジュール作成リクエスト */
+export interface ScheduleCreateRequest {
+  job_id: string;
+  type: ScheduleType;
+  cron_expression?: string;
+  interval_minutes?: number;
+  execute_at?: string;
+  enabled?: boolean;
+  timezone?: string;
+  tenant_id?: string;
+}
+
+// =============================================================================
+// Workflow 定義（サーバー DB レコード用）
+// =============================================================================
+
+/** ワークフローステップ（DB JSON 用） */
+export interface WorkflowStepRecord {
+  step_index: number;
+  name: string;
+  job_id: string;
+  document_path?: string;
+  on_failure: 'stop' | 'skip' | 'retry';
+  timeout_seconds?: number;
+}
+
+/** ワークフローレコード（DB + API レスポンス） */
+export interface WorkflowRecord {
+  id: string;
+  name: string;
+  description: string | null;
+  steps: WorkflowStepRecord[];
+  trigger: 'manual' | 'scheduled' | 'event';
+  enabled: boolean;
+  tenant_id: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** ワークフロー作成リクエスト */
+export interface WorkflowCreateRequest {
+  name: string;
+  description?: string;
+  steps: WorkflowStepRecord[];
+  trigger?: 'manual' | 'scheduled' | 'event';
+  enabled?: boolean;
+  tenant_id?: string;
+  created_by?: string;
+}
+
+/** ワークフロー実行レコード（DB + API レスポンス） */
+export interface WorkflowExecutionRecord {
+  id: string;
+  workflow_id: string;
+  agent_id: string | null;
+  status: ExecutionStatus;
+  current_step: number;
+  step_results: Array<{
+    step_index: number;
+    execution_id: string | null;
+    status: ExecutionStatus | 'pending';
+    started_at: string | null;
+    finished_at: string | null;
+    error: string | null;
+  }>;
+  started_at: string;
+  finished_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// =============================================================================
+// Alert 定義（サーバー DB レコード用）
+// =============================================================================
+
+/** アラート種別 */
+export type AlertType = 'job_failed' | 'job_succeeded' | 'agent_offline' | 'workflow_failed' | 'schedule_missed';
+
+/** 通知チャネル */
+export type NotificationChannel = 'email' | 'webhook' | 'slack' | 'teams';
+
+/** アラートレコード（DB + API レスポンス） */
+export interface AlertRecord {
+  id: string;
+  name: string;
+  type: AlertType;
+  channel: NotificationChannel;
+  destination: string;
+  enabled: boolean;
+  filter_job_ids: string[] | null;
+  filter_agent_ids: string[] | null;
+  tenant_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** アラート作成リクエスト */
+export interface AlertCreateRequest {
+  name: string;
+  type: AlertType;
+  channel: NotificationChannel;
+  destination: string;
+  enabled?: boolean;
+  filter_job_ids?: string[];
+  filter_agent_ids?: string[];
+  tenant_id?: string;
+}
+
+/** アラート履歴レコード（DB + API レスポンス） */
+export interface AlertHistoryRecord {
+  id: string;
+  alert_id: string;
+  event_type: AlertType;
+  event_payload: Record<string, unknown>;
+  sent_at: string;
+  delivery_status: 'pending' | 'sent' | 'failed';
+  error: string | null;
+  created_at: string;
+}
+
+// =============================================================================
+// Asset 定義（サーバー DB レコード用）
+// =============================================================================
+
+/** アセット種別 */
+export type AssetType = 'text' | 'integer' | 'boolean' | 'credential';
+
+/** アセットスコープ */
+export type AssetScope = 'global' | 'per_agent';
+
+/** アセットレコード（DB + API レスポンス） */
+export interface AssetRecord {
+  id: string;
+  name: string;
+  type: AssetType;
+  value: string | null;
+  scope: AssetScope;
+  description: string | null;
+  agent_ids: string[] | null;
+  tenant_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** アセット作成リクエスト */
+export interface AssetCreateRequest {
+  name: string;
+  type: AssetType;
+  value?: string;
+  scope?: AssetScope;
+  description?: string;
+  agent_ids?: string[];
+  tenant_id?: string;
+}
+
+// =============================================================================
+// Dashboard 統計（API レスポンス用）
+// =============================================================================
+
+/** ダッシュボード統計 */
+export interface OrchestratorStats {
+  agents: {
+    total: number;
+    online: number;
+    busy: number;
+    offline: number;
+    error: number;
+  };
+  jobs: {
+    total: number;
+    pending: number;
+    running: number;
+    completed_today: number;
+    failed_today: number;
+  };
+  workflows: {
+    total: number;
+    enabled: number;
+    running: number;
+  };
+  schedules: {
+    total: number;
+    enabled: number;
+    next_run_in_minutes: number | null;
+  };
+  alerts: {
+    total: number;
+    triggered_today: number;
+  };
+  assets: {
+    total: number;
+    credentials: number;
+  };
 }
 
 // =============================================================================
