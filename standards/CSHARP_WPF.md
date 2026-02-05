@@ -804,6 +804,153 @@ public void CellOperations(IWorksheet sheet)
 }
 ```
 
+### INSS (InsightSlide) における Presentation 使用パターン
+
+Presentation は PowerPoint プレゼンテーション (.pptx/.ppt) の読み書き・操作を行うライブラリです。
+
+#### 必須 NuGet パッケージ
+
+```xml
+<ItemGroup>
+    <!-- PowerPoint バックエンド処理 -->
+    <PackageReference Include="Syncfusion.Presentation.WPF" Version="*" />
+    <!-- PDF変換（オプション） -->
+    <PackageReference Include="Syncfusion.PresentationToPdfConverter.WPF" Version="*" />
+    <!-- 画像変換（オプション） -->
+    <PackageReference Include="Syncfusion.PresentationRenderer.WPF" Version="*" />
+    <!-- ライセンス管理（共通） -->
+    <PackageReference Include="Syncfusion.Licensing" Version="*" />
+</ItemGroup>
+```
+
+#### 基本的な使用パターン
+
+```csharp
+using Syncfusion.Presentation;
+
+// === プレゼンテーションの読み込み ===
+public IPresentation LoadPresentation(string filePath)
+{
+    return Presentation.Open(filePath);
+}
+
+// === プレゼンテーションの保存 ===
+public void SavePresentation(IPresentation presentation, string filePath)
+{
+    presentation.Save(filePath);
+}
+
+// === 新規作成 ===
+public IPresentation CreatePresentation()
+{
+    return Presentation.Create();
+}
+```
+
+#### テキスト抽出（AIレビュー用）
+
+```csharp
+// === 全スライドからテキスト抽出 ===
+public IEnumerable<SlideText> ExtractAllText(IPresentation presentation)
+{
+    foreach (ISlide slide in presentation.Slides)
+    {
+        int slideNumber = presentation.Slides.IndexOf(slide) + 1;
+
+        foreach (IShape shape in slide.Shapes)
+        {
+            if (shape is ITextBox textBox)
+            {
+                yield return new SlideText
+                {
+                    SlideNumber = slideNumber,
+                    ShapeId = shape.ShapeId,
+                    ShapeName = shape.ShapeName,
+                    Text = textBox.TextBody.Text
+                };
+            }
+        }
+    }
+}
+
+public record SlideText
+{
+    public int SlideNumber { get; init; }
+    public int ShapeId { get; init; }
+    public string ShapeName { get; init; } = "";
+    public string Text { get; init; } = "";
+}
+
+// === スライドノート抽出 ===
+public IEnumerable<string> ExtractNotes(IPresentation presentation)
+{
+    foreach (ISlide slide in presentation.Slides)
+    {
+        if (slide.NotesSlide != null)
+        {
+            yield return slide.NotesSlide.NotesTextBody.Text;
+        }
+    }
+}
+```
+
+#### テキスト検索・置換
+
+```csharp
+// === 一括検索・置換（用語統一など） ===
+public void FindAndReplace(IPresentation presentation, string find, string replace)
+{
+    foreach (ISlide slide in presentation.Slides)
+    {
+        foreach (IShape shape in slide.Shapes)
+        {
+            if (shape is ITextBox textBox)
+            {
+                foreach (IParagraph paragraph in textBox.TextBody.Paragraphs)
+                {
+                    foreach (ITextPart textPart in paragraph.TextParts)
+                    {
+                        if (textPart.Text.Contains(find))
+                        {
+                            textPart.Text = textPart.Text.Replace(find, replace);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+#### スライドサムネイル生成
+
+```csharp
+using Syncfusion.PresentationRenderer;
+
+// === スライドを画像に変換 ===
+public void ExportSlideAsImage(IPresentation presentation, int slideIndex, string outputPath)
+{
+    presentation.PresentationRenderer = new PresentationRenderer();
+    using var stream = presentation.Slides[slideIndex].ConvertToImage(ExportImageFormat.Png);
+    using var fileStream = File.Create(outputPath);
+    stream.CopyTo(fileStream);
+}
+```
+
+#### PDF 変換
+
+```csharp
+using Syncfusion.PresentationToPdfConverter;
+using Syncfusion.Pdf;
+
+public void ConvertToPdf(IPresentation presentation, string outputPath)
+{
+    using var pdfDocument = PresentationToPdfConverter.Convert(presentation);
+    using var stream = File.Create(outputPath);
+    pdfDocument.Save(stream);
+}
+```
+
 ### 必須実装: ThirdPartyLicenses.cs
 
 各アプリに `ThirdPartyLicenses.cs` を作成し、共通 JSON からキーを読み込みます。

@@ -27,8 +27,12 @@
       },
       "INSS": {
         "name": "Presentation",
-        "description": "PowerPoint (.pptx/.ppt) の読み書き",
-        "packages": ["Syncfusion.Presentation.WPF"]
+        "description": "PowerPoint (.pptx/.ppt) の読み書き・サムネイル生成・PDF変換",
+        "packages": [
+          "Syncfusion.Presentation.WPF",
+          "Syncfusion.PresentationToPdfConverter.WPF",
+          "Syncfusion.PresentationRenderer.WPF"
+        ]
       }
     }
   }
