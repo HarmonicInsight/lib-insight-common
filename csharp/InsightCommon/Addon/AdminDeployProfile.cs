@@ -106,7 +106,7 @@ public static class AdminProfileLoader
         {
             var json = File.ReadAllText(path);
             return JsonSerializer.Deserialize<AdminDeployProfile>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                JsonOptions.CaseInsensitive);
         }
         catch
         {
@@ -171,6 +171,6 @@ public static class AdminProfileLoader
             ],
         };
 
-        return JsonSerializer.Serialize(profile, new JsonSerializerOptions { WriteIndented = true });
+        return JsonSerializer.Serialize(profile, JsonOptions.WriteIndented);
     }
 }

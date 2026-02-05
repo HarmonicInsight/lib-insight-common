@@ -164,7 +164,7 @@ public class PythonScriptsPanel : UserControl
                 {
                     var json = File.ReadAllText(file);
                     var script = JsonSerializer.Deserialize<UserScriptData>(json,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        JsonOptions.CaseInsensitive);
                     if (script != null)
                     {
                         _allScripts.Add(new ScriptItem
@@ -387,7 +387,7 @@ public class PythonScriptsPanel : UserControl
             Description = description ?? "",
         };
 
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(data, JsonOptions.WriteIndented);
         File.WriteAllText(Path.Combine(_userScriptsDir, $"{data.Id}.json"), json);
 
         LoadScripts();
@@ -400,7 +400,7 @@ public class PythonScriptsPanel : UserControl
 
 internal enum ScriptSource { User, Admin }
 
-internal class ScriptItem
+internal sealed class ScriptItem
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
@@ -412,7 +412,7 @@ internal class ScriptItem
     public List<string> RequiredPackages { get; set; } = [];
 }
 
-internal class UserScriptData
+internal sealed class UserScriptData
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";

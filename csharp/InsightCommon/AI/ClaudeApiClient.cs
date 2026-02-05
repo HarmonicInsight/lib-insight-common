@@ -150,11 +150,7 @@ public class ClaudeApiClient : IDisposable
         if (!string.IsNullOrEmpty(systemContext))
             requestObj["system"] = systemContext;
 
-        var jsonOpts = new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-        var responseBody = await SendRequestAsync(requestObj, cancellationToken, jsonOpts);
+        var responseBody = await SendRequestAsync(requestObj, cancellationToken, JsonOptions.IgnoreNull);
         return ParseToolResponse(responseBody);
     }
 

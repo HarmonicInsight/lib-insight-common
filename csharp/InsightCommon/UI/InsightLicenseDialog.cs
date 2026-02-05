@@ -122,7 +122,7 @@ public class InsightLicenseDialog : Window
 
     // ── 現在のプランセクション ──
 
-    private UIElement BuildPlanSection()
+    private Border BuildPlanSection()
     {
         var border = CreateCardBorder();
         border.Margin = new Thickness(0, 0, 0, 12);
@@ -164,7 +164,7 @@ public class InsightLicenseDialog : Window
 
     // ── 機能一覧セクション ──
 
-    private UIElement BuildFeaturesSection()
+    private StackPanel BuildFeaturesSection()
     {
         var container = new StackPanel { Margin = new Thickness(0, 0, 0, 12) };
 
@@ -223,7 +223,7 @@ public class InsightLicenseDialog : Window
 
     // ── ライセンス認証セクション ──
 
-    private UIElement BuildInputSection()
+    private StackPanel BuildInputSection()
     {
         var container = new StackPanel { Margin = new Thickness(0, 0, 0, 0) };
 

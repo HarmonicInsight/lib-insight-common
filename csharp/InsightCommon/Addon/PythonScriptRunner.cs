@@ -347,7 +347,7 @@ print(json.dumps(diagnostics))
             await process.WaitForExitAsync();
 
             var version = (stdout + stderr).Trim();
-            var available = version.StartsWith("Python ");
+            var available = version.StartsWith("Python ", StringComparison.Ordinal);
 
             return new PythonEnvironmentInfo
             {
@@ -527,7 +527,7 @@ print(json.dumps(diagnostics))
         try { File.Delete(path); } catch { }
     }
 
-    private class ProcessResult
+    private sealed class ProcessResult
     {
         public int ExitCode { get; set; }
         public string Stdout { get; set; } = "";
