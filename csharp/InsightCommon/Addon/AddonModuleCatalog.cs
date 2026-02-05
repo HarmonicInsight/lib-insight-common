@@ -148,6 +148,21 @@ public static class AddonModuleCatalog
             Icon = "Person",
             ThemeColor = "#EC4899",
         },
+        ["bot_agent"] = new AddonModuleInfo
+        {
+            Id = "bot_agent",
+            Name = "InsightBot Agent",
+            NameJa = "InsightBot Agent",
+            Description = "Receive and execute JOBs from InsightBot Orchestrator. Enables remote Python script execution, scheduling, and centralized monitoring.",
+            DescriptionJa = "InsightBot（Orchestrator）から JOB を受信して実行する Agent 機能。リモートでの Python スクリプト実行・スケジュール実行・集中監視を実現。",
+            Distribution = AddonDistributionType.Bundled,
+            PanelPosition = AddonPanelPosition.Tab,
+            RequiredFeatureKey = "ai_editor",
+            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            RequiresModules = ["python_runtime"],
+            Icon = "Robot",
+            ThemeColor = "#6366F1",
+        },
     };
 
     /// <summary>
@@ -159,7 +174,8 @@ public static class AddonModuleCatalog
         {
             SupportedModules = [
                 "ai_assistant", "python_runtime", "ai_code_editor", "python_scripts",
-                "reference_materials", "board", "messaging", "voice_input", "vrm_avatar"
+                "reference_materials", "board", "messaging", "voice_input", "vrm_avatar",
+                "bot_agent"
             ],
             DefaultEnabled = ["ai_assistant", "board", "messaging"],
         },
