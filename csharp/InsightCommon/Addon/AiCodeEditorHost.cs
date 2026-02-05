@@ -327,7 +327,7 @@ public class AiCodeEditorHost : UserControl
     private TextBox? _fallbackEditor;
     private TextBlock? _statusText;
 
-    private UIElement CreateFallbackEditor()
+    private TextBox CreateFallbackEditor()
     {
         _fallbackEditor = new TextBox
         {

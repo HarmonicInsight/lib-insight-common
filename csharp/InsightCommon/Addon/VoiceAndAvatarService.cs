@@ -39,7 +39,7 @@ namespace InsightCommon.Addon;
 /// InsertTextAtCursor(text.Text);
 /// </code>
 /// </summary>
-public class VoiceAndAvatarService
+public class VoiceAndAvatarService : IDisposable
 {
     private readonly AddonManager _addonManager;
     private readonly HttpClient _httpClient = new();
@@ -425,6 +425,12 @@ public class VoiceAndAvatarService
     {
         // MP3: 約128kbps = 16KB/sec
         return format == "mp3" ? (int)(sizeBytes / 16.0) : 0;
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
 

@@ -400,7 +400,7 @@ public class PythonScriptsPanel : UserControl
 
 internal enum ScriptSource { User, Admin }
 
-internal class ScriptItem
+internal sealed class ScriptItem
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
@@ -412,7 +412,7 @@ internal class ScriptItem
     public List<string> RequiredPackages { get; set; } = [];
 }
 
-internal class UserScriptData
+internal sealed class UserScriptData
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";

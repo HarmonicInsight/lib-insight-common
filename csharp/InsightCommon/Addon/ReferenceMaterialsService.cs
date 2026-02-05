@@ -185,7 +185,7 @@ public class ReferenceMaterialsService
             var doc = _documents.FirstOrDefault(d => d.Id == id);
             if (doc == null) continue;
 
-            sb.AppendLine($"\n### {doc.FileName}");
+            sb.AppendLine(System.Globalization.CultureInfo.InvariantCulture, $"\n### {doc.FileName}");
             sb.AppendLine(doc.ExtractedText);
         }
 
@@ -437,7 +437,7 @@ public class SearchResult
     public double Relevance { get; set; }
 }
 
-internal class ReferenceIndexEntry
+internal sealed class ReferenceIndexEntry
 {
     public string Id { get; set; } = "";
     public string FileName { get; set; } = "";

@@ -226,7 +226,7 @@ public class AddonManager
                 {
                     return JsonSerializer.Deserialize<T>(jsonElement.GetRawText());
                 }
-                return (T)Convert.ChangeType(value, typeof(T));
+                return (T)Convert.ChangeType(value, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
             }
             catch
             {
@@ -528,7 +528,7 @@ public class AddonModuleViewModel
 }
 
 /// <summary>ユーザー設定の永続化用</summary>
-internal class AddonUserSetting
+internal sealed class AddonUserSetting
 {
     public bool Enabled { get; set; }
     public Dictionary<string, object> Settings { get; set; } = new();

@@ -26,7 +26,7 @@ public static class VoiceInputHelper
         // Win key up
         inputs[3] = CreateKeyInput(NativeMethods.VK_LWIN, true);
 
-        NativeMethods.SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<NativeMethods.INPUT>());
+        _ = NativeMethods.SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<NativeMethods.INPUT>());
     }
 
     private static NativeMethods.INPUT CreateKeyInput(ushort vk, bool keyUp)

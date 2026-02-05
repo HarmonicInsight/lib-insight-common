@@ -165,8 +165,8 @@ public class InsightLicenseManager
         DateTime? expiresAt = null;
         try
         {
-            var year = 2000 + int.Parse(yymm[..2]);
-            var month = int.Parse(yymm[2..]);
+            var year = 2000 + int.Parse(yymm[..2], System.Globalization.CultureInfo.InvariantCulture);
+            var month = int.Parse(yymm[2..], System.Globalization.CultureInfo.InvariantCulture);
             expiresAt = month == 12
                 ? new DateTime(year + 1, 1, 1).AddDays(-1)
                 : new DateTime(year, month + 1, 1).AddDays(-1);
@@ -294,7 +294,7 @@ public class InsightLicenseManager
         get
         {
             if (!CurrentLicense.ExpiresAt.HasValue) return "-";
-            return CurrentLicense.ExpiresAt.Value.ToString("yyyy/MM/dd");
+            return CurrentLicense.ExpiresAt.Value.ToString("yyyy/MM/dd", System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }
