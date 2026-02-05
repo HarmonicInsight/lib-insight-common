@@ -151,7 +151,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
-| 独自のモデル選択 UI | `resolvePersonaForMessage()` でシステム自動選択（ユーザーにモデル名を見せない） |
+| 独自のモデル選択UI | モデルはティア（Standard/Premium）で自動決定 |
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
 
 ## 5. 製品コード一覧・価格戦略
@@ -367,81 +367,43 @@ calculateWholesalePrice(39800, 'silver');
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
-| AI モデル | **Opus** 含む全モデル |
-| ライセンス制御 | TRIAL: 全機能 / STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
-| 追加パック | ¥10,000 / 100回 |
-| モデル選択 | **システム自動選択**（タスク内容に応じて最適モデルを自動決定、ユーザーには非公開） |
-| 内部モデル | Haiku（軽量タスク）/ Sonnet（標準タスク）/ Opus（高度な分析） |
+| モデル選択 | ティアで自動決定（ユーザーは選べない） |
+| Standard ティア | Sonnet（基本プラン / Standard アドオン） |
+| Premium ティア | Opus（Premium アドオン / TRIAL / ENT） |
+| ライセンス制御 | FREE: 20回 / PRO: 100回 / ENT: 無制限（STD は AI なし） |
+| 追加パック | Standard ¥10,000 / 200回、Premium ¥20,000 / 200回 |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
-**タスク別モデル自動選択ルール（内部ロジック）:**
+**モデルティア:**
 
-| タスク | 自動選択モデル | 用途例 |
-|--------|:----------:|--------|
-| 簡単な質問・ヘルプ | Haiku | 「SUM関数の使い方は？」 |
-| セル編集・数式入力 | Haiku | 「A1にSUM入れて」 |
-| データ分析・集計 | Sonnet | 「売上の月別推移を分析」 |
-| シート比較 | Sonnet | 「Sheet1のB列の差分を出して」 |
-| 全シート横断比較 | Opus | 「2ファイルの全体的な違いをまとめて」 |
-| コード生成 | Sonnet | 「CSVを読み込むスクリプト」 |
-| 文書校正 | Sonnet | 「誤字脱字をチェック」 |
-| レポート生成 | Opus | 「比較結果から報告書を作成」 |
-
-> アプリは `resolvePersonaForMessage()` を呼び出すだけで、タスクに最適なモデルが自動選択される。ユーザーにモデル名は表示しない。
-
-**製品別タスクコンテキスト対応:**
-
-| 製品 | 利用可能なコンテキスト |
-|------|----------------------|
-| IOSH | 簡単な質問、セル編集、データ分析、シート比較、全シート横断比較、レポート生成 |
-| INSS | 簡単な質問、文書校正、レポート生成 |
-| IOSD | 簡単な質問、文書校正、レポート生成 |
-| INPY | 簡単な質問、コード生成、データ分析、レポート生成 |
-| INBT | 簡単な質問、コード生成、レポート生成 |
+| ティア | モデル | 利用条件 |
+|--------|--------|---------|
+| Standard | Sonnet | 基本プラン（FREE/PRO）、Standard アドオン |
+| Premium | Opus | Premium アドオン購入、TRIAL、ENT |
 
 ```typescript
 import {
+  getModelForTier,
   getBaseSystemPrompt,
   canUseAiAssistant,
+  getAiCreditLabel,
   SPREADSHEET_TOOLS,
-  resolvePersonaForMessage,
-  inferTaskContext,
 } from '@/insight-common/config/ai-assistant';
+import { calculateCreditBalance } from '@/insight-common/config/usage-based-licensing';
 
 // ライセンスチェック
-canUseAiAssistant('PRO');   // true（月200回）
-canUseAiAssistant('STD');   // true（月50回）
-canUseAiAssistant('TRIAL'); // true（全機能）
+canUseAiAssistant('PRO');   // true
+canUseAiAssistant('FREE');  // true（20回制限）
+canUseAiAssistant('STD');   // false
 
-// システムプロンプト取得
-getBaseSystemPrompt('IOSH', 'ja');  // InsightOfficeSheet用プロンプト
-getBaseSystemPrompt('INSS', 'ja');  // InsightOfficeSlide用プロンプト
+// モデル決定（ティアから自動）
+const balance = calculateCreditBalance('PRO', 10, addonPacks);
+const model = getModelForTier(balance.effectiveModelTier);
+// → 'claude-sonnet-4-20250514'（Premium アドオンがあれば 'claude-opus-4-20250514'）
 
-// ======================================
-// モデル自動選択（アプリ組み込み用）
-// ======================================
-
-// IOSH: 「2ファイルの全体的な違いをまとめて」→ Opus が自動選択
-const result = resolvePersonaForMessage({
-  product: 'IOSH',
-  userMessage: '2ファイルの全体的な違いをまとめて',
-  locale: 'ja',
-});
-// { persona: { id: 'manabu', model: 'claude-opus-4-20250514', ... }, detectedContext: 'full_document_compare' }
-
-// Claude API 呼び出し時に result.persona.model を使用
-const model = result.persona.model;  // 'claude-opus-4-20250514'
-
-// IOSH: 「SUM関数の使い方は？」→ Haiku が自動選択
-const result2 = resolvePersonaForMessage({
-  product: 'IOSH',
-  userMessage: 'SUM関数の使い方は？',
-});
-// { persona: { id: 'shunsuke', model: 'claude-haiku-4-5-20251001', ... }, detectedContext: 'simple_chat' }
-
-// タスクコンテキストだけ取得したい場合
-inferTaskContext('IOSH', '売上の月別推移を分析して', 'ja');  // 'data_analysis'
-inferTaskContext('INSS', 'レポートを作成して', 'ja');        // 'report_generation'
+// クレジット表示
+getAiCreditLabel(balance, 'ja');
+// → "AIアシスタント（スタンダード（Sonnet））— 残り 90回"
 ```
 
 ### ライセンスキー形式
@@ -764,7 +726,7 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **サードパーティ**: Syncfusion キーが `third-party-licenses.json` 経由で登録されている
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
-- [ ] **AI アシスタント**: `resolvePersonaForMessage()` でタスク別モデル自動選択が実装されている
+- [ ] **AI アシスタント**: モデルティア（Standard/Premium）制御が実装されている
 - [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
 - [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
 - [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている

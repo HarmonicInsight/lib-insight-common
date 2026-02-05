@@ -21,9 +21,11 @@
  * │   │ (永続)   │ (14日)   │ (AIなし)  │  (/年)   │  (/年)   │     │
  * │   └──────────┴──────────┴──────────┴──────────┴──────────┘     │
  * │                                                                │
- * │   アドオンパック（追加購入）                                     │
+ * │   アドオンパック（追加購入・2ティア制）                           │
  * │   ┌──────────────────────────────────────────────┐             │
- * │   │  ¥10,000 / 200回（有効期限: 購入日から365日） │             │
+ * │   │  Standard  ¥10,000 / 200回（Sonnet まで）     │             │
+ * │   │  Premium   ¥20,000 / 200回（Opus 対応）       │             │
+ * │   │  有効期限: 購入日から365日                      │             │
  * │   │  複数パック購入可能（クレジットは累積加算）     │             │
  * │   └──────────────────────────────────────────────┘             │
  * │                                                                │
@@ -64,6 +66,15 @@ export type AiFeatureType = 'ai_assistant' | 'ai_editor';
 /** クレジット付与の基準期間 */
 export type QuotaPeriod = 'lifetime' | 'annual' | 'unlimited';
 
+/**
+ * AI モデルティア
+ *
+ * アドオンパックごとに利用可能なモデルの上限を制御する。
+ * - standard: Haiku / Sonnet まで
+ * - premium: Haiku / Sonnet / Opus（全モデル）
+ */
+export type AiModelTier = 'standard' | 'premium';
+
 /** プラン別 AI クレジット定義 */
 export interface AiQuotaDefinition {
   /** プランコード */
@@ -74,6 +85,8 @@ export interface AiQuotaDefinition {
   period: QuotaPeriod;
   /** AI 機能が利用可能か */
   aiEnabled: boolean;
+  /** 利用可能なモデルティア */
+  modelTier: AiModelTier;
   /** 説明（日本語） */
   descriptionJa: string;
   /** 説明（英語） */
@@ -92,6 +105,8 @@ export interface AddonPackDefinition {
   currency: 'JPY' | 'USD';
   /** 有効期間（日数） */
   validDays: number;
+  /** 利用可能なモデルティア */
+  modelTier: AiModelTier;
   /** 説明（日本語） */
   descriptionJa: string;
   /** 説明（英語） */
@@ -150,6 +165,8 @@ export interface CreditBalance {
   baseResetAt: Date | null;
   /** AI 機能が利用可能か */
   aiEnabled: boolean;
+  /** 現在の有効モデルティア（基本プラン + アドオンの最大値） */
+  effectiveModelTier: AiModelTier;
 }
 
 /** 使用可否チェック結果 */
@@ -197,6 +214,8 @@ export interface PurchasedAddonPack {
   expiresAt: string;
   /** 有効かどうか */
   isActive: boolean;
+  /** モデルティア */
+  modelTier: AiModelTier;
   /** 決済方法 */
   paymentMethod: 'paddle' | 'stripe' | 'msstore' | 'invoice' | 'admin';
   /** 決済 ID */
@@ -222,22 +241,25 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     baseCredits: 20,
     period: 'lifetime',
     aiEnabled: true,
-    descriptionJa: 'AI 20回付き無料版（Opus含む全モデル対応）',
-    descriptionEn: 'Free with 20 AI credits (all models including Opus)',
+    modelTier: 'standard',
+    descriptionJa: 'AI 20回付き無料版（Sonnetまで）',
+    descriptionEn: 'Free with 20 AI credits (up to Sonnet)',
   },
   TRIAL: {
     plan: 'TRIAL',
     baseCredits: -1,
     period: 'unlimited',
     aiEnabled: true,
-    descriptionJa: '全機能無制限（14日間）',
-    descriptionEn: 'Unlimited access for 14 days',
+    modelTier: 'premium',
+    descriptionJa: '全機能無制限（14日間・Opus対応）',
+    descriptionEn: 'Unlimited access for 14 days (including Opus)',
   },
   STD: {
     plan: 'STD',
     baseCredits: 0,
     period: 'annual',
     aiEnabled: false,
+    modelTier: 'standard',
     descriptionJa: 'AI機能なし（アドオン購入でAI利用可能）',
     descriptionEn: 'No AI features (purchase add-on to enable)',
   },
@@ -246,16 +268,18 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     baseCredits: 100,
     period: 'annual',
     aiEnabled: true,
-    descriptionJa: 'AI 100回付き（Opus含む全モデル対応）',
-    descriptionEn: '100 AI credits included (all models including Opus)',
+    modelTier: 'standard',
+    descriptionJa: 'AI 100回付き（Sonnetまで・Premiumアドオンで Opus利用可）',
+    descriptionEn: '100 AI credits included (up to Sonnet, Opus via Premium add-on)',
   },
   ENT: {
     plan: 'ENT',
     baseCredits: -1,
     period: 'unlimited',
     aiEnabled: true,
-    descriptionJa: 'AI無制限',
-    descriptionEn: 'Unlimited AI usage',
+    modelTier: 'premium',
+    descriptionJa: 'AI無制限（Opus対応）',
+    descriptionEn: 'Unlimited AI usage (including Opus)',
   },
 };
 
@@ -264,27 +288,43 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
 // =============================================================================
 
 /**
- * AI クレジット アドオンパック
+ * AI クレジット アドオンパック（2ティア制）
  *
+ * - Standard: ¥10,000 / 200回（Sonnet まで）
+ * - Premium:  ¥20,000 / 200回（Opus 対応）
  * - 全プランで購入可能（STD でもアドオンでAI利用可能に）
  * - 複数パック購入可能（クレジットは累積加算）
  * - 有効期限: 購入日から365日
+ * - Standard と Premium を混在購入可能
+ *   → 消費時に Premium パックのクレジットがあれば Opus 利用可能
  */
 export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   {
-    id: 'ai_credits_200',
+    id: 'ai_credits_200_standard',
     credits: 200,
     price: 10_000,
     currency: 'JPY',
     validDays: 365,
-    descriptionJa: 'AIクレジット 200回パック（Opus含む全モデル対応）',
-    descriptionEn: '200 AI Credits Pack (all models including Opus)',
+    modelTier: 'standard',
+    descriptionJa: 'AI標準パック 200回（Sonnetまで）',
+    descriptionEn: '200 AI Credits - Standard (up to Sonnet)',
+  },
+  {
+    id: 'ai_credits_200_premium',
+    credits: 200,
+    price: 20_000,
+    currency: 'JPY',
+    validDays: 365,
+    modelTier: 'premium',
+    descriptionJa: 'AIプレミアムパック 200回（Opus対応）',
+    descriptionEn: '200 AI Credits - Premium (including Opus)',
   },
 ];
 
 /** USD 参考価格（グローバル展開用） */
 export const AI_ADDON_PACKS_USD: Record<string, number> = {
-  ai_credits_200: 67, // $67 ≈ ¥10,000 at 150 JPY/USD
+  ai_credits_200_standard: 67,  // $67 ≈ ¥10,000
+  ai_credits_200_premium: 133,  // $133 ≈ ¥20,000
 };
 
 // =============================================================================
@@ -321,6 +361,42 @@ export function isUnlimitedPlan(plan: PlanCode): boolean {
 }
 
 /**
+ * プランの基本モデルティアを取得
+ */
+export function getModelTier(plan: PlanCode): AiModelTier {
+  return AI_QUOTA_BY_PLAN[plan].modelTier;
+}
+
+/**
+ * モデルティアに基づいて使用可能なモデルを取得
+ */
+export function getAllowedModels(tier: AiModelTier): string[] {
+  const standardModels = [
+    'claude-haiku-4-5-20251001',
+    'claude-sonnet-4-20250514',
+  ];
+  if (tier === 'premium') {
+    return [...standardModels, 'claude-opus-4-20250514'];
+  }
+  return standardModels;
+}
+
+/**
+ * 指定モデルがティアで利用可能かチェック
+ */
+export function isModelAllowedForTier(model: string, tier: AiModelTier): boolean {
+  return getAllowedModels(tier).includes(model);
+}
+
+/**
+ * モデルに必要な最低ティアを取得
+ */
+export function getRequiredTierForModel(model: string): AiModelTier {
+  if (model.includes('opus')) return 'premium';
+  return 'standard';
+}
+
+/**
  * クレジット残量を計算
  *
  * @param plan - 現在のプラン
@@ -349,6 +425,7 @@ export function calculateCreditBalance(
       totalUsed: baseUsed,
       baseResetAt: null,
       aiEnabled: true,
+      effectiveModelTier: quota.modelTier,
     };
   }
 
@@ -369,6 +446,13 @@ export function calculateCreditBalance(
   // STD でもアドオンがあれば AI 有効
   const aiEnabled = quota.aiEnabled || addonRemaining > 0;
 
+  // モデルティア: プラン基本 or 有効な Premium アドオンがあれば premium
+  const hasPremiumAddon = activePacks.some(
+    p => p.modelTier === 'premium' && p.remainingCredits > 0,
+  );
+  const effectiveModelTier: AiModelTier =
+    quota.modelTier === 'premium' || hasPremiumAddon ? 'premium' : 'standard';
+
   return {
     baseRemaining,
     baseTotal: quota.baseCredits,
@@ -381,6 +465,7 @@ export function calculateCreditBalance(
     totalUsed,
     baseResetAt: null, // サーバーサイドでライセンス期間から算出
     aiEnabled,
+    effectiveModelTier,
   };
 }
 
@@ -778,6 +863,10 @@ export default {
   isAiEnabledForPlan,
   getBaseCredits,
   isUnlimitedPlan,
+  getModelTier,
+  getAllowedModels,
+  isModelAllowedForTier,
+  getRequiredTierForModel,
   calculateCreditBalance,
   checkAiUsage,
   determineCreditSource,
