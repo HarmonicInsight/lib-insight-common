@@ -293,7 +293,7 @@ for name, lineno in imported_names:
         diagnostics.append({{
             'line': lineno,
             'column': 0,
-            'message': f""'{name}' imported but unused"",
+            'message': f""'{{name}}' imported but unused"",
             'severity': 'warning'
         }})
 
