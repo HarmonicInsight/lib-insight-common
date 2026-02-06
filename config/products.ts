@@ -31,7 +31,7 @@
 // =============================================================================
 
 /** 製品コード */
-export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'INPY' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'IVIN';
+export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'ISOF' | 'INPY' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'IVIN';
 
 /** プランコード（全製品 法人向け — FREE廃止） */
 export type PlanCode = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
@@ -260,6 +260,18 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightPy',
     description: 'AI editor-equipped Python execution platform for business automation',
     descriptionJa: 'AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤',
+  },
+
+  // =========================================================================
+  // Tier 4: Insight Senior Office（シニア向け社会貢献ツール）
+  // =========================================================================
+
+  ISOF: {
+    code: 'ISOF',
+    name: 'InsightSeniorOffice',
+    nameJa: 'InsightSeniorOffice',
+    description: 'AI-assisted office suite for senior users — spreadsheet, document, and iCloud email in one simple app',
+    descriptionJa: 'AIアシスタント搭載 — シニア向け統合オフィスツール（表計算・文書・iCloudメール）',
   },
 };
 
@@ -988,6 +1000,102 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'PowerPointファイルからの素材取込',
+    },
+  ],
+
+  // ========================================
+  // InsightSeniorOffice (ISOF) — Tier 4
+  // シニア向け統合オフィスツール
+  // ========================================
+  ISOF: [
+    {
+      key: 'spreadsheet',
+      name: 'Spreadsheet',
+      nameJa: '表計算',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: 'Excelファイルの読み込み・編集・保存',
+    },
+    {
+      key: 'document',
+      name: 'Document',
+      nameJa: '文書作成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: 'Wordドキュメントの読み込み・編集・保存',
+    },
+    {
+      key: 'icloud_mail',
+      name: 'iCloud Mail',
+      nameJa: 'iCloudメール',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: 'iCloudメールの送受信（iPhoneと同じメールをPCで閲覧）',
+    },
+    {
+      key: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AIアシスタント',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, ENT: -1 },
+      descriptionJa: 'AIによる自然言語操作支援（「A2に1万円入れて」等）（STD: 月50回 / ENT: 無制限）',
+    },
+    {
+      key: 'voice_input',
+      name: 'Voice Input',
+      nameJa: '音声入力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: '音声認識によるハンズフリー入力',
+    },
+    {
+      key: 'text_to_speech',
+      name: 'Text to Speech',
+      nameJa: '読み上げ',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: 'メール・文書の音声読み上げ',
+    },
+    {
+      key: 'font_scaling',
+      name: 'Font Scaling',
+      nameJa: '文字サイズ調整',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: '文字サイズ50%〜200%の拡大縮小',
+    },
+    {
+      key: 'setup_wizard',
+      name: 'Setup Wizard',
+      nameJa: '初期設定ウィザード',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: '5ステップの簡単初期設定（名前・メール・文字サイズ）',
+    },
+    {
+      key: 'tutorial',
+      name: 'Tutorial',
+      nameJa: 'チュートリアル',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: '10ステップの対話型ガイドツアー',
+    },
+    {
+      key: 'print',
+      name: 'Print',
+      nameJa: '印刷',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: 'シニア向け大きい文字での印刷',
+    },
+    {
+      key: 'contacts',
+      name: 'Contacts',
+      nameJa: '連絡先管理',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: '家族・友人・病院等のグループ別連絡先管理',
     },
   ],
 

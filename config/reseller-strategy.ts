@@ -354,6 +354,21 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     nfrLicenses: 2,
     notes: 'Python実行基盤。全パートナーが販売可能。業務自動化案件に有効。',
   },
+
+  // =========================================================================
+  // Tier 4: Insight Senior Office — 全パートナーが販売可能
+  // =========================================================================
+
+  ISOF: {
+    productCode: 'ISOF',
+    resellerEnabled: true,
+    minimumTier: 'registered',
+    pricingFlexibility: 'floor_price',
+    minimumSellingPriceRatio: 0.80,
+    demoLicenses: 10,
+    nfrLicenses: 3,
+    notes: 'シニア向け統合オフィスツール。全パートナーが販売可能。自治体・福祉法人案件に有効。デモライセンス多め（導入説明会用）。',
+  },
 };
 
 // =============================================================================
@@ -373,10 +388,10 @@ export const MEETING_PROPOSALS: MeetingProposal[] = [
   {
     name: 'スタンダード開始プラン',
     proposedTier: 'registered',
-    targetProducts: ['INSS', 'IOSH', 'IOSD', 'INPY'],
+    targetProducts: ['INSS', 'IOSH', 'IOSD', 'INPY', 'ISOF'],
     initialPackage: [
       'NFRライセンス各2本（パートナー社内利用）',
-      'デモライセンス各5本（顧客デモ用）',
+      'デモライセンス各5本（顧客デモ用）※ISOF: デモ10本',
       '販売トレーニング（オンライン、2時間）',
       '販促資料一式（日本語）',
       'パートナーポータルアクセス',

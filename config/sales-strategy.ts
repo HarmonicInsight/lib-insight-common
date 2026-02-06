@@ -371,6 +371,92 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     },
     positioning: 'Windows業務をPythonで自動化する実行環境。コンサル案件でクライアントの業務調査・データ収集を自動化。',
   },
+
+  // =========================================================================
+  // Tier 4: Insight Senior Office（シニア向け社会貢献ツール）
+  // =========================================================================
+
+  ISOF: {
+    productCode: 'ISOF',
+    channel: 'consulting',
+    targetMarkets: [
+      {
+        region: 'JP',
+        phase: 1,
+        languages: ['ja'],
+        currencies: ['JPY'],
+        salesMethods: ['direct_consulting', 'partner_reseller'],
+        notes: '地方創生・デジタルデバイド解消コンサル案件。自治体DX予算・総務省デジタル活用支援推進事業と連動。企業のシニア社員向け導入。',
+      },
+      {
+        region: 'SEA',
+        phase: 3,
+        languages: ['en'],
+        currencies: ['USD'],
+        salesMethods: ['partner_reseller'],
+        notes: '東南アジアの高齢化対応需要。現地パートナー経由。',
+      },
+    ],
+    customerSegments: [
+      {
+        name: 'Municipal DX Department',
+        nameJa: '自治体DX推進部門',
+        description: 'デジタルデバイド解消・住民向けIT講座で使用するツール導入',
+        companySize: 'large',
+        recommendedPlan: 'ENT',
+      },
+      {
+        name: 'Welfare & Care Facilities',
+        nameJa: '福祉法人・介護施設',
+        description: 'Office未導入の施設でExcel報告書を扱う職員向け',
+        companySize: 'medium',
+        recommendedPlan: 'STD',
+      },
+      {
+        name: 'Enterprise HR / General Affairs',
+        nameJa: '企業 人事・総務部門',
+        description: 'Office操作が困難なシニア社員向けの代替ツール',
+        companySize: 'large',
+        recommendedPlan: 'STD',
+      },
+    ],
+    marketingChannels: [
+      {
+        name: 'Regional Revitalization Consulting',
+        type: 'direct',
+        targetRegions: ['JP'],
+        priority: 1,
+        description: '地方創生コンサル案件への組み込み提案（最もROIが高い）',
+      },
+      {
+        name: 'Municipal DX Proposal',
+        type: 'direct',
+        targetRegions: ['JP'],
+        priority: 2,
+        description: '自治体DX推進・デジタルデバイド解消事業への提案',
+      },
+      {
+        name: 'Existing Client Senior Division',
+        type: 'direct',
+        targetRegions: ['JP'],
+        priority: 3,
+        description: '既存コンサル案件のクライアント企業のシニア社員部門への追加提案',
+      },
+      {
+        name: 'Welfare Partner Referral',
+        type: 'partner',
+        targetRegions: ['JP'],
+        priority: 4,
+        description: '福祉系パートナー経由での介護施設・福祉法人への導入',
+      },
+    ],
+    trialStrategy: {
+      durationDays: 14,
+      expectedConversionRate: 0.50,
+      noCreditCardRequired: true,
+    },
+    positioning: 'Office不要でExcelファイルを扱えるシニア向け統合ツール。AIが操作を手伝い、iPhoneのメールもPCで見られる。デジタルデバイド解消の切り札。年9,800円の社会貢献価格。',
+  },
 };
 
 // =============================================================================
