@@ -120,14 +120,34 @@ namespace InsightCommon.Addon;
 ///
 /// ## 製品別の実装差分
 ///
-/// | 項目 | HMSH | HMDC | HMSL |
+/// | 項目 | IOSH | IOSD | INSS |
 /// |------|------|------|------|
-/// | ProductCode | "HMSH" | "HMDC" | "HMSL" |
-/// | ProductName | "HarmonicSheet" | "HarmonicDoc" | "HarmonicSlide" |
+/// | ProductCode | "IOSH" | "IOSD" | "INSS" |
+/// | ProductName | "InsightOfficeSheet" | "InsightOfficeDoc" | "InsightSlide" |
 /// | board/messaging | ✅ サポート | ❌ なし | ❌ なし |
 /// | ドキュメント形式 | .xlsx | .docx | .pptx |
 /// | Python ライブラリ | openpyxl | python-docx | python-pptx |
-/// | Syncfusion コンポーネント | SfSpreadsheet | SfRichTextBox | SfPresentation |
+/// | Syncfusion コンポーネント | SfSpreadsheet (XlsIO) | SfRichTextBoxAdv (DocIO) | SfPresentation |
+///
+/// ## Syncfusion コンポーネント詳細
+///
+/// ### IOSH (Excel)
+/// - UI: Syncfusion.SfSpreadsheet.WPF
+/// - Backend: Syncfusion.XlsIO.WPF
+/// - License: Syncfusion.Licensing
+///
+/// ### IOSD (Word)
+/// - UI: Syncfusion.SfRichTextBoxAdv.WPF
+/// - Backend: Syncfusion.DocIO.WPF
+/// - PDF変換: Syncfusion.DocToPDFConverter.WPF
+/// - License: Syncfusion.Licensing
+///
+/// ### INSS (PowerPoint)
+/// - Backend: Syncfusion.Presentation.WPF
+/// - License: Syncfusion.Licensing
+///
+/// ライセンスキーは insight-common/config/third-party-licenses.json で共通管理。
+/// 各製品で ThirdPartyLicenseProvider.RegisterSyncfusion() を App.OnStartup で呼び出す。
 ///
 /// </summary>
 public static class AddonIntegrationGuide

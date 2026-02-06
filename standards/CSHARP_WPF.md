@@ -610,6 +610,347 @@ public class InsightLicenseManager
 
 Syncfusion 等のサードパーティライセンスキーは `insight-common/config/third-party-licenses.json` で**全製品共通管理**されています。各アプリに直書きしないでください。
 
+### Syncfusion コンポーネントマッピング
+
+| 製品 | 用途 | Syncfusion コンポーネント | NuGet パッケージ |
+|------|------|-------------------------|-----------------|
+| IOSH | Excel 操作 | SfSpreadsheet | `Syncfusion.SfSpreadsheet.WPF` |
+| IOSD | Word 操作 | SfRichTextBoxAdv (DocIO) | `Syncfusion.SfRichTextBoxAdv.WPF`, `Syncfusion.DocIO.WPF` |
+| INSS | PowerPoint 操作 | SfPresentation | `Syncfusion.Presentation.WPF` |
+
+### IOSD (InsightOfficeDoc) における DocIO 使用パターン
+
+DocIO は Word 文書 (.docx/.doc) の読み書き・操作を行うライブラリです。IOSD では以下のパターンで使用します。
+
+#### 必須 NuGet パッケージ
+
+```xml
+<ItemGroup>
+    <!-- Word 文書表示・編集 UI -->
+    <PackageReference Include="Syncfusion.SfRichTextBoxAdv.WPF" Version="*" />
+    <!-- Word 文書バックエンド処理（読み書き・変換） -->
+    <PackageReference Include="Syncfusion.DocIO.WPF" Version="*" />
+    <!-- ライセンス管理（共通） -->
+    <PackageReference Include="Syncfusion.Licensing" Version="*" />
+</ItemGroup>
+```
+
+#### 基本的な使用パターン
+
+```csharp
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
+using Syncfusion.Windows.Controls.RichTextBoxAdv;
+
+// === 文書の読み込み ===
+public WordDocument LoadDocument(string filePath)
+{
+    using var stream = File.OpenRead(filePath);
+    var document = new WordDocument(stream, FormatType.Automatic);
+    return document;
+}
+
+// === 文書の保存 ===
+public void SaveDocument(WordDocument document, string filePath, FormatType format = FormatType.Docx)
+{
+    using var stream = File.Create(filePath);
+    document.Save(stream, format);
+}
+
+// === SfRichTextBoxAdv への読み込み ===
+public void LoadToRichTextBox(SfRichTextBoxAdv richTextBox, string filePath)
+{
+    using var stream = File.OpenRead(filePath);
+    richTextBox.Load(stream, FormatType.Docx);
+}
+
+// === SfRichTextBoxAdv から保存 ===
+public void SaveFromRichTextBox(SfRichTextBoxAdv richTextBox, string filePath)
+{
+    using var stream = File.Create(filePath);
+    richTextBox.Save(stream, FormatType.Docx);
+}
+```
+
+#### テキスト抽出・検索
+
+```csharp
+// === 全文テキスト抽出 ===
+public string ExtractText(WordDocument document)
+{
+    return document.GetText();
+}
+
+// === 段落単位でのテキスト取得 ===
+public IEnumerable<string> GetParagraphs(WordDocument document)
+{
+    foreach (WSection section in document.Sections)
+    {
+        foreach (WParagraph paragraph in section.Body.Paragraphs)
+        {
+            yield return paragraph.Text;
+        }
+    }
+}
+
+// === テキスト検索・置換 ===
+public void FindAndReplace(WordDocument document, string find, string replace)
+{
+    document.Replace(find, replace, false, false);
+}
+```
+
+#### スタイル・書式設定
+
+```csharp
+// === 段落スタイル適用 ===
+public void ApplyHeadingStyle(WParagraph paragraph, int level)
+{
+    paragraph.ApplyStyle($"Heading {level}");
+}
+
+// === フォント設定 ===
+public void SetFontStyle(WTextRange textRange, string fontName, float fontSize)
+{
+    textRange.CharacterFormat.FontName = fontName;
+    textRange.CharacterFormat.FontSize = fontSize;
+}
+
+// === Ivory & Gold テーマカラーの適用 ===
+public void ApplyBrandColor(WTextRange textRange)
+{
+    // Gold (#B8942F) をアクセントカラーとして使用
+    textRange.CharacterFormat.TextColor = System.Drawing.Color.FromArgb(0xB8, 0x94, 0x2F);
+}
+```
+
+#### 表・画像の操作
+
+```csharp
+// === 表の作成 ===
+public WTable CreateTable(WSection section, int rows, int cols)
+{
+    var table = section.AddTable();
+    table.ResetCells(rows, cols);
+    return table;
+}
+
+// === 画像の挿入 ===
+public void InsertImage(WParagraph paragraph, string imagePath)
+{
+    using var stream = File.OpenRead(imagePath);
+    var picture = paragraph.AppendPicture(stream);
+    picture.Width = 200;
+    picture.Height = 150;
+}
+```
+
+#### PDF 変換
+
+```csharp
+using Syncfusion.DocToPDFConverter;
+using Syncfusion.Pdf;
+
+public void ConvertToPdf(WordDocument document, string outputPath)
+{
+    using var converter = new DocToPDFConverter();
+    using var pdfDocument = converter.ConvertToPDF(document);
+    using var stream = File.Create(outputPath);
+    pdfDocument.Save(stream);
+}
+```
+
+### IOSH (InsightOfficeSheet) における XlsIO 使用パターン
+
+XlsIO は Excel ブック (.xlsx/.xls) の読み書き・操作を行うライブラリです。
+
+#### 必須 NuGet パッケージ
+
+```xml
+<ItemGroup>
+    <!-- Excel 表示・編集 UI -->
+    <PackageReference Include="Syncfusion.SfSpreadsheet.WPF" Version="*" />
+    <!-- Excel バックエンド処理 -->
+    <PackageReference Include="Syncfusion.XlsIO.WPF" Version="*" />
+    <!-- ライセンス管理（共通） -->
+    <PackageReference Include="Syncfusion.Licensing" Version="*" />
+</ItemGroup>
+```
+
+#### 基本的な使用パターン
+
+```csharp
+using Syncfusion.XlsIO;
+
+// === ブックの読み込み ===
+public IWorkbook LoadWorkbook(string filePath)
+{
+    using var engine = new ExcelEngine();
+    var application = engine.Excel;
+    application.DefaultVersion = ExcelVersion.Xlsx;
+    return application.Workbooks.Open(filePath);
+}
+
+// === セル値の取得・設定 ===
+public void CellOperations(IWorksheet sheet)
+{
+    // 値の取得
+    var value = sheet.Range["A1"].Value;
+
+    // 値の設定
+    sheet.Range["B1"].Value = "Hello";
+    sheet.Range["C1"].Number = 123.45;
+    sheet.Range["D1"].DateTime = DateTime.Now;
+}
+```
+
+### INSS (InsightSlide) における Presentation 使用パターン
+
+Presentation は PowerPoint プレゼンテーション (.pptx/.ppt) の読み書き・操作を行うライブラリです。
+
+#### 必須 NuGet パッケージ
+
+```xml
+<ItemGroup>
+    <!-- PowerPoint バックエンド処理 -->
+    <PackageReference Include="Syncfusion.Presentation.WPF" Version="*" />
+    <!-- PDF変換（オプション） -->
+    <PackageReference Include="Syncfusion.PresentationToPdfConverter.WPF" Version="*" />
+    <!-- 画像変換（オプション） -->
+    <PackageReference Include="Syncfusion.PresentationRenderer.WPF" Version="*" />
+    <!-- ライセンス管理（共通） -->
+    <PackageReference Include="Syncfusion.Licensing" Version="*" />
+</ItemGroup>
+```
+
+#### 基本的な使用パターン
+
+```csharp
+using Syncfusion.Presentation;
+
+// === プレゼンテーションの読み込み ===
+public IPresentation LoadPresentation(string filePath)
+{
+    return Presentation.Open(filePath);
+}
+
+// === プレゼンテーションの保存 ===
+public void SavePresentation(IPresentation presentation, string filePath)
+{
+    presentation.Save(filePath);
+}
+
+// === 新規作成 ===
+public IPresentation CreatePresentation()
+{
+    return Presentation.Create();
+}
+```
+
+#### テキスト抽出（AIレビュー用）
+
+```csharp
+// === 全スライドからテキスト抽出 ===
+public IEnumerable<SlideText> ExtractAllText(IPresentation presentation)
+{
+    foreach (ISlide slide in presentation.Slides)
+    {
+        int slideNumber = presentation.Slides.IndexOf(slide) + 1;
+
+        foreach (IShape shape in slide.Shapes)
+        {
+            if (shape is ITextBox textBox)
+            {
+                yield return new SlideText
+                {
+                    SlideNumber = slideNumber,
+                    ShapeId = shape.ShapeId,
+                    ShapeName = shape.ShapeName,
+                    Text = textBox.TextBody.Text
+                };
+            }
+        }
+    }
+}
+
+public record SlideText
+{
+    public int SlideNumber { get; init; }
+    public int ShapeId { get; init; }
+    public string ShapeName { get; init; } = "";
+    public string Text { get; init; } = "";
+}
+
+// === スライドノート抽出 ===
+public IEnumerable<string> ExtractNotes(IPresentation presentation)
+{
+    foreach (ISlide slide in presentation.Slides)
+    {
+        if (slide.NotesSlide != null)
+        {
+            yield return slide.NotesSlide.NotesTextBody.Text;
+        }
+    }
+}
+```
+
+#### テキスト検索・置換
+
+```csharp
+// === 一括検索・置換（用語統一など） ===
+public void FindAndReplace(IPresentation presentation, string find, string replace)
+{
+    foreach (ISlide slide in presentation.Slides)
+    {
+        foreach (IShape shape in slide.Shapes)
+        {
+            if (shape is ITextBox textBox)
+            {
+                foreach (IParagraph paragraph in textBox.TextBody.Paragraphs)
+                {
+                    foreach (ITextPart textPart in paragraph.TextParts)
+                    {
+                        if (textPart.Text.Contains(find))
+                        {
+                            textPart.Text = textPart.Text.Replace(find, replace);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+#### スライドサムネイル生成
+
+```csharp
+using Syncfusion.PresentationRenderer;
+
+// === スライドを画像に変換 ===
+public void ExportSlideAsImage(IPresentation presentation, int slideIndex, string outputPath)
+{
+    presentation.PresentationRenderer = new PresentationRenderer();
+    using var stream = presentation.Slides[slideIndex].ConvertToImage(ExportImageFormat.Png);
+    using var fileStream = File.Create(outputPath);
+    stream.CopyTo(fileStream);
+}
+```
+
+#### PDF 変換
+
+```csharp
+using Syncfusion.PresentationToPdfConverter;
+using Syncfusion.Pdf;
+
+public void ConvertToPdf(IPresentation presentation, string outputPath)
+{
+    using var pdfDocument = PresentationToPdfConverter.Convert(presentation);
+    using var stream = File.Create(outputPath);
+    pdfDocument.Save(stream);
+}
+```
+
 ### 必須実装: ThirdPartyLicenses.cs
 
 各アプリに `ThirdPartyLicenses.cs` を作成し、共通 JSON からキーを読み込みます。
