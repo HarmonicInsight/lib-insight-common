@@ -156,10 +156,10 @@ const AI_PERSONAS: AiPersona[] = [
     id: 'manabu',
     nameJa: 'Claude 学',
     nameEn: 'Claude Manabu',
-    model: 'claude-opus-4-20250514',
+    model: 'claude-opus-4-6-20260131',
     themeColor: '#8C64C8',
-    descriptionJa: '深い思考力。レポート・精密な文書に最適',
-    descriptionEn: 'Deep thinker. Best for reports and documents requiring precision.',
+    descriptionJa: '深い思考力。レポート・ドキュメント評価・精密な文書に最適',
+    descriptionEn: 'Deep thinker. Best for reports, document evaluation, and documents requiring precision.',
     icon32: 'Assets/Personas/manabu_32.png',
     icon48: 'Assets/Personas/manabu_48.png',
   },
@@ -188,7 +188,7 @@ function getPersona(id: string): AiPersona | undefined {
 export function getModelForTier(tier: AiModelTier): string {
   switch (tier) {
     case 'premium':
-      return 'claude-opus-4-20250514';
+      return 'claude-opus-4-6-20260131';
     case 'standard':
     default:
       return 'claude-sonnet-4-20250514';
@@ -227,6 +227,7 @@ export const MODEL_PRICING: Record<string, { inputPer1M: number; outputPer1M: nu
   'claude-haiku-4-5-20251001': { inputPer1M: 1, outputPer1M: 5 },
   'claude-sonnet-4-20250514': { inputPer1M: 3, outputPer1M: 15 },
   'claude-opus-4-20250514': { inputPer1M: 15, outputPer1M: 75 },
+  'claude-opus-4-6-20260131': { inputPer1M: 15, outputPer1M: 75 },
 };
 
 /** 推定コストを計算 */
@@ -976,7 +977,8 @@ export type TaskContext =
   | 'full_document_compare' // 全シート横断の比較分析
   | 'code_generation'     // Pythonコード生成・修正（INPY/INBT）
   | 'document_review'     // 文書校正・レビュー（INSS/IOSD）
-  | 'report_generation';  // レポート・精密文書の生成
+  | 'report_generation'   // レポート・精密文書の生成
+  | 'document_evaluation'; // ドキュメント多角的評価（INSS/IOSH/IOSD — Opus 推奨）
 
 /** タスクコンテキスト → 推奨ペルソナのマッピング */
 const TASK_PERSONA_MAP: Record<TaskContext, {
@@ -1032,6 +1034,12 @@ const TASK_PERSONA_MAP: Record<TaskContext, {
     minimum: 'megumi',
     reasonJa: 'レポート・精密文書には学（Opus）がおすすめです。深い分析と正確な文章生成が得意です',
     reasonEn: 'Manabu (Opus) is recommended for reports requiring deep analysis and precise writing',
+  },
+  document_evaluation: {
+    recommended: 'manabu',
+    minimum: 'megumi',
+    reasonJa: 'ドキュメント評価には学（Opus 4.6）がおすすめです。拡張コンテキストで文書全体を俯瞰的に分析します',
+    reasonEn: 'Manabu (Opus 4.6) is recommended for document evaluation — extended context enables holistic document analysis',
   },
 };
 
@@ -1160,6 +1168,11 @@ export const TASK_CONTEXT_HINTS: Record<TaskContext, {
     keywordsEn: ['report', 'document', 'create', 'generate', 'write up'],
     toolNames: [],
   },
+  document_evaluation: {
+    keywordsJa: ['評価', '採点', 'スコア', 'グレード', '品質チェック', 'ドキュメント評価', '文書評価'],
+    keywordsEn: ['evaluate', 'evaluation', 'score', 'grade', 'quality check', 'assess', 'assessment'],
+    toolNames: [],
+  },
 };
 
 // =============================================================================
@@ -1173,25 +1186,28 @@ export const TASK_CONTEXT_HINTS: Record<TaskContext, {
  * TASK_CONTEXT_HINTS と照合してコンテキストを推定する。
  */
 const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
-  // InsightOfficeSheet: スプレッドシート系 + 比較 + レポート
+  // InsightOfficeSheet: スプレッドシート系 + 比較 + レポート + ドキュメント評価
   IOSH: [
     'simple_chat',
     'cell_edit',
     'data_analysis',
     'sheet_compare',
     'full_document_compare',
+    'document_evaluation',
     'report_generation',
   ],
-  // InsightOfficeSlide: 文書校正 + レポート
+  // InsightOfficeSlide: 文書校正 + ドキュメント評価 + レポート
   INSS: [
     'simple_chat',
     'document_review',
+    'document_evaluation',
     'report_generation',
   ],
-  // InsightOfficeDoc: 文書校正 + レポート
+  // InsightOfficeDoc: 文書校正 + ドキュメント評価 + レポート
   IOSD: [
     'simple_chat',
     'document_review',
+    'document_evaluation',
     'report_generation',
   ],
   // InsightPy: コード生成 + データ分析
@@ -1249,9 +1265,11 @@ export function inferTaskContext(
 
   // 優先度: 特殊コンテキスト → 汎用コンテキスト（simple_chat は最後）
   // full_document_compare を sheet_compare より先に判定（キーワードが包含関係にある）
+  // document_evaluation を document_review より先に判定（「評価」は「レビュー」より特殊）
   const priorityOrder: TaskContext[] = [
     'full_document_compare',
     'sheet_compare',
+    'document_evaluation',
     'report_generation',
     'code_generation',
     'document_review',
@@ -1546,7 +1564,7 @@ export default {
   getRecommendedPersona,
   checkPersonaForTask,
 
-  // 製品別タスクコンテキスト統合
+  // 製品別タスクコンテキスト統合（document_evaluation 含む）
   getTaskContextsForProduct,
   inferTaskContext,
   getPersonaGuidance,

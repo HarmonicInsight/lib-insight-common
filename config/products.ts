@@ -444,6 +444,15 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
     },
     {
+      key: 'document_evaluation',
+      name: 'Document Evaluation',
+      nameJa: 'ドキュメント評価',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
+      descriptionJa: 'AIによるプレゼンテーションの多角的評価・スコアリング・改善提案（Opus推奨・STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+    },
+    {
       key: 'voice_input',
       name: 'Voice Input',
       nameJa: '音声入力',
@@ -573,6 +582,15 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
     },
     {
+      key: 'document_evaluation',
+      name: 'Document Evaluation',
+      nameJa: 'ドキュメント評価',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
+      descriptionJa: 'AIによるスプレッドシートの多角的評価・スコアリング・改善提案（Opus推奨・STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+    },
+    {
       key: 'voice_input',
       name: 'Voice Input',
       nameJa: '音声入力',
@@ -669,6 +687,15 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
+    },
+    {
+      key: 'document_evaluation',
+      name: 'Document Evaluation',
+      nameJa: 'ドキュメント評価',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
+      descriptionJa: 'AIによるWord文書の多角的評価・スコアリング・改善提案（Opus推奨・STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
     },
     {
       key: 'voice_input',
