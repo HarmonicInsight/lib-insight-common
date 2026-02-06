@@ -267,6 +267,7 @@ export function getAiContextType(product: ProductCode): AiContextType | null {
     INSS: 'slide',
     IOSH: 'spreadsheet',
     IOSD: 'document',
+    ISOF: 'spreadsheet',
     INPY: 'code',
     INBT: 'code',
   };
@@ -1195,6 +1196,12 @@ const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
     'full_document_compare',
     'document_evaluation',
     'report_generation',
+  ],
+  // InsightSeniorOffice: シニア向け（簡易チャット + セル編集のみ、複雑な機能は不要）
+  ISOF: [
+    'simple_chat',
+    'cell_edit',
+    'document_review',
   ],
   // InsightOfficeSlide: 文書校正 + ドキュメント評価 + レポート
   INSS: [

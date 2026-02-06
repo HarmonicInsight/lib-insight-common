@@ -84,6 +84,33 @@
         ]
       },
       {
+        "id": "insight-senior-office",
+        "code": "ISOF",
+        "name": "InsightSeniorOffice",
+        "displayName": "Insight Senior Office",
+        "description": "AIアシスタント搭載 — シニア向け統合オフィスツール（表計算・文書・iCloudメール）",
+        "category": "office",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/app-harmonic-sheet",
+        "releasesRepository": "HarmonicInsight/releases",
+        "sharedLibrary": "HarmonicInsight.Common",
+        "hasAi": true,
+        "features": [
+          "excel-read-write",
+          "document-read-write",
+          "icloud-mail",
+          "ai-assistant",
+          "voice-input",
+          "text-to-speech",
+          "font-scaling",
+          "setup-wizard",
+          "tutorial",
+          "contacts"
+        ]
+      },
+      {
         "id": "insight-py",
         "code": "INPY",
         "name": "InsightPy",

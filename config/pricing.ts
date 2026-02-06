@@ -319,6 +319,34 @@ export const PRODUCT_PRICING: Record<ProductCode, ProductPricing> = {
     },
     notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回。1ユーザー/年。パートナー販売可。',
   },
+
+  // =========================================================================
+  // Tier 4: Insight Senior Office（シニア向け社会貢献ツール）
+  // =========================================================================
+
+  /**
+   * InsightSeniorOffice (ISOF)
+   * - シニア向け統合オフィスツール（表計算・文書・iCloudメール）
+   * - 地方創生・デジタルデバイド解消案件と連動
+   * - 社会貢献的価格設定（9,800円/人/年）
+   */
+  ISOF: {
+    productCode: 'ISOF',
+    channel: 'consulting',
+    channelDescription: '地方創生・デジタルデバイド解消コンサル案件、企業のシニア社員向けツールとして導入',
+    plans: {
+      TRIAL: null,
+      STD: {
+        annualPrice: 9_800,
+        currency: 'JPY',
+        monthlyEquivalent: 817,
+        unit: 'per_user',
+      },
+      PRO: null,
+      ENT: null,
+    },
+    notes: 'STD=全機能+AI月50回（Haikuのみ）。1ユーザー/年。PROプランなし（シンプルさ重視）。自治体・福祉法人向けENTは個別見積。',
+  },
 };
 
 // =============================================================================
@@ -389,6 +417,7 @@ export const GLOBAL_USD_PRICING: Partial<Record<ProductCode, Partial<Record<Plan
   IOSH: { STD: 265, PRO: 332 },
   IOSD: { STD: 265, PRO: 332 },
   INPY: { STD: 265, PRO: 332 },
+  ISOF: { STD: 65 },             // ¥9,800 / 150
 };
 
 /** USD 価格を取得（参考価格） */
