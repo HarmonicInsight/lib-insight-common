@@ -376,7 +376,7 @@ export function getAllowedModels(tier: AiModelTier): string[] {
     'claude-sonnet-4-20250514',
   ];
   if (tier === 'premium') {
-    return [...standardModels, 'claude-opus-4-20250514'];
+    return [...standardModels, 'claude-opus-4-20250514', 'claude-opus-4-6-20260131'];
   }
   return standardModels;
 }
@@ -390,6 +390,8 @@ export function isModelAllowedForTier(model: string, tier: AiModelTier): boolean
 
 /**
  * モデルに必要な最低ティアを取得
+ *
+ * Opus 系モデル（opus-4, opus-4-6 等）は premium ティアが必要。
  */
 export function getRequiredTierForModel(model: string): AiModelTier {
   if (model.includes('opus')) return 'premium';
