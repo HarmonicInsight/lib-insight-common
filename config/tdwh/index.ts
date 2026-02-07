@@ -67,6 +67,8 @@ export type {
   InterviewSessionData,
   InterviewMartId,
   InterviewCurationCategory,
+  InterviewTemplateDomain,
+  DomainMartMapping,
 } from './interview-mart';
 
 export {
@@ -82,6 +84,7 @@ export {
   INTERVIEW_TDWH_INSTANCE,
   INTERVIEW_CURATION_CONFIG,
   INTERVIEW_INTENT_KEYWORDS,
+  DOMAIN_MART_MAPPING,
   sessionToRawDocument,
   sessionToCuratedRecords,
   curatedRecordToChunks,
@@ -90,4 +93,6 @@ export {
   processInterviewSession,
   processInterviewSessions,
   getInterviewMartStats,
+  getMartMappingForDomain,
+  getRelevantMartIds,
 } from './interview-mart';
