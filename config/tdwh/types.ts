@@ -282,6 +282,9 @@ export type ChunkStrategyType =
   | 'case_study'           // 事例型（1 事例 = 1 チャンク、長い場合は段階分割）
   | 'construction_method'  // 工法・手法型（工種・手法単位）
   | 'safety_topic'         // 安全・コンプライアンス型（災害種別・作業種別単位）
+  | 'interview_qa_pair'    // インタビューQ&Aペア型（1問1答 = 1チャンク）
+  | 'interview_problem'    // インタビュー課題型（1課題/問題 = 1チャンク）
+  | 'interview_insight'    // インタビュー知見型（1知見/決定事項 = 1チャンク）
   | 'generic';             // 汎用（固定トークン数で分割）
 
 /** チャンク戦略設定 */
