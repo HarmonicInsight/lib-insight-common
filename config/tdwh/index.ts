@@ -8,14 +8,20 @@ export type {
   CrawlSchedule,
   SourceDefinition,
   RawDocument,
-  // Layer 2: マート
+  // Layer 2: キュレーション
+  CurationQuality,
+  CurationSourceType,
+  CuratedRecord,
+  ExtractedEntity,
+  CurationConfig,
+  // Layer 3: マート
   ChunkStrategyType,
   ChunkStrategyConfig,
   MetadataFieldType,
   MartDefinition,
   ClassificationResult,
   Chunk,
-  // Layer 3: ディスパッチ
+  // Layer 4: ディスパッチ
   MartQuery,
   IntentClassification,
   SearchResult,
@@ -28,7 +34,7 @@ export type {
   DispatcherConfig,
 } from './types';
 
-export { DEFAULT_DISPATCHER_CONFIG } from './types';
+export { DEFAULT_CURATION_CONFIG, DEFAULT_DISPATCHER_CONFIG } from './types';
 
 export type {
   EmbeddingProvider,

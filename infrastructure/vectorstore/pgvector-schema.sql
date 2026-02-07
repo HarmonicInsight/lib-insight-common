@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS tdwh_sources (
     instance_id     TEXT NOT NULL,              -- TDWH インスタンス ID
     name            TEXT NOT NULL,              -- 表示名
     url             TEXT NOT NULL,              -- 取得先 URL
-    type            TEXT NOT NULL CHECK (type IN ('web', 'web_recursive', 'pdf', 'rss', 'api')),
+    type            TEXT NOT NULL CHECK (type IN ('web', 'web_recursive', 'pdf', 'rss', 'api', 'scan_ocr', 'transcript', 'manual')),
     mart_id         TEXT NOT NULL REFERENCES tdwh_marts(id),
     schedule        TEXT NOT NULL CHECK (schedule IN ('daily', 'weekly', 'monthly', 'quarterly', 'annually')),
     description     TEXT,
@@ -63,11 +63,13 @@ CREATE TABLE IF NOT EXISTS tdwh_raw_documents (
     url           TEXT NOT NULL,
     title         TEXT,
     content       TEXT NOT NULL,
-    content_type  TEXT NOT NULL CHECK (content_type IN ('html', 'pdf', 'text', 'json')),
+    content_type  TEXT NOT NULL CHECK (content_type IN ('html', 'pdf', 'text', 'json', 'scan', 'transcript')),
     content_hash  TEXT NOT NULL,                -- SHA-256（重複検出用）
     crawled_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     metadata      JSONB DEFAULT '{}'::JSONB,
-    is_processed  BOOLEAN DEFAULT FALSE,
+    quality_score FLOAT,                        -- 取得品質 (0.0-1.0)。OCR等は低い
+    original_file TEXT,                         -- 元ファイルパス（再OCR用）
+    is_curated    BOOLEAN DEFAULT FALSE,        -- キュレーション済みフラグ
     created_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -75,9 +77,58 @@ CREATE TABLE IF NOT EXISTS tdwh_raw_documents (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_raw_documents_url_hash
     ON tdwh_raw_documents(url, content_hash);
 
--- 未処理ドキュメント検索用
-CREATE INDEX IF NOT EXISTS idx_raw_documents_unprocessed
-    ON tdwh_raw_documents(is_processed) WHERE is_processed = FALSE;
+-- 未キュレーションドキュメント検索用
+CREATE INDEX IF NOT EXISTS idx_raw_documents_uncurated
+    ON tdwh_raw_documents(is_curated) WHERE is_curated = FALSE;
+
+-- =============================================================================
+-- キュレーション済みレコードテーブル (キュレーション層)
+-- =============================================================================
+-- 1 RawDocument から複数の CuratedRecord が生成される。
+-- 例: 議事録PDF → 議題A, 議題B, 議題C (3レコード)
+--     法令HTML → 第3条, 第26条, ... (N レコード)
+
+CREATE TABLE IF NOT EXISTS tdwh_curated_records (
+    id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    raw_document_id    UUID NOT NULL REFERENCES tdwh_raw_documents(id),
+    source_id          TEXT NOT NULL REFERENCES tdwh_sources(id),
+    source_url         TEXT NOT NULL,
+    source_type        TEXT NOT NULL CHECK (source_type IN (
+        'web_article', 'legal_text', 'meeting_minutes', 'interview',
+        'report', 'manual', 'news', 'specification', 'scan_document', 'other'
+    )),
+    title              TEXT NOT NULL,              -- 情報単位タイトル
+    content            TEXT NOT NULL,              -- 正規化済みテキスト
+    summary            TEXT,                       -- 1-2文の要約
+    quality            TEXT NOT NULL CHECK (quality IN (
+        'verified', 'auto_extracted', 'low_quality', 'needs_review', 'rejected'
+    )) DEFAULT 'auto_extracted',
+    quality_score      FLOAT NOT NULL DEFAULT 0.8, -- 品質スコア (0.0-1.0)
+    quality_notes      JSONB DEFAULT '[]'::JSONB,  -- 品質注記（文字化け箇所等）
+    suggested_mart_id  TEXT REFERENCES tdwh_marts(id),
+    entities           JSONB DEFAULT '[]'::JSONB,  -- 抽出エンティティ
+    metadata           JSONB DEFAULT '{}'::JSONB,
+    curated_at         TIMESTAMPTZ DEFAULT NOW(),
+    curation_version   TEXT DEFAULT '1.0.0',       -- 再処理追跡用
+    created_at         TIMESTAMPTZ DEFAULT NOW(),
+    updated_at         TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 品質別検索
+CREATE INDEX IF NOT EXISTS idx_curated_quality
+    ON tdwh_curated_records(quality);
+
+-- マート別検索
+CREATE INDEX IF NOT EXISTS idx_curated_mart
+    ON tdwh_curated_records(suggested_mart_id);
+
+-- 元ドキュメント参照
+CREATE INDEX IF NOT EXISTS idx_curated_raw_doc
+    ON tdwh_curated_records(raw_document_id);
+
+-- レビュー待ちレコード検索
+CREATE INDEX IF NOT EXISTS idx_curated_needs_review
+    ON tdwh_curated_records(quality) WHERE quality = 'needs_review';
 
 -- =============================================================================
 -- チャンクテーブル (マート層)
@@ -85,10 +136,11 @@ CREATE INDEX IF NOT EXISTS idx_raw_documents_unprocessed
 
 CREATE TABLE IF NOT EXISTS tdwh_chunks (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    curated_record_id UUID REFERENCES tdwh_curated_records(id),
     source_id        TEXT NOT NULL REFERENCES tdwh_sources(id),
     source_url       TEXT NOT NULL,
     mart_id          TEXT NOT NULL REFERENCES tdwh_marts(id),
-    chunk_index      INTEGER NOT NULL,           -- 同一ドキュメント内のインデックス
+    chunk_index      INTEGER NOT NULL,           -- 同一レコード内のインデックス
     content          TEXT NOT NULL,
     embedding        vector(1536),                -- OpenAI text-embedding-3-small
     secondary_marts  JSONB DEFAULT '[]'::JSONB,  -- 副マート ID 一覧
@@ -248,6 +300,23 @@ CREATE OR REPLACE TRIGGER trg_sources_updated
     BEFORE UPDATE ON tdwh_sources
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
+CREATE OR REPLACE TRIGGER trg_curated_updated
+    BEFORE UPDATE ON tdwh_curated_records
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
 CREATE OR REPLACE TRIGGER trg_chunks_updated
     BEFORE UPDATE ON tdwh_chunks
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- =============================================================================
+-- キュレーション統計ビュー
+-- =============================================================================
+
+CREATE OR REPLACE VIEW tdwh_curation_stats AS
+SELECT
+    quality,
+    COUNT(*) AS record_count,
+    AVG(quality_score) AS avg_quality_score,
+    COUNT(*) FILTER (WHERE suggested_mart_id IS NOT NULL) AS classified_count
+FROM tdwh_curated_records
+GROUP BY quality;
