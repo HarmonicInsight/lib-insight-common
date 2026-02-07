@@ -53,3 +53,18 @@ export {
   LOCAL_CHROMADB_CONFIG,
   PRODUCTION_PGVECTOR_CONFIG,
 } from './embedding-config';
+
+// IPO ブリッジ（TDWH → 業務プロセス構造変換）
+export type {
+  ExtractedIpoStructure,
+  UnresolvedItem,
+  IpoExtractionConfig,
+  IpoExtractionHint,
+  IpoDiff,
+  IpoNodeDiff,
+} from './ipo-bridge';
+
+export {
+  DEFAULT_IPO_EXTRACTION_CONFIG,
+  IPO_EXTRACTION_HINTS,
+} from './ipo-bridge';
