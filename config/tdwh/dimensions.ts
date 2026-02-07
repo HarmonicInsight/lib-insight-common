@@ -358,6 +358,19 @@ export const DIMENSION_SEVERITY: DimensionDefinition = {
   required: false,
 };
 
+/** 地理次元の定義 */
+export const DIMENSION_GEOGRAPHY: DimensionDefinition = {
+  id: 'geography',
+  nameJa: '地理',
+  nameEn: 'Geography',
+  levels: [
+    { id: 'country', nameJa: '国', nameEn: 'Country', depth: 0, metadataKey: 'country' },
+    { id: 'region', nameJa: '地域', nameEn: 'Region', depth: 1, metadataKey: 'region' },
+    { id: 'site', nameJa: '拠点', nameEn: 'Site', depth: 2, metadataKey: 'site' },
+  ],
+  required: false,
+};
+
 /** 全標準次元 */
 export const ALL_STANDARD_DIMENSIONS: DimensionDefinition[] = [
   DIMENSION_ORGANIZATION,
@@ -365,6 +378,7 @@ export const ALL_STANDARD_DIMENSIONS: DimensionDefinition[] = [
   DIMENSION_TOPIC,
   DIMENSION_PROCESS,
   DIMENSION_SEVERITY,
+  DIMENSION_GEOGRAPHY,
 ];
 
 /** インタビュー業務調査で使用する次元セット */
@@ -374,6 +388,66 @@ export const INTERVIEW_ANALYSIS_DIMENSIONS: DimensionDefinition[] = [
   DIMENSION_TOPIC,
   DIMENSION_SEVERITY,
 ];
+
+// =============================================================================
+// カスタム次元ファクトリー
+// =============================================================================
+
+/**
+ * カスタム次元を作成するファクトリー関数
+ *
+ * 新しいドメインで TDWH を実装する際に、ドメイン固有の次元を定義する。
+ *
+ * @example
+ * ```typescript
+ * // 製造業向け: 設備次元
+ * const DIMENSION_EQUIPMENT = createCustomDimension({
+ *   id: 'equipment',
+ *   nameJa: '設備',
+ *   nameEn: 'Equipment',
+ *   levels: [
+ *     { id: 'plant', nameJa: '工場', nameEn: 'Plant', metadataKey: 'plant' },
+ *     { id: 'line', nameJa: 'ライン', nameEn: 'Line', metadataKey: 'productionLine' },
+ *     { id: 'machine', nameJa: '設備', nameEn: 'Machine', metadataKey: 'machineId' },
+ *   ],
+ * });
+ *
+ * // 医療向け: 患者次元
+ * const DIMENSION_PATIENT = createCustomDimension({
+ *   id: 'patient',
+ *   nameJa: '患者',
+ *   nameEn: 'Patient',
+ *   levels: [
+ *     { id: 'ward', nameJa: '病棟', nameEn: 'Ward', metadataKey: 'ward' },
+ *     { id: 'room', nameJa: '病室', nameEn: 'Room', metadataKey: 'room' },
+ *     { id: 'patient', nameJa: '患者', nameEn: 'Patient', metadataKey: 'patientId' },
+ *   ],
+ * });
+ * ```
+ */
+export function createCustomDimension(config: {
+  id: string;
+  nameJa: string;
+  nameEn: string;
+  levels: Array<{
+    id: string;
+    nameJa: string;
+    nameEn: string;
+    metadataKey: string;
+  }>;
+  required?: boolean;
+}): DimensionDefinition {
+  return {
+    id: config.id,
+    nameJa: config.nameJa,
+    nameEn: config.nameEn,
+    levels: config.levels.map((level, index) => ({
+      ...level,
+      depth: index,
+    })),
+    required: config.required ?? false,
+  };
+}
 
 // =============================================================================
 // 集約関数
@@ -730,4 +804,368 @@ export function drillDown(
   );
 
   return buildAggregationCells(groups, [{ dimension: drillDimension, level: nextLevel.id }]);
+}
+
+/**
+ * ロールアップ: 指定次元の1つ上の階層で再集約する
+ *
+ * ドリルダウンの逆操作。現在のグルーピングレベルより1つ上の粒度で
+ * チャンク群を再グルーピングし、集約結果を返す。
+ *
+ * @example
+ * ```typescript
+ * // 担当者レベル → 部署レベルにロールアップ
+ * const deptCells = rollUp(allChunks, currentCells, 'organization', INTERVIEW_ANALYSIS_DIMENSIONS);
+ * ```
+ */
+export function rollUp(
+  chunks: Chunk[],
+  currentCells: AggregationCell[],
+  rollUpDimension: DimensionType | string,
+  dimensions: DimensionDefinition[] = INTERVIEW_ANALYSIS_DIMENSIONS
+): AggregationCell[] {
+  const dim = dimensions.find((d) => d.id === rollUpDimension);
+  if (!dim || dim.levels.length === 0) return [];
+
+  // 現在のレベルを特定（セルの dimensionValues から推定）
+  let currentLevelId: string | undefined;
+  if (currentCells.length > 0) {
+    const firstCell = currentCells[0];
+    for (const key of Object.keys(firstCell.dimensionValues)) {
+      if (key.startsWith(`${rollUpDimension}:`)) {
+        currentLevelId = key.split(':')[1]?.split('=')[0];
+        break;
+      }
+    }
+  }
+
+  // 上のレベルを取得
+  let parentLevel: HierarchyLevel | undefined;
+  if (currentLevelId) {
+    const currentDepth = dim.levels.find((l) => l.id === currentLevelId)?.depth ?? 0;
+    if (currentDepth <= 0) return []; // 最上位レベルに到達
+    parentLevel = dim.levels.find((l) => l.depth === currentDepth - 1);
+  } else {
+    return []; // レベル不明
+  }
+
+  if (!parentLevel) return [];
+
+  // セルに含まれる全チャンクを取得
+  const allChunkIds = new Set<string>();
+  for (const cell of currentCells) {
+    for (const id of cell.chunkIds) {
+      allChunkIds.add(id);
+    }
+  }
+  const targetChunks = chunks.filter((c) => allChunkIds.has(c.id));
+
+  // 上位レベルで再グルーピング
+  const groups = groupChunks(
+    targetChunks,
+    [{ dimension: rollUpDimension, level: parentLevel.id }],
+    dimensions
+  );
+
+  return buildAggregationCells(groups, [{ dimension: rollUpDimension, level: parentLevel.id }]);
+}
+
+// =============================================================================
+// ピボット（クロス集計）
+// =============================================================================
+
+/**
+ * クロス集計テーブルのセル
+ */
+export interface CrossTabCell {
+  /** 行の値 */
+  rowValue: string;
+  /** 列の値 */
+  colValue: string;
+  /** 集計値 */
+  measure: number;
+  /** チャンク ID 一覧 */
+  chunkIds: string[];
+}
+
+/**
+ * クロス集計（ピボット）結果
+ */
+export interface CrossTabResult {
+  /** 行ヘッダー（次元:レベル） */
+  rowDimension: { dimension: string; level: string };
+  /** 列ヘッダー（次元:レベル） */
+  colDimension: { dimension: string; level: string };
+  /** 行の値一覧（ソート済み） */
+  rowValues: string[];
+  /** 列の値一覧（ソート済み） */
+  colValues: string[];
+  /** セル一覧 */
+  cells: CrossTabCell[];
+  /** 集計方法 */
+  measureType: 'chunkCount' | 'sessionCount' | 'avgSeverity';
+}
+
+/**
+ * ピボットテーブル（クロス集計）を生成する
+ *
+ * 2つの次元を行・列軸に配置し、交差セルに集計値を表示する。
+ * 管理会計でのピボットテーブルに相当。
+ *
+ * @example
+ * ```typescript
+ * // 部署 × マート のクロス集計
+ * const pivot = pivotResult(allChunks, {
+ *   rowDimension: 'organization',
+ *   rowLevel: 'department',
+ *   colDimension: 'topic',
+ *   colLevel: 'mart',
+ *   measureType: 'chunkCount',
+ * }, INTERVIEW_ANALYSIS_DIMENSIONS);
+ *
+ * // 結果:
+ * //          | 課題マート | 知見マート | 要件マート |
+ * // 経理部   |    12     |     8     |     5     |
+ * // 営業部   |     7     |    15     |     3     |
+ * // IT部門   |    20     |    10     |    12     |
+ * ```
+ */
+export function pivotResult(
+  chunks: Chunk[],
+  config: {
+    rowDimension: DimensionType | string;
+    rowLevel: string;
+    colDimension: DimensionType | string;
+    colLevel: string;
+    measureType?: 'chunkCount' | 'sessionCount' | 'avgSeverity';
+    filters?: DimensionFilter[];
+  },
+  dimensions: DimensionDefinition[] = INTERVIEW_ANALYSIS_DIMENSIONS
+): CrossTabResult {
+  const measureType = config.measureType || 'chunkCount';
+
+  // フィルター適用
+  let filtered = chunks;
+  if (config.filters && config.filters.length > 0) {
+    filtered = filterChunks(chunks, config.filters, dimensions);
+  }
+
+  // 行・列の次元定義を取得
+  const rowDim = dimensions.find((d) => d.id === config.rowDimension);
+  const colDim = dimensions.find((d) => d.id === config.colDimension);
+  if (!rowDim || !colDim) {
+    return {
+      rowDimension: { dimension: config.rowDimension, level: config.rowLevel },
+      colDimension: { dimension: config.colDimension, level: config.colLevel },
+      rowValues: [],
+      colValues: [],
+      cells: [],
+      measureType,
+    };
+  }
+
+  // 2次元でグルーピング
+  const groups = groupChunks(
+    filtered,
+    [
+      { dimension: config.rowDimension, level: config.rowLevel },
+      { dimension: config.colDimension, level: config.colLevel },
+    ],
+    dimensions
+  );
+
+  // クロス集計セルを構築
+  const rowValuesSet = new Set<string>();
+  const colValuesSet = new Set<string>();
+  const cells: CrossTabCell[] = [];
+
+  for (const [key, groupChunksArr] of groups) {
+    const parts = key.split('|');
+    let rowValue = '(未設定)';
+    let colValue = '(未設定)';
+
+    for (const part of parts) {
+      const [dimLevel, value] = part.split('=');
+      if (dimLevel?.startsWith(`${config.rowDimension}:`)) {
+        rowValue = value || '(未設定)';
+      } else if (dimLevel?.startsWith(`${config.colDimension}:`)) {
+        colValue = value || '(未設定)';
+      }
+    }
+
+    rowValuesSet.add(rowValue);
+    colValuesSet.add(colValue);
+
+    let measure = 0;
+    if (measureType === 'chunkCount') {
+      measure = groupChunksArr.length;
+    } else if (measureType === 'sessionCount') {
+      const sessionIds = new Set<string>();
+      for (const c of groupChunksArr) {
+        const meta = c.metadata as Record<string, unknown>;
+        if (meta.sessionId) sessionIds.add(String(meta.sessionId));
+      }
+      measure = sessionIds.size;
+    } else if (measureType === 'avgSeverity') {
+      let total = 0;
+      let count = 0;
+      for (const c of groupChunksArr) {
+        const meta = c.metadata as Record<string, unknown>;
+        if (typeof meta.severity === 'number') {
+          total += meta.severity;
+          count++;
+        }
+      }
+      measure = count > 0 ? total / count : 0;
+    }
+
+    cells.push({
+      rowValue,
+      colValue,
+      measure,
+      chunkIds: groupChunksArr.map((c) => c.id),
+    });
+  }
+
+  return {
+    rowDimension: { dimension: config.rowDimension, level: config.rowLevel },
+    colDimension: { dimension: config.colDimension, level: config.colLevel },
+    rowValues: [...rowValuesSet].sort(),
+    colValues: [...colValuesSet].sort(),
+    cells,
+    measureType,
+  };
+}
+
+// =============================================================================
+// 分析コンテキストビルダー
+// =============================================================================
+
+/**
+ * 分析コンテキスト（OLAP クエリ）を簡潔に構築するビルダー
+ *
+ * メソッドチェーンで直感的に分析条件を組み立てられる。
+ *
+ * @example
+ * ```typescript
+ * // A社 × 経理部 × 2025年の課題マート分析
+ * const context = createAnalysisContext()
+ *   .filterBy('organization', 'company', ['A社'])
+ *   .filterBy('organization', 'department', ['経理部'])
+ *   .groupBy('topic', 'mart')
+ *   .groupBy('severity', 'severity_level')
+ *   .forMarts(['interview_problems'])
+ *   .inTimeRange('2025-01-01', '2025-12-31', 'quarter')
+ *   .build();
+ *
+ * const result = analyzeMultiDimensional(chunks, context, dimensions);
+ * ```
+ */
+export function createAnalysisContext(): AnalysisContextBuilder {
+  return new AnalysisContextBuilder();
+}
+
+class AnalysisContextBuilder {
+  private _filters: DimensionFilter[] = [];
+  private _groupBy: AggregationSpec[] = [];
+  private _martIds?: string[];
+  private _timeRange?: TimeRange;
+  private _sortBy?: { field: string; direction: 'asc' | 'desc' };
+
+  /** 次元フィルターを追加（スライス/ダイス） */
+  filterBy(
+    dimension: DimensionType | string,
+    level: string,
+    values: string[],
+    excludeValues?: string[]
+  ): this {
+    this._filters.push({ dimension, level, values, excludeValues });
+    return this;
+  }
+
+  /** 集約軸を追加（ドリルダウン/ロールアップの粒度指定） */
+  groupBy(dimension: DimensionType | string, level: string): this {
+    this._groupBy.push({ dimension, level });
+    return this;
+  }
+
+  /** 対象マートを指定 */
+  forMarts(martIds: string[]): this {
+    this._martIds = martIds;
+    return this;
+  }
+
+  /** 時間範囲を指定 */
+  inTimeRange(from: string, to: string, granularity: TimeGranularity): this {
+    this._timeRange = { from, to, granularity };
+    return this;
+  }
+
+  /** ソート条件を指定 */
+  sortBy(field: string, direction: 'asc' | 'desc' = 'desc'): this {
+    this._sortBy = { field, direction };
+    return this;
+  }
+
+  /** AnalysisContext を構築 */
+  build(): AnalysisContext {
+    return {
+      martIds: this._martIds,
+      filters: this._filters,
+      groupBy: this._groupBy,
+      timeRange: this._timeRange,
+      sortBy: this._sortBy,
+    };
+  }
+}
+
+// =============================================================================
+// 次元セット構築ヘルパー
+// =============================================================================
+
+/**
+ * ドメイン固有の次元セットを構築する
+ *
+ * 標準次元から選択 + カスタム次元を追加して、
+ * ドメインに最適化された次元セットを作成する。
+ *
+ * @example
+ * ```typescript
+ * // 製造業向け次元セット
+ * const MANUFACTURING_DIMENSIONS = buildDimensionSet({
+ *   standardDimensions: ['organization', 'time', 'severity'],
+ *   customDimensions: [DIMENSION_EQUIPMENT],
+ * });
+ *
+ * // 医療向け次元セット
+ * const HEALTHCARE_DIMENSIONS = buildDimensionSet({
+ *   standardDimensions: ['organization', 'time', 'topic', 'severity'],
+ *   customDimensions: [DIMENSION_PATIENT],
+ * });
+ * ```
+ */
+export function buildDimensionSet(config: {
+  standardDimensions: DimensionType[];
+  customDimensions?: DimensionDefinition[];
+}): DimensionDefinition[] {
+  const standardDimMap: Record<string, DimensionDefinition> = {
+    organization: DIMENSION_ORGANIZATION,
+    time: DIMENSION_TIME,
+    topic: DIMENSION_TOPIC,
+    process: DIMENSION_PROCESS,
+    severity: DIMENSION_SEVERITY,
+    geography: DIMENSION_GEOGRAPHY,
+  };
+
+  const result: DimensionDefinition[] = [];
+  for (const dimType of config.standardDimensions) {
+    const dim = standardDimMap[dimType];
+    if (dim) result.push(dim);
+  }
+
+  if (config.customDimensions) {
+    result.push(...config.customDimensions);
+  }
+
+  return result;
 }

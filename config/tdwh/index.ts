@@ -111,22 +111,35 @@ export type {
   AnalysisContext,
   AggregationCell,
   MultiDimensionalResult,
+  CrossTabCell,
+  CrossTabResult,
 } from './dimensions';
 
 export {
+  // Standard dimension constants
   DIMENSION_ORGANIZATION,
   DIMENSION_TIME,
   DIMENSION_TOPIC,
   DIMENSION_PROCESS,
   DIMENSION_SEVERITY,
+  DIMENSION_GEOGRAPHY,
   ALL_STANDARD_DIMENSIONS,
   INTERVIEW_ANALYSIS_DIMENSIONS,
+  // Core OLAP operations
   extractTimeDimension,
   getDimensionValue,
   filterChunks,
   groupChunks,
   buildAggregationCells,
   analyzeMultiDimensional,
+  // Hierarchy navigation
   buildOrganizationHierarchy,
   drillDown,
+  rollUp,
+  // Pivot / cross-tabulation
+  pivotResult,
+  // Builders & factories
+  createCustomDimension,
+  createAnalysisContext,
+  buildDimensionSet,
 } from './dimensions';
