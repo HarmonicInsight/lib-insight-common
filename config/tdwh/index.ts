@@ -116,7 +116,6 @@ export type {
 } from './dimensions';
 
 export {
-  // Standard dimension constants
   DIMENSION_ORGANIZATION,
   DIMENSION_TIME,
   DIMENSION_TOPIC,
@@ -125,21 +124,32 @@ export {
   DIMENSION_GEOGRAPHY,
   ALL_STANDARD_DIMENSIONS,
   INTERVIEW_ANALYSIS_DIMENSIONS,
-  // Core OLAP operations
   extractTimeDimension,
   getDimensionValue,
   filterChunks,
   groupChunks,
   buildAggregationCells,
   analyzeMultiDimensional,
-  // Hierarchy navigation
   buildOrganizationHierarchy,
   drillDown,
   rollUp,
-  // Pivot / cross-tabulation
   pivotResult,
-  // Builders & factories
   createCustomDimension,
   createAnalysisContext,
   buildDimensionSet,
 } from './dimensions';
+
+// IPO ブリッジ（TDWH → 業務プロセス構造変換）
+export type {
+  ExtractedIpoStructure,
+  UnresolvedItem,
+  IpoExtractionConfig,
+  IpoExtractionHint,
+  IpoDiff,
+  IpoNodeDiff,
+} from './ipo-bridge';
+
+export {
+  DEFAULT_IPO_EXTRACTION_CONFIG,
+  IPO_EXTRACTION_HINTS,
+} from './ipo-bridge';
