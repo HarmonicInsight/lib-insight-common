@@ -96,3 +96,37 @@ export {
   getMartMappingForDomain,
   getRelevantMartIds,
 } from './interview-mart';
+
+// Multi-Dimensional Analysis Framework
+export type {
+  DimensionType,
+  HierarchyLevel,
+  DimensionDefinition,
+  OrganizationNode,
+  OrganizationHierarchy,
+  TimeGranularity,
+  TimeRange,
+  DimensionFilter,
+  AggregationSpec,
+  AnalysisContext,
+  AggregationCell,
+  MultiDimensionalResult,
+} from './dimensions';
+
+export {
+  DIMENSION_ORGANIZATION,
+  DIMENSION_TIME,
+  DIMENSION_TOPIC,
+  DIMENSION_PROCESS,
+  DIMENSION_SEVERITY,
+  ALL_STANDARD_DIMENSIONS,
+  INTERVIEW_ANALYSIS_DIMENSIONS,
+  extractTimeDimension,
+  getDimensionValue,
+  filterChunks,
+  groupChunks,
+  buildAggregationCells,
+  analyzeMultiDimensional,
+  buildOrganizationHierarchy,
+  drillDown,
+} from './dimensions';

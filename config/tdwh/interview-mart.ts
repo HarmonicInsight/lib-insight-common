@@ -135,10 +135,14 @@ export interface InterviewSignalData {
 export interface InterviewSessionInfo {
   sessionId: string;
   title: string;
+  /** 組織次元: 会社/プロジェクト（Level 0） */
   clientOrProject?: string;
+  /** 組織次元: 部署（Level 1） */
+  department?: string;
   templateName: string;
   templateDomain: string;
   interviewerName?: string;
+  /** 組織次元: 担当者（Level 2） */
   intervieweeName?: string;
   tags: string[];
   status: 'draft' | 'in_progress' | 'completed' | 'archived';
@@ -498,6 +502,7 @@ export function sessionToRawDocument(
     metadata: {
       sessionId: session.sessionId,
       clientOrProject: session.clientOrProject,
+      department: session.department,
       templateName: session.templateName,
       templateDomain: session.templateDomain,
       interviewerName: session.interviewerName,
@@ -583,6 +588,7 @@ export function sessionToCuratedRecords(
         root_cause_hypothesis: p.root_cause_hypothesis,
         sessionId: session.sessionId,
         clientOrProject: session.clientOrProject,
+        department: session.department,
         intervieweeName: session.intervieweeName,
         templateDomain: session.templateDomain,
       },
@@ -607,6 +613,7 @@ export function sessionToCuratedRecords(
           is_explicit: false,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -631,6 +638,7 @@ export function sessionToCuratedRecords(
           stakeholders: aggregatedOutput.stakeholders,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -652,6 +660,7 @@ export function sessionToCuratedRecords(
           stakeholders: aggregatedOutput.stakeholders,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -674,6 +683,7 @@ export function sessionToCuratedRecords(
           evidence_refs: aggregatedOutput.evidence_refs,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -696,6 +706,7 @@ export function sessionToCuratedRecords(
           open_questions: aggregatedOutput.open_questions,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -718,6 +729,7 @@ export function sessionToCuratedRecords(
           is_explicit: true,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -744,6 +756,7 @@ export function sessionToCuratedRecords(
         question_order: answer.questionOrder,
         sessionId: session.sessionId,
         clientOrProject: session.clientOrProject,
+        department: session.department,
         intervieweeName: session.intervieweeName,
         templateDomain: session.templateDomain,
       },
@@ -779,6 +792,7 @@ export function sessionToCuratedRecords(
         topics: signal.topics,
         sessionId: session.sessionId,
         clientOrProject: session.clientOrProject,
+        department: session.department,
         intervieweeName: session.intervieweeName,
         templateDomain: session.templateDomain,
       },
