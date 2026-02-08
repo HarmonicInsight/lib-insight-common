@@ -1,0 +1,17 @@
+{
+  "description": "Harmonic Insight 開発標準の自動チェック。ファイル書き込み後にカラー違反と禁止パターンを検出。",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "変更されたファイルの内容を確認してください。以下の違反がある場合は { \"ok\": false, \"reason\": \"違反内容\" } を返してください:\n1. #2563EB (Blue) がプライマリカラーとして使用されている\n2. OpenAI / Azure AI のインポートや呼び出しがある\n3. API キーがハードコードされている\n4. console.log が本番コードにある\n違反がない場合は { \"ok\": true } を返してください。",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
