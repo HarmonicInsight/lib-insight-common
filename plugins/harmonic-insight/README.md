@@ -26,7 +26,7 @@ claude --plugin-dir ./insight-common/plugins/harmonic-insight
 |---------|------|-----|
 | `/harmonic-insight:new-app` | 新規アプリ作成ウィザード | `/harmonic-insight:new-app my-app` |
 | `/harmonic-insight:setup` | 既存プロジェクトに統合 | `/harmonic-insight:setup IOSH` |
-| `/harmonic-insight:standardize` | **既存アプリを標準に準拠させる（検出→修正）** | `/harmonic-insight:standardize IOSH` |
+| `/harmonic-insight:standardize` | **既存アプリを標準に準拠させる（検出→修正）** | `/harmonic-insight:standardize https://github.com/HarmonicInsight/SomeApp` or 引数なし |
 | `/harmonic-insight:validate` | 開発標準検証（チェックのみ） | `/harmonic-insight:validate .` |
 | `/harmonic-insight:build-fix` | ビルドエラー自動修正 | `/harmonic-insight:build-fix vercel` |
 | `/harmonic-insight:pricing` | 価格・販売戦略参照 | `/harmonic-insight:pricing INSS STD` |

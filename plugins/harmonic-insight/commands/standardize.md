@@ -1,13 +1,50 @@
 ---
-description: 既存アプリを Harmonic Insight 開発標準に準拠させる。カラー置換、ライセンス追加、API ラッパー適用、AI プロバイダー移行を段階的に実行。
-argument-hint: "[product-code]"
+description: 既存アプリを Harmonic Insight 開発標準に準拠させる。リポジトリ URL またはカレントディレクトリを対象に、カラー置換、ライセンス追加、API ラッパー適用、AI プロバイダー移行を段階的に実行。
+argument-hint: "[repo-url or nothing]"
 ---
 
 # 既存アプリの標準化マイグレーション
 
-製品コード: $ARGUMENTS
+## Step 0: 対象リポジトリの準備
 
-**このコマンドは既存コードを変更します。実行前に必ず `git stash` または別ブランチで作業してください。**
+引数の形式に応じて対象を決定:
+
+### パターン A: リポジトリ URL が渡された場合
+
+`$ARGUMENTS` が `http` / `https` / `git@` で始まる場合:
+
+```bash
+# 1. クローン
+git clone $ARGUMENTS /tmp/hi-standardize-target
+cd /tmp/hi-standardize-target
+
+# 2. 作業ブランチ作成
+git checkout -b feat/standardize-to-hi-standards
+```
+
+### パターン B: 引数なし（カレントディレクトリ）
+
+`$ARGUMENTS` が空の場合:
+
+```bash
+# 1. 現在のディレクトリが git リポジトリか確認
+git rev-parse --is-inside-work-tree
+
+# 2. 作業ブランチ作成
+git checkout -b feat/standardize-to-hi-standards
+```
+
+### 製品コードの自動検出
+
+以下の順で製品コードを推定:
+1. `package.json` の `name` / `productCode` フィールド
+2. `.csproj` の `AssemblyName` / `Product`
+3. リポジトリ名（InsightOfficeSheet → IOSH, InsightSlide → INSS 等）
+4. 見つからない場合はユーザーに確認
+
+**このコマンドは既存コードを変更します。作業ブランチで実行されていることを確認してから進めてください。**
+
+---
 
 ## Phase 0: 現状分析
 
