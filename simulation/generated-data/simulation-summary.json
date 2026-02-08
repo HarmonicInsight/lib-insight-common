@@ -1,0 +1,339 @@
+{
+  "totalInterviews": 1000,
+  "matchRateByPattern": {
+    "project_management": {
+      "count": 106,
+      "avgMatchRate": 1,
+      "minMatchRate": 1,
+      "maxMatchRate": 1
+    },
+    "biz_improvement": {
+      "count": 239,
+      "avgMatchRate": 1,
+      "minMatchRate": 0.8,
+      "maxMatchRate": 1
+    },
+    "internal_audit": {
+      "count": 92,
+      "avgMatchRate": 1,
+      "minMatchRate": 1,
+      "maxMatchRate": 1
+    },
+    "hr_organizational": {
+      "count": 96,
+      "avgMatchRate": 1,
+      "minMatchRate": 1,
+      "maxMatchRate": 1
+    },
+    "customer_success": {
+      "count": 110,
+      "avgMatchRate": 0.99,
+      "minMatchRate": 0.75,
+      "maxMatchRate": 1
+    },
+    "dx_strategy": {
+      "count": 141,
+      "avgMatchRate": 1,
+      "minMatchRate": 1,
+      "maxMatchRate": 1
+    },
+    "it_system": {
+      "count": 104,
+      "avgMatchRate": 0.99,
+      "minMatchRate": 0.8,
+      "maxMatchRate": 1
+    },
+    "management_review": {
+      "count": 112,
+      "avgMatchRate": 1,
+      "minMatchRate": 1,
+      "maxMatchRate": 1
+    }
+  },
+  "matchRateByIndustry": {
+    "製造業": {
+      "count": 179,
+      "avgMatchRate": 1
+    },
+    "金融業": {
+      "count": 108,
+      "avgMatchRate": 1
+    },
+    "小売業": {
+      "count": 108,
+      "avgMatchRate": 1
+    },
+    "IT・情報通信業": {
+      "count": 107,
+      "avgMatchRate": 0.99
+    },
+    "建設業": {
+      "count": 72,
+      "avgMatchRate": 0.97
+    },
+    "医療": {
+      "count": 72,
+      "avgMatchRate": 1
+    },
+    "不動産業": {
+      "count": 36,
+      "avgMatchRate": 1
+    },
+    "物流業": {
+      "count": 72,
+      "avgMatchRate": 1
+    },
+    "人材サービス業": {
+      "count": 36,
+      "avgMatchRate": 1
+    },
+    "サービス業": {
+      "count": 70,
+      "avgMatchRate": 1
+    },
+    "食品製造業": {
+      "count": 35,
+      "avgMatchRate": 1
+    },
+    "教育": {
+      "count": 35,
+      "avgMatchRate": 1
+    },
+    "持株会社": {
+      "count": 35,
+      "avgMatchRate": 1
+    },
+    "官公庁": {
+      "count": 35,
+      "avgMatchRate": 1
+    }
+  },
+  "matchRateByDemand": {
+    "PM-D001": {
+      "demandDescription": "プロジェクトのリスク要因を特定したい",
+      "matchRate": 1,
+      "totalChecks": 106,
+      "matches": 106
+    },
+    "PM-D002": {
+      "demandDescription": "各ステークホルダーの期待値と懸念を把握したい",
+      "matchRate": 1,
+      "totalChecks": 106,
+      "matches": 106
+    },
+    "PM-D003": {
+      "demandDescription": "既存の制約条件（人・モノ・金・時間）を明確にしたい",
+      "matchRate": 1,
+      "totalChecks": 106,
+      "matches": 106
+    },
+    "BIZ-D001": {
+      "demandDescription": "手作業・紙ベースの業務で自動化の余地がある箇所を特定したい",
+      "matchRate": 1,
+      "totalChecks": 125,
+      "matches": 125
+    },
+    "BIZ-D002": {
+      "demandDescription": "属人化している業務を洗い出して、標準化の対象を見つけたい",
+      "matchRate": 1,
+      "totalChecks": 125,
+      "matches": 125
+    },
+    "BIZ-D003": {
+      "demandDescription": "現場が本当に求めているシステム要件を把握したい",
+      "matchRate": 1,
+      "totalChecks": 125,
+      "matches": 125
+    },
+    "BIZ-D004": {
+      "demandDescription": "過去のシステム導入失敗体験から、導入阻害要因を理解したい",
+      "matchRate": 0.96,
+      "totalChecks": 125,
+      "matches": 120
+    },
+    "BIZ-D005": {
+      "demandDescription": "うまくいっている業務を把握して、成功要因を横展開したい",
+      "matchRate": 1,
+      "totalChecks": 125,
+      "matches": 125
+    },
+    "BIZ2-D001": {
+      "demandDescription": "コスト発生の大きい業務プロセスを特定したい",
+      "matchRate": 1,
+      "totalChecks": 114,
+      "matches": 114
+    },
+    "BIZ2-D002": {
+      "demandDescription": "重複作業や無駄な承認フローを見つけたい",
+      "matchRate": 1,
+      "totalChecks": 114,
+      "matches": 114
+    },
+    "BIZ2-D003": {
+      "demandDescription": "クイックウィン（すぐに効果が出る施策）を見つけたい",
+      "matchRate": 1,
+      "totalChecks": 114,
+      "matches": 114
+    },
+    "AUD-D001": {
+      "demandDescription": "規程やルールが守られていない実態を把握したい",
+      "matchRate": 1,
+      "totalChecks": 92,
+      "matches": 92
+    },
+    "AUD-D002": {
+      "demandDescription": "不正やミスが起こりやすい業務プロセスを特定したい",
+      "matchRate": 1,
+      "totalChecks": 92,
+      "matches": 92
+    },
+    "AUD-D003": {
+      "demandDescription": "改善提案に対する現場の受入れ姿勢を確認したい",
+      "matchRate": 1,
+      "totalChecks": 92,
+      "matches": 92
+    },
+    "HR-D001": {
+      "demandDescription": "離職リスクの高い部署やポジションを特定したい",
+      "matchRate": 1,
+      "totalChecks": 96,
+      "matches": 96
+    },
+    "HR-D002": {
+      "demandDescription": "上司と部下のコミュニケーション課題を把握したい",
+      "matchRate": 1,
+      "totalChecks": 96,
+      "matches": 96
+    },
+    "HR-D003": {
+      "demandDescription": "人材育成の課題と現場のニーズを把握したい",
+      "matchRate": 1,
+      "totalChecks": 96,
+      "matches": 96
+    },
+    "HR-D004": {
+      "demandDescription": "部門間の協力関係やサイロ化の実態を理解したい",
+      "matchRate": 1,
+      "totalChecks": 96,
+      "matches": 96
+    },
+    "HR-D005": {
+      "demandDescription": "組織の強みやポジティブな文化要素を把握したい",
+      "matchRate": 1,
+      "totalChecks": 96,
+      "matches": 96
+    },
+    "CS-D001": {
+      "demandDescription": "製品の利用上の困りごとや不満を把握したい",
+      "matchRate": 1,
+      "totalChecks": 110,
+      "matches": 110
+    },
+    "CS-D002": {
+      "demandDescription": "追加機能や他製品のニーズを発見したい（アップセル機会）",
+      "matchRate": 1,
+      "totalChecks": 110,
+      "matches": 110
+    },
+    "CS-D003": {
+      "demandDescription": "チャーンリスクの兆候を早期発見したい",
+      "matchRate": 0.96,
+      "totalChecks": 110,
+      "matches": 106
+    },
+    "CS-D004": {
+      "demandDescription": "製品の成功事例やポジティブな声を収集したい",
+      "matchRate": 1,
+      "totalChecks": 110,
+      "matches": 110
+    },
+    "DX-D001": {
+      "demandDescription": "デジタル化の現状レベルを把握したい（紙→Excel→システム→AI）",
+      "matchRate": 1,
+      "totalChecks": 141,
+      "matches": 141
+    },
+    "DX-D002": {
+      "demandDescription": "DX推進の組織的な障壁を理解したい",
+      "matchRate": 1,
+      "totalChecks": 141,
+      "matches": 141
+    },
+    "DX-D003": {
+      "demandDescription": "データ活用のポテンシャルがある領域を発見したい",
+      "matchRate": 1,
+      "totalChecks": 141,
+      "matches": 141
+    },
+    "DX-D004": {
+      "demandDescription": "競合他社のデジタル活用状況と差別化ポイントを把握したい",
+      "matchRate": 1,
+      "totalChecks": 141,
+      "matches": 141
+    },
+    "IT-D001": {
+      "demandDescription": "現行システムの機能不足や操作性の問題を把握したい",
+      "matchRate": 1,
+      "totalChecks": 104,
+      "matches": 104
+    },
+    "IT-D002": {
+      "demandDescription": "データの分断・サイロ化の実態を明らかにしたい",
+      "matchRate": 1,
+      "totalChecks": 104,
+      "matches": 104
+    },
+    "IT-D003": {
+      "demandDescription": "新システムに必要な機能要件を収集したい",
+      "matchRate": 1,
+      "totalChecks": 104,
+      "matches": 104
+    },
+    "IT-D004": {
+      "demandDescription": "システム導入の阻害要因（過去の失敗含む）を理解したい",
+      "matchRate": 0.96,
+      "totalChecks": 104,
+      "matches": 100
+    },
+    "IT-D005": {
+      "demandDescription": "セキュリティやコンプライアンスの要件を確認したい",
+      "matchRate": 1,
+      "totalChecks": 104,
+      "matches": 104
+    },
+    "MGT-D001": {
+      "demandDescription": "経営層の認識と現場の実態のギャップを把握したい",
+      "matchRate": 1,
+      "totalChecks": 112,
+      "matches": 112
+    },
+    "MGT-D002": {
+      "demandDescription": "中長期的な成長の阻害要因を特定したい",
+      "matchRate": 1,
+      "totalChecks": 112,
+      "matches": 112
+    },
+    "MGT-D003": {
+      "demandDescription": "組織の強みと差別化要因を再確認したい",
+      "matchRate": 1,
+      "totalChecks": 112,
+      "matches": 112
+    }
+  },
+  "overallPivotDistribution": {
+    "P": 3595,
+    "I": 2879,
+    "V": 3164,
+    "O": 2719,
+    "T": 3309
+  },
+  "expectedMartCounts": {
+    "interview_problems": 3595,
+    "interview_risks": 5598,
+    "interview_requirements": 3164,
+    "interview_voices": 9193,
+    "interview_insights": 3309,
+    "interview_knowledge": 3309
+  },
+  "overallMatchRate": 1
+}
