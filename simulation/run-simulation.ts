@@ -28,6 +28,12 @@ import {
   type InterviewSimulationResult,
   type SimulationSummary,
 } from './simulation-engine.js';
+import {
+  convertToSessionData,
+  sessionDataToJsonl,
+  generateDemoDataSummary,
+} from './demo-data-generator.js';
+import type { InterviewSessionData } from '../config/tdwh/interview-mart.js';
 
 // =============================================================================
 // 設定
@@ -100,13 +106,32 @@ async function main() {
   console.log('--- Step 4: User Story Acceptance Criteria Validation ---');
   validateUserStories(interviews, results, summary);
 
-  // Step 5: サンプルインタビューの表示
-  console.log('\n--- Step 5: Sample Interviews ---');
+  // Step 5: デモデータ生成（InterviewSessionData形式）
+  console.log('\n--- Step 5: Generating Demo Data (InterviewSessionData format) ---');
+  const startDemo = Date.now();
+  const sessionDataList = convertToSessionData(interviews, SEED);
+  const demoTime = Date.now() - startDemo;
+  console.log(`Converted ${sessionDataList.length} sessions to InterviewSessionData in ${demoTime}ms`);
+
+  // デモデータ統計
+  const demoSummary = generateDemoDataSummary(sessionDataList);
+  console.log(`  Total Answers: ${demoSummary.totalAnswers}`);
+  console.log(`  Total Problems Extracted: ${demoSummary.totalProblems}`);
+  console.log(`  Avg Sentiment Score: ${demoSummary.avgSentimentScore}`);
+  console.log(`  Date Range: ${demoSummary.dateRange.earliest} ~ ${demoSummary.dateRange.latest}`);
+  console.log('  By Template:');
+  for (const [tmpl, count] of Object.entries(demoSummary.byTemplate)) {
+    console.log(`    ${tmpl}: ${count}`);
+  }
+  console.log('');
+
+  // Step 6: サンプルインタビューの表示
+  console.log('--- Step 6: Sample Interviews ---');
   showSampleInterviews(interviews, results);
 
-  // Step 6: ファイル出力
-  console.log('\n--- Step 6: Saving Output Files ---');
-  saveOutputFiles(interviews, results, summary, report);
+  // Step 7: ファイル出力
+  console.log('\n--- Step 7: Saving Output Files ---');
+  saveOutputFiles(interviews, results, summary, report, sessionDataList);
 
   console.log('\n='.repeat(80));
   console.log('  SIMULATION COMPLETE');
@@ -274,6 +299,7 @@ function saveOutputFiles(
   results: InterviewSimulationResult[],
   summary: SimulationSummary,
   report: string,
+  sessionDataList: InterviewSessionData[],
 ) {
   mkdirSync(OUTPUT_DIR, { recursive: true });
 
@@ -319,30 +345,23 @@ function saveOutputFiles(
   writeFileSync(personaCsvPath, [csvHeader, ...csvRows].join('\n'), 'utf-8');
   console.log(`  Saved: ${personaCsvPath}`);
 
-  // 7. マート生成用データ（既存のinterview-mart.tsのLayer2入力形式）
-  const martInputPath = join(OUTPUT_DIR, 'mart-input-sessions.jsonl');
-  const martInputLines = interviews.map(interview => {
-    return JSON.stringify({
-      session: {
-        sessionId: interview.id,
-        title: `${interview.metadata.intervieweeCompany} ${interview.metadata.intervieweeDepartment} ヒアリング`,
-        clientOrProject: interview.metadata.intervieweeCompany,
-        interviewerName: interview.metadata.interviewerName,
-        intervieweeName: interview.metadata.intervieweeName,
-        tags: [interview.metadata.intervieweeIndustry, interview.metadata.interviewPattern],
-        status: 'completed',
-        completedAt: `${interview.metadata.date}T17:00:00Z`,
-      },
-      answers: interview.answers.map(a => ({
-        questionOrder: a.questionNo,
-        questionText: a.questionText,
-        rawText: a.answerText,
-        answeredAt: `${interview.metadata.date}T${String(14 + a.questionNo).padStart(2, '0')}:00:00Z`,
-      })),
-    });
-  });
-  writeFileSync(martInputPath, martInputLines.join('\n'), 'utf-8');
-  console.log(`  Saved: ${martInputPath} (${interviews.length} sessions)`);
+  // 7. デモデータ — InterviewSessionData 形式（JSONL）
+  //    app-auto-interview-web で直接読み込み可能なフォーマット
+  const demoDataPath = join(OUTPUT_DIR, 'demo-sessions.jsonl');
+  const demoDataLines = sessionDataToJsonl(sessionDataList);
+  writeFileSync(demoDataPath, demoDataLines, 'utf-8');
+  console.log(`  Saved: ${demoDataPath} (${sessionDataList.length} sessions)`);
+
+  // 8. デモデータ — サンプル10件（JSON、確認用）
+  const demoSamplePath = join(OUTPUT_DIR, 'demo-sessions-sample.json');
+  writeFileSync(demoSamplePath, JSON.stringify(sessionDataList.slice(0, 10), null, 2), 'utf-8');
+  console.log(`  Saved: ${demoSamplePath} (10 samples, formatted)`);
+
+  // 9. デモデータ統計
+  const demoStatsPath = join(OUTPUT_DIR, 'demo-data-stats.json');
+  const demoStats = generateDemoDataSummary(sessionDataList);
+  writeFileSync(demoStatsPath, JSON.stringify(demoStats, null, 2), 'utf-8');
+  console.log(`  Saved: ${demoStatsPath}`);
 }
 
 // =============================================================================
