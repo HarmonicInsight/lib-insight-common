@@ -58,6 +58,16 @@ export interface ProjectFileConfig {
   contextMenuLabelJa: string;
   /** コンテキストメニューに登録する対象拡張子（ドットなし） */
   contextMenuTargetExtensions: string[];
+  /**
+   * AI メモリ対応フラグ
+   *
+   * true の場合、プロジェクトファイル内に以下のメモリファイルを格納:
+   * - ai_memory.json（ホットキャッシュ）
+   * - ai_memory_deep/（ディープストレージ: PRO+ のみ）
+   *
+   * 参照: config/ai-memory.ts
+   */
+  supportsAiMemory?: boolean;
 }
 
 /** 製品情報 */
@@ -216,6 +226,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
       contextMenuLabel: 'Open with InsightOfficeSlide',
       contextMenuLabelJa: 'InsightOfficeSlide で開く',
       contextMenuTargetExtensions: ['pptx', 'ppt'],
+      supportsAiMemory: true,
     },
   },
   IOSH: {
@@ -234,6 +245,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
       contextMenuLabel: 'Open with InsightOfficeSheet',
       contextMenuLabelJa: 'InsightOfficeSheet で開く',
       contextMenuTargetExtensions: ['xlsx', 'xls', 'csv'],
+      supportsAiMemory: true,
     },
   },
   IOSD: {
@@ -252,6 +264,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
       contextMenuLabel: 'Open with InsightOfficeDoc',
       contextMenuLabelJa: 'InsightOfficeDoc で開く',
       contextMenuTargetExtensions: ['docx', 'doc'],
+      supportsAiMemory: true,
     },
   },
   INPY: {
