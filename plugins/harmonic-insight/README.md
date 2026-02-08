@@ -26,7 +26,8 @@ claude --plugin-dir ./insight-common/plugins/harmonic-insight
 |---------|------|-----|
 | `/harmonic-insight:new-app` | 新規アプリ作成ウィザード | `/harmonic-insight:new-app my-app` |
 | `/harmonic-insight:setup` | 既存プロジェクトに統合 | `/harmonic-insight:setup IOSH` |
-| `/harmonic-insight:validate` | 開発標準検証 | `/harmonic-insight:validate .` |
+| `/harmonic-insight:standardize` | **既存アプリを標準に準拠させる（検出→修正）** | `/harmonic-insight:standardize IOSH` |
+| `/harmonic-insight:validate` | 開発標準検証（チェックのみ） | `/harmonic-insight:validate .` |
 | `/harmonic-insight:build-fix` | ビルドエラー自動修正 | `/harmonic-insight:build-fix vercel` |
 | `/harmonic-insight:pricing` | 価格・販売戦略参照 | `/harmonic-insight:pricing INSS STD` |
 | `/harmonic-insight:deploy-railway` | Railway デプロイ | `/harmonic-insight:deploy-railway` |
@@ -102,10 +103,11 @@ plugins/harmonic-insight/
 │   ├── deploy-railway/SKILL.md  # Railway パターン
 │   ├── deploy-cloudflare/SKILL.md # Cloudflare パターン
 │   └── deploy-vercel/SKILL.md   # Vercel パターン
-├── commands/                    # ユーザー起動コマンド（5個）
+├── commands/                    # ユーザー起動コマンド（6個）
 │   ├── new-app.md               # 新規アプリ作成
 │   ├── setup.md                 # 既存プロジェクト統合
-│   ├── validate.md              # 標準検証
+│   ├── standardize.md           # 既存アプリの標準化マイグレーション
+│   ├── validate.md              # 標準検証（チェックのみ）
 │   ├── build-fix.md             # ビルドエラー修正
 │   └── pricing.md               # 価格参照
 ├── agents/                      # エージェント（1個）
