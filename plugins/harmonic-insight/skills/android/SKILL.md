@@ -1,12 +1,15 @@
 ---
 name: android
-description: Android アプリの開発標準。Kotlin、Jetpack Compose、Android XML レイアウトの作業時に自動適用。Material 3 + Ivory & Gold テーマ、ライセンス統合パターンを提供。
+description: Android ネイティブアプリの開発標準。Kotlin、Jetpack Compose、Android XML レイアウトの作業時に自動適用。Material 3 + Ivory & Gold テーマ、ライセンス統合パターンを提供。Expo/React Native の場合は expo スキルを使用。
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
-# Android 開発標準
+# Android ネイティブ開発標準
 
-対象: Harmonic Insight Android アプリ（将来的なモバイル展開）
+> **Expo / React Native でクロスプラットフォーム開発する場合は `expo` スキルを使用してください。**
+> このスキルは Kotlin + Jetpack Compose によるネイティブ Android 専用です。
+
+対象: Harmonic Insight Android ネイティブアプリ
 
 ## 技術スタック
 

@@ -45,13 +45,14 @@ Claude が作業コンテキストに応じて自動的に適用するドメイ�
 
 ### プラットフォーム別
 
-| スキル | 発動条件 |
-|--------|---------|
-| `wpf` | .cs / .xaml / .csproj ファイル作業 |
-| `react` | .tsx / .jsx / Next.js 設定作業 |
-| `python-app` | .py / requirements.txt 作業 |
-| `android` | Kotlin / Android XML 作業 |
-| `ios` | Swift / SwiftUI 作業 |
+| スキル | 発動条件 | 技術スタック |
+|--------|---------|------------|
+| `wpf` | .cs / .xaml / .csproj 作業 | C# / WPF / .NET 8 |
+| `react` | .tsx / .jsx / Next.js 作業 | React / Next.js / Tauri |
+| `python-app` | .py / requirements.txt 作業 | Python / Tkinter |
+| `expo` | expo-router / EAS / app.json 作業 | Expo / React Native (iOS+Android) |
+| `android` | Kotlin / Jetpack Compose 作業 | Android ネイティブ専用 |
+| `ios` | Swift / SwiftUI 作業 | iOS ネイティブ専用 |
 
 ### ドメイン別
 
@@ -87,13 +88,14 @@ Claude が作業コンテキストに応じて自動的に適用するドメイ�
 plugins/harmonic-insight/
 ├── .claude-plugin/
 │   └── plugin.json              # マニフェスト
-├── skills/                      # 自動適用スキル（12個）
+├── skills/                      # 自動適用スキル（13個）
 │   ├── design-system/SKILL.md   # Ivory & Gold デザインシステム
 │   ├── wpf/SKILL.md             # C# WPF 標準
 │   ├── react/SKILL.md           # React/Next.js 標準
 │   ├── python-app/SKILL.md      # Python 標準
-│   ├── android/SKILL.md         # Android 標準
-│   ├── ios/SKILL.md             # iOS 標準
+│   ├── expo/SKILL.md            # Expo / React Native 標準
+│   ├── android/SKILL.md         # Android ネイティブ標準
+│   ├── ios/SKILL.md             # iOS ネイティブ標準
 │   ├── ai-assistant/SKILL.md    # AI アシスタント標準
 │   ├── licensing/SKILL.md       # ライセンス標準
 │   ├── product-config/SKILL.md  # 製品設定

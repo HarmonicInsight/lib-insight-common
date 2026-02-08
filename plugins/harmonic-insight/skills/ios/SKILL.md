@@ -1,12 +1,15 @@
 ---
 name: ios
-description: iOS アプリの開発標準。Swift、SwiftUI の作業時に自動適用。Ivory & Gold テーマ、ライセンス統合パターンを提供。
+description: iOS ネイティブアプリの開発標準。Swift、SwiftUI の作業時に自動適用。Ivory & Gold テーマ、ライセンス統合パターンを提供。Expo/React Native の場合は expo スキルを使用。
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
-# iOS 開発標準
+# iOS ネイティブ開発標準
 
-対象: Harmonic Insight iOS アプリ（将来的なモバイル展開）
+> **Expo / React Native でクロスプラットフォーム開発する場合は `expo` スキルを使用してください。**
+> このスキルは Swift + SwiftUI によるネイティブ iOS 専用です。
+
+対象: Harmonic Insight iOS ネイティブアプリ
 
 ## 技術スタック
 
