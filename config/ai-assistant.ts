@@ -22,6 +22,21 @@ import {
   getAllowedModels,
   isModelAllowedForTier,
 } from './usage-based-licensing';
+import {
+  type SkillDefinition,
+  detectActiveSkills,
+  buildSkillPromptExtension,
+  getAvailableSkills,
+  getAvailableCommands,
+  getCommandsForProduct,
+} from './ai-assistant-skills';
+import {
+  type HotCache,
+  formatMemoryForPrompt,
+  isMemoryEnabled,
+  isDeepStorageEnabled,
+  MEMORY_LIMITS_BY_PLAN,
+} from './ai-memory';
 
 // =============================================================================
 // 型定義
@@ -352,7 +367,26 @@ ${product === 'INBT' ? `【InsightBot 固有】
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
-Respond in the same language as the user's message.`;
+Respond in the same language as the user's message.
+
+【経理・財務スキル（Finance）】
+経理・財務関連の質問を受けた場合、以下の専門知識で対応:
+
+1. 仕訳準備 — AP 未払計上、固定資産減価償却、前払費用償却、給与計上、収益認識（ASC 606）
+   - 承認マトリクス: 定常仕訳=経理MGR / 25万超=経理部長 / 100万超=CFO
+   - 各仕訳に必要: 説明、計算根拠、証憑、対象期間、承認証跡、逆仕訳要否
+
+2. 差異分析 — 予実比較、前年比較、前月比較
+   - Price/Volume 分解: Volume Effect = (実績数量-予算数量)×予算単価 / Price Effect = (実績単価-予算単価)×実績数量
+   - マテリアリティ閾値: 予実5-10% / YoY 10-15% / MoM 15-20%
+   - ナラティブ: ドライバー名、金額、因果関係、継続見込み、推奨アクション
+
+3. 勘定照合 — GL-補助元帳照合、銀行照合、会社間照合
+4. 月次クローズ管理 — Day 1-10 の標準チェックリスト
+
+【データ分析スキル（Data）】
+- 自然言語 → Excel 数式 / SQL クエリ変換
+- 統計分析、集計、データプロファイリング`;
 
       case 'document':
         return `あなたはInsightOfficeDocのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
@@ -363,6 +397,18 @@ Respond in the same language as the user's message.`;
 - 文書の要約・構成提案
 - フォーマット変換のアドバイス
 - テンプレート活用の提案
+- 契約書レビュー・NDA 審査（Legal スキル）
+- ビジネスコンテンツ作成（Marketing スキル）
+
+【契約書レビュー】
+契約書関連の質問を受けた場合、以下のプロセスで対応:
+1. 契約タイプの特定（SaaS / 業務委託 / ライセンス / NDA 等）
+2. 当事者の立場確認（ベンダー / 顧客）
+3. 6 大条項の分析: 責任制限 / 補償 / IP / データ保護 / 解約 / 準拠法
+4. 重大度分類: GREEN（許容）/ YELLOW（交渉要）/ RED（エスカレーション）
+5. レッドライン生成（代替文言 + 根拠 + 優先度 + フォールバック案）
+
+※ 法的助言ではなくワークフロー支援です。最終判断は法務専門家が行います。
 
 ユーザーの質問や要望に丁寧に回答してください。`;
 
@@ -437,7 +483,26 @@ Please respond helpfully to user questions and requests.`;
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
-Respond in the same language as the user's message.`;
+Respond in the same language as the user's message.
+
+[Finance Skills]
+For accounting and finance queries:
+
+1. Journal Entry Prep — AP accruals, depreciation, prepaid amortization, payroll, revenue recognition (ASC 606)
+   - Approval matrix: routine=Accounting MGR / >¥250K=Accounting Director / >¥1M=CFO
+   - Each entry requires: description, calculation basis, supporting docs, period, approval trail, reversal flag
+
+2. Variance Analysis — budget vs actual, YoY, MoM
+   - Price/Volume decomposition: Volume Effect = (Actual Qty - Budget Qty) × Budget Price / Price Effect = (Actual Price - Budget Price) × Actual Qty
+   - Materiality thresholds: BvA 5-10% / YoY 10-15% / MoM 15-20%
+   - Narrative: driver name, amounts, causality, continuation outlook, recommended actions
+
+3. Reconciliation — GL-to-subledger, bank, intercompany
+4. Month-End Close Management — Day 1-10 standard checklist
+
+[Data Analysis Skills]
+- Natural language → Excel formula / SQL query generation
+- Statistical analysis, aggregation, data profiling`;
 
     case 'document':
       return `You are an AI assistant for InsightOfficeDoc, a Word document operations and automation tool.
@@ -448,6 +513,18 @@ Key capabilities:
 - Document summarization and structure suggestions
 - Format conversion advice
 - Template usage recommendations
+- Contract review and NDA triage (Legal skill)
+- Business content creation (Marketing skill)
+
+[Contract Review]
+When handling contract-related queries, follow this process:
+1. Identify contract type (SaaS / services / license / NDA, etc.)
+2. Determine party's position (vendor / customer)
+3. Analyze 6 key clauses: Limitation of Liability / Indemnification / IP / Data Protection / Termination / Governing Law
+4. Classify severity: GREEN (acceptable) / YELLOW (negotiate) / RED (escalate)
+5. Generate redlines (alternative language + rationale + priority + fallback)
+
+Note: This is workflow assistance, not legal advice. All analysis should be reviewed by qualified legal professionals.
 
 Please respond helpfully to user questions and requests.`;
 
@@ -979,7 +1056,11 @@ export type TaskContext =
   | 'code_generation'     // Pythonコード生成・修正（INPY/INBT）
   | 'document_review'     // 文書校正・レビュー（INSS/IOSD）
   | 'report_generation'   // レポート・精密文書の生成
-  | 'document_evaluation'; // ドキュメント多角的評価（INSS/IOSH/IOSD — Opus 推奨）
+  | 'document_evaluation' // ドキュメント多角的評価（INSS/IOSH/IOSD — Opus 推奨）
+  // --- Anthropic Plugins 統合タスクコンテキスト ---
+  | 'contract_review'     // 契約書レビュー・NDA 審査（Legal プラグイン参考 — IOSD）
+  | 'finance_analysis'    // 仕訳準備・差異分析・勘定照合（Finance プラグイン参考 — IOSH）
+  | 'content_creation';   // コンテンツ作成（Marketing プラグイン参考 — IOSD/INSS）
 
 /** タスクコンテキスト → 推奨ペルソナのマッピング */
 const TASK_PERSONA_MAP: Record<TaskContext, {
@@ -1041,6 +1122,25 @@ const TASK_PERSONA_MAP: Record<TaskContext, {
     minimum: 'megumi',
     reasonJa: 'ドキュメント評価には学（Opus 4.6）がおすすめです。拡張コンテキストで文書全体を俯瞰的に分析します',
     reasonEn: 'Manabu (Opus 4.6) is recommended for document evaluation — extended context enables holistic document analysis',
+  },
+  // --- Anthropic Plugins 統合タスクコンテキスト ---
+  contract_review: {
+    recommended: 'manabu',
+    minimum: 'megumi',
+    reasonJa: '契約書レビューには学（Opus）がおすすめです。条項の相互作用を精密に分析し、リスクを見逃しません',
+    reasonEn: 'Manabu (Opus) is recommended for contract review — precisely analyzes clause interactions and avoids missing risks',
+  },
+  finance_analysis: {
+    recommended: 'megumi',
+    minimum: 'megumi',
+    reasonJa: '経理・財務分析には恵（Sonnet）以上が必要です。正確な計算と構造化された分析を提供します',
+    reasonEn: 'Megumi (Sonnet) or above is required for finance analysis — provides accurate calculations and structured analysis',
+  },
+  content_creation: {
+    recommended: 'megumi',
+    minimum: 'shunsuke',
+    reasonJa: 'コンテンツ作成には恵（Sonnet）がおすすめです',
+    reasonEn: 'Megumi (Sonnet) is recommended for content creation',
   },
 };
 
@@ -1174,6 +1274,22 @@ export const TASK_CONTEXT_HINTS: Record<TaskContext, {
     keywordsEn: ['evaluate', 'evaluation', 'score', 'grade', 'quality check', 'assess', 'assessment'],
     toolNames: [],
   },
+  // --- Anthropic Plugins 統合タスクコンテキスト ---
+  contract_review: {
+    keywordsJa: ['契約', '契約書', 'NDA', '秘密保持', '責任制限', '補償', 'レッドライン', '条項', '準拠法', 'リーガル'],
+    keywordsEn: ['contract', 'NDA', 'non-disclosure', 'liability', 'indemnif', 'redline', 'clause', 'governing law', 'legal review'],
+    toolNames: [],
+  },
+  finance_analysis: {
+    keywordsJa: ['仕訳', '計上', '減価償却', '予実', '差異分析', '照合', '月次クローズ', '決算', '勘定', '試算表', '貸借', '損益'],
+    keywordsEn: ['journal entry', 'accrual', 'depreciation', 'variance', 'reconcil', 'close', 'ledger', 'trial balance', 'P&L', 'balance sheet'],
+    toolNames: ['get_cell_range', 'set_cell_values', 'set_cell_formulas', 'analyze_data'],
+  },
+  content_creation: {
+    keywordsJa: ['ブログ', 'プレスリリース', 'ケーススタディ', 'ランディングページ', 'メルマガ', 'SEO', '記事作成', 'コンテンツ'],
+    keywordsEn: ['blog', 'press release', 'case study', 'landing page', 'newsletter', 'SEO', 'content', 'article'],
+    toolNames: [],
+  },
 };
 
 // =============================================================================
@@ -1187,7 +1303,7 @@ export const TASK_CONTEXT_HINTS: Record<TaskContext, {
  * TASK_CONTEXT_HINTS と照合してコンテキストを推定する。
  */
 const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
-  // InsightOfficeSheet: スプレッドシート系 + 比較 + レポート + ドキュメント評価
+  // InsightOfficeSheet: スプレッドシート系 + 比較 + レポート + ドキュメント評価 + Finance
   IOSH: [
     'simple_chat',
     'cell_edit',
@@ -1196,6 +1312,7 @@ const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
     'full_document_compare',
     'document_evaluation',
     'report_generation',
+    'finance_analysis',      // Finance プラグイン統合
   ],
   // InsightSeniorOffice: シニア向け（簡易チャット + セル編集のみ、複雑な機能は不要）
   ISOF: [
@@ -1203,19 +1320,22 @@ const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
     'cell_edit',
     'document_review',
   ],
-  // InsightOfficeSlide: 文書校正 + ドキュメント評価 + レポート
+  // InsightOfficeSlide: 文書校正 + ドキュメント評価 + レポート + コンテンツ作成
   INSS: [
     'simple_chat',
     'document_review',
     'document_evaluation',
     'report_generation',
+    'content_creation',      // Marketing プラグイン統合
   ],
-  // InsightOfficeDoc: 文書校正 + ドキュメント評価 + レポート
+  // InsightOfficeDoc: 文書校正 + ドキュメント評価 + レポート + 契約書レビュー + コンテンツ作成
   IOSD: [
     'simple_chat',
     'document_review',
     'document_evaluation',
     'report_generation',
+    'contract_review',       // Legal プラグイン統合
+    'content_creation',      // Marketing プラグイン統合
   ],
   // InsightPy: コード生成 + データ分析
   INPY: [
@@ -1276,8 +1396,11 @@ export function inferTaskContext(
   const priorityOrder: TaskContext[] = [
     'full_document_compare',
     'sheet_compare',
+    'contract_review',       // Legal: 契約書キーワードを最優先判定
+    'finance_analysis',      // Finance: 経理キーワードを優先判定
     'document_evaluation',
     'report_generation',
+    'content_creation',      // Marketing: コンテンツ作成
     'code_generation',
     'document_review',
     'data_analysis',
@@ -1527,6 +1650,119 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
 // デフォルトエクスポート
 // =============================================================================
 
+// =============================================================================
+// スキル + メモリ統合システムプロンプトビルダー
+// =============================================================================
+
+/**
+ * スキルとメモリを統合した拡張システムプロンプトを構築
+ *
+ * Anthropic Knowledge Work Plugins のアーキテクチャを参考に、
+ * ユーザーのメッセージ内容に応じてドメインスキルを自動有効化し、
+ * メモリコンテキストを注入する。
+ *
+ * 各アプリは Claude API 呼び出し前にこの関数でシステムプロンプトを生成する。
+ *
+ * @example
+ * ```typescript
+ * const systemPrompt = buildEnhancedSystemPrompt({
+ *   product: 'IOSH',
+ *   plan: 'PRO',
+ *   userMessage: '今月の仕訳を準備してください',
+ *   hotCache: loadedHotCache,
+ *   locale: 'ja',
+ * });
+ * // → ベースプロンプト + Finance: journal-entry-prep スキル + メモリコンテキスト
+ * ```
+ */
+export function buildEnhancedSystemPrompt(params: {
+  product: ProductCode;
+  plan: PlanCode;
+  userMessage: string;
+  hotCache?: HotCache | null;
+  locale?: 'ja' | 'en';
+}): {
+  systemPrompt: string;
+  activeSkills: SkillDefinition[];
+  detectedContext: TaskContext;
+  memoryEnabled: boolean;
+} {
+  const { product, plan, userMessage, hotCache, locale = 'ja' } = params;
+
+  // 1. ベースシステムプロンプト
+  const basePrompt = getBaseSystemPrompt(product, locale);
+
+  // 2. タスクコンテキスト推定
+  const detectedContext = inferTaskContext(product, userMessage, locale);
+
+  // 3. アクティブスキル検出（トリガーパターンマッチ）
+  const activeSkills = detectActiveSkills(product, plan, userMessage);
+
+  // 4. スキル拡張プロンプト
+  const skillExtension = buildSkillPromptExtension(activeSkills);
+
+  // 5. メモリコンテキスト
+  const memoryEnabled = isMemoryEnabled(plan);
+  let memoryContext = '';
+  if (memoryEnabled && hotCache && hotCache.entries.length > 0) {
+    memoryContext = formatMemoryForPrompt(hotCache, locale);
+  }
+
+  // 6. 利用可能コマンド一覧（PRO+ のみ表示）
+  const availableCommands = getAvailableCommands(product, plan);
+  let commandsInfo = '';
+  if (availableCommands.length > 0) {
+    const commandList = availableCommands
+      .map(cmd => `- /${cmd.name}: ${locale === 'ja' ? cmd.descriptionJa : cmd.descriptionEn}`)
+      .join('\n');
+    commandsInfo = locale === 'ja'
+      ? `\n\n【利用可能なコマンド】\nユーザーが以下のコマンドを使用できます:\n${commandList}`
+      : `\n\n[Available Commands]\nThe user can use the following commands:\n${commandList}`;
+  }
+
+  // 7. 結合
+  const parts = [basePrompt];
+  if (skillExtension) parts.push(skillExtension);
+  if (memoryContext) {
+    const memoryHeader = locale === 'ja'
+      ? '\n\n【ユーザーコンテキスト（メモリ）】\n以下はこのユーザーの組織コンテキストです。回答時に参考にしてください:'
+      : '\n\n[User Context (Memory)]\nThe following is organizational context for this user. Reference it when responding:';
+    parts.push(memoryHeader + '\n' + memoryContext);
+  }
+  if (commandsInfo) parts.push(commandsInfo);
+
+  return {
+    systemPrompt: parts.join('\n\n'),
+    activeSkills,
+    detectedContext,
+    memoryEnabled,
+  };
+}
+
+/**
+ * メモリ機能の有効状態を取得
+ *
+ * UI でメモリ機能の表示/非表示を制御するためのヘルパー。
+ */
+export function getMemoryStatus(plan: PlanCode): {
+  enabled: boolean;
+  deepStorageEnabled: boolean;
+  hotCacheLimit: number;
+  deepStorageLimit: number;
+} {
+  const limits = MEMORY_LIMITS_BY_PLAN[plan];
+  return {
+    enabled: limits?.enabled ?? false,
+    deepStorageEnabled: isDeepStorageEnabled(plan),
+    hotCacheLimit: limits?.hotCacheMaxEntries ?? 0,
+    deepStorageLimit: limits?.deepStorageMaxEntries ?? 0,
+  };
+}
+
+// =============================================================================
+// デフォルトエクスポート
+// =============================================================================
+
 export default {
   // モデル選択
   getModelForTier,
@@ -1581,4 +1817,8 @@ export default {
 
   // クレジット表示
   getAiCreditLabel,
+
+  // スキル + メモリ統合（Anthropic Plugins アーキテクチャ）
+  buildEnhancedSystemPrompt,
+  getMemoryStatus,
 };

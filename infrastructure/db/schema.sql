@@ -304,6 +304,57 @@ CREATE INDEX IF NOT EXISTS idx_security_events_ip ON security_events(ip_address,
 -- DELETE FROM security_events WHERE timestamp < now() - interval '90 days';
 
 -- =============================================
+-- サポートチケット（Anthropic Customer Support Plugin 参考）
+-- =============================================
+-- 参照: config/support-triage.ts
+
+CREATE TABLE IF NOT EXISTS support_tickets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    -- チケット内容
+    subject TEXT NOT NULL,
+    body TEXT NOT NULL,
+    -- AI 自動分類
+    category TEXT NOT NULL DEFAULT 'how-to',           -- bug, how-to, license, ai-assistant, integration, feature-request, performance, data, security, partner
+    priority TEXT NOT NULL DEFAULT 'P3',                -- P1, P2, P3, P4
+    routing_target TEXT NOT NULL DEFAULT 'tier1',       -- tier1, tier2, engineering, product, security, billing, partner-team
+    -- メタデータ
+    product_code TEXT,                                 -- INSS, IOSH, IOSD 等
+    plan TEXT,                                         -- 問い合わせ時のプラン
+    partner_id UUID,                                   -- パートナー経由の場合
+    -- ステータス管理
+    status TEXT NOT NULL DEFAULT 'open',                -- open, in_progress, waiting_customer, waiting_internal, resolved, closed
+    assigned_to TEXT,                                   -- 担当者 ID
+    resolved_at TIMESTAMPTZ,
+    -- SLA 追跡
+    sla_response_deadline TIMESTAMPTZ,                 -- 初回応答期限
+    sla_responded_at TIMESTAMPTZ,                      -- 実際の初回応答時刻
+    sla_met BOOLEAN,                                   -- SLA 達成フラグ
+    -- タイムスタンプ
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- チケットコメント（対応履歴）
+CREATE TABLE IF NOT EXISTS support_ticket_comments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticket_id UUID REFERENCES support_tickets(id) ON DELETE CASCADE NOT NULL,
+    author_type TEXT NOT NULL DEFAULT 'agent',          -- customer, agent, system, ai
+    author_id TEXT,
+    body TEXT NOT NULL,
+    is_internal BOOLEAN DEFAULT false,                 -- 内部メモ（顧客には非公開）
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- サポートインデックス
+CREATE INDEX IF NOT EXISTS idx_support_tickets_user ON support_tickets(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_support_tickets_status ON support_tickets(status, priority, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_support_tickets_category ON support_tickets(category, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_support_tickets_partner ON support_tickets(partner_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_support_tickets_assigned ON support_tickets(assigned_to, status);
+CREATE INDEX IF NOT EXISTS idx_support_ticket_comments_ticket ON support_ticket_comments(ticket_id, created_at);
+
+-- =============================================
 -- 初期データ確認用クエリ
 -- =============================================
 -- SELECT * FROM users LIMIT 10;
@@ -312,3 +363,4 @@ CREATE INDEX IF NOT EXISTS idx_security_events_ip ON security_events(ip_address,
 -- SELECT * FROM api_keys LIMIT 10;
 -- SELECT * FROM audit_logs ORDER BY timestamp DESC LIMIT 10;
 -- SELECT * FROM security_events ORDER BY timestamp DESC LIMIT 10;
+-- SELECT * FROM support_tickets ORDER BY created_at DESC LIMIT 10;

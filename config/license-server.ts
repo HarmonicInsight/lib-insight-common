@@ -496,6 +496,56 @@ export const LICENSE_SERVER_ENDPOINTS = {
     auth: 'cron_secret',
     description: 'Stripeの自動更新を処理。',
   },
+
+  // --- サポートトリアージ（Anthropic Customer Support Plugin 参考） ---
+
+  /** サポートチケット作成 */
+  supportCreate: {
+    method: 'POST' as const,
+    path: '/api/v1/support/tickets',
+    auth: 'firebase_token',
+    description: 'サポートチケットを作成。AI が自動分類・優先度判定・ルーティングを実施。',
+  },
+
+  /** サポートチケット一覧 */
+  supportList: {
+    method: 'GET' as const,
+    path: '/api/v1/support/tickets',
+    auth: 'firebase_token',
+    description: 'ユーザーまたは管理者のサポートチケット一覧。',
+  },
+
+  /** サポートチケット詳細 */
+  supportDetail: {
+    method: 'GET' as const,
+    path: '/api/v1/support/tickets/:ticketId',
+    auth: 'firebase_token',
+    description: 'チケットの詳細・対応履歴。',
+  },
+
+  /** サポートチケット AI 自動分類 */
+  supportAutoClassify: {
+    method: 'POST' as const,
+    path: '/api/v1/support/classify',
+    auth: 'api_key',
+    description: 'メッセージ内容を AI で自動分類（カテゴリ・優先度・ルーティング先を返却）。',
+  },
+
+  /** パートナー向けサポートガイドライン取得 */
+  supportPartnerGuidelines: {
+    method: 'GET' as const,
+    path: '/api/v1/support/partner-guidelines',
+    auth: 'partner_api_key',
+    description: 'パートナー向け 1 次サポートガイドライン（カテゴリ分類・応答テンプレート）。',
+  },
+
+  /** サポート統計（管理画面用） */
+  supportAdminStats: {
+    method: 'GET' as const,
+    path: '/api/v1/admin/support/stats',
+    auth: 'admin',
+    description: 'サポートチケットの統計（カテゴリ別件数・平均応答時間・SLA 達成率）。',
+  },
 } as const;
 
 // =============================================================================
