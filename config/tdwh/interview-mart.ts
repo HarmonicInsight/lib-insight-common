@@ -135,10 +135,14 @@ export interface InterviewSignalData {
 export interface InterviewSessionInfo {
   sessionId: string;
   title: string;
+  /** 組織次元: 会社/プロジェクト（Level 0） */
   clientOrProject?: string;
+  /** 組織次元: 部署（Level 1） */
+  department?: string;
   templateName: string;
   templateDomain: string;
   interviewerName?: string;
+  /** 組織次元: 担当者（Level 2） */
   intervieweeName?: string;
   tags: string[];
   status: 'draft' | 'in_progress' | 'completed' | 'archived';
@@ -498,6 +502,7 @@ export function sessionToRawDocument(
     metadata: {
       sessionId: session.sessionId,
       clientOrProject: session.clientOrProject,
+      department: session.department,
       templateName: session.templateName,
       templateDomain: session.templateDomain,
       interviewerName: session.interviewerName,
@@ -583,6 +588,7 @@ export function sessionToCuratedRecords(
         root_cause_hypothesis: p.root_cause_hypothesis,
         sessionId: session.sessionId,
         clientOrProject: session.clientOrProject,
+        department: session.department,
         intervieweeName: session.intervieweeName,
         templateDomain: session.templateDomain,
       },
@@ -607,6 +613,7 @@ export function sessionToCuratedRecords(
           is_explicit: false,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -631,6 +638,7 @@ export function sessionToCuratedRecords(
           stakeholders: aggregatedOutput.stakeholders,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -652,6 +660,7 @@ export function sessionToCuratedRecords(
           stakeholders: aggregatedOutput.stakeholders,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -674,6 +683,7 @@ export function sessionToCuratedRecords(
           evidence_refs: aggregatedOutput.evidence_refs,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -696,6 +706,7 @@ export function sessionToCuratedRecords(
           open_questions: aggregatedOutput.open_questions,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -718,6 +729,7 @@ export function sessionToCuratedRecords(
           is_explicit: true,
           sessionId: session.sessionId,
           clientOrProject: session.clientOrProject,
+          department: session.department,
           intervieweeName: session.intervieweeName,
           templateDomain: session.templateDomain,
         },
@@ -744,6 +756,7 @@ export function sessionToCuratedRecords(
         question_order: answer.questionOrder,
         sessionId: session.sessionId,
         clientOrProject: session.clientOrProject,
+        department: session.department,
         intervieweeName: session.intervieweeName,
         templateDomain: session.templateDomain,
       },
@@ -779,6 +792,7 @@ export function sessionToCuratedRecords(
         topics: signal.topics,
         sessionId: session.sessionId,
         clientOrProject: session.clientOrProject,
+        department: session.department,
         intervieweeName: session.intervieweeName,
         templateDomain: session.templateDomain,
       },
@@ -1039,4 +1053,218 @@ export function getInterviewMartStats(
       sessionIds,
     };
   });
+}
+
+// =============================================================================
+// テンプレートドメイン → マート紐付け定義
+// =============================================================================
+
+/** テンプレートドメイン */
+export type InterviewTemplateDomain =
+  | 'quality'
+  | 'requirements'
+  | 'operations'
+  | 'hr'
+  | 'customer'
+  | 'project'
+  | 'knowledge'
+  | 'general';
+
+/**
+ * ドメインごとのマート優先度定義
+ *
+ * primary: そのドメインのインタビューで最も重要なマート（必ず生成・目立つ表示）
+ * secondary: 補助的に生成するマート（データがあれば表示）
+ *
+ * ```
+ * テンプレートドメイン        主要マート                  補助マート
+ * ─────────────────────────────────────────────────────────────────
+ * quality (品質トラブル)    → 課題, リスク               知見, ナレッジ
+ * requirements (要件定義)   → 要件, 知見                 リスク, ナレッジ
+ * operations (業務引き継ぎ) → ナレッジ, 課題             知見, リスク
+ * hr (退職/1on1)           → 声, 課題                   知見, ナレッジ
+ * customer (顧客FB)        → 声, 要件, 課題             知見
+ * project (振り返り)       → 知見, 課題                 リスク, ナレッジ
+ * knowledge (知識引継)     → ナレッジ, 知見             課題
+ * general (汎用)           → ナレッジ                   全マート
+ * ```
+ */
+export interface DomainMartMapping {
+  /** ドメイン表示名（日本語） */
+  nameJa: string;
+  /** ドメイン表示名（英語） */
+  nameEn: string;
+  /** 主要マート（優先度順、常に生成・表示） */
+  primaryMarts: InterviewMartId[];
+  /** 補助マート（データがあれば生成・表示） */
+  secondaryMarts: InterviewMartId[];
+  /** このドメインで特に注目すべき分析観点（日本語） */
+  focusPointsJa: string[];
+  /** このドメインで特に注目すべき分析観点（英語） */
+  focusPointsEn: string[];
+}
+
+export const DOMAIN_MART_MAPPING: Record<InterviewTemplateDomain, DomainMartMapping> = {
+  quality: {
+    nameJa: '品質トラブル引き継ぎ',
+    nameEn: 'Quality Trouble Handover',
+    primaryMarts: [INTERVIEW_MART_IDS.PROBLEMS, INTERVIEW_MART_IDS.RISKS],
+    secondaryMarts: [INTERVIEW_MART_IDS.INSIGHTS, INTERVIEW_MART_IDS.KNOWLEDGE],
+    focusPointsJa: [
+      '深刻度の高い課題の特定',
+      '根本原因の仮説と検証状況',
+      '未解決リスクの洗い出し',
+      '是正措置の決定事項',
+    ],
+    focusPointsEn: [
+      'Identify high-severity issues',
+      'Root cause hypotheses and verification',
+      'Unresolved risk identification',
+      'Corrective action decisions',
+    ],
+  },
+  requirements: {
+    nameJa: 'システム要件定義',
+    nameEn: 'System Requirements Capture',
+    primaryMarts: [INTERVIEW_MART_IDS.REQUIREMENTS, INTERVIEW_MART_IDS.INSIGHTS],
+    secondaryMarts: [INTERVIEW_MART_IDS.RISKS, INTERVIEW_MART_IDS.KNOWLEDGE],
+    focusPointsJa: [
+      '要件の網羅性確認',
+      'ステークホルダー別の要望整理',
+      '矛盾する要件の検出',
+      '技術的制約の把握',
+    ],
+    focusPointsEn: [
+      'Requirement coverage verification',
+      'Organize requirements by stakeholder',
+      'Detect conflicting requirements',
+      'Technical constraint identification',
+    ],
+  },
+  operations: {
+    nameJa: '業務引き継ぎ',
+    nameEn: 'Operations Handover',
+    primaryMarts: [INTERVIEW_MART_IDS.KNOWLEDGE, INTERVIEW_MART_IDS.PROBLEMS],
+    secondaryMarts: [INTERVIEW_MART_IDS.INSIGHTS, INTERVIEW_MART_IDS.RISKS],
+    focusPointsJa: [
+      '暗黙知の言語化',
+      '進行中の課題と対応状況',
+      '引き継ぎ必須の注意事項',
+      '関係者と連絡経路の整理',
+    ],
+    focusPointsEn: [
+      'Tacit knowledge documentation',
+      'Active issues and response status',
+      'Critical handover notes',
+      'Stakeholder and communication paths',
+    ],
+  },
+  hr: {
+    nameJa: 'HR・退職/1on1',
+    nameEn: 'HR / Exit Interview / 1-on-1',
+    primaryMarts: [INTERVIEW_MART_IDS.VOICES, INTERVIEW_MART_IDS.PROBLEMS],
+    secondaryMarts: [INTERVIEW_MART_IDS.INSIGHTS, INTERVIEW_MART_IDS.KNOWLEDGE],
+    focusPointsJa: [
+      '本音と建前の乖離検出',
+      'モチベーション・満足度の把握',
+      '組織文化・職場環境の課題',
+      '引き継ぎが必要な業務知識',
+    ],
+    focusPointsEn: [
+      'Detect gap between stated and true feelings',
+      'Motivation and satisfaction assessment',
+      'Organizational culture issues',
+      'Business knowledge requiring handover',
+    ],
+  },
+  customer: {
+    nameJa: '顧客フィードバック',
+    nameEn: 'Customer Feedback',
+    primaryMarts: [INTERVIEW_MART_IDS.VOICES, INTERVIEW_MART_IDS.REQUIREMENTS, INTERVIEW_MART_IDS.PROBLEMS],
+    secondaryMarts: [INTERVIEW_MART_IDS.INSIGHTS],
+    focusPointsJa: [
+      '顧客満足度と温度感',
+      '改善要望の優先順位付け',
+      '競合比較での強み・弱み',
+      '新機能・サービスのニーズ',
+    ],
+    focusPointsEn: [
+      'Customer satisfaction and sentiment',
+      'Improvement request prioritization',
+      'Competitive strengths and weaknesses',
+      'New feature/service needs',
+    ],
+  },
+  project: {
+    nameJa: 'プロジェクト振り返り',
+    nameEn: 'Project Retrospective',
+    primaryMarts: [INTERVIEW_MART_IDS.INSIGHTS, INTERVIEW_MART_IDS.PROBLEMS],
+    secondaryMarts: [INTERVIEW_MART_IDS.RISKS, INTERVIEW_MART_IDS.KNOWLEDGE],
+    focusPointsJa: [
+      '成功要因と教訓の抽出',
+      'プロセス課題の体系化',
+      '次回への改善提案',
+      'ベストプラクティスの蓄積',
+    ],
+    focusPointsEn: [
+      'Success factors and lessons learned',
+      'Process issue systematization',
+      'Improvement proposals for next time',
+      'Best practice accumulation',
+    ],
+  },
+  knowledge: {
+    nameJa: '専門知識の引き継ぎ',
+    nameEn: 'Expert Knowledge Transfer',
+    primaryMarts: [INTERVIEW_MART_IDS.KNOWLEDGE, INTERVIEW_MART_IDS.INSIGHTS],
+    secondaryMarts: [INTERVIEW_MART_IDS.PROBLEMS],
+    focusPointsJa: [
+      '暗黙知・ノウハウの体系化',
+      'よくある問題と解決パターン',
+      '業務の優先順位と判断基準',
+      '新人がつまずきやすいポイント',
+    ],
+    focusPointsEn: [
+      'Tacit knowledge systematization',
+      'Common problems and solution patterns',
+      'Task priorities and decision criteria',
+      'Common pitfalls for newcomers',
+    ],
+  },
+  general: {
+    nameJa: '汎用',
+    nameEn: 'General',
+    primaryMarts: [INTERVIEW_MART_IDS.KNOWLEDGE],
+    secondaryMarts: [
+      INTERVIEW_MART_IDS.PROBLEMS,
+      INTERVIEW_MART_IDS.INSIGHTS,
+      INTERVIEW_MART_IDS.REQUIREMENTS,
+      INTERVIEW_MART_IDS.RISKS,
+      INTERVIEW_MART_IDS.VOICES,
+    ],
+    focusPointsJa: [
+      'Q&Aペアの蓄積と検索',
+      '全マートへの自動分類',
+    ],
+    focusPointsEn: [
+      'Q&A pair accumulation and search',
+      'Auto-classification across all marts',
+    ],
+  },
+};
+
+/**
+ * テンプレートドメインから紐づくマート情報を取得する
+ */
+export function getMartMappingForDomain(domain: string): DomainMartMapping {
+  const mapping = DOMAIN_MART_MAPPING[domain as InterviewTemplateDomain];
+  return mapping || DOMAIN_MART_MAPPING.general;
+}
+
+/**
+ * テンプレートドメインに対する全関連マート ID を優先度順で返す
+ */
+export function getRelevantMartIds(domain: string): InterviewMartId[] {
+  const mapping = getMartMappingForDomain(domain);
+  return [...mapping.primaryMarts, ...mapping.secondaryMarts];
 }
