@@ -114,18 +114,20 @@ insight-common サブモジュールを最新に更新してください。
 
 ## ライセンスサーバー（Railway + Hono）— サポートトリアージ
 
-```
-insight-common サブモジュールを最新に更新してください。
+> **注意**: エンドポイント定義・DB スキーマ・トリアージロジックは全て insight-common 内に
+> 既に含まれています（今回のコミットで追加済み）。
+> 以下はライセンスサーバーアプリ（Hono）側でルートを実装するためのプロンプトです。
 
+```
 以下の統合作業を実施してください:
 
 1. DB マイグレーション
-   - insight-common/infrastructure/db/schema.sql の末尾に追加された
-     support_tickets テーブルと support_ticket_comments テーブルを Supabase に適用
+   - config/support-triage.ts と infrastructure/db/schema.sql は insight-common に定義済み
+   - schema.sql の support_tickets / support_ticket_comments テーブルを Supabase に適用
    - インデックスも合わせて作成
 
-2. サポート API ルートの実装
-   - LICENSE_SERVER_ENDPOINTS に定義された 6 エンドポイントを Hono ルートとして実装:
+2. サポート API ルートの実装（Hono）
+   - config/license-server.ts の LICENSE_SERVER_ENDPOINTS に定義された 6 エンドポイントを実装:
      - POST /api/v1/support/tickets — チケット作成
      - GET /api/v1/support/tickets — チケット一覧
      - GET /api/v1/support/tickets/:ticketId — チケット詳細
@@ -135,7 +137,7 @@ insight-common サブモジュールを最新に更新してください。
 
 3. AI 自動分類の実装
    - /api/v1/support/classify エンドポイントで:
-     - support-triage.ts の detectCategory() でカテゴリ推定
+     - config/support-triage.ts の detectCategory() でカテゴリ推定
      - estimatePriority() で優先度推定
      - getRouting() でルーティング先取得
      - getAutoResponseTemplate() で初回応答テンプレート取得
@@ -148,10 +150,10 @@ insight-common サブモジュールを最新に更新してください。
      - ROUTING_RULES
      - AUTO_RESPONSE_TEMPLATES_JA を返却
 
-参照ファイル:
-- insight-common/config/support-triage.ts — 全分類ロジック
-- insight-common/config/license-server.ts — エンドポイント定義
-- insight-common/infrastructure/db/schema.sql — テーブル定義
+参照ファイル（全て insight-common 内）:
+- config/support-triage.ts — 全分類ロジック・型定義
+- config/license-server.ts — エンドポイント定義
+- infrastructure/db/schema.sql — テーブル定義
 ```
 
 ---
