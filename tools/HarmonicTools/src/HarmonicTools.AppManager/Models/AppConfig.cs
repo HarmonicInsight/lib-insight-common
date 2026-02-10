@@ -328,7 +328,7 @@ public class AppConfig
                 },
 
                 // ══════════════════════════════════════════════════════
-                // Web アプリ（Tier 1 製品 Web 版）
+                // Web アプリ（製品 Web 版）
                 // ══════════════════════════════════════════════════════
                 new()
                 {
@@ -341,6 +341,18 @@ public class AppConfig
                     DevCommand = "npm run dev",
                     WebBuildCommand = "npm run build",
                     DevUrl = "http://localhost:3010",
+                },
+                new()
+                {
+                    Name = "InsightProcess",
+                    ProductCode = "INPR",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "Insight-Process"),
+                    Description = "業務プロセス可視化・DX評価ツール",
+                    Framework = "React + Vite",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:5173",
                 },
 
                 // ── Webサイト ──
