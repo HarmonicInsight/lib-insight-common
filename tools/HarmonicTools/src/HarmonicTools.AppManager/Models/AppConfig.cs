@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 7;
+    private const int CurrentConfigVersion = 8;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -328,7 +328,7 @@ public class AppConfig
                 },
 
                 // ══════════════════════════════════════════════════════
-                // Web アプリ（Tier 1 製品 Web 版）
+                // Web アプリ（製品 Web 版）
                 // ══════════════════════════════════════════════════════
                 new()
                 {
@@ -341,6 +341,43 @@ public class AppConfig
                     DevCommand = "npm run dev",
                     WebBuildCommand = "npm run build",
                     DevUrl = "http://localhost:3010",
+                },
+                new()
+                {
+                    Name = "InsightProcess",
+                    ProductCode = "INPR",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "Insight-Process"),
+                    Description = "業務プロセス可視化・DX評価ツール",
+                    Framework = "React + Vite",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:5173",
+                },
+                new()
+                {
+                    Name = "RPA Migration Factory",
+                    ProductCode = "RPAT",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "rpatest", "hmm-saas"),
+                    Description = "RPAの移行を完全工場化するSaaSツール",
+                    Framework = "Next.js",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3006",
+                    ProductionUrl = "https://rpatest.vercel.app",
+                },
+                new()
+                {
+                    Name = "InsightBrowser AI",
+                    ProductCode = "INBA",
+                    Type = AppType.WebApp,
+                    BasePath = Path.Combine(DefaultDevRoot, "Insgight-browser-AI"),
+                    Description = "AI搭載ブラウザ — Electron + React デスクトップアプリ",
+                    Framework = "Electron + React",
+                    DevCommand = "npm run dev",
+                    WebBuildCommand = "npm run build",
+                    DevUrl = "http://localhost:3000",
                 },
 
                 // ── Webサイト ──
