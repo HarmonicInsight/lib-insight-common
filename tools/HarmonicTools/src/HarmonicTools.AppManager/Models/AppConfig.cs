@@ -56,8 +56,8 @@ public class AppConfig
     }
 
     /// <summary>
-    /// デフォルト定義に基づいてアプリの Type を強制修正する。
-    /// config.json に保存された Type が不正な場合（旧バージョンからの移行漏れ等）のフォールバック。
+    /// デフォルト定義に基づいてアプリの Type および Web 固有フィールドを補完する。
+    /// config.json に保存された値が不正・未設定の場合（旧バージョンからの移行漏れ等）のフォールバック。
     /// </summary>
     private static void EnsureCorrectTypes(AppConfig config)
     {
@@ -67,10 +67,29 @@ public class AppConfig
 
         foreach (var app in config.Apps)
         {
-            if (defaultsByCode.TryGetValue(app.ProductCode, out var def) && app.Type != def.Type)
+            if (!defaultsByCode.TryGetValue(app.ProductCode, out var def))
+                continue;
+
+            // Type の修正
+            if (app.Type != def.Type)
             {
                 app.Type = def.Type;
                 needsSave = true;
+            }
+
+            // Web 系フィールドの補完（空の場合のみデフォルトで埋める）
+            if (def.IsWebBased)
+            {
+                if (string.IsNullOrEmpty(app.Framework) && !string.IsNullOrEmpty(def.Framework))
+                    { app.Framework = def.Framework; needsSave = true; }
+                if (string.IsNullOrEmpty(app.DevCommand) && !string.IsNullOrEmpty(def.DevCommand))
+                    { app.DevCommand = def.DevCommand; needsSave = true; }
+                if (string.IsNullOrEmpty(app.WebBuildCommand) && !string.IsNullOrEmpty(def.WebBuildCommand))
+                    { app.WebBuildCommand = def.WebBuildCommand; needsSave = true; }
+                if (string.IsNullOrEmpty(app.DevUrl) && !string.IsNullOrEmpty(def.DevUrl))
+                    { app.DevUrl = def.DevUrl; needsSave = true; }
+                if (string.IsNullOrEmpty(app.ProductionUrl) && !string.IsNullOrEmpty(def.ProductionUrl))
+                    { app.ProductionUrl = def.ProductionUrl; needsSave = true; }
             }
         }
 
