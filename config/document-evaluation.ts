@@ -822,7 +822,14 @@ export function getEffectiveWeights(
   const preset = getPresetById(docType, presetId);
   if (!preset?.weightOverrides) return baseWeights;
 
-  return { ...baseWeights, ...preset.weightOverrides };
+  // Apply weight overrides, filtering out any undefined values
+  const result = { ...baseWeights };
+  for (const [key, value] of Object.entries(preset.weightOverrides)) {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+  return result;
 }
 
 // =============================================================================

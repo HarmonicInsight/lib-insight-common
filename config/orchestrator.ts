@@ -957,12 +957,6 @@ export const ORCHESTRATOR_LIMITS: Record<PlanCode, {
   maxConcurrentDispatches: number;
   logRetentionDays: number;
 }> = {
-  FREE: {
-    maxAgents: 0,
-    schedulerEnabled: false,
-    maxConcurrentDispatches: 0,
-    logRetentionDays: 0,
-  },
   TRIAL: {
     maxAgents: 5,
     schedulerEnabled: true,

@@ -359,6 +359,12 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
     windows: 'https://download.harmonicinsight.com/insightinterview/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/insightinterview',
   },
+  ISOF: {
+    productCode: 'ISOF',
+    productName: 'InsightSeniorOffice',
+    windows: 'https://download.harmonicinsight.com/insightsenioroffice/latest/windows',
+    documentation: 'https://docs.harmonicinsight.com/insightsenioroffice',
+  },
 };
 
 // =============================================================================

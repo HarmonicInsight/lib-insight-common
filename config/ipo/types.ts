@@ -146,7 +146,7 @@ export interface IpoKpi {
  *   output: [{ name: '月次損益計算書', destination: 'proc-management-report' }],
  *   kpi: [{ name: '決算所要日数', target: '5営業日以内', unit: '営業日' }],
  *   issues: ['現場からの原価データ提出が遅延（平均3日遅れ）'],
- *   children: [/* task nodes */],
+ *   children: [/* ...task nodes... *\/],
  * };
  * ```
  */

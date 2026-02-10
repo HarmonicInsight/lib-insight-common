@@ -564,6 +564,7 @@ function createStandaloneInstaller(product: ProductCode): InstallerConfig {
     INCA: '{{F6A7B8C9-0D1E-2F3A-4B5C-D6E7F8A9B0C1}',
     INPY: '{{A7B8C9D0-1E2F-3A4B-5C6D-E7F8A9B0C1D2}',
     IVIN: '{{B8C9D0E1-2F3A-4B5C-6D7E-F8A9B0C1D2E3}',
+    ISOF: '{{C9D0E1F2-3A4B-5C6D-7E8F-A9B0C1D2E3F4}',
   };
 
   return {
@@ -622,6 +623,7 @@ export const INIG_INSTALLER: InstallerConfig = createStandaloneInstaller('INIG')
 export const INCA_INSTALLER: InstallerConfig = createStandaloneInstaller('INCA');
 export const INPY_INSTALLER: InstallerConfig = createStandaloneInstaller('INPY');
 export const IVIN_INSTALLER: InstallerConfig = createStandaloneInstaller('IVIN');
+export const ISOF_INSTALLER: InstallerConfig = createStandaloneInstaller('ISOF');
 
 // =============================================================================
 // 全製品マップ
@@ -637,6 +639,7 @@ export const INSTALLER_CONFIGS: Record<ProductCode, InstallerConfig> = {
   INCA: INCA_INSTALLER,
   INPY: INPY_INSTALLER,
   IVIN: IVIN_INSTALLER,
+  ISOF: ISOF_INSTALLER,
 };
 
 // =============================================================================
@@ -844,6 +847,7 @@ export default {
   INCA_INSTALLER,
   INPY_INSTALLER,
   IVIN_INSTALLER,
+  ISOF_INSTALLER,
 
   // 全製品マップ
   INSTALLER_CONFIGS,

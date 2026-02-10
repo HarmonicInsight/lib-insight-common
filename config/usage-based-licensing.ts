@@ -236,15 +236,6 @@ export interface PurchasedAddonPack {
  * - TRIAL/ENT: 無制限
  */
 export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
-  FREE: {
-    plan: 'FREE',
-    baseCredits: 20,
-    period: 'lifetime',
-    aiEnabled: true,
-    modelTier: 'standard',
-    descriptionJa: 'AI 20回付き無料版（Sonnetまで）',
-    descriptionEn: 'Free with 20 AI credits (up to Sonnet)',
-  },
   TRIAL: {
     plan: 'TRIAL',
     baseCredits: -1,
@@ -494,8 +485,8 @@ export function checkAiUsage(
   balance: CreditBalance,
   licenseActive: boolean = true,
 ): UsageCheckResult {
-  // ライセンス無効
-  if (!licenseActive && plan !== 'FREE') {
+  // ライセンス無効（全プランでライセンス必須）
+  if (!licenseActive) {
     return {
       allowed: false,
       remaining: 0,
