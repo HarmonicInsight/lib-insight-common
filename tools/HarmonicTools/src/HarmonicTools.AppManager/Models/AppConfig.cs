@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 5;
+    private const int CurrentConfigVersion = 6;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -89,8 +89,8 @@ public class AppConfig
                 app.Description = def.Description;
                 app.Type = def.Type;
 
-                // Web App 固有フィールドはデフォルトから補完（ユーザー未設定の場合のみ）
-                if (def.IsWebApp)
+                // Web 系固有フィールドはデフォルトから補完（ユーザー未設定の場合のみ）
+                if (def.IsWebBased)
                 {
                     if (string.IsNullOrEmpty(app.Framework)) app.Framework = def.Framework;
                     if (string.IsNullOrEmpty(app.DevCommand)) app.DevCommand = def.DevCommand;
@@ -277,7 +277,7 @@ public class AppConfig
                 {
                     Name = "Harmonic Insight",
                     ProductCode = "WEB-HOME",
-                    Type = AppType.WebApp,
+                    Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-home"),
                     Description = "コーポレートサイト",
                     Framework = "Next.js",
@@ -290,7 +290,7 @@ public class AppConfig
                 {
                     Name = "Insight Series",
                     ProductCode = "WEB-INSIGHT",
-                    Type = AppType.WebApp,
+                    Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-insight"),
                     Description = "Insight Series 製品ページ",
                     Framework = "Next.js",
@@ -303,7 +303,7 @@ public class AppConfig
                 {
                     Name = "Framework",
                     ProductCode = "WEB-FW",
-                    Type = AppType.WebApp,
+                    Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-framework"),
                     Description = "ビジネスフレームワーク集",
                     Framework = "Next.js",
@@ -316,7 +316,7 @@ public class AppConfig
                 {
                     Name = "Blog",
                     ProductCode = "WEB-BLOG",
-                    Type = AppType.WebApp,
+                    Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-blog"),
                     Description = "技術・ビジネスブログ",
                     Framework = "Next.js",
@@ -329,7 +329,7 @@ public class AppConfig
                 {
                     Name = "Documentation",
                     ProductCode = "WEB-DOCS",
-                    Type = AppType.WebApp,
+                    Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-docs"),
                     Description = "製品マニュアル・APIリファレンス",
                     Framework = "Next.js",
@@ -342,7 +342,7 @@ public class AppConfig
                 {
                     Name = "Support",
                     ProductCode = "WEB-SUP",
-                    Type = AppType.WebApp,
+                    Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-support"),
                     Description = "お問い合わせ・ヘルプセンター",
                     Framework = "Next.js",
@@ -355,7 +355,7 @@ public class AppConfig
                 {
                     Name = "License Server",
                     ProductCode = "WEB-LIC",
-                    Type = AppType.WebApp,
+                    Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "app-license-server"),
                     Description = "統合ライセンスサーバー (Hono)",
                     Framework = "Hono",
