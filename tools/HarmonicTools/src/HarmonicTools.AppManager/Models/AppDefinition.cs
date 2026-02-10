@@ -11,8 +11,10 @@ public enum AppType
 {
     /// <summary>デスクトップアプリ（WPF / Python 等）</summary>
     Desktop,
-    /// <summary>Webアプリ（Next.js / React 等）</summary>
-    WebApp
+    /// <summary>Webアプリ（Next.js / React 等の製品）</summary>
+    WebApp,
+    /// <summary>Webサイト（コーポレートサイト・ブログ・ドキュメント等）</summary>
+    Website
 }
 
 /// <summary>
@@ -84,10 +86,22 @@ public class AppDefinition
     public bool IsWebApp => Type == AppType.WebApp;
 
     /// <summary>
+    /// Webサイトかどうか
+    /// </summary>
+    [JsonIgnore]
+    public bool IsWebSite => Type == AppType.Website;
+
+    /// <summary>
+    /// Web系（WebApp または Website）かどうか
+    /// </summary>
+    [JsonIgnore]
+    public bool IsWebBased => Type == AppType.WebApp || Type == AppType.Website;
+
+    /// <summary>
     /// dotnet プロジェクトかどうか
     /// </summary>
     [JsonIgnore]
-    public bool IsDotNet => !string.IsNullOrEmpty(ProjectPath) && !IsWebApp;
+    public bool IsDotNet => !string.IsNullOrEmpty(ProjectPath) && !IsWebBased;
 
     /// <summary>
     /// 解決済みのソリューション絶対パス
@@ -197,8 +211,8 @@ public class AppDefinition
         {
             var released = !string.IsNullOrEmpty(LastReleasedTag);
 
-            // Web アプリの場合
-            if (IsWebApp)
+            // Web 系の場合
+            if (IsWebBased)
             {
                 var hasUrl = !string.IsNullOrEmpty(ProductionUrl);
                 string status;

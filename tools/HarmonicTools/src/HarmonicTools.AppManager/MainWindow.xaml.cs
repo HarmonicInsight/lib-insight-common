@@ -12,10 +12,12 @@ namespace HarmonicTools.AppManager;
 
 public partial class MainWindow : Window
 {
+    private enum ActiveTab { Desktop, WebApp, Website }
+
     private readonly AppConfig _config;
     private readonly CommandRunner _runner = new();
     private AppDefinition? _selectedApp;
-    private bool _showWebApps;
+    private ActiveTab _activeTab = ActiveTab.Desktop;
 
     public MainWindow()
     {
@@ -54,38 +56,32 @@ public partial class MainWindow : Window
 
     // ── Tab Switching ──
 
-    private void DesktopTab_Click(object sender, RoutedEventArgs e)
-    {
-        if (!_showWebApps) return;
-        _showWebApps = false;
-        UpdateTabStyles();
-        RefreshAppList();
-    }
+    private void DesktopTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Desktop);
+    private void WebAppTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.WebApp);
+    private void WebSiteTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Website);
 
-    private void WebTab_Click(object sender, RoutedEventArgs e)
+    private void SwitchTab(ActiveTab tab)
     {
-        if (_showWebApps) return;
-        _showWebApps = true;
+        if (_activeTab == tab) return;
+        _activeTab = tab;
         UpdateTabStyles();
         RefreshAppList();
     }
 
     private void UpdateTabStyles()
     {
-        if (_showWebApps)
-        {
-            DesktopTabBtn.Background = (Brush)FindResource("BgSecondaryBrush");
-            DesktopTabBtn.Foreground = (Brush)FindResource("TextSecondaryBrush");
-            WebTabBtn.Background = (Brush)FindResource("PrimaryBrush");
-            WebTabBtn.Foreground = Brushes.White;
-        }
-        else
-        {
-            DesktopTabBtn.Background = (Brush)FindResource("PrimaryBrush");
-            DesktopTabBtn.Foreground = Brushes.White;
-            WebTabBtn.Background = (Brush)FindResource("BgSecondaryBrush");
-            WebTabBtn.Foreground = (Brush)FindResource("TextSecondaryBrush");
-        }
+        var inactive = (Brush)FindResource("BgSecondaryBrush");
+        var inactiveText = (Brush)FindResource("TextSecondaryBrush");
+        var active = (Brush)FindResource("PrimaryBrush");
+
+        DesktopTabBtn.Background = _activeTab == ActiveTab.Desktop ? active : inactive;
+        DesktopTabBtn.Foreground = _activeTab == ActiveTab.Desktop ? Brushes.White : inactiveText;
+
+        WebAppTabBtn.Background = _activeTab == ActiveTab.WebApp ? active : inactive;
+        WebAppTabBtn.Foreground = _activeTab == ActiveTab.WebApp ? Brushes.White : inactiveText;
+
+        WebSiteTabBtn.Background = _activeTab == ActiveTab.Website ? active : inactive;
+        WebSiteTabBtn.Foreground = _activeTab == ActiveTab.Website ? Brushes.White : inactiveText;
     }
 
     // ── App List ──
@@ -94,7 +90,13 @@ public partial class MainWindow : Window
     {
         AppListBox.ItemsSource = null;
         var filtered = _config.Apps
-            .Where(a => _showWebApps ? a.IsWebApp : !a.IsWebApp)
+            .Where(a => _activeTab switch
+            {
+                ActiveTab.Desktop => a.Type == AppType.Desktop,
+                ActiveTab.WebApp => a.Type == AppType.WebApp,
+                ActiveTab.Website => a.Type == AppType.Website,
+                _ => true,
+            })
             .ToList();
         AppListBox.ItemsSource = filtered;
 
@@ -132,9 +134,9 @@ public partial class MainWindow : Window
 
         SelectedAppName.Text = _selectedApp.Name;
 
-        if (_selectedApp.IsWebApp)
+        if (_selectedApp.IsWebBased)
         {
-            // Web app details
+            // Web app / website details
             DesktopPathInfo.Visibility = Visibility.Collapsed;
             WebPathInfo.Visibility = Visibility.Visible;
             DesktopActions.Visibility = Visibility.Collapsed;
@@ -456,8 +458,8 @@ public partial class MainWindow : Window
     {
         if (_selectedApp == null) return;
 
-        // Web app: always open base path
-        if (_selectedApp.IsWebApp)
+        // Web app / website: always open base path
+        if (_selectedApp.IsWebBased)
         {
             if (!string.IsNullOrEmpty(_selectedApp.BasePath) && Directory.Exists(_selectedApp.BasePath))
                 Process.Start("explorer.exe", _selectedApp.BasePath);
@@ -884,13 +886,13 @@ public partial class MainWindow : Window
     {
         if (_selectedApp == null) return;
 
-        var isCurrentlyOpen = _selectedApp.IsWebApp
+        var isCurrentlyOpen = _selectedApp.IsWebBased
             ? WebEditPanel.Visibility == Visibility.Visible
             : EditPanel.Visibility == Visibility.Visible;
 
         if (!isCurrentlyOpen)
         {
-            if (_selectedApp.IsWebApp)
+            if (_selectedApp.IsWebBased)
             {
                 PopulateWebEditFields(_selectedApp);
                 WebEditPanel.Visibility = Visibility.Visible;
@@ -1057,13 +1059,14 @@ public partial class MainWindow : Window
 
     private void AddApp_Click(object sender, RoutedEventArgs e)
     {
-        if (_showWebApps)
+        if (_activeTab == ActiveTab.WebApp || _activeTab == ActiveTab.Website)
         {
+            var isWebSite = _activeTab == ActiveTab.Website;
             var app = new AppDefinition
             {
-                Name = "新規Webアプリ",
-                ProductCode = "WEB-NEW",
-                Type = AppType.WebApp,
+                Name = isWebSite ? "新規Webサイト" : "新規Webアプリ",
+                ProductCode = isWebSite ? "WEB-NEW" : "APP-NEW",
+                Type = isWebSite ? AppType.Website : AppType.WebApp,
                 Description = "説明を入力",
                 Framework = "Next.js",
                 DevCommand = "npm run dev",
@@ -1131,7 +1134,7 @@ public partial class MainWindow : Window
         SaveConfig();
 
         // Auto-open edit panel for copied app
-        if (app.IsWebApp)
+        if (app.IsWebBased)
         {
             PopulateWebEditFields(app);
             WebEditPanel.Visibility = Visibility.Visible;
