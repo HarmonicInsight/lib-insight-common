@@ -150,6 +150,15 @@ public partial class MainWindow : Window
             WebDevUrlText.Text = _selectedApp.DevUrl;
             WebProductionUrlText.Text = _selectedApp.ProductionUrl;
             WebDevCommandText.Text = _selectedApp.DevCommand;
+
+            // インラインURL表示
+            WebDevUrlInline.Text = _selectedApp.DevUrl;
+            WebProductionUrlInline.Text = _selectedApp.ProductionUrl;
+
+            // 本番URLがない場合はセクションを非表示
+            WebProductionSection.Visibility = string.IsNullOrEmpty(_selectedApp.ProductionUrl)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
         else
         {

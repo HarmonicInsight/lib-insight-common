@@ -43,12 +43,39 @@ public class AppConfig
                         config = MigrateApps(config);
                         config.Save();
                     }
+
+                    // 型の整合性チェック（旧バージョンからの移行漏れ対策）
+                    EnsureCorrectTypes(config);
+
                     return config;
                 }
             }
         }
         catch { }
         return CreateDefault();
+    }
+
+    /// <summary>
+    /// デフォルト定義に基づいてアプリの Type を強制修正する。
+    /// config.json に保存された Type が不正な場合（旧バージョンからの移行漏れ等）のフォールバック。
+    /// </summary>
+    private static void EnsureCorrectTypes(AppConfig config)
+    {
+        var defaults = CreateDefault();
+        var defaultsByCode = defaults.Apps.ToDictionary(a => a.ProductCode);
+        var needsSave = false;
+
+        foreach (var app in config.Apps)
+        {
+            if (defaultsByCode.TryGetValue(app.ProductCode, out var def) && app.Type != def.Type)
+            {
+                app.Type = def.Type;
+                needsSave = true;
+            }
+        }
+
+        if (needsSave)
+            config.Save();
     }
 
     /// <summary>
