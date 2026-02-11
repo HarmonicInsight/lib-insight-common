@@ -315,10 +315,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INCA',
     productName: 'InsightNoCodeAnalyzer',
-    masterSvg: 'brand/icons/icon-insight-nca.svg',
-    masterPng: 'brand/icons/NoCodeAnalyzer.png',
-    motif: 'Flowchart + magnifying glass',
-    motifJa: 'フローチャート + 虫眼鏡',
+    masterSvg: 'brand/icons/svg/icon-insight-nca.svg',
+    masterPng: 'brand/icons/png/icon-insight-nca.png',
+    motif: 'Flowchart + gear',
+    motifJa: 'フローチャート + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -326,10 +326,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INBT',
     productName: 'InsightBot',
-    masterSvg: 'brand/icons/icon-insight-bot.svg',
-    masterPng: 'brand/icons/InsightBot.png',
-    motif: 'Cute robot (big eyes + antenna)',
-    motifJa: 'かわいいロボット（大きな目 + アンテナ）',
+    masterSvg: 'brand/icons/svg/icon-insight-bot.svg',
+    masterPng: 'brand/icons/png/icon-insight-bot.png',
+    motif: 'Cute robot + chat bubble',
+    motifJa: 'かわいいロボット + チャット吹き出し',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -337,10 +337,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'IVIN',
     productName: 'InterviewInsight',
-    masterSvg: 'brand/icons/icon-interview-insight.svg',
-    masterPng: 'brand/icons/InsightAutoInterview.png',
-    motif: 'Microphone + sound waves',
-    motifJa: 'マイク + 音波',
+    masterSvg: 'brand/icons/svg/icon-interview-insight.svg',
+    masterPng: 'brand/icons/png/icon-interview-insight.png',
+    motif: 'Robot + microphone + clipboard',
+    motifJa: 'ロボット + マイク + クリップボード',
     platforms: [
       { platform: 'web', targets: WEB_TARGETS },
     ],
@@ -352,10 +352,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INMV',
     productName: 'InsightMovie',
-    masterSvg: 'brand/icons/icon-insight-movie.svg',
-    masterPng: 'brand/icons/InsightMovieGen.png',
-    motif: 'Film strip + play button',
-    motifJa: 'フィルムストリップ + 再生ボタン',
+    masterSvg: 'brand/icons/svg/icon-insight-movie.svg',
+    masterPng: 'brand/icons/png/icon-insight-movie.png',
+    motif: 'Projector + film strip + gear',
+    motifJa: '映写機 + フィルムストリップ + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -363,10 +363,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INIG',
     productName: 'InsightImageGen',
-    masterSvg: 'brand/icons/icon-insight-imagegen.svg',
-    masterPng: 'brand/icons/InsightImageGen.png',
-    motif: 'Image frame + paint brush',
-    motifJa: '画像フレーム + ペイントブラシ',
+    masterSvg: 'brand/icons/svg/icon-insight-imagegen.svg',
+    masterPng: 'brand/icons/png/icon-insight-imagegen.png',
+    motif: 'Monitor + aperture + image + gear',
+    motifJa: 'モニター + アパーチャ + 画像 + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -378,10 +378,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INSS',
     productName: 'InsightOfficeSlide',
-    masterSvg: 'brand/icons/icon-insight-slide.svg',
-    masterPng: 'brand/icons/InsightSlide.png',
-    motif: 'Slide layers + up arrow (text extraction)',
-    motifJa: 'スライドレイヤー + 上矢印（テキスト抽出）',
+    masterSvg: 'brand/icons/svg/icon-insight-slide.svg',
+    masterPng: 'brand/icons/png/icon-insight-slide.png',
+    motif: 'Presentation board + gear + arrows',
+    motifJa: 'プレゼンボード + ギア + 矢印',
     platforms: [
       { platform: 'wpf', targets: wpfWithFileIcon('inss-file.ico') },
     ],
@@ -389,10 +389,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'IOSH',
     productName: 'InsightOfficeSheet',
-    masterSvg: 'brand/icons/icon-insight-sheet.svg',
-    masterPng: 'brand/icons/InsightSheet.png',
-    motif: 'Spreadsheet grid + header row',
-    motifJa: 'スプレッドシートグリッド + ヘッダー行',
+    masterSvg: 'brand/icons/svg/icon-insight-sheet.svg',
+    masterPng: 'brand/icons/png/icon-insight-sheet.png',
+    motif: 'Spreadsheet grid + gear',
+    motifJa: 'スプレッドシートグリッド + ギア',
     platforms: [
       { platform: 'wpf', targets: wpfWithFileIcon('iosh-file.ico') },
     ],
@@ -400,10 +400,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'IOSD',
     productName: 'InsightOfficeDoc',
-    masterSvg: 'brand/icons/icon-insight-doc.svg',
-    masterPng: 'brand/icons/InsightDoc.png',
-    motif: 'Document + fold corner + text lines',
-    motifJa: 'ドキュメント + 折り角 + テキスト行',
+    masterSvg: 'brand/icons/svg/icon-insight-doc.svg',
+    masterPng: 'brand/icons/png/icon-insight-doc.png',
+    motif: 'Document + gear + DB',
+    motifJa: 'ドキュメント + ギア + DB',
     platforms: [
       { platform: 'wpf', targets: wpfWithFileIcon('iosd-file.ico') },
     ],
@@ -411,10 +411,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INPY',
     productName: 'InsightPy',
-    masterSvg: 'brand/icons/icon-insight-py.svg',
-    masterPng: 'brand/icons/InsightPy.png',
-    motif: 'Python snake (S-curve)',
-    motifJa: 'Python ヘビ（S字カーブ）',
+    masterSvg: 'brand/icons/svg/icon-insight-py.svg',
+    masterPng: 'brand/icons/png/icon-insight-py.png',
+    motif: 'Python snake + circuit board',
+    motifJa: 'Python ヘビ + 回路基板',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -427,9 +427,9 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productCode: 'ISOF',
     productName: 'InsightSeniorOffice',
     masterSvg: '',
-    masterPng: 'brand/icons/InsightSeniorOffice.png',
-    motif: 'Senior-friendly office suite',
-    motifJa: 'シニア向け統合オフィスツール',
+    masterPng: 'brand/icons/png/icon-senior-office.png',
+    motif: 'Calendar + document + mail + gear',
+    motifJa: 'カレンダー + 文書 + メール + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -457,10 +457,10 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'LAUNCHER',
     productName: 'Insight Launcher',
-    masterSvg: 'brand/icons/icon-launcher.svg',
-    masterPng: 'brand/icons/InsightLauncher.png',
-    motif: '2x2 app grid',
-    motifJa: '2x2 アプリグリッド',
+    masterSvg: 'brand/icons/svg/icon-launcher.svg',
+    masterPng: 'brand/icons/png/icon-launcher.png',
+    motif: '2x2 grid + rocket + circuit board',
+    motifJa: '2x2 グリッド + ロケット + 回路基板',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],

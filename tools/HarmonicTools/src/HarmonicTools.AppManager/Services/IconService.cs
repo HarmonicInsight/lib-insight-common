@@ -286,25 +286,25 @@ public class IconService
             new()
             {
                 ProductCode = "INCA", ProductName = "InsightNoCodeAnalyzer",
-                MasterSvg = @"brand\icons\icon-insight-nca.svg",
-                MasterPng = @"brand\icons\NoCodeAnalyzer.png",
-                Motif = "フローチャート + 虫眼鏡",
+                MasterSvg = @"brand\icons\svg\icon-insight-nca.svg",
+                MasterPng = @"brand\icons\png\icon-insight-nca.png",
+                Motif = "フローチャート + ギア",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },
             new()
             {
                 ProductCode = "INBT", ProductName = "InsightBot",
-                MasterSvg = @"brand\icons\icon-insight-bot.svg",
-                MasterPng = @"brand\icons\InsightBot.png",
-                Motif = "ロボット（大きな目 + アンテナ）",
+                MasterSvg = @"brand\icons\svg\icon-insight-bot.svg",
+                MasterPng = @"brand\icons\png\icon-insight-bot.png",
+                Motif = "ロボット + チャット吹き出し",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },
             new()
             {
                 ProductCode = "IVIN", ProductName = "InterviewInsight",
-                MasterSvg = @"brand\icons\icon-interview-insight.svg",
-                MasterPng = @"brand\icons\InsightAutoInterview.png",
-                Motif = "マイク + 音波",
+                MasterSvg = @"brand\icons\svg\icon-interview-insight.svg",
+                MasterPng = @"brand\icons\png\icon-interview-insight.png",
+                Motif = "ロボット + マイク + クリップボード",
                 Platforms = [new() { Platform = "web", Targets = WebTargets() }],
             },
 
@@ -312,17 +312,17 @@ public class IconService
             new()
             {
                 ProductCode = "INMV", ProductName = "InsightMovie",
-                MasterSvg = @"brand\icons\icon-insight-movie.svg",
-                MasterPng = @"brand\icons\InsightMovieGen.png",
-                Motif = "フィルム + 再生ボタン",
+                MasterSvg = @"brand\icons\svg\icon-insight-movie.svg",
+                MasterPng = @"brand\icons\png\icon-insight-movie.png",
+                Motif = "映写機 + フィルム + ギア",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },
             new()
             {
                 ProductCode = "INIG", ProductName = "InsightImageGen",
-                MasterSvg = @"brand\icons\icon-insight-imagegen.svg",
-                MasterPng = @"brand\icons\InsightImageGen.png",
-                Motif = "画像フレーム + ブラシ",
+                MasterSvg = @"brand\icons\svg\icon-insight-imagegen.svg",
+                MasterPng = @"brand\icons\png\icon-insight-imagegen.png",
+                Motif = "モニター + アパーチャ + ギア",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },
 
@@ -330,33 +330,33 @@ public class IconService
             new()
             {
                 ProductCode = "INSS", ProductName = "InsightOfficeSlide",
-                MasterSvg = @"brand\icons\icon-insight-slide.svg",
-                MasterPng = @"brand\icons\InsightSlide.png",
-                Motif = "スライドレイヤー + 上矢印",
+                MasterSvg = @"brand\icons\svg\icon-insight-slide.svg",
+                MasterPng = @"brand\icons\png\icon-insight-slide.png",
+                Motif = "プレゼンボード + ギア + 矢印",
                 Platforms = [new() { Platform = "wpf", Targets = WpfWithFileIcon("inss-file.ico") }],
             },
             new()
             {
                 ProductCode = "IOSH", ProductName = "InsightOfficeSheet",
-                MasterSvg = @"brand\icons\icon-insight-sheet.svg",
-                MasterPng = @"brand\icons\InsightSheet.png",
-                Motif = "スプレッドシートグリッド",
+                MasterSvg = @"brand\icons\svg\icon-insight-sheet.svg",
+                MasterPng = @"brand\icons\png\icon-insight-sheet.png",
+                Motif = "スプレッドシートグリッド + ギア",
                 Platforms = [new() { Platform = "wpf", Targets = WpfWithFileIcon("iosh-file.ico") }],
             },
             new()
             {
                 ProductCode = "IOSD", ProductName = "InsightOfficeDoc",
-                MasterSvg = @"brand\icons\icon-insight-doc.svg",
-                MasterPng = @"brand\icons\InsightDoc.png",
-                Motif = "ドキュメント + 折り角",
+                MasterSvg = @"brand\icons\svg\icon-insight-doc.svg",
+                MasterPng = @"brand\icons\png\icon-insight-doc.png",
+                Motif = "ドキュメント + ギア + DB",
                 Platforms = [new() { Platform = "wpf", Targets = WpfWithFileIcon("iosd-file.ico") }],
             },
             new()
             {
                 ProductCode = "INPY", ProductName = "InsightPy",
-                MasterSvg = @"brand\icons\icon-insight-py.svg",
-                MasterPng = @"brand\icons\InsightPy.png",
-                Motif = "Python ヘビ（S字カーブ）",
+                MasterSvg = @"brand\icons\svg\icon-insight-py.svg",
+                MasterPng = @"brand\icons\png\icon-insight-py.png",
+                Motif = "Python ヘビ + 回路基板",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },
 
@@ -365,8 +365,8 @@ public class IconService
             {
                 ProductCode = "ISOF", ProductName = "InsightSeniorOffice",
                 MasterSvg = "",
-                MasterPng = @"brand\icons\InsightSeniorOffice.png",
-                Motif = "シニア向け統合オフィス",
+                MasterPng = @"brand\icons\png\icon-senior-office.png",
+                Motif = "カレンダー + 文書 + メール + ギア",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },
 
@@ -388,9 +388,9 @@ public class IconService
             new()
             {
                 ProductCode = "LAUNCHER", ProductName = "Insight Launcher",
-                MasterSvg = @"brand\icons\icon-launcher.svg",
-                MasterPng = @"brand\icons\InsightLauncher.png",
-                Motif = "2x2 アプリグリッド",
+                MasterSvg = @"brand\icons\svg\icon-launcher.svg",
+                MasterPng = @"brand\icons\png\icon-launcher.png",
+                Motif = "2x2 グリッド + ロケット + 回路基板",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },
         };
