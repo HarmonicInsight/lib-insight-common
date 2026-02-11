@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- QR Code pattern -->
+  <rect x="38" y="42" width="12" height="12" rx="1.5" fill="white"/>
+  <rect x="40" y="44" width="8" height="8" rx="0.5" fill="#B8942F"/>
+  <rect x="42" y="46" width="4" height="4" fill="white"/>
+  <rect x="58" y="42" width="12" height="12" rx="1.5" fill="white"/>
+  <rect x="60" y="44" width="8" height="8" rx="0.5" fill="#B8942F"/>
+  <rect x="62" y="46" width="4" height="4" fill="white"/>
+  <rect x="38" y="58" width="12" height="12" rx="1.5" fill="white"/>
+  <rect x="40" y="60" width="8" height="8" rx="0.5" fill="#B8942F"/>
+  <rect x="42" y="62" width="4" height="4" fill="white"/>
+  <!-- Data dots -->
+  <rect x="58" y="58" width="4" height="4" fill="white"/>
+  <rect x="64" y="58" width="4" height="4" fill="white"/>
+  <rect x="58" y="64" width="4" height="4" fill="white"/>
+  <rect x="66" y="64" width="4" height="4" fill="white"/>
+  <rect x="62" y="62" width="3" height="3" fill="white" opacity="0.6"/>
+</svg>
