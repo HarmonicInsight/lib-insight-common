@@ -1,0 +1,276 @@
+name: Sync insight-common to dependent repos
+
+# insight-common の main に push されたとき、
+# 各アプリリポジトリのサブモジュールを更新する PR を自動作成する。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      repos:
+        description: '同期対象リポジトリ（カンマ区切り、空=全て）'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run（PR を作成しない）'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  ICON_SRC_BASE: brand/icons/generated
+  # 各リポジトリ内の insight-common サブモジュールパス
+  SUBMODULE_PATH: insight-common
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        include:
+          # ── Tier 1: 業務変革ツール ──
+          - repo: win-app-nocode-analyzer
+            product: INCA
+            name: InsightNoCodeAnalyzer
+            icon_src: InsightNoCodeAnalyzer/
+            icon_dest: src-tauri/icons/
+            copy_mode: dir
+
+          - repo: win-app-insight-bot
+            product: INBT
+            name: InsightBot
+            icon_src: InsightBot
+            icon_dest: Resources
+            copy_mode: ico_png
+
+          - repo: web-app-auto-interview
+            product: IVIN
+            name: InterviewInsight
+            icon_src: InterviewInsight/
+            icon_dest: src-tauri/icons/
+            copy_mode: dir
+
+          # ── Tier 2: AI活用ツール ──
+          - repo: win-app-insight-movie-gen
+            product: INMV
+            name: InsightMovie
+            icon_src: InsightMovie
+            icon_dest: resources
+            copy_mode: ico_png
+
+          - repo: win-app-insight-image-gen
+            product: INIG
+            name: InsightImageGen
+            icon_src: InsightImageGen
+            icon_dest: resources
+            copy_mode: ico_png
+
+          # ── Tier 3: InsightOffice Suite ──
+          - repo: win-app-insight-slide
+            product: INSS
+            name: InsightOfficeSlide
+            icon_src: InsightOfficeSlide
+            icon_dest: Resources
+            copy_mode: ico_png
+
+          - repo: win-app-insight-sheet
+            product: IOSH
+            name: InsightOfficeSheet
+            icon_src: InsightOfficeSheet
+            icon_dest: Resources
+            copy_mode: ico_png
+
+          - repo: win-app-insight-doc
+            product: IOSD
+            name: InsightOfficeDoc
+            icon_src: InsightOfficeDoc
+            icon_dest: Resources
+            copy_mode: ico_png
+
+          - repo: win-app-insight-py
+            product: INPY
+            name: InsightPy
+            icon_src: InsightPy
+            icon_dest: resources
+            copy_mode: ico_png
+
+          - repo: win-app-insight-py-pro
+            product: INPY
+            name: "InsightPy (PRO)"
+            icon_src: InsightPy
+            icon_dest: resources
+            copy_mode: ico_png
+
+          # ── Tier 4: シニア向け ──
+          - repo: win-app-insight-sheet-senior
+            product: ISOF
+            name: InsightSeniorOffice
+            icon_src: InsightSeniorOffice
+            icon_dest: Resources
+            copy_mode: ico_png
+
+          # ── ユーティリティ ──
+          - repo: win-app-insight-launcher
+            product: LAUNCHER
+            name: InsightLauncher
+            icon_src: InsightLauncher
+            icon_dest: Resources
+            copy_mode: ico_png
+
+          - repo: web-app-insight-qr
+            product: QR
+            name: InsightQR
+            icon_src: InsightQR
+            icon_dest: public
+            copy_mode: web
+
+    steps:
+      - name: Check if repo should be synced
+        id: check
+        run: |
+          FILTER="${{ inputs.repos }}"
+          if [ -n "$FILTER" ]; then
+            if echo "$FILTER" | grep -qw "${{ matrix.repo }}"; then
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout insight-common
+        if: steps.check.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          path: insight-common
+
+      - name: Checkout target repo
+        if: steps.check.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: HarmonicInsight/${{ matrix.repo }}
+          token: ${{ secrets.SYNC_PAT }}
+          path: target-repo
+          submodules: true
+          fetch-depth: 0
+
+      - name: Update submodule reference
+        if: steps.check.outputs.skip != 'true'
+        working-directory: target-repo
+        run: |
+          SUBMODULE="${{ env.SUBMODULE_PATH }}"
+          COMMON_SHA="${{ github.sha }}"
+
+          # サブモジュールを最新の insight-common main に更新
+          cd "$SUBMODULE"
+          git fetch origin main
+          git checkout "$COMMON_SHA"
+          cd ..
+
+          echo "submodule_updated=true" >> "$GITHUB_ENV"
+
+      - name: Copy icons
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          SRC_BASE="insight-common/${{ env.ICON_SRC_BASE }}"
+          DEST_BASE="target-repo"
+          MODE="${{ matrix.copy_mode }}"
+          ICON_SRC="${{ matrix.icon_src }}"
+          ICON_DEST="${{ matrix.icon_dest }}"
+          NAME="${{ matrix.name }}"
+
+          mkdir -p "$DEST_BASE/$ICON_DEST"
+
+          case "$MODE" in
+            dir)
+              # ディレクトリ丸ごとコピー（Tauri）
+              cp -r "$SRC_BASE/$ICON_SRC"* "$DEST_BASE/$ICON_DEST"
+              echo "Copied directory: $ICON_SRC -> $ICON_DEST"
+              ;;
+            ico_png)
+              # .ico + _256.png をコピー（WPF / Python / Service）
+              cp "$SRC_BASE/$ICON_SRC/$NAME.ico" "$DEST_BASE/$ICON_DEST/$NAME.ico"
+              cp "$SRC_BASE/$ICON_SRC/${NAME}_256.png" "$DEST_BASE/$ICON_DEST/${NAME}_256.png"
+              echo "Copied: $NAME.ico + ${NAME}_256.png -> $ICON_DEST"
+              ;;
+            web)
+              # Web アイコンセット
+              cp "$SRC_BASE/$ICON_SRC/favicon.ico" "$DEST_BASE/$ICON_DEST/favicon.ico"
+              cp "$SRC_BASE/$ICON_SRC/favicon-16.png" "$DEST_BASE/$ICON_DEST/favicon-16x16.png" 2>/dev/null || true
+              cp "$SRC_BASE/$ICON_SRC/favicon-32.png" "$DEST_BASE/$ICON_DEST/favicon-32x32.png" 2>/dev/null || true
+              cp "$SRC_BASE/$ICON_SRC/apple-touch-icon.png" "$DEST_BASE/$ICON_DEST/apple-touch-icon.png" 2>/dev/null || true
+              cp "$SRC_BASE/$ICON_SRC/icon-192.png" "$DEST_BASE/$ICON_DEST/icon-192.png" 2>/dev/null || true
+              cp "$SRC_BASE/$ICON_SRC/icon-512.png" "$DEST_BASE/$ICON_DEST/icon-512.png" 2>/dev/null || true
+              echo "Copied web icons -> $ICON_DEST"
+              ;;
+          esac
+
+      - name: Check for changes
+        if: steps.check.outputs.skip != 'true'
+        id: changes
+        working-directory: target-repo
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No changes in ${{ matrix.repo }}"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Changes detected in ${{ matrix.repo }}:"
+            git diff --cached --stat
+          fi
+
+      - name: Create PR
+        if: >-
+          steps.check.outputs.skip != 'true' &&
+          steps.changes.outputs.has_changes == 'true' &&
+          inputs.dry_run != true
+        working-directory: target-repo
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          BRANCH="chore/sync-insight-common-${SHORT_SHA}"
+          COMMIT_MSG="chore: update insight-common to ${SHORT_SHA}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$BRANCH"
+          git commit -m "$COMMIT_MSG"
+          git push -u origin "$BRANCH"
+
+          # 既存の PR がなければ作成
+          EXISTING=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -z "$EXISTING" ]; then
+            gh pr create \
+              --title "$COMMIT_MSG" \
+              --body "$(cat <<EOF
+          ## insight-common サブモジュール自動更新
+
+          **変更元**: HarmonicInsight/cross-lib-insight-common@${SHORT_SHA}
+          **対象製品**: ${{ matrix.name }} (${{ matrix.product }})
+
+          ### 変更内容
+          - insight-common サブモジュールを最新に更新
+          - アイコンファイルを同期
+
+          ### 確認手順
+          1. ビルドが通ることを確認
+          2. アイコンが正しく表示されることを確認
+
+          ---
+          *This PR was automatically created by [sync-submodule](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+          EOF
+          )"
+            echo "PR created for ${{ matrix.repo }}"
+          else
+            echo "PR #$EXISTING already exists for ${{ matrix.repo }}"
+          fi
