@@ -5,90 +5,88 @@
 すべてのアプリアイコンは統一されたデザイン言語を使用:
 
 - **背景**: Ivory (#FAF8F5)
-- **ベースサークル**: Gold (#B8942F)、半径 34dp
+- **ベースサークル**: Gold (#B8942F)
 - **アイコンアート**: White (#FFFFFF)
 - **スパークルアクセント**: Light Gold (#D4BC6A)、右上に配置
 - **スタイル**: 丸みのある可愛いデザイン
 
-## ファイル構成
+## ディレクトリ構成
 
 ```
 brand/icons/
-├── master/                      # AI生成マスターアイコン（1024x1024 PNG）
-│   ├── master-grid.png          # 元画像（3x3グリッド）
-│   ├── icon-insight-slide.png   # INSS
-│   ├── icon-insight-sheet.png   # IOSH
-│   ├── icon-insight-doc.png     # IOSD
-│   ├── icon-insight-py.png      # INPY
-│   ├── icon-insight-movie.png   # INMV
-│   ├── icon-insight-imagegen.png # INIG
-│   ├── icon-insight-bot.png     # INBT
-│   ├── icon-insight-nca.png     # INCA
-│   └── icon-interview-insight.png # IVIN
-├── launcher.png                 # Launcher マスターアイコン（Gold + 脳 + ロケット）
-├── Camera.png                   # Camera マスターアイコン（Gold + シャッター）
-├── Clock.png                    # Clock マスターアイコン（Gold + 目覚まし時計）
-├── icon-*.svg                   # ブランド準拠 SVG アイコン
+├── png/                         # マスター PNG アイコン（正式版）
+│   ├── icon-launcher.png        # Insight Launcher
+│   ├── icon-camera.png          # Insight Camera
+│   ├── icon-voice-clock.png     # Insight Voice Clock
+│   └── products-grid-gemini.png # 9製品グリッド（元画像）
+├── svg/                         # SVG アイコン（参考・フォールバック用）
+│   ├── icon-insight-*.svg       # 9製品アイコン
+│   └── icon-*.svg               # ユーティリティアイコン
 └── README.md
 ```
 
-## マスターアイコン（PNG）— AI生成
+> **重要**: `png/` ディレクトリのアイコンが正式版（マスター）です。
+> すべてのアイコンは手動で作成・管理されます。SVG は参考資料として保持しています。
 
-Gemini で生成した各製品のマスターアイコン。`master/` ディレクトリに 1024x1024 PNG として格納。
+## マスターアイコン（png/ — 正式版）
 
-### 製品アイコン（9製品）
-
-| ファイル | 製品コード | 製品名 | モチーフ |
-|---------|-----------|--------|---------|
-| `master/icon-insight-slide.png` | INSS | InsightOfficeSlide | スライド + 上矢印（テキスト抽出） |
-| `master/icon-insight-sheet.png` | IOSH | InsightOfficeSheet | スプレッドシートグリッド |
-| `master/icon-insight-doc.png` | IOSD | InsightOfficeDoc | ドキュメント + 折り角 |
-| `master/icon-insight-py.png` | INPY | InsightPy | Python ヘビ |
-| `master/icon-insight-movie.png` | INMV | InsightMovie | フィルムストリップ + 再生ボタン |
-| `master/icon-insight-imagegen.png` | INIG | InsightImageGen | ブラシ + 画像フレーム |
-| `master/icon-insight-bot.png` | INBT | InsightBot | かわいいロボット |
-| `master/icon-insight-nca.png` | INCA | InsightNoCodeAnalyzer | フローチャート + 虫眼鏡 |
-| `master/icon-interview-insight.png` | IVIN | InterviewInsight | マイク + 音波 |
-
-### ユーティリティアイコン（ブランド準拠 Gold + Ivory）
-
-| ファイル | アプリ | モチーフ |
-|---------|--------|---------|
-| `launcher.png` | Insight Launcher | 脳 + 回路基板 + ロケット + スパークル |
-| `Camera.png` | Insight Camera | カメラ + シャッター + 回路基板 |
-| `Clock.png` | Insight Voice Clock | 目覚まし時計 + マイク + 音波 + "10:24" |
-
-## SVG アイコン（ブランド準拠）
-
-プログラマティックに生成した SVG アイコン。Ivory背景 + Gold円 + 白シンボル + スパークルの統一スタイル。
-
-### 製品アイコン
-
-| ファイル名 | 製品コード | 製品名 | モチーフ |
-|-----------|-----------|--------|---------|
-| `icon-insight-slide.svg` | INSS | InsightOfficeSlide | スライドレイヤー + 上矢印 |
-| `icon-insight-sheet.svg` | IOSH | InsightOfficeSheet | スプレッドシートグリッド + ヘッダー行 |
-| `icon-insight-doc.svg` | IOSD | InsightOfficeDoc | ドキュメント + 折り角 + テキスト行 |
-| `icon-insight-py.svg` | INPY | InsightPy | Python ヘビ（S字カーブ） |
-| `icon-insight-movie.svg` | INMV | InsightMovie | フィルムストリップ + 再生ボタン |
-| `icon-insight-imagegen.svg` | INIG | InsightImageGen | 画像フレーム + ペイントブラシ |
-| `icon-insight-bot.svg` | INBT | InsightBot | かわいいロボット（大きな目 + アンテナ） |
-| `icon-insight-nca.svg` | INCA | InsightNoCodeAnalyzer | フローチャート + 虫眼鏡 |
-| `icon-interview-insight.svg` | IVIN | InterviewInsight | マイク + 音波 |
+手動で作成された 1024x1024 PNG マスターアイコン。各プラットフォーム用の画像生成元として使用。
 
 ### ユーティリティアイコン
 
-| ファイル名 | アプリ | モチーフ |
-|-----------|--------|---------|
-| `icon-launcher.svg` | Insight Launcher | 2x2 アプリグリッド |
-| `icon-qr.svg` | Insight QR | QR コードパターン |
-| `icon-voice-clock.svg` | Insight Voice Clock | ベル付き目覚まし時計 |
-| `icon-camera.svg` | Insight Camera | カメラ + レンズ |
-| `icon-incline.svg` | InclineInsight | ゲージ + スマイル |
-| `icon-consul-type.svg` | ConsulType | 盾 + 肉球 |
-| `icon-consul-evaluate.svg` | ConsulEvaluate | クリップボード + チェック |
-| `icon-horoscope.svg` | Harmonic Horoscope | 三日月 + 星 |
-| `icon-food-medicine.svg` | Food Medicine Insight | フォーク + カプセル |
+| ファイル | アプリ | モチーフ | スタイル |
+|---------|--------|---------|---------|
+| `icon-launcher.png` | Insight Launcher | 脳 + 回路基板 + ロケット + スパークル | Gold + Ivory |
+| `icon-camera.png` | Insight Camera | カメラ + シャッター + 回路基板 | Gold + Ivory |
+| `icon-voice-clock.png` | Insight Voice Clock | 目覚まし時計 + マイク + 音波 + "10:24" | Gold + Ivory |
+
+### 製品アイコン（作成予定）
+
+| ファイル | 製品コード | 製品名 | ステータス |
+|---------|-----------|--------|-----------|
+| `icon-insight-slide.png` | INSS | InsightOfficeSlide | 未作成 |
+| `icon-insight-sheet.png` | IOSH | InsightOfficeSheet | 未作成 |
+| `icon-insight-doc.png` | IOSD | InsightOfficeDoc | 未作成 |
+| `icon-insight-py.png` | INPY | InsightPy | 未作成 |
+| `icon-insight-movie.png` | INMV | InsightMovie | 未作成 |
+| `icon-insight-imagegen.png` | INIG | InsightImageGen | 未作成 |
+| `icon-insight-bot.png` | INBT | InsightBot | 未作成 |
+| `icon-insight-nca.png` | INCA | InsightNoCodeAnalyzer | 未作成 |
+| `icon-interview-insight.png` | IVIN | InterviewInsight | 未作成 |
+
+> `products-grid-gemini.png` に9製品のドラフト版グリッドがあります（個別PNG化は今後対応）。
+
+## SVG アイコン（svg/ — 参考用）
+
+プログラマティックに生成した SVG アイコン。Ivory背景 + Gold円 + 白シンボル + スパークルの統一スタイル。
+
+### 製品アイコン（9製品）
+
+| ファイル名 | 製品コード | 製品名 |
+|-----------|-----------|--------|
+| `icon-insight-slide.svg` | INSS | InsightOfficeSlide |
+| `icon-insight-sheet.svg` | IOSH | InsightOfficeSheet |
+| `icon-insight-doc.svg` | IOSD | InsightOfficeDoc |
+| `icon-insight-py.svg` | INPY | InsightPy |
+| `icon-insight-movie.svg` | INMV | InsightMovie |
+| `icon-insight-imagegen.svg` | INIG | InsightImageGen |
+| `icon-insight-bot.svg` | INBT | InsightBot |
+| `icon-insight-nca.svg` | INCA | InsightNoCodeAnalyzer |
+| `icon-interview-insight.svg` | IVIN | InterviewInsight |
+
+### ユーティリティアイコン
+
+| ファイル名 | アプリ |
+|-----------|--------|
+| `icon-launcher.svg` | Insight Launcher |
+| `icon-camera.svg` | Insight Camera |
+| `icon-voice-clock.svg` | Insight Voice Clock |
+| `icon-qr.svg` | Insight QR |
+| `icon-incline.svg` | InclineInsight |
+| `icon-consul-type.svg` | ConsulType |
+| `icon-consul-evaluate.svg` | ConsulEvaluate |
+| `icon-horoscope.svg` | Harmonic Horoscope |
+| `icon-food-medicine.svg` | Food Medicine Insight |
 
 ## 使用方法
 
@@ -96,29 +94,21 @@ Gemini で生成した各製品のマスターアイコン。`master/` ディレ
 
 ```bash
 # generate-app-icon.py でマスターPNG から全プラットフォーム用画像を生成
-python scripts/generate-app-icon.py --master brand/icons/master/icon-insight-sheet.png --product IOSH
+python scripts/generate-app-icon.py --master brand/icons/png/icon-launcher.png --product LAUNCHER
 ```
 
-### SVG → PNG 変換
+### プラットフォーム別配置
 
-```bash
-# Inkscape で SVG を 1024x1024 PNG に変換
-inkscape brand/icons/icon-insight-sheet.svg -w 1024 -h 1024 -o icon-insight-sheet.png
+| プラットフォーム | 配置先 |
+|----------------|--------|
+| Android | `app/src/main/res/mipmap-*/ic_launcher.png` |
+| iOS | Asset Catalog → `AppIcon` |
+| Expo/React Native | `assets/icon.png` |
+| WPF (C#) | `Assets/app.ico`（ICO変換が必要） |
 
-# rsvg-convert で変換
-rsvg-convert -w 1024 -h 1024 brand/icons/icon-insight-sheet.svg > icon-insight-sheet.png
-```
+## 新しいアイコンの追加方法
 
-### Android (Native Kotlin)
-SVG を Android Studio で Vector Drawable に変換し、
-`app/src/main/res/drawable/ic_launcher_foreground.xml` として配置。
-
-### iOS
-SVG を 1024x1024 PNG に書き出し、Xcode の Asset Catalog に `AppIcon` として配置。
-
-### Expo/React Native
-SVG を 1024x1024 PNG に書き出し、`assets/icon.png` として配置。
-
-### WPF (C#)
-SVG を ICO に変換し、プロジェクトの `Assets/app.ico` として配置。
-`generate-app-icon.py` で Windows 用 ICO（16/32/48/64/128/256px）を自動生成可能。
+1. Gold + Ivory スタイルで 1024x1024 PNG を作成
+2. `png/icon-{app-name}.png` として配置
+3. この README の一覧に追記
+4. `generate-app-icon.py` で各プラットフォーム用を生成
