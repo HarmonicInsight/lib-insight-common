@@ -51,7 +51,7 @@
 | **wpf** (C# WPF) | `.ico` (16-256px) + 個別 PNG | `Resources/{Name}.ico` |
 | **python** (PyInstaller) | `.ico` (16-256px) + 個別 PNG | `resources/{Name}.ico` |
 | **tauri** (Tauri + React) | `icon.ico` + `icon.png` + sized PNGs + Store logos | `src-tauri/icons/` |
-| **expo** (Expo/React Native) | `icon.png` (1024x1024) + Android mipmap + splash | `assets/` |
+| **expo** (Expo/React Native) | `icon.png` + `adaptive-icon.png` + `notification-icon.png` + `favicon.png` + `splash-icon.png` + Android mipmap | `assets/` |
 | **web** (Next.js/React) | `favicon.ico` + `apple-touch-icon.png` + manifest PNGs | `public/` |
 | **service** (Windows Service) | `.ico` (16-256px) + 個別 PNG | `Resources/{Name}.ico` |
 
@@ -179,30 +179,41 @@ python insight-common/scripts/generate-app-icon.py --product CAMERA --output ass
 ```
 
 ```json
-// app.json (Expo)
+// app.json (Expo) — templates/expo/app.json 参照
 {
   "expo": {
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash-icon.png"
+      "image": "./assets/splash-icon.png",
+      "backgroundColor": "#B8942F"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#B8942F"
+      },
+      "notifications": {
+        "icon": "./assets/notification-icon.png",
+        "color": "#B8942F"
       }
     },
     "ios": {
       "icon": "./assets/icon.png"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
     }
   }
 }
 ```
 
 **生成ファイル:**
-- `icon.png` (1024x1024, RGB, 透明なし)
-- `splash-icon.png` (200x200)
-- `android/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher.png`
+- `icon.png` (1024x1024, RGB, 透明なし) — iOS App Store / Expo アイコン
+- `adaptive-icon.png` (1024x1024, RGBA) — Android Adaptive Icon foreground
+- `notification-icon.png` (96x96) — Android 通知アイコン
+- `splash-icon.png` (200x200) — スプラッシュ画面ロゴ
+- `favicon.png` (48x48, RGB) — Web/PWA ファビコン
+- `android/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher.png` — Android ランチャー
 
 ### Web (Next.js / React) — QR
 
