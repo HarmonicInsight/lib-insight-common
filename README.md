@@ -213,7 +213,7 @@ python -m pytest
 
 ## ライセンス
 
-このリポジトリはHarmonic Insightの内部利用専用です。
+このリポジトリはHARMONIC insightの内部利用専用です。
 
 ## 連絡先
 

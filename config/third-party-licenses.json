@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Insight Series サードパーティライセンスキー（全製品共通）",
   "version": "1.0.0",
-  "_note": "このファイルのキーはすべての Harmonic Insight 製品で共有されます。製品固有のキーは各製品リポジトリで管理してください。",
+  "_note": "このファイルのキーはすべての HARMONIC insight 製品で共有されます。製品固有のキーは各製品リポジトリで管理してください。",
 
   "syncfusion": {
     "provider": "Syncfusion",

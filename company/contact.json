@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Harmonic Insight 連絡先情報",
+  "description": "HARMONIC insight 連絡先情報",
   "version": "1.0.0",
   "company": {
-    "name": "Harmonic Insight",
-    "legalName": "Harmonic Insight Inc.",
+    "name": "HARMONIC insight",
+    "legalName": "HARMONIC insight LLC",
     "founded": 2024
   },
   "contact": {

@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight ライセンス発行・配布システム
+ * HARMONIC insight ライセンス発行・配布システム
  *
  * ============================================================================
  * 【Syncfusion モデルを参考にしたライセンス発行フロー】
@@ -12,7 +12,7 @@
  * 4. 即座に 7日間の仮ライセンスキーをメールで発行
  * 5. 審査完了後、長期ライセンスキーを別途送付
  *
- * ## Harmonic Insight の流れ（本実装）
+ * ## HARMONIC insight の流れ（本実装）
  *
  * ┌─────────────────────────────────────────────────────────────────┐
  * │                    ライセンス発行フロー                          │
@@ -386,8 +386,8 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   verification: {
     template: 'verification',
     subject: {
-      ja: '【Harmonic Insight】メールアドレスの確認',
-      en: '[Harmonic Insight] Verify your email address',
+      ja: '【HARMONIC insight】メールアドレスの確認',
+      en: '[HARMONIC insight] Verify your email address',
     },
     description: 'メール認証リンク付き。Confirm and Verifyボタン。15日間有効。',
     trigger: 'Step ① 登録直後',
@@ -395,8 +395,8 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   provisional_key: {
     template: 'provisional_key',
     subject: {
-      ja: '【Harmonic Insight】{productName} — 7日間トライアルキー',
-      en: '[Harmonic Insight] {productName} — Your 7-Day Trial Key',
+      ja: '【HARMONIC insight】{productName} — 7日間トライアルキー',
+      en: '[HARMONIC insight] {productName} — Your 7-Day Trial Key',
     },
     description: '7日間仮キー + 製品ダウンロードリンク + ドキュメントリンク。',
     trigger: 'Step ② メール認証完了直後',
@@ -404,8 +404,8 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   payment_confirmation: {
     template: 'payment_confirmation',
     subject: {
-      ja: '【Harmonic Insight】お支払い確認 — {productName} {planName}',
-      en: '[Harmonic Insight] Payment Confirmed — {productName} {planName}',
+      ja: '【HARMONIC insight】お支払い確認 — {productName} {planName}',
+      en: '[HARMONIC insight] Payment Confirmed — {productName} {planName}',
     },
     description: '決済完了確認。正式キーは別メールで送付する旨を案内。',
     trigger: 'Step ④ 決済完了時',
@@ -413,8 +413,8 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   production_key: {
     template: 'production_key',
     subject: {
-      ja: '【Harmonic Insight】{productName} {planName} — 正式ライセンスキー',
-      en: '[Harmonic Insight] {productName} {planName} — Your License Key',
+      ja: '【HARMONIC insight】{productName} {planName} — 正式ライセンスキー',
+      en: '[HARMONIC insight] {productName} {planName} — Your License Key',
     },
     description: '正式キー（12ヶ月） + アクティベーション手順 + サポート連絡先。',
     trigger: 'Step ⑤ 決済完了後即時（または審査完了後）',
@@ -422,8 +422,8 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   expiry_reminder: {
     template: 'expiry_reminder',
     subject: {
-      ja: '【Harmonic Insight】{productName} — ライセンス更新のお知らせ（残り30日）',
-      en: '[Harmonic Insight] {productName} — License Renewal Reminder (30 days)',
+      ja: '【HARMONIC insight】{productName} — ライセンス更新のお知らせ（残り30日）',
+      en: '[HARMONIC insight] {productName} — License Renewal Reminder (30 days)',
     },
     description: '期限切れ30日前に自動送信。更新リンク付き。',
     trigger: '期限切れ30日前（バッチ処理）',
@@ -431,8 +431,8 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   expiry_notice: {
     template: 'expiry_notice',
     subject: {
-      ja: '【Harmonic Insight】{productName} — ライセンスの有効期限が切れました',
-      en: '[Harmonic Insight] {productName} — Your License Has Expired',
+      ja: '【HARMONIC insight】{productName} — ライセンスの有効期限が切れました',
+      en: '[HARMONIC insight] {productName} — Your License Has Expired',
     },
     description: '期限切れ通知。更新リンク + FREE機能の案内。',
     trigger: '期限切れ当日（バッチ処理）',
@@ -440,8 +440,8 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   renewal_confirmation: {
     template: 'renewal_confirmation',
     subject: {
-      ja: '【Harmonic Insight】{productName} — ライセンス更新完了',
-      en: '[Harmonic Insight] {productName} — License Renewal Confirmed',
+      ja: '【HARMONIC insight】{productName} — ライセンス更新完了',
+      en: '[HARMONIC insight] {productName} — License Renewal Confirmed',
     },
     description: '更新完了 + 新しいキー + 新しい有効期限。',
     trigger: '更新決済完了時',

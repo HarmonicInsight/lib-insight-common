@@ -2,13 +2,13 @@
  * サポートトリアージシステム定義
  *
  * Anthropic Customer Support Plugin の ticket-triage スキルを参考に、
- * Harmonic Insight 製品のサポート体制に適用。
+ * HARMONIC insight 製品のサポート体制に適用。
  *
  * 参照: https://github.com/anthropics/knowledge-work-plugins
  *       → customer-support/skills/ticket-triage/SKILL.md
  *
  * 【用途】
- * - Harmonic Insight 自社サポート体制の標準化
+ * - HARMONIC insight 自社サポート体制の標準化
  * - パートナー向け 1 次サポートガイドラインの提供
  * - AI アシスタント組み込みの自動分類ルール
  */

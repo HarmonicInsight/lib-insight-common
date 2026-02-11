@@ -2,7 +2,7 @@
 set -e
 
 echo "============================================"
-echo "  Harmonic Insight - Auto-Fix Environment"
+echo "  HARMONIC insight - Auto-Fix Environment"
 echo "============================================"
 echo ""
 echo "Node.js: $(node --version)"

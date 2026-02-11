@@ -4,11 +4,12 @@
 
 ## 適用範囲
 
-| 対象 | URL | リポジトリ |
-|------|-----|-----------|
-| 製品ポータル | h-insight.jp/products | site-product-repo-analysis |
-| 会社HP | h-insight.jp | （将来） |
-| LP（各製品） | 各製品ページ | site-product-repo-analysis |
+| 対象 | URL | 説明 |
+|------|-----|------|
+| コーポレートサイト | https://h-insight.jp | ハーモニックインサイト合同会社 |
+| 製品サイト | https://www.insight-office.com | Insight Office 製品ポータル |
+| 小説プラットフォーム | https://www.insight-novels.com | AI活用メディアプラットフォーム |
+| 個人事業主サイト | https://erikhiroyuki.com | 瀬田博之 コンサルタント紹介 |
 
 > **注意:** このドキュメントは公開Webサイト（マーケティングサイト）向けです。
 > デスクトップアプリ・モバイルアプリのUI標準は `REACT.md` / `CSHARP_WPF.md` / `IOS.md` を参照してください。
@@ -297,7 +298,10 @@ layout.tsx で CSS 変数として定義：
 | 一般問い合わせ | info@h-insight.jp |
 | サポート | support@h-insight.jp |
 | 受付時間 | 平日 9:00-18:00 (JST) |
-| 会社サイト | https://h-insight.jp |
+| コーポレートサイト | https://h-insight.jp |
+| 製品サイト | https://www.insight-office.com |
+| 小説プラットフォーム | https://www.insight-novels.com |
+| コンサルタント紹介 | https://erikhiroyuki.com |
 | GitHub | https://github.com/HarmonicInsight |
 | プライバシーポリシー | https://h-insight.jp/privacy |
 | 利用規約 | https://h-insight.jp/terms |

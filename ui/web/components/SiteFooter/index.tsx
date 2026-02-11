@@ -2,17 +2,20 @@
  * SiteFooter - サイトフッターコンポーネント
  *
  * Harmonic Insight の全サイトで共通のフッター
+ * 4サイト間のクロスリンクを自動生成し、導線を確保する
  *
  * @example
  * import { SiteFooter } from '@harmonic-insight/ui';
  *
- * <SiteFooter currentSiteId="blog" />
+ * <SiteFooter currentSiteId="corporate" />
  */
 
 import React from 'react';
 import {
   getFooterSitesByCategory,
   getCategoryName,
+  getCrossSiteLinks,
+  getFooterPages,
   getSite,
   type SiteId,
   type SiteCategory,
@@ -45,11 +48,10 @@ export function SiteFooter({
   copyrightYear = new Date().getFullYear(),
   additionalLinks = [],
 }: SiteFooterProps) {
-  const sitesByCategory = getFooterSitesByCategory();
-  const homeSite = getSite('home');
-
-  // 表示するカテゴリの順序
-  const categoryOrder: SiteCategory[] = ['product', 'content', 'support'];
+  const currentSite = getSite(currentSiteId);
+  const crossSiteLinks = getCrossSiteLinks(currentSiteId);
+  const corporatePages = getFooterPages('corporate');
+  const productPages = getFooterPages('insight-office');
 
   return (
     <footer
@@ -76,30 +78,19 @@ export function SiteFooter({
                 <path d="M14 16L20 10L26 16L20 22L14 16Z" fill="white" fillOpacity="0.6" />
               </svg>
               <div className={styles.logoTextGroup}>
-                <span className={styles.logoText}>Harmonic Insight</span>
-                <span className={styles.tagline}>AI業務支援ソリューション</span>
+                <span className={styles.logoText}>HARMONIC insight</span>
+                <span className={styles.tagline}>AI業務支援コンサルティング</span>
               </div>
             </div>
 
             <p className={styles.description}>
-              AIの力で業務効率を最大化。
-              インタビュー、セールス、プレゼンテーションなど、
-              あらゆるビジネスシーンをサポートします。
+              28年の現場経験を持つITコンサルタントが開発した
+              AI搭載業務効率化ツール。
+              コンサルティングとテクノロジーで業務変革を支援します。
             </p>
 
             {/* ソーシャルリンク */}
             <div className={styles.social}>
-              <a
-                href="https://twitter.com/harmonicinsight"
-                className={styles.socialLink}
-                aria-label="Twitter"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
               <a
                 href="https://github.com/HarmonicInsight"
                 className={styles.socialLink}
@@ -116,29 +107,64 @@ export function SiteFooter({
 
           {/* サイトリンクグリッド */}
           <div className={styles.linksGrid}>
-            {categoryOrder.map(category => {
-              const sites = sitesByCategory[category];
-              if (sites.length === 0) return null;
+            {/* 製品・サービス */}
+            {productPages.length > 0 && (
+              <div className={styles.linkGroup}>
+                <h3 className={styles.linkGroupTitle}>製品・サービス</h3>
+                <ul className={styles.linkList}>
+                  <li>
+                    <a href="https://www.insight-office.com/ja" className={styles.link}>
+                      Insight Office
+                    </a>
+                  </li>
+                  {productPages.map(page => (
+                    <li key={page.url}>
+                      <a href={page.url} className={styles.link}>
+                        {page.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-              return (
-                <div key={category} className={styles.linkGroup}>
-                  <h3 className={styles.linkGroupTitle}>{getCategoryName(category)}</h3>
-                  <ul className={styles.linkList}>
-                    {sites.map(site => (
-                      <li key={site.id}>
-                        <a
-                          href={site.url}
-                          className={`${styles.link} ${site.id === currentSiteId ? styles.current : ''}`}
-                          aria-current={site.id === currentSiteId ? 'page' : undefined}
-                        >
-                          {site.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
+            {/* 会社情報 */}
+            <div className={styles.linkGroup}>
+              <h3 className={styles.linkGroupTitle}>会社情報</h3>
+              <ul className={styles.linkList}>
+                <li>
+                  <a href="https://h-insight.jp" className={styles.link}>
+                    ハーモニックインサイト
+                  </a>
+                </li>
+                {corporatePages
+                  .filter(page => !page.url.includes('/privacy') && !page.url.includes('/terms') && !page.url.includes('/legal'))
+                  .map(page => (
+                    <li key={page.url}>
+                      <a href={page.url} className={styles.link}>
+                        {page.name}
+                      </a>
+                    </li>
+                  ))}
+                <li>
+                  <a href="https://erikhiroyuki.com" className={styles.link}>
+                    コンサルタント紹介
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* メディア */}
+            <div className={styles.linkGroup}>
+              <h3 className={styles.linkGroupTitle}>メディア</h3>
+              <ul className={styles.linkList}>
+                <li>
+                  <a href="https://www.insight-novels.com" className={styles.link}>
+                    Insight Novels
+                  </a>
+                </li>
+              </ul>
+            </div>
 
             {/* 法的情報 */}
             <div className={styles.linkGroup}>
@@ -177,7 +203,7 @@ export function SiteFooter({
         {/* ボトムバー */}
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            &copy; {copyrightYear} Harmonic Insight Inc. All rights reserved.
+            &copy; {copyrightYear} HARMONIC insight LLC. All rights reserved.
           </p>
           <div className={styles.bottomLinks}>
             <a href="mailto:info@h-insight.jp" className={styles.bottomLink}>

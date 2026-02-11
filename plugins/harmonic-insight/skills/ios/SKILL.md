@@ -9,7 +9,7 @@ allowed-tools: Read, Grep, Glob, Bash
 > **Expo / React Native でクロスプラットフォーム開発する場合は `expo` スキルを使用してください。**
 > このスキルは Swift + SwiftUI によるネイティブ iOS 専用です。
 
-対象: Harmonic Insight iOS ネイティブアプリ
+対象: HARMONIC insight iOS ネイティブアプリ
 
 ## 技術スタック
 

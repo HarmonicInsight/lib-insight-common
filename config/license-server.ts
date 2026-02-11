@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight 統合ライセンス発行・管理サーバー設計
+ * HARMONIC insight 統合ライセンス発行・管理サーバー設計
  *
  * ============================================================================
  * 【設計方針】
@@ -91,7 +91,7 @@ export type IssuanceChannel =
 /** 発行者の種別 */
 export type IssuerType =
   | 'system'    // 自動（メール認証、Webhook、バッチ）
-  | 'admin'     // Harmonic Insight管理者
+  | 'admin'     // HARMONIC insight管理者
   | 'partner';  // パートナー企業
 
 /** 発行者情報 */
@@ -755,7 +755,7 @@ export const RAILWAY_CONFIG = {
 export const EMAIL_CONFIG = {
   provider: 'resend',
   fromAddress: 'license@harmonicinsight.com',
-  fromName: 'Harmonic Insight',
+  fromName: 'HARMONIC insight',
   replyTo: 'support@harmonicinsight.com',
   /** テンプレートで使用する変数 */
   templateVars: [

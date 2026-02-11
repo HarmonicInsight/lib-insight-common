@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Harmonic Insight 製品定義（公式サイト準拠）",
+  "description": "HARMONIC insight 製品定義（公式サイト準拠）",
   "version": "2.0.0",
   "products": {
     "individual": [
