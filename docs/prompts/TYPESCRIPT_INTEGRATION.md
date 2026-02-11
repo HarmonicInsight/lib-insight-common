@@ -16,7 +16,7 @@
 ## 実行手順
 
 ### 1. Submodule 追加
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 ### 2. tsconfig.json にパスエイリアス追加
 compilerOptions.paths に以下を追加:

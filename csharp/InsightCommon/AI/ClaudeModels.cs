@@ -7,7 +7,7 @@ public static class ClaudeModels
 {
     public const string HaikuId = "claude-haiku-4-5-20251001";
     public const string SonnetId = "claude-sonnet-4-20250514";
-    public const string OpusId = "claude-opus-4-20250514";
+    public const string OpusId = "claude-opus-4-6-20260131";
 
     public const string DefaultModel = SonnetId;
 

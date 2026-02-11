@@ -88,7 +88,7 @@ Border:           #E7E2DA (Warm Gray)
 mkdir -p .github/workflows
 
 # 2. ワークフローファイルをコピー
-cp lib-insight-common/templates/github-workflow-validate.yml .github/workflows/validate-standards.yml
+cp insight-common/templates/github-workflow-validate.yml .github/workflows/validate-standards.yml
 
 # 3. コミット
 git add .github/workflows/validate-standards.yml
@@ -104,7 +104,7 @@ git commit -m "ci: add design standards validation"
 
 ```bash
 # 検証スクリプト実行
-./lib-insight-common/scripts/validate-standards.sh .
+./insight-common/scripts/validate-standards.sh .
 ```
 
 ## チェック内容

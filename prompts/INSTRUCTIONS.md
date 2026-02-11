@@ -15,7 +15,7 @@
 
 既存リポジトリ:
 ```bash
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 ```
 
 ### 2. APIは必ず withGateway() でラップ

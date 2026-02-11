@@ -124,9 +124,9 @@ export interface AppIconConfig {
   productCode: ProductCode | string;
   /** 製品名 */
   productName: string;
-  /** マスター SVG ソース（insight-common ルートからの相対パス） */
+  /** マスター SVG ソース（リポジトリルートからの相対パス） */
   masterSvg: string;
-  /** マスター PNG ソース（高解像度ラスター、insight-common ルートからの相対パス） */
+  /** マスター PNG ソース（高解像度ラスター、リポジトリルートからの相対パス） */
   masterPng?: string;
   /** アイコンモチーフ説明（英語） */
   motif: string;

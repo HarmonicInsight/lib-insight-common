@@ -18,7 +18,7 @@ PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 ## セットアップ
 
 ```bash
-git clone https://github.com/HarmonicInsight/insight-common.git
+git clone https://github.com/HarmonicInsight/cross-lib-insight-common.git
 cd insight-common/license/tools
 ```
 

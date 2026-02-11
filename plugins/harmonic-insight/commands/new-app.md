@@ -65,7 +65,7 @@ main_features:
 
 ```bash
 # insight-common をサブモジュールとして追加
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 # init スクリプト実行
 ./insight-common/scripts/init-app.sh $ARGUMENTS

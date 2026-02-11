@@ -185,7 +185,7 @@ raise LicenseError(ErrorCode.LICENSE_EXPIRED, 'ライセンスの有効期限が
 各製品リポジトリでは、このリポジトリをGit Submoduleとして取り込むことを推奨します：
 
 ```bash
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init --recursive
 ```
 

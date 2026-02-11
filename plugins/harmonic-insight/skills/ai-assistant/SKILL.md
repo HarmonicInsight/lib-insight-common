@@ -38,7 +38,7 @@ canUseAiAssistant('STD');  // true（月50回制限）
 // モデル決定
 const model = getModelForTier(balance.effectiveModelTier);
 // Standard → 'claude-sonnet-4-20250514'
-// Premium  → 'claude-opus-4-20250514'
+// Premium  → 'claude-opus-4-6-20260131'
 ```
 
 ## クレジットプール

@@ -16,7 +16,7 @@
 ## 実行手順
 
 ### 1. Submodule 追加
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 ### 2. パス設定
 src/__init__.py またはエントリーポイントに以下を追加:

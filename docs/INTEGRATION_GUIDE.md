@@ -33,7 +33,7 @@ insight-common/
 
 ```bash
 # リポジトリのルートで実行
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 # 初期化（クローン後）
 git submodule update --init --recursive
@@ -529,5 +529,5 @@ jobs:
 
 質問や問題がある場合：
 
-- Issue: https://github.com/HarmonicInsight/insight-common/issues
+- Issue: https://github.com/HarmonicInsight/cross-lib-insight-common/issues
 - Email: developer@h-insight.jp

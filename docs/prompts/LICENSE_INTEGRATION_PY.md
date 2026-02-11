@@ -18,7 +18,7 @@ InsightPy に insight-common のライセンス管理機能を統合してくだ
 
 ### 1. Git Submodule 追加
 insight-common を git submodule として追加:
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 ### 2. Python パス設定
 プロジェクトルートに以下のシンボリックリンクまたはパス設定:

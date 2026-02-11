@@ -130,7 +130,7 @@ insight-common 自体に Android/iOS モジュールを追加するプロンプ�
 ### Submodule 追加
 
 ```bash
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init --recursive
 ```
 

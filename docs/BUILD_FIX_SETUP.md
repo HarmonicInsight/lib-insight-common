@@ -95,7 +95,7 @@ your-repo/
 .\scripts\setup-windows.ps1
 
 # または直接ダウンロードして実行
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/setup-windows.ps1" -OutFile "setup.ps1"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/HarmonicInsight/cross-lib-insight-common/main/scripts/setup-windows.ps1" -OutFile "setup.ps1"
 .\setup.ps1
 ```
 
@@ -116,7 +116,7 @@ WSL 2 内で以下を実行：
 ./scripts/setup-wsl.sh
 
 # または直接ダウンロードして実行
-curl -fsSL https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/setup-wsl.sh | bash
+curl -fsSL https://raw.githubusercontent.com/HarmonicInsight/cross-lib-insight-common/main/scripts/setup-wsl.sh | bash
 ```
 
 ---

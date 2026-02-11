@@ -37,7 +37,7 @@ InsightOffice 系アプリには、Claude API を利用した AI アシスタン
 |-----|----------|--------|--------|-------------|-----------|
 | `shunsuke` | Claude 俊 | Claude Shun | `claude-haiku-4-5-20251001` | `#4696DC` | 素早く簡潔。軽い確認・ちょっとした修正に最適 |
 | `megumi` | Claude 恵 | Claude Megumi | `claude-sonnet-4-20250514` | `#B8942F` (Gold) | 万能で丁寧。編集・要約・翻訳のバランス型 |
-| `manabu` | Claude 学 | Claude Manabu | `claude-opus-4-20250514` | `#8C64C8` | 深い思考力。レポート・精密な文書に最適 |
+| `manabu` | Claude 学 | Claude Manabu | `claude-opus-4-6-20260131` | `#8C64C8` | 深い思考力。レポート・精密な文書に最適 |
 
 ### 2.2 ペルソナアイコン
 

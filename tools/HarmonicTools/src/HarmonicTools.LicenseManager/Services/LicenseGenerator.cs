@@ -12,21 +12,24 @@ public class LicenseGenerator
     private const string SECRET_KEY = "insight-series-license-secret-2026";
 
     public static readonly string[] ProductCodes =
-        { "INBT", "INCA", "INPY", "IOSH", "INSS", "INIV", "INMV", "INIG" };
+        { "INCA", "INBT", "IVIN", "INMV", "INIG", "INSS", "IOSH", "IOSD", "INPY", "ISOF" };
 
     public static readonly Dictionary<string, string> ProductNames = new()
     {
-        // Automation & Delivery
-        ["INBT"] = "InsightBot",
+        // Tier 1: 業務変革ツール
         ["INCA"] = "InsightNoCodeAnalyzer",
-        ["INPY"] = "InsightPy",
-        // Consulting & Requirements
-        ["IOSH"] = "InsightOfficeSheet",
-        ["INSS"] = "InsightSlide",
-        ["INIV"] = "InterviewInsight",
-        // Content Creation
+        ["INBT"] = "InsightBot",
+        ["IVIN"] = "InterviewInsight",
+        // Tier 2: AI活用ツール
         ["INMV"] = "InsightMovie",
         ["INIG"] = "InsightImageGen",
+        // Tier 3: InsightOffice Suite
+        ["INSS"] = "InsightOfficeSlide",
+        ["IOSH"] = "InsightOfficeSheet",
+        ["IOSD"] = "InsightOfficeDoc",
+        ["INPY"] = "InsightPy",
+        // Tier 4: Accessibility
+        ["ISOF"] = "InsightSeniorOffice",
     };
 
     public static readonly string[] PlanCodes = { "TRIAL", "STD", "PRO" };

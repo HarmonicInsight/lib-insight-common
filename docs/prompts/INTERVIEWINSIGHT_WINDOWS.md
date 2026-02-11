@@ -84,7 +84,7 @@ InterviewInsight/
 ## Step 4: insight-common 統合
 
 ### 4.1 Submodule 追加
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 ### 4.2 tsconfig.json 設定
 {

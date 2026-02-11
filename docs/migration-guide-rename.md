@@ -178,7 +178,7 @@ reusable workflow の参照パスを更新:
 
 ```yaml
 # 旧
-uses: HarmonicInsight/lib-insight-common/.github/workflows/reusable-validate.yml@main
+uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/reusable-validate.yml@main
 
 # 新
 uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/reusable-validate.yml@main

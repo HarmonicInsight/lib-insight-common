@@ -367,7 +367,7 @@ export function getAllowedModels(tier: AiModelTier): string[] {
     'claude-sonnet-4-20250514',
   ];
   if (tier === 'premium') {
-    return [...standardModels, 'claude-opus-4-20250514', 'claude-opus-4-6-20260131'];
+    return [...standardModels, 'claude-opus-4-6-20260131'];
   }
   return standardModels;
 }

@@ -241,7 +241,6 @@ export const CLAUDE_API_CONFIG = {
 export const MODEL_PRICING: Record<string, { inputPer1M: number; outputPer1M: number }> = {
   'claude-haiku-4-5-20251001': { inputPer1M: 1, outputPer1M: 5 },
   'claude-sonnet-4-20250514': { inputPer1M: 3, outputPer1M: 15 },
-  'claude-opus-4-20250514': { inputPer1M: 15, outputPer1M: 75 },
   'claude-opus-4-6-20260131': { inputPer1M: 15, outputPer1M: 75 },
 };
 
@@ -1490,7 +1489,7 @@ export function getPersonaGuidance(
  *   locale: 'ja',
  * });
  * // {
- * //   persona: { id: 'manabu', model: 'claude-opus-4-20250514', ... },
+ * //   persona: { id: 'manabu', model: 'claude-opus-4-6-20260131', ... },
  * //   detectedContext: 'full_document_compare',
  * // }
  *
