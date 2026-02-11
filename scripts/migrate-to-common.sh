@@ -64,7 +64,7 @@ if [ -d "lib-insight-common" ]; then
     echo -e "${YELLOW}📦 lib-insight-common は既に存在します（スキップ）${NC}"
 else
     echo -e "${YELLOW}📦 lib-insight-common サブモジュール追加...${NC}"
-    git submodule add https://github.com/HarmonicInsight/lib-insight-common.git
+    git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git lib-insight-common
 
     # .gitmodules のURLからトークンを除去（安全対策）
     if grep -q "ghp_" .gitmodules 2>/dev/null; then
