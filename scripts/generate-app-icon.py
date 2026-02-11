@@ -27,6 +27,7 @@ Brand: Ivory & Gold Theme (#B8942F primary)
 import argparse
 import os
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from PIL import Image
@@ -78,12 +79,13 @@ LAUNCHER_GRID_SIZES = {
 #   - build_path: recommended path to copy generated icons in the app repo
 #
 # Platforms:
-#   wpf       → Windows ICO + PNGs (C# WPF apps, Inno Setup installer)
-#   python    → Windows ICO + PNGs (PyInstaller bundled apps)
-#   tauri     → Windows ICO + PNGs + icon.png (Tauri desktop apps)
-#   expo      → iOS icon.png (1024x1024) + Android mipmap PNGs
-#   web       → favicon.ico + apple-touch-icon + manifest PNGs
-#   service   → Windows ICO (tray icon only)
+#   wpf            → Windows ICO + PNGs (C# WPF apps, Inno Setup installer)
+#   python         → Windows ICO + PNGs (PyInstaller bundled apps)
+#   tauri          → Windows ICO + PNGs + icon.png (Tauri desktop apps)
+#   expo           → iOS icon.png (1024x1024) + Android mipmap PNGs
+#   android_native → Android vector drawable XMLs (SVG → ic_launcher_foreground.xml)
+#   web            → favicon.ico + apple-touch-icon + manifest PNGs
+#   service        → Windows ICO (tray icon only)
 # =============================================================================
 
 PRODUCT_ICONS = {
@@ -166,20 +168,23 @@ UTILITY_ICONS = {
     'LAUNCHER_ANDROID': {
         'name': 'InsightLauncherAndroid',
         'icon': 'icon-launcher.png',
-        'platform': 'expo',
-        'build_path': 'assets/',
+        'svg': 'icon-launcher.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
     },
     'CAMERA': {
         'name': 'InsightCamera',
         'icon': 'icon-camera.png',
-        'platform': 'expo',
-        'build_path': 'assets/',
+        'svg': 'icon-camera.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
     },
     'VOICE_CLOCK': {
         'name': 'InsightVoiceClock',
         'icon': 'icon-voice-clock.png',
-        'platform': 'expo',
-        'build_path': 'assets/',
+        'svg': 'icon-voice-clock.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
     },
     'QR': {
         'name': 'InsightQR',
@@ -190,8 +195,8 @@ UTILITY_ICONS = {
     'PINBOARD': {
         'name': 'InsightPinBoard',
         'icon': 'icon-pinboard.png',
-        'platform': 'expo',
-        'build_path': 'assets/',
+        'platform': 'wpf',
+        'build_path': 'Resources/',
     },
     'VOICE_MEMO': {
         'name': 'InsightVoiceMemo',
@@ -209,6 +214,7 @@ PLATFORM_LABELS = {
     'python': 'Python/PyInstaller (Windows)',
     'tauri': 'Tauri + React (Desktop)',
     'expo': 'Expo/React Native (iOS/Android)',
+    'android_native': 'Android Native (Kotlin/Compose)',
     'web': 'Next.js/React (Web)',
     'service': 'Windows Service + Tray',
 }
@@ -226,6 +232,14 @@ def get_master_icon_path(key: str) -> Path:
     if key in ALL_ICONS:
         return root / 'brand' / 'icons' / 'png' / ALL_ICONS[key]['icon']
     raise ValueError(f"Unknown icon key: {key}")
+
+
+def get_svg_icon_path(key: str) -> Path:
+    """Get the SVG icon path for a product/utility key (android_native)."""
+    root = find_insight_common_root()
+    if key in ALL_ICONS and 'svg' in ALL_ICONS[key]:
+        return root / 'brand' / 'icons' / 'svg' / ALL_ICONS[key]['svg']
+    raise ValueError(f"No SVG defined for icon key: {key}")
 
 
 def resize_icon(master: Image.Image, size: int) -> Image.Image:
@@ -376,6 +390,186 @@ def generate_expo(master: Image.Image, name: str, output_dir: str):
     print(f"  Expo: icon.png + adaptive-icon.png + notification-icon.png + splash-icon.png + favicon.png + Android mipmaps")
 
 
+# =============================================================================
+# SVG → Android Vector Drawable converter
+# =============================================================================
+
+SVG_NS = '{http://www.w3.org/2000/svg}'
+
+
+def _svg_rect_to_path(elem) -> str:
+    """Convert SVG <rect> to Android path data."""
+    x = float(elem.get('x', 0))
+    y = float(elem.get('y', 0))
+    w = float(elem.get('width'))
+    h = float(elem.get('height'))
+    rx = float(elem.get('rx', 0))
+
+    if rx > 0:
+        return (f"M{x+rx},{y} L{x+w-rx},{y} Q{x+w},{y} {x+w},{y+rx} "
+                f"L{x+w},{y+h-rx} Q{x+w},{y+h} {x+w-rx},{y+h} "
+                f"L{x+rx},{y+h} Q{x},{y+h} {x},{y+h-rx} "
+                f"L{x},{y+rx} Q{x},{y} {x+rx},{y} Z")
+    return f"M{x},{y}h{w}v{h}h-{w}z"
+
+
+def _svg_circle_to_path(elem) -> str:
+    """Convert SVG <circle> to Android path data."""
+    cx = float(elem.get('cx'))
+    cy = float(elem.get('cy'))
+    r = float(elem.get('r'))
+    return f"M{cx},{cy}m-{r},0a{r},{r} 0,1 1,{2*r},0a{r},{r} 0,1 1,-{2*r},0"
+
+
+def _svg_line_to_path(elem) -> str:
+    """Convert SVG <line> to Android path data."""
+    return f"M{elem.get('x1')},{elem.get('y1')} L{elem.get('x2')},{elem.get('y2')}"
+
+
+def _svg_elem_to_android(elem) -> dict | None:
+    """Convert a single SVG element to Android vector path attributes."""
+    tag = elem.tag.replace(SVG_NS, '')
+    attrs = {}
+
+    if tag == 'rect':
+        attrs['pathData'] = _svg_rect_to_path(elem)
+    elif tag == 'circle':
+        attrs['pathData'] = _svg_circle_to_path(elem)
+    elif tag == 'path':
+        attrs['pathData'] = elem.get('d', '')
+    elif tag == 'line':
+        attrs['pathData'] = _svg_line_to_path(elem)
+    else:
+        return None  # Skip comments, etc.
+
+    fill = elem.get('fill')
+    if fill and fill != 'none':
+        attrs['fillColor'] = '#FFFFFF' if fill == 'white' else fill
+    stroke = elem.get('stroke')
+    if stroke:
+        attrs['strokeColor'] = '#FFFFFF' if stroke == 'white' else stroke
+        attrs['strokeWidth'] = elem.get('stroke-width', '1')
+    if elem.get('stroke-linecap'):
+        attrs['strokeLineCap'] = elem.get('stroke-linecap')
+    if elem.get('opacity'):
+        attrs['fillAlpha'] = elem.get('opacity')
+    if elem.get('fill') == 'none' and not stroke:
+        return None  # Invisible element
+
+    return attrs
+
+
+def _build_android_path_xml(attrs: dict, indent: str = '    ') -> str:
+    """Build a single <path .../> XML element."""
+    parts = [f'{indent}<path']
+    for svg_key, android_key in [
+        ('fillColor', 'android:fillColor'),
+        ('fillAlpha', 'android:fillAlpha'),
+        ('strokeColor', 'android:strokeColor'),
+        ('strokeWidth', 'android:strokeWidth'),
+        ('strokeLineCap', 'android:strokeLineCap'),
+        ('pathData', 'android:pathData'),
+    ]:
+        if svg_key in attrs:
+            parts.append(f'{indent}    {android_key}="{attrs[svg_key]}"')
+    # Close the tag on the pathData line
+    last = parts[-1]
+    parts[-1] = last + ' />'
+    return '\n'.join(parts)
+
+
+def svg_to_android_drawables(svg_path: str) -> tuple[str, str]:
+    """Convert SVG icon to Android foreground + background vector drawable XML.
+
+    Returns (foreground_xml, background_xml).
+    """
+    tree = ET.parse(svg_path)
+    root = tree.getroot()
+
+    foreground_paths = []
+    for elem in root:
+        tag = elem.tag.replace(SVG_NS, '')
+        # Skip the background rect (first rect with Ivory fill)
+        if tag == 'rect' and elem.get('fill', '') in ('#FAF8F5', '#faf8f5'):
+            continue
+        android_attrs = _svg_elem_to_android(elem)
+        if android_attrs:
+            foreground_paths.append(android_attrs)
+
+    # Build foreground XML
+    fg_lines = [
+        '<?xml version="1.0" encoding="utf-8"?>',
+        '<vector xmlns:android="http://schemas.android.com/apk/res/android"',
+        '    android:width="108dp"',
+        '    android:height="108dp"',
+        '    android:viewportWidth="108"',
+        '    android:viewportHeight="108">',
+        '',
+    ]
+    for attrs in foreground_paths:
+        fg_lines.append(_build_android_path_xml(attrs))
+        fg_lines.append('')
+    fg_lines.append('</vector>')
+    fg_lines.append('')
+    foreground_xml = '\n'.join(fg_lines)
+
+    # Background XML (simple Ivory fill)
+    background_xml = (
+        '<?xml version="1.0" encoding="utf-8"?>\n'
+        '<vector xmlns:android="http://schemas.android.com/apk/res/android"\n'
+        '    android:width="108dp"\n'
+        '    android:height="108dp"\n'
+        '    android:viewportWidth="108"\n'
+        '    android:viewportHeight="108">\n'
+        '    <path\n'
+        '        android:fillColor="#FAF8F5"\n'
+        '        android:pathData="M0,0h108v108h-108z" />\n'
+        '</vector>\n'
+    )
+
+    return foreground_xml, background_xml
+
+
+# Adaptive icon XML templates
+ADAPTIVE_ICON_XML = (
+    '<?xml version="1.0" encoding="utf-8"?>\n'
+    '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n'
+    '    <background android:drawable="@drawable/ic_launcher_background" />\n'
+    '    <foreground android:drawable="@drawable/ic_launcher_foreground" />\n'
+    '</adaptive-icon>\n'
+)
+
+
+def generate_android_native(svg_path: str, name: str, output_dir: str):
+    """Generate Android native vector drawable icons from SVG.
+
+    Output structure:
+      drawable/ic_launcher_foreground.xml
+      drawable/ic_launcher_background.xml
+      mipmap-anydpi-v26/ic_launcher.xml
+      mipmap-anydpi-v26/ic_launcher_round.xml
+    """
+    foreground_xml, background_xml = svg_to_android_drawables(svg_path)
+
+    # drawable/
+    drawable_dir = os.path.join(output_dir, 'drawable')
+    os.makedirs(drawable_dir, exist_ok=True)
+    with open(os.path.join(drawable_dir, 'ic_launcher_foreground.xml'), 'w') as f:
+        f.write(foreground_xml)
+    with open(os.path.join(drawable_dir, 'ic_launcher_background.xml'), 'w') as f:
+        f.write(background_xml)
+
+    # mipmap-anydpi-v26/
+    mipmap_dir = os.path.join(output_dir, 'mipmap-anydpi-v26')
+    os.makedirs(mipmap_dir, exist_ok=True)
+    with open(os.path.join(mipmap_dir, 'ic_launcher.xml'), 'w') as f:
+        f.write(ADAPTIVE_ICON_XML)
+    with open(os.path.join(mipmap_dir, 'ic_launcher_round.xml'), 'w') as f:
+        f.write(ADAPTIVE_ICON_XML)
+
+    print(f"  Android Native: drawable/ic_launcher_{{foreground,background}}.xml + mipmap-anydpi-v26/ic_launcher{{,_round}}.xml")
+
+
 def generate_web(master: Image.Image, name: str, output_dir: str):
     """Generate Web favicons and manifest icons."""
     os.makedirs(output_dir, exist_ok=True)
@@ -512,6 +706,9 @@ def generate_for_platform(platform: str, master: Image.Image, name: str, output_
         generate_tauri(master, name, output_dir)
     elif platform == 'expo':
         generate_expo(master, name, output_dir)
+    elif platform == 'android_native':
+        # android_native is handled separately (SVG-based, not PNG)
+        pass
     elif platform == 'web':
         generate_web(master, name, output_dir)
     elif platform == 'service':
@@ -577,7 +774,7 @@ def main():
     parser.add_argument('--master', '-m', help='Path to master PNG (overrides product lookup)')
     parser.add_argument('--name', '-n', help='Output name (default: derived from product)')
     parser.add_argument('--output', '-o', default='./generated-icons', help='Output directory')
-    parser.add_argument('--platform', choices=['windows', 'android', 'ios', 'web', 'wpf', 'python', 'tauri', 'expo', 'service', 'all'],
+    parser.add_argument('--platform', choices=['windows', 'android', 'ios', 'web', 'wpf', 'python', 'tauri', 'expo', 'android_native', 'service', 'all'],
                         default=None,
                         help='Target platform (default: auto-detect from product)')
     parser.add_argument('--all', action='store_true', help='Generate icons for ALL products (using each product\'s platform)')
@@ -604,16 +801,25 @@ def main():
     if args.all:
         for code, info in ALL_ICONS.items():
             try:
-                path = get_master_icon_path(code)
-                if not path.exists():
-                    print(f"[SKIP] {code}: master icon not found at {path}")
-                    continue
                 platform = args.platform or info['platform']
                 platform_label = PLATFORM_LABELS.get(platform, platform)
-                print(f"\n[{code}] {info['name']} ({platform_label})")
-                master = Image.open(path).convert('RGBA')
                 product_dir = os.path.join(args.output, info['name'])
-                generate_for_platform(platform, master, info['name'], product_dir)
+
+                if platform == 'android_native':
+                    svg_path = get_svg_icon_path(code)
+                    if not svg_path.exists():
+                        print(f"[SKIP] {code}: SVG not found at {svg_path}")
+                        continue
+                    print(f"\n[{code}] {info['name']} ({platform_label})")
+                    generate_android_native(str(svg_path), info['name'], product_dir)
+                else:
+                    path = get_master_icon_path(code)
+                    if not path.exists():
+                        print(f"[SKIP] {code}: master icon not found at {path}")
+                        continue
+                    print(f"\n[{code}] {info['name']} ({platform_label})")
+                    master = Image.open(path).convert('RGBA')
+                    generate_for_platform(platform, master, info['name'], product_dir)
             except Exception as e:
                 print(f"[ERROR] {code}: {e}")
         print("\nAll icons generated!")
@@ -633,9 +839,26 @@ def main():
         if key not in ALL_ICONS:
             print(f"Error: Unknown product '{key}'. Use --list to see available icons.")
             sys.exit(1)
-        master_path = get_master_icon_path(key)
         name = args.name or ALL_ICONS[key]['name']
         platform = args.platform or ALL_ICONS[key]['platform']
+
+        # android_native uses SVG source, not PNG
+        if platform == 'android_native':
+            svg_path = get_svg_icon_path(key)
+            if not svg_path.exists():
+                print(f"Error: SVG icon not found: {svg_path}")
+                sys.exit(1)
+            platform_label = PLATFORM_LABELS.get(platform, platform)
+            print(f"SVG: {svg_path}")
+            print(f"Name: {name}")
+            print(f"Output: {args.output}")
+            print(f"Platform: {platform_label}")
+            print()
+            generate_android_native(str(svg_path), name, args.output)
+            print("\nDone!")
+            return
+
+        master_path = get_master_icon_path(key)
 
     if not master_path.exists():
         print(f"Error: Master icon not found: {master_path}")
