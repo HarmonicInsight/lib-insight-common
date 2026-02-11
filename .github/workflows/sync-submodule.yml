@@ -123,6 +123,13 @@ jobs:
             icon_dest: Resources
             copy_mode: ico_png
 
+          - repo: android-app-insight-launcher
+            product: LAUNCHER_ANDROID
+            name: InsightLauncherAndroid
+            icon_src: InsightLauncherAndroid
+            icon_dest: assets
+            copy_mode: expo
+
           # ── Expo / React Native ──
           - repo: android-app-insight-voice-clock
             product: VOICE_CLOCK

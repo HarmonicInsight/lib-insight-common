@@ -41,6 +41,7 @@ REPOS=(
   "win-app-insight-py-pro|INPY|InsightPy|InsightPy|resources|ico_png"
   "win-app-insight-sheet-senior|ISOF|InsightSeniorOffice|InsightSeniorOffice|Resources|ico_png"
   "win-app-insight-launcher|LAUNCHER|InsightLauncher|InsightLauncher|Resources|ico_png"
+  "android-app-insight-launcher|LAUNCHER_ANDROID|InsightLauncherAndroid|InsightLauncherAndroid|assets|expo"
   "android-app-insight-voice-clock|VOICE_CLOCK|InsightVoiceClock|InsightVoiceClock|assets|expo"
   "android-app-insight-camera|CAMERA|InsightCamera|InsightCamera|assets|expo"
   "mobile-app-voice-memo|VOICE_MEMO|InsightVoiceMemo|InsightVoiceMemo|assets|expo"
