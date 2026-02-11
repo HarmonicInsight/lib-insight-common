@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,11 +13,14 @@ namespace HarmonicTools.AppManager;
 
 public partial class MainWindow : Window
 {
-    private enum ActiveTab { Desktop, WebApp, Website }
+    private enum ActiveTab { Desktop, WebApp, Website, Icon }
 
     private readonly AppConfig _config;
     private readonly CommandRunner _runner = new();
+    private readonly IconService _iconService = new();
     private AppDefinition? _selectedApp;
+    private IconDefinition? _selectedIcon;
+    private List<IconDefinition>? _iconDefinitions;
     private ActiveTab _activeTab = ActiveTab.Desktop;
 
     public MainWindow()
@@ -27,6 +31,9 @@ public partial class MainWindow : Window
 
         _runner.OutputReceived += OnOutputReceived;
         _runner.CommandCompleted += OnCommandCompleted;
+
+        // insight-common ルートの自動検出
+        _iconService.InsightCommonRoot = IconService.DetectInsightCommonRoot();
 
         RefreshAppList();
     }
@@ -59,13 +66,32 @@ public partial class MainWindow : Window
     private void DesktopTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Desktop);
     private void WebAppTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.WebApp);
     private void WebSiteTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Website);
+    private void IconTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Icon);
 
     private void SwitchTab(ActiveTab tab)
     {
         if (_activeTab == tab) return;
         _activeTab = tab;
         UpdateTabStyles();
-        RefreshAppList();
+
+        if (tab == ActiveTab.Icon)
+        {
+            // アイコンタブ: App List を非表示にし、Icon List を表示
+            AppListBox.Visibility = Visibility.Collapsed;
+            IconListBox.Visibility = Visibility.Visible;
+            AppListButtons.Visibility = Visibility.Collapsed;
+            IconListButtons.Visibility = Visibility.Visible;
+            RefreshIconList();
+        }
+        else
+        {
+            // 通常タブ: Icon List を非表示にし、App List を表示
+            AppListBox.Visibility = Visibility.Visible;
+            IconListBox.Visibility = Visibility.Collapsed;
+            AppListButtons.Visibility = Visibility.Visible;
+            IconListButtons.Visibility = Visibility.Collapsed;
+            RefreshAppList();
+        }
     }
 
     private void UpdateTabStyles()
@@ -82,6 +108,9 @@ public partial class MainWindow : Window
 
         WebSiteTabBtn.Background = _activeTab == ActiveTab.Website ? active : inactive;
         WebSiteTabBtn.Foreground = _activeTab == ActiveTab.Website ? Brushes.White : inactiveText;
+
+        IconTabBtn.Background = _activeTab == ActiveTab.Icon ? active : inactive;
+        IconTabBtn.Foreground = _activeTab == ActiveTab.Icon ? Brushes.White : inactiveText;
     }
 
     // ── App List ──
@@ -117,6 +146,13 @@ public partial class MainWindow : Window
 
     private void UpdateAppDetails()
     {
+        // アイコンタブの場合は UpdateIconDetails で処理するため、ここでは何もしない
+        if (_activeTab == ActiveTab.Icon) return;
+
+        // 通常タブ: アイコンパネルを非表示、編集ボタンを表示
+        IconActions.Visibility = Visibility.Collapsed;
+        EditToggleBtn.Visibility = Visibility.Visible;
+
         if (_selectedApp == null)
         {
             SelectedAppName.Text = "アプリを選択してください";
@@ -1438,6 +1474,184 @@ public partial class MainWindow : Window
         var selected = AppListBox.SelectedItem;
         RefreshAppList();
         if (selected != null) AppListBox.SelectedItem = selected;
+    }
+
+    // ── Icon Tab ──
+
+    private void RefreshIconList()
+    {
+        _iconDefinitions ??= _iconService.BuildIconDefinitions(_config);
+
+        // BasePath を最新の AppConfig から再マッピング
+        var appsByCode = _config.Apps.ToDictionary(a => a.ProductCode, a => a);
+        foreach (var def in _iconDefinitions)
+        {
+            if (appsByCode.TryGetValue(def.ProductCode, out var app))
+                def.AppBasePath = app.BasePath;
+        }
+
+        IconListBox.ItemsSource = null;
+        IconListBox.ItemsSource = _iconDefinitions;
+
+        if (_iconDefinitions.Count > 0 && IconListBox.SelectedIndex < 0)
+            IconListBox.SelectedIndex = 0;
+    }
+
+    private void IconListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        _selectedIcon = IconListBox.SelectedItem as IconDefinition;
+        UpdateIconDetails();
+    }
+
+    private void UpdateIconDetails()
+    {
+        if (_selectedIcon == null)
+        {
+            SelectedAppName.Text = "アイコンを選択してください";
+            IconActions.Visibility = Visibility.Collapsed;
+            DesktopActions.Visibility = Visibility.Collapsed;
+            WebActions.Visibility = Visibility.Collapsed;
+            DesktopPathInfo.Visibility = Visibility.Collapsed;
+            WebPathInfo.Visibility = Visibility.Collapsed;
+            EditPanel.Visibility = Visibility.Collapsed;
+            WebEditPanel.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        SelectedAppName.Text = $"{_selectedIcon.ProductName} ({_selectedIcon.ProductCode})";
+
+        // 通常のパネルを非表示、アイコンパネルを表示
+        DesktopPathInfo.Visibility = Visibility.Collapsed;
+        WebPathInfo.Visibility = Visibility.Collapsed;
+        DesktopActions.Visibility = Visibility.Collapsed;
+        WebActions.Visibility = Visibility.Collapsed;
+        EditPanel.Visibility = Visibility.Collapsed;
+        WebEditPanel.Visibility = Visibility.Collapsed;
+        IconActions.Visibility = Visibility.Visible;
+
+        // マスター情報
+        IconMasterSvgText.Text = string.IsNullOrEmpty(_selectedIcon.MasterSvg) ? "(なし)" : _selectedIcon.MasterSvg;
+        IconMasterPngText.Text = string.IsNullOrEmpty(_selectedIcon.MasterPng) ? "(なし)" : _selectedIcon.MasterPng;
+        IconMotifText.Text = _selectedIcon.Motif;
+
+        if (_selectedIcon.HasMaster)
+        {
+            IconMasterStatusText.Text = $"✓ 存在 ({_selectedIcon.MasterLastModified:yyyy/MM/dd HH:mm})";
+            IconMasterStatusText.Foreground = (Brush)FindResource("SuccessBrush");
+        }
+        else
+        {
+            IconMasterStatusText.Text = "✗ マスターファイルなし";
+            IconMasterStatusText.Foreground = (Brush)FindResource("ErrorBrush");
+        }
+
+        // プラットフォーム別ステータス
+        IconPlatformList.ItemsSource = null;
+        IconPlatformList.ItemsSource = _selectedIcon.Platforms;
+
+        // 編集ボタンを非表示
+        EditToggleBtn.Visibility = Visibility.Collapsed;
+    }
+
+    private void ScanIcon_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedIcon == null) return;
+        _iconService.ScanIcon(_selectedIcon);
+        UpdateIconDetails();
+
+        // リスト側の表示も更新
+        var saved = _selectedIcon;
+        IconListBox.ItemsSource = null;
+        IconListBox.ItemsSource = _iconDefinitions;
+        IconListBox.SelectedItem = saved;
+
+        AppendOutput($"[アイコン] {_selectedIcon.ProductName} をスキャンしました: {_selectedIcon.OverallStatusIcon}\n");
+    }
+
+    private void ScanAllIcons_Click(object sender, RoutedEventArgs e)
+    {
+        if (_iconDefinitions == null) return;
+
+        _iconService.ScanAll(_iconDefinitions);
+
+        // リスト更新
+        var saved = _selectedIcon;
+        IconListBox.ItemsSource = null;
+        IconListBox.ItemsSource = _iconDefinitions;
+        if (saved != null) IconListBox.SelectedItem = saved;
+
+        UpdateIconDetails();
+
+        // サマリー出力
+        var total = 0;
+        var upToDate = 0;
+        var missing = 0;
+        foreach (var def in _iconDefinitions)
+        {
+            foreach (var p in def.Platforms)
+            {
+                foreach (var t in p.Targets)
+                {
+                    total++;
+                    if (t.Status == IconTargetStatus.UpToDate) upToDate++;
+                    else if (t.Status == IconTargetStatus.Missing) missing++;
+                }
+            }
+        }
+
+        AppendOutput($"═══ 全アイコン スキャン完了 ═══\n");
+        AppendOutput($"  合計: {total} ターゲット\n");
+        AppendOutput($"  最新: {upToDate} / 未配置: {missing} / その他: {total - upToDate - missing}\n\n");
+    }
+
+    private void OpenIconMaster_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedIcon == null) return;
+        _iconService.OpenMasterInExplorer(_selectedIcon);
+    }
+
+    private void OpenIconMasterFolder_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedIcon == null) return;
+        _iconService.OpenMasterInExplorer(_selectedIcon);
+    }
+
+    private void OpenIconTargetFolder_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedIcon == null) return;
+        if (_selectedIcon.Platforms.Count == 0) return;
+
+        // 最初のプラットフォームの最初のターゲットを開く
+        var firstTarget = _selectedIcon.Platforms.First().Targets.FirstOrDefault();
+        if (firstTarget != null)
+            _iconService.OpenTargetInExplorer(_selectedIcon, firstTarget);
+    }
+
+    private void GenerateIco_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedIcon == null) return;
+
+        var insightRoot = _iconService.InsightCommonRoot;
+        if (string.IsNullOrEmpty(insightRoot))
+        {
+            AppendOutput("[エラー] insight-common のルートパスが検出できません。\n");
+            return;
+        }
+
+        var scriptPath = Path.Combine(insightRoot, "scripts", "generate-app-icon.py");
+        if (!File.Exists(scriptPath))
+        {
+            AppendOutput($"[エラー] generate-app-icon.py が見つかりません: {scriptPath}\n");
+            return;
+        }
+
+        AppendOutput($"[アイコン] generate-app-icon.py を起動します...\n");
+        AppendOutput($"  ヒント: スクリプトを拡張して対象製品を追加してください。\n");
+
+        var title = $"Icon Generator - {_selectedIcon.ProductName}";
+        _runner.RunInExternalConsole(title, "python",
+            $"\"{scriptPath}\"",
+            insightRoot);
     }
 
     protected override void OnClosed(EventArgs e)
