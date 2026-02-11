@@ -20,11 +20,11 @@ import '@harmonic-insight/ui/styles/variables.css';
 function App() {
   return (
     <>
-      <GlobalNav currentSiteId="blog" />
+      <GlobalNav currentSiteId="insight-office" />
       <main>
         {/* コンテンツ */}
       </main>
-      <SiteFooter currentSiteId="blog" />
+      <SiteFooter currentSiteId="insight-office" />
     </>
   );
 }
@@ -66,9 +66,9 @@ ui/web/
 import { GlobalNav } from '@harmonic-insight/ui';
 
 <GlobalNav
-  currentSiteId="blog"      // 現在のサイトID
-  darkMode={false}          // ダークモード（オプション）
-  onLogoClick={() => {}}    // ロゴクリック時（オプション）
+  currentSiteId="corporate"     // 現在のサイトID
+  darkMode={false}              // ダークモード（オプション）
+  onLogoClick={() => {}}        // ロゴクリック時（オプション）
 />
 ```
 
@@ -83,15 +83,15 @@ import { GlobalNav } from '@harmonic-insight/ui';
 
 ### SiteFooter
 
-サイトフッターコンポーネント
+サイトフッターコンポーネント。4サイト間のクロスリンクを自動生成。
 
 ```tsx
 import { SiteFooter } from '@harmonic-insight/ui';
 
 <SiteFooter
-  currentSiteId="blog"      // 現在のサイトID
-  darkMode={false}          // ダークモード（オプション）
-  additionalLinks={[        // 追加リンク（オプション）
+  currentSiteId="corporate"    // 現在のサイトID
+  darkMode={false}             // ダークモード（オプション）
+  additionalLinks={[           // 追加リンク（オプション）
     { label: 'カスタムリンク', href: '/custom' }
   ]}
 />
@@ -111,17 +111,30 @@ import { SiteFooter } from '@harmonic-insight/ui';
 
 ## サイト設定
 
-### 現在のサイト一覧
+### 4サイト構成
 
-| ID | サイト名 | URL | カテゴリ |
-|----|----------|-----|----------|
-| `home` | Harmonic Insight | h-insight.jp | main |
-| `insight` | Insight Series | insight.h-insight.jp | product |
-| `framework` | Framework | framework.h-insight.jp | product |
-| `blog` | ブログ | blog.h-insight.jp | content |
-| `docs` | ドキュメント | docs.h-insight.jp | content |
-| `support` | サポート | support.h-insight.jp | support |
-| `careers` | 採用情報 | h-insight.jp/careers | support |
+| ID | サイト名 | URL | カテゴリ | ナビ表示 |
+|----|----------|-----|----------|:--------:|
+| `corporate` | ハーモニックインサイト | h-insight.jp | corporate | ✓ |
+| `insight-office` | Insight Office | www.insight-office.com | product | ✓ |
+| `novels` | Insight Novels | www.insight-novels.com | media | |
+| `personal` | 瀬田博之 | erikhiroyuki.com | personal | |
+
+### サイト間導線
+
+```
+                    ┌─────────────┐
+                    │ h-insight.jp │ ← 信頼の起点
+                    │  法人サイト   │
+                    └──────┬──────┘
+                           │
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+    ┌──────────────┐ ┌──────────┐ ┌──────────────┐
+    │insight-office│ │ novels   │ │erikhiroyuki  │
+    │ 製品 → 受注  │ │ 技術力証明│ │ 人格信頼     │
+    └──────────────┘ └──────────┘ └──────────────┘
+```
 
 ### ユーティリティ関数
 
@@ -131,10 +144,12 @@ import {
   getGlobalNavSites,
   getFooterSites,
   getSitesByCategory,
+  getCrossSiteLinks,
+  getFooterPages,
 } from '@harmonic-insight/ui';
 
 // 特定のサイト設定を取得
-const blogSite = getSite('blog');
+const officeSite = getSite('insight-office');
 
 // ナビゲーションに表示するサイト一覧
 const navSites = getGlobalNavSites();
@@ -144,6 +159,12 @@ const footerSites = getFooterSites();
 
 // カテゴリ別にサイトを取得
 const productSites = getSitesByCategory('product');
+
+// 他サイトへのクロスリンク
+const crossLinks = getCrossSiteLinks('corporate');
+
+// サイト内ページリンク（フッター用）
+const pages = getFooterPages('insight-office');
 ```
 
 ---

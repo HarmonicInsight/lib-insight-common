@@ -11,6 +11,15 @@ Harmonic Insight の新しいWebサイトを追加する手順
 - サイトフッター（`showInFooter: true` の場合）
 - サイト一覧API
 
+### 現在の4サイト構成
+
+| ID | サイト名 | URL | カテゴリ |
+|----|----------|-----|----------|
+| `corporate` | ハーモニックインサイト | h-insight.jp | corporate |
+| `insight-office` | Insight Office | www.insight-office.com | product |
+| `novels` | Insight Novels | www.insight-novels.com | media |
+| `personal` | 瀬田博之 | erikhiroyuki.com | personal |
+
 ---
 
 ## 手順
@@ -21,13 +30,10 @@ Harmonic Insight の新しいWebサイトを追加する手順
 
 ```typescript
 export type SiteId =
-  | 'home'
-  | 'framework'
-  | 'insight'
-  | 'blog'
-  | 'support'
-  | 'docs'
-  | 'careers'
+  | 'corporate'
+  | 'insight-office'
+  | 'novels'
+  | 'personal'
   | 'newsite';     // ← 追加
 ```
 
@@ -44,12 +50,16 @@ export const SITES: SiteConfig[] = [
     id: 'newsite',
     name: '新サイト',
     nameEn: 'New Site',
-    url: 'https://newsite.h-insight.jp',
-    description: 'サイトの説明文',
-    category: 'content',  // 'main' | 'product' | 'content' | 'support'
-    showInGlobalNav: true,
+    url: 'https://newsite.example.com',
+    description: 'サイトの説明文（日本語）',
+    descriptionEn: 'Site description (English)',
+    category: 'media',  // 'corporate' | 'product' | 'media' | 'personal'
+    showInGlobalNav: false,
     showInFooter: true,
     order: 25,  // 表示順序（小さいほど先）
+    pages: [    // サイト内ページ（オプション）
+      { name: 'ページ名', nameEn: 'Page Name', path: '/page', showInFooter: true },
+    ],
   },
 ];
 ```
@@ -89,80 +99,32 @@ npm update @harmonic-insight/ui
 | `name` | `string` | サイト名（日本語） |
 | `nameEn` | `string` | サイト名（英語） |
 | `url` | `string` | サイトのURL |
-| `description` | `string` | サイトの説明文 |
+| `description` | `string` | サイトの説明文（日本語） |
+| `descriptionEn` | `string` | サイトの説明文（英語） |
 | `category` | `SiteCategory` | サイトカテゴリ |
 | `showInGlobalNav` | `boolean` | グローバルナビに表示するか |
 | `showInFooter` | `boolean` | フッターに表示するか |
 | `order` | `number` | 表示順序（小さいほど先） |
+| `pages` | `SitePage[]` | サイト内の主要ページ（オプション） |
 
 ### SiteCategory
 
-| カテゴリ | 説明 | 表示名 |
-|----------|------|--------|
-| `main` | メインサイト | メイン |
-| `product` | 製品・サービス | サービス |
-| `content` | コンテンツ | コンテンツ |
-| `support` | サポート・その他 | サポート |
+| カテゴリ | 説明 | フッター表示名 |
+|----------|------|----------------|
+| `corporate` | コーポレートサイト | 会社情報 |
+| `product` | 製品・サービス | 製品・サービス |
+| `media` | メディア・コンテンツ | メディア |
+| `personal` | 個人・コンサルタント | コンサルタント |
 
 ### order 値の目安
 
 | 範囲 | 用途 |
 |------|------|
-| 0-9 | メインサイト |
+| 0-9 | コーポレート |
 | 10-19 | 製品・サービス |
-| 20-29 | コンテンツ |
-| 30-39 | サポート |
-| 40+ | その他 |
-
----
-
-## 例：製品ページの追加
-
-```typescript
-{
-  id: 'newproduct',
-  name: '新製品',
-  nameEn: 'New Product',
-  url: 'https://newproduct.h-insight.jp',
-  description: 'AI搭載の新製品',
-  category: 'product',
-  showInGlobalNav: true,  // ナビに表示
-  showInFooter: true,     // フッターに表示
-  order: 12,              // Framework (11) の後
-},
-```
-
-## 例：内部ページ（フッターのみ）
-
-```typescript
-{
-  id: 'internal',
-  name: '社内ツール',
-  nameEn: 'Internal Tools',
-  url: 'https://internal.h-insight.jp',
-  description: '社内向けツール',
-  category: 'support',
-  showInGlobalNav: false, // ナビには非表示
-  showInFooter: true,     // フッターには表示
-  order: 35,
-},
-```
-
-## 例：完全に非表示（API用）
-
-```typescript
-{
-  id: 'api',
-  name: 'API',
-  nameEn: 'API',
-  url: 'https://api.h-insight.jp',
-  description: 'API エンドポイント',
-  category: 'support',
-  showInGlobalNav: false, // ナビに非表示
-  showInFooter: false,    // フッターにも非表示
-  order: 99,
-},
-```
+| 20-29 | メディア |
+| 30-39 | 個人・その他 |
+| 40+ | 予備 |
 
 ---
 
@@ -215,6 +177,7 @@ export default function Layout({ children }) {
 
 - [ ] `SiteId` 型にIDを追加
 - [ ] `SITES` 配列に設定を追加
+- [ ] `descriptionEn` を含む英語名が設定されているか確認
 - [ ] `order` 値が適切か確認
 - [ ] `category` が正しいか確認
 - [ ] `showInGlobalNav` / `showInFooter` が意図通りか確認

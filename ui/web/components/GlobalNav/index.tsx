@@ -6,11 +6,11 @@
  * @example
  * import { GlobalNav } from '@harmonic-insight/ui';
  *
- * <GlobalNav currentSiteId="blog" />
+ * <GlobalNav currentSiteId="corporate" />
  */
 
 import React, { useState, useCallback } from 'react';
-import { getGlobalNavSites, getSite, type SiteId, type SiteConfig } from '../../config/sites';
+import { getGlobalNavSites, getSite, getSitesByCategory, type SiteId, type SiteConfig } from '../../config/sites';
 import styles from './GlobalNav.module.css';
 
 export interface GlobalNavProps {
@@ -36,7 +36,7 @@ export function GlobalNav({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sites = getGlobalNavSites();
   const currentSite = getSite(currentSiteId);
-  const homeSite = getSite('home');
+  const homeSite = getSite('corporate');
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => !prev);

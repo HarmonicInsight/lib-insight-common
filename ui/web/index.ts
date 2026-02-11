@@ -17,7 +17,11 @@ export {
   getSitesByCategory,
   getFooterSitesByCategory,
   getCategoryName,
+  getCategoryNameEn,
+  getCrossSiteLinks,
+  getFooterPages,
   type SiteId,
   type SiteCategory,
   type SiteConfig,
+  type SitePage,
 } from './config/sites';

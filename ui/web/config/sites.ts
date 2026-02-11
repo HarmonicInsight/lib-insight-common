@@ -1,6 +1,12 @@
 /**
  * Harmonic Insight Webサイト設定
  *
+ * 4サイト構成:
+ *   1. h-insight.jp          - コーポレート（法人）
+ *   2. insight-office.com    - Insight Office 製品サイト
+ *   3. insight-novels.com    - 小説プラットフォーム
+ *   4. erikhiroyuki.com      - 瀬田博之 個人事業主
+ *
  * 新しいサイトを追加する場合:
  * 1. SiteId に新しいIDを追加
  * 2. SITES 配列に新しいサイト設定を追加
@@ -13,18 +19,15 @@
  * 新しいサイト追加時はここにIDを追加
  */
 export type SiteId =
-  | 'home'           // メインサイト
-  | 'framework'      // ビジネスフレームワーク
-  | 'insight'        // Insight Series 製品ページ
-  | 'blog'           // ブログ
-  | 'support'        // サポート
-  | 'docs'           // ドキュメント
-  | 'careers';       // 採用情報
+  | 'corporate'       // コーポレートサイト（h-insight.jp）
+  | 'insight-office'  // Insight Office 製品サイト（insight-office.com）
+  | 'novels'          // 小説プラットフォーム（insight-novels.com）
+  | 'personal';       // 瀬田博之 個人事業主（erikhiroyuki.com）
 
 /**
  * サイトカテゴリ
  */
-export type SiteCategory = 'main' | 'product' | 'content' | 'support';
+export type SiteCategory = 'corporate' | 'product' | 'media' | 'personal';
 
 /**
  * サイト設定
@@ -38,8 +41,10 @@ export interface SiteConfig {
   nameEn: string;
   /** サイトURL */
   url: string;
-  /** サイト説明 */
+  /** サイト説明（日本語） */
   description: string;
+  /** サイト説明（英語） */
+  descriptionEn: string;
   /** カテゴリ */
   category: SiteCategory;
   /** グローバルナビに表示するか */
@@ -48,96 +53,114 @@ export interface SiteConfig {
   showInFooter: boolean;
   /** 表示順序（小さいほど先） */
   order: number;
+  /** サイト内の主要ページ */
+  pages?: SitePage[];
+}
+
+/**
+ * サイト内ページ
+ */
+export interface SitePage {
+  /** ページ名（日本語） */
+  name: string;
+  /** ページ名（英語） */
+  nameEn: string;
+  /** ページパス（サイトURL末尾に結合） */
+  path: string;
+  /** フッターに表示するか */
+  showInFooter: boolean;
 }
 
 /**
  * 全サイト設定
- * 新しいサイト追加時はここに設定を追加
+ *
+ * サイト間の導線設計:
+ *
+ *   法人顧客の典型的ジャーニー:
+ *     セミナー/紹介 → erikhiroyuki.com（人格信頼）
+ *     会社確認      → h-insight.jp（法人信頼）
+ *     製品検討      → insight-office.com（受注）
+ *
+ *                    ┌─────────────┐
+ *                    │ h-insight.jp │ ← 信頼の起点
+ *                    │  法人サイト   │
+ *                    └──────┬──────┘
+ *                           │
+ *              ┌────────────┼────────────┐
+ *              ▼            ▼            ▼
+ *    ┌──────────────┐ ┌──────────┐ ┌──────────────┐
+ *    │insight-office│ │ novels   │ │erikhiroyuki  │
+ *    │ 製品 → 受注  │ │ 技術力証明│ │ 人格信頼     │
+ *    └──────────────┘ └──────────┘ └──────────────┘
  */
 export const SITES: SiteConfig[] = [
-  // === メインサイト ===
+  // === 1. コーポレートサイト ===
   {
-    id: 'home',
-    name: 'Harmonic Insight',
+    id: 'corporate',
+    name: 'ハーモニックインサイト',
     nameEn: 'Harmonic Insight',
     url: 'https://h-insight.jp',
-    description: 'AI業務支援ソリューション',
-    category: 'main',
+    description: 'ハーモニックインサイト合同会社 — AI業務支援コンサルティング',
+    descriptionEn: 'Harmonic Insight LLC — AI Business Consulting',
+    category: 'corporate',
     showInGlobalNav: true,
     showInFooter: true,
     order: 0,
+    pages: [
+      { name: '会社概要', nameEn: 'About', path: '/about', showInFooter: true },
+      { name: 'お問い合わせ', nameEn: 'Contact', path: '/contact', showInFooter: true },
+      { name: 'プライバシーポリシー', nameEn: 'Privacy Policy', path: '/privacy', showInFooter: true },
+      { name: '利用規約', nameEn: 'Terms of Service', path: '/terms', showInFooter: true },
+      { name: '特定商取引法に基づく表記', nameEn: 'Legal Notice', path: '/legal', showInFooter: true },
+    ],
   },
 
-  // === 製品・サービス ===
+  // === 2. Insight Office 製品サイト ===
   {
-    id: 'insight',
-    name: 'Insight Series',
-    nameEn: 'Insight Series',
-    url: 'https://insight.h-insight.jp',
-    description: 'AI搭載デスクトップアプリケーション',
+    id: 'insight-office',
+    name: 'Insight Office',
+    nameEn: 'Insight Office',
+    url: 'https://www.insight-office.com',
+    description: 'AI搭載 業務効率化ツール — 10製品の統合ソリューション',
+    descriptionEn: 'AI-Powered Business Productivity Tools',
     category: 'product',
     showInGlobalNav: true,
     showInFooter: true,
     order: 10,
-  },
-  {
-    id: 'framework',
-    name: 'Framework',
-    nameEn: 'Framework',
-    url: 'https://framework.h-insight.jp',
-    description: 'ビジネスフレームワーク集',
-    category: 'product',
-    showInGlobalNav: true,
-    showInFooter: true,
-    order: 11,
+    pages: [
+      { name: '製品一覧', nameEn: 'Products', path: '/ja#products', showInFooter: true },
+      { name: 'ソリューション', nameEn: 'Solutions', path: '/ja#solutions', showInFooter: true },
+      { name: 'ダウンロード', nameEn: 'Download', path: '/ja/download', showInFooter: true },
+      { name: '無料相談', nameEn: 'Contact', path: '/ja/contact', showInFooter: true },
+    ],
   },
 
-  // === コンテンツ ===
+  // === 3. 小説プラットフォーム ===
   {
-    id: 'blog',
-    name: 'ブログ',
-    nameEn: 'Blog',
-    url: 'https://blog.h-insight.jp',
-    description: '技術・ビジネス情報',
-    category: 'content',
-    showInGlobalNav: true,
+    id: 'novels',
+    name: 'Insight Novels',
+    nameEn: 'Insight Novels',
+    url: 'https://www.insight-novels.com',
+    description: 'AI活用 小説プラットフォーム — テクノロジーの可能性を体験',
+    descriptionEn: 'AI-Powered Novel Platform',
+    category: 'media',
+    showInGlobalNav: false,
     showInFooter: true,
     order: 20,
   },
-  {
-    id: 'docs',
-    name: 'ドキュメント',
-    nameEn: 'Documentation',
-    url: 'https://docs.h-insight.jp',
-    description: '製品マニュアル・API リファレンス',
-    category: 'content',
-    showInGlobalNav: false,
-    showInFooter: true,
-    order: 21,
-  },
 
-  // === サポート ===
+  // === 4. 瀬田博之 個人事業主 ===
   {
-    id: 'support',
-    name: 'サポート',
-    nameEn: 'Support',
-    url: 'https://support.h-insight.jp',
-    description: 'お問い合わせ・ヘルプセンター',
-    category: 'support',
+    id: 'personal',
+    name: '瀬田博之',
+    nameEn: 'Hiroyuki Seta',
+    url: 'https://erikhiroyuki.com',
+    description: 'ITコンサルタント — 28年の現場経験',
+    descriptionEn: 'IT Consultant — 28 Years of Experience',
+    category: 'personal',
     showInGlobalNav: false,
     showInFooter: true,
     order: 30,
-  },
-  {
-    id: 'careers',
-    name: '採用情報',
-    nameEn: 'Careers',
-    url: 'https://h-insight.jp/careers',
-    description: '採用情報',
-    category: 'support',
-    showInGlobalNav: false,
-    showInFooter: true,
-    order: 31,
   },
 ];
 
@@ -154,6 +177,7 @@ export function getSite(id: SiteId): SiteConfig | undefined {
 
 /**
  * グローバルナビに表示するサイト一覧を取得
+ * （corporate + insight-office のみ）
  */
 export function getGlobalNavSites(): SiteConfig[] {
   return SITES
@@ -184,10 +208,10 @@ export function getSitesByCategory(category: SiteCategory): SiteConfig[] {
  */
 export function getFooterSitesByCategory(): Record<SiteCategory, SiteConfig[]> {
   return {
-    main: getSitesByCategory('main'),
+    corporate: getSitesByCategory('corporate'),
     product: getSitesByCategory('product'),
-    content: getSitesByCategory('content'),
-    support: getSitesByCategory('support'),
+    media: getSitesByCategory('media'),
+    personal: getSitesByCategory('personal'),
   };
 }
 
@@ -196,10 +220,49 @@ export function getFooterSitesByCategory(): Record<SiteCategory, SiteConfig[]> {
  */
 export function getCategoryName(category: SiteCategory): string {
   const names: Record<SiteCategory, string> = {
-    main: 'メイン',
-    product: 'サービス',
-    content: 'コンテンツ',
-    support: 'サポート',
+    corporate: '会社情報',
+    product: '製品・サービス',
+    media: 'メディア',
+    personal: 'コンサルタント',
   };
   return names[category];
+}
+
+/**
+ * カテゴリの英語名を取得
+ */
+export function getCategoryNameEn(category: SiteCategory): string {
+  const names: Record<SiteCategory, string> = {
+    corporate: 'Company',
+    product: 'Products',
+    media: 'Media',
+    personal: 'Consultant',
+  };
+  return names[category];
+}
+
+/**
+ * 全サイトのクロスリンク情報を取得
+ * 各サイトのフッター等で他サイトへのリンクを表示するために使用
+ */
+export function getCrossSiteLinks(currentSiteId: SiteId): SiteConfig[] {
+  return SITES
+    .filter(site => site.id !== currentSiteId && site.showInFooter)
+    .sort((a, b) => a.order - b.order);
+}
+
+/**
+ * サイトの全ページリンク（フッター用）を取得
+ */
+export function getFooterPages(siteId: SiteId): { name: string; nameEn: string; url: string }[] {
+  const site = getSite(siteId);
+  if (!site?.pages) return [];
+
+  return site.pages
+    .filter(page => page.showInFooter)
+    .map(page => ({
+      name: page.name,
+      nameEn: page.nameEn,
+      url: `${site.url}${page.path}`,
+    }));
 }
