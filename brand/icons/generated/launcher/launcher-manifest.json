@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "description": "HARMONIC insight Launcher icon manifest — maps product codes to Android mipmap icons",
+  "basePath": "brand/icons/generated/launcher",
+  "densities": {
+    "mdpi": 48,
+    "hdpi": 72,
+    "xhdpi": 96,
+    "xxhdpi": 144,
+    "xxxhdpi": 192
+  },
+  "iconFileName": "ic_launcher.png",
+  "entries": [
+    {
+      "code": "INSS",
+      "name": "InsightOfficeSlide",
+      "masterIcon": "brand/icons/png/icon-insight-slide.png",
+      "category": "office",
+      "displayOrder": 100,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "IOSH",
+      "name": "InsightOfficeSheet",
+      "masterIcon": "brand/icons/png/icon-insight-sheet.png",
+      "category": "office",
+      "displayOrder": 110,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "IOSD",
+      "name": "InsightOfficeDoc",
+      "masterIcon": "brand/icons/png/icon-insight-doc.png",
+      "category": "office",
+      "displayOrder": 120,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "ISOF",
+      "name": "InsightSeniorOffice",
+      "masterIcon": "brand/icons/png/icon-senior-office.png",
+      "category": "senior",
+      "displayOrder": 130,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "INPY",
+      "name": "InsightPy",
+      "masterIcon": "brand/icons/png/icon-insight-py.png",
+      "category": "ai_tools",
+      "displayOrder": 200,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "INMV",
+      "name": "InsightMovie",
+      "masterIcon": "brand/icons/png/icon-insight-movie.png",
+      "category": "ai_tools",
+      "displayOrder": 210,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "INIG",
+      "name": "InsightImageGen",
+      "masterIcon": "brand/icons/png/icon-insight-imagegen.png",
+      "category": "ai_tools",
+      "displayOrder": 220,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "INCA",
+      "name": "InsightNoCodeAnalyzer",
+      "masterIcon": "brand/icons/png/icon-insight-nca.png",
+      "category": "enterprise",
+      "displayOrder": 300,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "INBT",
+      "name": "InsightBot",
+      "masterIcon": "brand/icons/png/icon-insight-bot.png",
+      "category": "enterprise",
+      "displayOrder": 310,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "IVIN",
+      "name": "InterviewInsight",
+      "masterIcon": "brand/icons/png/icon-interview-insight.png",
+      "category": "enterprise",
+      "displayOrder": 320,
+      "isProduct": true,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "CAMERA",
+      "name": "InsightCamera",
+      "masterIcon": "brand/icons/png/icon-camera.png",
+      "category": "utility",
+      "displayOrder": 400,
+      "isProduct": false,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "VOICE_CLOCK",
+      "name": "InsightVoiceClock",
+      "masterIcon": "brand/icons/png/icon-voice-clock.png",
+      "category": "utility",
+      "displayOrder": 410,
+      "isProduct": false,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "PINBOARD",
+      "name": "InsightPinBoard",
+      "masterIcon": "brand/icons/png/icon-pinboard.png",
+      "category": "utility",
+      "displayOrder": 420,
+      "isProduct": false,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "VOICE_MEMO",
+      "name": "InsightVoiceMemo",
+      "masterIcon": "brand/icons/png/icon-voice-memo.png",
+      "category": "utility",
+      "displayOrder": 430,
+      "isProduct": false,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
+      "code": "QR",
+      "name": "InsightQR",
+      "masterIcon": "brand/icons/png/icon-qr.png",
+      "category": "utility",
+      "displayOrder": 440,
+      "isProduct": false,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    }
+  ]
+}

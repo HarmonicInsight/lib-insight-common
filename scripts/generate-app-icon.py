@@ -58,6 +58,15 @@ WEB_SIZES = {
 TAURI_PNG_SIZES = [32, 128, 256]
 TAURI_LARGE_PNG = 512  # icon.png
 
+# Launcher grid icon sizes (displayed inside the launcher app)
+LAUNCHER_GRID_SIZES = {
+    'mdpi': 48,
+    'hdpi': 72,
+    'xhdpi': 96,
+    'xxhdpi': 144,
+    'xxxhdpi': 192,
+}
+
 
 # =============================================================================
 # Product → Platform mapping
@@ -373,6 +382,108 @@ def generate_web(master: Image.Image, name: str, output_dir: str):
     print(f"  Web: favicon.ico + {len(WEB_SIZES)} PNG variants")
 
 
+def generate_launcher_icon(master: Image.Image, code: str, output_dir: str):
+    """Generate Android mipmap icons for the launcher app grid.
+
+    This generates mipmap PNGs at all Android densities for a single product,
+    to be displayed as a tile icon inside the InsightLauncher Android app.
+
+    Output structure:
+        {output_dir}/{code}/mipmap-{density}/ic_launcher.png
+    """
+    product_dir = os.path.join(output_dir, code)
+    for density, size in LAUNCHER_GRID_SIZES.items():
+        density_dir = os.path.join(product_dir, f"mipmap-{density}")
+        os.makedirs(density_dir, exist_ok=True)
+        img = resize_icon(master, size)
+        img.save(os.path.join(density_dir, "ic_launcher.png"))
+
+
+def generate_launcher_all(output_dir: str):
+    """Generate launcher icons for ALL products + utilities.
+
+    Creates Android mipmap icons for every product so the InsightLauncher
+    Android app can display them in a tile grid. Also generates a
+    launcher-manifest.json for the app to consume.
+
+    Args:
+        output_dir: Base output directory (e.g., brand/icons/generated/launcher)
+    """
+    import json
+
+    manifest_entries = []
+    generated = 0
+    skipped = 0
+
+    # Category mapping for manifest
+    category_map = {
+        'INSS': 'office', 'IOSH': 'office', 'IOSD': 'office',
+        'INMV': 'ai_tools', 'INIG': 'ai_tools', 'INPY': 'ai_tools',
+        'INCA': 'enterprise', 'INBT': 'enterprise', 'IVIN': 'enterprise',
+        'ISOF': 'senior',
+        'CAMERA': 'utility', 'VOICE_CLOCK': 'utility', 'QR': 'utility',
+        'PINBOARD': 'utility', 'VOICE_MEMO': 'utility',
+    }
+
+    # Display order for manifest
+    display_order = {
+        'INSS': 100, 'IOSH': 110, 'IOSD': 120, 'ISOF': 130,
+        'INPY': 200, 'INMV': 210, 'INIG': 220,
+        'INCA': 300, 'INBT': 310, 'IVIN': 320,
+        'CAMERA': 400, 'VOICE_CLOCK': 410, 'PINBOARD': 420,
+        'VOICE_MEMO': 430, 'QR': 440,
+    }
+
+    # Process all icons (products + utilities, excluding LAUNCHER itself)
+    all_entries = {**PRODUCT_ICONS, **{k: v for k, v in UTILITY_ICONS.items() if k != 'LAUNCHER'}}
+
+    for code, info in all_entries.items():
+        try:
+            path = get_master_icon_path(code)
+            if not path.exists():
+                print(f"  [SKIP] {code}: master icon not found at {path}")
+                skipped += 1
+                continue
+
+            master = Image.open(path).convert('RGBA')
+            generate_launcher_icon(master, code, output_dir)
+
+            manifest_entries.append({
+                'code': code,
+                'name': info['name'],
+                'masterIcon': f"brand/icons/png/{info['icon']}",
+                'category': category_map.get(code, 'utility'),
+                'displayOrder': display_order.get(code, 999),
+                'isProduct': code in PRODUCT_ICONS,
+                'densities': {d: s for d, s in LAUNCHER_GRID_SIZES.items()},
+            })
+            generated += 1
+            print(f"  [OK] {code}: {info['name']} ({len(LAUNCHER_GRID_SIZES)} densities)")
+
+        except Exception as e:
+            print(f"  [ERROR] {code}: {e}")
+            skipped += 1
+
+    # Sort manifest by display order
+    manifest_entries.sort(key=lambda e: e['displayOrder'])
+
+    # Write manifest JSON
+    manifest_path = os.path.join(output_dir, 'launcher-manifest.json')
+    manifest = {
+        'version': 1,
+        'description': 'HARMONIC insight Launcher icon manifest — maps product codes to Android mipmap icons',
+        'basePath': 'brand/icons/generated/launcher',
+        'densities': dict(LAUNCHER_GRID_SIZES),
+        'iconFileName': 'ic_launcher.png',
+        'entries': manifest_entries,
+    }
+    with open(manifest_path, 'w', encoding='utf-8') as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=2)
+
+    print(f"\n  Launcher icons generated: {generated} products, {skipped} skipped")
+    print(f"  Manifest: {manifest_path}")
+
+
 def generate_all_platforms(master: Image.Image, name: str, output_dir: str):
     """Generate icons for all platforms (fallback when no platform specified)."""
     generate_windows(master, name, os.path.join(output_dir, 'windows'))
@@ -464,12 +575,24 @@ def main():
                         default=None,
                         help='Target platform (default: auto-detect from product)')
     parser.add_argument('--all', action='store_true', help='Generate icons for ALL products (using each product\'s platform)')
+    parser.add_argument('--launcher', action='store_true',
+                        help='Generate Android mipmap icons for ALL products (for InsightLauncher app grid)')
     parser.add_argument('--list', action='store_true', help='List all available icons with platform info')
 
     args = parser.parse_args()
 
     if args.list:
         list_icons()
+        return
+
+    if args.launcher:
+        launcher_dir = os.path.join(args.output, 'launcher') if args.output != './generated-icons' else os.path.join(
+            str(find_insight_common_root()), 'brand', 'icons', 'generated', 'launcher'
+        )
+        print(f"\n=== Generating Launcher Icons (Android mipmap for all products) ===")
+        print(f"Output: {launcher_dir}\n")
+        generate_launcher_all(launcher_dir)
+        print("\nDone!")
         return
 
     if args.all:
