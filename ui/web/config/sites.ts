@@ -107,11 +107,14 @@ export const SITES: SiteConfig[] = [
     showInFooter: true,
     order: 0,
     pages: [
-      { name: '会社概要', nameEn: 'About', path: '/about', showInFooter: true },
-      { name: 'お問い合わせ', nameEn: 'Contact', path: '/contact', showInFooter: true },
-      { name: 'プライバシーポリシー', nameEn: 'Privacy Policy', path: '/privacy', showInFooter: true },
-      { name: '利用規約', nameEn: 'Terms of Service', path: '/terms', showInFooter: true },
-      { name: '特定商取引法に基づく表記', nameEn: 'Legal Notice', path: '/legal', showInFooter: true },
+      { name: 'サービス', nameEn: 'Services', path: '/services', showInFooter: true },
+      { name: '製品', nameEn: 'Products', path: '/products', showInFooter: true },
+      { name: '建設DX', nameEn: 'Construction DX', path: '/construction-dx', showInFooter: true },
+      { name: '会社概要', nameEn: 'About', path: '/company', showInFooter: true },
+      { name: 'お問い合わせ', nameEn: 'Contact', path: '/#contact', showInFooter: true },
+      { name: 'プライバシーポリシー', nameEn: 'Privacy Policy', path: '/privacy', showInFooter: false },
+      { name: '利用規約', nameEn: 'Terms of Service', path: '/terms', showInFooter: false },
+      { name: '特定商取引法に基づく表記', nameEn: 'Legal Notice', path: '/legal', showInFooter: false },
     ],
   },
 
@@ -128,10 +131,10 @@ export const SITES: SiteConfig[] = [
     showInFooter: true,
     order: 10,
     pages: [
-      { name: '製品一覧', nameEn: 'Products', path: '/ja#products', showInFooter: true },
-      { name: 'ソリューション', nameEn: 'Solutions', path: '/ja#solutions', showInFooter: true },
-      { name: 'ダウンロード', nameEn: 'Download', path: '/ja/download', showInFooter: true },
-      { name: '無料相談', nameEn: 'Contact', path: '/ja/contact', showInFooter: true },
+      { name: '製品一覧', nameEn: 'Products', path: '/ja/products', showInFooter: true },
+      { name: 'ダウンロード', nameEn: 'Downloads', path: '/ja/downloads', showInFooter: true },
+      { name: 'プロフィール', nameEn: 'About', path: '/ja/partners', showInFooter: true },
+      { name: 'お問い合わせ', nameEn: 'Contact', path: '/ja/contact', showInFooter: true },
     ],
   },
 
@@ -147,6 +150,11 @@ export const SITES: SiteConfig[] = [
     showInGlobalNav: false,
     showInFooter: true,
     order: 20,
+    pages: [
+      { name: '小説一覧', nameEn: 'Novels', path: '/novels', showInFooter: true },
+      { name: 'ランキング', nameEn: 'Ranking', path: '/novels/ranking', showInFooter: true },
+      { name: '未来年表', nameEn: 'Future Timeline', path: '/novels/future-timeline', showInFooter: true },
+    ],
   },
 
   // === 4. 瀬田博之 個人事業主 ===
@@ -161,6 +169,10 @@ export const SITES: SiteConfig[] = [
     showInGlobalNav: false,
     showInFooter: true,
     order: 30,
+    pages: [
+      { name: '個人サイト', nameEn: 'Personal', path: '/', showInFooter: true },
+      { name: 'ハーモニックインサイト紹介', nameEn: 'Harmonic Insight', path: '/harmonic-insight.html', showInFooter: true },
+    ],
   },
 ];
 
