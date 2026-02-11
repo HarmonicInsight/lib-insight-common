@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight 製品インストーラー定義
+ * HARMONIC insight 製品インストーラー定義
  *
  * ============================================================================
  * 【設計方針】
@@ -402,7 +402,7 @@ export const INBT_INSTALLER: InstallerConfig = {
  * ## インストール構成（例: IOSH）
  *
  * ```
- * %ProgramFiles%/Harmonic Insight/InsightOfficeSheet/
+ * %ProgramFiles%/HARMONIC insight/InsightOfficeSheet/
  * ├── InsightOfficeSheet.exe       # メインアプリ
  * ├── iosh-file.ico                # 独自拡張子アイコン
  * └── modules/

@@ -171,7 +171,7 @@ function main() {
 
   // CSS ファイル生成
   const cssContent = `/**
- * Harmonic Insight CSS Variables
+ * HARMONIC insight CSS Variables
  *
  * このファイルは自動生成されています。直接編集しないでください。
  * 生成元: brand/colors.json, brand/design-system.json

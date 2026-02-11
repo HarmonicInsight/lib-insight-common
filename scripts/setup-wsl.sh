@@ -1,11 +1,11 @@
 #!/bin/bash
 # ============================================
-# Harmonic Insight - WSL 2 セットアップスクリプト
+# HARMONIC insight - WSL 2 セットアップスクリプト
 # ============================================
 set -e
 
 echo "============================================"
-echo "  Harmonic Insight - WSL 2 Setup"
+echo "  HARMONIC insight - WSL 2 Setup"
 echo "============================================"
 echo ""
 

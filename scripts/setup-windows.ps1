@@ -1,7 +1,7 @@
 #Requires -RunAsAdministrator
 <#
 .SYNOPSIS
-    Harmonic Insight - Windows 開発環境セットアップスクリプト
+    HARMONIC insight - Windows 開発環境セットアップスクリプト
 .DESCRIPTION
     Claude Code による自動ビルドエラー修正環境を Windows に構築します。
     Node.js, Python, 各種CLI ツール、メッセージングSDKをインストールします。
@@ -13,7 +13,7 @@
 $ErrorActionPreference = "Stop"
 
 Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "  Harmonic Insight - Windows Setup" -ForegroundColor Cyan
+Write-Host "  HARMONIC insight - Windows Setup" -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 

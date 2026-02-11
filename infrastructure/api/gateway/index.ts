@@ -1,7 +1,7 @@
 /**
  * API Gateway
  *
- * Harmonic Insight 全アプリ共通のAPIゲートウェイ
+ * HARMONIC insight 全アプリ共通のAPIゲートウェイ
  *
  * 機能:
  *   - 認証 (Firebase Token / APIキー)

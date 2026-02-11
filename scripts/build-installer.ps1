@@ -64,7 +64,7 @@ $ErrorActionPreference = "Stop"
 # =============================================================================
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  Harmonic Insight Installer Builder" -ForegroundColor Cyan
+Write-Host "  HARMONIC insight Installer Builder" -ForegroundColor Cyan
 Write-Host "  Product: $ProductCode  Version: $AppVersion" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""

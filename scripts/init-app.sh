@@ -291,7 +291,7 @@ SPECEOF
     cat > README.md << RDEOF
 # ${APP_NAME}
 
-Harmonic Insight Android アプリ
+HARMONIC insight Android アプリ
 
 ## セットアップ
 
@@ -703,7 +703,7 @@ SPECEOF
     cat > README.md << RDEOF
 # ${APP_NAME}
 
-Harmonic Insight Expo/React Native アプリ
+HARMONIC insight Expo/React Native アプリ
 
 ## セットアップ
 

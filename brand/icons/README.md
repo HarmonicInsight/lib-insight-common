@@ -1,4 +1,4 @@
-# Harmonic Insight アプリアイコン シリーズ
+# HARMONIC insight アプリアイコン シリーズ
 
 ## デザインシステム
 

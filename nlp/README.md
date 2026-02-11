@@ -1,4 +1,4 @@
-# Harmonic Insight NLP - 日本語ビジネス文脈分析
+# HARMONIC insight NLP - 日本語ビジネス文脈分析
 
 > Japanese Business Context Analyzer (JBCA)
 
