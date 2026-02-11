@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- Sheet body -->
+  <rect x="37" y="38" width="34" height="32" rx="3" fill="white"/>
+  <!-- Header row -->
+  <rect x="37" y="38" width="34" height="7" rx="3" fill="#D4BC6A"/>
+  <rect x="37" y="42" width="34" height="3" fill="#D4BC6A"/>
+  <!-- Vertical grid lines -->
+  <line x1="48" y1="45" x2="48" y2="70" stroke="#B8942F" stroke-width="0.8" opacity="0.3"/>
+  <line x1="59" y1="45" x2="59" y2="70" stroke="#B8942F" stroke-width="0.8" opacity="0.3"/>
+  <!-- Horizontal grid lines -->
+  <line x1="37" y1="51" x2="71" y2="51" stroke="#B8942F" stroke-width="0.8" opacity="0.3"/>
+  <line x1="37" y1="57" x2="71" y2="57" stroke="#B8942F" stroke-width="0.8" opacity="0.3"/>
+  <line x1="37" y1="63" x2="71" y2="63" stroke="#B8942F" stroke-width="0.8" opacity="0.3"/>
+  <!-- Cell data dots -->
+  <circle cx="42.5" cy="48" r="1.5" fill="#B8942F" opacity="0.25"/>
+  <circle cx="53.5" cy="48" r="1.5" fill="#B8942F" opacity="0.25"/>
+  <circle cx="65" cy="54" r="1.5" fill="#B8942F" opacity="0.25"/>
+  <circle cx="42.5" cy="60" r="1.5" fill="#B8942F" opacity="0.25"/>
+  <circle cx="53.5" cy="66" r="1.5" fill="#B8942F" opacity="0.25"/>
+</svg>
