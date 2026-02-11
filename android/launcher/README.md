@@ -1,61 +1,75 @@
 # InsightLauncher Android 統合ガイド
 
-insight-common のランチャーアイコン（全 15 製品）を Android アプリに統合する手順。
+insight-common でアイコンを一元管理し、ランチャーアプリに自動反映する仕組み。
 
-## アーキテクチャ
+## 全体フロー
 
 ```
-insight-common (サブモジュール)
-  └── brand/icons/generated/launcher/
-      ├── launcher-manifest.json     ← 全製品メタデータ
-      ├── INSS/mipmap-*/ic_launcher.png
-      ├── IOSH/mipmap-*/ic_launcher.png
-      └── ...（15 製品 × 5 密度 = 75 PNG）
-          ↓
-  scripts/sync-launcher-assets.sh   ← コピースクリプト
-          ↓
-Android App
-  └── app/src/main/assets/launcher/
-      ├── launcher-manifest.json
-      ├── INSS/mipmap-*/ic_launcher.png
-      └── ...
+insight-common（アイコンの Single Source of Truth）
+  │
+  │  ① デザイナーがマスター PNG を更新
+  │     brand/icons/png/icon-*.png
+  │
+  │  ② ランチャー用 mipmap を再生成（1コマンド）
+  │     ./scripts/update-launcher-icons.sh --push
+  │     → generated/launcher/ に 15製品 × 5密度 のPNG + マニフェスト
+  │     → 自動 commit & push
+  │
+  ├──────────────────────────────────────────────────
+  │
+  │  ③ ランチャーアプリをビルド（Gradle preBuild が自動実行）
+  │     sync-launcher-assets.sh --pull --verify
+  │     → submodule を最新に pull
+  │     → 変更がなければスキップ（ハッシュ比較で高速）
+  │     → 変更があれば assets/launcher/ にコピー
+  │
+  ▼
+Android App — assets/launcher/ に最新アイコンが入った状態でビルド
 ```
 
-## Step 1: insight-common をサブモジュールとして追加
+**ポイント**: insight-common でアイコンを変更して push すれば、ランチャーアプリの次回ビルドで自動的に反映される。
+
+## insight-common 側の操作
+
+### アイコンを更新する場合
+
+```bash
+# ① マスター PNG を差し替え（例: IOSH のアイコンを更新）
+cp new-icon.png brand/icons/png/icon-insight-sheet.png
+
+# ② ランチャー用 mipmap を再生成 + commit + push（1コマンド）
+./scripts/update-launcher-icons.sh --push
+
+# 特定の製品だけ再生成したい場合
+./scripts/update-launcher-icons.sh --product IOSH --push
+```
+
+### 新しい製品を追加する場合
+
+1. `brand/icons/png/` にマスター PNG を追加
+2. `scripts/generate-app-icon.py` の `PRODUCT_ICONS` に追加
+3. `config/app-icon-manager.ts` の定数に追加
+4. `./scripts/update-launcher-icons.sh --push` で再生成
+
+## ランチャーアプリ側のセットアップ
+
+### Step 1: insight-common をサブモジュールとして追加
 
 ```bash
 git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init
 ```
 
-## Step 2: アイコンを assets にコピー
-
-### 手動実行
-
-```bash
-./insight-common/scripts/sync-launcher-assets.sh app/src/main/assets/launcher
-```
-
-### オプション
-
-```bash
-# ドライラン（何がコピーされるか確認）
-./insight-common/scripts/sync-launcher-assets.sh --dry-run app/src/main/assets/launcher
-
-# クリーンコピー（既存ファイルを削除してからコピー）
-./insight-common/scripts/sync-launcher-assets.sh --clean app/src/main/assets/launcher
-
-# 検証付き（コピー後にファイル数をチェック）
-./insight-common/scripts/sync-launcher-assets.sh --verify app/src/main/assets/launcher
-```
-
-## Step 3: Gradle でビルド時に自動同期
+### Step 2: Gradle でビルド時に自動同期
 
 `app/build.gradle.kts` に以下を追加:
 
 ```kotlin
 // ============================================================
-// insight-common ランチャーアイコン同期タスク
+// insight-common ランチャーアイコン自動同期
+// ビルドのたびに:
+//   1. insight-common submodule を最新に pull
+//   2. 変更があればアイコンを assets にコピー（なければスキップ）
 // ============================================================
 tasks.register<Exec>("syncLauncherAssets") {
     description = "Sync launcher icons from insight-common to assets"
@@ -65,17 +79,16 @@ tasks.register<Exec>("syncLauncherAssets") {
     val syncScript = insightCommonDir.resolve("scripts/sync-launcher-assets.sh")
     val targetDir = project.file("src/main/assets/launcher")
 
-    // スクリプトが存在する場合のみ実行
     onlyIf { syncScript.exists() }
 
-    commandLine("bash", syncScript.absolutePath, "--verify", targetDir.absolutePath)
-
-    // insight-common のアイコンが変更された場合のみ再実行
-    inputs.dir(insightCommonDir.resolve("brand/icons/generated/launcher"))
-    outputs.dir(targetDir)
+    commandLine(
+        "bash", syncScript.absolutePath,
+        "--pull",     // submodule を最新に更新
+        "--verify",   // コピー後にファイル数を検証
+        targetDir.absolutePath
+    )
 }
 
-// preBuild に依存させて自動実行
 tasks.named("preBuild") {
     dependsOn("syncLauncherAssets")
 }
@@ -94,18 +107,19 @@ task syncLauncherAssets(type: Exec) {
 
     onlyIf { syncScript.exists() }
 
-    commandLine 'bash', syncScript.absolutePath, '--verify', targetDir.absolutePath
-
-    inputs.dir new File(insightCommonDir, 'brand/icons/generated/launcher')
-    outputs.dir targetDir
+    commandLine 'bash', syncScript.absolutePath,
+        '--pull', '--verify', targetDir.absolutePath
 }
 
 preBuild.dependsOn syncLauncherAssets
 ```
 
-## Step 4: Kotlin コードでアイコンを読み込む
+これで **Gradle ビルドのたびに**:
+- insight-common を `git pull` して最新化
+- 前回同期時のハッシュと比較して変更があればコピー
+- 変更がなければ `[SKIP]` で即座に終了（ビルド時間への影響なし）
 
-### LauncherManifestReader をプロジェクトにコピー
+### Step 3: LauncherManifestReader をプロジェクトにコピー
 
 ```bash
 cp insight-common/android/launcher/LauncherManifestReader.kt \
@@ -114,34 +128,21 @@ cp insight-common/android/launcher/LauncherManifestReader.kt \
 
 パッケージ名はアプリに合わせて変更してください。
 
-### 使い方
+### Step 4: Kotlin コードでアイコンを読み込む
 
 ```kotlin
-// 初期化
 val reader = LauncherManifestReader(applicationContext)
-
-// assets にマニフェストがあるか確認
-if (!reader.isAvailable()) {
-    Log.w("Launcher", "Launcher manifest not found in assets")
-    return
-}
 
 // 全エントリ取得（displayOrder 順にソート済み）
 val entries = reader.getEntries()
 
 // カテゴリ別に取得
 val grouped = reader.getEntriesByCategory()
-// grouped[LauncherIconCategory.OFFICE]     → [INSS, IOSH, IOSD]
-// grouped[LauncherIconCategory.AI_TOOLS]   → [INPY, INMV, INIG]
-// grouped[LauncherIconCategory.ENTERPRISE] → [INCA, INBT, IVIN]
-
-// 製品のみ（ユーティリティ除外）
-val products = reader.getProductEntries()
 
 // アイコン Bitmap を読み込む（デバイス密度に合わせて自動選択）
 val bitmap: Bitmap? = reader.loadIcon("IOSH")
 
-// PackageManager フォールバック付き
+// PackageManager フォールバック付き（アセット優先 → PM にフォールバック）
 val drawable: Drawable? = reader.loadIconWithFallback(
     code = "IOSH",
     packageName = "com.harmonic.insight.sheet",
@@ -159,7 +160,7 @@ class AppRepository(
     private val manifestReader = LauncherManifestReader(context)
 
     fun getAppIcon(productCode: String, packageName: String?): Drawable? {
-        // insight-common のアセットアイコンを優先
+        // insight-common のアセットアイコンを優先、なければ PackageManager
         return manifestReader.loadIconWithFallback(
             code = productCode,
             packageName = packageName,
@@ -168,70 +169,72 @@ class AppRepository(
     }
 
     fun getAllApps(): List<AppInfo> {
-        // マニフェストから全製品を取得し、インストール状態と合わせて表示
+        // マニフェストから全製品を取得（未インストールも含む）
         return manifestReader.getEntries().map { entry ->
+            val pkgName = resolvePackageName(entry.code)
             AppInfo(
                 code = entry.code,
                 name = entry.name,
                 category = entry.category,
                 displayOrder = entry.displayOrder,
-                icon = getAppIcon(entry.code, resolvePackageName(entry.code)),
-                isInstalled = isPackageInstalled(resolvePackageName(entry.code)),
+                icon = getAppIcon(entry.code, pkgName),
+                isInstalled = isPackageInstalled(pkgName),
             )
         }
     }
 }
 ```
 
-## assets ディレクトリ構造
+## sync スクリプトの変更チェック
 
-同期後の構造:
+`sync-launcher-assets.sh` は **ハッシュ比較** で不要なコピーをスキップします:
+
+1. insight-common が git リポジトリの場合: `launcher/` ディレクトリの最終コミットハッシュを使用
+2. git がない場合: `launcher-manifest.json` の SHA-256 + アイコンファイル数で代替
+3. ハッシュは `assets/launcher/.launcher-sync-hash` に保存
+4. 次回実行時にハッシュが一致すれば `[SKIP]` で即終了
+
+```
+1回目のビルド:  [OK] 15 products synced (76 files)  ← 約2秒
+2回目のビルド:  [SKIP] No changes since last sync    ← 即座に完了
+```
+
+## assets ディレクトリ構造
 
 ```
 app/src/main/assets/launcher/
 ├── launcher-manifest.json
+├── .launcher-sync-hash         ← 変更チェック用（自動生成）
 ├── INSS/
 │   ├── mipmap-mdpi/ic_launcher.png      (48×48)
 │   ├── mipmap-hdpi/ic_launcher.png      (72×72)
 │   ├── mipmap-xhdpi/ic_launcher.png     (96×96)
 │   ├── mipmap-xxhdpi/ic_launcher.png    (144×144)
 │   └── mipmap-xxxhdpi/ic_launcher.png   (192×192)
-├── IOSH/
-│   └── ... (同構造)
-├── IOSD/
-├── ISOF/
-├── INPY/
-├── INMV/
-├── INIG/
-├── INCA/
-├── INBT/
-├── IVIN/
-├── CAMERA/
-├── VOICE_CLOCK/
-├── PINBOARD/
-├── VOICE_MEMO/
-└── QR/
+├── IOSH/ ...
+├── IOSD/ ...
+└── ... (15 製品)
 ```
 
 ## .gitignore
 
-assets にコピーされたアイコンはビルド時に生成されるため、`.gitignore` に追加を推奨:
+assets にコピーされるアイコンはビルド時に生成されるため、`.gitignore` に追加:
 
 ```gitignore
-# insight-common から同期されるランチャーアイコン
+# insight-common から同期されるランチャーアイコン（ビルド時自動生成）
 app/src/main/assets/launcher/
 ```
 
 ## FAQ
 
-**Q: アイコンが表示されません**
-A: `./insight-common/scripts/sync-launcher-assets.sh --verify app/src/main/assets/launcher` で検証してください。
+**Q: insight-common でアイコンを変えたのにアプリに反映されない**
+A: `./scripts/update-launcher-icons.sh` で mipmap を再生成して push しましたか？ マスター PNG を差し替えただけでは mipmap は更新されません。
+
+**Q: ビルドが遅くなりませんか？**
+A: 変更がなければハッシュ比較で即スキップするので影響はありません。
 
 **Q: インストールされていないアプリも表示できますか？**
-A: はい。`launcher-manifest.json` は全 15 製品の情報を持っているため、インストール状態に関係なくアイコンとメタデータを取得できます。`isInstalled` フラグは PackageManager で別途判定してください。
+A: はい。`launcher-manifest.json` は全 15 製品の情報を持っているため、インストール状態に関係なくアイコンとメタデータを取得できます。
 
 **Q: 製品が追加されたらどうなりますか？**
-A: insight-common 側で `python scripts/generate-app-icon.py --launcher` を再実行すると、マニフェストとアイコンが更新されます。ランチャーアプリ側は `sync-launcher-assets.sh` を再実行するだけで反映されます。
-
-**Q: TypeScript の app-icon-manager.ts は使えますか？**
-A: Kotlin アプリでは直接使えません。代わりに `LauncherManifestReader.kt` が同等の機能を提供します。マニフェスト JSON は共通フォーマットなので、どの言語からでも読み取れます。
+A: insight-common 側で `update-launcher-icons.sh --push` を実行すれば、ランチャーアプリの次回ビルドで自動反映されます。

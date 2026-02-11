@@ -3,20 +3,21 @@
 # sync-launcher-assets.sh
 # =======================
 # insight-common のランチャーアイコンを Android アプリプロジェクトにコピーする。
+# 変更がない場合はスキップする（ハッシュ比較）。
 #
 # 用途:
-#   - InsightLauncher (Android) のビルド前にアイコンアセットを同期
-#   - Gradle の preBuild タスクから呼び出す or 手動実行
+#   - InsightLauncher (Android) の Gradle preBuild タスクから自動呼び出し
+#   - 手動実行
 #
 # 使い方:
-#   # insight-common がサブモジュールの場合
-#   ./insight-common/scripts/sync-launcher-assets.sh ./app/src/main/assets/launcher
+#   # 基本（変更があれば同期、なければスキップ）
+#   ./insight-common/scripts/sync-launcher-assets.sh app/src/main/assets/launcher
 #
-#   # insight-common リポジトリを直接指定
-#   ./scripts/sync-launcher-assets.sh --source /path/to/insight-common /path/to/target
+#   # サブモジュールを最新に pull してから同期（ビルド時推奨）
+#   ./insight-common/scripts/sync-launcher-assets.sh --pull app/src/main/assets/launcher
 #
-#   # ドライラン（コピーせず差分のみ表示）
-#   ./scripts/sync-launcher-assets.sh --dry-run ./app/src/main/assets/launcher
+#   # 変更チェックを無視して強制同期
+#   ./insight-common/scripts/sync-launcher-assets.sh --force app/src/main/assets/launcher
 #
 set -euo pipefail
 
@@ -27,6 +28,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_SOURCE="$(cd "$SCRIPT_DIR/.." && pwd)"
 LAUNCHER_SUBDIR="brand/icons/generated/launcher"
 MANIFEST_FILE="launcher-manifest.json"
+SYNC_HASH_FILE=".launcher-sync-hash"
 
 # =============================================================================
 # ヘルプ
@@ -36,27 +38,29 @@ usage() {
 Usage: $(basename "$0") [OPTIONS] <target-dir>
 
 Android ランチャーアプリに insight-common のアイコンとマニフェストを同期します。
+前回の同期からソースに変更がなければスキップします（高速）。
 
 Arguments:
   <target-dir>    コピー先ディレクトリ (例: app/src/main/assets/launcher)
 
 Options:
   --source DIR    insight-common のルートディレクトリ (デフォルト: スクリプトの親ディレクトリ)
-  --dry-run       コピーせず、何が行われるかだけ表示
+  --pull          同期前に insight-common サブモジュールを git pull で最新化
+  --force         変更チェックをスキップして強制同期
   --clean         コピー前にターゲットディレクトリをクリーンアップ
+  --dry-run       コピーせず、何が行われるかだけ表示
   --manifest-only マニフェストのみコピー（アイコン画像はスキップ）
   --verify        コピー後にファイル数を検証
   -h, --help      このヘルプを表示
 
 Examples:
-  # サブモジュール利用時
-  ./insight-common/scripts/sync-launcher-assets.sh app/src/main/assets/launcher
-
-  # Gradle から呼ぶ場合
+  # Gradle preBuild から呼ぶ場合（推奨）
   ./insight-common/scripts/sync-launcher-assets.sh \\
-    --source ./insight-common \\
-    --verify \\
+    --pull --verify \\
     app/src/main/assets/launcher
+
+  # 強制再同期
+  ./insight-common/scripts/sync-launcher-assets.sh --force app/src/main/assets/launcher
 EOF
   exit 0
 }
@@ -66,6 +70,8 @@ EOF
 # =============================================================================
 SOURCE_DIR="$DEFAULT_SOURCE"
 TARGET_DIR=""
+PULL=false
+FORCE=false
 DRY_RUN=false
 CLEAN=false
 MANIFEST_ONLY=false
@@ -73,37 +79,16 @@ VERIFY=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --source)
-      SOURCE_DIR="$2"
-      shift 2
-      ;;
-    --dry-run)
-      DRY_RUN=true
-      shift
-      ;;
-    --clean)
-      CLEAN=true
-      shift
-      ;;
-    --manifest-only)
-      MANIFEST_ONLY=true
-      shift
-      ;;
-    --verify)
-      VERIFY=true
-      shift
-      ;;
-    -h|--help)
-      usage
-      ;;
-    -*)
-      echo "Error: Unknown option: $1" >&2
-      usage
-      ;;
-    *)
-      TARGET_DIR="$1"
-      shift
-      ;;
+    --source)   SOURCE_DIR="$2"; shift 2 ;;
+    --pull)     PULL=true; shift ;;
+    --force)    FORCE=true; shift ;;
+    --dry-run)  DRY_RUN=true; shift ;;
+    --clean)    CLEAN=true; shift ;;
+    --manifest-only) MANIFEST_ONLY=true; shift ;;
+    --verify)   VERIFY=true; shift ;;
+    -h|--help)  usage ;;
+    -*)         echo "Error: Unknown option: $1" >&2; usage ;;
+    *)          TARGET_DIR="$1"; shift ;;
   esac
 done
 
@@ -111,6 +96,21 @@ if [[ -z "$TARGET_DIR" ]]; then
   echo "Error: <target-dir> is required." >&2
   echo "Run with --help for usage." >&2
   exit 1
+fi
+
+# =============================================================================
+# サブモジュール pull
+# =============================================================================
+if [[ "$PULL" == true ]]; then
+  echo "Pulling latest insight-common..."
+  if [[ -d "$SOURCE_DIR/.git" ]] || [[ -f "$SOURCE_DIR/.git" ]]; then
+    git -C "$SOURCE_DIR" pull --ff-only origin main 2>/dev/null || \
+    git -C "$SOURCE_DIR" pull --ff-only 2>/dev/null || \
+    echo "[WARN] git pull failed, using current version"
+  else
+    echo "[WARN] $SOURCE_DIR is not a git repository, skipping pull"
+  fi
+  echo ""
 fi
 
 # =============================================================================
@@ -127,6 +127,60 @@ fi
 if [[ ! -f "$LAUNCHER_SOURCE/$MANIFEST_FILE" ]]; then
   echo "Error: Manifest not found: $LAUNCHER_SOURCE/$MANIFEST_FILE" >&2
   exit 1
+fi
+
+# =============================================================================
+# 変更チェック（ハッシュ比較）
+# =============================================================================
+compute_source_hash() {
+  # ソース側のハッシュを計算
+  # 方法 1: insight-common が git リポジトリなら、launcher ディレクトリの tree hash を使う（最も正確）
+  if [[ -d "$SOURCE_DIR/.git" ]] || [[ -f "$SOURCE_DIR/.git" ]]; then
+    local tree_hash
+    tree_hash=$(git -C "$SOURCE_DIR" log -1 --format='%H' -- "$LAUNCHER_SUBDIR" 2>/dev/null || echo "")
+    if [[ -n "$tree_hash" ]]; then
+      echo "$tree_hash"
+      return
+    fi
+  fi
+
+  # 方法 2: git が使えない場合はマニフェストの内容ハッシュ + ファイル数で代替
+  local manifest_hash file_count
+  if command -v sha256sum &>/dev/null; then
+    manifest_hash=$(sha256sum "$LAUNCHER_SOURCE/$MANIFEST_FILE" | cut -d' ' -f1)
+  elif command -v shasum &>/dev/null; then
+    manifest_hash=$(shasum -a 256 "$LAUNCHER_SOURCE/$MANIFEST_FILE" | cut -d' ' -f1)
+  else
+    manifest_hash=$(stat -c '%Y%s' "$LAUNCHER_SOURCE/$MANIFEST_FILE" 2>/dev/null || \
+                    stat -f '%m%z' "$LAUNCHER_SOURCE/$MANIFEST_FILE" 2>/dev/null || echo "unknown")
+  fi
+  file_count=$(find "$LAUNCHER_SOURCE" -name "ic_launcher.png" | wc -l | tr -d ' ')
+  echo "${manifest_hash}_${file_count}"
+}
+
+get_last_sync_hash() {
+  local hash_file="$TARGET_DIR/$SYNC_HASH_FILE"
+  if [[ -f "$hash_file" ]]; then
+    cat "$hash_file"
+  else
+    echo ""
+  fi
+}
+
+save_sync_hash() {
+  local hash="$1"
+  echo "$hash" > "$TARGET_DIR/$SYNC_HASH_FILE"
+}
+
+if [[ "$FORCE" == false ]] && [[ "$DRY_RUN" == false ]] && [[ "$CLEAN" == false ]]; then
+  current_hash=$(compute_source_hash)
+  last_hash=$(get_last_sync_hash)
+
+  if [[ -n "$last_hash" ]] && [[ "$current_hash" == "$last_hash" ]]; then
+    echo "[SKIP] No changes since last sync (hash: ${current_hash:0:12}...)"
+    echo "Use --force to sync anyway."
+    exit 0
+  fi
 fi
 
 # =============================================================================
@@ -174,24 +228,19 @@ fi
 
 # 製品アイコンディレクトリを列挙してコピー
 for product_dir in "$LAUNCHER_SOURCE"/*/; do
-  # ディレクトリのみ処理
   [[ -d "$product_dir" ]] || continue
 
   product_code="$(basename "$product_dir")"
 
-  # mipmap ディレクトリがあるか確認（製品ディレクトリの判別）
+  # mipmap ディレクトリがあるか確認
   has_mipmap=false
   for density_dir in "$product_dir"mipmap-*/; do
     [[ -d "$density_dir" ]] && has_mipmap=true && break
   done
-
-  if [[ "$has_mipmap" == false ]]; then
-    continue
-  fi
+  [[ "$has_mipmap" == false ]] && continue
 
   copied_dirs=$((copied_dirs + 1))
 
-  # 各密度のアイコンをコピー
   for density_dir in "$product_dir"mipmap-*/; do
     [[ -d "$density_dir" ]] || continue
     density_name="$(basename "$density_dir")"
@@ -215,6 +264,14 @@ for product_dir in "$LAUNCHER_SOURCE"/*/; do
 done
 
 # =============================================================================
+# ハッシュ保存（次回のスキップ判定用）
+# =============================================================================
+if [[ "$DRY_RUN" == false ]]; then
+  current_hash=$(compute_source_hash)
+  save_sync_hash "$current_hash"
+fi
+
+# =============================================================================
 # 検証
 # =============================================================================
 echo ""
@@ -226,7 +283,6 @@ if [[ "$VERIFY" == true ]] && [[ "$DRY_RUN" == false ]]; then
   echo ""
   echo "--- Verification ---"
 
-  # マニフェストの entries 数を取得
   if command -v python3 &>/dev/null; then
     expected=$(python3 -c "
 import json
@@ -241,7 +297,6 @@ print(len(m['entries']))
     expected="$copied_dirs"
   fi
 
-  # 実際にコピーされたディレクトリ数と比較
   actual_dirs=$(find "$TARGET_DIR" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
 
   if [[ "$actual_dirs" -eq "$expected" ]]; then
@@ -251,7 +306,6 @@ print(len(m['entries']))
     exit 1
   fi
 
-  # 各製品に5つの密度があるか確認
   verify_ok=true
   for product_dir in "$TARGET_DIR"/*/; do
     [[ -d "$product_dir" ]] || continue
