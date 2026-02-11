@@ -41,11 +41,11 @@ REPOS=(
   "win-app-insight-py-pro|INPY|InsightPy|InsightPy|resources|ico_png"
   "win-app-insight-sheet-senior|ISOF|InsightSeniorOffice|InsightSeniorOffice|Resources|ico_png"
   "win-app-insight-launcher|LAUNCHER|InsightLauncher|InsightLauncher|Resources|ico_png"
-  "android-app-insight-launcher|LAUNCHER_ANDROID|InsightLauncherAndroid|InsightLauncherAndroid|assets|expo"
-  "android-app-insight-voice-clock|VOICE_CLOCK|InsightVoiceClock|InsightVoiceClock|assets|expo"
-  "android-app-insight-camera|CAMERA|InsightCamera|InsightCamera|assets|expo"
+  "android-app-insight-launcher|LAUNCHER_ANDROID|InsightLauncherAndroid|InsightLauncherAndroid|app/src/main/res|android_native"
+  "android-app-insight-voice-clock|VOICE_CLOCK|InsightVoiceClock|InsightVoiceClock|app/src/main/res|android_native"
+  "android-app-insight-camera|CAMERA|InsightCamera|InsightCamera|app/src/main/res|android_native"
   "mobile-app-voice-memo|VOICE_MEMO|InsightVoiceMemo|InsightVoiceMemo|assets|expo"
-  "win-app-insight-pinboard|PINBOARD|InsightPinBoard|InsightPinBoard|assets|expo"
+  "win-app-insight-pinboard|PINBOARD|InsightPinBoard|InsightPinBoard|Resources|ico_png"
   "web-app-insight-qr|QR|InsightQR|InsightQR|public|web"
 )
 
@@ -93,6 +93,14 @@ copy_icons() {
     ico_png)
       cp "$ICON_GENERATED/$icon_src/$name.ico" "$repo_dir/$icon_dest/$name.ico"
       cp "$ICON_GENERATED/$icon_src/${name}_256.png" "$repo_dir/$icon_dest/${name}_256.png"
+      ;;
+    android_native)
+      for subdir in drawable mipmap-anydpi-v26; do
+        if [ -d "$ICON_GENERATED/$icon_src/$subdir" ]; then
+          mkdir -p "$repo_dir/$icon_dest/$subdir"
+          cp "$ICON_GENERATED/$icon_src/$subdir/"*.xml "$repo_dir/$icon_dest/$subdir/"
+        fi
+      done
       ;;
     expo)
       for f in icon.png adaptive-icon.png notification-icon.png splash-icon.png favicon.png; do

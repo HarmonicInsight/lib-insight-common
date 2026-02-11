@@ -186,27 +186,21 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
     productCode: 'LAUNCHER_ANDROID',
     productName: 'InsightLauncherAndroid',
     iconCopy: [
-      { src: 'InsightLauncherAndroid/icon.png', dest: 'assets/icon.png' },
-      { src: 'InsightLauncherAndroid/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
-      { src: 'InsightLauncherAndroid/notification-icon.png', dest: 'assets/notification-icon.png' },
-      { src: 'InsightLauncherAndroid/splash-icon.png', dest: 'assets/splash-icon.png' },
-      { src: 'InsightLauncherAndroid/favicon.png', dest: 'assets/favicon.png' },
+      { src: 'InsightLauncherAndroid/drawable/', dest: 'app/src/main/res/drawable/' },
+      { src: 'InsightLauncherAndroid/mipmap-anydpi-v26/', dest: 'app/src/main/res/mipmap-anydpi-v26/' },
     ],
     enabled: true,
   },
   // ══════════════════════════════════════════════════════
-  // Expo / React Native アプリ
+  // Android Native (Kotlin/Compose)
   // ══════════════════════════════════════════════════════
   {
     repo: 'android-app-insight-voice-clock',
     productCode: 'VOICE_CLOCK',
     productName: 'InsightVoiceClock',
     iconCopy: [
-      { src: 'InsightVoiceClock/icon.png', dest: 'assets/icon.png' },
-      { src: 'InsightVoiceClock/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
-      { src: 'InsightVoiceClock/notification-icon.png', dest: 'assets/notification-icon.png' },
-      { src: 'InsightVoiceClock/splash-icon.png', dest: 'assets/splash-icon.png' },
-      { src: 'InsightVoiceClock/favicon.png', dest: 'assets/favicon.png' },
+      { src: 'InsightVoiceClock/drawable/', dest: 'app/src/main/res/drawable/' },
+      { src: 'InsightVoiceClock/mipmap-anydpi-v26/', dest: 'app/src/main/res/mipmap-anydpi-v26/' },
     ],
     enabled: true,
   },
@@ -215,14 +209,14 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
     productCode: 'CAMERA',
     productName: 'InsightCamera',
     iconCopy: [
-      { src: 'InsightCamera/icon.png', dest: 'assets/icon.png' },
-      { src: 'InsightCamera/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
-      { src: 'InsightCamera/notification-icon.png', dest: 'assets/notification-icon.png' },
-      { src: 'InsightCamera/splash-icon.png', dest: 'assets/splash-icon.png' },
-      { src: 'InsightCamera/favicon.png', dest: 'assets/favicon.png' },
+      { src: 'InsightCamera/drawable/', dest: 'app/src/main/res/drawable/' },
+      { src: 'InsightCamera/mipmap-anydpi-v26/', dest: 'app/src/main/res/mipmap-anydpi-v26/' },
     ],
     enabled: true,
   },
+  // ══════════════════════════════════════════════════════
+  // Expo / React Native
+  // ══════════════════════════════════════════════════════
   {
     repo: 'mobile-app-voice-memo',
     productCode: 'VOICE_MEMO',
@@ -236,16 +230,16 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
     ],
     enabled: true,
   },
+  // ══════════════════════════════════════════════════════
+  // WPF (C#)
+  // ══════════════════════════════════════════════════════
   {
     repo: 'win-app-insight-pinboard',
     productCode: 'PINBOARD',
     productName: 'InsightPinBoard',
     iconCopy: [
-      { src: 'InsightPinBoard/icon.png', dest: 'assets/icon.png' },
-      { src: 'InsightPinBoard/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
-      { src: 'InsightPinBoard/notification-icon.png', dest: 'assets/notification-icon.png' },
-      { src: 'InsightPinBoard/splash-icon.png', dest: 'assets/splash-icon.png' },
-      { src: 'InsightPinBoard/favicon.png', dest: 'assets/favicon.png' },
+      { src: 'InsightPinBoard/InsightPinBoard.ico', dest: 'Resources/InsightPinBoard.ico' },
+      { src: 'InsightPinBoard/InsightPinBoard_256.png', dest: 'Resources/InsightPinBoard_256.png' },
     ],
     enabled: true,
   },
