@@ -1,0 +1,24 @@
+# =============================================================
+# HARMONIC insight - Code Owners
+# =============================================================
+# 全ファイルのデフォルトオーナー
+* @HarmonicInsight/core-team
+
+# 設定ファイル（価格・ライセンス・製品定義）— 変更時は必ずレビュー
+/config/pricing.ts @HarmonicInsight/core-team
+/config/products.ts @HarmonicInsight/core-team
+/config/reseller-strategy.ts @HarmonicInsight/core-team
+/config/license-server.ts @HarmonicInsight/core-team
+/config/license-issuance.ts @HarmonicInsight/core-team
+/config/stripe-integration.ts @HarmonicInsight/core-team
+/config/third-party-licenses.json @HarmonicInsight/core-team
+
+# ブランド・デザインシステム
+/brand/ @HarmonicInsight/core-team
+
+# インフラ・認証
+/infrastructure/ @HarmonicInsight/core-team
+
+# 標準・ガイドライン
+/standards/ @HarmonicInsight/core-team
+/CLAUDE.md @HarmonicInsight/core-team
