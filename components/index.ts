@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight 共通コンポーネント
+ * HARMONIC insight 共通コンポーネント
  */
 
 // 音声入力

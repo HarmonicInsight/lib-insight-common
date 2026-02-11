@@ -1,5 +1,5 @@
 <Project>
-  <!-- Harmonic Insight 共通ビルド設定テンプレート -->
+  <!-- HARMONIC insight 共通ビルド設定テンプレート -->
   <!-- 各アプリのルートにコピーして使用 -->
 
   <PropertyGroup>

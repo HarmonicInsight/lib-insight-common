@@ -383,7 +383,7 @@ public class AppConfig
                 // ── Webサイト ──
                 new()
                 {
-                    Name = "Harmonic Insight",
+                    Name = "HARMONIC insight",
                     ProductCode = "WEB-HOME",
                     Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-home"),

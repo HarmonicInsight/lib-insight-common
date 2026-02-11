@@ -1,4 +1,4 @@
-# Harmonic Insight 開発標準ガイド
+# HARMONIC insight 開発標準ガイド
 
 > 本ドキュメントは InsightIoT プロジェクトでの経験を基に、今後の開発でスムーズに進めるための標準とチェックリストをまとめたものです。
 

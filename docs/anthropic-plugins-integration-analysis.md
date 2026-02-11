@@ -2,7 +2,7 @@
 
 > **調査対象**: https://github.com/anthropics/knowledge-work-plugins
 > **調査日**: 2026-02-08
-> **目的**: Harmonic Insight 製品群への統合・参考可能な要素の抽出
+> **目的**: HARMONIC insight 製品群への統合・参考可能な要素の抽出
 
 ---
 
@@ -294,7 +294,7 @@ plugin-name/
 
 ---
 
-## 4. Harmonic Insight 製品への統合マッピング
+## 4. HARMONIC insight 製品への統合マッピング
 
 ### 4.1 製品別適用マトリクス
 
@@ -320,7 +320,7 @@ plugin-name/
 
 ### 5.1 プラグインアーキテクチャの導入
 
-Anthropic のプラグイン構造を Harmonic Insight 向けにカスタマイズ:
+Anthropic のプラグイン構造を HARMONIC insight 向けにカスタマイズ:
 
 ```
 insight-common/
@@ -346,7 +346,7 @@ insight-common/
   "name": "insight-finance",
   "version": "1.0.0",
   "description": "経理・財務ワークフロー支援。仕訳準備、差異分析、月次クローズを効率化。",
-  "author": { "name": "Harmonic Insight" },
+  "author": { "name": "HARMONIC insight" },
   "targetProducts": ["IOSH", "INPY"],
   "requiredPlan": "PRO",
   "locale": ["ja", "en"],

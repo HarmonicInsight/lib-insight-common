@@ -1,6 +1,6 @@
 # Android 開発標準
 
-> **すべての Harmonic Insight Android アプリは、このドキュメントに準拠すること。**
+> **すべての HARMONIC insight Android アプリは、このドキュメントに準拠すること。**
 > 新規作成・修正時に必ず確認。
 
 ---
