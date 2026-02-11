@@ -73,6 +73,8 @@ Modes (いずれか必須):
 
 Options:
   --source DIR      insight-common のルートディレクトリ
+  --platform NAME   プラットフォーム指定（android, expo, tauri, wpf, web）
+                    指定時、生成ディレクトリ内の該当サブディレクトリをソースとして使用
   --pull            同期前に insight-common を git pull で最新化
   --force           変更チェックをスキップして強制同期
   --clean           コピー前にターゲットをクリーンアップ
@@ -94,6 +96,10 @@ Examples:
   # Expo アプリ（InsightCamera）
   ./insight-common/scripts/sync-app-icons.sh --product CAMERA --pull assets/
 
+  # Android ネイティブアプリ（mipmap のみ res/ に同期）
+  ./insight-common/scripts/sync-app-icons.sh --product VOICE_CLOCK --platform android \
+    app/src/main/res/
+
   # ランチャーアプリ（全製品）
   ./insight-common/scripts/sync-app-icons.sh --launcher --pull --verify \
     app/src/main/assets/launcher
@@ -111,6 +117,7 @@ SOURCE_DIR="$DEFAULT_SOURCE"
 TARGET_DIR=""
 MODE=""           # "product" or "launcher"
 PRODUCT_CODE=""
+PLATFORM=""       # "android", "expo", "tauri", "wpf", "web" or ""
 PULL=false
 FORCE=false
 DRY_RUN=false
@@ -122,6 +129,7 @@ while [[ $# -gt 0 ]]; do
     --product)    MODE="product"; PRODUCT_CODE="${2^^}"; shift 2 ;;
     --launcher)   MODE="launcher"; shift ;;
     --source)     SOURCE_DIR="$2"; shift 2 ;;
+    --platform)   PLATFORM="${2,,}"; shift 2 ;;
     --pull)       PULL=true; shift ;;
     --force)      FORCE=true; shift ;;
     --dry-run)    DRY_RUN=true; shift ;;
@@ -218,6 +226,17 @@ sync_product() {
     echo "Error: Generated icons not found: $source_dir" >&2
     echo "Run 'python scripts/generate-app-icon.py --product $code' first." >&2
     exit 1
+  fi
+
+  # --platform 指定時、該当サブディレクトリをソースとして使用
+  if [[ -n "$PLATFORM" ]]; then
+    local platform_dir="$source_dir/$PLATFORM"
+    if [[ ! -d "$platform_dir" ]]; then
+      echo "Error: Platform directory not found: $platform_dir" >&2
+      echo "Available: $(ls -d "$source_dir"/*/ 2>/dev/null | xargs -I{} basename {} | tr '\n' ' ')" >&2
+      exit 1
+    fi
+    source_dir="$platform_dir"
   fi
 
   # 変更チェック
