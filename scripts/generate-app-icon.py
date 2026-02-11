@@ -1,5 +1,5 @@
 """
-Harmonic Insight App Icon Generator
+HARMONIC insight App Icon Generator
 Generates ICO files for InsightOfficeSheet, InsightOfficeDoc, InsightOfficeSlide
 Brand: Ivory & Gold Theme (#B8942F primary)
 """

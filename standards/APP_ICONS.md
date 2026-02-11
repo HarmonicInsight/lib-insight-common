@@ -1,6 +1,6 @@
 # アプリアイコン標準ガイド
 
-> Harmonic Insight 全製品のアプリアイコンに適用される標準仕様
+> HARMONIC insight 全製品のアプリアイコンに適用される標準仕様
 
 ---
 
@@ -179,7 +179,7 @@ python scripts/generate-app-icon.py --product InsightOfficeSheet --output ./Reso
 - [ ] 必要な全サイズが含まれている (プラットフォーム別)
 - [ ] `.csproj` / `layout.tsx` / `app.json` で正しく参照されている
 - [ ] タスクバー / ブラウザタブで視認性が確保されている (16px)
-- [ ] 他の Harmonic Insight 製品アイコンとファミリー感がある
+- [ ] 他の HARMONIC insight 製品アイコンとファミリー感がある
 
 ---
 

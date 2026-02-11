@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight NLP - 形態素解析ラッパー (kuromoji)
+ * HARMONIC insight NLP - 形態素解析ラッパー (kuromoji)
  */
 
 import type { TokenDetail } from './types';

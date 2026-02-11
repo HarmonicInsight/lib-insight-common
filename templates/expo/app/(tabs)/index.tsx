@@ -14,7 +14,7 @@ export default function HomeScreen() {
           __app_display_name__
         </Text>
         <Text style={[typography.bodyLarge, { marginTop: spacing.sm }]}>
-          Harmonic Insight アプリ
+          HARMONIC insight アプリ
         </Text>
       </View>
     </View>

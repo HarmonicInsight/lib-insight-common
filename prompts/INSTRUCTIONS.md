@@ -1,6 +1,6 @@
 # Claude Code 指示書
 
-このファイルは Claude Code がHarmonic Insightのプロジェクトで作業する際に従うべきルールです。
+このファイルは Claude Code がHARMONIC insightのプロジェクトで作業する際に従うべきルールです。
 
 ---
 

@@ -1,4 +1,4 @@
-# Harmonic Insight Skills
+# HARMONIC insight Skills
 
 Claude Code が繰り返し使うワークフローを標準化した「スキル」定義集です。
 

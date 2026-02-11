@@ -1,6 +1,6 @@
 # Harmonic Tools
 
-Harmonic Insight 製品の管理ツール群（WPF / .NET 8）
+HARMONIC insight 製品の管理ツール群（WPF / .NET 8）
 
 ## ツール一覧
 

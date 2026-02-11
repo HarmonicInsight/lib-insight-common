@@ -1,7 +1,7 @@
 /**
  * GlobalNav - グローバルナビゲーションコンポーネント
  *
- * Harmonic Insight の全サイトで共通のヘッダーナビゲーション
+ * HARMONIC insight の全サイトで共通のヘッダーナビゲーション
  *
  * @example
  * import { GlobalNav } from '@harmonic-insight/ui';

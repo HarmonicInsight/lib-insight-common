@@ -34,7 +34,7 @@ InsightProcess は「**業務 = 関数 (Input → Process → Output)**」とい
 
 ### 2.1 共通化すべき: IPO データモデル（高優先度）
 
-InsightProcess の核心である **IPO スキーマ** は、複数の Harmonic Insight 製品で
+InsightProcess の核心である **IPO スキーマ** は、複数の HARMONIC insight 製品で
 業務プロセス構造を表現する共通言語になり得る。
 
 ```

@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight Webサイト設定
+ * HARMONIC insight Webサイト設定
  *
  * 4サイト構成:
  *   1. h-insight.jp          - コーポレート（法人）

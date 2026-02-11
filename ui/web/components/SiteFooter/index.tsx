@@ -1,7 +1,7 @@
 /**
  * SiteFooter - サイトフッターコンポーネント
  *
- * Harmonic Insight の全サイトで共通のフッター
+ * HARMONIC insight の全サイトで共通のフッター
  * 4サイト間のクロスリンクを自動生成し、導線を確保する
  *
  * @example
