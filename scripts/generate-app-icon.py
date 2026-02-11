@@ -230,9 +230,13 @@ def flatten_to_rgb(img: Image.Image) -> Image.Image:
 
 
 def save_ico(master: Image.Image, filepath: str):
-    """Generate multi-resolution ICO file from master PNG."""
+    """Generate multi-resolution ICO file from master PNG.
+
+    Creates an ICO containing all WINDOWS_ICO_SIZES (16-256px).
+    The largest image must be first for Pillow to correctly embed all sizes.
+    """
     sizes_to_save = []
-    for s in WINDOWS_ICO_SIZES:
+    for s in sorted(WINDOWS_ICO_SIZES, reverse=True):
         img = resize_icon(master, s)
         if img.mode != 'RGBA':
             img = img.convert('RGBA')
@@ -242,7 +246,6 @@ def save_ico(master: Image.Image, filepath: str):
         sizes_to_save[0].save(
             filepath,
             format='ICO',
-            sizes=[(img.width, img.height) for img in sizes_to_save],
             append_images=sizes_to_save[1:]
         )
 
