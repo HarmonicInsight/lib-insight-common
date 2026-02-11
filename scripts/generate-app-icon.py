@@ -163,6 +163,12 @@ UTILITY_ICONS = {
         'platform': 'wpf',
         'build_path': 'Resources/',
     },
+    'LAUNCHER_ANDROID': {
+        'name': 'InsightLauncherAndroid',
+        'icon': 'icon-launcher.png',
+        'platform': 'expo',
+        'build_path': 'assets/',
+    },
     'CAMERA': {
         'name': 'InsightCamera',
         'icon': 'icon-camera.png',

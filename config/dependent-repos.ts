@@ -181,6 +181,19 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
     ],
     enabled: true,
   },
+  {
+    repo: 'android-app-insight-launcher',
+    productCode: 'LAUNCHER_ANDROID',
+    productName: 'InsightLauncherAndroid',
+    iconCopy: [
+      { src: 'InsightLauncherAndroid/icon.png', dest: 'assets/icon.png' },
+      { src: 'InsightLauncherAndroid/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
+      { src: 'InsightLauncherAndroid/notification-icon.png', dest: 'assets/notification-icon.png' },
+      { src: 'InsightLauncherAndroid/splash-icon.png', dest: 'assets/splash-icon.png' },
+      { src: 'InsightLauncherAndroid/favicon.png', dest: 'assets/favicon.png' },
+    ],
+    enabled: true,
+  },
   // ══════════════════════════════════════════════════════
   // Expo / React Native アプリ
   // ══════════════════════════════════════════════════════
