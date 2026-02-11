@@ -1,4 +1,4 @@
-# Harmonic Insight アプリアイコン シリーズ
+# HARMONIC insight アプリアイコン シリーズ
 
 ## デザインシステム
 
@@ -10,33 +10,73 @@
 - **スパークルアクセント**: Light Gold (#D4BC6A)、右上に配置
 - **スタイル**: 丸みのある可愛いデザイン
 
-## 製品アイコン一覧
+## ファイル構成
 
-### Tier 3: InsightOffice Suite
+```
+brand/icons/
+├── master/                      # AI生成マスターアイコン（1024x1024 PNG）
+│   ├── master-grid.png          # 元画像（3x3グリッド）
+│   ├── icon-insight-slide.png   # INSS
+│   ├── icon-insight-sheet.png   # IOSH
+│   ├── icon-insight-doc.png     # IOSD
+│   ├── icon-insight-py.png      # INPY
+│   ├── icon-insight-movie.png   # INMV
+│   ├── icon-insight-imagegen.png # INIG
+│   ├── icon-insight-bot.png     # INBT
+│   ├── icon-insight-nca.png     # INCA
+│   └── icon-interview-insight.png # IVIN
+├── launcher.png                 # Launcher マスターアイコン（Gold + 脳 + ロケット）
+├── Camera.png                   # Camera マスターアイコン（Gold + シャッター）
+├── Clock.png                    # Clock マスターアイコン（Gold + 目覚まし時計）
+├── icon-*.svg                   # ブランド準拠 SVG アイコン
+└── README.md
+```
+
+## マスターアイコン（PNG）— AI生成
+
+Gemini で生成した各製品のマスターアイコン。`master/` ディレクトリに 1024x1024 PNG として格納。
+
+### 製品アイコン（9製品）
+
+| ファイル | 製品コード | 製品名 | モチーフ |
+|---------|-----------|--------|---------|
+| `master/icon-insight-slide.png` | INSS | InsightOfficeSlide | スライド + 上矢印（テキスト抽出） |
+| `master/icon-insight-sheet.png` | IOSH | InsightOfficeSheet | スプレッドシートグリッド |
+| `master/icon-insight-doc.png` | IOSD | InsightOfficeDoc | ドキュメント + 折り角 |
+| `master/icon-insight-py.png` | INPY | InsightPy | Python ヘビ |
+| `master/icon-insight-movie.png` | INMV | InsightMovie | フィルムストリップ + 再生ボタン |
+| `master/icon-insight-imagegen.png` | INIG | InsightImageGen | ブラシ + 画像フレーム |
+| `master/icon-insight-bot.png` | INBT | InsightBot | かわいいロボット |
+| `master/icon-insight-nca.png` | INCA | InsightNoCodeAnalyzer | フローチャート + 虫眼鏡 |
+| `master/icon-interview-insight.png` | IVIN | InterviewInsight | マイク + 音波 |
+
+### ユーティリティアイコン（ブランド準拠 Gold + Ivory）
+
+| ファイル | アプリ | モチーフ |
+|---------|--------|---------|
+| `launcher.png` | Insight Launcher | 脳 + 回路基板 + ロケット + スパークル |
+| `Camera.png` | Insight Camera | カメラ + シャッター + 回路基板 |
+| `Clock.png` | Insight Voice Clock | 目覚まし時計 + マイク + 音波 + "10:24" |
+
+## SVG アイコン（ブランド準拠）
+
+プログラマティックに生成した SVG アイコン。Ivory背景 + Gold円 + 白シンボル + スパークルの統一スタイル。
+
+### 製品アイコン
 
 | ファイル名 | 製品コード | 製品名 | モチーフ |
 |-----------|-----------|--------|---------|
-| `icon-insight-slide.svg` | INSS | InsightOfficeSlide | スライドレイヤー + 上矢印（テキスト抽出） |
+| `icon-insight-slide.svg` | INSS | InsightOfficeSlide | スライドレイヤー + 上矢印 |
 | `icon-insight-sheet.svg` | IOSH | InsightOfficeSheet | スプレッドシートグリッド + ヘッダー行 |
 | `icon-insight-doc.svg` | IOSD | InsightOfficeDoc | ドキュメント + 折り角 + テキスト行 |
 | `icon-insight-py.svg` | INPY | InsightPy | Python ヘビ（S字カーブ） |
-
-### Tier 2: AI活用ツール
-
-| ファイル名 | 製品コード | 製品名 | モチーフ |
-|-----------|-----------|--------|---------|
 | `icon-insight-movie.svg` | INMV | InsightMovie | フィルムストリップ + 再生ボタン |
 | `icon-insight-imagegen.svg` | INIG | InsightImageGen | 画像フレーム + ペイントブラシ |
-
-### Tier 1: 業務変革ツール
-
-| ファイル名 | 製品コード | 製品名 | モチーフ |
-|-----------|-----------|--------|---------|
 | `icon-insight-bot.svg` | INBT | InsightBot | かわいいロボット（大きな目 + アンテナ） |
 | `icon-insight-nca.svg` | INCA | InsightNoCodeAnalyzer | フローチャート + 虫眼鏡 |
 | `icon-interview-insight.svg` | IVIN | InterviewInsight | マイク + 音波 |
 
-## ユーティリティアイコン一覧
+### ユーティリティアイコン
 
 | ファイル名 | アプリ | モチーフ |
 |-----------|--------|---------|
@@ -52,16 +92,20 @@
 
 ## 使用方法
 
-### SVG → PNG 変換
+### マスター PNG → 各プラットフォーム用画像
 
 ```bash
 # generate-app-icon.py でマスターPNG から全プラットフォーム用画像を生成
-python scripts/generate-app-icon.py --master brand/icons/icon-insight-sheet.png --product IOSH
+python scripts/generate-app-icon.py --master brand/icons/master/icon-insight-sheet.png --product IOSH
+```
 
-# SVG を 1024x1024 PNG に変換（Inkscape）
+### SVG → PNG 変換
+
+```bash
+# Inkscape で SVG を 1024x1024 PNG に変換
 inkscape brand/icons/icon-insight-sheet.svg -w 1024 -h 1024 -o icon-insight-sheet.png
 
-# SVG を 1024x1024 PNG に変換（rsvg-convert）
+# rsvg-convert で変換
 rsvg-convert -w 1024 -h 1024 brand/icons/icon-insight-sheet.svg > icon-insight-sheet.png
 ```
 
