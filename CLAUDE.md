@@ -72,10 +72,10 @@
 
 ```bash
 # insight-commonのinit-app.shを使用
-curl -sL https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/init-app.sh | bash -s -- <app-name>
+curl -sL https://raw.githubusercontent.com/HarmonicInsight/cross-lib-insight-common/main/scripts/init-app.sh | bash -s -- <app-name>
 
 # または既存リポジトリに追加
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 ```
 
 ### Step 2: 標準検証

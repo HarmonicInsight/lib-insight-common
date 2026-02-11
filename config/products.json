@@ -15,8 +15,8 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/app-Insight-slide",
-        "releasesRepository": "HarmonicInsight/releases",
+        "repository": "HarmonicInsight/win-app-insight-slide",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "sharedLibrary": "HarmonicInsight.Common",
         "hasAi": true,
         "features": [
@@ -41,8 +41,8 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/app-Insight-excel",
-        "releasesRepository": "HarmonicInsight/releases",
+        "repository": "HarmonicInsight/win-app-insight-sheet",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "sharedLibrary": "HarmonicInsight.Common",
         "hasAi": true,
         "features": [
@@ -68,8 +68,8 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "development",
-        "repository": "HarmonicInsight/app-Insight-doc",
-        "releasesRepository": "HarmonicInsight/releases",
+        "repository": "HarmonicInsight/win-app-insight-doc",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "sharedLibrary": "HarmonicInsight.Common",
         "hasAi": true,
         "features": [
@@ -93,8 +93,8 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/app-harmonic-sheet",
-        "releasesRepository": "HarmonicInsight/releases",
+        "repository": "HarmonicInsight/win-app-insight-sheet-senior",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "sharedLibrary": "HarmonicInsight.Common",
         "hasAi": true,
         "features": [
@@ -120,7 +120,7 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/InsightPy",
+        "repository": "HarmonicInsight/win-app-insight-py",
         "hasAi": true,
         "features": [
           "code-execution",
@@ -140,7 +140,7 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/InsightMovie",
+        "repository": "HarmonicInsight/win-app-insight-movie-gen",
         "hasAi": false,
         "features": [
           "video-generation",
@@ -159,7 +159,7 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/app-insight-image-gen-C",
+        "repository": "HarmonicInsight/win-app-insight-image-gen",
         "hasAi": false,
         "features": [
           "generate-image",
@@ -182,7 +182,7 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/InsightBot",
+        "repository": "HarmonicInsight/win-app-insight-bot",
         "hasAi": true,
         "features": [
           "script-execution",
@@ -202,7 +202,7 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/InsightNoCodeAnalyzer",
+        "repository": "HarmonicInsight/win-app-nocode-analyzer",
         "hasAi": false,
         "features": [
           "rpa-analysis",
@@ -223,7 +223,7 @@
         "platform": ["windows"],
         "framework": "wpf",
         "status": "development",
-        "repository": "HarmonicInsight/InterviewInsight",
+        "repository": "HarmonicInsight/web-app-auto-interview",
         "hasAi": true,
         "features": []
       }

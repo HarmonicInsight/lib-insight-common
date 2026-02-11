@@ -6,7 +6,7 @@
     "name": "Harmonic Insight",
     "url": "https://github.com/HarmonicInsight"
   },
-  "repository": "https://github.com/HarmonicInsight/insight-common",
+  "repository": "https://github.com/HarmonicInsight/cross-lib-insight-common",
   "license": "UNLICENSED",
   "keywords": [
     "harmonic-insight",

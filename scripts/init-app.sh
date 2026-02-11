@@ -3,7 +3,7 @@
 # Insight App 初期化スクリプト
 #
 # 使い方:
-#   curl -fsSL https://raw.githubusercontent.com/HarmonicInsight/insight-common/main/scripts/init-app.sh | bash -s my-app-name
+#   curl -fsSL https://raw.githubusercontent.com/HarmonicInsight/cross-lib-insight-common/main/scripts/init-app.sh | bash -s my-app-name
 #
 #   または
 #   ./init-app.sh my-app-name
@@ -70,7 +70,7 @@ git init
 # 3. insight-common サブモジュール追加
 # =============================================
 echo -e "${YELLOW}📦 insight-common サブモジュール追加...${NC}"
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 # =============================================
 # 4. ディレクトリ構成作成
@@ -292,7 +292,7 @@ on:
 
 jobs:
   validate:
-    uses: HarmonicInsight/lib-insight-common/.github/workflows/reusable-validate.yml@main
+    uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/reusable-validate.yml@main
     with:
       project_path: '.'
 EOF
