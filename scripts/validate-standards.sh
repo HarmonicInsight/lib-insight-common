@@ -370,7 +370,10 @@ if [ "$PLATFORM" = "expo" ]; then
     echo ""
     print_section "5" "Expo/React Native 固有チェック"
 
+    # 5.1 app.json
     if [ -f "$PROJECT_DIR/app.json" ]; then
+        print_ok "app.json が存在"
+
         if grep -q "2563EB" "$PROJECT_DIR/app.json" 2>/dev/null; then
             print_error "app.json: Blue (#2563EB) が使用されています"
         else
@@ -381,6 +384,117 @@ if [ "$PLATFORM" = "expo" ]; then
             print_ok "app.json: Gold (#B8942F) が使用されている"
         else
             print_warning "app.json: Gold (#B8942F) が見つかりません"
+        fi
+
+        if grep -q "expo-router" "$PROJECT_DIR/app.json" 2>/dev/null; then
+            print_ok "app.json: expo-router プラグインが設定されている"
+        else
+            print_warning "app.json: expo-router プラグインが見つかりません"
+        fi
+    else
+        print_error "app.json が見つかりません"
+    fi
+
+    # 5.2 eas.json
+    if [ -f "$PROJECT_DIR/eas.json" ]; then
+        print_ok "eas.json が存在"
+
+        if grep -q '"production"' "$PROJECT_DIR/eas.json" 2>/dev/null; then
+            print_ok "eas.json: production プロファイルが定義されている"
+        else
+            print_warning "eas.json: production プロファイルが見つかりません"
+        fi
+    else
+        print_warning "eas.json が見つかりません（EAS Build 未設定）"
+    fi
+
+    # 5.3 package.json 依存関係
+    if [ -f "$PROJECT_DIR/package.json" ]; then
+        if grep -q '"expo-router"' "$PROJECT_DIR/package.json" 2>/dev/null; then
+            print_ok "package.json: expo-router が依存関係にある"
+        else
+            print_warning "package.json: expo-router が見つかりません"
+        fi
+
+        if grep -q '"expo"' "$PROJECT_DIR/package.json" 2>/dev/null; then
+            print_ok "package.json: expo が依存関係にある"
+        fi
+    fi
+
+    # 5.4 lib/colors.ts
+    colors_ts=$(find "$PROJECT_DIR" -name "colors.ts" -path "*/lib/*" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    if [ -n "$colors_ts" ]; then
+        if grep -q "B8942F" "$colors_ts" 2>/dev/null; then
+            print_ok "lib/colors.ts: Gold (#B8942F) が定義されている"
+        else
+            print_error "lib/colors.ts: Gold (#B8942F) が見つかりません"
+        fi
+
+        if grep -q "FAF8F5" "$colors_ts" 2>/dev/null; then
+            print_ok "lib/colors.ts: Ivory (#FAF8F5) が定義されている"
+        else
+            print_warning "lib/colors.ts: Ivory (#FAF8F5) が見つかりません"
+        fi
+    else
+        # colors.ts が src/ 配下にある可能性も
+        colors_ts_alt=$(find "$PROJECT_DIR" -name "colors.ts" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+        if [ -n "$colors_ts_alt" ]; then
+            print_warning "colors.ts が lib/ 以外に配置されています: $colors_ts_alt"
+            if grep -q "B8942F" "$colors_ts_alt" 2>/dev/null; then
+                print_ok "colors.ts: Gold (#B8942F) が定義されている"
+            else
+                print_error "colors.ts: Gold (#B8942F) が見つかりません"
+            fi
+        else
+            print_error "lib/colors.ts が見つかりません（カラー定義ファイルが必要）"
+        fi
+    fi
+
+    # 5.5 lib/theme.ts
+    theme_ts=$(find "$PROJECT_DIR" -name "theme.ts" -path "*/lib/*" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    if [ -n "$theme_ts" ]; then
+        print_ok "lib/theme.ts が存在"
+    else
+        print_warning "lib/theme.ts が見つかりません（テーマ定義ファイル推奨）"
+    fi
+
+    # 5.6 lib/license-manager.ts
+    license_ts=$(find "$PROJECT_DIR" -name "license-manager.ts" -o -name "licenseManager.ts" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    if [ -n "$license_ts" ]; then
+        print_ok "license-manager.ts が存在"
+    else
+        print_warning "license-manager.ts が見つかりません（InsightOffice 製品では必須）"
+    fi
+
+    # 5.7 TypeScript strict mode
+    if [ -f "$PROJECT_DIR/tsconfig.json" ]; then
+        if grep -q '"strict"\s*:\s*true' "$PROJECT_DIR/tsconfig.json" 2>/dev/null; then
+            print_ok "tsconfig.json: strict mode が有効"
+        else
+            print_warning "tsconfig.json: strict mode が無効です"
+        fi
+    else
+        print_warning "tsconfig.json が見つかりません"
+    fi
+
+    # 5.8 expo-router ファイル構造
+    if [ -d "$PROJECT_DIR/app" ]; then
+        if [ -f "$PROJECT_DIR/app/_layout.tsx" ]; then
+            print_ok "app/_layout.tsx が存在（expo-router ルートレイアウト）"
+        else
+            print_warning "app/_layout.tsx が見つかりません"
+        fi
+    else
+        print_warning "app/ ディレクトリが見つかりません（expo-router 構造ではない可能性）"
+    fi
+
+    # 5.9 パッケージ名
+    if [ -f "$PROJECT_DIR/app.json" ]; then
+        expo_package=$(grep -o '"package"\s*:\s*"[^"]*"' "$PROJECT_DIR/app.json" 2>/dev/null | head -1)
+        if echo "$expo_package" | grep -q "com\.harmonicinsight"; then
+            print_ok "パッケージ名: com.harmonicinsight.* 準拠"
+        elif [ -n "$expo_package" ]; then
+            print_warning "パッケージ名が com.harmonicinsight.* 形式ではありません: $expo_package"
         fi
     fi
 fi
@@ -411,6 +525,9 @@ echo ""
 if [ "$PLATFORM" = "android" ]; then
     echo -e "参照: ${BLUE}insight-common/standards/ANDROID.md${NC}"
     echo -e "テンプレート: ${BLUE}insight-common/templates/android/${NC}"
+elif [ "$PLATFORM" = "expo" ]; then
+    echo -e "参照: ${BLUE}insight-common/standards/ANDROID.md §13${NC}"
+    echo -e "テンプレート: ${BLUE}insight-common/templates/expo/${NC}"
 else
     echo -e "参照: ${BLUE}insight-common/standards/README.md${NC}"
 fi

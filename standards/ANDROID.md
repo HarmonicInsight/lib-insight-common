@@ -910,7 +910,138 @@ class LicenseManager(context: Context, private val productCode: String) {
 
 ---
 
-## 13. 現行アプリの準拠状況
+## 13. Expo/React Native（Android アプリの第2パターン）
+
+> **Kotlin ではなく Expo/React Native で開発する Android アプリ向け。**
+> テンプレートは `templates/expo/` に配置。
+
+### クイックスタート（Expo アプリ作成）
+
+#### 方法1: 自動スキャフォールド（推奨）
+
+```bash
+./insight-common/scripts/init-app.sh my-app --platform expo --package com.harmonicinsight.myapp
+```
+
+#### 方法2: テンプレートファイルから手動コピー
+
+`templates/expo/` に**そのままコピーして使えるファイル**が揃っています:
+
+```
+templates/expo/
+├── app/
+│   ├── _layout.tsx            # Root layout (expo-router)
+│   ├── license.tsx            # ライセンス画面 (Insight Slides 形式)
+│   └── (tabs)/
+│       ├── _layout.tsx        # Tab layout (Gold テーマ)
+│       ├── index.tsx          # ホーム画面
+│       └── settings.tsx       # 設定画面
+├── lib/
+│   ├── colors.ts              # Ivory & Gold カラー定義
+│   ├── theme.ts               # タイポグラフィ・スペーシング
+│   └── license-manager.ts     # ライセンス管理 (AsyncStorage)
+├── app.json                   # Expo 設定 (Gold テーマカラー)
+├── eas.json                   # EAS Build 設定
+├── package.json               # 依存関係
+├── tsconfig.json              # TypeScript 設定
+└── .gitignore
+```
+
+**プレースホルダー置換**（コピー後に実行）:
+
+| プレースホルダー | 説明 | 例 |
+|---|---|---|
+| `__app_slug__` | Expo slug (小文字ハイフン) | `insight-qr` |
+| `__app_display_name__` | 表示名 | `Insight QR` |
+| `__APP_PACKAGE__` | パッケージ名 | `com.harmonicinsight.insightqr` |
+| `__PRODUCT_CODE__` | 製品コード (4文字) | `IOSH` |
+
+### 13.1 基本方針
+
+| 項目 | 標準値 |
+|------|--------|
+| **SDK** | Expo 52+ |
+| **ナビゲーション** | expo-router（ファイルベースルーティング） |
+| **状態管理** | React hooks / Zustand（必要な場合） |
+| **カラー** | `lib/colors.ts` から import（ハードコード禁止） |
+| **ライセンス** | `lib/license-manager.ts`（InsightOffice 製品のみ） |
+| **TypeScript** | strict mode 必須 |
+| **パッケージ名** | `com.harmonicinsight.*` |
+| **ビルド** | EAS Build（`eas.json` 必須） |
+
+### 13.2 パッケージ命名規則（Expo）
+
+```
+com.harmonicinsight.<アプリ名>
+```
+
+> **注意**: Native Kotlin (`com.harmonic.*`) とは命名規則が異なる。
+
+### 13.3 カラーシステム（lib/colors.ts）
+
+Ivory & Gold カラーは `lib/colors.ts` で一元管理。ハードコード禁止。
+
+```typescript
+import { colors } from '@/lib/colors';
+
+// Primary (Gold): colors.brand.primary  (#B8942F)
+// Background (Ivory): colors.background.primary  (#FAF8F5)
+// Text: colors.text.primary  (#1C1917)
+// Border: colors.border.default  (#E7E2DA)
+```
+
+### 13.4 app.json 標準
+
+```json
+{
+  "expo": {
+    "backgroundColor": "#B8942F",
+    "splash": {
+      "backgroundColor": "#B8942F"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#B8942F"
+      },
+      "package": "com.harmonicinsight.__app_slug__"
+    },
+    "plugins": ["expo-router"]
+  }
+}
+```
+
+### 13.5 EAS Build（eas.json）
+
+```json
+{
+  "build": {
+    "development": { "developmentClient": true, "distribution": "internal" },
+    "preview": { "distribution": "internal", "android": { "buildType": "apk" } },
+    "production": { "android": { "buildType": "app-bundle" } }
+  }
+}
+```
+
+### 13.6 ライセンス管理（lib/license-manager.ts）
+
+- `@react-native-async-storage/async-storage` を使用
+- キー形式: Kotlin 版と同一 (`{製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}`)
+- シングルトンパターン、`initialize()` で AsyncStorage から復元
+
+### 13.7 Expo チェックリスト
+
+- [ ] `lib/colors.ts` が Ivory & Gold テーマに準拠
+- [ ] `app.json` の backgroundColor/splash が Gold (#B8942F)
+- [ ] `eas.json` が存在（development/preview/production プロファイル）
+- [ ] `tsconfig.json` で strict mode が有効
+- [ ] パッケージ名が `com.harmonicinsight.*` 形式
+- [ ] expo-router を使用（ファイルベースルーティング）
+- [ ] ハードコードカラーが使用されていない
+- [ ] `lib/license-manager.ts` が実装（InsightOffice 製品のみ）
+
+---
+
+## 14. 現行アプリの準拠状況
 
 ### Native Kotlin アプリ
 
@@ -934,7 +1065,7 @@ class LicenseManager(context: Context, private val productCode: String) {
 
 ---
 
-## 14. 必須チェックリスト
+## 15. 必須チェックリスト
 
 ### デザイン（トンマナ）
 

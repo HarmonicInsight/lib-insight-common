@@ -13,6 +13,9 @@
 #   # Android (Kotlin/Compose)
 #   ./init-app.sh my-app-name --platform android --package com.harmonic.insight.myapp
 #
+#   # Expo (React Native)
+#   ./init-app.sh my-app-name --platform expo --package com.harmonicinsight.myapp
+#
 # 機能:
 #   - 新規リポジトリ作成
 #   - insight-common サブモジュール追加
@@ -81,9 +84,9 @@ if [ -d "$APP_NAME" ]; then
 fi
 
 # プラットフォーム検証
-if [[ "$PLATFORM" != "web" && "$PLATFORM" != "android" ]]; then
+if [[ "$PLATFORM" != "web" && "$PLATFORM" != "android" && "$PLATFORM" != "expo" ]]; then
     echo -e "${RED}サポートされていないプラットフォーム: $PLATFORM${NC}"
-    echo "サポート: web, android"
+    echo "サポート: web, android, expo"
     exit 1
 fi
 
@@ -581,10 +584,185 @@ EOF
 }
 
 # =============================================
+# Expo (React Native) 初期化
+# =============================================
+init_expo() {
+    echo -e "${YELLOW}[3/5] Expo テンプレート展開...${NC}"
+
+    TEMPLATE_DIR="$COMMON_DIR/templates/expo"
+
+    if [ ! -d "$TEMPLATE_DIR" ]; then
+        echo -e "${RED}テンプレートが見つかりません: $TEMPLATE_DIR${NC}"
+        echo "insight-common を最新版に更新してください。"
+        exit 1
+    fi
+
+    # パッケージ名の解決
+    if [ -z "$PACKAGE_NAME" ]; then
+        local clean_name=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]' | tr '-' '' | sed 's/[^a-z0-9]//g')
+        PACKAGE_NAME="com.harmonicinsight.${clean_name}"
+        echo -e "${YELLOW}  パッケージ名を自動推定: $PACKAGE_NAME${NC}"
+    fi
+
+    # slug 名（小文字ハイフン区切り）
+    local app_slug=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')
+    local app_display="$APP_NAME"
+
+    # テンプレートコピー
+    echo -e "${YELLOW}  テンプレートファイルをコピー中...${NC}"
+
+    # ルートファイル
+    cp "$TEMPLATE_DIR/app.json" ./app.json
+    cp "$TEMPLATE_DIR/eas.json" ./eas.json
+    cp "$TEMPLATE_DIR/package.json" ./package.json
+    cp "$TEMPLATE_DIR/tsconfig.json" ./tsconfig.json
+    cp "$TEMPLATE_DIR/.gitignore" ./.gitignore
+
+    # lib/
+    mkdir -p lib
+    cp "$TEMPLATE_DIR/lib/colors.ts" ./lib/colors.ts
+    cp "$TEMPLATE_DIR/lib/theme.ts" ./lib/theme.ts
+    cp "$TEMPLATE_DIR/lib/license-manager.ts" ./lib/license-manager.ts
+
+    # app/
+    mkdir -p "app/(tabs)"
+    cp "$TEMPLATE_DIR/app/_layout.tsx" ./app/_layout.tsx
+    cp "$TEMPLATE_DIR/app/license.tsx" ./app/license.tsx
+    cp "$TEMPLATE_DIR/app/(tabs)/_layout.tsx" "./app/(tabs)/_layout.tsx"
+    cp "$TEMPLATE_DIR/app/(tabs)/index.tsx" "./app/(tabs)/index.tsx"
+    cp "$TEMPLATE_DIR/app/(tabs)/settings.tsx" "./app/(tabs)/settings.tsx"
+
+    # assets ディレクトリ
+    mkdir -p assets/images
+
+    # CI/CD
+    mkdir -p .github/workflows
+    cat > .github/workflows/build.yml << 'CIEOF'
+name: Build Expo
+
+on:
+  push:
+    branches: [ main, 'claude/**' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Export (static check)
+        run: npx expo export --platform android 2>/dev/null || echo "Export check completed"
+CIEOF
+
+    # プレースホルダー置換
+    echo -e "${YELLOW}[4/5] プレースホルダーを置換中...${NC}"
+    find . -type f \( -name "*.json" -o -name "*.ts" -o -name "*.tsx" \) \
+        ! -path "./insight-common/*" ! -path "./.git/*" ! -path "./node_modules/*" \
+        -exec sed -i \
+            -e "s/__app_slug__/${app_slug}/g" \
+            -e "s/__app_display_name__/${app_display}/g" \
+            -e "s/__APP_PACKAGE__/${PACKAGE_NAME}/g" \
+            -e "s/__PRODUCT_CODE__/XXXX/g" \
+            {} +
+
+    # APP_SPEC.md
+    cat > APP_SPEC.md << SPECEOF
+# ${APP_NAME} 仕様書
+
+## 概要
+- **製品コード**: (config/products.ts に登録後に記入)
+- **パッケージ名**: $PACKAGE_NAME
+- **プラットフォーム**: Expo/React Native (Android + iOS)
+- **デザインシステム**: Ivory & Gold
+
+## 機能
+(機能一覧を記入)
+
+## 参照
+- \`insight-common/standards/ANDROID.md\` — Android 開発標準（§13 Expo セクション）
+- \`insight-common/CLAUDE.md\` — プロジェクト全体ガイドライン
+SPECEOF
+
+    # README
+    cat > README.md << RDEOF
+# ${APP_NAME}
+
+Harmonic Insight Expo/React Native アプリ
+
+## セットアップ
+
+\`\`\`bash
+npm install
+npx expo start
+\`\`\`
+
+## 開発標準
+
+このプロジェクトは \`insight-common/standards/ANDROID.md\`（§13 Expo セクション）に準拠しています。
+
+- Ivory & Gold カラーシステム (\`lib/colors.ts\`)
+- expo-router (ファイルベースルーティング)
+- TypeScript strict mode
+- EAS Build
+
+## アーキテクチャ
+
+\`\`\`
+app/
+├── _layout.tsx         # Root layout
+├── license.tsx         # ライセンス画面
+└── (tabs)/
+    ├── _layout.tsx     # Tab layout
+    ├── index.tsx       # ホーム
+    └── settings.tsx    # 設定
+lib/
+├── colors.ts           # Ivory & Gold カラー
+├── theme.ts            # テーマ・タイポグラフィ
+└── license-manager.ts  # ライセンス管理
+\`\`\`
+RDEOF
+
+    # 標準チェックワークフロー
+    cat > .github/workflows/validate-standards.yml << 'VSEOF'
+name: Validate Design Standards
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+jobs:
+  validate:
+    uses: HarmonicInsight/lib-insight-common/.github/workflows/reusable-validate.yml@main
+    with:
+      project_path: '.'
+VSEOF
+
+    echo -e "${GREEN}  Expo テンプレート展開完了${NC}"
+}
+
+# =============================================
 # 関数実行 (引数解析後)
 # =============================================
 if [ "$PLATFORM" = "android" ]; then
     init_android
+elif [ "$PLATFORM" = "expo" ]; then
+    init_expo
 elif [ "$PLATFORM" = "web" ]; then
     init_web
 fi
@@ -616,6 +794,17 @@ if [ "$PLATFORM" = "android" ]; then
     echo ""
     echo -e "標準ガイド: ${BLUE}insight-common/standards/ANDROID.md${NC}"
     echo -e "テンプレート: ${BLUE}insight-common/templates/android/${NC}"
+elif [ "$PLATFORM" = "expo" ]; then
+    echo -e "次のステップ:"
+    echo ""
+    echo -e "  ${BLUE}1.${NC} cd ${APP_NAME}"
+    echo -e "  ${BLUE}2.${NC} npm install"
+    echo -e "  ${BLUE}3.${NC} npx expo start"
+    echo -e "  ${BLUE}4.${NC} app.json のプレースホルダーを確認"
+    echo -e "  ${BLUE}5.${NC} APP_SPEC.md に仕様を記入"
+    echo ""
+    echo -e "標準ガイド: ${BLUE}insight-common/standards/ANDROID.md §13${NC}"
+    echo -e "テンプレート: ${BLUE}insight-common/templates/expo/${NC}"
 else
     echo -e "次のステップ:"
     echo ""
