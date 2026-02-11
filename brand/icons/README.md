@@ -14,101 +14,113 @@
 
 ```
 brand/icons/
-├── png/                         # マスター PNG アイコン（正式版）
-│   ├── icon-launcher.png        # Insight Launcher
-│   ├── icon-camera.png          # Insight Camera
-│   ├── icon-voice-clock.png     # Insight Voice Clock
-│   └── products-grid-gemini.png # 9製品グリッド（元画像）
-├── svg/                         # SVG アイコン（参考・フォールバック用）
-│   ├── icon-insight-*.svg       # 9製品アイコン
-│   └── icon-*.svg               # ユーティリティアイコン
+├── png/                              # マスター PNG アイコン（1024x1024、正式版）
+│   ├── icon-insight-slide.png        # INSS - InsightOfficeSlide
+│   ├── icon-insight-sheet.png        # IOSH - InsightOfficeSheet
+│   ├── icon-insight-doc.png          # IOSD - InsightOfficeDoc
+│   ├── icon-insight-py.png           # INPY - InsightPy
+│   ├── icon-insight-movie.png        # INMV - InsightMovie
+│   ├── icon-insight-imagegen.png     # INIG - InsightImageGen
+│   ├── icon-insight-bot.png          # INBT - InsightBot
+│   ├── icon-insight-nca.png          # INCA - InsightNoCodeAnalyzer
+│   ├── icon-interview-insight.png    # IVIN - InterviewInsight
+│   ├── icon-senior-office.png        # ISOF - InsightSeniorOffice
+│   ├── icon-launcher.png             # Insight Launcher
+│   ├── icon-camera.png               # Insight Camera
+│   ├── icon-voice-clock.png          # Insight Voice Clock
+│   ├── icon-qr.png                   # Insight QR
+│   ├── icon-pinboard.png             # Insight PinBoard
+│   └── icon-voice-memo.png           # Insight Voice Memo
+├── svg/                              # SVG アイコン（参考・フォールバック用）
+│   └── icon-*.svg
 └── README.md
 ```
 
-> **重要**: `png/` ディレクトリのアイコンが正式版（マスター）です。
-> すべてのアイコンは手動で作成・管理されます。SVG は参考資料として保持しています。
+> **重要**: `png/` のアイコンが正式版マスターです。すべて手動で作成・管理されます。
 
-## マスターアイコン（png/ — 正式版）
+## 製品アイコン一覧（10製品）
 
-手動で作成された 1024x1024 PNG マスターアイコン。各プラットフォーム用の画像生成元として使用。
+### Tier 1: 業務変革ツール
 
-### ユーティリティアイコン
+| ファイル | コード | 製品名 | モチーフ |
+|---------|:------:|--------|---------|
+| `icon-insight-nca.png` | INCA | InsightNoCodeAnalyzer | フローチャート + ギア |
+| `icon-insight-bot.png` | INBT | InsightBot | かわいいロボット + チャット吹き出し |
+| `icon-interview-insight.png` | IVIN | InterviewInsight | ロボット + マイク + クリップボード |
 
-| ファイル | アプリ | モチーフ | スタイル |
-|---------|--------|---------|---------|
-| `icon-launcher.png` | Insight Launcher | 脳 + 回路基板 + ロケット + スパークル | Gold + Ivory |
-| `icon-camera.png` | Insight Camera | カメラ + シャッター + 回路基板 | Gold + Ivory |
-| `icon-voice-clock.png` | Insight Voice Clock | 目覚まし時計 + マイク + 音波 + "10:24" | Gold + Ivory |
+### Tier 2: AI活用ツール
 
-### 製品アイコン（作成予定）
+| ファイル | コード | 製品名 | モチーフ |
+|---------|:------:|--------|---------|
+| `icon-insight-movie.png` | INMV | InsightMovie | 映写機 + フィルムストリップ + ギア |
+| `icon-insight-imagegen.png` | INIG | InsightImageGen | モニター + アパーチャ + 画像 + ギア |
 
-| ファイル | 製品コード | 製品名 | ステータス |
-|---------|-----------|--------|-----------|
-| `icon-insight-slide.png` | INSS | InsightOfficeSlide | 未作成 |
-| `icon-insight-sheet.png` | IOSH | InsightOfficeSheet | 未作成 |
-| `icon-insight-doc.png` | IOSD | InsightOfficeDoc | 未作成 |
-| `icon-insight-py.png` | INPY | InsightPy | 未作成 |
-| `icon-insight-movie.png` | INMV | InsightMovie | 未作成 |
-| `icon-insight-imagegen.png` | INIG | InsightImageGen | 未作成 |
-| `icon-insight-bot.png` | INBT | InsightBot | 未作成 |
-| `icon-insight-nca.png` | INCA | InsightNoCodeAnalyzer | 未作成 |
-| `icon-interview-insight.png` | IVIN | InterviewInsight | 未作成 |
+### Tier 3: InsightOffice Suite
 
-> `products-grid-gemini.png` に9製品のドラフト版グリッドがあります（個別PNG化は今後対応）。
+| ファイル | コード | 製品名 | モチーフ |
+|---------|:------:|--------|---------|
+| `icon-insight-slide.png` | INSS | InsightOfficeSlide | プレゼンボード + ギア + 矢印 |
+| `icon-insight-sheet.png` | IOSH | InsightOfficeSheet | スプレッドシートグリッド + ギア |
+| `icon-insight-doc.png` | IOSD | InsightOfficeDoc | ドキュメント + ギア + DB |
+| `icon-insight-py.png` | INPY | InsightPy | Python ヘビ + 回路基板 |
 
-## SVG アイコン（svg/ — 参考用）
+### Tier 4: Accessibility
 
-プログラマティックに生成した SVG アイコン。Ivory背景 + Gold円 + 白シンボル + スパークルの統一スタイル。
+| ファイル | コード | 製品名 | モチーフ |
+|---------|:------:|--------|---------|
+| `icon-senior-office.png` | ISOF | InsightSeniorOffice | カレンダー + 文書 + メール + ギア |
 
-### 製品アイコン（9製品）
+## ユーティリティアプリ一覧（6アプリ）
 
-| ファイル名 | 製品コード | 製品名 |
-|-----------|-----------|--------|
-| `icon-insight-slide.svg` | INSS | InsightOfficeSlide |
-| `icon-insight-sheet.svg` | IOSH | InsightOfficeSheet |
-| `icon-insight-doc.svg` | IOSD | InsightOfficeDoc |
-| `icon-insight-py.svg` | INPY | InsightPy |
-| `icon-insight-movie.svg` | INMV | InsightMovie |
-| `icon-insight-imagegen.svg` | INIG | InsightImageGen |
-| `icon-insight-bot.svg` | INBT | InsightBot |
-| `icon-insight-nca.svg` | INCA | InsightNoCodeAnalyzer |
-| `icon-interview-insight.svg` | IVIN | InterviewInsight |
-
-### ユーティリティアイコン
-
-| ファイル名 | アプリ |
-|-----------|--------|
-| `icon-launcher.svg` | Insight Launcher |
-| `icon-camera.svg` | Insight Camera |
-| `icon-voice-clock.svg` | Insight Voice Clock |
-| `icon-qr.svg` | Insight QR |
-| `icon-incline.svg` | InclineInsight |
-| `icon-consul-type.svg` | ConsulType |
-| `icon-consul-evaluate.svg` | ConsulEvaluate |
-| `icon-horoscope.svg` | Harmonic Horoscope |
-| `icon-food-medicine.svg` | Food Medicine Insight |
+| ファイル | アプリ | モチーフ |
+|---------|--------|---------|
+| `icon-launcher.png` | Insight Launcher | 2x2 グリッド + ロケット + 回路基板 |
+| `icon-camera.png` | Insight Camera | カメラ + アパーチャ |
+| `icon-voice-clock.png` | Insight Voice Clock | 目覚まし時計 + マイク + 音波 + "10:24" |
+| `icon-qr.png` | Insight QR | QR コードパターン |
+| `icon-pinboard.png` | Insight PinBoard | コルクボード + 付箋メモ |
+| `icon-voice-memo.png` | Insight Voice Memo | マイク + 回路基板 + 波形 |
 
 ## 使用方法
 
-### マスター PNG → 各プラットフォーム用画像
+### 各アプリへの配布（generate-app-icon.py）
 
 ```bash
-# generate-app-icon.py でマスターPNG から全プラットフォーム用画像を生成
-python scripts/generate-app-icon.py --master brand/icons/png/icon-launcher.png --product LAUNCHER
+# 製品コード指定で全プラットフォーム用アイコンを生成
+python scripts/generate-app-icon.py --product IOSH --output ./Resources/
+
+# Windows ICO のみ
+python scripts/generate-app-icon.py --product IOSH --platform windows --output ./Resources/
+
+# 全製品一括生成
+python scripts/generate-app-icon.py --all --output ./generated-icons/
+
+# 利用可能なアイコン一覧
+python scripts/generate-app-icon.py --list
 ```
 
-### プラットフォーム別配置
+### TypeScript から参照
+
+```typescript
+import { getMasterIconPath, UTILITY_ICONS } from '@/insight-common/config/products';
+
+getMasterIconPath('IOSH');              // 'brand/icons/png/icon-insight-sheet.png'
+UTILITY_ICONS.LAUNCHER.masterIcon;      // 'brand/icons/png/icon-launcher.png'
+```
+
+### プラットフォーム別配置先
 
 | プラットフォーム | 配置先 |
 |----------------|--------|
+| Windows (WPF) | `Resources/{ProductName}.ico` |
 | Android | `app/src/main/res/mipmap-*/ic_launcher.png` |
-| iOS | Asset Catalog → `AppIcon` |
-| Expo/React Native | `assets/icon.png` |
-| WPF (C#) | `Assets/app.ico`（ICO変換が必要） |
+| iOS / Expo | `assets/icon.png` (1024x1024) |
+| Web (Next.js) | `public/favicon.ico` + `public/icon-*.png` |
 
 ## 新しいアイコンの追加方法
 
-1. Gold + Ivory スタイルで 1024x1024 PNG を作成
+1. Gold (#B8942F) + Ivory (#FAF8F5) スタイルで 1024x1024 PNG を作成
 2. `png/icon-{app-name}.png` として配置
-3. この README の一覧に追記
-4. `generate-app-icon.py` で各プラットフォーム用を生成
+3. `config/products.ts` の `masterIcon` フィールドを更新
+4. `scripts/generate-app-icon.py` のマッピングに追加
+5. この README の一覧に追記

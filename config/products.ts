@@ -77,6 +77,8 @@ export interface ProductInfo {
   nameJa: string;
   description: string;
   descriptionJa: string;
+  /** マスターアイコン PNG パス（insight-common からの相対パス） */
+  masterIcon: string;
   /** 継承元の製品（この製品の機能をすべて含む） */
   inheritsFrom?: ProductCode;
   /** プロジェクトファイル設定（対応製品のみ） */
@@ -171,6 +173,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightNoCodeAnalyzer',
     description: 'RPA and low-code migration automation tool',
     descriptionJa: 'RPA・ローコードのマイグレーション自動化ツール',
+    masterIcon: 'brand/icons/png/icon-insight-nca.png',
   },
   INBT: {
     code: 'INBT',
@@ -178,6 +181,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightBot',
     description: 'AI editor-equipped RPA product for business optimization',
     descriptionJa: 'AIエディタ搭載 — 業務最適化RPA製品',
+    masterIcon: 'brand/icons/png/icon-insight-bot.png',
   },
   IVIN: {
     code: 'IVIN',
@@ -185,6 +189,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InterviewInsight',
     description: 'Automated hearing and business research support',
     descriptionJa: '自動ヒアリング・業務調査支援',
+    masterIcon: 'brand/icons/png/icon-interview-insight.png',
   },
 
   // =========================================================================
@@ -197,6 +202,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightMovie',
     description: 'Automated video creation from images and text',
     descriptionJa: '画像とテキストから動画を自動作成',
+    masterIcon: 'brand/icons/png/icon-insight-movie.png',
   },
   INIG: {
     code: 'INIG',
@@ -204,6 +210,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightImageGen',
     description: 'AI bulk image generation tool for business materials',
     descriptionJa: '業務資料向けAI画像の大量自動生成ツール',
+    masterIcon: 'brand/icons/png/icon-insight-imagegen.png',
   },
 
   // =========================================================================
@@ -216,6 +223,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightOfficeSlide',
     description: 'AI-powered PowerPoint text extraction and review tool for enterprise',
     descriptionJa: 'AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール',
+    masterIcon: 'brand/icons/png/icon-insight-slide.png',
     projectFile: {
       extension: 'inss',
       mimeType: 'application/x-insightoffice-slide',
@@ -235,6 +243,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightOfficeSheet',
     description: 'AI-powered business planning, budget management, and simulation tool for enterprise',
     descriptionJa: 'AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション',
+    masterIcon: 'brand/icons/png/icon-insight-sheet.png',
     projectFile: {
       extension: 'iosh',
       mimeType: 'application/x-insightoffice-sheet',
@@ -254,6 +263,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightOfficeDoc',
     description: 'AI-powered Word document management with reference materials for enterprise',
     descriptionJa: 'AIアシスタント搭載 — 参照資料付きWord文書管理ツール',
+    masterIcon: 'brand/icons/png/icon-insight-doc.png',
     projectFile: {
       extension: 'iosd',
       mimeType: 'application/x-insightoffice-doc',
@@ -273,6 +283,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightPy',
     description: 'AI editor-equipped Python execution platform for business automation',
     descriptionJa: 'AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤',
+    masterIcon: 'brand/icons/png/icon-insight-py.png',
   },
 
   // =========================================================================
@@ -285,6 +296,7 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     nameJa: 'InsightSeniorOffice',
     description: 'AI-assisted office suite for senior users — spreadsheet, document, and iCloud email in one simple app',
     descriptionJa: 'AIアシスタント搭載 — シニア向け統合オフィスツール（表計算・文書・iCloudメール）',
+    masterIcon: 'brand/icons/png/icon-senior-office.png',
   },
 };
 
@@ -1557,6 +1569,54 @@ export function getFileAssociationInfo(
 }
 
 // =============================================================================
+// アイコン
+// =============================================================================
+
+/** ユーティリティアプリのマスターアイコン定義 */
+export const UTILITY_ICONS: Record<string, { name: string; nameJa: string; masterIcon: string }> = {
+  LAUNCHER: { name: 'InsightLauncher', nameJa: 'Insight Launcher', masterIcon: 'brand/icons/png/icon-launcher.png' },
+  CAMERA: { name: 'InsightCamera', nameJa: 'Insight Camera', masterIcon: 'brand/icons/png/icon-camera.png' },
+  VOICE_CLOCK: { name: 'InsightVoiceClock', nameJa: 'Insight Voice Clock', masterIcon: 'brand/icons/png/icon-voice-clock.png' },
+  QR: { name: 'InsightQR', nameJa: 'Insight QR', masterIcon: 'brand/icons/png/icon-qr.png' },
+  PINBOARD: { name: 'InsightPinBoard', nameJa: 'Insight PinBoard', masterIcon: 'brand/icons/png/icon-pinboard.png' },
+  VOICE_MEMO: { name: 'InsightVoiceMemo', nameJa: 'Insight Voice Memo', masterIcon: 'brand/icons/png/icon-voice-memo.png' },
+};
+
+/**
+ * 製品コードからマスターアイコンのパスを取得
+ *
+ * @param productCode 製品コード
+ * @returns insight-common からの相対パス
+ *
+ * @example
+ * getMasterIconPath('IOSH')  // 'brand/icons/png/icon-insight-sheet.png'
+ */
+export function getMasterIconPath(productCode: ProductCode): string {
+  return PRODUCTS[productCode].masterIcon;
+}
+
+/**
+ * 全アイコン（製品 + ユーティリティ）の一覧を取得
+ */
+export function getAllIcons(): Array<{ key: string; name: string; nameJa: string; masterIcon: string; isProduct: boolean }> {
+  const productIcons = Object.values(PRODUCTS).map(p => ({
+    key: p.code,
+    name: p.name,
+    nameJa: p.nameJa,
+    masterIcon: p.masterIcon,
+    isProduct: true,
+  }));
+  const utilityIcons = Object.entries(UTILITY_ICONS).map(([key, v]) => ({
+    key,
+    name: v.name,
+    nameJa: v.nameJa,
+    masterIcon: v.masterIcon,
+    isProduct: false,
+  }));
+  return [...productIcons, ...utilityIcons];
+}
+
+// =============================================================================
 // 後方互換性（非推奨）
 // =============================================================================
 
@@ -1634,6 +1694,11 @@ export default {
   getContextMenuProducts,
   getProjectFileConfig,
   getFileAssociationInfo,
+
+  // アイコン
+  UTILITY_ICONS,
+  getMasterIconPath,
+  getAllIcons,
 
   // 後方互換（非推奨）
   FEATURE_MATRIX,

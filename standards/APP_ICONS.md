@@ -143,31 +143,100 @@ export const metadata = {
 
 ---
 
-## 4. 生成方法
+## 4. マスターアイコンと生成方法
 
-### Python スクリプト (推奨)
+### マスターアイコン
 
-`scripts/generate-app-icon.py` を使用して一貫したアイコンを生成する。
+すべてのアプリアイコンのマスター PNG (1024x1024) は以下に格納:
+
+```
+insight-common/brand/icons/png/
+```
+
+マスターアイコンは手動で作成・管理される。プログラムでの自動生成は行わない。
+
+### 各アプリへの配布: generate-app-icon.py
+
+`scripts/generate-app-icon.py` でマスター PNG から各プラットフォーム用アイコンを生成する。
 
 ```bash
 # 依存パッケージ
 pip install Pillow
 
-# 使用例
-python scripts/generate-app-icon.py --product InsightOfficeSheet --output ./Resources/
+# 製品コード指定で生成（全プラットフォーム）
+python scripts/generate-app-icon.py --product IOSH --output ./Resources/
+
+# Windows ICO のみ生成
+python scripts/generate-app-icon.py --product IOSH --output ./Resources/ --platform windows
+
+# 全製品を一括生成
+python scripts/generate-app-icon.py --all --output ./generated-icons/
+
+# 利用可能なアイコン一覧
+python scripts/generate-app-icon.py --list
 ```
 
 **生成フロー:**
-1. 4x サイズでレンダリング (アンチエイリアス)
+1. マスター PNG (1024x1024) を読み込み
 2. LANCZOS リサンプリングで各サイズにダウンスケール
-3. マルチ解像度 ICO ファイルとして保存
+3. プラットフォーム別にファイルを出力
 
-### 手動作成時の注意
+### 出力ファイル（プラットフォーム別）
 
-- Figma / Illustrator で作成する場合も、上記カラー仕様を厳守
-- 角丸 radius はサイズの 1/6 (256px なら ~43px)
-- マージンはサイズの 1/8 (256px なら 32px)
-- コンテンツ領域はサイズの 1/4 マージン (256px なら 64px インセット)
+| プラットフォーム | 出力 |
+|----------------|------|
+| **Windows** | `{Name}.ico` (16/24/32/48/64/128/256px) + 個別 PNG |
+| **Android** | `mipmap-{density}/ic_launcher.png` (48〜192px) |
+| **iOS/Expo** | `icon.png` (1024x1024, RGB, 透明なし) |
+| **Web** | `favicon.ico` + `apple-touch-icon.png` + `icon-192.png` + `icon-512.png` |
+
+### 各アプリへの組み込み手順
+
+**1. WPF (C#) アプリ:**
+```bash
+python scripts/generate-app-icon.py --product IOSH --platform windows --output src/InsightOfficeSheet.App/Resources/
+```
+```xml
+<!-- .csproj -->
+<PropertyGroup>
+  <ApplicationIcon>Resources\InsightOfficeSheet.ico</ApplicationIcon>
+</PropertyGroup>
+```
+
+**2. Expo / React Native:**
+```bash
+python scripts/generate-app-icon.py --product IOSH --platform ios --output assets/
+```
+```json
+// app.json
+{ "expo": { "icon": "./assets/icon.png" } }
+```
+
+**3. Android:**
+```bash
+python scripts/generate-app-icon.py --product IOSH --platform android --output app/src/main/res/
+```
+
+**4. Web (Next.js):**
+```bash
+python scripts/generate-app-icon.py --product IOSH --platform web --output public/
+```
+
+### TypeScript からのアイコンパス取得
+
+```typescript
+import { getMasterIconPath, PRODUCTS, UTILITY_ICONS, getAllIcons } from '@/insight-common/config/products';
+
+// 製品のマスターアイコンパス
+getMasterIconPath('IOSH');  // 'brand/icons/png/icon-insight-sheet.png'
+PRODUCTS.IOSH.masterIcon;   // 'brand/icons/png/icon-insight-sheet.png'
+
+// ユーティリティアイコン
+UTILITY_ICONS.LAUNCHER.masterIcon;  // 'brand/icons/png/icon-launcher.png'
+
+// 全アイコン一覧
+getAllIcons();  // [{ key: 'INSS', name: '...', masterIcon: '...', isProduct: true }, ...]
+```
 
 ---
 
