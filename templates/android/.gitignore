@@ -1,0 +1,39 @@
+# ============================================================
+# Insight Android 標準 .gitignore
+# ============================================================
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/
+
+# IDE
+.idea/
+*.iml
+*.iws
+.vscode/
+*.swp
+*.swo
+
+# Local configuration
+local.properties
+google-services.json
+
+# Generated
+*.apk
+*.aab
+*.dex
+*.class
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Kotlin
+*.kotlin_module
+
+# Secrets
+*.keystore
+*.jks
+.env

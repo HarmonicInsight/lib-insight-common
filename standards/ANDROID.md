@@ -5,6 +5,72 @@
 
 ---
 
+## クイックスタート（新規アプリ作成）
+
+### 方法1: 自動スキャフォールド（推奨）
+
+```bash
+./insight-common/scripts/init-app.sh my-app --platform android --package com.harmonic.insight.myapp
+```
+
+### 方法2: テンプレートファイルから手動コピー
+
+`templates/android/` に**そのままコピーして使えるファイル**が揃っています:
+
+```
+templates/android/
+├── gradle/libs.versions.toml      # Version Catalog（§5）
+├── build.gradle.kts               # ルートビルド設定
+├── settings.gradle.kts            # プロジェクト設定
+├── gradle.properties              # Gradle プロパティ（§11）
+├── app/
+│   ├── build.gradle.kts           # アプリビルド設定（§2, §8）
+│   ├── proguard-rules.pro         # ProGuard ルール（§8）
+│   └── src/main/
+│       ├── kotlin/
+│       │   ├── ui/theme/
+│       │   │   ├── Color.kt      # Ivory & Gold カラー（§6）
+│       │   │   ├── Theme.kt      # Material3 テーマ（§6）
+│       │   │   └── Type.kt       # タイポグラフィ（§7）
+│       │   └── license/
+│       │       ├── PlanCode.kt    # プランコード（§12）
+│       │       ├── LicenseManager.kt # ライセンス管理（§12）
+│       │       └── LicenseScreen.kt  # ライセンス画面（§12, Compose）
+│       └── res/
+│           ├── drawable/
+│           │   ├── ic_launcher_foreground.xml  # アイコン前景
+│           │   └── ic_launcher_background.xml  # アイコン背景 (Ivory)
+│           ├── values/
+│           │   ├── colors.xml     # XML カラー（§6）
+│           │   ├── strings.xml    # 日本語文字列（§10）
+│           │   └── themes.xml     # システムテーマ（§6）
+│           ├── values-en/
+│           │   └── strings.xml    # 英語文字列（§10）
+│           └── values-night/
+│               └── themes.xml     # ダークテーマ
+├── .github/workflows/build.yml    # CI/CD（§9）
+└── .gitignore
+```
+
+**プレースホルダー置換**（コピー後に実行）:
+
+| プレースホルダー | 説明 | 例 |
+|---|---|---|
+| `__APPNAME__` | パッケージ名末尾 | `camera` |
+| `__AppName__` | テーマ関数名 | `Camera` |
+| `__APP_PACKAGE__` | 完全パッケージ名 | `com.harmonic.insight.camera` |
+| `__app_display_name__` | 表示名 | `Insight Camera` |
+| `__PRODUCT_CODE__` | 製品コード | `IOSH` |
+
+### 標準検証
+
+```bash
+# Android 固有チェック（Version Catalog, SDK, ProGuard, テーマ, i18n, アイコン）
+./insight-common/scripts/validate-standards.sh <project-directory>
+```
+
+---
+
 ## 1. 基本方針
 
 | 項目 | 標準値 |
