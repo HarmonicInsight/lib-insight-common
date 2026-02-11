@@ -1,11 +1,19 @@
 # =============================================
 # HarmonicInsight 全リポジトリ一括クローンスクリプト (PowerShell)
 #
-# 使い方:
-#   .\scripts\clone-all-repos.ps1                          # C:\dev にクローン（既存はスキップ）
-#   .\scripts\clone-all-repos.ps1 -Backup                  # 既存を C:\dev_backup_YYYYMMDD に退避してからクローン
-#   .\scripts\clone-all-repos.ps1 -Clean                   # 既存を削除してからクローン
-#   .\scripts\clone-all-repos.ps1 -DevRoot "D:\projects"   # 別ディレクトリにクローン
+# 使い方（どこからでも実行可能）:
+#   # Step 1: スクリプトをテンポラリにコピーして実行（推奨）
+#   Copy-Item C:\dev\cross-lib-insight-common\scripts\clone-all-repos.ps1 $env:TEMP\clone-all-repos.ps1
+#   & $env:TEMP\clone-all-repos.ps1 -Backup
+#
+#   # またはワンライナー
+#   powershell -File C:\dev\cross-lib-insight-common\scripts\clone-all-repos.ps1 -Backup
+#
+# オプション:
+#   -Backup                  既存を C:\dev_backup_YYYYMMDD に退避してからクローン
+#   -Clean                   既存を削除してからクローン（確認あり）
+#   (なし)                   既存フォルダはスキップ、新規のみクローン
+#   -DevRoot "D:\projects"   別ディレクトリにクローン
 # =============================================
 
 param(
@@ -15,6 +23,32 @@ param(
 )
 
 $ORG = "HarmonicInsight"
+
+# --- Self-copy: Backup/Clean 時は自分自身をテンポラリにコピーして再実行 ---
+# （C:\dev 内から実行した場合、リネーム/削除でスクリプトが消えるのを防止）
+
+$scriptPath = $MyInvocation.MyCommand.Path
+$tempScript = Join-Path $env:TEMP "clone-all-repos_running.ps1"
+
+if ($scriptPath -and ($Backup -or $Clean)) {
+    $scriptDir = Split-Path $scriptPath -Parent
+    $resolvedDevRoot = (Resolve-Path $DevRoot -ErrorAction SilentlyContinue)
+
+    # スクリプトが DevRoot 内にあり、かつまだテンポラリにコピーされていない場合
+    if ($resolvedDevRoot -and $scriptDir.StartsWith($resolvedDevRoot.Path) -and ($scriptPath -ne $tempScript)) {
+        Write-Host "Script is inside $DevRoot. Copying to temp and re-launching..." -ForegroundColor Yellow
+        Copy-Item -Path $scriptPath -Destination $tempScript -Force
+
+        $args = @()
+        if ($Backup) { $args += "-Backup" }
+        if ($Clean)  { $args += "-Clean" }
+        $args += "-DevRoot"
+        $args += "`"$DevRoot`""
+
+        & powershell.exe -ExecutionPolicy Bypass -File $tempScript @args
+        exit $LASTEXITCODE
+    }
+}
 
 Write-Host ""
 Write-Host "=== HarmonicInsight Clone All Repos ===" -ForegroundColor Blue
