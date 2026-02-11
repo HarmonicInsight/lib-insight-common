@@ -1,9 +1,9 @@
 ---
-description: 新しい Harmonic Insight アプリを作成。製品コード・プラットフォーム・技術スタックを選択してプロジェクトを初期化。
+description: 新しい HARMONIC insight アプリを作成。製品コード・プラットフォーム・技術スタックを選択してプロジェクトを初期化。
 argument-hint: "[app-name]"
 ---
 
-# 新規 Harmonic Insight アプリ作成
+# 新規 HARMONIC insight アプリ作成
 
 ## Step 1: 基本情報確認
 

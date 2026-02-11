@@ -78,7 +78,7 @@ export function SiteFooter({
                 <path d="M14 16L20 10L26 16L20 22L14 16Z" fill="white" fillOpacity="0.6" />
               </svg>
               <div className={styles.logoTextGroup}>
-                <span className={styles.logoText}>Harmonic Insight</span>
+                <span className={styles.logoText}>HARMONIC insight</span>
                 <span className={styles.tagline}>AI業務支援コンサルティング</span>
               </div>
             </div>
@@ -203,7 +203,7 @@ export function SiteFooter({
         {/* ボトムバー */}
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            &copy; {copyrightYear} Harmonic Insight LLC. All rights reserved.
+            &copy; {copyrightYear} HARMONIC insight LLC. All rights reserved.
           </p>
           <div className={styles.bottomLinks}>
             <a href="mailto:info@h-insight.jp" className={styles.bottomLink}>

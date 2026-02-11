@@ -1,4 +1,4 @@
-# Harmonic Insight - 開発標準ガイド
+# HARMONIC insight - 開発標準ガイド
 
 > **重要**: このドキュメントは新規アプリ作成時・コード修正時に**必ず**参照してください。
 
@@ -311,8 +311,8 @@ getProductsByRegion('SEA');  // 全製品
 - **契約期間**: 12ヶ月（自動更新）、解約は3ヶ月前通知
 - **支払サイト**: 30日
 - **初年度ノルマ**: なし（2年目以降、ティア維持には最低件数が必要）
-- **顧客所有権**: ライセンス契約はHarmonic Insightが締結。顧客リストは共有。
-- **サポート分担**: 1次（操作）=パートナー、2次（バグ・技術）=Harmonic Insight
+- **顧客所有権**: ライセンス契約はHARMONIC insightが締結。顧客リストは共有。
+- **サポート分担**: 1次（操作）=パートナー、2次（バグ・技術）=HARMONIC insight
 
 ```typescript
 import { calculateWholesalePrice, getResellerProducts } from '@/insight-common/config/reseller-strategy';

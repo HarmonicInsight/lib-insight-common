@@ -1,6 +1,6 @@
-# Harmonic Insight Web UI
+# HARMONIC insight Web UI
 
-Harmonic Insight の全Webサイトで共通利用するUIコンポーネント・スタイル・設定
+HARMONIC insight の全Webサイトで共通利用するUIコンポーネント・スタイル・設定
 
 ## クイックスタート
 

@@ -1,12 +1,12 @@
 ---
 name: design-system
-description: Harmonic Insight の Ivory & Gold デザインシステム。UI実装・カラー指定・スタイル変更時に自動適用。色指定やデザイン関連の作業で参照される。
+description: HARMONIC insight の Ivory & Gold デザインシステム。UI実装・カラー指定・スタイル変更時に自動適用。色指定やデザイン関連の作業で参照される。
 allowed-tools: Read, Grep, Glob
 ---
 
 # Ivory & Gold デザインシステム
 
-Harmonic Insight 全製品共通のデザインシステム。**Blue (#2563EB) をプライマリに使うのは絶対禁止**。
+HARMONIC insight 全製品共通のデザインシステム。**Blue (#2563EB) をプライマリに使うのは絶対禁止**。
 
 ## カラーパレット
 

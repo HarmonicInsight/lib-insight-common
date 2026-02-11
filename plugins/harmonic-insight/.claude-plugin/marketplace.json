@@ -1,6 +1,6 @@
 {
   "name": "harmonic-local",
-  "description": "Harmonic Insight ローカルプラグインマーケットプレース",
+  "description": "HARMONIC insight ローカルプラグインマーケットプレース",
   "plugins": [
     {
       "name": "harmonic-insight",

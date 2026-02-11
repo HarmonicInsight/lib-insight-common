@@ -1,6 +1,6 @@
 # 新しいサイトの追加ガイド
 
-Harmonic Insight の新しいWebサイトを追加する手順
+HARMONIC insight の新しいWebサイトを追加する手順
 
 ---
 

@@ -98,10 +98,10 @@ export const SITES: SiteConfig[] = [
   {
     id: 'corporate',
     name: 'ハーモニックインサイト',
-    nameEn: 'Harmonic Insight',
+    nameEn: 'HARMONIC insight',
     url: 'https://h-insight.jp',
     description: 'ハーモニックインサイト合同会社 — AI業務支援コンサルティング',
-    descriptionEn: 'Harmonic Insight LLC — AI Business Consulting',
+    descriptionEn: 'HARMONIC insight LLC — AI Business Consulting',
     category: 'corporate',
     showInGlobalNav: true,
     showInFooter: true,
@@ -171,7 +171,7 @@ export const SITES: SiteConfig[] = [
     order: 30,
     pages: [
       { name: '個人サイト', nameEn: 'Personal', path: '/', showInFooter: true },
-      { name: 'ハーモニックインサイト紹介', nameEn: 'Harmonic Insight', path: '/harmonic-insight.html', showInFooter: true },
+      { name: 'ハーモニックインサイト紹介', nameEn: 'HARMONIC insight', path: '/harmonic-insight.html', showInFooter: true },
     ],
   },
 ];

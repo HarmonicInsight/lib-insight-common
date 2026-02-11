@@ -1,4 +1,4 @@
-# Harmonic Insight について
+# HARMONIC insight について
 
 ## 会社概要
 

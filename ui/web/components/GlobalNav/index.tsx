@@ -82,7 +82,7 @@ export function GlobalNav({
               fillOpacity="0.6"
             />
           </svg>
-          <span className={styles.logoText}>Harmonic Insight</span>
+          <span className={styles.logoText}>HARMONIC insight</span>
         </div>
 
         {/* デスクトップナビゲーション */}
