@@ -41,6 +41,10 @@ REPOS=(
   "win-app-insight-py-pro|INPY|InsightPy|InsightPy|resources|ico_png"
   "win-app-insight-sheet-senior|ISOF|InsightSeniorOffice|InsightSeniorOffice|Resources|ico_png"
   "win-app-insight-launcher|LAUNCHER|InsightLauncher|InsightLauncher|Resources|ico_png"
+  "android-app-insight-voice-clock|VOICE_CLOCK|InsightVoiceClock|InsightVoiceClock|assets|expo"
+  "android-app-insight-camera|CAMERA|InsightCamera|InsightCamera|assets|expo"
+  "mobile-app-voice-memo|VOICE_MEMO|InsightVoiceMemo|InsightVoiceMemo|assets|expo"
+  "win-app-insight-pinboard|PINBOARD|InsightPinBoard|InsightPinBoard|assets|expo"
   "web-app-insight-qr|QR|InsightQR|InsightQR|public|web"
 )
 
@@ -88,6 +92,15 @@ copy_icons() {
     ico_png)
       cp "$ICON_GENERATED/$icon_src/$name.ico" "$repo_dir/$icon_dest/$name.ico"
       cp "$ICON_GENERATED/$icon_src/${name}_256.png" "$repo_dir/$icon_dest/${name}_256.png"
+      ;;
+    expo)
+      for f in icon.png adaptive-icon.png notification-icon.png splash-icon.png favicon.png; do
+        [ -f "$ICON_GENERATED/$icon_src/$f" ] && cp "$ICON_GENERATED/$icon_src/$f" "$repo_dir/$icon_dest/$f"
+      done
+      # Android mipmap ディレクトリ
+      if [ -d "$ICON_GENERATED/$icon_src/android" ]; then
+        cp -r "$ICON_GENERATED/$icon_src/android/"* "$repo_dir/$icon_dest/" 2>/dev/null || true
+      fi
       ;;
     web)
       cp "$ICON_GENERATED/$icon_src/favicon.ico" "$repo_dir/$icon_dest/favicon.ico"

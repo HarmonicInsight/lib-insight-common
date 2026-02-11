@@ -181,6 +181,65 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
     ],
     enabled: true,
   },
+  // ══════════════════════════════════════════════════════
+  // Expo / React Native アプリ
+  // ══════════════════════════════════════════════════════
+  {
+    repo: 'android-app-insight-voice-clock',
+    productCode: 'VOICE_CLOCK',
+    productName: 'InsightVoiceClock',
+    iconCopy: [
+      { src: 'InsightVoiceClock/icon.png', dest: 'assets/icon.png' },
+      { src: 'InsightVoiceClock/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
+      { src: 'InsightVoiceClock/notification-icon.png', dest: 'assets/notification-icon.png' },
+      { src: 'InsightVoiceClock/splash-icon.png', dest: 'assets/splash-icon.png' },
+      { src: 'InsightVoiceClock/favicon.png', dest: 'assets/favicon.png' },
+    ],
+    enabled: true,
+  },
+  {
+    repo: 'android-app-insight-camera',
+    productCode: 'CAMERA',
+    productName: 'InsightCamera',
+    iconCopy: [
+      { src: 'InsightCamera/icon.png', dest: 'assets/icon.png' },
+      { src: 'InsightCamera/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
+      { src: 'InsightCamera/notification-icon.png', dest: 'assets/notification-icon.png' },
+      { src: 'InsightCamera/splash-icon.png', dest: 'assets/splash-icon.png' },
+      { src: 'InsightCamera/favicon.png', dest: 'assets/favicon.png' },
+    ],
+    enabled: true,
+  },
+  {
+    repo: 'mobile-app-voice-memo',
+    productCode: 'VOICE_MEMO',
+    productName: 'InsightVoiceMemo',
+    iconCopy: [
+      { src: 'InsightVoiceMemo/icon.png', dest: 'assets/icon.png' },
+      { src: 'InsightVoiceMemo/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
+      { src: 'InsightVoiceMemo/notification-icon.png', dest: 'assets/notification-icon.png' },
+      { src: 'InsightVoiceMemo/splash-icon.png', dest: 'assets/splash-icon.png' },
+      { src: 'InsightVoiceMemo/favicon.png', dest: 'assets/favicon.png' },
+    ],
+    enabled: true,
+  },
+  {
+    repo: 'win-app-insight-pinboard',
+    productCode: 'PINBOARD',
+    productName: 'InsightPinBoard',
+    iconCopy: [
+      { src: 'InsightPinBoard/icon.png', dest: 'assets/icon.png' },
+      { src: 'InsightPinBoard/adaptive-icon.png', dest: 'assets/adaptive-icon.png' },
+      { src: 'InsightPinBoard/notification-icon.png', dest: 'assets/notification-icon.png' },
+      { src: 'InsightPinBoard/splash-icon.png', dest: 'assets/splash-icon.png' },
+      { src: 'InsightPinBoard/favicon.png', dest: 'assets/favicon.png' },
+    ],
+    enabled: true,
+  },
+
+  // ══════════════════════════════════════════════════════
+  // Web アプリ
+  // ══════════════════════════════════════════════════════
   {
     repo: 'web-app-insight-qr',
     productCode: 'QR',

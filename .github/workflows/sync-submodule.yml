@@ -123,6 +123,36 @@ jobs:
             icon_dest: Resources
             copy_mode: ico_png
 
+          # ── Expo / React Native ──
+          - repo: android-app-insight-voice-clock
+            product: VOICE_CLOCK
+            name: InsightVoiceClock
+            icon_src: InsightVoiceClock
+            icon_dest: assets
+            copy_mode: expo
+
+          - repo: android-app-insight-camera
+            product: CAMERA
+            name: InsightCamera
+            icon_src: InsightCamera
+            icon_dest: assets
+            copy_mode: expo
+
+          - repo: mobile-app-voice-memo
+            product: VOICE_MEMO
+            name: InsightVoiceMemo
+            icon_src: InsightVoiceMemo
+            icon_dest: assets
+            copy_mode: expo
+
+          - repo: win-app-insight-pinboard
+            product: PINBOARD
+            name: InsightPinBoard
+            icon_src: InsightPinBoard
+            icon_dest: assets
+            copy_mode: expo
+
+          # ── Web ──
           - repo: web-app-insight-qr
             product: QR
             name: InsightQR
@@ -199,6 +229,17 @@ jobs:
               cp "$SRC_BASE/$ICON_SRC/$NAME.ico" "$DEST_BASE/$ICON_DEST/$NAME.ico"
               cp "$SRC_BASE/$ICON_SRC/${NAME}_256.png" "$DEST_BASE/$ICON_DEST/${NAME}_256.png"
               echo "Copied: $NAME.ico + ${NAME}_256.png -> $ICON_DEST"
+              ;;
+            expo)
+              # Expo / React Native アイコンセット
+              for f in icon.png adaptive-icon.png notification-icon.png splash-icon.png favicon.png; do
+                [ -f "$SRC_BASE/$ICON_SRC/$f" ] && cp "$SRC_BASE/$ICON_SRC/$f" "$DEST_BASE/$ICON_DEST/$f"
+              done
+              # Android mipmap ディレクトリ
+              if [ -d "$SRC_BASE/$ICON_SRC/android" ]; then
+                cp -r "$SRC_BASE/$ICON_SRC/android/"* "$DEST_BASE/$ICON_DEST/" 2>/dev/null || true
+              fi
+              echo "Copied Expo icons + Android mipmaps -> $ICON_DEST"
               ;;
             web)
               # Web アイコンセット
