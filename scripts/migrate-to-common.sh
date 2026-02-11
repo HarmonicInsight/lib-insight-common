@@ -2,7 +2,7 @@
 # =============================================
 # Insight Series - InsightCommon 統合スクリプト
 #
-# 既存のC# WPFアプリに lib-insight-common サブモジュールを追加し、
+# 既存のC# WPFアプリに cross-lib-insight-common サブモジュールを追加し、
 # ローカルの License フォルダを共通コードに置き換える。
 #
 # 使い方:
@@ -46,7 +46,7 @@ echo -e "${GREEN}📁 リポジトリ: ${REPO_NAME}${NC}"
 # =============================================
 echo -e "${YELLOW}🔍 C# プロジェクト検出...${NC}"
 
-CSPROJ=$(find . -maxdepth 2 -name "*.csproj" -not -path "./lib-insight-common/*" | head -1)
+CSPROJ=$(find . -maxdepth 2 -name "*.csproj" -not -path "./insight-common/*" | head -1)
 if [ -z "$CSPROJ" ]; then
     echo -e "${RED}❌ .csproj ファイルが見つかりません${NC}"
     exit 1
@@ -60,11 +60,11 @@ echo -e "${GREEN}  パス: ${CSPROJ}${NC}"
 # =============================================
 # 3. サブモジュール追加（既に存在する場合はスキップ）
 # =============================================
-if [ -d "lib-insight-common" ]; then
-    echo -e "${YELLOW}📦 lib-insight-common は既に存在します（スキップ）${NC}"
+if [ -d "insight-common" ]; then
+    echo -e "${YELLOW}📦 insight-common は既に存在します（スキップ）${NC}"
 else
-    echo -e "${YELLOW}📦 lib-insight-common サブモジュール追加...${NC}"
-    git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git lib-insight-common
+    echo -e "${YELLOW}📦 insight-common サブモジュール追加...${NC}"
+    git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
     # .gitmodules のURLからトークンを除去（安全対策）
     if grep -q "ghp_" .gitmodules 2>/dev/null; then
@@ -78,7 +78,7 @@ fi
 # =============================================
 echo -e "${YELLOW}🔗 プロジェクト参照追加...${NC}"
 
-RELATIVE_PATH="../lib-insight-common/csharp/InsightCommon/InsightCommon.csproj"
+RELATIVE_PATH="../insight-common/csharp/InsightCommon/InsightCommon.csproj"
 
 if grep -q "InsightCommon.csproj" "$CSPROJ"; then
     echo -e "${YELLOW}  参照は既に存在します（スキップ）${NC}"
@@ -155,14 +155,14 @@ echo -e "${GREEN}║  ✅ 移行完了                                          
 echo -e "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "変更内容:"
-echo -e "  ${BLUE}1.${NC} lib-insight-common サブモジュール追加"
+echo -e "  ${BLUE}1.${NC} insight-common サブモジュール追加"
 echo -e "  ${BLUE}2.${NC} InsightCommon プロジェクト参照追加"
 echo -e "  ${BLUE}3.${NC} ローカル License → InsightCommon.License に置換"
 echo ""
 echo -e "次のステップ:"
 echo -e "  ${BLUE}1.${NC} dotnet build でビルド確認"
 echo -e "  ${BLUE}2.${NC} 動作テスト"
-echo -e "  ${BLUE}3.${NC} git add -A && git commit -m 'refactor: use lib-insight-common shared License module'"
+echo -e "  ${BLUE}3.${NC} git add -A && git commit -m 'refactor: use insight-common shared License module'"
 echo -e "  ${BLUE}4.${NC} git push origin main"
 echo ""
 echo -e "問題がある場合:"

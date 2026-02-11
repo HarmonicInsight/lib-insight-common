@@ -10,7 +10,7 @@ argument-hint: "[product-code]"
 ## Step 1: サブモジュール追加
 
 ```bash
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init --recursive
 ```
 

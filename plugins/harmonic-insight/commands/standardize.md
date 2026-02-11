@@ -313,7 +313,7 @@ git submodule status insight-common
 なければ追加:
 
 ```bash
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 ```
 
 ### 8-2. import パスの修正

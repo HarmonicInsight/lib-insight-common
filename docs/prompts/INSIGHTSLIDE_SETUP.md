@@ -17,7 +17,7 @@ Insight Series の共通リソースリポジトリ (insight-common) を Insight
 
 ### 1. Submodule として追加
 ```bash
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init --recursive
 ```
 

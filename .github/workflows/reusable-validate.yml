@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout lib-insight-common
+      - name: Checkout cross-lib-insight-common
         uses: actions/checkout@v4
         with:
           repository: HarmonicInsight/cross-lib-insight-common

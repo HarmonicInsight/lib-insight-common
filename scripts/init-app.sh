@@ -335,7 +335,7 @@ on:
     branches: [main]
 jobs:
   validate:
-    uses: HarmonicInsight/lib-insight-common/.github/workflows/reusable-validate.yml@main
+    uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/reusable-validate.yml@main
     with:
       project_path: '.'
 VSEOF
@@ -748,7 +748,7 @@ on:
     branches: [main]
 jobs:
   validate:
-    uses: HarmonicInsight/lib-insight-common/.github/workflows/reusable-validate.yml@main
+    uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/reusable-validate.yml@main
     with:
       project_path: '.'
 VSEOF

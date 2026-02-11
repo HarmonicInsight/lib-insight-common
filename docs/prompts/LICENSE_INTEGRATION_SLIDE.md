@@ -18,7 +18,7 @@ InsightSlide に insight-common のライセンス管理機能を統合してく
 
 ### 1. Git Submodule 追加
 insight-common を git submodule として追加:
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
 ### 2. TypeScript パス設定
 tsconfig.json に以下を追加:

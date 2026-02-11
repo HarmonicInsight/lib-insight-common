@@ -75,7 +75,7 @@ public static class ThirdPartyLicenseProvider
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "insight-common", "config", "third-party-licenses.json"),
             // 開発環境 (ソリューションルートからの相対パス)
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "insight-common", "config", "third-party-licenses.json"),
-            // lib-insight-common 直下で開発中の場合
+            // cross-lib-insight-common 直下で開発中の場合
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "config", "third-party-licenses.json"),
         };
 

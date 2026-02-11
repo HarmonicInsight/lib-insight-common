@@ -80,7 +80,7 @@ export interface ProductInfo {
   nameJa: string;
   description: string;
   descriptionJa: string;
-  /** マスターアイコン PNG パス（insight-common からの相対パス） */
+  /** マスターアイコン PNG パス（リポジトリルートからの相対パス） */
   masterIcon: string;
   /** ターゲットプラットフォーム（アイコン生成・ビルド設定に使用） */
   targetPlatform: AppPlatform;
@@ -1619,7 +1619,7 @@ export const UTILITY_ICONS: Record<string, {
  * 製品コードからマスターアイコンのパスを取得
  *
  * @param productCode 製品コード
- * @returns insight-common からの相対パス
+ * @returns リポジトリルートからの相対パス
  *
  * @example
  * getMasterIconPath('IOSH')  // 'brand/icons/png/icon-insight-sheet.png'

@@ -1,5 +1,5 @@
 {
-  "name": "insight-common",
+  "name": "cross-lib-insight-common",
   "version": "1.0.0",
   "type": "module",
   "private": true

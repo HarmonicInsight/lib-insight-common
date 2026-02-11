@@ -273,7 +273,7 @@ data/
 ```bash
 mkdir {industry}-tdwh && cd {industry}-tdwh
 git init
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 ```
 
 ### Step 2: Python プロジェクト初期化

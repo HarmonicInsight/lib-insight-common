@@ -26,7 +26,7 @@ Insight Series の各リポジトリに insight-common を組み込む手順で�
 
 ```bash
 # リポジトリのルートで実行
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init --recursive
 ```
 
@@ -262,7 +262,7 @@ export default App;
 ### Step 1: Submodule 追加
 
 ```bash
-git submodule add https://github.com/HarmonicInsight/insight-common.git
+git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init --recursive
 ```
 

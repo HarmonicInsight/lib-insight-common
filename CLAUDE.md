@@ -399,7 +399,7 @@ canUseAiAssistant('STD');   // false
 // モデル決定（ティアから自動）
 const balance = calculateCreditBalance('PRO', 10, addonPacks);
 const model = getModelForTier(balance.effectiveModelTier);
-// → 'claude-sonnet-4-20250514'（Premium アドオンがあれば 'claude-opus-4-20250514'）
+// → 'claude-sonnet-4-20250514'（Premium アドオンがあれば 'claude-opus-4-6-20260131'）
 
 // クレジット表示
 getAiCreditLabel(balance, 'ja');
