@@ -3,39 +3,54 @@ using System.Windows.Media;
 namespace InsightCommon.Theme;
 
 /// <summary>
-/// Insight Series 共通カラー定義
+/// Insight Series 共通カラー定義 - Ivory & Gold Theme
 /// </summary>
 public static class InsightColors
 {
-    // ── ブランドカラー ──
-    public static readonly Color BrandPrimary = FromHex("#6366F1");
-    public static readonly Color BrandTitle   = FromHex("#2563EB");
+    // ── ブランドカラー (Gold) ──
+    public static readonly Color BrandPrimary = FromHex("#B8942F");  // Gold
+    public static readonly Color BrandHover   = FromHex("#8C711E");  // Gold Hover
+    public static readonly Color BrandLight   = FromHex("#F0E6C8");  // Gold Light
 
-    // ── プラン別カラー（ライト・ダーク共通） ──
-    public static readonly Color PlanFree  = FromHex("#9CA3AF");
-    public static readonly Color PlanTrial = FromHex("#F59E0B");
-    public static readonly Color PlanStd   = FromHex("#10B981");
-    public static readonly Color PlanPro   = FromHex("#3B82F6");
-    public static readonly Color PlanEnt   = FromHex("#F59E0B"); // Gold
+    // ── プラン別カラー ──
+    public static readonly Color PlanFree  = FromHex("#A8A29E");  // Stone 400
+    public static readonly Color PlanTrial = FromHex("#2563EB");  // Blue
+    public static readonly Color PlanStd   = FromHex("#16A34A");  // Green
+    public static readonly Color PlanPro   = FromHex("#B8942F");  // Gold
+    public static readonly Color PlanEnt   = FromHex("#7C3AED");  // Purple
 
-    // ── ライトテーマ ──
+    // ── Ivory & Gold テーマ（標準） ──
     public static class Light
     {
-        public static readonly Color Background      = FromHex("#F8FAFC");
-        public static readonly Color Surface          = FromHex("#FFFFFF");
-        public static readonly Color SurfaceHover     = FromHex("#F1F5F9");
-        public static readonly Color TextPrimary      = FromHex("#1E293B");
-        public static readonly Color TextSecondary    = FromHex("#64748B");
-        public static readonly Color TextMuted        = FromHex("#94A3B8");
-        public static readonly Color Border           = FromHex("#E2E8F0");
-        public static readonly Color Success          = FromHex("#10B981");
-        public static readonly Color Error            = FromHex("#EF4444");
-        public static readonly Color Warning          = FromHex("#F59E0B");
-        public static readonly Color MenuBackground   = FromHex("#F1F5F9");
-        public static readonly Color MenuForeground   = FromHex("#334155");
-        public static readonly Color MenuHover        = FromHex("#E2E8F0");
-        public static readonly Color TitleBar         = FromHex("#F1F5F9");
-        public static readonly Color TitleBarText     = FromHex("#334155");
+        // Background (Ivory)
+        public static readonly Color Background      = FromHex("#FAF8F5");  // Ivory
+        public static readonly Color Surface         = FromHex("#FFFFFF");  // White
+        public static readonly Color SurfaceSecondary= FromHex("#F3F0EB");  // Ivory Secondary
+        public static readonly Color SurfaceHover    = FromHex("#EEEBE5");  // Ivory Hover
+
+        // Text (Stone)
+        public static readonly Color TextPrimary     = FromHex("#1C1917");  // Stone 900
+        public static readonly Color TextSecondary   = FromHex("#57534E");  // Stone 600
+        public static readonly Color TextTertiary    = FromHex("#A8A29E");  // Stone 400
+        public static readonly Color TextMuted       = FromHex("#D6D3D1");  // Stone 300
+        public static readonly Color TextAccent      = FromHex("#8C711E");  // Gold Dark
+
+        // Border
+        public static readonly Color Border          = FromHex("#E7E2DA");  // Warm Gray
+        public static readonly Color BorderLight     = FromHex("#F3F0EB");  // Ivory Secondary
+
+        // Semantic
+        public static readonly Color Success         = FromHex("#16A34A");
+        public static readonly Color Error           = FromHex("#DC2626");
+        public static readonly Color Warning         = FromHex("#CA8A04");
+        public static readonly Color Info            = FromHex("#2563EB");
+
+        // UI Elements
+        public static readonly Color MenuBackground  = FromHex("#F3F0EB");  // Ivory Secondary
+        public static readonly Color MenuForeground  = FromHex("#1C1917");  // Stone 900
+        public static readonly Color MenuHover       = FromHex("#EEEBE5");  // Ivory Hover
+        public static readonly Color TitleBar        = FromHex("#F3F0EB");  // Ivory Secondary
+        public static readonly Color TitleBarText    = FromHex("#1C1917");  // Stone 900
     }
 
     // ── ダークテーマ ──

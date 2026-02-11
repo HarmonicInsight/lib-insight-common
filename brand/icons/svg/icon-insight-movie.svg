@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- Film strip body -->
+  <rect x="36" y="40" width="36" height="28" rx="3" fill="white"/>
+  <!-- Film perforations (top) -->
+  <rect x="39" y="42" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <rect x="46" y="42" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <rect x="53" y="42" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <rect x="60" y="42" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <!-- Film perforations (bottom) -->
+  <rect x="39" y="63" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <rect x="46" y="63" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <rect x="53" y="63" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <rect x="60" y="63" width="4" height="3" rx="1" fill="#B8942F" opacity="0.3"/>
+  <!-- Play button -->
+  <polygon points="50,49 50,59 60,54" fill="#B8942F"/>
+</svg>

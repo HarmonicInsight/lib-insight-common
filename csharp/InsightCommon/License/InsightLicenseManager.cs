@@ -18,7 +18,7 @@ public class InsightLicenseManager
     private const string SECRET_KEY = "insight-series-license-secret-2026";
 
     private static readonly Regex LICENSE_KEY_REGEX = new(
-        @"^(INSS|INSP|INPY|FGIN|INMV|INBT)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
+        @"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
         RegexOptions.Compiled);
 
     private readonly string _productCode;
@@ -38,8 +38,8 @@ public class InsightLicenseManager
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="productCode">製品コード (INSS, INSP, INPY, FGIN, INMV, INBT)</param>
-    /// <param name="productName">製品名 (InsightSlide, InsightMovie, InsightBot, etc.)</param>
+    /// <param name="productCode">製品コード (INSS, IOSH, IOSD, INPY, INMV, INBT, INCA, INIG, IVIN)</param>
+    /// <param name="productName">製品名 (InsightOfficeSlide, InsightOfficeSheet, InsightOfficeDoc, etc.)</param>
     public InsightLicenseManager(string productCode, string productName)
     {
         _productCode = productCode;
@@ -165,8 +165,8 @@ public class InsightLicenseManager
         DateTime? expiresAt = null;
         try
         {
-            var year = 2000 + int.Parse(yymm[..2]);
-            var month = int.Parse(yymm[2..]);
+            var year = 2000 + int.Parse(yymm[..2], System.Globalization.CultureInfo.InvariantCulture);
+            var month = int.Parse(yymm[2..], System.Globalization.CultureInfo.InvariantCulture);
             expiresAt = month == 12
                 ? new DateTime(year + 1, 1, 1).AddDays(-1)
                 : new DateTime(year, month + 1, 1).AddDays(-1);
@@ -253,7 +253,7 @@ public class InsightLicenseManager
             email = CurrentLicense.Email,
             expires = CurrentLicense.ExpiresAt?.ToString("O")
         };
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(data, JsonOptions.WriteIndented);
         File.WriteAllText(_licenseFile, json);
     }
 
@@ -294,7 +294,7 @@ public class InsightLicenseManager
         get
         {
             if (!CurrentLicense.ExpiresAt.HasValue) return "-";
-            return CurrentLicense.ExpiresAt.Value.ToString("yyyy/MM/dd");
+            return CurrentLicense.ExpiresAt.Value.ToString("yyyy/MM/dd", System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }

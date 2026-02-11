@@ -1,0 +1,163 @@
+From 96be9038d7a033816c10bbf727969b8e283ca8fd Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 6 Feb 2026 05:24:26 +0000
+Subject: [PATCH] =?UTF-8?q?Ivory=20&=20Gold=20=E3=83=86=E3=83=BC=E3=83=9E?=
+ =?UTF-8?q?=E6=A8=99=E6=BA=96=E3=81=AB=E6=BA=96=E6=8B=A0:=20AccentBlue=20?=
+ =?UTF-8?q?=E3=82=92=20AccentGold=20(#B8942F)=20=E3=81=AB=E7=BD=AE?=
+ =?UTF-8?q?=E6=8F=9B?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- App.xaml: AccentBlue リソースを AccentGold (#B8942F) にリネーム
+- MainWindow.xaml: 選択矩形・選択情報テキストの色を Gold に変更
+- MainWindow.xaml.cs: ノート/グループカラーパレットの Blue を Gold に置換
+  - アクティブボードタブの背景色を Gold に変更
+  - 選択ボーダー色を Gold に変更
+  - Light テーマを Ivory (#FAF8F5) / Gold 標準カラーに修正
+  - Harmonic/Dark テーマの AccentBlue を AccentGold に変更
+- PinGroup.cs: デフォルトグループ色を Blue から Gold に変更
+
+https://claude.ai/code/session_01VpeRssQRAD544oYSQ6gw24
+---
+ InsightPinboard/App.xaml           |  2 +-
+ InsightPinboard/MainWindow.xaml    |  6 +++---
+ InsightPinboard/MainWindow.xaml.cs | 27 ++++++++++++++-------------
+ InsightPinboard/Models/PinGroup.cs |  2 +-
+ 4 files changed, 19 insertions(+), 18 deletions(-)
+
+diff --git a/InsightPinboard/App.xaml b/InsightPinboard/App.xaml
+index 048e2cf..6b4e8b4 100644
+--- a/InsightPinboard/App.xaml
++++ b/InsightPinboard/App.xaml
+@@ -11,7 +11,7 @@
+         <SolidColorBrush x:Key="FgSecondary" Color="#8892b0"/>
+         <SolidColorBrush x:Key="FgDim" Color="#4a5568"/>
+         <SolidColorBrush x:Key="AccentGreen" Color="#4ade80"/>
+-        <SolidColorBrush x:Key="AccentBlue" Color="#60a5fa"/>
++        <SolidColorBrush x:Key="AccentGold" Color="#B8942F"/>
+         <SolidColorBrush x:Key="BorderSubtle" Color="#252c3a"/>
+     </Application.Resources>
+ </Application>
+diff --git a/InsightPinboard/MainWindow.xaml b/InsightPinboard/MainWindow.xaml
+index e7eaed7..b83f806 100644
+--- a/InsightPinboard/MainWindow.xaml
++++ b/InsightPinboard/MainWindow.xaml
+@@ -215,7 +215,7 @@
+ 
+                 <!-- Selection info -->
+                 <TextBlock x:Name="SelectionInfoText" Text=""
+-                           Foreground="{StaticResource AccentBlue}" FontSize="11"
++                           Foreground="{StaticResource AccentGold}" FontSize="11"
+                            VerticalAlignment="Center" Margin="8,0"
+                            FontWeight="Medium"/>
+             </DockPanel>
+@@ -289,10 +289,10 @@
+ 
+                 <!-- Selection Rectangle -->
+                 <Rectangle x:Name="SelectionRect"
+-                           Stroke="{StaticResource AccentBlue}"
++                           Stroke="{StaticResource AccentGold}"
+                            StrokeThickness="1"
+                            StrokeDashArray="4 2"
+-                           Fill="#2060a5fa"
++                           Fill="#20B8942F"
+                            Visibility="Collapsed"/>
+             </Canvas>
+         </Border>
+diff --git a/InsightPinboard/MainWindow.xaml.cs b/InsightPinboard/MainWindow.xaml.cs
+index 90ab56a..0ce6ae2 100644
+--- a/InsightPinboard/MainWindow.xaml.cs
++++ b/InsightPinboard/MainWindow.xaml.cs
+@@ -67,7 +67,7 @@ public partial class MainWindow : Window
+     // 色パレット
+     private static readonly string[] NoteColors = {
+         "#FFFBBF24", // Yellow
+-        "#FF60A5FA", // Blue
++        "#FFB8942F", // Gold
+         "#FF4ADE80", // Green
+         "#FFF472B6", // Pink
+         "#FFA78BFA", // Purple
+@@ -77,7 +77,7 @@ public partial class MainWindow : Window
+     };
+ 
+     private static readonly string[] GroupColors = {
+-        "#301E4A8A", // Blue
++        "#30B8942F", // Gold
+         "#302D9254", // Green
+         "#30D97706", // Yellow
+         "#30DC2626", // Red
+@@ -120,7 +120,7 @@ public partial class MainWindow : Window
+                 Content = board.Name,
+                 Tag = board,
+                 Background = board == _vm.ActiveBoard
+-                    ? new SolidColorBrush(Color.FromArgb(30, 100, 165, 250))
++                    ? new SolidColorBrush(Color.FromArgb(30, 184, 148, 47))
+                     : Brushes.Transparent,
+                 Foreground = board == _vm.ActiveBoard
+                     ? (Brush)FindResource("FgPrimary")
+@@ -266,7 +266,7 @@ public partial class MainWindow : Window
+     {
+         if (selected)
+         {
+-            border.BorderBrush = new SolidColorBrush(Color.FromRgb(96, 165, 250));
++            border.BorderBrush = new SolidColorBrush(Color.FromRgb(184, 148, 47));
+             border.BorderThickness = new Thickness(2);
+         }
+     }
+@@ -1906,13 +1906,14 @@ public partial class MainWindow : Window
+         switch (theme)
+         {
+             case "Light":
+-                res["BgDark"] = new SolidColorBrush(Color.FromRgb(245, 245, 250));
+-                res["BgPanel"] = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+-                res["BgCard"] = new SolidColorBrush(Color.FromRgb(250, 250, 255));
+-                res["FgPrimary"] = new SolidColorBrush(Color.FromRgb(30, 30, 40));
+-                res["FgSecondary"] = new SolidColorBrush(Color.FromRgb(80, 80, 100));
+-                res["FgDim"] = new SolidColorBrush(Color.FromRgb(150, 150, 170));
+-                res["BorderSubtle"] = new SolidColorBrush(Color.FromRgb(220, 220, 230));
++                res["BgDark"] = new SolidColorBrush(Color.FromRgb(250, 248, 245));     // Ivory #FAF8F5
++                res["BgPanel"] = new SolidColorBrush(Color.FromRgb(255, 255, 255));     // Card White #FFFFFF
++                res["BgCard"] = new SolidColorBrush(Color.FromRgb(255, 255, 255));      // Card White #FFFFFF
++                res["FgPrimary"] = new SolidColorBrush(Color.FromRgb(28, 25, 23));      // Text Primary #1C1917
++                res["FgSecondary"] = new SolidColorBrush(Color.FromRgb(87, 83, 78));    // Text Secondary #57534E
++                res["FgDim"] = new SolidColorBrush(Color.FromRgb(168, 162, 158));       // Muted text
++                res["AccentGold"] = new SolidColorBrush(Color.FromRgb(184, 148, 47));   // Gold #B8942F
++                res["BorderSubtle"] = new SolidColorBrush(Color.FromRgb(231, 226, 218)); // Border #E7E2DA
+                 break;
+ 
+             case "Harmonic":
+@@ -1923,7 +1924,7 @@ public partial class MainWindow : Window
+                 res["FgSecondary"] = new SolidColorBrush(Color.FromRgb(100, 180, 220));
+                 res["FgDim"] = new SolidColorBrush(Color.FromRgb(60, 100, 140));
+                 res["AccentGreen"] = new SolidColorBrush(Color.FromRgb(0, 200, 150));
+-                res["AccentBlue"] = new SolidColorBrush(Color.FromRgb(0, 150, 255));
++                res["AccentGold"] = new SolidColorBrush(Color.FromRgb(184, 148, 47));   // Gold #B8942F
+                 res["BorderSubtle"] = new SolidColorBrush(Color.FromRgb(40, 70, 100));
+                 break;
+ 
+@@ -1935,7 +1936,7 @@ public partial class MainWindow : Window
+                 res["FgSecondary"] = new SolidColorBrush(Color.FromRgb(136, 146, 176));
+                 res["FgDim"] = new SolidColorBrush(Color.FromRgb(74, 85, 104));
+                 res["AccentGreen"] = new SolidColorBrush(Color.FromRgb(74, 222, 128));
+-                res["AccentBlue"] = new SolidColorBrush(Color.FromRgb(96, 165, 250));
++                res["AccentGold"] = new SolidColorBrush(Color.FromRgb(184, 148, 47));   // Gold #B8942F
+                 res["BorderSubtle"] = new SolidColorBrush(Color.FromRgb(37, 44, 58));
+                 break;
+         }
+diff --git a/InsightPinboard/Models/PinGroup.cs b/InsightPinboard/Models/PinGroup.cs
+index d973001..63188fa 100644
+--- a/InsightPinboard/Models/PinGroup.cs
++++ b/InsightPinboard/Models/PinGroup.cs
+@@ -8,7 +8,7 @@ public class PinGroup
+     public string Name { get; set; } = "新しいグループ";
+ 
+     /// <summary>背景色（#AARRGGBB形式）</summary>
+-    public string Color { get; set; } = "#201E4A8A";
++    public string Color { get; set; } = "#30B8942F";
+ 
+     /// <summary>キャンバス上のX座標</summary>
+     public double X { get; set; }
+-- 
+2.43.0
+

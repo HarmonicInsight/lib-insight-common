@@ -1,0 +1,25 @@
+{
+  "name": "harmonic-insight",
+  "version": "1.0.0",
+  "description": "HARMONIC insight 開発標準プラグイン — Ivory & Gold デザインシステム、プラットフォーム別標準、製品設定、デプロイパターンを統合管理",
+  "author": {
+    "name": "HARMONIC insight",
+    "url": "https://github.com/HarmonicInsight"
+  },
+  "repository": "https://github.com/HarmonicInsight/cross-lib-insight-common",
+  "license": "UNLICENSED",
+  "keywords": [
+    "harmonic-insight",
+    "ivory-gold",
+    "design-system",
+    "wpf",
+    "react",
+    "python",
+    "android",
+    "ios",
+    "licensing",
+    "claude-api",
+    "b2b",
+    "insightoffice"
+  ]
+}

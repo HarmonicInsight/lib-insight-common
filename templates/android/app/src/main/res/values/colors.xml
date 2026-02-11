@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Insight Ivory & Gold カラーリソース
+  brand/colors.json に基づく統一定義
+
+  【このファイルについて】
+  insight-common/templates/android/ からコピーして使用。
+  アプリ固有のカラーは末尾の App-Specific セクションに追加。
+-->
+<resources>
+    <!-- === Background (Ivory) === -->
+    <color name="bg_primary">#FAF8F5</color>
+    <color name="bg_secondary">#F3F0EB</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="bg_hover">#EEEBE5</color>
+
+    <!-- === Brand Primary (Gold) === -->
+    <color name="primary">#B8942F</color>
+    <color name="primary_hover">#8C711E</color>
+    <color name="primary_light">#F0E6C8</color>
+
+    <!-- === Accent Scale (Gold) === -->
+    <color name="accent_50">#FDF9EF</color>
+    <color name="accent_100">#F9F0D9</color>
+    <color name="accent_200">#F0E6C8</color>
+    <color name="accent_300">#E5D5A0</color>
+    <color name="accent_400">#D4BC6A</color>
+    <color name="accent_500">#B8942F</color>
+    <color name="accent_600">#8C711E</color>
+    <color name="accent_700">#6B5518</color>
+
+    <!-- === Semantic === -->
+    <color name="success">#16A34A</color>
+    <color name="success_light">#DCFCE7</color>
+    <color name="warning">#CA8A04</color>
+    <color name="warning_light">#FEF9C3</color>
+    <color name="error">#DC2626</color>
+    <color name="error_light">#FEE2E2</color>
+    <color name="info">#2563EB</color>
+    <color name="info_light">#DBEAFE</color>
+
+    <!-- === Text === -->
+    <color name="text_primary">#1C1917</color>
+    <color name="text_secondary">#57534E</color>
+    <color name="text_tertiary">#A8A29E</color>
+    <color name="text_muted">#D6D3D1</color>
+    <color name="text_accent">#8C711E</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- === Border === -->
+    <color name="border">#E7E2DA</color>
+    <color name="border_light">#F3F0EB</color>
+
+    <!-- === Dark Mode === -->
+    <color name="dark_bg_primary">#1C1917</color>
+    <color name="dark_bg_secondary">#292524</color>
+    <color name="dark_bg_card">#292524</color>
+    <color name="dark_text_primary">#FAF8F5</color>
+    <color name="dark_text_secondary">#D6D3D1</color>
+    <color name="dark_border">#3D3835</color>
+
+    <!-- === Plan Badge === -->
+    <color name="plan_free">#A8A29E</color>
+    <color name="plan_trial">#2563EB</color>
+    <color name="plan_std">#16A34A</color>
+    <color name="plan_pro">#B8942F</color>
+    <color name="plan_ent">#7C3AED</color>
+
+    <!-- === Insight Adaptive Icon === -->
+    <color name="insight_icon_background">#FAF8F5</color>
+
+    <!-- ============================================ -->
+    <!-- App-Specific Colors                          -->
+    <!-- アプリ固有のカラーはここに追加してください       -->
+    <!-- ============================================ -->
+</resources>

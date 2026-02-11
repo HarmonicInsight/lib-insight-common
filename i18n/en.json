@@ -168,15 +168,19 @@
     "retry": "Retry"
   },
   "products": {
-    "SALES": "SalesInsight",
-    "SLIDE": "InsightSlide",
-    "PY": "InsightPy",
-    "INTV": "InterviewInsight",
-    "ALL": "Insight Series"
+    "INSS": "InsightOfficeSlide",
+    "IOSH": "InsightOfficeSheet",
+    "IOSD": "InsightOfficeDoc",
+    "INPY": "InsightPy",
+    "INMV": "InsightMovie",
+    "INIG": "InsightImageGen",
+    "INBT": "InsightBot",
+    "INCA": "InsightNoCodeAnalyzer",
+    "IVIN": "InterviewInsight"
   },
   "company": {
-    "name": "Harmonic Insight",
-    "copyright": "© {year} Harmonic Insight. All rights reserved.",
+    "name": "HARMONIC insight",
+    "copyright": "© {year} HARMONIC insight. All rights reserved.",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
     "contact": "Contact",

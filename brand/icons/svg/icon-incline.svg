@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- Gauge arc -->
+  <path d="M34,62 A20,20 0 0,1 74,62" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Tick marks -->
+  <line x1="34" y1="62" x2="37" y2="62" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <line x1="40" y1="48" x2="42" y2="50" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <line x1="54" y1="42" x2="54" y2="45" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <line x1="68" y1="48" x2="66" y2="50" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <line x1="74" y1="62" x2="71" y2="62" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <!-- Needle -->
+  <line x1="54" y1="62" x2="65" y2="47" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Pivot -->
+  <circle cx="54" cy="62" r="3.5" fill="white"/>
+  <circle cx="54" cy="62" r="1.5" fill="#B8942F"/>
+  <!-- Cute face -->
+  <circle cx="48" cy="66" r="1.2" fill="white"/>
+  <circle cx="60" cy="66" r="1.2" fill="white"/>
+  <path d="M50,69 Q54,72 58,69" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

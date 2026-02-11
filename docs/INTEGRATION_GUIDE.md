@@ -1,6 +1,6 @@
 # Insight Series 共通リソース統合ガイド
 
-このドキュメントは、Insight Series の各アプリケーション（SalesInsight, InsightSlide, InsightPy, InterviewInsight）が `insight-common` リポジトリの共通リソースを使用するための手順を説明します。
+このドキュメントは、Insight Series の各アプリケーション（InsightOfficeSlide, InsightOfficeSheet, InsightOfficeDoc, InsightPy, InsightMovie, InsightImageGen, InsightBot, InsightNoCodeAnalyzer, InterviewInsight）が `insight-common` リポジトリの共通リソースを使用するための手順を説明します。
 
 ## 概要
 
@@ -41,7 +41,7 @@ git submodule update --init --recursive
 
 ディレクトリ構成例：
 ```
-SalesInsight/
+InsightNoCodeAnalyzer/
 ├── insight-common/     # サブモジュール
 ├── src/
 ├── src-tauri/
@@ -70,19 +70,23 @@ cp insight-common/brand/colors.json ./src/assets/
 INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
 例:
-INS-ALL-TRIAL-A1B2-C3D4-X9     # 全製品トライアル
-INS-SALES-PRO-E5F6-G7H8-Y0     # SalesInsight Professional
+INS-INSS-TRIAL-A1B2-C3D4-X9    # InsightOfficeSlide トライアル
+INS-INCA-PRO-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Professional
 ```
 
 ### 製品コード
 
 | コード | 製品名 | 対象アプリ |
 |--------|--------|-----------|
-| `SALES` | SalesInsight | SalesInsight |
-| `SLIDE` | InsightSlide | InsightSlide |
-| `PY` | InsightPy | InsightPy |
-| `INTV` | InterviewInsight | InterviewInsight |
-| `ALL` | 全製品バンドル | 全アプリ共通 |
+| `INSS` | InsightOfficeSlide | InsightOfficeSlide |
+| `IOSH` | InsightOfficeSheet | InsightOfficeSheet |
+| `IOSD` | InsightOfficeDoc | InsightOfficeDoc |
+| `INPY` | InsightPy | InsightPy |
+| `INMV` | InsightMovie | InsightMovie |
+| `INIG` | InsightImageGen | InsightImageGen |
+| `INBT` | InsightBot | InsightBot |
+| `INCA` | InsightNoCodeAnalyzer | InsightNoCodeAnalyzer |
+| `IVIN` | InterviewInsight | InterviewInsight |
 
 ### ティア
 
@@ -97,7 +101,7 @@ INS-SALES-PRO-E5F6-G7H8-Y0     # SalesInsight Professional
 
 ## TypeScript/React アプリでの使用
 
-SalesInsight, InsightSlide（Tauri版）など
+InsightNoCodeAnalyzer, InterviewInsight（Tauri版）など
 
 ### 1. インポート設定
 
@@ -126,7 +130,7 @@ import {
 } from '@insight/license';
 
 // このアプリの製品コード
-const CURRENT_PRODUCT: ProductCode = 'SALES';  // または 'SLIDE', 'INTV'
+const CURRENT_PRODUCT: ProductCode = 'INCA';  // または 'IVIN'
 
 class AppLicenseManager {
   private validator = new LicenseValidator();
@@ -179,7 +183,7 @@ class AppLicenseManager {
   private getTrialLicense(): LicenseInfo {
     return {
       isValid: true,
-      product: 'ALL',
+      product: CURRENT_PRODUCT,
       tier: 'TRIAL',
       expiresAt: null,
     };
@@ -225,10 +229,10 @@ import colors from '@insight/brand';
 
 export const theme = {
   colors: {
-    primary: colors.brand.primary.main,      // #2563EB
-    secondary: colors.brand.secondary.main,  // #7C3AED
-    success: colors.semantic.success.main,   // #10B981
-    error: colors.semantic.error.main,       // #EF4444
+    primary: colors.brand.primary.main,      // #B8942F
+    secondary: colors.brand.secondary.main,
+    success: colors.semantic.success.main,   // #16A34A
+    error: colors.semantic.error.main,       // #DC2626
   }
 };
 ```
@@ -237,12 +241,12 @@ export const theme = {
 
 ## Python アプリでの使用
 
-InsightPy, InsightSlide（Python版）など
+InsightOfficeSlide, InsightPy（Python版）など
 
 ### 1. パッケージ構成
 
 ```
-InsightPy/
+InsightOfficeSlide/
 ├── insight_common/          # コピーまたはシンボリックリンク
 │   └── license/
 │       └── __init__.py
@@ -269,10 +273,10 @@ from insight_common.license import (
 )
 
 # このアプリの製品コード
-CURRENT_PRODUCT = ProductCode.SLIDE  # または PY, INTV
+CURRENT_PRODUCT = ProductCode.INSS  # または INPY, IVIN
 
 # 設定ファイルのパス
-CONFIG_DIR = Path.home() / ".insight-slide"
+CONFIG_DIR = Path.home() / ".insight-office-slide"
 LICENSE_FILE = CONFIG_DIR / "license.json"
 
 
@@ -336,7 +340,7 @@ class AppLicenseManager:
         """トライアルライセンス"""
         return LicenseInfo(
             is_valid=True,
-            product=ProductCode.ALL,
+            product=CURRENT_PRODUCT,
             tier=LicenseTier.TRIAL,
             expires_at=None,
         )
@@ -391,32 +395,26 @@ def sync_to_cloud():
 ```json
 {
   "brand": {
-    "primary": { "main": "#2563EB", "light": "#60A5FA", "dark": "#1D4ED8" },
+    "primary": { "main": "#B8942F", "light": "#D4B95E", "dark": "#8A6F23" },
     "secondary": { "main": "#7C3AED", ... }
   },
   "semantic": {
-    "success": { "main": "#10B981", ... },
-    "error": { "main": "#EF4444", ... }
+    "success": { "main": "#16A34A", ... },
+    "error": { "main": "#DC2626", ... }
   },
   "products": {
-    "salesInsight": { "primary": "#2563EB" },
-    "insightSlide": { "primary": "#7C3AED" },
+    "insightOfficeSlide": { "primary": "#B8942F" },
+    "insightOfficeSheet": { "primary": "#B8942F" },
+    "insightOfficeDoc": { "primary": "#B8942F" },
     "insightPy": { "primary": "#059669" },
-    "interviewInsight": { "primary": "#DC2626" }
+    "interviewInsight": { "primary": "#B8942F" }
   }
 }
 ```
 
 ### 製品別アクセントカラー
 
-各製品は固有のアクセントカラーを使用しつつ、共通のセマンティックカラーを維持：
-
-| 製品 | プライマリ | 用途 |
-|------|-----------|------|
-| SalesInsight | `#2563EB` (Blue) | ヘッダー、ボタン |
-| InsightSlide | `#7C3AED` (Purple) | ヘッダー、ボタン |
-| InsightPy | `#059669` (Green) | ヘッダー、ボタン |
-| InterviewInsight | `#DC2626` (Red) | ヘッダー、ボタン |
+全製品は Gold (#B8942F) をプライマリカラーとして使用し、Ivory (#FAF8F5) を背景色として使用します。
 
 ---
 
@@ -452,12 +450,12 @@ function LegalPage() {
 import products from '@/insight-common/config/products.json';
 
 // 現在の製品情報を取得
-const currentProduct = products.products.desktop.find(
-  p => p.code === 'SALES'
+const currentProduct = products.products.individual.find(
+  p => p.code === 'INSS'
 );
 
-console.log(currentProduct.name);        // "SalesInsight"
-console.log(currentProduct.description); // "AI営業支援アシスタント"
+console.log(currentProduct.name);        // "InsightOfficeSlide"
+console.log(currentProduct.description); // "PowerPointコンテンツ抽出・更新"
 
 // ティア情報
 const proTier = products.tiers.PRO;
@@ -518,7 +516,7 @@ jobs:
 新規アプリで insight-common を導入する際のチェックリスト：
 
 - [ ] insight-common を submodule として追加
-- [ ] 製品コード（SALES/SLIDE/PY/INTV）を決定
+- [ ] 製品コード（INSS/IOSH/IOSD/INPY/INMV/INIG/INBT/INCA/IVIN）を決定
 - [ ] ライセンス管理クラスを実装
 - [ ] 機能制限のゲート処理を実装
 - [ ] ブランドカラーをテーマに適用

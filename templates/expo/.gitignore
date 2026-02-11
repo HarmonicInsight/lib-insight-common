@@ -1,0 +1,35 @@
+# Expo
+.expo/
+dist/
+web-build/
+
+# Node
+node_modules/
+
+# Native build
+ios/
+android/
+
+# Env
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# EAS
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Metro
+.metro-health-check*

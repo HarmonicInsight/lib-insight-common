@@ -4,7 +4,7 @@ Insight Series製品群の共通リソースを一元管理するリポジトリ
 
 ## 概要
 
-このリポジトリは、5つのデスクトップアプリケーションと10個のモバイルアプリケーションで構成されるInsight Series全体で共有するリソースを管理します。
+このリポジトリは、9つのアプリケーションで構成されるInsight Series全体で共有するリソースを管理します。
 
 ## ディレクトリ構成
 
@@ -53,18 +53,24 @@ insight-common/
 
 ## 対象製品
 
-### デスクトップアプリケーション
+### 個人向け製品
 
 | 製品コード | 製品名 | 説明 |
 |-----------|--------|------|
-| SALES | SalesInsight | AI営業支援アシスタント |
-| SLIDE | InsightSlide | AIプレゼンテーション支援 |
-| PY | InsightPy | Pythonデータ分析支援 |
-| INTV | InterviewInsight | AI採用面接支援 |
+| INSS | InsightOfficeSlide | PowerPointコンテンツ抽出・更新 |
+| IOSH | InsightOfficeSheet | Excelバージョン管理・チームコラボ |
+| IOSD | InsightOfficeDoc | Wordドキュメント操作・自動化 |
+| INPY | InsightPy | Windows自動化Python実行環境 |
+| INMV | InsightMovie | 画像・PPTから動画作成 |
+| INIG | InsightImageGen | AI画像・音声生成 |
 
-### モバイルアプリケーション
+### 法人向け製品
 
-各デスクトップ製品に対応するモバイル版およびコンパニオンアプリ
+| 製品コード | 製品名 | 説明 |
+|-----------|--------|------|
+| INBT | InsightBot | Python RPA自動化ボット |
+| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
+| IVIN | InterviewInsight | AI採用面接支援 |
 
 ## ライセンスキー形式
 
@@ -207,7 +213,7 @@ python -m pytest
 
 ## ライセンス
 
-このリポジトリはHarmonic Insightの内部利用専用です。
+このリポジトリはHARMONIC insightの内部利用専用です。
 
 ## 連絡先
 

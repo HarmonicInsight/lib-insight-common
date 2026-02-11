@@ -1,0 +1,10 @@
+{
+  "name": "harmonic-local",
+  "description": "HARMONIC insight ローカルプラグインマーケットプレース",
+  "plugins": [
+    {
+      "name": "harmonic-insight",
+      "path": "."
+    }
+  ]
+}

@@ -45,7 +45,7 @@ if [ -d "insight-common" ]; then
     fi
 else
     echo -e "  ${RED}❌ insight-common が見つかりません${NC}"
-    echo -e "     git submodule add https://github.com/HarmonicInsight/insight-common.git"
+    echo -e "     git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common"
     ((ERRORS++))
 fi
 

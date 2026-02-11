@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- Document body with folded corner -->
+  <path d="M40,36 L62,36 L68,42 L68,76 Q68,78 66,78 L42,78 Q40,78 40,76 Z" fill="white"/>
+  <!-- Folded corner -->
+  <path d="M62,36 L62,42 L68,42 Z" fill="#D4BC6A"/>
+  <!-- Text lines -->
+  <rect x="46" y="48" width="16" height="2" rx="1" fill="#D4BC6A"/>
+  <rect x="46" y="54" width="14" height="2" rx="1" fill="#D4BC6A" opacity="0.6"/>
+  <rect x="46" y="60" width="16" height="2" rx="1" fill="#D4BC6A" opacity="0.6"/>
+  <rect x="46" y="66" width="10" height="2" rx="1" fill="#D4BC6A" opacity="0.4"/>
+</svg>

@@ -1,192 +1,306 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "Insight Series 製品定義",
-  "version": "1.0.0",
+  "description": "HARMONIC insight 製品定義（公式サイト準拠）",
+  "version": "2.0.0",
   "products": {
-    "desktop": [
+    "individual": [
       {
-        "id": "sales-insight",
-        "code": "SALES",
-        "name": "SalesInsight",
-        "displayName": "SalesInsight",
-        "description": "AI営業支援アシスタント",
-        "category": "sales",
-        "platform": ["windows", "macos"],
-        "framework": "tauri",
+        "id": "insight-office-slide",
+        "code": "INSS",
+        "name": "InsightOfficeSlide",
+        "displayName": "InsightOfficeSlide",
+        "description": "AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール",
+        "category": "office",
+        "salesChannel": "standalone",
+        "platform": ["windows"],
+        "framework": "wpf",
         "status": "active",
-        "repository": "HarmonicInsight/SalesInsight",
+        "repository": "HarmonicInsight/win-app-insight-slide",
+        "releasesRepository": "HarmonicInsight/cross-releases",
+        "sharedLibrary": "HarmonicInsight.Common",
+        "hasAi": true,
         "features": [
-          "realtime-analysis",
-          "talk-optimization",
-          "crm-integration"
+          "pptx-read-write",
+          "content-extraction",
+          "batch-replace",
+          "diff-compare",
+          "ai-assistant",
+          "ai-editor",
+          "reference-materials",
+          "voice-input",
+          "vrm-avatar"
         ]
       },
       {
-        "id": "insight-slide",
-        "code": "SLIDE",
-        "name": "InsightSlide",
-        "displayName": "InsightSlide",
-        "description": "AIプレゼンテーション支援",
-        "category": "presentation",
-        "platform": ["windows", "macos"],
-        "framework": "tauri",
-        "status": "development",
-        "repository": "HarmonicInsight/InsightSlide",
+        "id": "insight-office-sheet",
+        "code": "IOSH",
+        "name": "InsightOfficeSheet",
+        "displayName": "InsightOfficeSheet",
+        "description": "AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション",
+        "category": "office",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/win-app-insight-sheet",
+        "releasesRepository": "HarmonicInsight/cross-releases",
+        "sharedLibrary": "HarmonicInsight.Common",
+        "hasAi": true,
         "features": [
-          "slide-generation",
-          "speech-coaching",
-          "rehearsal-analysis"
+          "excel-read-write",
+          "version-control",
+          "diff-compare",
+          "change-log",
+          "team-board",
+          "ai-assistant",
+          "ai-editor",
+          "reference-materials",
+          "voice-input",
+          "vrm-avatar"
+        ]
+      },
+      {
+        "id": "insight-office-doc",
+        "code": "IOSD",
+        "name": "InsightOfficeDoc",
+        "displayName": "InsightOfficeDoc",
+        "description": "AIアシスタント搭載 — 参照資料付きWord文書管理ツール",
+        "category": "office",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "development",
+        "repository": "HarmonicInsight/win-app-insight-doc",
+        "releasesRepository": "HarmonicInsight/cross-releases",
+        "sharedLibrary": "HarmonicInsight.Common",
+        "hasAi": true,
+        "features": [
+          "word-read-write",
+          "version-control",
+          "diff-compare",
+          "ai-assistant",
+          "ai-editor",
+          "reference-materials",
+          "voice-input",
+          "vrm-avatar"
+        ]
+      },
+      {
+        "id": "insight-senior-office",
+        "code": "ISOF",
+        "name": "InsightSeniorOffice",
+        "displayName": "Insight Senior Office",
+        "description": "AIアシスタント搭載 — シニア向け統合オフィスツール（表計算・文書・iCloudメール）",
+        "category": "office",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/win-app-insight-sheet-senior",
+        "releasesRepository": "HarmonicInsight/cross-releases",
+        "sharedLibrary": "HarmonicInsight.Common",
+        "hasAi": true,
+        "features": [
+          "excel-read-write",
+          "document-read-write",
+          "icloud-mail",
+          "ai-assistant",
+          "voice-input",
+          "text-to-speech",
+          "font-scaling",
+          "setup-wizard",
+          "tutorial",
+          "contacts"
         ]
       },
       {
         "id": "insight-py",
-        "code": "PY",
+        "code": "INPY",
         "name": "InsightPy",
         "displayName": "InsightPy",
-        "description": "Pythonデータ分析支援",
-        "category": "data-analysis",
-        "platform": ["windows", "macos", "linux"],
-        "framework": "python",
-        "status": "planned",
-        "repository": "HarmonicInsight/InsightPy",
+        "description": "AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤",
+        "category": "automation",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/win-app-insight-py",
+        "hasAi": true,
         "features": [
-          "code-generation",
-          "data-visualization",
-          "report-creation"
+          "code-execution",
+          "presets",
+          "script-storage",
+          "cloud-sync",
+          "ai-editor"
+        ]
+      },
+      {
+        "id": "insight-movie",
+        "code": "INMV",
+        "name": "InsightMovie",
+        "displayName": "InsightMovie",
+        "description": "画像とテキストから動画を自動作成",
+        "category": "content",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/win-app-insight-movie-gen",
+        "hasAi": false,
+        "features": [
+          "video-generation",
+          "subtitle",
+          "transition",
+          "pptx-import"
+        ]
+      },
+      {
+        "id": "insight-image-gen",
+        "code": "INIG",
+        "name": "InsightImageGen",
+        "displayName": "InsightImageGen",
+        "description": "業務資料向けAI画像の大量自動生成ツール",
+        "category": "content",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/win-app-insight-image-gen",
+        "hasAi": false,
+        "features": [
+          "generate-image",
+          "batch-image",
+          "generate-audio",
+          "character-prompts",
+          "hi-res",
+          "cloud-sync"
+        ]
+      }
+    ],
+    "corporate": [
+      {
+        "id": "insight-bot",
+        "code": "INBT",
+        "name": "InsightBot",
+        "displayName": "InsightBot",
+        "description": "AIエディタ搭載 — 業務最適化RPA製品",
+        "category": "automation",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/win-app-insight-bot",
+        "hasAi": true,
+        "features": [
+          "script-execution",
+          "presets",
+          "job-storage",
+          "cloud-sync",
+          "ai-editor"
+        ]
+      },
+      {
+        "id": "insight-no-code-analyzer",
+        "code": "INCA",
+        "name": "InsightNoCodeAnalyzer",
+        "displayName": "InsightNoCodeAnalyzer",
+        "description": "RPA・ローコードのマイグレーション自動化ツール",
+        "category": "automation",
+        "platform": ["windows"],
+        "framework": "wpf",
+        "status": "active",
+        "repository": "HarmonicInsight/win-app-nocode-analyzer",
+        "hasAi": false,
+        "features": [
+          "rpa-analysis",
+          "lowcode-analysis",
+          "migration-assessment",
+          "akabot-conversion",
+          "export-json",
+          "export-markdown"
         ]
       },
       {
         "id": "interview-insight",
-        "code": "INTV",
+        "code": "IVIN",
         "name": "InterviewInsight",
         "displayName": "InterviewInsight",
-        "description": "AI採用面接支援",
-        "category": "hr",
-        "platform": ["windows", "macos"],
-        "framework": "tauri",
-        "status": "planned",
-        "repository": "HarmonicInsight/InterviewInsight",
-        "features": [
-          "interview-evaluation",
-          "question-suggestion",
-          "bias-detection"
-        ]
-      },
-      {
-        "id": "insight-forguncy",
-        "code": "FORG",
-        "name": "InsightForguncy",
-        "displayName": "InsightForguncy",
-        "description": "Forguncy AI開発支援",
-        "category": "development",
+        "description": "自動ヒアリング・業務調査支援",
+        "category": "research",
         "platform": ["windows"],
-        "framework": "tauri",
+        "framework": "wpf",
         "status": "development",
-        "repository": "HarmonicInsight/app-win-insight-forguncy",
-        "features": [
-          "code-generation",
-          "formula-assistance",
-          "ui-optimization"
-        ]
-      },
-      {
-        "id": "insight-suite",
-        "code": "ALL",
-        "name": "Insight Suite",
-        "displayName": "Insight Suite",
-        "description": "全製品バンドル",
-        "category": "bundle",
-        "platform": ["windows", "macos"],
-        "framework": "mixed",
-        "status": "active",
-        "repository": null,
-        "features": ["all"]
-      }
-    ],
-    "mobile": [
-      {
-        "id": "sales-insight-mobile",
-        "code": "SALES-M",
-        "name": "SalesInsight Mobile",
-        "parentProduct": "sales-insight",
-        "platform": ["ios", "android"],
-        "framework": "react-native",
-        "status": "planned"
-      },
-      {
-        "id": "insight-slide-mobile",
-        "code": "SLIDE-M",
-        "name": "InsightSlide Mobile",
-        "parentProduct": "insight-slide",
-        "platform": ["ios", "android"],
-        "framework": "react-native",
-        "status": "planned"
+        "repository": "HarmonicInsight/web-app-auto-interview",
+        "hasAi": true,
+        "features": []
       }
     ]
   },
   "tiers": {
-    "TRIAL": {
-      "name": "Trial",
-      "duration": 14,
-      "durationUnit": "days",
-      "features": ["basic"],
-      "limits": {
-        "apiCalls": 100,
-        "storage": "100MB"
+    "individual": {
+      "FREE": {
+        "name": "Free",
+        "nameJa": "フリー",
+        "price": 0,
+        "currency": "JPY",
+        "aiCredits": 20,
+        "aiModel": "opus",
+        "description": "AI 20回付き無料版"
+      },
+      "STD": {
+        "name": "Standard",
+        "nameJa": "スタンダード",
+        "price": 39800,
+        "currency": "JPY",
+        "aiCredits": 0,
+        "aiModel": null,
+        "description": "AIなし版"
+      },
+      "PRO": {
+        "name": "Professional",
+        "nameJa": "プロフェッショナル",
+        "price": 49800,
+        "currency": "JPY",
+        "aiCredits": 100,
+        "aiModel": "opus",
+        "description": "AI 100回付き（Opus対応）"
+      },
+      "ENT": {
+        "name": "Enterprise",
+        "nameJa": "エンタープライズ",
+        "price": null,
+        "currency": "JPY",
+        "aiCredits": null,
+        "aiModel": "opus",
+        "description": "個別見積"
       }
     },
-    "STD": {
-      "name": "Standard",
-      "duration": 365,
-      "durationUnit": "days",
-      "features": ["basic", "standard"],
-      "limits": {
-        "apiCalls": 10000,
-        "storage": "5GB"
+    "corporate": {
+      "STD": {
+        "name": "Standard",
+        "nameJa": "スタンダード",
+        "price": null,
+        "currency": "JPY",
+        "description": "コンサル連動型 — 個別見積"
+      },
+      "PRO": {
+        "name": "Professional",
+        "nameJa": "プロフェッショナル",
+        "price": null,
+        "currency": "JPY",
+        "description": "コンサル連動型 — 個別見積"
+      },
+      "ENT": {
+        "name": "Enterprise",
+        "nameJa": "エンタープライズ",
+        "price": null,
+        "currency": "JPY",
+        "description": "コンサル連動型 — 個別見積"
       }
     },
-    "PRO": {
-      "name": "Professional",
-      "duration": 365,
-      "durationUnit": "days",
-      "features": ["basic", "standard", "professional"],
-      "limits": {
-        "apiCalls": 100000,
-        "storage": "50GB"
-      }
-    },
-    "ENT": {
-      "name": "Enterprise",
-      "duration": null,
-      "durationUnit": "perpetual",
-      "features": ["basic", "standard", "professional", "enterprise"],
-      "limits": {
-        "apiCalls": "unlimited",
-        "storage": "unlimited"
+    "aiAddon": {
+      "credits200": {
+        "name": "AI Credits 200",
+        "nameJa": "AI追加200回パック",
+        "price": 10000,
+        "currency": "JPY",
+        "aiCredits": 200,
+        "aiModel": "opus",
+        "description": "AI使用回数追加 200回"
       }
     }
-  },
-  "featureFlags": {
-    "basic": [
-      "core-functionality",
-      "local-processing"
-    ],
-    "standard": [
-      "cloud-sync",
-      "export-basic"
-    ],
-    "professional": [
-      "team-collaboration",
-      "advanced-analytics",
-      "export-advanced",
-      "api-access"
-    ],
-    "enterprise": [
-      "sso",
-      "audit-logs",
-      "custom-deployment",
-      "priority-support",
-      "sla"
-    ]
   }
 }

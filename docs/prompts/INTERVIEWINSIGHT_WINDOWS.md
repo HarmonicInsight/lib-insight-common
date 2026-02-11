@@ -18,7 +18,7 @@ InterviewInsight を Windows デスクトップアプリに変換し、insight-c
 
 ## 製品情報
 - 製品名: InterviewInsight
-- 製品コード: INTV
+- 製品コード: IVIN
 - 旧名: AutoInterview（必要に応じてリネーム）
 
 ---
@@ -140,7 +140,7 @@ export default defineConfig({
 ### 5.1 src/lib/license-manager.ts 作成
 import { LicenseValidator, getFeatureLimits, type LicenseTier, type FeatureLimits } from '@insight/license';
 
-const PRODUCT_CODE = 'INTV';
+const PRODUCT_CODE = 'IVIN';
 const LICENSE_STORAGE_KEY = 'interview_insight_license';
 
 class LicenseManager {

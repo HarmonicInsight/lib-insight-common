@@ -104,11 +104,15 @@ export {
 
 // Constants (legacy - use config/products.ts instead)
 export const PRODUCT_CODES = {
-  INSS: 'InsightSlide Standard',
-  INSP: 'InsightSlide Pro',
+  INSS: 'InsightOfficeSlide',
+  IOSH: 'InsightOfficeSheet',
+  IOSD: 'InsightOfficeDoc',
   INPY: 'InsightPy',
-  FGIN: 'ForguncyInsight',
   INMV: 'InsightMovie',
+  INBT: 'InsightBot',
+  INCA: 'InsightNoCodeAnalyzer',
+  INIG: 'InsightImageGen',
+  IVIN: 'InterviewInsight',
 } as const;
 
 export const PLANS = {

@@ -1,7 +1,7 @@
 /**
  * @harmonic-insight/ui
  *
- * Harmonic Insight Webサイト共通UIコンポーネント
+ * HARMONIC insight Webサイト共通UIコンポーネント
  */
 
 // コンポーネント
@@ -17,7 +17,11 @@ export {
   getSitesByCategory,
   getFooterSitesByCategory,
   getCategoryName,
+  getCategoryNameEn,
+  getCrossSiteLinks,
+  getFooterPages,
   type SiteId,
   type SiteCategory,
   type SiteConfig,
+  type SitePage,
 } from './config/sites';

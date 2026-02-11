@@ -1,44 +1,41 @@
-# Harmonic Insight について
+# HARMONIC insight について
 
 ## 会社概要
 
-Harmonic Insightは、AI技術を活用したビジネスソフトウェアを開発する企業です。営業、プレゼンテーション、データ分析、採用面接など、ビジネスのあらゆる場面で人々の能力を拡張するソリューションを提供しています。
+ハーモニックインサイト合同会社は、28年の現場経験を持つITコンサルタントが設立した、AI技術を活用したビジネスソフトウェアの開発・コンサルティング企業です。コンサルティングとテクノロジーの融合により、業務プロセスの変革を支援しています。
 
 ## ミッション
 
 > AIの力で、すべてのビジネスパーソンの可能性を解き放つ
 
+## 公式サイト
+
+| サイト | URL | 説明 |
+|--------|-----|------|
+| コーポレート | https://h-insight.jp | ハーモニックインサイト合同会社 |
+| Insight Office | https://www.insight-office.com | AI搭載 業務効率化ツール 10製品 |
+| Insight Novels | https://www.insight-novels.com | AI活用 小説プラットフォーム |
+| 瀬田博之 | https://erikhiroyuki.com | 代表コンサルタント 個人事業主 |
+
 ## 製品群
 
-### Insight Series
+### Tier 1: 業務変革ツール
 
-#### デスクトップアプリケーション
+1. **InsightNoCodeAnalyzer (INCA)** - RPA・ローコード解析・移行アセスメント
+2. **InsightBot (INBT)** - AIエディタ搭載 業務最適化RPA + Orchestrator
+3. **InterviewInsight (IVIN)** - 自動ヒアリング・業務調査支援
 
-1. **SalesInsight** - AI営業支援アシスタント
-   - リアルタイム商談分析
-   - 営業トーク最適化
-   - CRM連携
+### Tier 2: AI活用ツール
 
-2. **InsightSlide** - AIプレゼンテーション支援
-   - スライド自動生成
-   - スピーチコーチング
-   - リハーサル分析
+4. **InsightMovie (INMV)** - 画像・テキストから動画作成
+5. **InsightImageGen (INIG)** - 業務資料向けAI画像の大量自動生成
 
-3. **InsightPy** - Pythonデータ分析支援
-   - コード自動生成
-   - データ可視化
-   - 分析レポート作成
+### Tier 3: InsightOffice Suite
 
-4. **InterviewInsight** - AI採用面接支援
-   - 面接評価支援
-   - 質問提案
-   - バイアス検出
-
-#### モバイルアプリケーション
-
-- 各デスクトップ製品のモバイル版
-- コンパニオンアプリ
-- 通知・モニタリングアプリ
+6. **InsightOfficeSlide (INSS)** - AIアシスタント搭載 PowerPointテキスト抽出・レビュー
+7. **InsightOfficeSheet (IOSH)** - AIアシスタント搭載 経営数値管理・予実管理
+8. **InsightOfficeDoc (IOSD)** - AIアシスタント搭載 参照資料付きWord文書管理
+9. **InsightPy (INPY)** - AIエディタ搭載 業務調査・データ収集Python実行基盤
 
 ## 価値観
 
@@ -50,15 +47,11 @@ Harmonic Insightは、AI技術を活用したビジネスソフトウェアを�
 ## 沿革
 
 - 2024年 - 会社設立
-- 2024年 - SalesInsight v1.0 リリース
-- 2024年 - InsightSlide ベータ版公開
+- 2024年 - InsightOffice Suite 開発開始
+- 2025年 - Insight Office 製品サイト公開 (insight-office.com)
 
-## 受賞歴・メディア掲載
+## 連絡先
 
-（今後追加予定）
-
-## 採用情報
-
-私たちは常に優秀な人材を求めています。詳しくは採用ページをご覧ください。
-
-https://h-insight.jp
+- 一般問い合わせ: info@h-insight.jp
+- サポート: support@h-insight.jp
+- コーポレートサイト: https://h-insight.jp

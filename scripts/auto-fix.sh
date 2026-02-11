@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================
 # 全環境ビルドエラー自動修正スクリプト
-# Harmonic Insight - insight-common
+# HARMONIC insight - insight-common
 # ============================================
 
 MAX_ATTEMPTS=5

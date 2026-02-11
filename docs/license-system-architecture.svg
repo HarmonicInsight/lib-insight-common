@@ -26,7 +26,7 @@
 
   <!-- Title -->
   <text x="450" y="40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="bold" fill="#1E293B">
-    Harmonic Insight ライセンスシステム
+    HARMONIC insight ライセンスシステム
   </text>
   <text x="450" y="65" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#64748B">
     config/products.ts - 中央集権型の機能制御
@@ -50,8 +50,8 @@
   <!-- PRODUCTS Box -->
   <rect x="365" y="150" width="170" height="100" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1"/>
   <text x="450" y="175" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#166534">PRODUCTS</text>
-  <text x="450" y="195" text-anchor="middle" font-family="monospace" font-size="11" fill="#22C55E">INSS | INSP</text>
-  <text x="450" y="212" text-anchor="middle" font-family="monospace" font-size="11" fill="#22C55E">INPY | INMV | FGIN</text>
+  <text x="450" y="195" text-anchor="middle" font-family="monospace" font-size="11" fill="#22C55E">INSS | IOSH | IOSD</text>
+  <text x="450" y="212" text-anchor="middle" font-family="monospace" font-size="11" fill="#22C55E">INPY | INMV | IVIN</text>
   <text x="450" y="235" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748B">製品定義 + 継承</text>
 
   <!-- COMMON_FEATURES Box -->
@@ -79,11 +79,12 @@
   <text x="455" y="335" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">transition...</text>
 
   <rect x="515" y="300" width="100" height="40" rx="4" fill="#FFEDD5"/>
-  <text x="565" y="325" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">FGIN: ...</text>
+  <text x="565" y="325" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">IOSH: cells,</text>
+  <text x="565" y="335" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">formulas...</text>
 
   <rect x="625" y="300" width="90" height="40" rx="4" fill="#FFEDD5"/>
-  <text x="670" y="325" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">INSP:</text>
-  <text x="670" y="335" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">→ INSS継承</text>
+  <text x="670" y="325" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">IOSD:</text>
+  <text x="670" y="335" text-anchor="middle" font-family="monospace" font-size="10" fill="#EA580C">paragraphs...</text>
 
   <!-- Arrow from config to API -->
   <path d="M 450 370 L 450 395" stroke="#94A3B8" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
@@ -116,7 +117,7 @@
   <rect x="100" y="530" width="180" height="80" rx="10" fill="white" stroke="#E2E8F0" stroke-width="2" filter="url(#shadow)"/>
   <rect x="100" y="530" width="180" height="30" rx="10" fill="url(#orangeGrad)"/>
   <rect x="100" y="550" width="180" height="10" fill="url(#orangeGrad)"/>
-  <text x="190" y="552" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="white">InsightSlide</text>
+  <text x="190" y="552" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="white">InsightOfficeSlide</text>
   <text x="190" y="580" text-anchor="middle" font-family="monospace" font-size="10" fill="#64748B">checkFeature('INSS',</text>
   <text x="190" y="595" text-anchor="middle" font-family="monospace" font-size="10" fill="#64748B">'extract', plan)</text>
 

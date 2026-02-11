@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight NLP - 日本語ビジネス文脈分析
+ * HARMONIC insight NLP - 日本語ビジネス文脈分析
  * 型定義
  */
 

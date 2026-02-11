@@ -1,3 +1,5 @@
+> **DEPRECATED**: ForguncyInsight (FORG/FGIN) has been discontinued. This document is retained for historical reference only.
+
 # InsightForguncy ライセンス統合プロンプト
 
 このプロンプトを InsightForguncy リポジトリで実行してライセンス機能を追加します。
