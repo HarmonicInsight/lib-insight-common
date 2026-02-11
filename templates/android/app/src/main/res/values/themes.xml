@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Insight Android システムテーマ
+  Compose がテーマを管理するため、最小限の設定のみ。
+  __AppName__ を実際のアプリ名に置換してください。
+-->
+<resources>
+    <style name="Theme.Insight__AppName__" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/bg_primary</item>
+        <item name="android:navigationBarColor">@color/bg_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

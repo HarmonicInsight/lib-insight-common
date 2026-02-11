@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Insight Adaptive Icon 前景テンプレート
+  108x108dp viewport, 72x72dp safe zone (18dp padding)
+
+  【このファイルについて】
+  insight-common/templates/android/ からコピーして使用。
+  Gold (#B8942F) の丸背景 + 白いシンボルアートを描画。
+  brand/icons/ の SVG を参考にアプリ固有のアートに置き換えてください。
+
+  デザインルール:
+  - 円の中心: (54, 54)、半径: 34
+  - アイコンアート: 白 (#FFFFFF)、中心の 40x40 領域に収める
+  - スパークルアクセント: Gold Light (#D4BC6A)、右上
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Gold Circle Background -->
+    <path
+        android:fillColor="#B8942F"
+        android:pathData="M54,54m-34,0a34,34 0,1 1,68 0a34,34 0,1 1,-68 0" />
+
+    <!-- === ここにアプリ固有のアイコンアートを描画 === -->
+    <!-- 例: シンプルな星 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,38 L57.5,48 L68,48 L59.5,54 L63,64 L54,58 L45,64 L48.5,54 L40,48 L50.5,48 Z" />
+
+    <!-- Sparkle Accent (右上) -->
+    <path
+        android:fillColor="#D4BC6A"
+        android:pathData="M78,30 L79.5,33 L83,33 L80,35.5 L81,39 L78,37 L75,39 L76,35.5 L73,33 L76.5,33 Z" />
+</vector>

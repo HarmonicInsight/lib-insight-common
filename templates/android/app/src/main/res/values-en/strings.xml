@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  English string resources
+  __app_display_name__ should match the Japanese values/strings.xml app name.
+-->
+<resources>
+    <string name="app_name">__app_display_name__</string>
+
+    <!-- === Common UI === -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="loading">Loading...</string>
+    <string name="error_generic">An error occurred</string>
+    <string name="retry">Retry</string>
+
+    <!-- === License === -->
+    <string name="license_title">License Activation</string>
+    <string name="license_current_plan">Current Plan</string>
+    <string name="license_expiry">Expiry Date</string>
+    <string name="license_email_hint">Email Address</string>
+    <string name="license_key_hint">License Key</string>
+    <string name="license_activate">Activate</string>
+    <string name="license_clear">Clear</string>
+    <string name="license_activated">License activated successfully</string>
+    <string name="license_invalid_key">Invalid license key format</string>
+    <string name="license_wrong_product">This key is not for this product</string>
+    <string name="license_features">Features</string>
+    <string name="license_feature_available">Available</string>
+    <string name="license_feature_unavailable">Unavailable</string>
+
+    <!-- === App-specific strings go here === -->
+</resources>
