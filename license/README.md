@@ -1,6 +1,6 @@
-# Harmonic Insight ライセンス管理
+# HARMONIC insight ライセンス管理
 
-Harmonic Insight 製品群の共通ライセンス管理モジュールです。
+HARMONIC insight 製品群の共通ライセンス管理モジュールです。
 
 ## ライセンスキー形式
 

@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Bash
 
 # Expo / React Native 開発標準
 
-対象: Harmonic Insight モバイルアプリ（iOS + Android クロスプラットフォーム）
+対象: HARMONIC insight モバイルアプリ（iOS + Android クロスプラットフォーム）
 
 ## ネイティブとの使い分け
 

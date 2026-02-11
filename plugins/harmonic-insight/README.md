@@ -1,6 +1,6 @@
-# Harmonic Insight — Claude Code Plugin
+# HARMONIC insight — Claude Code Plugin
 
-Harmonic Insight の開発標準をすべて Claude Code プラグインとしてパッケージ化。
+HARMONIC insight の開発標準をすべて Claude Code プラグインとしてパッケージ化。
 Ivory & Gold デザインシステム、プラットフォーム別標準、製品設定、デプロイパターンをコマンド一つで適用可能。
 
 ## インストール
@@ -137,4 +137,4 @@ plugins/harmonic-insight/
 
 ## ライセンス
 
-UNLICENSED — Harmonic Insight 内部使用
+UNLICENSED — HARMONIC insight 内部使用

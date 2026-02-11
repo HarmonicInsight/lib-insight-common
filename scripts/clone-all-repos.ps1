@@ -87,15 +87,8 @@ if (Test-Path $DevRoot) {
         $backupDir = "${DevRoot}_backup_$timestamp"
         Write-Host ""
         Write-Host "Backing up $DevRoot -> $backupDir ..." -ForegroundColor Yellow
-        try {
-            Rename-Item -Path $DevRoot -NewName $backupDir -ErrorAction Stop
-            Write-Host "Backup complete" -ForegroundColor Green
-        }
-        catch {
-            Write-Host "ERROR: Backup failed - $($_.Exception.Message)" -ForegroundColor Red
-            Write-Host "Hint: Close all terminals/apps using $DevRoot and retry, or run from outside $DevRoot" -ForegroundColor Yellow
-            exit 1
-        }
+        Rename-Item -Path $DevRoot -NewName $backupDir
+        Write-Host "Backup complete" -ForegroundColor Green
     }
     elseif ($Clean) {
         Write-Host ""
@@ -106,14 +99,8 @@ if (Test-Path $DevRoot) {
             exit 0
         }
         Write-Host "Deleting $DevRoot ..." -ForegroundColor Yellow
-        try {
-            Remove-Item -Path $DevRoot -Recurse -Force -ErrorAction Stop
-            Write-Host "Deleted" -ForegroundColor Green
-        }
-        catch {
-            Write-Host "ERROR: Delete failed - $($_.Exception.Message)" -ForegroundColor Red
-            exit 1
-        }
+        Remove-Item -Path $DevRoot -Recurse -Force
+        Write-Host "Deleted" -ForegroundColor Green
     }
 }
 

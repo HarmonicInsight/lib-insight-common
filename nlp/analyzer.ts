@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight NLP - メイン分析エンジン
+ * HARMONIC insight NLP - メイン分析エンジン
  */
 
 import type {

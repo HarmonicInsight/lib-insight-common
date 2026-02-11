@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- Microphone body -->
+  <rect x="48" y="38" width="12" height="18" rx="6" fill="white"/>
+  <!-- Microphone grille lines -->
+  <line x1="50" y1="43" x2="58" y2="43" stroke="#D4BC6A" stroke-width="0.8" opacity="0.5"/>
+  <line x1="50" y1="46" x2="58" y2="46" stroke="#D4BC6A" stroke-width="0.8" opacity="0.5"/>
+  <line x1="50" y1="49" x2="58" y2="49" stroke="#D4BC6A" stroke-width="0.8" opacity="0.5"/>
+  <!-- Microphone holder arc -->
+  <path d="M44,54 Q44,64 54,64 Q64,64 64,54" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Microphone stand -->
+  <line x1="54" y1="64" x2="54" y2="72" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Stand base -->
+  <line x1="48" y1="72" x2="60" y2="72" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Sound waves (left) -->
+  <path d="M40,44 Q36,50 40,56" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <path d="M36,42 Q30,50 36,58" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  <!-- Sound waves (right) -->
+  <path d="M68,44 Q72,50 68,56" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <path d="M72,42 Q78,50 72,58" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  <!-- Speech bubble hint -->
+  <circle cx="70" cy="38" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="73" cy="35" r="1" fill="white" opacity="0.4"/>
+</svg>

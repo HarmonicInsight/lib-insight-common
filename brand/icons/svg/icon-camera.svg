@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- Viewfinder bump -->
+  <path d="M44,46 L48,40 L56,40 L60,46" fill="white"/>
+  <!-- Camera body -->
+  <rect x="35" y="46" width="38" height="22" rx="3" fill="white"/>
+  <!-- Lens outer ring -->
+  <circle cx="54" cy="57" r="10" fill="#B8942F"/>
+  <!-- Lens mid -->
+  <circle cx="54" cy="57" r="7" fill="white"/>
+  <!-- Lens inner -->
+  <circle cx="54" cy="57" r="4" fill="#B8942F"/>
+  <!-- Lens highlight -->
+  <circle cx="51" cy="54.5" r="1.5" fill="white"/>
+  <!-- Flash -->
+  <circle cx="66" cy="50" r="2.5" fill="#D4BC6A"/>
+</svg>

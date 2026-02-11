@@ -26,7 +26,7 @@
 
   <!-- Title -->
   <text x="450" y="40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="bold" fill="#1E293B">
-    Harmonic Insight ライセンスシステム
+    HARMONIC insight ライセンスシステム
   </text>
   <text x="450" y="65" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#64748B">
     config/products.ts - 中央集権型の機能制御

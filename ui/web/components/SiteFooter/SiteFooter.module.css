@@ -11,7 +11,7 @@
   --footer-bg: var(--hi-footer-bg, #f5f5f5);
   --footer-text: var(--hi-footer-text, #1a1a1a);
   --footer-text-muted: var(--hi-footer-text-muted, #666666);
-  --footer-accent: var(--hi-footer-accent, #2563eb);
+  --footer-accent: var(--hi-footer-accent, #B8942F);
   --footer-border: var(--hi-footer-border, #e5e5e5);
 
   background: var(--footer-bg);

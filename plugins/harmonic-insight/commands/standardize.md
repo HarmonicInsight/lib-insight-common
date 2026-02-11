@@ -1,5 +1,5 @@
 ---
-description: 既存アプリを Harmonic Insight 開発標準に準拠させる。リポジトリ URL またはカレントディレクトリを対象に、カラー置換、ライセンス追加、API ラッパー適用、AI プロバイダー移行を段階的に実行。
+description: 既存アプリを HARMONIC insight 開発標準に準拠させる。リポジトリ URL またはカレントディレクトリを対象に、カラー置換、ライセンス追加、API ラッパー適用、AI プロバイダー移行を段階的に実行。
 argument-hint: "[repo-url or nothing]"
 ---
 

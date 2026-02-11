@@ -142,7 +142,7 @@ public static class AdminProfileLoader
         {
             Name = "Sample Profile",
             Description = "サンプル管理者プロファイル。このファイルを編集して admin-profile.json として配置してください。",
-            CreatedBy = "Harmonic Insight",
+            CreatedBy = "HARMONIC insight",
             CreatedAt = DateTime.UtcNow.ToString("O"),
             Product = productCode,
             ForcedEnabledModules = ["python_runtime", "python_scripts"],

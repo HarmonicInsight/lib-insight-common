@@ -1,5 +1,5 @@
 /**
- * Harmonic Insight 製品インストーラー定義
+ * HARMONIC insight 製品インストーラー定義
  *
  * ============================================================================
  * 【設計方針】
@@ -237,11 +237,11 @@ export interface InstallerConfig {
 // 共通定数
 // =============================================================================
 
-const PUBLISHER = 'Harmonic Insight';
+const PUBLISHER = 'HARMONIC insight';
 const PUBLISHER_URL = 'https://harmonicinsight.com';
 const SUPPORT_URL = 'https://harmonicinsight.com/support';
 const UPDATE_BASE_URL = 'https://api.harmonicinsight.com/updates';
-const START_MENU_GROUP = 'Harmonic Insight';
+const START_MENU_GROUP = 'HARMONIC insight';
 const MIN_OS_VERSION = '10.0.17763'; // Windows 10 1809+
 
 // =============================================================================
@@ -257,7 +257,7 @@ const MIN_OS_VERSION = '10.0.17763'; // Windows 10 1809+
  * ## インストール構成
  *
  * ```
- * %ProgramFiles%/Harmonic Insight/InsightBot/
+ * %ProgramFiles%/HARMONIC insight/InsightBot/
  * ├── InsightBot.exe              # メインアプリ（AI エディター + JOB 管理 GUI）
  * ├── InsightBotService.exe       # Orchestrator サービスプロセス
  * ├── InsightBotTray.exe          # タスクトレイ管理アプリ
@@ -402,7 +402,7 @@ export const INBT_INSTALLER: InstallerConfig = {
  * ## インストール構成（例: IOSH）
  *
  * ```
- * %ProgramFiles%/Harmonic Insight/InsightOfficeSheet/
+ * %ProgramFiles%/HARMONIC insight/InsightOfficeSheet/
  * ├── InsightOfficeSheet.exe       # メインアプリ
  * ├── iosh-file.ico                # 独自拡張子アイコン
  * └── modules/
@@ -814,7 +814,7 @@ export function generateInnoSetupConfig(product: ProductCode): {
       AppPublisher: config.app.publisher,
       AppPublisherURL: config.app.publisherUrl,
       AppSupportURL: config.app.supportUrl,
-      DefaultDirName: `{autopf}\\Harmonic Insight\\${config.app.installDirName}`,
+      DefaultDirName: `{autopf}\\HARMONIC insight\\${config.app.installDirName}`,
       DefaultGroupName: config.app.startMenuGroup,
       OutputBaseFilename: `${productInfo.name}-Setup`,
       Compression: 'lzma2',

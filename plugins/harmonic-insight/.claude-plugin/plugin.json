@@ -1,9 +1,9 @@
 {
   "name": "harmonic-insight",
   "version": "1.0.0",
-  "description": "Harmonic Insight 開発標準プラグイン — Ivory & Gold デザインシステム、プラットフォーム別標準、製品設定、デプロイパターンを統合管理",
+  "description": "HARMONIC insight 開発標準プラグイン — Ivory & Gold デザインシステム、プラットフォーム別標準、製品設定、デプロイパターンを統合管理",
   "author": {
-    "name": "Harmonic Insight",
+    "name": "HARMONIC insight",
     "url": "https://github.com/HarmonicInsight"
   },
   "repository": "https://github.com/HarmonicInsight/cross-lib-insight-common",

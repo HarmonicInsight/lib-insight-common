@@ -9,7 +9,7 @@ allowed-tools: Read, Grep, Glob, Bash
 > **Expo / React Native でクロスプラットフォーム開発する場合は `expo` スキルを使用してください。**
 > このスキルは Kotlin + Jetpack Compose によるネイティブ Android 専用です。
 
-対象: Harmonic Insight Android ネイティブアプリ
+対象: HARMONIC insight Android ネイティブアプリ
 
 ## 技術スタック
 

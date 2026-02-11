@@ -1,5 +1,5 @@
 ---
-description: Harmonic Insight 開発標準への準拠を検証。カラー、ライセンス、API パターン、禁止事項をチェック。
+description: HARMONIC insight 開発標準への準拠を検証。カラー、ライセンス、API パターン、禁止事項をチェック。
 argument-hint: "[directory]"
 ---
 

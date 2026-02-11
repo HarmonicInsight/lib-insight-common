@@ -109,7 +109,7 @@ FEATURES="${FEATURES}
 
 cat > "${APP_ROOT}/.devcontainer/devcontainer.json" << DEVJSON
 {
-  "name": "Harmonic Insight - Web App Build Environment",
+  "name": "HARMONIC insight - Web App Build Environment",
   "image": "mcr.microsoft.com/devcontainers/universal:2",
 
   "features": ${FEATURES},
@@ -151,7 +151,7 @@ cat > "${APP_ROOT}/.devcontainer/setup.sh" << 'SETUPSH'
 set -e
 
 echo "============================================"
-echo "  Harmonic Insight - Web App Environment"
+echo "  HARMONIC insight - Web App Environment"
 echo "============================================"
 echo ""
 echo "Node.js: $(node --version)"

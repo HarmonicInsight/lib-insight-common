@@ -1,5 +1,5 @@
 {
-  "description": "Harmonic Insight 開発標準の自動チェック。ファイル書き込み後にカラー違反と禁止パターンを検出。",
+  "description": "HARMONIC insight 開発標準の自動チェック。ファイル書き込み後にカラー違反と禁止パターンを検出。",
   "hooks": {
     "PostToolUse": [
       {

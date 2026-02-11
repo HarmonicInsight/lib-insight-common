@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 8;
+    private const int CurrentConfigVersion = 9;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -383,7 +383,7 @@ public class AppConfig
                 // ── Webサイト ──
                 new()
                 {
-                    Name = "Harmonic Insight",
+                    Name = "HARMONIC insight",
                     ProductCode = "WEB-HOME",
                     Type = AppType.Website,
                     BasePath = Path.Combine(DefaultDevRoot, "web-home"),

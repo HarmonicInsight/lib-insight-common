@@ -1,6 +1,6 @@
 # Desktop File Organizer - 実装プロンプト
 
-> Harmonic Insight Windows App シリーズ
+> HARMONIC insight Windows App シリーズ
 
 ## 概要
 

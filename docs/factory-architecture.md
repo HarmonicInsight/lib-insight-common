@@ -1,4 +1,4 @@
-# Harmonic Insight Factory - 全体アーキテクチャ図
+# HARMONIC insight Factory - 全体アーキテクチャ図
 
 > あなたの頭の中にある「知識工場」の完全な見取り図
 
@@ -284,7 +284,7 @@
 ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 ```
 
-## 要約: Harmonic Insight Factory の本質
+## 要約: HARMONIC insight Factory の本質
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -303,4 +303,4 @@
 
 *Document Version: 1.0.0*
 *Last Updated: 2026-01-12*
-*Author: Harmonic Insight Team*
+*Author: HARMONIC insight Team*

@@ -1,5 +1,5 @@
 {
-  "name": "Harmonic Insight - Full Stack Auto-Fix Environment",
+  "name": "HARMONIC insight - Full Stack Auto-Fix Environment",
   "image": "mcr.microsoft.com/devcontainers/universal:2",
 
   "features": {

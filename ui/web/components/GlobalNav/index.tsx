@@ -1,16 +1,16 @@
 /**
  * GlobalNav - グローバルナビゲーションコンポーネント
  *
- * Harmonic Insight の全サイトで共通のヘッダーナビゲーション
+ * HARMONIC insight の全サイトで共通のヘッダーナビゲーション
  *
  * @example
  * import { GlobalNav } from '@harmonic-insight/ui';
  *
- * <GlobalNav currentSiteId="blog" />
+ * <GlobalNav currentSiteId="corporate" />
  */
 
 import React, { useState, useCallback } from 'react';
-import { getGlobalNavSites, getSite, type SiteId, type SiteConfig } from '../../config/sites';
+import { getGlobalNavSites, getSite, getSitesByCategory, type SiteId, type SiteConfig } from '../../config/sites';
 import styles from './GlobalNav.module.css';
 
 export interface GlobalNavProps {
@@ -36,7 +36,7 @@ export function GlobalNav({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sites = getGlobalNavSites();
   const currentSite = getSite(currentSiteId);
-  const homeSite = getSite('home');
+  const homeSite = getSite('corporate');
 
   const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(prev => !prev);
@@ -82,7 +82,7 @@ export function GlobalNav({
               fillOpacity="0.6"
             />
           </svg>
-          <span className={styles.logoText}>Harmonic Insight</span>
+          <span className={styles.logoText}>HARMONIC insight</span>
         </div>
 
         {/* デスクトップナビゲーション */}
