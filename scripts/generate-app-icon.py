@@ -230,9 +230,13 @@ def flatten_to_rgb(img: Image.Image) -> Image.Image:
 
 
 def save_ico(master: Image.Image, filepath: str):
-    """Generate multi-resolution ICO file from master PNG."""
+    """Generate multi-resolution ICO file from master PNG.
+
+    Creates an ICO containing all WINDOWS_ICO_SIZES (16-256px).
+    The largest image must be first for Pillow to correctly embed all sizes.
+    """
     sizes_to_save = []
-    for s in WINDOWS_ICO_SIZES:
+    for s in sorted(WINDOWS_ICO_SIZES, reverse=True):
         img = resize_icon(master, s)
         if img.mode != 'RGBA':
             img = img.convert('RGBA')
@@ -242,7 +246,6 @@ def save_ico(master: Image.Image, filepath: str):
         sizes_to_save[0].save(
             filepath,
             format='ICO',
-            sizes=[(img.width, img.height) for img in sizes_to_save],
             append_images=sizes_to_save[1:]
         )
 
@@ -321,18 +324,41 @@ def generate_ios(master: Image.Image, name: str, output_dir: str):
 
 
 def generate_expo(master: Image.Image, name: str, output_dir: str):
-    """Generate Expo/React Native icons (iOS + Android)."""
-    # iOS icon (1024x1024, no transparency)
+    """Generate Expo/React Native icons (iOS + Android + Web).
+
+    Generates all files referenced by templates/expo/app.json:
+      - icon.png          (1024x1024, RGB, no transparency) — iOS app icon
+      - adaptive-icon.png (1024x1024, RGBA) — Android adaptive icon foreground
+      - notification-icon.png (96x96, white silhouette recommended) — Android notification
+      - splash-icon.png   (200x200) — Splash screen logo
+      - favicon.png       (48x48) — Web/PWA favicon
+      - android/mipmap-*/ic_launcher.png — Android launcher mipmaps
+    """
+    # iOS icon (1024x1024, no transparency — required by App Store)
     generate_ios(master, name, output_dir)
 
-    # Android adaptive icon (mipmap PNGs)
+    # Android adaptive icon foreground (1024x1024, with transparency OK)
+    img_adaptive = resize_icon(master, 1024)
+    img_adaptive.save(os.path.join(output_dir, "adaptive-icon.png"))
+
+    # Android notification icon (96x96)
+    img_notif = resize_icon(master, 96)
+    img_notif.save(os.path.join(output_dir, "notification-icon.png"))
+
+    # Android launcher mipmaps
     android_dir = os.path.join(output_dir, 'android')
     generate_android(master, name, android_dir)
 
-    # splash-icon.png (optional, 200x200)
+    # Splash screen icon (200x200)
     img_splash = resize_icon(master, 200)
     img_splash.save(os.path.join(output_dir, "splash-icon.png"))
-    print(f"  Expo: icon.png + splash-icon.png + Android mipmaps")
+
+    # Web favicon (48x48)
+    img_favicon = resize_icon(master, 48)
+    img_favicon = flatten_to_rgb(img_favicon)
+    img_favicon.save(os.path.join(output_dir, "favicon.png"))
+
+    print(f"  Expo: icon.png + adaptive-icon.png + notification-icon.png + splash-icon.png + favicon.png + Android mipmaps")
 
 
 def generate_web(master: Image.Image, name: str, output_dir: str):
