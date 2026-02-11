@@ -41,14 +41,21 @@
 com.harmonic.insight.<アプリ名>
 ```
 
-| アプリ | パッケージ名 |
-|--------|------------|
-| Insight Camera | `com.harmonic.insight.camera` |
-| Insight Launcher | `com.harmonic.insight.launcher` |
-| Insight Voice Clock | `com.harmonic.insight.voiceclock` |
+| アプリ | パッケージ名 | 種別 |
+|--------|------------|------|
+| Insight Camera | `com.harmonic.insight.camera` | Native Kotlin |
+| Insight Launcher | `com.harmonic.insight.launcher` | Native Kotlin |
+| Insight Voice Clock | `com.harmonic.insight.voiceclock` | Native Kotlin |
+| InclineInsight | `com.harmonic.inclineinsight` | Native Kotlin |
+| ConsulType (コンサル評価) | `com.harmonic.insighttype` | Native Kotlin |
+| Harmonic Horoscope | `com.harmonic.horoscope` | Native Kotlin |
+| Food Medicine Insight | `com.foodmedicineinsight` (native) / `com.foodmedicineinsight.app` (Expo) | Hybrid |
+| Insight QR | `com.harmonicinsight.insightqr` | Expo/React Native |
+| ConsulEvaluate Mobile | `com.harmonicinsight.consulevaluate` | Expo/React Native |
 
 > **禁止**: `com.insightXXX`（フラットなパッケージ名）は使わないこと。
-> 必ず `com.harmonic.insight.*` の命名規則に従う。
+> Native Kotlin アプリは `com.harmonic.*` の命名規則に従う。
+> Expo/React Native アプリは `com.harmonicinsight.*` の命名規則に従う。
 
 ---
 
@@ -839,11 +846,25 @@ class LicenseManager(context: Context, private val productCode: String) {
 
 ## 13. 現行アプリの準拠状況
 
-| アプリ | パッケージ | カラー | Version Catalog | ProGuard | i18n | 準拠率 |
-|--------|----------|--------|:---------------:|:--------:|:----:|:------:|
-| Insight Voice Clock | ❌ `com.insightvoiceclock` | ❌ Indigo | ✅ | ✅ | ✅ ja+en | 40% |
-| Insight Launcher | ✅ | ❌ Blue | ❌ inline | ❌ 無効 | ✅ ja+en | 30% |
-| Insight Camera | ✅ | ❌ Blue | ❌ inline | ✅ | ❌ ハードコード | 20% |
+### Native Kotlin アプリ
+
+| アプリ | パッケージ | カラー | Version Catalog | ProGuard | SDK | JVM | 準拠率 |
+|--------|----------|--------|:---------------:|:--------:|:---:|:---:|:------:|
+| Insight Voice Clock | ❌ `com.insightvoiceclock` | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 80% |
+| Insight Launcher | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
+| Insight Camera | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
+| InclineInsight | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
+| ConsulType（コンサル評価）| ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
+| Harmonic Horoscope | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
+| Food Medicine (native) | ✅ | ✅ Ivory & Gold | ❌ inline | ✅ | ✅ 35 | ✅ 17 | 80% |
+
+### Expo/React Native アプリ
+
+| アプリ | パッケージ | カラー | 備考 |
+|--------|----------|--------|------|
+| Insight QR | ✅ `com.harmonicinsight.insightqr` | ✅ Ivory & Gold | 元から準拠済み |
+| ConsulEvaluate Mobile | ✅ `com.harmonicinsight.consulevaluate` | ✅ Ivory & Gold | Blue→Gold 修正済み |
+| Food Medicine (Expo) | ✅ `com.foodmedicineinsight.app` | ✅ Ivory & Gold | Teal→Gold 修正済み |
 
 ---
 
