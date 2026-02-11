@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 108 108">
+  <!-- Background -->
+  <rect width="108" height="108" fill="#FAF8F5"/>
+  <!-- Gold circle -->
+  <circle cx="54" cy="54" r="34" fill="#B8942F"/>
+  <!-- Sparkle -->
+  <path d="M76,30 L77.5,26 L79,30 L83,31.5 L79,33 L77.5,37 L76,33 L72,31.5 Z" fill="#D4BC6A"/>
+  <!-- Crescent moon (two overlapping circles) -->
+  <circle cx="50" cy="54" r="16" fill="white"/>
+  <circle cx="58" cy="50" r="14" fill="#B8942F"/>
+  <!-- Stars -->
+  <path d="M65,43 L66,40 L67,43 L70,44 L67,45 L66,48 L65,45 L62,44 Z" fill="white"/>
+  <path d="M68.3,55.3 L69,53.3 L69.7,55.3 L71.7,56 L69.7,56.7 L69,58.7 L68.3,56.7 L66.3,56 Z" fill="white"/>
+  <path d="M62.3,64.3 L63,62.5 L63.7,64.3 L65.5,65 L63.7,65.7 L63,67.5 L62.3,65.7 L60.5,65 Z" fill="white"/>
+</svg>
