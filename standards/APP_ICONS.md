@@ -324,7 +324,124 @@ getAllIcons();
 
 ---
 
-## 6. チェックリスト
+## 6. Android ランチャー用アイコン（InsightLauncher）
+
+InsightLauncher は **Android ネイティブアプリ** で、全 Insight 製品をタイルグリッドで表示する。
+各製品の `targetPlatform` に関係なく、ランチャー表示用に Android mipmap PNG が必要。
+
+### 生成コマンド
+
+```bash
+# 全製品のランチャー用アイコンを一括生成
+python scripts/generate-app-icon.py --launcher
+
+# カスタム出力先を指定
+python scripts/generate-app-icon.py --launcher --output /path/to/output/
+```
+
+### 生成ファイル構造
+
+```
+brand/icons/generated/launcher/
+├── launcher-manifest.json          # 全製品のアイコンメタデータ
+├── INSS/
+│   ├── mipmap-mdpi/ic_launcher.png     # 48x48
+│   ├── mipmap-hdpi/ic_launcher.png     # 72x72
+│   ├── mipmap-xhdpi/ic_launcher.png    # 96x96
+│   ├── mipmap-xxhdpi/ic_launcher.png   # 144x144
+│   └── mipmap-xxxhdpi/ic_launcher.png  # 192x192
+├── IOSH/
+│   └── ... (同構造)
+├── IOSD/
+│   └── ...
+└── ... (全15製品)
+```
+
+### launcher-manifest.json
+
+Android ランチャーアプリがアイコンを解決するためのマニフェスト。
+
+```json
+{
+  "version": 1,
+  "basePath": "brand/icons/generated/launcher",
+  "densities": { "mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192 },
+  "iconFileName": "ic_launcher.png",
+  "entries": [
+    {
+      "code": "INSS",
+      "name": "InsightOfficeSlide",
+      "category": "office",
+      "displayOrder": 100,
+      "isProduct": true
+    }
+  ]
+}
+```
+
+### Android ネイティブアプリでの利用
+
+**方法 1: assets から読み込み（推奨）**
+
+ランチャーアプリの `assets/` に `launcher/` ディレクトリごとコピーし、実行時に読み込む。
+
+```kotlin
+// assets/launcher/launcher-manifest.json を読み込み
+val manifest = assets.open("launcher/launcher-manifest.json").use {
+    JSONObject(it.bufferedReader().readText())
+}
+
+// 製品コードからアイコンを読み込み
+fun loadProductIcon(code: String, density: String = "xxhdpi"): Bitmap {
+    val path = "launcher/$code/mipmap-$density/ic_launcher.png"
+    return BitmapFactory.decodeStream(assets.open(path))
+}
+```
+
+**方法 2: res/drawable にコピー**
+
+ビルド時にリソースとして組み込む場合:
+
+```kotlin
+// ビルドスクリプトで launcher/{CODE}/mipmap-{density}/ → res/mipmap-{density}/ にコピー
+// ic_launcher.png → ic_{code_lowercase}.png にリネーム
+```
+
+### TypeScript からの利用（config/app-icon-manager.ts）
+
+```typescript
+import {
+  getLauncherIcon,
+  getLauncherIconsForDensity,
+  getLauncherIconsByCategory,
+  LAUNCHER_ICON_MANIFEST,
+} from '@/insight-common/config/app-icon-manager';
+
+// 特定製品のアイコンパスを取得
+getLauncherIcon('IOSH', 'xxhdpi');
+// → 'brand/icons/generated/launcher/IOSH/mipmap-xxhdpi/ic_launcher.png'
+
+// 全製品のアイコンをまとめて取得（グリッド表示用）
+const icons = getLauncherIconsForDensity('xxhdpi');
+// → [{ code: 'INSS', name: 'InsightOfficeSlide', path: '...', size: 144 }, ...]
+
+// カテゴリ別にグルーピング
+const grouped = getLauncherIconsByCategory('xxhdpi');
+// grouped.office     → [INSS, IOSH, IOSD]
+// grouped.ai_tools   → [INPY, INMV, INIG]
+// grouped.enterprise → [INCA, INBT, IVIN]
+```
+
+### アイコン更新手順
+
+1. `brand/icons/png/` のマスター PNG を更新
+2. `python scripts/generate-app-icon.py --launcher` を実行
+3. 生成された `brand/icons/generated/launcher/` をランチャーアプリにコピー
+4. ランチャーアプリをリビルド
+
+---
+
+## 8. チェックリスト
 
 - [ ] Gold `#B8942F` がベースカラーとして使用されている
 - [ ] 白いシンボルが製品の特徴を表現している
@@ -336,7 +453,7 @@ getAllIcons();
 
 ---
 
-## 7. 禁止事項
+## 9. 禁止事項
 
 | やってはいけない | 正しいやり方 |
 |-----------------|-------------|
