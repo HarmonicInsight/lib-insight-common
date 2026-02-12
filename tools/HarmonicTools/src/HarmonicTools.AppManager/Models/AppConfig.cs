@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 9;
+    private const int CurrentConfigVersion = 10;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -156,6 +156,54 @@ public class AppConfig
                 migratedApps.Add(def);
         }
 
+        // v9 → v10: リポジトリリネームに伴うデフォルト BasePath の自動更新
+        if (old.ConfigVersion < 10)
+        {
+            var repoRenameMap = new Dictionary<string, (string OldFolder, string NewFolder)>
+            {
+                // Tier 1
+                ["INCA"] = ("app-nocode-analyzer-C", "win-app-nocode-analyzer"),
+                ["INBT"] = ("app-Insight-bot-C", "win-app-insight-bot"),
+                // Tier 2
+                ["INMV"] = ("app-insight-movie-gen-win-C", "win-app-insight-movie-gen"),
+                ["INIG"] = ("app-insight-image-gen-C", "win-app-insight-image-gen"),
+                // Tier 3
+                ["INSS"] = ("app-insight-slide-win-C", "win-app-insight-slide"),
+                ["IOSH"] = ("app-Insight-excel", "win-app-insight-sheet"),
+                ["IOSD"] = ("app-Insight-doc", "win-app-insight-doc"),
+                ["INPY"] = ("app-insight-py-win", "win-app-insight-py"),
+                // Tier 4
+                ["ISOF"] = ("app-harmonic-sheet", "win-app-insight-sheet-senior"),
+                // Web Apps
+                ["IVIN"] = ("app-auto-interview-web", "web-app-auto-interview"),
+                ["INPR"] = ("Insight-Process", "web-app-insight-process"),
+                ["RPAT"] = ("rpatest", "cross-tool-rpa-test"),
+                ["INBA"] = ("Insgight-browser-AI", "web-app-insight-browser-ai"),
+                // Websites
+                ["WEB-HOME"] = ("web-home", "web-site-corporate"),
+                ["WEB-INSIGHT"] = ("web-insight", "web-site-insight-office"),
+                ["WEB-FW"] = ("web-framework", "web-site-framework"),
+                ["WEB-BLOG"] = ("web-blog", "web-site-blog"),
+                ["WEB-DOCS"] = ("web-docs", "web-site-docs"),
+                ["WEB-SUP"] = ("web-support", "web-site-support"),
+                ["WEB-LIC"] = ("app-license-server", "web-app-license-server"),
+            };
+
+            foreach (var app in migratedApps)
+            {
+                if (repoRenameMap.TryGetValue(app.ProductCode, out var rename)
+                    && !string.IsNullOrEmpty(app.BasePath))
+                {
+                    var oldBase = Path.Combine(DefaultDevRoot, rename.OldFolder);
+                    if (app.BasePath.StartsWith(oldBase, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var newBase = Path.Combine(DefaultDevRoot, rename.NewFolder);
+                        app.BasePath = newBase + app.BasePath.Substring(oldBase.Length);
+                    }
+                }
+            }
+        }
+
         return new AppConfig
         {
             ConfigVersion = CurrentConfigVersion,
@@ -201,7 +249,7 @@ public class AppConfig
                 {
                     Name = "InsightNoCodeAnalyzer",
                     ProductCode = "INCA",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-nocode-analyzer-C"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-nocode-analyzer"),
                     SolutionPath = "InsightNoCodeAnalyzer.sln",
                     ProjectPath = "InsightNoCodeAnalyzer/InsightNoCodeAnalyzer.csproj",
                     TestProjectPath = "",
@@ -214,7 +262,7 @@ public class AppConfig
                 {
                     Name = "InsightBot",
                     ProductCode = "INBT",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-bot-C"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-bot"),
                     SolutionPath = @"csharp\InsightBotRPA.sln",
                     ProjectPath = @"csharp\src\InsightBotRPA.Studio\InsightBotRPA.Studio.csproj",
                     TestProjectPath = @"csharp\tests\InsightBotRPA.Core.Tests\InsightBotRPA.Core.Tests.csproj",
@@ -231,7 +279,7 @@ public class AppConfig
                 {
                     Name = "InsightMovie",
                     ProductCode = "INMV",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-movie-gen-win-C"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-movie-gen"),
                     SolutionPath = "InsightMovie.sln",
                     ProjectPath = @"InsightMovie\InsightMovie.csproj",
                     TestProjectPath = "",
@@ -244,7 +292,7 @@ public class AppConfig
                 {
                     Name = "InsightImageGen",
                     ProductCode = "INIG",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-image-gen-C"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-image-gen"),
                     SolutionPath = "InsightMediaGenerator.sln",
                     ProjectPath = @"InsightMediaGenerator\InsightMediaGenerator.csproj",
                     TestProjectPath = "",
@@ -261,7 +309,7 @@ public class AppConfig
                 {
                     Name = "InsightOfficeSlide",
                     ProductCode = "INSS",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-slide-win-C"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-slide"),
                     SolutionPath = "InsightOfficeSlide.sln",
                     ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
                     TestProjectPath = "",
@@ -274,7 +322,7 @@ public class AppConfig
                 {
                     Name = "InsightOfficeSheet",
                     ProductCode = "IOSH",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-excel"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-sheet"),
                     SolutionPath = "InsightOfficeSheet.sln",
                     ProjectPath = @"src\InsightOfficeSheet.App\InsightOfficeSheet.App.csproj",
                     TestProjectPath = @"tests\InsightOfficeSheet.Core.Tests\InsightOfficeSheet.Core.Tests.csproj",
@@ -287,7 +335,7 @@ public class AppConfig
                 {
                     Name = "InsightOfficeDoc",
                     ProductCode = "IOSD",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-Insight-doc"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-doc"),
                     SolutionPath = "InsightOfficeDoc.sln",
                     ProjectPath = @"src\InsightOfficeDoc.App\InsightOfficeDoc.App.csproj",
                     TestProjectPath = "",
@@ -300,7 +348,7 @@ public class AppConfig
                 {
                     Name = "InsightPy",
                     ProductCode = "INPY",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-insight-py-win"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-py"),
                     SolutionPath = "",
                     ProjectPath = "",
                     TestProjectPath = "",
@@ -317,7 +365,7 @@ public class AppConfig
                 {
                     Name = "InsightSeniorOffice",
                     ProductCode = "ISOF",
-                    BasePath = Path.Combine(DefaultDevRoot, "app-harmonic-sheet"),
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-sheet-senior"),
                     SolutionPath = "InsightSeniorOffice.sln",
                     ProjectPath = @"src\InsightSeniorOffice\InsightSeniorOffice.csproj",
                     TestProjectPath = "",
@@ -335,7 +383,7 @@ public class AppConfig
                     Name = "InterviewInsight",
                     ProductCode = "IVIN",
                     Type = AppType.WebApp,
-                    BasePath = Path.Combine(DefaultDevRoot, "app-auto-interview-web"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-app-auto-interview"),
                     Description = "[Tier1] 自動ヒアリング・業務調査支援",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -347,7 +395,7 @@ public class AppConfig
                     Name = "InsightProcess",
                     ProductCode = "INPR",
                     Type = AppType.WebApp,
-                    BasePath = Path.Combine(DefaultDevRoot, "Insight-Process"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-app-insight-process"),
                     Description = "業務プロセス可視化・DX評価ツール",
                     Framework = "React + Vite",
                     DevCommand = "npm run dev",
@@ -359,7 +407,7 @@ public class AppConfig
                     Name = "RPA Migration Factory",
                     ProductCode = "RPAT",
                     Type = AppType.WebApp,
-                    BasePath = Path.Combine(DefaultDevRoot, "rpatest", "hmm-saas"),
+                    BasePath = Path.Combine(DefaultDevRoot, "cross-tool-rpa-test", "hmm-saas"),
                     Description = "RPAの移行を完全工場化するSaaSツール",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -372,7 +420,7 @@ public class AppConfig
                     Name = "InsightBrowser AI",
                     ProductCode = "INBA",
                     Type = AppType.WebApp,
-                    BasePath = Path.Combine(DefaultDevRoot, "Insgight-browser-AI"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-app-insight-browser-ai"),
                     Description = "AI搭載ブラウザ — Electron + React デスクトップアプリ",
                     Framework = "Electron + React",
                     DevCommand = "npm run dev",
@@ -386,7 +434,7 @@ public class AppConfig
                     Name = "HARMONIC insight",
                     ProductCode = "WEB-HOME",
                     Type = AppType.Website,
-                    BasePath = Path.Combine(DefaultDevRoot, "web-home"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-site-corporate"),
                     Description = "コーポレートサイト",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -399,7 +447,7 @@ public class AppConfig
                     Name = "Insight Series",
                     ProductCode = "WEB-INSIGHT",
                     Type = AppType.Website,
-                    BasePath = Path.Combine(DefaultDevRoot, "web-insight"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-site-insight-office"),
                     Description = "Insight Series 製品ページ",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -412,7 +460,7 @@ public class AppConfig
                     Name = "Framework",
                     ProductCode = "WEB-FW",
                     Type = AppType.Website,
-                    BasePath = Path.Combine(DefaultDevRoot, "web-framework"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-site-framework"),
                     Description = "ビジネスフレームワーク集",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -425,7 +473,7 @@ public class AppConfig
                     Name = "Blog",
                     ProductCode = "WEB-BLOG",
                     Type = AppType.Website,
-                    BasePath = Path.Combine(DefaultDevRoot, "web-blog"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-site-blog"),
                     Description = "技術・ビジネスブログ",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -438,7 +486,7 @@ public class AppConfig
                     Name = "Documentation",
                     ProductCode = "WEB-DOCS",
                     Type = AppType.Website,
-                    BasePath = Path.Combine(DefaultDevRoot, "web-docs"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-site-docs"),
                     Description = "製品マニュアル・APIリファレンス",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -451,7 +499,7 @@ public class AppConfig
                     Name = "Support",
                     ProductCode = "WEB-SUP",
                     Type = AppType.Website,
-                    BasePath = Path.Combine(DefaultDevRoot, "web-support"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-site-support"),
                     Description = "お問い合わせ・ヘルプセンター",
                     Framework = "Next.js",
                     DevCommand = "npm run dev",
@@ -464,7 +512,7 @@ public class AppConfig
                     Name = "License Server",
                     ProductCode = "WEB-LIC",
                     Type = AppType.Website,
-                    BasePath = Path.Combine(DefaultDevRoot, "app-license-server"),
+                    BasePath = Path.Combine(DefaultDevRoot, "web-app-license-server"),
                     Description = "統合ライセンスサーバー (Hono)",
                     Framework = "Hono",
                     DevCommand = "npm run dev",
