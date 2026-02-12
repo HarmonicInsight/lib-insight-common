@@ -436,6 +436,21 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
 
   // ══════════════════════════════════════════════════════
+  // ユーティリティ（Expo / React Native）
+  // ══════════════════════════════════════════════════════
+  {
+    productCode: 'QR',
+    productName: 'InsightQR',
+    masterSvg: 'brand/icons/svg/icon-qr.svg',
+    masterPng: 'brand/icons/png/icon-qr.png',
+    motif: 'QR code pattern',
+    motifJa: 'QR コードパターン',
+    platforms: [
+      { platform: 'expo', targets: EXPO_TARGETS },
+    ],
+  },
+
+  // ══════════════════════════════════════════════════════
   // Web アプリ（追加分）
   // ══════════════════════════════════════════════════════
   {

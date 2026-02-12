@@ -189,8 +189,8 @@ UTILITY_ICONS = {
     'QR': {
         'name': 'InsightQR',
         'icon': 'icon-qr.png',
-        'platform': 'web',
-        'build_path': 'public/',
+        'platform': 'expo',
+        'build_path': 'assets/',
     },
     'PINBOARD': {
         'name': 'InsightPinBoard',
