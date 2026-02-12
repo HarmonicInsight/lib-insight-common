@@ -86,12 +86,13 @@ import type { ProductCode } from './products';
 
 /** アプリケーションプラットフォーム */
 export type IconPlatform =
-  | 'wpf'          // WPF (C#) デスクトップアプリ
-  | 'web'          // Web (Next.js / React / Hono)
-  | 'android'      // Android (Native Kotlin)
-  | 'ios'          // iOS (Swift)
-  | 'expo'         // Expo / React Native
-  | 'electron';    // Electron デスクトップアプリ
+  | 'wpf'              // WPF (C#) デスクトップアプリ
+  | 'web'              // Web (Next.js / React / Hono)
+  | 'android'          // Android (Native Kotlin) — mipmap PNG
+  | 'android_native'   // Android (Native Kotlin) — vector drawable XML
+  | 'ios'              // iOS (Swift)
+  | 'expo'             // Expo / React Native
+  | 'electron';        // Electron デスクトップアプリ
 
 /** アイコンフォーマット */
 export type IconFormat = 'ico' | 'png' | 'svg' | 'icns' | 'vector_drawable';
@@ -265,6 +266,45 @@ const ANDROID_TARGETS: IconTarget[] = [
     sizes: [192],
     description: 'Android mipmap-xxxhdpi',
     descriptionJa: 'Android mipmap-xxxhdpi',
+  },
+];
+
+/** Android Native (vector drawable) 向けターゲット */
+const ANDROID_NATIVE_TARGETS: IconTarget[] = [
+  {
+    path: 'app/src/main/res/drawable/ic_launcher_foreground.xml',
+    format: 'vector_drawable',
+    sizes: [108],
+    description: 'Android adaptive icon foreground (vector drawable)',
+    descriptionJa: 'Android Adaptive Icon フォアグラウンド (vector drawable)',
+  },
+  {
+    path: 'app/src/main/res/drawable/ic_launcher_background.xml',
+    format: 'vector_drawable',
+    sizes: [108],
+    description: 'Android adaptive icon background (vector drawable)',
+    descriptionJa: 'Android Adaptive Icon バックグラウンド (vector drawable)',
+  },
+  {
+    path: 'app/src/main/res/drawable/ic_launcher_monochrome.xml',
+    format: 'vector_drawable',
+    sizes: [108],
+    description: 'Android 13+ themed icon monochrome (vector drawable)',
+    descriptionJa: 'Android 13+ テーマアイコン モノクロ (vector drawable)',
+  },
+  {
+    path: 'app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml',
+    format: 'vector_drawable',
+    sizes: [],
+    description: 'Android adaptive icon definition',
+    descriptionJa: 'Android Adaptive Icon 定義',
+  },
+  {
+    path: 'app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml',
+    format: 'vector_drawable',
+    sizes: [],
+    description: 'Android adaptive icon definition (round)',
+    descriptionJa: 'Android Adaptive Icon 定義 (round)',
   },
 ];
 
@@ -480,6 +520,21 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
   },
+
+  // ══════════════════════════════════════════════════════
+  // ユーティリティ（Android Native）
+  // ══════════════════════════════════════════════════════
+  {
+    productCode: 'CAMERA',
+    productName: 'InsightCamera',
+    masterSvg: 'brand/icons/svg/icon-camera.svg',
+    masterPng: 'brand/icons/png/icon-camera.png',
+    motif: 'Camera lens with gold accent + sparkle',
+    motifJa: 'カメラレンズ + ゴールドアクセント + スパークル',
+    platforms: [
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
+    ],
+  },
 ];
 
 // =============================================================================
@@ -566,8 +621,9 @@ export function getPlatformTemplate(platform: IconPlatform): IconTarget[] {
   switch (platform) {
     case 'wpf':       return WPF_TARGETS;
     case 'web':       return WEB_TARGETS;
-    case 'android':   return ANDROID_TARGETS;
-    case 'ios':       return IOS_TARGETS;
+    case 'android':          return ANDROID_TARGETS;
+    case 'android_native':   return ANDROID_NATIVE_TARGETS;
+    case 'ios':              return IOS_TARGETS;
     case 'expo':      return EXPO_TARGETS;
     case 'electron':  return ELECTRON_TARGETS;
     default:          return [];

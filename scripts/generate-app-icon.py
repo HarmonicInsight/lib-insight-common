@@ -539,6 +539,22 @@ ADAPTIVE_ICON_XML = (
     '</adaptive-icon>\n'
 )
 
+ADAPTIVE_ICON_WITH_MONOCHROME_XML = (
+    '<?xml version="1.0" encoding="utf-8"?>\n'
+    '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n'
+    '    <background android:drawable="@drawable/ic_launcher_background" />\n'
+    '    <foreground android:drawable="@drawable/ic_launcher_foreground" />\n'
+    '    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />\n'
+    '</adaptive-icon>\n'
+)
+
+
+def get_monochrome_svg_path(svg_path: str) -> Path:
+    """Get the monochrome SVG path for an icon (e.g., icon-camera.svg -> icon-camera-monochrome.svg)."""
+    p = Path(svg_path)
+    monochrome_path = p.parent / f"{p.stem}-monochrome{p.suffix}"
+    return monochrome_path
+
 
 def generate_android_native(svg_path: str, name: str, output_dir: str):
     """Generate Android native vector drawable icons from SVG.
@@ -546,6 +562,7 @@ def generate_android_native(svg_path: str, name: str, output_dir: str):
     Output structure:
       drawable/ic_launcher_foreground.xml
       drawable/ic_launcher_background.xml
+      drawable/ic_launcher_monochrome.xml  (if monochrome SVG exists)
       mipmap-anydpi-v26/ic_launcher.xml
       mipmap-anydpi-v26/ic_launcher_round.xml
     """
@@ -559,15 +576,25 @@ def generate_android_native(svg_path: str, name: str, output_dir: str):
     with open(os.path.join(drawable_dir, 'ic_launcher_background.xml'), 'w') as f:
         f.write(background_xml)
 
+    # Check for monochrome SVG (e.g., icon-camera-monochrome.svg)
+    monochrome_svg = get_monochrome_svg_path(svg_path)
+    has_monochrome = monochrome_svg.exists()
+    if has_monochrome:
+        monochrome_xml, _ = svg_to_android_drawables(str(monochrome_svg))
+        with open(os.path.join(drawable_dir, 'ic_launcher_monochrome.xml'), 'w') as f:
+            f.write(monochrome_xml)
+
     # mipmap-anydpi-v26/
+    adaptive_xml = ADAPTIVE_ICON_WITH_MONOCHROME_XML if has_monochrome else ADAPTIVE_ICON_XML
     mipmap_dir = os.path.join(output_dir, 'mipmap-anydpi-v26')
     os.makedirs(mipmap_dir, exist_ok=True)
     with open(os.path.join(mipmap_dir, 'ic_launcher.xml'), 'w') as f:
-        f.write(ADAPTIVE_ICON_XML)
+        f.write(adaptive_xml)
     with open(os.path.join(mipmap_dir, 'ic_launcher_round.xml'), 'w') as f:
-        f.write(ADAPTIVE_ICON_XML)
+        f.write(adaptive_xml)
 
-    print(f"  Android Native: drawable/ic_launcher_{{foreground,background}}.xml + mipmap-anydpi-v26/ic_launcher{{,_round}}.xml")
+    mono_label = " + monochrome" if has_monochrome else ""
+    print(f"  Android Native: drawable/ic_launcher_{{foreground,background}}.xml{mono_label} + mipmap-anydpi-v26/ic_launcher{{,_round}}.xml")
 
 
 def generate_web(master: Image.Image, name: str, output_dir: str):

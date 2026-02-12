@@ -71,7 +71,7 @@ export interface ProjectFileConfig {
 }
 
 /** アプリのターゲットプラットフォーム */
-export type AppPlatform = 'wpf' | 'python' | 'tauri' | 'expo' | 'web' | 'service';
+export type AppPlatform = 'wpf' | 'python' | 'tauri' | 'expo' | 'android_native' | 'web' | 'service';
 
 /** 製品情報 */
 export interface ProductInfo {
@@ -1608,7 +1608,7 @@ export const UTILITY_ICONS: Record<string, {
   iconBuildPath: string;
 }> = {
   LAUNCHER: { name: 'InsightLauncher', nameJa: 'Insight Launcher', masterIcon: 'brand/icons/png/icon-launcher.png', targetPlatform: 'wpf', iconBuildPath: 'Resources/' },
-  CAMERA: { name: 'InsightCamera', nameJa: 'Insight Camera', masterIcon: 'brand/icons/png/icon-camera.png', targetPlatform: 'expo', iconBuildPath: 'assets/' },
+  CAMERA: { name: 'InsightCamera', nameJa: 'Insight Camera', masterIcon: 'brand/icons/png/icon-camera.png', targetPlatform: 'android_native', iconBuildPath: 'app/src/main/res/' },
   VOICE_CLOCK: { name: 'InsightVoiceClock', nameJa: 'Insight Voice Clock', masterIcon: 'brand/icons/png/icon-voice-clock.png', targetPlatform: 'expo', iconBuildPath: 'assets/' },
   QR: { name: 'InsightQR', nameJa: 'Insight QR', masterIcon: 'brand/icons/png/icon-qr.png', targetPlatform: 'web', iconBuildPath: 'public/' },
   PINBOARD: { name: 'InsightPinBoard', nameJa: 'Insight PinBoard', masterIcon: 'brand/icons/png/icon-pinboard.png', targetPlatform: 'expo', iconBuildPath: 'assets/' },
