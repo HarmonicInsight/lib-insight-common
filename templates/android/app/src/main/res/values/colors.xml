@@ -14,10 +14,13 @@
     <color name="bg_card">#FFFFFF</color>
     <color name="bg_hover">#EEEBE5</color>
 
-    <!-- === Brand Primary (Gold) === -->
+    <!-- === Brand (Gold) === -->
     <color name="primary">#B8942F</color>
     <color name="primary_hover">#8C711E</color>
     <color name="primary_light">#F0E6C8</color>
+    <color name="primary_dark">#6B5518</color>
+    <color name="brand_secondary">#78716C</color>
+    <color name="brand_accent">#D4BC6A</color>
 
     <!-- === Accent Scale (Gold) === -->
     <color name="accent_50">#FDF9EF</color>

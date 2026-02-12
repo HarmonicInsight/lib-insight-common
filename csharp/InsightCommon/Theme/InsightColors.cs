@@ -8,9 +8,12 @@ namespace InsightCommon.Theme;
 public static class InsightColors
 {
     // ── ブランドカラー (Gold) ──
-    public static readonly Color BrandPrimary = FromHex("#B8942F");  // Gold
-    public static readonly Color BrandHover   = FromHex("#8C711E");  // Gold Hover
-    public static readonly Color BrandLight   = FromHex("#F0E6C8");  // Gold Light
+    public static readonly Color BrandPrimary   = FromHex("#B8942F");  // Gold
+    public static readonly Color BrandHover     = FromHex("#8C711E");  // Gold Hover
+    public static readonly Color BrandLight     = FromHex("#F0E6C8");  // Gold Light
+    public static readonly Color BrandDark      = FromHex("#6B5518");  // Gold Dark
+    public static readonly Color BrandSecondary = FromHex("#78716C");  // Stone (Secondary)
+    public static readonly Color BrandAccent    = FromHex("#D4BC6A");  // Gold Accent
 
     // ── プラン別カラー ──
     public static readonly Color PlanFree  = FromHex("#A8A29E");  // Stone 400

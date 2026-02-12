@@ -101,18 +101,18 @@ h6 {
 }
 
 a {
-  color: var(--hi-color-primary, #2563eb);
+  color: var(--hi-color-primary, #B8942F);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover {
-  color: var(--hi-color-secondary, #1d4ed8);
+  color: var(--hi-color-primary-hover, #8C711E);
   text-decoration: underline;
 }
 
 a:focus {
-  outline: 2px solid var(--hi-color-primary, #2563eb);
+  outline: 2px solid var(--hi-color-primary, #B8942F);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -171,7 +171,7 @@ body.dark {
 
 /* フォーカス可視化 */
 :focus-visible {
-  outline: 2px solid var(--hi-color-primary, #2563eb);
+  outline: 2px solid var(--hi-color-primary, #B8942F);
   outline-offset: 2px;
 }
 
