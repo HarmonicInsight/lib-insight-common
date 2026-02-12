@@ -11,11 +11,14 @@
  */
 
 export const colors = {
-  // === Brand Primary (Gold) ===
+  // === Brand (Gold) ===
   brand: {
     primary: '#B8942F',
     primaryHover: '#8C711E',
     primaryLight: '#F0E6C8',
+    primaryDark: '#6B5518',
+    secondary: '#78716C',
+    accent: '#D4BC6A',
   },
 
   // === Background (Ivory) ===

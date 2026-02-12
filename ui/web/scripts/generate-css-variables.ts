@@ -26,24 +26,29 @@ function loadJson<T>(filename: string): T {
   return JSON.parse(content) as T;
 }
 
-// カラーJSON の型
+// カラーJSON の型（brand/colors.json の構造に準拠）
 interface ColorsJson {
   brand: {
     primary: string;
+    primaryHover: string;
+    primaryLight: string;
+    primaryDark: string;
     secondary: string;
     accent: string;
   };
-  semantic: {
-    success: string;
-    warning: string;
-    error: string;
-    info: string;
+  background: Record<string, string>;
+  text: Record<string, string>;
+  border: Record<string, string>;
+  semantic: Record<string, string>;
+  accent: { gold: Record<string, string> };
+  link: Record<string, string>;
+  plan: Record<string, string>;
+  category: Record<string, string>;
+  darkMode: {
+    background: Record<string, string>;
+    text: Record<string, string>;
+    border: Record<string, string>;
   };
-  neutral: Record<string, string>;
-  products: Record<string, {
-    primary: string;
-    secondary: string;
-  }>;
 }
 
 // デザインシステムJSON の型
@@ -101,26 +106,42 @@ function main() {
   // CSS 変数を収集
   const variables: Record<string, string> = {};
 
-  // カラー変数
+  // ブランドカラー変数
   variables['--hi-color-primary'] = colors.brand.primary;
+  variables['--hi-color-primary-hover'] = colors.brand.primaryHover;
+  variables['--hi-color-primary-light'] = colors.brand.primaryLight;
+  variables['--hi-color-primary-dark'] = colors.brand.primaryDark;
   variables['--hi-color-secondary'] = colors.brand.secondary;
   variables['--hi-color-accent'] = colors.brand.accent;
 
+  // 背景カラー
+  for (const [key, value] of Object.entries(colors.background)) {
+    variables[`--hi-bg-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`] = value;
+  }
+
+  // テキストカラー
+  for (const [key, value] of Object.entries(colors.text)) {
+    variables[`--hi-text-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`] = value;
+  }
+
+  // ボーダーカラー
+  for (const [key, value] of Object.entries(colors.border)) {
+    variables[`--hi-border-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`] = value;
+  }
+
   // セマンティックカラー
   for (const [key, value] of Object.entries(colors.semantic)) {
-    variables[`--hi-color-${key}`] = value;
+    variables[`--hi-color-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`] = value;
   }
 
-  // ニュートラルカラー
-  for (const [key, value] of Object.entries(colors.neutral)) {
-    variables[`--hi-color-neutral-${key}`] = value;
+  // アクセントゴールドスケール
+  for (const [key, value] of Object.entries(colors.accent.gold)) {
+    variables[`--hi-accent-gold-${key}`] = value;
   }
 
-  // 製品カラー
-  for (const [product, productColors] of Object.entries(colors.products)) {
-    const productKey = product.replace(/([A-Z])/g, '-$1').toLowerCase();
-    variables[`--hi-product-${productKey}-primary`] = productColors.primary;
-    variables[`--hi-product-${productKey}-secondary`] = productColors.secondary;
+  // プランカラー
+  for (const [key, value] of Object.entries(colors.plan)) {
+    variables[`--hi-plan-${key}`] = value;
   }
 
   // タイポグラフィ
