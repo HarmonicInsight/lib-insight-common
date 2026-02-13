@@ -98,7 +98,7 @@ print_section "1" "デザインシステム（Ivory & Gold Theme）検証"
 
 # 禁止: Blue (#2563EB) がプライマリとして使用されている
 check_blue_primary() {
-    local blue_as_primary=$(grep -r "primary.*#2563EB\|#2563EB.*primary\|Primary.*2563EB\|primaryColor.*2563EB" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -5)
+    local blue_as_primary=$(grep -r "primary.*#2563EB\|#2563EB.*primary\|Primary.*2563EB\|primaryColor.*2563EB" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -5)
 
     if [ -n "$blue_as_primary" ]; then
         print_error "Blue (#2563EB) がプライマリとして使用されています"
@@ -111,7 +111,7 @@ check_blue_primary() {
 
 # 必須: Gold (#B8942F) がプライマリとして使用されている
 check_gold_primary() {
-    local gold_primary=$(grep -r "#B8942F\|B8942F\|0xFFB8942F" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    local gold_primary=$(grep -r "#B8942F\|B8942F\|0xFFB8942F" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
     if [ -z "$gold_primary" ]; then
         print_error "Gold (#B8942F) が見つかりません"
@@ -123,7 +123,7 @@ check_gold_primary() {
 
 # 必須: Ivory背景 (#FAF8F5) が使用されている
 check_ivory_background() {
-    local ivory=$(grep -r "#FAF8F5\|FAF8F5\|0xFFFAF8F5" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    local ivory=$(grep -r "#FAF8F5\|FAF8F5\|0xFFFAF8F5" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
     if [ -z "$ivory" ]; then
         print_warning "Ivory背景 (#FAF8F5) が見つかりません"
@@ -143,7 +143,7 @@ check_ivory_background
 print_section "2" "ライセンスシステム検証"
 
 check_license_manager() {
-    local license_file=$(find "$PROJECT_DIR" -name "*LicenseManager*" -o -name "*license_manager*" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    local license_file=$(find "$PROJECT_DIR" \( -name "*LicenseManager*" -o -name "*license_manager*" \) -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
 
     if [ -z "$license_file" ]; then
         print_warning "LicenseManager が見つかりません（ユーティリティアプリの場合は不要）"
@@ -162,7 +162,7 @@ print_section "3" "製品コード検証"
 
 check_product_code() {
     local product_codes="INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN"
-    local found_code=$(grep -rE "($product_codes)" "$PROJECT_DIR" --include="*.cs" --include="*.ts" --include="*.py" --include="*.swift" --include="*.kt" --include="*.json" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    local found_code=$(grep -rE "($product_codes)" "$PROJECT_DIR" --include="*.cs" --include="*.ts" --include="*.py" --include="*.swift" --include="*.kt" --include="*.json" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
     if [ -z "$found_code" ]; then
         print_warning "登録済み製品コードが見つかりません（新規製品の場合は config/products.ts に登録してください）"
@@ -422,7 +422,7 @@ if [ "$PLATFORM" = "expo" ]; then
     fi
 
     # 5.4 lib/colors.ts
-    colors_ts=$(find "$PROJECT_DIR" -name "colors.ts" -path "*/lib/*" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    colors_ts=$(find "$PROJECT_DIR" -name "colors.ts" -path "*/lib/*" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
     if [ -n "$colors_ts" ]; then
         if grep -q "B8942F" "$colors_ts" 2>/dev/null; then
             print_ok "lib/colors.ts: Gold (#B8942F) が定義されている"
@@ -437,7 +437,7 @@ if [ "$PLATFORM" = "expo" ]; then
         fi
     else
         # colors.ts が src/ 配下にある可能性も
-        colors_ts_alt=$(find "$PROJECT_DIR" -name "colors.ts" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+        colors_ts_alt=$(find "$PROJECT_DIR" -name "colors.ts" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
         if [ -n "$colors_ts_alt" ]; then
             print_warning "colors.ts が lib/ 以外に配置されています: $colors_ts_alt"
             if grep -q "B8942F" "$colors_ts_alt" 2>/dev/null; then
@@ -451,7 +451,7 @@ if [ "$PLATFORM" = "expo" ]; then
     fi
 
     # 5.5 lib/theme.ts
-    theme_ts=$(find "$PROJECT_DIR" -name "theme.ts" -path "*/lib/*" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    theme_ts=$(find "$PROJECT_DIR" -name "theme.ts" -path "*/lib/*" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
     if [ -n "$theme_ts" ]; then
         print_ok "lib/theme.ts が存在"
     else
@@ -459,7 +459,7 @@ if [ "$PLATFORM" = "expo" ]; then
     fi
 
     # 5.6 lib/license-manager.ts
-    license_ts=$(find "$PROJECT_DIR" -name "license-manager.ts" -o -name "licenseManager.ts" 2>/dev/null | grep -v node_modules | grep -v insight-common | head -1)
+    license_ts=$(find "$PROJECT_DIR" \( -name "license-manager.ts" -o -name "licenseManager.ts" \) -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
     if [ -n "$license_ts" ]; then
         print_ok "license-manager.ts が存在"
     else
