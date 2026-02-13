@@ -366,10 +366,10 @@ public class AppConfig
                     Name = "InsightSeniorOffice",
                     ProductCode = "ISOF",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-sheet-senior"),
-                    SolutionPath = "InsightSeniorOffice.sln",
-                    ProjectPath = @"src\InsightSeniorOffice\InsightSeniorOffice.csproj",
+                    SolutionPath = "HarmonicSheet.App.sln",
+                    ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = @"src\InsightSeniorOffice\bin\{config}\net8.0-windows\InsightSeniorOffice.exe",
+                    ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.App.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
                     Description = "[Tier4] AIアシスタント搭載 — シニア向け統合オフィスツール"
