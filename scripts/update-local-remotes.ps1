@@ -232,8 +232,11 @@ foreach ($dir in Get-ChildItem -Path $BaseDir -Directory) {
             Set-Content -Path $gitmodulesPath -Value $content -NoNewline
             Write-Host "  [SUBMODULE] ${folderName}: .gitmodules を更新" -ForegroundColor Green
 
-            # submodule sync
+            # submodule sync + update
             git -C $repoDir submodule sync 2>$null
+            Write-Host "    submodule sync 完了" -ForegroundColor Gray
+            git -C $repoDir submodule update --init --recursive 2>$null
+            Write-Host "    submodule update 完了" -ForegroundColor Gray
 
             # コミット
             git -C $repoDir add .gitmodules 2>$null
