@@ -1256,6 +1256,52 @@ public partial class MainWindow : Window
         }
     }
 
+    // ── Move Up/Down ──
+
+    private void MoveUp_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+        var index = _config.Apps.IndexOf(_selectedApp);
+        if (index < 0) return;
+
+        // 同じタブ内で1つ上のアプリを探す
+        for (var i = index - 1; i >= 0; i--)
+        {
+            if (_config.Apps[i].Type == _selectedApp.Type)
+            {
+                // swap
+                (_config.Apps[index], _config.Apps[i]) = (_config.Apps[i], _config.Apps[index]);
+                SaveConfig();
+                var saved = _selectedApp;
+                RefreshAppList();
+                AppListBox.SelectedItem = saved;
+                return;
+            }
+        }
+    }
+
+    private void MoveDown_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+        var index = _config.Apps.IndexOf(_selectedApp);
+        if (index < 0) return;
+
+        // 同じタブ内で1つ下のアプリを探す
+        for (var i = index + 1; i < _config.Apps.Count; i++)
+        {
+            if (_config.Apps[i].Type == _selectedApp.Type)
+            {
+                // swap
+                (_config.Apps[index], _config.Apps[i]) = (_config.Apps[i], _config.Apps[index]);
+                SaveConfig();
+                var saved = _selectedApp;
+                RefreshAppList();
+                AppListBox.SelectedItem = saved;
+                return;
+            }
+        }
+    }
+
     // ── GitHub Sync ──
 
     private async void GitSync_Click(object sender, RoutedEventArgs e)

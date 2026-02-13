@@ -187,14 +187,22 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <!-- Add/Copy/Remove buttons -->
-                        <StackPanel x:Name="AppListButtons" Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
-                            <Button Content="追加" Style="{StaticResource SecondaryButton}"
-                                    Padding="12,4" Click="AddApp_Click"/>
-                            <Button Content="コピー" Style="{StaticResource SecondaryButton}"
-                                    Padding="12,4" Margin="8,0,0,0" Click="CopyApp_Click"/>
-                            <Button Content="削除" Style="{StaticResource DangerButton}"
-                                    Padding="12,4" Margin="8,0,0,0" Click="RemoveApp_Click"/>
+                        <!-- Add/Copy/Remove/Move buttons -->
+                        <StackPanel x:Name="AppListButtons" Grid.Row="2" Margin="0,8,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="追加" Style="{StaticResource SecondaryButton}"
+                                        Padding="12,4" Click="AddApp_Click"/>
+                                <Button Content="コピー" Style="{StaticResource SecondaryButton}"
+                                        Padding="12,4" Margin="8,0,0,0" Click="CopyApp_Click"/>
+                                <Button Content="削除" Style="{StaticResource DangerButton}"
+                                        Padding="12,4" Margin="8,0,0,0" Click="RemoveApp_Click"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <Button Content="▲ 上へ" Style="{StaticResource SecondaryButton}"
+                                        Padding="12,4" Click="MoveUp_Click"/>
+                                <Button Content="▼ 下へ" Style="{StaticResource SecondaryButton}"
+                                        Padding="12,4" Margin="8,0,0,0" Click="MoveDown_Click"/>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Border>
