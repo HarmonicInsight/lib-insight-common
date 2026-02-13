@@ -476,7 +476,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // ユーティリティ（Expo / React Native）
+  // ユーティリティ（InsightQR: Expo iOS + Android Native Kotlin）
   // ══════════════════════════════════════════════════════
   {
     productCode: 'QR',
@@ -486,7 +486,8 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     motif: 'QR code pattern',
     motifJa: 'QR コードパターン',
     platforms: [
-      { platform: 'expo', targets: EXPO_TARGETS },
+      { platform: 'expo', targets: EXPO_TARGETS },                        // iOS (Expo)
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },    // Android (Kotlin)
     ],
   },
 
@@ -635,12 +636,13 @@ export function getPlatformTemplate(platform: IconPlatform): IconTarget[] {
  */
 export function getPlatformLabel(platform: IconPlatform, locale: 'en' | 'ja' = 'ja'): string {
   const labels: Record<IconPlatform, { en: string; ja: string }> = {
-    wpf:      { en: 'WPF (C#)', ja: 'WPF (C#)' },
-    web:      { en: 'Web (Next.js/React)', ja: 'Web (Next.js/React)' },
-    android:  { en: 'Android', ja: 'Android' },
-    ios:      { en: 'iOS', ja: 'iOS' },
-    expo:     { en: 'Expo / React Native', ja: 'Expo / React Native' },
-    electron: { en: 'Electron', ja: 'Electron' },
+    wpf:            { en: 'WPF (C#)', ja: 'WPF (C#)' },
+    web:            { en: 'Web (Next.js/React)', ja: 'Web (Next.js/React)' },
+    android:        { en: 'Android', ja: 'Android' },
+    android_native: { en: 'Android (Kotlin)', ja: 'Android (Kotlin)' },
+    ios:            { en: 'iOS', ja: 'iOS' },
+    expo:           { en: 'Expo / React Native', ja: 'Expo / React Native' },
+    electron:       { en: 'Electron', ja: 'Electron' },
   };
   return labels[platform]?.[locale] ?? platform;
 }
