@@ -23,7 +23,10 @@
  *
  * ## 製品追加手順
  * 1. PRODUCT_CATALOG 配列にエントリを追加
- * 2. published: true にすると Web サイトに表示
+ * 2. status を設定:
+ *    - 'published'   → Web サイトに公開（通常表示）
+ *    - 'development' → 「開発中」バッジ付きで表示
+ *    - 'hidden'      → Web サイトに表示しない
  * 3. releases にダウンロード情報を設定
  */
 
@@ -41,6 +44,22 @@ export type WebsiteCategory = 'rpa' | 'consulting' | 'content' | 'utility';
 
 /** 対応プラットフォーム */
 export type PlatformType = 'windows' | 'web' | 'android' | 'ios';
+
+/**
+ * カタログステータス
+ *
+ * - published:   Web サイトに公開（通常表示）
+ * - development: 「開発中」バッジ付きで表示（DL ボタンは非活性）
+ * - hidden:      Web サイトに表示しない（内部管理用）
+ */
+export type CatalogStatus = 'published' | 'development' | 'hidden';
+
+/** ステータスの多言語ラベル */
+export const STATUS_LABELS: Record<CatalogStatus, Record<CatalogLocale, string>> = {
+  published: { en: 'Available', ja: '公開中', zh: '已发布' },
+  development: { en: 'In Development', ja: '開発中', zh: '开发中' },
+  hidden: { en: 'Hidden', ja: '非公開', zh: '未公开' },
+};
 
 /** ユーティリティアプリコード */
 export type UtilityCode = 'LAUNCHER' | 'CAMERA' | 'VOICE_CLOCK' | 'QR' | 'PINBOARD' | 'VOICE_MEMO';
@@ -74,8 +93,8 @@ export interface CatalogEntry {
   code: CatalogCode;
   /** URL スラッグ（例: "insight-bot"）— Web サイトの /products/{slug} に対応 */
   slug: string;
-  /** Web サイトに公開するか */
-  published: boolean;
+  /** 公開ステータス: 'published' | 'development' | 'hidden' */
+  status: CatalogStatus;
   /** カテゴリ内の表示順（小さいほど先頭） */
   displayOrder: number;
   /** Web サイトでのカテゴリ分類 */
@@ -145,7 +164,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'INBT',
     slug: 'insight-bot',
-    published: true,
+    status: 'published',
     displayOrder: 10,
     category: 'rpa',
     svgIcon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
@@ -215,7 +234,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'INCA',
     slug: 'insight-nocode-analyzer',
-    published: true,
+    status: 'published',
     displayOrder: 20,
     category: 'rpa',
     svgIcon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
@@ -285,7 +304,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'INPY',
     slug: 'insight-py',
-    published: true,
+    status: 'published',
     displayOrder: 30,
     category: 'rpa',
     svgIcon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
@@ -360,7 +379,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'IOSH',
     slug: 'insight-office-sheet',
-    published: true,
+    status: 'published',
     displayOrder: 10,
     category: 'consulting',
     svgIcon: 'M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
@@ -435,7 +454,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'ISOF',
     slug: 'insight-senior-office',
-    published: true,
+    status: 'development',
     displayOrder: 20,
     category: 'consulting',
     svgIcon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
@@ -508,7 +527,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'IOSD',
     slug: 'insight-office-doc',
-    published: true,
+    status: 'development',
     displayOrder: 30,
     category: 'consulting',
     svgIcon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
@@ -576,7 +595,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'INSS',
     slug: 'insight-slide',
-    published: true,
+    status: 'published',
     displayOrder: 40,
     category: 'consulting',
     svgIcon: 'M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122',
@@ -651,7 +670,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'IVIN',
     slug: 'interview-insight',
-    published: true,
+    status: 'development',
     displayOrder: 50,
     category: 'consulting',
     svgIcon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
@@ -724,7 +743,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'INMV',
     slug: 'insight-movie',
-    published: true,
+    status: 'published',
     displayOrder: 10,
     category: 'content',
     svgIcon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
@@ -794,7 +813,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'INIG',
     slug: 'insight-image-gen',
-    published: true,
+    status: 'published',
     displayOrder: 20,
     category: 'content',
     svgIcon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
@@ -869,7 +888,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'LAUNCHER',
     slug: 'insight-launcher',
-    published: false,
+    status: 'hidden',
     displayOrder: 10,
     category: 'utility',
     svgIcon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
@@ -901,7 +920,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'CAMERA',
     slug: 'insight-camera',
-    published: false,
+    status: 'hidden',
     displayOrder: 20,
     category: 'utility',
     svgIcon: 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z',
@@ -933,7 +952,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'VOICE_CLOCK',
     slug: 'insight-voice-clock',
-    published: false,
+    status: 'hidden',
     displayOrder: 30,
     category: 'utility',
     svgIcon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
@@ -965,7 +984,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'QR',
     slug: 'insight-qr',
-    published: false,
+    status: 'hidden',
     displayOrder: 40,
     category: 'utility',
     svgIcon: 'M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z',
@@ -997,7 +1016,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'PINBOARD',
     slug: 'insight-pinboard',
-    published: false,
+    status: 'hidden',
     displayOrder: 50,
     category: 'utility',
     svgIcon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
@@ -1029,7 +1048,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   {
     code: 'VOICE_MEMO',
     slug: 'insight-voice-memo',
-    published: false,
+    status: 'hidden',
     displayOrder: 60,
     category: 'utility',
     svgIcon: 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z',
@@ -1065,11 +1084,13 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
 // =============================================================================
 
 /**
- * Web サイトに公開されている製品のみ取得
+ * Web サイトに表示する製品を取得（published + development）
+ *
+ * hidden は除外。development は「開発中」バッジ付きで表示。
  */
-export function getPublishedProducts(): CatalogEntry[] {
+export function getVisibleProducts(): CatalogEntry[] {
   return PRODUCT_CATALOG
-    .filter(p => p.published)
+    .filter(p => p.status !== 'hidden')
     .sort((a, b) => {
       const catA = CATEGORY_ORDER.indexOf(a.category);
       const catB = CATEGORY_ORDER.indexOf(b.category);
@@ -1079,11 +1100,34 @@ export function getPublishedProducts(): CatalogEntry[] {
 }
 
 /**
- * カテゴリ別に製品を取得（公開済みのみ）
+ * 公開済み（published）の製品のみ取得
+ */
+export function getPublishedProducts(): CatalogEntry[] {
+  return PRODUCT_CATALOG
+    .filter(p => p.status === 'published')
+    .sort((a, b) => {
+      const catA = CATEGORY_ORDER.indexOf(a.category);
+      const catB = CATEGORY_ORDER.indexOf(b.category);
+      if (catA !== catB) return catA - catB;
+      return a.displayOrder - b.displayOrder;
+    });
+}
+
+/**
+ * ステータスで製品をフィルタ
+ */
+export function getProductsByStatus(status: CatalogStatus): CatalogEntry[] {
+  return PRODUCT_CATALOG
+    .filter(p => p.status === status)
+    .sort((a, b) => a.displayOrder - b.displayOrder);
+}
+
+/**
+ * カテゴリ別に製品を取得（hidden 以外）
  */
 export function getProductsByCategory(category: WebsiteCategory): CatalogEntry[] {
   return PRODUCT_CATALOG
-    .filter(p => p.published && p.category === category)
+    .filter(p => p.status !== 'hidden' && p.category === category)
     .sort((a, b) => a.displayOrder - b.displayOrder);
 }
 
@@ -1102,10 +1146,17 @@ export function getProductByCode(code: CatalogCode): CatalogEntry | undefined {
 }
 
 /**
- * プラットフォーム別の公開製品を取得
+ * プラットフォーム別の表示対象製品を取得（hidden 以外）
  */
-export function getPublishedProductsByPlatform(platform: PlatformType): CatalogEntry[] {
-  return getPublishedProducts().filter(p => p.platforms.includes(platform));
+export function getVisibleProductsByPlatform(platform: PlatformType): CatalogEntry[] {
+  return getVisibleProducts().filter(p => p.platforms.includes(platform));
+}
+
+/**
+ * ステータスのラベルを取得
+ */
+export function getStatusLabel(status: CatalogStatus, locale: CatalogLocale = 'ja'): string {
+  return STATUS_LABELS[status][locale];
 }
 
 /**
@@ -1157,15 +1208,19 @@ export default {
   PRODUCT_CATALOG,
   CATEGORY_NAMES,
   CATEGORY_ORDER,
+  STATUS_LABELS,
   GITHUB_DOWNLOAD_BASE,
 
   // ヘルパー
+  getVisibleProducts,
   getPublishedProducts,
+  getProductsByStatus,
   getProductsByCategory,
   getProductBySlug,
   getProductByCode,
-  getPublishedProductsByPlatform,
+  getVisibleProductsByPlatform,
   getDownloadUrl,
   isDownloadAvailable,
   getCategorizedProducts,
+  getStatusLabel,
 };
