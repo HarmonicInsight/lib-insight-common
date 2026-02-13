@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -1299,6 +1301,141 @@ public partial class MainWindow : Window
                 AppListBox.SelectedItem = saved;
                 return;
             }
+        }
+    }
+
+    // ── Import ──
+
+    private void ImportApps_Click(object sender, RoutedEventArgs e)
+    {
+        // 埋め込みリソースから読むか、外部ファイルを選ぶか
+        var result = MessageBox.Show(
+            "スマホアプリの一括インポート\n\n" +
+            "「はい」→ 内蔵データ (12アプリ) をインポート\n" +
+            "「いいえ」→ JSON ファイルを選択してインポート",
+            "一括インポート",
+            MessageBoxButton.YesNoCancel,
+            MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Cancel) return;
+
+        List<AppDefinition>? apps;
+        if (result == MessageBoxResult.Yes)
+        {
+            apps = LoadEmbeddedMobileApps();
+        }
+        else
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "インポートする JSON ファイルを選択",
+                Filter = "JSON ファイル (*.json)|*.json|すべてのファイル (*.*)|*.*",
+                DefaultExt = ".json"
+            };
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                var json = File.ReadAllText(dialog.FileName);
+                apps = JsonSerializer.Deserialize<List<AppDefinition>>(json);
+            }
+            catch (Exception ex)
+            {
+                AppendOutput($"[エラー] JSON の読み込みに失敗: {ex.Message}\n");
+                return;
+            }
+        }
+
+        if (apps == null || apps.Count == 0)
+        {
+            AppendOutput("[情報] インポートするアプリがありません。\n");
+            return;
+        }
+
+        var existingCodes = _config.Apps.Select(a => a.ProductCode).ToHashSet();
+        var added = 0;
+        var skipped = 0;
+
+        foreach (var app in apps)
+        {
+            if (existingCodes.Contains(app.ProductCode))
+            {
+                skipped++;
+                continue;
+            }
+
+            // Type を強制的に MobileApp に設定
+            app.Type = AppType.MobileApp;
+            _config.Apps.Add(app);
+            existingCodes.Add(app.ProductCode);
+            added++;
+        }
+
+        if (added > 0)
+        {
+            SaveConfig();
+            RefreshAppList();
+        }
+
+        AppendOutput($"[一括インポート] {added} 件追加、{skipped} 件スキップ（既存）\n");
+
+        if (added > 0)
+            MessageBox.Show($"{added} 件のスマホアプリを追加しました。\n{skipped} 件は既に登録済みのためスキップしました。",
+                "インポート完了", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private static List<AppDefinition>? LoadEmbeddedMobileApps()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = assembly.GetManifestResourceNames()
+            .FirstOrDefault(n => n.EndsWith("mobile-apps.json"));
+
+        if (resourceName == null) return null;
+
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+        if (stream == null) return null;
+
+        return JsonSerializer.Deserialize<List<AppDefinition>>(stream);
+    }
+
+    private void ExportApps_Click(object sender, RoutedEventArgs e)
+    {
+        // 現在のタブのアプリを JSON エクスポート
+        var filtered = _config.Apps
+            .Where(a => _activeTab switch
+            {
+                ActiveTab.Desktop => a.Type == AppType.Desktop,
+                ActiveTab.WebApp => a.Type == AppType.WebApp,
+                ActiveTab.Website => a.Type == AppType.Website,
+                ActiveTab.MobileApp => a.Type == AppType.MobileApp,
+                _ => true,
+            })
+            .ToList();
+
+        if (filtered.Count == 0)
+        {
+            AppendOutput("[情報] エクスポートするアプリがありません。\n");
+            return;
+        }
+
+        var dialog = new SaveFileDialog
+        {
+            Title = "アプリ一覧をエクスポート",
+            Filter = "JSON ファイル (*.json)|*.json",
+            DefaultExt = ".json",
+            FileName = $"{_activeTab}-apps.json"
+        };
+        if (dialog.ShowDialog() != true) return;
+
+        try
+        {
+            var json = JsonSerializer.Serialize(filtered, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(dialog.FileName, json);
+            AppendOutput($"[エクスポート] {filtered.Count} 件を {dialog.FileName} に保存しました。\n");
+        }
+        catch (Exception ex)
+        {
+            AppendOutput($"[エラー] エクスポート失敗: {ex.Message}\n");
         }
     }
 
