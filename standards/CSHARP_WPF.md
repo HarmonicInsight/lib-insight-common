@@ -1013,6 +1013,6 @@ protected override void OnStartup(StartupEventArgs e)
 
 ## 参考実装
 
-- **InsightOfficeSheet**: `app-Insight-excel` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
-- **InsightNoCodeAnalyzer**: `app-nocode-analyzer-C` リポジトリ
+- **InsightOfficeSheet**: `win-app-insight-sheet` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
+- **InsightNoCodeAnalyzer**: `win-app-nocode-analyzer` リポジトリ
 - **InsightSlide**: ライセンス画面のリファレンス実装

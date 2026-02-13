@@ -2,7 +2,7 @@
  * デモデータ生成器
  *
  * シミュレーション生成したインタビューデータを
- * app-auto-interview-web で使用する InterviewSessionData 形式に変換する。
+ * web-app-auto-interview で使用する InterviewSessionData 形式に変換する。
  *
  * 変換内容:
  * 1. GeneratedInterview → InterviewSessionData のフォーマット変換

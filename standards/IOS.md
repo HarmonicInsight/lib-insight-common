@@ -320,4 +320,4 @@ struct LicenseView: View {
 
 ## 参考実装
 
-- **Insight Mobile iOS**: `app-insight-mobile-ios` リポジトリ
+- **Insight Mobile iOS**: `ios-app-insight-movie` リポジトリ
