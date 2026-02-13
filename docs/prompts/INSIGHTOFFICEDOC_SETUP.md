@@ -30,8 +30,8 @@
 ### 1. リポジトリクローン
 
 ```bash
-git clone https://github.com/HarmonicInsight/app-Insight-doc.git
-cd app-Insight-doc
+git clone https://github.com/HarmonicInsight/win-app-insight-doc.git
+cd win-app-insight-doc
 git submodule update --init --recursive
 ```
 

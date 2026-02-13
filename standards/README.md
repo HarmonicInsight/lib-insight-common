@@ -126,6 +126,6 @@ git commit -m "ci: add design standards validation"
 
 | プラットフォーム | リポジトリ |
 |----------------|-----------|
-| C# (WPF) | app-nocode-analyzer-C |
-| React | app-insight-slide-web |
-| iOS | app-insight-mobile-ios |
+| C# (WPF) | win-app-nocode-analyzer |
+| React | web-app-insight-process |
+| iOS | ios-app-insight-movie |

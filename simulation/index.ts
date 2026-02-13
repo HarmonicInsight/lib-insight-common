@@ -1,7 +1,7 @@
 /**
  * シミュレーション / デモデータ モジュール
  *
- * app-auto-interview-web から以下のようにインポートして利用:
+ * web-app-auto-interview から以下のようにインポートして利用:
  *
  * ```typescript
  * import {

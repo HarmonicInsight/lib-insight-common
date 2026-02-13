@@ -44,10 +44,10 @@
  * └─────────────────────────────────────────────────────────────────┘
  * ```
  *
- * ## app-auto-interview-web との連携
+ * ## web-app-auto-interview との連携
  *
  * ```
- * app-auto-interview-web                 insight-common/tdwh
+ * web-app-auto-interview                 insight-common/tdwh
  * ┌─────────────────┐                   ┌─────────────────────┐
  * │ Session          │──────────────────→│ RawDocument          │
  * │ Answer           │                   │ (Layer 1)            │
@@ -81,7 +81,7 @@ import type {
 import { DEFAULT_CURATION_CONFIG } from './types';
 
 // =============================================================================
-// インタビューデータ型（app-auto-interview-web との共通型）
+// インタビューデータ型（web-app-auto-interview との共通型）
 // =============================================================================
 
 /** インタビューの構造化出力（LLM処理後） */

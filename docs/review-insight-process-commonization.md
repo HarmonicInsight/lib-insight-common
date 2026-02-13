@@ -1,6 +1,6 @@
 # InsightProcess 共通化分析レビュー
 
-> **対象リポジトリ**: https://github.com/HarmonicInsight/Insight-Process.git
+> **対象リポジトリ**: https://github.com/HarmonicInsight/web-app-insight-process.git
 > **レビュー日**: 2026-02-07
 > **ブランチ**: claude/review-warehouse-architecture-g1Fsj
 
@@ -38,7 +38,7 @@ InsightProcess の核心である **IPO スキーマ** は、複数の HARMONIC 
 業務プロセス構造を表現する共通言語になり得る。
 
 ```
-現在: Insight-Process/src/types/ipo.ts （アプリ内ローカル）
+現在: web-app-insight-process/src/types/ipo.ts （アプリ内ローカル）
 推奨: insight-common/config/ipo/types.ts （共通型として昇格）
 ```
 
@@ -149,7 +149,7 @@ insight-common/
 │   └── IPO.md                  ← 新規: IPO データモデル設計標準
 └── ...
 
-Insight-Process/
+web-app-insight-process/
 ├── src/
 │   ├── types/
 │   │   └── ipo.ts              → insight-common/config/ipo/types.ts から import

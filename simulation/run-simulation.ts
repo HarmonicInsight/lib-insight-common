@@ -346,7 +346,7 @@ function saveOutputFiles(
   console.log(`  Saved: ${personaCsvPath}`);
 
   // 7. デモデータ — InterviewSessionData 形式（JSONL）
-  //    app-auto-interview-web で直接読み込み可能なフォーマット
+  //    web-app-auto-interview で直接読み込み可能なフォーマット
   const demoDataPath = join(OUTPUT_DIR, 'demo-sessions.jsonl');
   const demoDataLines = sessionDataToJsonl(sessionDataList);
   writeFileSync(demoDataPath, demoDataLines, 'utf-8');

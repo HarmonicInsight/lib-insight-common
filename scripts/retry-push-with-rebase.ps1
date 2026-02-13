@@ -12,18 +12,18 @@ param(
 )
 
 $repos = @(
-    "app-auto-interview-web",
-    "app-mobile-Consul-Evaluate",
-    "app-mobile-InsightVoiceMemo",
-    "app-nocode-analyzer-C",
-    "Book-output-first",
-    "InsightAgent",
-    "InsightDiagnosis",
-    "InsightPy",
-    "Insight-Senior-Phone",
-    "InsightTidy",
-    "tool-Insight-factory-win",
-    "z_ForguncyInsight"
+    "web-app-auto-interview",
+    "mobile-app-consul-evaluate",
+    "mobile-app-voice-memo",
+    "win-app-nocode-analyzer",
+    "cross-kb-book-output",
+    "unity-app-insight-agent",
+    "web-app-insight-diagnosis",
+    "win-app-insight-py",
+    "mobile-app-insight-senior-phone",
+    "web-app-insight-tidy",
+    "win-tool-insight-factory",
+    "win-app-forguncy"
 )
 
 Write-Host ""
