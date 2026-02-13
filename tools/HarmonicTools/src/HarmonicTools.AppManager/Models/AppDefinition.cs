@@ -14,7 +14,9 @@ public enum AppType
     /// <summary>Webアプリ（Next.js / React 等の製品）</summary>
     WebApp,
     /// <summary>Webサイト（コーポレートサイト・ブログ・ドキュメント等）</summary>
-    Website
+    Website,
+    /// <summary>スマホアプリ（Android / iOS / クロスプラットフォーム）</summary>
+    MobileApp
 }
 
 /// <summary>
@@ -79,6 +81,23 @@ public class AppDefinition
     /// </summary>
     public string Framework { get; set; } = string.Empty;
 
+    // ── Mobile App 専用フィールド ──
+
+    /// <summary>
+    /// モバイルプラットフォーム（例: "Android", "iOS", "Cross-platform"）
+    /// </summary>
+    public string MobilePlatform { get; set; } = string.Empty;
+
+    /// <summary>
+    /// バンドルID / パッケージ名（例: "com.harmonicinsight.insightmobile"）
+    /// </summary>
+    public string BundleId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// ストアURL（Play Store / App Store）
+    /// </summary>
+    public string StoreUrl { get; set; } = string.Empty;
+
     /// <summary>
     /// Webアプリかどうか
     /// </summary>
@@ -96,6 +115,12 @@ public class AppDefinition
     /// </summary>
     [JsonIgnore]
     public bool IsWebBased => Type == AppType.WebApp || Type == AppType.Website;
+
+    /// <summary>
+    /// スマホアプリかどうか
+    /// </summary>
+    [JsonIgnore]
+    public bool IsMobileApp => Type == AppType.MobileApp;
 
     /// <summary>
     /// dotnet プロジェクトかどうか
@@ -218,6 +243,19 @@ public class AppDefinition
                 string status;
                 if (released) status = "★ デプロイ済";
                 else if (hasUrl) status = "● 公開中";
+                else status = "○ 開発中";
+
+                var version = released ? LastReleasedTag : ProductCode;
+                return $"{version}  {status}";
+            }
+
+            // スマホアプリの場合
+            if (IsMobileApp)
+            {
+                var hasStore = !string.IsNullOrEmpty(StoreUrl);
+                string status;
+                if (released) status = "★ リリース済";
+                else if (hasStore) status = "● 公開中";
                 else status = "○ 開発中";
 
                 var version = released ? LastReleasedTag : ProductCode;
