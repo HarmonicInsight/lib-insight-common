@@ -1,39 +1,42 @@
 # =============================================
-# HarmonicInsight ローカルリポジトリ一括 remote URL 更新 (PowerShell)
+# HarmonicInsight ローカルリポジトリ一括 remote URL 更新
 #
 # リポジトリ名の一括リネーム後、各ローカルPCで実行して
 # remote URL・.gitmodules を新しいリポ名に更新するスクリプト。
 #
 # 使い方:
-#   # ドライラン（確認のみ）
-#   .\scripts\update-local-remotes.ps1 -BaseDir C:\dev
+#   # dev フォルダに cd してから実行
+#   cd C:\dev
+#
+#   # ドライラン（確認のみ・デフォルト）
+#   .\update-local-remotes.ps1
 #
 #   # 実行モード
-#   .\scripts\update-local-remotes.ps1 -BaseDir C:\dev -Execute
+#   .\update-local-remotes.ps1 -Execute
+#
+# 処理内容:
+#   - カレントディレクトリ直下の各フォルダを走査
+#   - git remote origin の URL が旧リポ名なら新リポ名に更新
+#   - .gitmodules 内の旧リポ名を新リポ名に更新
+#   - git submodule sync を実行
+#   - .gitmodules の変更を自動コミット
 # =============================================
 
 param(
-    [Parameter(Mandatory = $true)]
-    [string]$BaseDir,
     [switch]$Execute
 )
 
-if (-not (Test-Path $BaseDir -PathType Container)) {
-    Write-Host "エラー: ディレクトリが存在しません: $BaseDir" -ForegroundColor Red
-    exit 1
-}
-
-$BaseDir = (Resolve-Path $BaseDir).Path
+$BaseDir = (Get-Location).Path
 
 Write-Host ""
 Write-Host "=== HarmonicInsight Local Remote URL Updater ===" -ForegroundColor Blue
 if ($Execute) {
     Write-Host "MODE: EXECUTE" -ForegroundColor Red
 } else {
-    Write-Host "MODE: DRY RUN" -ForegroundColor Yellow
+    Write-Host "MODE: DRY RUN（確認のみ・変更なし）" -ForegroundColor Yellow
 }
 Write-Host ""
-Write-Host "Base directory: $BaseDir" -ForegroundColor Blue
+Write-Host "対象ディレクトリ: $BaseDir" -ForegroundColor Blue
 Write-Host ""
 
 # =============================================
@@ -209,7 +212,6 @@ foreach ($dir in Get-ChildItem -Path $BaseDir -Directory) {
         $content = Get-Content $gitmodulesPath -Raw -ErrorAction SilentlyContinue
         if (-not $content) { continue }
 
-        $originalContent = $content
         $submoduleChanged = $false
 
         foreach ($oldName in $renameMap.Keys) {
@@ -235,8 +237,8 @@ foreach ($dir in Get-ChildItem -Path $BaseDir -Directory) {
 
             # コミット
             git -C $repoDir add .gitmodules 2>$null
-            $hasDiff = git -C $repoDir diff --cached --quiet .gitmodules 2>$null; $LASTEXITCODE -ne 0
-            if ($hasDiff) {
+            $null = git -C $repoDir diff --cached --quiet .gitmodules 2>$null
+            if ($LASTEXITCODE -ne 0) {
                 git -C $repoDir commit -m "chore: update submodule URLs after repository rename" 2>$null
                 Write-Host "    コミット済み" -ForegroundColor Green
             }
@@ -256,7 +258,7 @@ if (-not $Execute) {
     Write-Host ""
     if (($updatedRemote + $updatedSubmodule) -gt 0) {
         Write-Host "実行するには:" -ForegroundColor Yellow
-        Write-Host "  .\scripts\update-local-remotes.ps1 -BaseDir $BaseDir -Execute" -ForegroundColor Cyan
+        Write-Host "  .\update-local-remotes.ps1 -Execute" -ForegroundColor Cyan
     } else {
         Write-Host "更新対象はありませんでした。既に最新の可能性があります。" -ForegroundColor Green
     }
