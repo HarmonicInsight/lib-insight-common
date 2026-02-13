@@ -245,12 +245,12 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // Web アプリ
+  // InsightQR（Expo iOS + Android Native Kotlin）
   // ══════════════════════════════════════════════════════
   {
     repo: 'web-app-insight-qr',
     productCode: 'QR',
-    productName: 'InsightQR',
+    productName: 'InsightQR (iOS / Expo)',
     iconCopy: [
       { src: 'InsightQR/favicon.ico', dest: 'public/favicon.ico' },
       { src: 'InsightQR/favicon-16.png', dest: 'public/favicon-16x16.png' },
@@ -258,6 +258,16 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
       { src: 'InsightQR/apple-touch-icon.png', dest: 'public/apple-touch-icon.png' },
       { src: 'InsightQR/icon-192.png', dest: 'public/icon-192.png' },
       { src: 'InsightQR/icon-512.png', dest: 'public/icon-512.png' },
+    ],
+    enabled: true,
+  },
+  {
+    repo: 'android-app-insight-qr',
+    productCode: 'QR',
+    productName: 'InsightQR (Android / Kotlin)',
+    iconCopy: [
+      { src: 'InsightQR/drawable/', dest: 'app/src/main/res/drawable/' },
+      { src: 'InsightQR/mipmap-anydpi-v26/', dest: 'app/src/main/res/mipmap-anydpi-v26/' },
     ],
     enabled: true,
   },
