@@ -13,14 +13,11 @@ namespace HarmonicTools.AppManager;
 
 public partial class MainWindow : Window
 {
-    private enum ActiveTab { Desktop, WebApp, Website, Icon }
+    private enum ActiveTab { Desktop, WebApp, Website, MobileApp }
 
     private readonly AppConfig _config;
     private readonly CommandRunner _runner = new();
-    private readonly IconService _iconService = new();
     private AppDefinition? _selectedApp;
-    private IconDefinition? _selectedIcon;
-    private List<IconDefinition>? _iconDefinitions;
     private ActiveTab _activeTab = ActiveTab.Desktop;
 
     public MainWindow()
@@ -31,9 +28,6 @@ public partial class MainWindow : Window
 
         _runner.OutputReceived += OnOutputReceived;
         _runner.CommandCompleted += OnCommandCompleted;
-
-        // insight-common ルートの自動検出
-        _iconService.InsightCommonRoot = IconService.DetectInsightCommonRoot();
 
         RefreshAppList();
     }
@@ -66,32 +60,14 @@ public partial class MainWindow : Window
     private void DesktopTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Desktop);
     private void WebAppTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.WebApp);
     private void WebSiteTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Website);
-    private void IconTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.Icon);
+    private void MobileTab_Click(object sender, RoutedEventArgs e) => SwitchTab(ActiveTab.MobileApp);
 
     private void SwitchTab(ActiveTab tab)
     {
         if (_activeTab == tab) return;
         _activeTab = tab;
         UpdateTabStyles();
-
-        if (tab == ActiveTab.Icon)
-        {
-            // アイコンタブ: App List を非表示にし、Icon List を表示
-            AppListBox.Visibility = Visibility.Collapsed;
-            IconListBox.Visibility = Visibility.Visible;
-            AppListButtons.Visibility = Visibility.Collapsed;
-            IconListButtons.Visibility = Visibility.Visible;
-            RefreshIconList();
-        }
-        else
-        {
-            // 通常タブ: Icon List を非表示にし、App List を表示
-            AppListBox.Visibility = Visibility.Visible;
-            IconListBox.Visibility = Visibility.Collapsed;
-            AppListButtons.Visibility = Visibility.Visible;
-            IconListButtons.Visibility = Visibility.Collapsed;
-            RefreshAppList();
-        }
+        RefreshAppList();
     }
 
     private void UpdateTabStyles()
@@ -109,8 +85,8 @@ public partial class MainWindow : Window
         WebSiteTabBtn.Background = _activeTab == ActiveTab.Website ? active : inactive;
         WebSiteTabBtn.Foreground = _activeTab == ActiveTab.Website ? Brushes.White : inactiveText;
 
-        IconTabBtn.Background = _activeTab == ActiveTab.Icon ? active : inactive;
-        IconTabBtn.Foreground = _activeTab == ActiveTab.Icon ? Brushes.White : inactiveText;
+        MobileTabBtn.Background = _activeTab == ActiveTab.MobileApp ? active : inactive;
+        MobileTabBtn.Foreground = _activeTab == ActiveTab.MobileApp ? Brushes.White : inactiveText;
     }
 
     // ── App List ──
@@ -124,6 +100,7 @@ public partial class MainWindow : Window
                 ActiveTab.Desktop => a.Type == AppType.Desktop,
                 ActiveTab.WebApp => a.Type == AppType.WebApp,
                 ActiveTab.Website => a.Type == AppType.Website,
+                ActiveTab.MobileApp => a.Type == AppType.MobileApp,
                 _ => true,
             })
             .ToList();
@@ -141,16 +118,12 @@ public partial class MainWindow : Window
         // Close edit panels on selection change
         EditPanel.Visibility = Visibility.Collapsed;
         WebEditPanel.Visibility = Visibility.Collapsed;
+        MobileEditPanel.Visibility = Visibility.Collapsed;
         EditToggleBtn.Content = "編集";
     }
 
     private void UpdateAppDetails()
     {
-        // アイコンタブの場合は UpdateIconDetails で処理するため、ここでは何もしない
-        if (_activeTab == ActiveTab.Icon) return;
-
-        // 通常タブ: アイコンパネルを非表示、編集ボタンを表示
-        IconActions.Visibility = Visibility.Collapsed;
         EditToggleBtn.Visibility = Visibility.Visible;
 
         if (_selectedApp == null)
@@ -163,20 +136,51 @@ public partial class MainWindow : Window
             ReleaseExeText.Text = "";
             DesktopPathInfo.Visibility = Visibility.Visible;
             WebPathInfo.Visibility = Visibility.Collapsed;
+            MobilePathInfo.Visibility = Visibility.Collapsed;
             DesktopActions.Visibility = Visibility.Visible;
             WebActions.Visibility = Visibility.Collapsed;
+            MobileActions.Visibility = Visibility.Collapsed;
             return;
         }
 
         SelectedAppName.Text = _selectedApp.Name;
 
-        if (_selectedApp.IsWebBased)
+        if (_selectedApp.IsMobileApp)
+        {
+            // Mobile app details
+            DesktopPathInfo.Visibility = Visibility.Collapsed;
+            WebPathInfo.Visibility = Visibility.Collapsed;
+            MobilePathInfo.Visibility = Visibility.Visible;
+            DesktopActions.Visibility = Visibility.Collapsed;
+            WebActions.Visibility = Visibility.Collapsed;
+            MobileActions.Visibility = Visibility.Visible;
+
+            MobileBasePathText.Text = string.IsNullOrEmpty(_selectedApp.BasePath) ? "(未設定)" : _selectedApp.BasePath;
+            MobileBasePathText.Foreground = string.IsNullOrEmpty(_selectedApp.BasePath)
+                ? (Brush)FindResource("ErrorBrush")
+                : (Brush)FindResource("TextPrimaryBrush");
+            MobilePlatformText.Text = string.IsNullOrEmpty(_selectedApp.MobilePlatform) ? "(未設定)" : _selectedApp.MobilePlatform;
+            MobileFrameworkText.Text = _selectedApp.Framework;
+            MobileBundleIdText.Text = _selectedApp.BundleId;
+            MobileStoreUrlText.Text = _selectedApp.StoreUrl;
+
+            // インラインURL表示
+            MobileStoreUrlInline.Text = _selectedApp.StoreUrl;
+
+            // ストアURLがない場合はセクションを非表示
+            MobileStoreSection.Visibility = string.IsNullOrEmpty(_selectedApp.StoreUrl)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+        }
+        else if (_selectedApp.IsWebBased)
         {
             // Web app / website details
             DesktopPathInfo.Visibility = Visibility.Collapsed;
             WebPathInfo.Visibility = Visibility.Visible;
+            MobilePathInfo.Visibility = Visibility.Collapsed;
             DesktopActions.Visibility = Visibility.Collapsed;
             WebActions.Visibility = Visibility.Visible;
+            MobileActions.Visibility = Visibility.Collapsed;
 
             WebBasePathText.Text = string.IsNullOrEmpty(_selectedApp.BasePath) ? "(未設定)" : _selectedApp.BasePath;
             WebBasePathText.Foreground = string.IsNullOrEmpty(_selectedApp.BasePath)
@@ -201,8 +205,10 @@ public partial class MainWindow : Window
             // Desktop app details
             DesktopPathInfo.Visibility = Visibility.Visible;
             WebPathInfo.Visibility = Visibility.Collapsed;
+            MobilePathInfo.Visibility = Visibility.Collapsed;
             DesktopActions.Visibility = Visibility.Visible;
             WebActions.Visibility = Visibility.Collapsed;
+            MobileActions.Visibility = Visibility.Collapsed;
 
             BasePathText.Text = string.IsNullOrEmpty(_selectedApp.BasePath) ? "(未設定)" : _selectedApp.BasePath;
             BasePathText.Foreground = string.IsNullOrEmpty(_selectedApp.BasePath)
@@ -503,8 +509,8 @@ public partial class MainWindow : Window
     {
         if (_selectedApp == null) return;
 
-        // Web app / website: always open base path
-        if (_selectedApp.IsWebBased)
+        // Web app / website / mobile app: always open base path
+        if (_selectedApp.IsWebBased || _selectedApp.IsMobileApp)
         {
             if (!string.IsNullOrEmpty(_selectedApp.BasePath) && Directory.Exists(_selectedApp.BasePath))
                 Process.Start("explorer.exe", _selectedApp.BasePath);
@@ -931,23 +937,33 @@ public partial class MainWindow : Window
     {
         if (_selectedApp == null) return;
 
-        var isCurrentlyOpen = _selectedApp.IsWebBased
-            ? WebEditPanel.Visibility == Visibility.Visible
-            : EditPanel.Visibility == Visibility.Visible;
+        var isCurrentlyOpen = _selectedApp.IsMobileApp
+            ? MobileEditPanel.Visibility == Visibility.Visible
+            : _selectedApp.IsWebBased
+                ? WebEditPanel.Visibility == Visibility.Visible
+                : EditPanel.Visibility == Visibility.Visible;
 
         if (!isCurrentlyOpen)
         {
-            if (_selectedApp.IsWebBased)
+            // 全編集パネルを閉じてから該当パネルを開く
+            EditPanel.Visibility = Visibility.Collapsed;
+            WebEditPanel.Visibility = Visibility.Collapsed;
+            MobileEditPanel.Visibility = Visibility.Collapsed;
+
+            if (_selectedApp.IsMobileApp)
+            {
+                PopulateMobileEditFields(_selectedApp);
+                MobileEditPanel.Visibility = Visibility.Visible;
+            }
+            else if (_selectedApp.IsWebBased)
             {
                 PopulateWebEditFields(_selectedApp);
                 WebEditPanel.Visibility = Visibility.Visible;
-                EditPanel.Visibility = Visibility.Collapsed;
             }
             else
             {
                 PopulateEditFields(_selectedApp);
                 EditPanel.Visibility = Visibility.Visible;
-                WebEditPanel.Visibility = Visibility.Collapsed;
             }
             EditToggleBtn.Content = "閉じる";
         }
@@ -955,6 +971,7 @@ public partial class MainWindow : Window
         {
             EditPanel.Visibility = Visibility.Collapsed;
             WebEditPanel.Visibility = Visibility.Collapsed;
+            MobileEditPanel.Visibility = Visibility.Collapsed;
             EditToggleBtn.Content = "編集";
         }
     }
@@ -1104,7 +1121,30 @@ public partial class MainWindow : Window
 
     private void AddApp_Click(object sender, RoutedEventArgs e)
     {
-        if (_activeTab == ActiveTab.WebApp || _activeTab == ActiveTab.Website)
+        if (_activeTab == ActiveTab.MobileApp)
+        {
+            var app = new AppDefinition
+            {
+                Name = "新規スマホアプリ",
+                ProductCode = "MOB-NEW",
+                Type = AppType.MobileApp,
+                Description = "説明を入力",
+                MobilePlatform = "Cross-platform",
+                Framework = "React Native",
+                DevCommand = "npx expo start",
+                WebBuildCommand = "npx expo build",
+            };
+
+            _config.Apps.Add(app);
+            RefreshAppList();
+            AppListBox.SelectedItem = app;
+            SaveConfig();
+
+            PopulateMobileEditFields(app);
+            MobileEditPanel.Visibility = Visibility.Visible;
+            EditToggleBtn.Content = "閉じる";
+        }
+        else if (_activeTab == ActiveTab.WebApp || _activeTab == ActiveTab.Website)
         {
             var isWebSite = _activeTab == ActiveTab.Website;
             var app = new AppDefinition
@@ -1171,6 +1211,9 @@ public partial class MainWindow : Window
             WebBuildCommand = _selectedApp.WebBuildCommand,
             DevUrl = _selectedApp.DevUrl,
             ProductionUrl = _selectedApp.ProductionUrl,
+            MobilePlatform = _selectedApp.MobilePlatform,
+            BundleId = _selectedApp.BundleId,
+            StoreUrl = _selectedApp.StoreUrl,
         };
 
         _config.Apps.Add(app);
@@ -1179,7 +1222,12 @@ public partial class MainWindow : Window
         SaveConfig();
 
         // Auto-open edit panel for copied app
-        if (app.IsWebBased)
+        if (app.IsMobileApp)
+        {
+            PopulateMobileEditFields(app);
+            MobileEditPanel.Visibility = Visibility.Visible;
+        }
+        else if (app.IsWebBased)
         {
             PopulateWebEditFields(app);
             WebEditPanel.Visibility = Visibility.Visible;
@@ -1205,6 +1253,52 @@ public partial class MainWindow : Window
             _selectedApp = null;
             RefreshAppList();
             SaveConfig();
+        }
+    }
+
+    // ── Move Up/Down ──
+
+    private void MoveUp_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+        var index = _config.Apps.IndexOf(_selectedApp);
+        if (index < 0) return;
+
+        // 同じタブ内で1つ上のアプリを探す
+        for (var i = index - 1; i >= 0; i--)
+        {
+            if (_config.Apps[i].Type == _selectedApp.Type)
+            {
+                // swap
+                (_config.Apps[index], _config.Apps[i]) = (_config.Apps[i], _config.Apps[index]);
+                SaveConfig();
+                var saved = _selectedApp;
+                RefreshAppList();
+                AppListBox.SelectedItem = saved;
+                return;
+            }
+        }
+    }
+
+    private void MoveDown_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+        var index = _config.Apps.IndexOf(_selectedApp);
+        if (index < 0) return;
+
+        // 同じタブ内で1つ下のアプリを探す
+        for (var i = index + 1; i < _config.Apps.Count; i++)
+        {
+            if (_config.Apps[i].Type == _selectedApp.Type)
+            {
+                // swap
+                (_config.Apps[index], _config.Apps[i]) = (_config.Apps[i], _config.Apps[index]);
+                SaveConfig();
+                var saved = _selectedApp;
+                RefreshAppList();
+                AppListBox.SelectedItem = saved;
+                return;
+            }
         }
     }
 
@@ -1447,6 +1541,7 @@ public partial class MainWindow : Window
     {
         CancelBtn.IsEnabled = running;
         WebCancelBtn.IsEnabled = running;
+        MobileCancelBtn.IsEnabled = running;
         if (running)
         {
             StatusText.Text = "実行中...";
@@ -1476,182 +1571,113 @@ public partial class MainWindow : Window
         if (selected != null) AppListBox.SelectedItem = selected;
     }
 
-    // ── Icon Tab ──
+    // ── Mobile App Tab ──
 
-    private void RefreshIconList()
+    private void PopulateMobileEditFields(AppDefinition app)
     {
-        _iconDefinitions ??= _iconService.BuildIconDefinitions(_config);
+        MobileEditName.Text = app.Name;
+        MobileEditProductCode.Text = app.ProductCode;
+        MobileEditDescription.Text = app.Description;
+        MobileEditBasePath.Text = app.BasePath;
+        MobileEditPlatform.Text = app.MobilePlatform;
+        MobileEditFramework.Text = app.Framework;
+        MobileEditBuildCommand.Text = app.WebBuildCommand;
+        MobileEditBundleId.Text = app.BundleId;
+        MobileEditStoreUrl.Text = app.StoreUrl;
+    }
 
-        // BasePath を最新の AppConfig から再マッピング
-        var appsByCode = _config.Apps.ToDictionary(a => a.ProductCode, a => a);
-        foreach (var def in _iconDefinitions)
+    private void SaveMobileEdit_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+
+        _selectedApp.Name = MobileEditName.Text.Trim();
+        _selectedApp.ProductCode = MobileEditProductCode.Text.Trim();
+        _selectedApp.Description = MobileEditDescription.Text.Trim();
+        _selectedApp.BasePath = MobileEditBasePath.Text.Trim();
+        _selectedApp.MobilePlatform = MobileEditPlatform.Text.Trim();
+        _selectedApp.Framework = MobileEditFramework.Text.Trim();
+        _selectedApp.WebBuildCommand = MobileEditBuildCommand.Text.Trim();
+        _selectedApp.BundleId = MobileEditBundleId.Text.Trim();
+        _selectedApp.StoreUrl = MobileEditStoreUrl.Text.Trim();
+
+        SaveConfig();
+        UpdateAppDetails();
+
+        var saved = _selectedApp;
+        RefreshAppList();
+        AppListBox.SelectedItem = saved;
+
+        MobileEditPanel.Visibility = Visibility.Collapsed;
+        EditToggleBtn.Content = "編集";
+
+        AppendOutput($"[保存] {_selectedApp.Name} の設定を保存しました。\n");
+    }
+
+    private void BrowseMobileEditBasePath_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFolderDialog
         {
-            if (appsByCode.TryGetValue(def.ProductCode, out var app))
-                def.AppBasePath = app.BasePath;
+            Title = "リポジトリフォルダを選択"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            MobileEditBasePath.Text = dialog.FolderName;
         }
-
-        IconListBox.ItemsSource = null;
-        IconListBox.ItemsSource = _iconDefinitions;
-
-        if (_iconDefinitions.Count > 0 && IconListBox.SelectedIndex < 0)
-            IconListBox.SelectedIndex = 0;
     }
 
-    private void IconListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    private void MobileBuild_Click(object sender, RoutedEventArgs e)
     {
-        _selectedIcon = IconListBox.SelectedItem as IconDefinition;
-        UpdateIconDetails();
-    }
-
-    private void UpdateIconDetails()
-    {
-        if (_selectedIcon == null)
+        if (!ValidateSelection()) return;
+        var buildCmd = _selectedApp!.WebBuildCommand;
+        if (string.IsNullOrEmpty(buildCmd))
         {
-            SelectedAppName.Text = "アイコンを選択してください";
-            IconActions.Visibility = Visibility.Collapsed;
-            DesktopActions.Visibility = Visibility.Collapsed;
-            WebActions.Visibility = Visibility.Collapsed;
-            DesktopPathInfo.Visibility = Visibility.Collapsed;
-            WebPathInfo.Visibility = Visibility.Collapsed;
-            EditPanel.Visibility = Visibility.Collapsed;
-            WebEditPanel.Visibility = Visibility.Collapsed;
+            AppendOutput("[情報] ビルドコマンドが設定されていません。\n");
             return;
         }
 
-        SelectedAppName.Text = $"{_selectedIcon.ProductName} ({_selectedIcon.ProductCode})";
+        var title = $"{_selectedApp.Name} - Build";
+        _runner.RunInExternalConsole(title, "cmd.exe",
+            $"/c title {title} && {buildCmd} & echo. & echo ──────────────────────────── & echo 完了しました。何かキーを押すと閉じます。 & pause > nul",
+            _selectedApp.BasePath);
+    }
 
-        // 通常のパネルを非表示、アイコンパネルを表示
-        DesktopPathInfo.Visibility = Visibility.Collapsed;
-        WebPathInfo.Visibility = Visibility.Collapsed;
-        DesktopActions.Visibility = Visibility.Collapsed;
-        WebActions.Visibility = Visibility.Collapsed;
-        EditPanel.Visibility = Visibility.Collapsed;
-        WebEditPanel.Visibility = Visibility.Collapsed;
-        IconActions.Visibility = Visibility.Visible;
-
-        // マスター情報
-        IconMasterSvgText.Text = string.IsNullOrEmpty(_selectedIcon.MasterSvg) ? "(なし)" : _selectedIcon.MasterSvg;
-        IconMasterPngText.Text = string.IsNullOrEmpty(_selectedIcon.MasterPng) ? "(なし)" : _selectedIcon.MasterPng;
-        IconMotifText.Text = _selectedIcon.Motif;
-
-        if (_selectedIcon.HasMaster)
+    private void MobileRun_Click(object sender, RoutedEventArgs e)
+    {
+        if (!ValidateSelection()) return;
+        if (string.IsNullOrEmpty(_selectedApp!.DevCommand))
         {
-            IconMasterStatusText.Text = $"✓ 存在 ({_selectedIcon.MasterLastModified:yyyy/MM/dd HH:mm})";
-            IconMasterStatusText.Foreground = (Brush)FindResource("SuccessBrush");
-        }
-        else
-        {
-            IconMasterStatusText.Text = "✗ マスターファイルなし";
-            IconMasterStatusText.Foreground = (Brush)FindResource("ErrorBrush");
-        }
-
-        // プラットフォーム別ステータス
-        IconPlatformList.ItemsSource = null;
-        IconPlatformList.ItemsSource = _selectedIcon.Platforms;
-
-        // 編集ボタンを非表示
-        EditToggleBtn.Visibility = Visibility.Collapsed;
-    }
-
-    private void ScanIcon_Click(object sender, RoutedEventArgs e)
-    {
-        if (_selectedIcon == null) return;
-        _iconService.ScanIcon(_selectedIcon);
-        UpdateIconDetails();
-
-        // リスト側の表示も更新
-        var saved = _selectedIcon;
-        IconListBox.ItemsSource = null;
-        IconListBox.ItemsSource = _iconDefinitions;
-        IconListBox.SelectedItem = saved;
-
-        AppendOutput($"[アイコン] {_selectedIcon.ProductName} をスキャンしました: {_selectedIcon.OverallStatusIcon}\n");
-    }
-
-    private void ScanAllIcons_Click(object sender, RoutedEventArgs e)
-    {
-        if (_iconDefinitions == null) return;
-
-        _iconService.ScanAll(_iconDefinitions);
-
-        // リスト更新
-        var saved = _selectedIcon;
-        IconListBox.ItemsSource = null;
-        IconListBox.ItemsSource = _iconDefinitions;
-        if (saved != null) IconListBox.SelectedItem = saved;
-
-        UpdateIconDetails();
-
-        // サマリー出力
-        var total = 0;
-        var upToDate = 0;
-        var missing = 0;
-        foreach (var def in _iconDefinitions)
-        {
-            foreach (var p in def.Platforms)
-            {
-                foreach (var t in p.Targets)
-                {
-                    total++;
-                    if (t.Status == IconTargetStatus.UpToDate) upToDate++;
-                    else if (t.Status == IconTargetStatus.Missing) missing++;
-                }
-            }
-        }
-
-        AppendOutput($"═══ 全アイコン スキャン完了 ═══\n");
-        AppendOutput($"  合計: {total} ターゲット\n");
-        AppendOutput($"  最新: {upToDate} / 未配置: {missing} / その他: {total - upToDate - missing}\n\n");
-    }
-
-    private void OpenIconMaster_Click(object sender, RoutedEventArgs e)
-    {
-        if (_selectedIcon == null) return;
-        _iconService.OpenMasterInExplorer(_selectedIcon);
-    }
-
-    private void OpenIconMasterFolder_Click(object sender, RoutedEventArgs e)
-    {
-        if (_selectedIcon == null) return;
-        _iconService.OpenMasterInExplorer(_selectedIcon);
-    }
-
-    private void OpenIconTargetFolder_Click(object sender, RoutedEventArgs e)
-    {
-        if (_selectedIcon == null) return;
-        if (_selectedIcon.Platforms.Count == 0) return;
-
-        // 最初のプラットフォームの最初のターゲットを開く
-        var firstTarget = _selectedIcon.Platforms.First().Targets.FirstOrDefault();
-        if (firstTarget != null)
-            _iconService.OpenTargetInExplorer(_selectedIcon, firstTarget);
-    }
-
-    private void GenerateIco_Click(object sender, RoutedEventArgs e)
-    {
-        if (_selectedIcon == null) return;
-
-        var insightRoot = _iconService.InsightCommonRoot;
-        if (string.IsNullOrEmpty(insightRoot))
-        {
-            AppendOutput("[エラー] insight-common のルートパスが検出できません。\n");
+            AppendOutput("[情報] 実行コマンドが設定されていません。\n");
             return;
         }
 
-        var scriptPath = Path.Combine(insightRoot, "scripts", "generate-app-icon.py");
-        if (!File.Exists(scriptPath))
+        var title = $"{_selectedApp.Name} - Run";
+        _runner.RunInExternalConsole(title, "cmd.exe",
+            $"/c title {title} && {_selectedApp.DevCommand}",
+            _selectedApp.BasePath);
+
+        AppendOutput($"[Run] {_selectedApp.Name} を起動しました\n");
+    }
+
+    private void MobileOpenStore_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedApp == null) return;
+        var url = _selectedApp.StoreUrl;
+        if (string.IsNullOrEmpty(url))
         {
-            AppendOutput($"[エラー] generate-app-icon.py が見つかりません: {scriptPath}\n");
+            AppendOutput("[情報] ストア URL が設定されていません。\n");
             return;
         }
 
-        AppendOutput($"[アイコン] generate-app-icon.py を起動します...\n");
-        AppendOutput($"  ヒント: スクリプトを拡張して対象製品を追加してください。\n");
-
-        var title = $"Icon Generator - {_selectedIcon.ProductName}";
-        _runner.RunInExternalConsole(title, "python",
-            $"\"{scriptPath}\"",
-            insightRoot);
+        try
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            AppendOutput($"[ブラウザ] {url} を開きました\n");
+        }
+        catch (Exception ex)
+        {
+            AppendOutput($"[エラー] ブラウザ起動失敗: {ex.Message}\n");
+        }
     }
 
     protected override void OnClosed(EventArgs e)

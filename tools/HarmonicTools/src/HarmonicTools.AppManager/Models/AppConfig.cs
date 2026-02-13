@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 11;
+    private const int CurrentConfigVersion = 12;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -91,6 +91,21 @@ public class AppConfig
                 if (string.IsNullOrEmpty(app.ProductionUrl) && !string.IsNullOrEmpty(def.ProductionUrl))
                     { app.ProductionUrl = def.ProductionUrl; needsSave = true; }
             }
+
+            // スマホアプリ系フィールドの補完
+            if (def.IsMobileApp)
+            {
+                if (string.IsNullOrEmpty(app.Framework) && !string.IsNullOrEmpty(def.Framework))
+                    { app.Framework = def.Framework; needsSave = true; }
+                if (string.IsNullOrEmpty(app.MobilePlatform) && !string.IsNullOrEmpty(def.MobilePlatform))
+                    { app.MobilePlatform = def.MobilePlatform; needsSave = true; }
+                if (string.IsNullOrEmpty(app.BundleId) && !string.IsNullOrEmpty(def.BundleId))
+                    { app.BundleId = def.BundleId; needsSave = true; }
+                if (string.IsNullOrEmpty(app.DevCommand) && !string.IsNullOrEmpty(def.DevCommand))
+                    { app.DevCommand = def.DevCommand; needsSave = true; }
+                if (string.IsNullOrEmpty(app.WebBuildCommand) && !string.IsNullOrEmpty(def.WebBuildCommand))
+                    { app.WebBuildCommand = def.WebBuildCommand; needsSave = true; }
+            }
         }
 
         if (needsSave)
@@ -143,6 +158,16 @@ public class AppConfig
                     if (string.IsNullOrEmpty(app.WebBuildCommand)) app.WebBuildCommand = def.WebBuildCommand;
                     if (string.IsNullOrEmpty(app.DevUrl)) app.DevUrl = def.DevUrl;
                     if (string.IsNullOrEmpty(app.ProductionUrl)) app.ProductionUrl = def.ProductionUrl;
+                }
+
+                // スマホアプリ系固有フィールドはデフォルトから補完
+                if (def.IsMobileApp)
+                {
+                    if (string.IsNullOrEmpty(app.Framework)) app.Framework = def.Framework;
+                    if (string.IsNullOrEmpty(app.MobilePlatform)) app.MobilePlatform = def.MobilePlatform;
+                    if (string.IsNullOrEmpty(app.BundleId)) app.BundleId = def.BundleId;
+                    if (string.IsNullOrEmpty(app.DevCommand)) app.DevCommand = def.DevCommand;
+                    if (string.IsNullOrEmpty(app.WebBuildCommand)) app.WebBuildCommand = def.WebBuildCommand;
                 }
             }
 
