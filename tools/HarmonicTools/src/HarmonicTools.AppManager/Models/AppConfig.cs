@@ -366,7 +366,7 @@ public class AppConfig
                     Name = "InsightSeniorOffice",
                     ProductCode = "ISOF",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-sheet-senior"),
-                    SolutionPath = "HarmonicSheet.App.sln",
+                    SolutionPath = "HarmonicSheet.sln",
                     ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
                     TestProjectPath = "",
                     ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.App.exe",
