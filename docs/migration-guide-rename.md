@@ -151,9 +151,13 @@ foreach ($old in $renames.Keys) {
         # サブモジュール URL 更新（.gitmodules がある場合）
         if (Test-Path ".gitmodules") {
             $content = Get-Content .gitmodules -Raw
-            $content = $content -replace "HarmonicInsight/lib-insight-common", "HarmonicInsight/cross-lib-insight-common"
-            $content = $content -replace "HarmonicInsight/insight-common", "HarmonicInsight/cross-lib-insight-common"
-            Set-Content .gitmodules $content
+            # まず cross-cross- の重複プレフィックスを修正
+            $content = $content -replace "HarmonicInsight/cross-cross-lib-insight-common", "HarmonicInsight/cross-lib-insight-common"
+            # 旧名 lib-insight-common → cross-lib-insight-common（既に cross- 付きの場合はスキップ）
+            $content = $content -replace "HarmonicInsight/(?<!cross-)lib-insight-common", "HarmonicInsight/cross-lib-insight-common"
+            # 旧名 insight-common（リポジトリ名）→ cross-lib-insight-common
+            $content = $content -replace "HarmonicInsight/(?<!cross-lib-)insight-common(?!\.)", "HarmonicInsight/cross-lib-insight-common"
+            Set-Content .gitmodules $content -NoNewline
             git submodule sync
         }
 
