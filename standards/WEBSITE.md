@@ -304,7 +304,7 @@ layout.tsx で CSS 変数として定義：
 | コンサルタント紹介 | https://erikhiroyuki.com |
 | GitHub | https://github.com/HarmonicInsight |
 | プライバシーポリシー | https://h-insight.jp/privacy |
-| 利用規約 | https://h-insight.jp/terms |
+| 利用規約 | https://www.insight-office.com/ja/terms |
 
 **禁止事項:**
 

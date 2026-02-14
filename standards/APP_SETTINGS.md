@@ -84,7 +84,7 @@
 | 項目 | 種別 | 遷移先 |
 |------|------|--------|
 | プライバシーポリシー | 外部リンク | `https://h-insight.jp/privacy` |
-| 利用規約 | 外部リンク | `https://h-insight.jp/terms` |
+| 利用規約 | 外部リンク | `https://www.insight-office.com/ja/terms` |
 | オープンソースライセンス | アプリ内遷移 | OssLicensesMenuActivity または独自画面 |
 
 ---
@@ -93,7 +93,7 @@
 
 ```
 プライバシーポリシー: https://h-insight.jp/privacy
-利用規約:             https://h-insight.jp/terms
+利用規約:             https://www.insight-office.com/ja/terms
 ```
 
 > **重要**: これらの URL は Play Store Console の「データ セーフティ」セクションにも
@@ -274,7 +274,7 @@ fun StandardSettingsFooter(
 - [ ] 開発元が「HARMONIC insight」と表示されている
 - [ ] 設定画面に「法的情報」セクションがある
 - [ ] プライバシーポリシーのリンクが `https://h-insight.jp/privacy` を開く
-- [ ] 利用規約のリンクが `https://h-insight.jp/terms` を開く
+- [ ] 利用規約のリンクが `https://www.insight-office.com/ja/terms` を開く
 - [ ] オープンソースライセンス画面がある
 - [ ] コピーライト表記が画面下部にある
 - [ ] 日本語・英語の両方の文字列リソースが存在する
