@@ -233,6 +233,12 @@ UTILITY_ICONS = {
         'platform': 'wpf',
         'build_path': 'Resources/',
     },
+    'VOICE_TASK_CALENDAR': {
+        'name': 'VoiceTaskCalendar',
+        'icon': 'icon-voice-clock.png',
+        'platform': 'expo',
+        'build_path': 'assets/',
+    },
     'VOICE_MEMO': {
         'name': 'InsightVoiceMemo',
         'icon': 'icon-voice-memo.png',
@@ -729,8 +735,8 @@ def generate_launcher_all(output_dir: str):
         'INMV': 'ai_tools', 'INIG': 'ai_tools', 'INPY': 'ai_tools',
         'INCA': 'enterprise', 'INBT': 'enterprise', 'IVIN': 'enterprise',
         'ISOF': 'senior',
-        'CAMERA': 'utility', 'VOICE_CLOCK': 'utility', 'QR': 'utility',
-        'PINBOARD': 'utility', 'VOICE_MEMO': 'utility',
+        'CAMERA': 'utility', 'VOICE_CLOCK': 'utility', 'VOICE_TASK_CALENDAR': 'utility',
+        'QR': 'utility', 'PINBOARD': 'utility', 'VOICE_MEMO': 'utility',
         'INCLINE': 'utility', 'CONSUL_TYPE': 'utility', 'HOROSCOPE': 'utility',
         'FOOD_MEDICINE': 'utility', 'CONSUL_EVALUATE': 'utility',
     }
@@ -740,8 +746,8 @@ def generate_launcher_all(output_dir: str):
         'INSS': 100, 'IOSH': 110, 'IOSD': 120, 'ISOF': 130,
         'INPY': 200, 'INMV': 210, 'INIG': 220,
         'INCA': 300, 'INBT': 310, 'IVIN': 320,
-        'CAMERA': 400, 'VOICE_CLOCK': 410, 'PINBOARD': 420,
-        'VOICE_MEMO': 430, 'QR': 440,
+        'CAMERA': 400, 'VOICE_CLOCK': 410, 'VOICE_TASK_CALENDAR': 415,
+        'PINBOARD': 420, 'VOICE_MEMO': 430, 'QR': 440,
         'INCLINE': 450, 'CONSUL_TYPE': 460, 'HOROSCOPE': 470,
         'FOOD_MEDICINE': 480, 'CONSUL_EVALUATE': 490,
     }
