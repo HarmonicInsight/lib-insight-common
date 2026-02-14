@@ -161,13 +161,13 @@ jobs:
             icon_dest: Resources
             copy_mode: ico_png
 
-          # ── Web ──
+          # ── Web (Expo build) ──
           - repo: web-app-insight-qr
             product: QR
             name: InsightQR
             icon_src: InsightQR
-            icon_dest: public
-            copy_mode: web
+            icon_dest: assets
+            copy_mode: expo
 
     steps:
       - name: Validate SYNC_PAT secret
@@ -212,11 +212,32 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         working-directory: target-repo
         run: |
-          SUBMODULE="${{ env.SUBMODULE_PATH }}"
           COMMON_SHA="${{ github.sha }}"
+
+          # Auto-detect submodule path (some repos use 'lib-insight-common')
+          SUBMODULE=""
+          for path in insight-common lib-insight-common; do
+            if [ -d "$path" ]; then
+              SUBMODULE="$path"
+              break
+            fi
+          done
+
+          if [ -z "$SUBMODULE" ]; then
+            echo "::error::No insight-common submodule found in ${{ matrix.repo }}"
+            exit 1
+          fi
+
+          echo "Detected submodule path: $SUBMODULE"
 
           # サブモジュールを最新の insight-common main に更新
           cd "$SUBMODULE"
+          # Ensure we fetch from cross-lib-insight-common (some repos may reference lib-insight-common)
+          CURRENT_URL=$(git remote get-url origin)
+          if [[ "$CURRENT_URL" != *"cross-lib-insight-common"* ]]; then
+            echo "Updating remote URL from $CURRENT_URL to cross-lib-insight-common"
+            git remote set-url origin https://github.com/HarmonicInsight/cross-lib-insight-common.git
+          fi
           git fetch origin main
           git checkout "$COMMON_SHA"
           cd ..
