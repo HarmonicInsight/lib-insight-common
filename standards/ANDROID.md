@@ -1149,21 +1149,17 @@ import { colors } from '@/lib/colors';
 
 ### 概要
 
-マスター PNG（1024x1024）+ SVG から、Android ネイティブアプリに必要な全アイコンファイルを自動生成する。
+マスター PNG（1024x1024）から、Android ネイティブアプリに必要な全アイコンファイルを自動生成する。
+マスター PNG が唯一の正（Single Source of Truth）。
 
 ```
 マスターソース                       生成出力 (app/src/main/res/)
 ┌────────────────────┐              ┌──────────────────────────────────┐
-│ brand/icons/png/   │              │ drawable/                        │
-│  icon-*.png        │──── SVG ────→│  ic_launcher_foreground.xml      │
-│  (1024x1024)       │              │  ic_launcher_background.xml      │
-│                    │              │  ic_launcher_monochrome.xml (opt) │
-│ brand/icons/svg/   │              ├──────────────────────────────────┤
-│  icon-*.svg        │              │ mipmap-mdpi/     (48px)          │
-│  icon-*-monochrome │──── PNG ────→│  ic_launcher.png                 │
-│  .svg (optional)   │              │  ic_launcher_round.png           │
-└────────────────────┘              │ mipmap-hdpi/     (72px)          │
-                                    │  ic_launcher.png                 │
+│ brand/icons/png/   │              │ mipmap-mdpi/     (48px)          │
+│  icon-*.png        │──── PNG ────→│  ic_launcher.png                 │
+│  (1024x1024)       │              │  ic_launcher_round.png           │
+│                    │              │ mipmap-hdpi/     (72px)          │
+└────────────────────┘              │  ic_launcher.png                 │
                                     │  ic_launcher_round.png           │
                                     │ mipmap-xhdpi/    (96px)          │
                                     │  ic_launcher.png                 │
@@ -1174,16 +1170,17 @@ import { colors } from '@/lib/colors';
                                     │ mipmap-xxxhdpi/  (192px)         │
                                     │  ic_launcher.png                 │
                                     │  ic_launcher_round.png           │
-                                    │ mipmap-anydpi-v26/               │
-                                    │  ic_launcher.xml                 │
-                                    │  ic_launcher_round.xml           │
                                     └──────────────────────────────────┘
 ```
+
+> **重要**: `mipmap-anydpi-v26/` や `drawable/ic_launcher_foreground.xml` がアプリの
+> `res/` に残っていると、mipmap PNG よりも優先されてしまう。
+> これらのファイルが存在する場合は削除すること。
 
 ### 生成コマンド
 
 ```bash
-# 個別アプリのアイコンを生成（SVG + PNG → 完全な res/ アイコンセット）
+# 個別アプリのアイコンを生成（PNG → mipmap PNGs）
 python scripts/generate-app-icon.py --product CAMERA
 
 # 全アプリのアイコンを一括生成
@@ -1195,19 +1192,16 @@ python scripts/generate-app-icon.py --all
 
 ### 対象アプリ一覧（android_native プラットフォーム）
 
-| コード | アプリ名 | マスター PNG | マスター SVG | モノクロ SVG |
-|--------|----------|:----------:|:----------:|:----------:|
-| LAUNCHER_ANDROID | InsightLauncherAndroid | ✅ | ✅ | ❌ |
-| CAMERA | InsightCamera | ✅ | ✅ | ✅ |
-| VOICE_CLOCK | InsightVoiceClock | ✅ | ✅ | ❌ |
-| INCLINE | InclineInsight | ❌ | ✅ | ❌ |
-| CONSUL_TYPE | InsightConsulType | ❌ | ✅ | ❌ |
-| HOROSCOPE | HarmonicHoroscope | ❌ | ✅ | ❌ |
-| FOOD_MEDICINE | FoodMedicineInsight | ❌ | ✅ | ❌ |
-| CONSUL_EVALUATE | InsightConsulEvaluate | ❌ | ✅ | ❌ |
-
-> **注意**: マスター PNG がないアプリは mipmap PNG が生成されない。
-> PNG を `brand/icons/png/` に追加した後、再生成すれば mipmap PNG も生成される。
+| コード | アプリ名 | マスター PNG |
+|--------|----------|:----------:|
+| LAUNCHER_ANDROID | InsightLauncherAndroid | ✅ |
+| CAMERA | InsightCamera | ✅ |
+| VOICE_CLOCK | InsightVoiceClock | ✅ |
+| INCLINE | InclineInsight | ✅ |
+| CONSUL_TYPE | InsightConsulType | ✅ |
+| HOROSCOPE | HarmonicHoroscope | ✅ |
+| FOOD_MEDICINE | FoodMedicineInsight | ✅ |
+| CONSUL_EVALUATE | InsightConsulEvaluate | ✅ |
 
 ### マスターアイコン更新フロー
 
