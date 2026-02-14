@@ -799,6 +799,8 @@ jobs:
 
 ## 10. 多言語対応（i18n）
 
+> **詳細**: `standards/LOCALIZATION.md` を参照。
+
 ### 必須要件
 
 | 項目 | 必須 |
@@ -811,6 +813,28 @@ jobs:
 - UI テキストは**すべて** `strings.xml` で管理する。Compose 内のハードコードは禁止。
 - `stringResource(R.string.xxx)` を使用する。
 - 日本語をデフォルト（`values/strings.xml`）、英語を `values-en/` に配置。
+- パラメータは `%1$s`（文字列）、`%1$d`（整数）を使用。
+- `values/strings.xml` と `values-en/strings.xml` のキーは完全一致させる。
+
+### Play ストア向けメタデータ
+
+リリース時はストアのメタデータも日英で用意する。テンプレートは `templates/android/fastlane/` にあります。
+
+```
+fastlane/metadata/android/
+├── ja-JP/
+│   ├── title.txt               # アプリ名（30文字以内）
+│   ├── short_description.txt   # 短い説明（80文字以内）
+│   ├── full_description.txt    # 完全な説明（4000文字以内）
+│   └── changelogs/default.txt  # リリースノート（500文字以内）
+└── en-US/
+    ├── title.txt
+    ├── short_description.txt
+    ├── full_description.txt
+    └── changelogs/default.txt
+```
+
+> 文字数制限は `config/localization.ts` の `PLAY_STORE_LIMITS` で定義。
 
 ---
 
@@ -1098,11 +1122,13 @@ import { colors } from '@/lib/colors';
 - [ ] Kotlin ソースが `src/main/kotlin/` に配置
 - [ ] `APP_SPEC.md` が存在
 
-### 多言語
+### 多言語（`standards/LOCALIZATION.md` 参照）
 
 - [ ] `values/strings.xml`（日本語）が存在
 - [ ] `values-en/strings.xml`（英語）が存在
+- [ ] `values/strings.xml` と `values-en/strings.xml` のキーが完全一致
 - [ ] Compose 内に文字列のハードコードがない
+- [ ] Play ストアリリース時: メタデータ（タイトル・説明）が日英で用意されている
 
 ### CI/CD
 

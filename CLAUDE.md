@@ -37,6 +37,7 @@
 - **Android**: `standards/ANDROID.md`
 - **iOS**: `standards/IOS.md`
 - **AI アシスタント**: `standards/AI_ASSISTANT.md`（InsightOffice 系アプリ共通）
+- **ローカライゼーション**: `standards/LOCALIZATION.md`（全プラットフォーム共通）
 
 ### 検証スクリプト
 
@@ -153,6 +154,8 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
 | 独自のモデル選択UI | モデルはティア（Standard/Premium）で自動決定 |
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
+| UI テキストのハードコード | リソースファイル / 翻訳定義から参照（`standards/LOCALIZATION.md`） |
+| 英語翻訳の省略 | 日本語 + 英語の両方を必ず用意 |
 
 ## 5. 製品コード一覧・価格戦略
 
@@ -733,6 +736,9 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
 - [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT PRO+ のみ）
 - [ ] **ローカルワークフロー**: PRO InsightOffice でローカル連続処理が動作する（PRO+ のみ）
+- [ ] **ローカライゼーション**: UI テキストがハードコードされて**いない**（リソースファイル経由）
+- [ ] **ローカライゼーション**: 日本語（デフォルト）+ 英語の翻訳が完全に用意されている
+- [ ] **ローカライゼーション**: ストアメタデータ（タイトル・説明）が日英で用意されている（モバイルアプリのみ）
 - [ ] **検証**: `validate-standards.sh` が成功する
 
 ## 13. 困ったときは

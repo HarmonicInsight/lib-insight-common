@@ -84,7 +84,7 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
         onClick={() => setLanguage('ja')}
         className={`px-2 py-1 rounded-l border transition ${
           language === 'ja'
-            ? 'bg-blue-600 text-white border-blue-600'
+            ? 'bg-[#B8942F] text-white border-[#B8942F]'
             : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
         }`}
       >
@@ -94,7 +94,7 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
         onClick={() => setLanguage('en')}
         className={`px-2 py-1 rounded-r border-t border-r border-b transition ${
           language === 'en'
-            ? 'bg-blue-600 text-white border-blue-600'
+            ? 'bg-[#B8942F] text-white border-[#B8942F]'
             : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'
         }`}
       >
