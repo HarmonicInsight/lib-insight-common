@@ -99,6 +99,70 @@ templates/android/
 | **AGP** | 8.7.3+ | |
 | **Kotlin** | 2.1.0+ | |
 
+### 2.1 APK サイズ最適化（必須）
+
+APK サイズを不必要に肥大化させないため、以下のルールに従うこと。
+
+#### ABI Split
+
+```kotlin
+splits {
+    abi {
+        isEnable = true
+        reset()
+        include("arm64-v8a", "armeabi-v7a")
+        isUniversalApk = false    // 【必須】 Play Store は AAB / ABI別APK で配布
+    }
+}
+```
+
+> **禁止**: `isUniversalApk = true`。Universal APK は全 ABI のネイティブライブラリを含むため
+> サイズが倍増する。Play Store（AAB）/ ABI 別 APK で配布すること。
+
+#### desugar_jdk_libs は原則不要
+
+minSdk = 26 では `java.time` 等の Java 8 API がネイティブで利用可能。
+`desugar_jdk_libs`（約 2〜3 MB）は **minSdk 26 以上では追加しないこと**。
+
+```kotlin
+// ❌ minSdk 26 以上では不要
+compileOptions {
+    isCoreLibraryDesugaringEnabled = true  // 削除する
+}
+dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs)  // 削除する
+}
+
+// ✅ minSdk 26 以上の正しい設定
+compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+```
+
+#### ML Kit: アンバンドル版を使用
+
+ML Kit を使用する場合、**Play Services 版（アンバンドル版）** を使うこと。
+バンドル版は ML モデル（約 3〜5 MB）が APK に埋め込まれる。
+
+| ❌ バンドル版（APK にモデル内蔵） | ✅ アンバンドル版（Play Services 経由） |
+|---|---|
+| `com.google.mlkit:barcode-scanning` | `com.google.android.gms:play-services-mlkit-barcode-scanning` |
+| `com.google.mlkit:text-recognition-japanese` | `com.google.android.gms:play-services-mlkit-text-recognition-japanese` |
+
+アンバンドル版を使う場合、`AndroidManifest.xml` にモデル自動ダウンロード宣言を追加:
+
+```xml
+<application ...>
+    <!-- ML Kit モデルを Google Play Services 経由で自動ダウンロード -->
+    <meta-data
+        android:name="com.google.mlkit.vision.DEPENDENCIES"
+        android:value="barcode" />   <!-- 使用する機能に応じて変更 -->
+</application>
+```
+
+> **例外**: Google Play Services が利用できない環境（中国市場等）向けのアプリのみバンドル版を許可。
+
 ---
 
 ## 3. パッケージ命名規則
@@ -711,6 +775,30 @@ buildTypes {
 
 > **アプリ固有のルール**（Room エンティティ、BroadcastReceiver 等）はコメントで分離して追記。
 
+### ProGuard keep ルールのベストプラクティス
+
+| ❌ 禁止 | ✅ 正しいやり方 | 理由 |
+|---|---|---|
+| `-keep class com.example.lib.** { *; }` | 使用クラスだけを個別に keep | ライブラリ全体の keep は R8 の tree-shaking を無効化し、APK サイズを肥大化させる |
+| リフレクションで使わないクラスの keep | keep しない | R8 が自動的に不要クラスを除去する |
+
+**例: ZXing（QR コード生成）**
+
+```proguard
+# ❌ ライブラリ全体を keep（サイズ増大）
+-keep class com.google.zxing.** { *; }
+
+# ✅ QR エンコードに必要なクラスだけを keep
+-keep class com.google.zxing.BarcodeFormat { *; }
+-keep class com.google.zxing.EncodeHintType { *; }
+-keep class com.google.zxing.WriterException { *; }
+-keep class com.google.zxing.common.BitMatrix { *; }
+-keep class com.google.zxing.qrcode.QRCodeWriter { *; }
+```
+
+> **原則**: サードパーティライブラリの keep は「リフレクション・シリアライゼーションで必要な最小限のクラス」に絞る。
+> R8 ビルド後にクラッシュが発生した場合のみ、必要なクラスを追加していくこと。
+
 ---
 
 ## 9. CI/CD ワークフロー（GitHub Actions 標準テンプレート）
@@ -1115,6 +1203,14 @@ import { colors } from '@/lib/colors';
 - [ ] JVM Target = 17
 - [ ] Release ビルドで `isMinifyEnabled = true`, `isShrinkResources = true`
 - [ ] `proguard-rules.pro` が標準テンプレートに準拠
+
+### APK サイズ最適化（§2.1）
+
+- [ ] `isUniversalApk = false`（ABI split 使用時）
+- [ ] `desugar_jdk_libs` が含まれて**いない**（minSdk 26 では不要）
+- [ ] `isCoreLibraryDesugaringEnabled` が設定されて**いない**（minSdk 26 では不要）
+- [ ] ML Kit 使用時: アンバンドル版（`play-services-mlkit-*`）を使用
+- [ ] ProGuard でサードパーティライブラリ全体を keep して**いない**（§8 参照）
 
 ### プロジェクト構造
 
