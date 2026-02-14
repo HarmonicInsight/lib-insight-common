@@ -224,8 +224,9 @@ jobs:
           done
 
           if [ -z "$SUBMODULE" ]; then
-            echo "::error::No insight-common submodule found in ${{ matrix.repo }}"
-            exit 1
+            echo "No submodule found — adding insight-common to ${{ matrix.repo }}"
+            git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
+            SUBMODULE="insight-common"
           fi
 
           echo "Detected submodule path: $SUBMODULE"
