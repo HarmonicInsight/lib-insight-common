@@ -803,19 +803,27 @@ buildTypes {
 
 ## 9. CI/CD ワークフロー（GitHub Actions 標準テンプレート）
 
+> **テンプレートファイル**: `templates/android/.github/workflows/build.yml`
+> APK（テスト配布用）と AAB（Play Store 用）の両方を必ずビルドすること。
+
 ```yaml
-name: Build APK
+name: Build Android
 
 on:
   push:
     branches: [ main, 'claude/**' ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      HAS_SIGNING_KEY: ${{ secrets.KEYSTORE_BASE64 }}
 
     steps:
       - name: Checkout code
@@ -830,7 +838,24 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # Firebase を使用している場合のみ
+      # --- 署名設定（secrets が設定されている場合のみ） ---
+      - name: Setup signing
+        if: env.HAS_SIGNING_KEY != ''
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > app/release.keystore
+          cat > keystore.properties <<PROPS
+          storeFile=release.keystore
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          PROPS
+
+      # Firebase を使用している場合のみ（不要なら削除）
       - name: Create google-services.json for CI
         run: |
           if [ ! -f app/google-services.json ]; then
@@ -856,20 +881,62 @@ jobs:
           GSEOF
           fi
 
+      # --- ビルド: AAB（Play Store 用）+ APK ---
+      - name: Build Release AAB
+        run: ./gradlew bundleRelease --stacktrace
+
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Display APK size
+      # --- アーティファクト名をアプリ名に変更 ---
+      - name: Rename artifacts
+        run: |
+          for f in app/build/outputs/apk/release/app-*.apk; do
+            [ -f "$f" ] && mv "$f" "${f/app-/<AppDisplayName>-}"
+          done
+          for f in app/build/outputs/bundle/release/app-*.aab; do
+            [ -f "$f" ] && mv "$f" "${f/app-/<AppDisplayName>-}"
+          done
+
+      # --- サイズ確認 ---
+      - name: Display build artifact sizes
         run: |
           echo "=== Release APK ==="
-          find app/build/outputs/apk/release/ -name "*.apk" -exec ls -lh {} \;
+          find app/build/outputs/apk/release/ -name "*.apk" -exec ls -lh {} \; 2>/dev/null || true
+          echo "=== Release AAB ==="
+          find app/build/outputs/bundle/release/ -name "*.aab" -exec ls -lh {} \; 2>/dev/null || true
 
-      - name: Upload Release APK
+      # --- アーティファクトアップロード ---
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: <app-name>-aab
+          path: app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: <app-name>-apk
           path: app/build/outputs/apk/release/*.apk
-          retention-days: 30
+          if-no-files-found: error
+          retention-days: 90
+
+      # --- GitHub Release（タグ push 時のみ） ---
+      - name: Collect release artifacts
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          mkdir -p release-artifacts
+          cp app/build/outputs/bundle/release/*.aab release-artifacts/
+          cp app/build/outputs/apk/release/*.apk release-artifacts/
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-artifacts/*
+          generate_release_notes: true
 ```
 
 ### 統一ポイント
@@ -878,10 +945,39 @@ jobs:
 |------|------|
 | JDK | 17 (Temurin) |
 | Gradle | `gradle/actions/setup-gradle@v4` |
-| トリガー | `main`, `claude/**` ブランチ |
-| ビルド | `assembleRelease` |
-| アーティファクト保持 | 30日 |
-| google-services.json | CI プレースホルダー自動生成 |
+| トリガー | `main`, `claude/**` ブランチ + `v*` タグ |
+| ビルド | `bundleRelease`（AAB）+ `assembleRelease`（APK）の**両方** |
+| 署名 | `secrets.KEYSTORE_BASE64` 経由（CI 上で復元） |
+| アーティファクト保持 | 90日 |
+| GitHub Release | `v*` タグ push 時に AAB + APK を自動リリース |
+| サイズ表示 | APK / AAB のファイルサイズをログに出力 |
+| google-services.json | CI プレースホルダー自動生成（Firebase 使用時のみ） |
+
+### 必要な GitHub Secrets
+
+| Secret 名 | 説明 | 設定方法 |
+|-----------|------|---------|
+| `KEYSTORE_BASE64` | リリース keystore の Base64 エンコード | `base64 -w 0 release.keystore` |
+| `KEYSTORE_PASSWORD` | keystore のパスワード | |
+| `KEY_ALIAS` | キーエイリアス | |
+| `KEY_PASSWORD` | キーのパスワード | |
+
+> **注意**: Secrets が未設定の場合、署名ステップはスキップされ debug 署名でビルドされる。
+> Play Store にアップロードするには release 署名が必須。
+
+### リリースフロー
+
+```bash
+# 1. バージョン更新（build.gradle.kts の versionCode / versionName）
+# 2. コミット & プッシュ
+git add . && git commit -m "release: v1.1.0"
+git tag v1.1.0
+git push origin main --tags
+
+# → GitHub Actions が自動で:
+#   - AAB + APK をビルド
+#   - GitHub Release を作成（AAB + APK を添付）
+```
 
 ---
 
@@ -1231,7 +1327,11 @@ import { colors } from '@/lib/colors';
 - [ ] `.github/workflows/build.yml` が標準テンプレートに準拠
 - [ ] JDK 17 + Temurin
 - [ ] `gradle/actions/setup-gradle@v4` を使用
-- [ ] Release APK をビルド・アップロード
+- [ ] Release APK **と AAB の両方**をビルド・アップロード
+- [ ] 署名設定が secrets 経由（`KEYSTORE_BASE64` 等）
+- [ ] `v*` タグで GitHub Release が自動作成される
+- [ ] `--stacktrace` フラグ付きでビルド
+- [ ] APK / AAB サイズがログに表示される
 
 ### ライセンス（InsightOffice 製品のみ）
 

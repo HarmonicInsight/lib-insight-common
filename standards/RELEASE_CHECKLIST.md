@@ -142,7 +142,10 @@
 |---|------------|:----:|------|
 | AC1 | `.github/workflows/build.yml` が存在 | ✅ | |
 | AC2 | CI でリリースビルドが成功している | ⚠️ | GitHub Actions 確認 |
-| AC3 | google-services.json の CI プレースホルダーが設定済み | ✅ | Firebase 使用時 |
+| AC3 | CI で AAB **と** APK の両方がビルドされている | ✅ | `bundleRelease` + `assembleRelease` |
+| AC4 | 署名設定が secrets 経由 | ✅ | `KEYSTORE_BASE64` 等 |
+| AC5 | `v*` タグで GitHub Release が自動作成される | ✅ | `softprops/action-gh-release` |
+| AC6 | google-services.json の CI プレースホルダーが設定済み | ✅ | Firebase 使用時 |
 
 ---
 
