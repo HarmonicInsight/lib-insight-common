@@ -109,6 +109,34 @@ if [ ! -d "$PROJECT_DIR" ]; then
 fi
 
 # ============================================================
+# insight-common サブモジュール自動セットアップ
+# ============================================================
+bootstrap_submodule() {
+    local target_dir="$1"
+
+    # .gitmodules に insight-common が登録されているか確認
+    if [ -f "$target_dir/.gitmodules" ] && grep -q "insight-common" "$target_dir/.gitmodules" 2>/dev/null; then
+        # サブモジュールが初期化されていない場合
+        if [ ! -f "$target_dir/insight-common/CLAUDE.md" ]; then
+            echo -e "${CYAN}insight-common サブモジュールを初期化しています...${NC}"
+            git -C "$target_dir" submodule init 2>/dev/null || true
+            git -C "$target_dir" submodule update --recursive 2>/dev/null || true
+        fi
+
+        # 最新に更新
+        echo -e "${CYAN}insight-common を最新に更新しています...${NC}"
+        git -C "$target_dir" submodule update --remote --merge insight-common 2>/dev/null || true
+
+        # スクリプトの実行権限を付与
+        chmod +x "$target_dir/insight-common/scripts/"*.sh 2>/dev/null || true
+    fi
+}
+
+# このスクリプト自身が insight-common 内にある場合は PROJECT_DIR のサブモジュールをセットアップ
+# 外部から呼ばれた場合（サブモジュール未初期化）も対応
+bootstrap_submodule "$PROJECT_DIR"
+
+# ============================================================
 # プラットフォーム検出
 # ============================================================
 detect_platform() {
