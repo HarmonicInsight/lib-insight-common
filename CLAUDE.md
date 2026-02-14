@@ -4,6 +4,20 @@
 
 ---
 
+## ⚠️ AI アシスタントの自動行動ルール
+
+**以下のキーワード・状況を検知したら、該当するアクションを自動で提案・実行してください。ユーザーが忘れていても AI 側から提案すること。**
+
+| トリガー（ユーザーの発言・状況） | 自動アクション |
+|-------------------------------|--------------|
+| 「リリース」「デプロイ」「ストアに出す」「公開」「本番」「ship」「release」 | `/release-check` を提案・実行 |
+| 「PR 作って」「プルリク」「マージ」 | `/release-check` の実行を推奨 |
+| 新規プロジェクト作成・UI 実装開始 | デザイン標準（Ivory & Gold）を確認 |
+| AI アシスタント機能の実装 | `standards/AI_ASSISTANT.md` を確認 |
+| ストアメタデータ・スクリーンショットの話題 | `standards/LOCALIZATION.md` §6 を参照 |
+
+---
+
 ## ⚠️ 開発開始前の必須チェック（AI アシスタント向け）
 
 **新規プロジェクト作成・UI 実装・デザイン変更を行う前に、以下を確認してください：**
@@ -38,11 +52,16 @@
 - **iOS**: `standards/IOS.md`
 - **AI アシスタント**: `standards/AI_ASSISTANT.md`（InsightOffice 系アプリ共通）
 - **ローカライゼーション**: `standards/LOCALIZATION.md`（全プラットフォーム共通）
+- **リリースチェック**: `standards/RELEASE_CHECKLIST.md`（全プラットフォーム共通）
 
 ### 検証スクリプト
 
 ```bash
+# 開発中の標準検証
 ./scripts/validate-standards.sh <project-directory>
+
+# リリース前の包括チェック（標準検証 + リリース固有チェック）
+./scripts/release-check.sh <project-directory>
 ```
 
 ---
@@ -156,6 +175,9 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
 | UI テキストのハードコード | リソースファイル / 翻訳定義から参照（`standards/LOCALIZATION.md`） |
 | 英語翻訳の省略 | 日本語 + 英語の両方を必ず用意 |
+| リリースチェックなしでリリース | `/release-check` または `release-check.sh` を必ず実行 |
+| TODO/FIXME を残したままリリース | リリース前に全て解決する |
+| API キー・シークレットのハードコード | 環境変数 / .env / secrets 経由で参照 |
 
 ## 5. 製品コード一覧・価格戦略
 
@@ -741,11 +763,76 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **ローカライゼーション**: ストアメタデータ（タイトル・説明）が日英で用意されている（モバイルアプリのみ）
 - [ ] **検証**: `validate-standards.sh` が成功する
 
-## 13. 困ったときは
+## 13. リリースチェック
+
+> **リリース前に必ず実行。** 詳細は `standards/RELEASE_CHECKLIST.md` を参照。
+
+### リリースチェックの実行
+
+```bash
+# 自動スクリプト（標準検証 + リリース固有チェック）
+./insight-common/scripts/release-check.sh <project-directory>
+
+# Claude Code スキル（対話的にチェック + 修正案提示）
+/release-check <project-directory>
+```
+
+### リリース前チェックリスト
+
+#### 全プラットフォーム共通
+- [ ] **バージョン**: バージョン番号が更新されている
+- [ ] **コード品質**: TODO/FIXME/HACK が残っていない
+- [ ] **コード品質**: デバッグ出力（console.log / print / Log.d）が残っていない
+- [ ] **セキュリティ**: ハードコードされた API キー・シークレットがない
+- [ ] **セキュリティ**: .env / credentials が .gitignore に含まれている
+- [ ] **ローカライゼーション**: 日本語 + 英語リソースのキーが完全一致
+- [ ] **Git**: 未コミットの変更がない
+- [ ] **検証**: `release-check.sh` が成功する
+
+#### Android 固有（Native Kotlin）
+- [ ] **バージョン**: `versionCode` がインクリメントされている
+- [ ] **バージョン**: `versionName` が更新されている
+- [ ] **署名**: `signingConfigs` が設定されている
+- [ ] **署名**: keystore がリポジトリに含まれて**いない**
+- [ ] **ストア**: Play Store メタデータ（タイトル・説明・リリースノート）が日英で作成済み
+- [ ] **ストア**: 文字数制限を超えていない（title:30, short:80, full:4000, changelog:500）
+- [ ] **ストア**: スクリーンショットが日英で用意されている
+- [ ] **ビルド**: Release AAB/APK がビルドできる
+
+#### Android 固有（Expo / React Native）
+- [ ] **バージョン**: `app.json` の `version` + `android.versionCode` が更新されている
+- [ ] **EAS**: `eas.json` の `production` プロファイルが `app-bundle` ビルド
+- [ ] **ビルド**: `eas build --platform android --profile production` が成功する
+
+#### iOS 固有
+- [ ] **バージョン**: Bundle Version がインクリメントされている
+- [ ] **ストア**: App Store メタデータが日英で作成済み
+- [ ] **ビルド**: Archive ビルドが成功する
+
+#### C# (WPF) 固有
+- [ ] **バージョン**: AssemblyVersion / FileVersion が更新されている
+- [ ] **サードパーティ**: Syncfusion キーがハードコードされて**いない**
+- [ ] **配布**: インストーラーの動作確認（クリーン環境）
+- [ ] **ファイル関連付け**: 独自拡張子の登録・動作確認
+
+#### React / Next.js 固有
+- [ ] **ビルド**: `next build` が成功する
+- [ ] **品質**: TypeScript strict mode が有効
+- [ ] **品質**: console.log が残っていない
+- [ ] **環境**: 本番環境変数が設定されている
+
+#### Python 固有
+- [ ] **バージョン**: pyproject.toml のバージョンが更新されている
+- [ ] **依存**: 全パッケージがピン留め（`==`）されている
+
+## 14. 困ったときは
 
 ```bash
 # 標準検証
 ./insight-common/scripts/validate-standards.sh .
+
+# リリースチェック（包括的）
+./insight-common/scripts/release-check.sh .
 
 # セットアップ確認
 ./insight-common/scripts/check-app.sh
@@ -754,9 +841,15 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 cat insight-common/standards/CSHARP_WPF.md  # C#
 cat insight-common/standards/PYTHON.md      # Python
 cat insight-common/standards/REACT.md       # React
+cat insight-common/standards/ANDROID.md     # Android
+cat insight-common/standards/IOS.md         # iOS
+
+# リリースチェックリスト
+cat insight-common/standards/RELEASE_CHECKLIST.md
 ```
 
 ---
 
 **⚠️ このガイドに従わないコードはレビューで却下されます。**
 **⚠️ AI アシスタントは、このガイドを確認せずにコードを生成してはいけません。**
+**⚠️ リリース前に `/release-check` を実行せずにリリースしてはいけません。**
