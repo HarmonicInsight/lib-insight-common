@@ -773,41 +773,158 @@ fi
 echo -e "${YELLOW}  Claude Code スキルを配置中...${NC}"
 mkdir -p .claude/commands
 
-# release-check スキル
-cat > .claude/commands/release-check.md << 'SKILLEOF'
-# リリースチェック
+# release-check スキル（insight-common から同期）
+if [ -f "insight-common/.claude/commands/release-check.md" ]; then
+    cp insight-common/.claude/commands/release-check.md .claude/commands/release-check.md
+    echo -e "  ${GREEN}✓${NC} release-check スキル (insight-common から同期)"
+else
+    # フォールバック: insight-common がまだ初期化されていない場合の簡易版
+    cat > .claude/commands/release-check.md << 'SKILLEOF'
+# リリースチェックコマンド
 
-リリース前の包括チェック（標準検証 + リリース固有チェック）を実行します。
+対象プロジェクトに対して HARMONIC insight のリリース前チェックを**フェーズ別に対話的**に実行します。
+
+## 重要: 実行ルール
+
+- 各フェーズを**順番に**実行すること。一気に全部やらない。
+- 各フェーズ完了後、結果をユーザーに**チェックリスト形式**で提示し、次のフェーズに進むか確認する。
+- エラーが見つかった場合、**その場で修正案を提示**し、ユーザーの確認後に修正を実行する。
+- TODO ツールを使って全フェーズの進捗を管理する。
 
 ## 実行手順
 
-1. `$ARGUMENTS` が指定されている場合はそのディレクトリを対象に、未指定の場合はカレントディレクトリを対象にする
-2. `insight-common/scripts/release-check.sh` を実行する
+### Phase 0: 準備
+
+1. `$ARGUMENTS` が指定されている場合はそのディレクトリ、未指定の場合はカレントディレクトリを対象にする。
+2. プラットフォームを自動検出する:
+   - `build.gradle.kts` → Android (Native Kotlin) → `/release-check-android` に委譲
+   - `app.json` + `expo` → Expo (React Native)
+   - `package.json` → React / Next.js
+   - `*.csproj` → C# (WPF)
+   - `pyproject.toml` / `requirements.txt` → Python
+   - `Package.swift` → iOS
+3. Android (Native Kotlin) を検出した場合は `/release-check-android` スキルに切り替える。
+4. TODO リストにフェーズを登録し、フェーズ別に対話的に実行する。
+
+### Phase 1: 標準検証（自動スクリプト）
+
+自動検証スクリプトを実行する:
 
 ```bash
 bash ./insight-common/scripts/release-check.sh ${ARGUMENTS:-.}
 ```
 
-3. エラーがあれば修正案を具体的に提示する
-4. 警告があれば確認すべき内容を説明する
-5. 手動確認項目の一覧を表示する
+結果をチェックリスト形式で報告。❌ がある場合はこのフェーズで修正案を提示する。
 
-検証に失敗した場合は `standards/RELEASE_CHECKLIST.md` を参照して対応案を提示してください。
+### Phase 2: コード品質・セキュリティ確認
 
-検証項目:
-- デザイン標準（Ivory & Gold）
-- バージョン番号の更新
-- TODO/FIXME/HACK の残存
-- デバッグ出力の残存
-- ハードコードされたシークレット
-- ローカライゼーション（日本語 + 英語）
-- ライセンス管理
-- Git 状態
-- プラットフォーム固有チェック
+| # | チェック項目 | 確認方法 |
+|---|------------|---------|
+| Q1 | TODO/FIXME/HACK の残存 | ソースファイルで検索 |
+| Q2 | デバッグ出力の残存 | プラットフォームに応じた検索 |
+| Q3 | ハードコードされた API キー | 秘密鍵パターンを検索 |
+| S1 | .env が .gitignore に含まれる | `.gitignore` を確認 |
+| S2 | credentials ファイルが除外されている | `.gitignore` を確認 |
+| G1 | 未コミットの変更がない | `git status` |
+
+### Phase 3: プラットフォーム固有チェック
+
+`insight-common/standards/RELEASE_CHECKLIST.md` を参照し、検出プラットフォームに応じたチェックを実行する。
+
+### Phase 4: ストアメタデータ確認（モバイルアプリの場合）
+
+`fastlane/metadata/` ディレクトリの構成と文字数制限を確認する。
+
+### Phase 5: 最終確認・サマリー
+
+全フェーズの結果を統合し、最終サマリーを表示する。
+
+## プラットフォーム別の専用スキル
+
+- `/release-check-android` — Android (Native Kotlin) 専用の詳細チェック
+
+## 参照ドキュメント
+
+- `insight-common/standards/RELEASE_CHECKLIST.md` — 全チェック項目の詳細定義
+- `insight-common/standards/LOCALIZATION.md` — ストアメタデータのローカライゼーション
+- `insight-common/CLAUDE.md` §12 — 開発完了チェックリスト
 SKILLEOF
+    echo -e "  ${GREEN}✓${NC} release-check スキル (テンプレートから生成)"
+fi
 
-# CLAUDE.md（アプリ側用）
-cat > CLAUDE.md << 'CLEOF'
+# プラットフォーム固有スキルの配置
+if [ "$PLATFORM" = "android" ]; then
+    if [ -f "insight-common/.claude/commands/release-check-android.md" ]; then
+        cp insight-common/.claude/commands/release-check-android.md .claude/commands/release-check-android.md
+        echo -e "  ${GREEN}✓${NC} release-check-android スキル (insight-common から同期)"
+    else
+        # フォールバック: insight-common の release-check-android.md がない場合
+        cat > .claude/commands/release-check-android.md << 'ANDROIDSKILLEOF'
+# Android リリースチェック（Native Kotlin）
+
+Android (Kotlin + Jetpack Compose) アプリ専用のリリース前チェックを**対話的チェックリスト形式**で実行します。
+
+> Expo / React Native の場合は `/release-check` を使用してください。
+
+## 重要: 実行ルール
+
+- **チェックリストの各項目を1つずつ確認**し、結果をユーザーに報告する。
+- 一気に全項目をチェックして結果だけ出すのは**禁止**。フェーズごとに報告・確認を挟む。
+- TODO ツールで全フェーズの進捗を管理する。
+- エラーが見つかったらその場で修正案を提示し、ユーザーの承認後に修正する。
+- 各フェーズ完了時に「次のフェーズに進みますか？」と確認する。
+
+## Phase 0: 準備
+
+1. `$ARGUMENTS` が指定されている場合はそのディレクトリ、未指定の場合はカレントディレクトリを対象にする。
+2. `build.gradle.kts` の存在を確認し、Android プロジェクトであることを検証する。
+3. TODO リストに Phase 1〜8 を登録する。
+
+## Phase 1: ビルド設定チェック (A1-A8)
+
+`app/build.gradle.kts` を読み込み、versionCode, versionName, compileSdk(35), targetSdk(35), minSdk(26), isMinifyEnabled(true), isShrinkResources(true), ProGuard を確認する。
+
+## Phase 2: 署名・セキュリティ (AS1-AS4, S1-S4)
+
+signingConfig, keystore, .gitignore, API キー埋め込み, google-services.json を確認する。
+
+## Phase 3: デザイン標準 Ivory & Gold (D1-D8)
+
+Gold (#B8942F) プライマリ, Ivory (#FAF8F5) 背景, Blue 未使用, Theme, Material3 を確認する。
+
+## Phase 4: ローカライゼーション (L1-L5)
+
+strings.xml 日英存在, キー一致, ハードコード文字列を確認する。
+
+## Phase 5: Play Store メタデータ (AP1-AP7)
+
+fastlane/metadata/android/ のタイトル・説明・リリースノート・スクリーンショットを確認する。
+
+## Phase 6: コード品質 (Q1-Q5)
+
+TODO/FIXME, デバッグ出力, API キー, 未使用 import, Lint を確認する。
+
+## Phase 7: CI/CD (AC1-AC3)
+
+.github/workflows/build.yml, JDK 17, google-services.json の CI プレースホルダーを確認する。
+
+## Phase 8: 最終確認・サマリー
+
+全フェーズの結果を統合して最終サマリーを表示する。
+
+## 参照ドキュメント
+
+- `insight-common/standards/ANDROID.md` — Android 開発標準
+- `insight-common/standards/RELEASE_CHECKLIST.md` — 全プラットフォーム共通リリースチェックリスト
+- `insight-common/standards/LOCALIZATION.md` — ストアメタデータのローカライゼーション
+ANDROIDSKILLEOF
+        echo -e "  ${GREEN}✓${NC} release-check-android スキル (テンプレートから生成)"
+    fi
+fi
+
+# CLAUDE.md（アプリ側用 — プラットフォーム別に生成）
+if [ "$PLATFORM" = "android" ]; then
+    cat > CLAUDE.md << 'CLEOF'
 # 開発ガイド
 
 > このプロジェクトは `insight-common/CLAUDE.md` の全標準に準拠します。
@@ -816,8 +933,10 @@ cat > CLAUDE.md << 'CLEOF'
 ## 標準ドキュメント
 
 ```bash
-cat insight-common/CLAUDE.md           # 全体ガイド
-cat insight-common/standards/RELEASE_CHECKLIST.md  # リリースチェック
+cat insight-common/CLAUDE.md                       # 全体ガイド
+cat insight-common/standards/ANDROID.md             # Android 開発標準
+cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
+cat insight-common/standards/LOCALIZATION.md        # ローカライゼーション
 ```
 
 ## 検証コマンド
@@ -832,11 +951,65 @@ cat insight-common/standards/RELEASE_CHECKLIST.md  # リリースチェック
 
 ## AI アシスタント自動行動ルール
 
-| トリガー | アクション |
-|---------|----------|
-| 「リリース」「デプロイ」「公開」「本番」 | `/release-check` を提案・実行 |
-| 新規 UI 実装 | Ivory & Gold デザイン標準を確認 |
+| トリガー（ユーザーの発言・状況） | 自動アクション |
+|-------------------------------|--------------|
+| 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | `/release-check-android` を提案・実行 |
+| 「PR 作って」「プルリク」「マージ」 | `/release-check-android` の実行を推奨 |
+| 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認（`insight-common/CLAUDE.md` §1） |
+| ストアメタデータ・スクリーンショットの話題 | `insight-common/standards/LOCALIZATION.md` §6 を参照 |
+
+## ⚠️ 重要ルール
+
+- リリース前に `/release-check-android` を**必ず**実行すること
+- `/release-check-android` は**フェーズ別に対話的に実行**する（一気にやらない）
+- デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
+- Blue (#2563EB) をプライマリとして使用**禁止**
+- TODO/FIXME を残したままリリース**禁止**
+- API キー・シークレットのハードコード**禁止**
 CLEOF
+else
+    cat > CLAUDE.md << 'CLEOF'
+# 開発ガイド
+
+> このプロジェクトは `insight-common/CLAUDE.md` の全標準に準拠します。
+> 開発・レビュー・リリース前に必ず参照してください。
+
+## 標準ドキュメント
+
+```bash
+cat insight-common/CLAUDE.md                       # 全体ガイド
+cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
+```
+
+## 検証コマンド
+
+```bash
+# 開発中の標準検証
+./insight-common/scripts/validate-standards.sh .
+
+# リリース前の包括チェック
+./insight-common/scripts/release-check.sh .
+```
+
+## AI アシスタント自動行動ルール
+
+| トリガー（ユーザーの発言・状況） | 自動アクション |
+|-------------------------------|--------------|
+| 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | `/release-check` を提案・実行 |
+| 「PR 作って」「プルリク」「マージ」 | `/release-check` の実行を推奨 |
+| 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認（`insight-common/CLAUDE.md` §1） |
+| ストアメタデータ・スクリーンショットの話題 | `insight-common/standards/LOCALIZATION.md` §6 を参照 |
+
+## ⚠️ 重要ルール
+
+- リリース前に `/release-check` を**必ず**実行すること
+- `/release-check` は**フェーズ別に対話的に実行**する（一気にやらない）
+- デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
+- Blue (#2563EB) をプライマリとして使用**禁止**
+- TODO/FIXME を残したままリリース**禁止**
+- API キー・シークレットのハードコード**禁止**
+CLEOF
+fi
 
 echo -e "${GREEN}  Claude Code スキル配置完了${NC}"
 

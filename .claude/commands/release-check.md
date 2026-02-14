@@ -1,113 +1,171 @@
 # リリースチェックコマンド
 
-対象プロジェクトに対して HARMONIC insight のリリース前チェックを包括的に実行します。
+対象プロジェクトに対して HARMONIC insight のリリース前チェックを**フェーズ別に対話的**に実行します。
 
-## 概要
+## 重要: 実行ルール
 
-このコマンドは、`validate-standards.sh`（標準検証）を内部で呼び出した上で、リリース固有のチェック（バージョン、署名、メタデータ、セキュリティ、コード品質）を追加実行します。
+- 各フェーズを**順番に**実行すること。一気に全部やらない。
+- 各フェーズ完了後、結果をユーザーに**チェックリスト形式**で提示し、次のフェーズに進むか確認する。
+- エラーが見つかった場合、**その場で修正案を提示**し、ユーザーの確認後に修正を実行する。
+- TODO ツールを使って全フェーズの進捗を管理する。
 
 ## 実行手順
 
-### Step 1: 自動検証の実行
+### Phase 0: 準備
 
-`$ARGUMENTS` が指定されている場合はそのディレクトリを対象に、未指定の場合はカレントディレクトリを対象にする。
+1. `$ARGUMENTS` が指定されている場合はそのディレクトリ、未指定の場合はカレントディレクトリを対象にする。
+2. プラットフォームを自動検出する:
+   - `build.gradle.kts` → Android (Native Kotlin)
+   - `app.json` + `expo` → Expo (React Native)
+   - `package.json` → React / Next.js
+   - `*.csproj` → C# (WPF)
+   - `pyproject.toml` / `requirements.txt` → Python
+   - `Package.swift` → iOS
+3. 検出したプラットフォームをユーザーに通知する。
+4. TODO リストに以下のフェーズを登録する:
+   - Phase 1: 標準検証（自動スクリプト）
+   - Phase 2: コード品質・セキュリティ確認
+   - Phase 3: プラットフォーム固有チェック
+   - Phase 4: ストアメタデータ確認（モバイルアプリの場合）
+   - Phase 5: 最終確認・サマリー
+
+### Phase 1: 標準検証（自動スクリプト）
+
+自動検証スクリプトを実行する。スクリプトのパスは以下の優先順で探す:
+- `./scripts/release-check.sh`（insight-common 本体の場合）
+- `./insight-common/scripts/release-check.sh`（サブモジュール経由）
 
 ```bash
+# insight-common 本体
 bash ./scripts/release-check.sh ${ARGUMENTS:-.}
+# または サブモジュール経由
+bash ./insight-common/scripts/release-check.sh ${ARGUMENTS:-.}
 ```
 
-### Step 2: 結果の分析
-
-自動検証の結果を分析し、以下を報告:
-
-1. **エラー（✗）**: 必ず修正が必要な項目。修正案を具体的に提示する。
-2. **警告（!）**: 確認が推奨される項目。リスクを説明する。
-3. **手動確認（⚠）**: 自動検証できない項目。確認方法を案内する。
-
-### Step 3: 未完了項目への対応提案
-
-エラーや警告がある場合、以下のフォーマットで対応案を提示:
+スクリプトの実行結果を以下のフォーマットでまとめて報告する:
 
 ```
-## リリースチェック結果
+## Phase 1: 標準検証 結果
 
-### ❌ 要修正（エラー）
-1. [項目名]: [問題の説明]
-   → 修正方法: [具体的な手順]
-
-### ⚠️ 要確認（警告）
-1. [項目名]: [確認すべき内容]
-
-### 📋 手動確認項目
-1. [項目名]: [確認手順]
+| # | チェック項目 | 結果 | 詳細 |
+|---|------------|:----:|------|
+| D1 | Gold がプライマリカラー | ✅ / ❌ | ... |
+| D2 | Ivory が背景色 | ✅ / ❌ | ... |
+| D3 | Blue 未使用 | ✅ / ❌ | ... |
+| ... | ... | ... | ... |
 ```
 
-### Step 4: プラットフォーム固有の補足
+❌ がある場合はこのフェーズで修正案を提示し、ユーザーの確認を取る。
 
-検出されたプラットフォームに応じて、以下の標準ドキュメントを参照して補足情報を提供:
+### Phase 2: コード品質・セキュリティ確認
 
-| プラットフォーム | 参照 |
-|----------------|------|
-| Android | `standards/ANDROID.md` §15 チェックリスト |
-| iOS | `standards/IOS.md` |
-| C# (WPF) | `standards/CSHARP_WPF.md` |
-| React | `standards/REACT.md` |
-| Python | `standards/PYTHON.md` |
-| Expo | `standards/ANDROID.md` §13.7 チェックリスト |
+以下を手動で確認する（Grep ツール等で検索）:
 
-### Step 5: Play Store / App Store メタデータ
+| # | チェック項目 | 確認方法 |
+|---|------------|---------|
+| Q1 | TODO/FIXME/HACK の残存 | `grep -rn "TODO\|FIXME\|HACK"` |
+| Q2 | デバッグ出力の残存 | プラットフォームに応じた検索 |
+| Q3 | ハードコードされた API キー | `grep -rn "sk-\|AIza\|AKIA"` |
+| S1 | .env が .gitignore に含まれる | `.gitignore` を確認 |
+| S2 | credentials ファイルが除外されている | `.gitignore` を確認 |
+| G1 | 未コミットの変更がない | `git status` |
+| G2 | リモートと同期済み | `git status -sb` |
 
-ストアリリースの場合は追加で確認:
+結果をチェックリスト形式で報告し、問題があればその場で対応する。
 
-**Android（Play Store）**:
-- `fastlane/metadata/android/ja-JP/` と `en-US/` の全ファイル
-- 文字数制限: title(30), short_description(80), full_description(4000), changelog(500)
-- `standards/LOCALIZATION.md` §6 のチェックリストを参照
+### Phase 3: プラットフォーム固有チェック
 
-**iOS（App Store）**:
-- `fastlane/metadata/ja/` と `en-US/` の全ファイル
-- `standards/LOCALIZATION.md` §6 のチェックリストを参照
+検出されたプラットフォームに応じて、以下の標準ドキュメントを**読み込んで**チェックリストを実行する:
 
-## 検証項目サマリー
+| プラットフォーム | 参照ドキュメント | チェックリストセクション |
+|----------------|----------------|----------------------|
+| Android (Native) | `standards/ANDROID.md` | §15 チェックリスト |
+| Android (Expo) | `standards/ANDROID.md` | §13.7 チェックリスト |
+| iOS | `standards/IOS.md` | リリースチェックリスト |
+| C# (WPF) | `standards/CSHARP_WPF.md` | リリースチェックリスト |
+| React | `standards/REACT.md` | リリースチェックリスト |
+| Python | `standards/PYTHON.md` | リリースチェックリスト |
 
-### 全プラットフォーム共通
-- バージョン番号の更新確認
-- TODO/FIXME/HACK の残存チェック
-- デバッグ出力の残存チェック
-- ハードコードされたシークレットの検出
-- デザイン標準（Ivory & Gold）準拠
-- ローカライゼーション（日本語 + 英語）
-- ライセンス管理（InsightOffice 製品）
-- Git 状態（未コミット変更、リモート同期）
-- AI アシスタント（Claude API のみ、モデルティア制御）
+**Android の場合の主要チェック項目:**
 
-### Android 固有
-- versionCode / versionName の更新
-- 署名設定（signingConfigs）
-- Play Store メタデータ（日英、文字数制限）
-- ProGuard/R8 設定
+| # | チェック項目 | 確認方法 |
+|---|------------|---------|
+| A1 | versionCode インクリメント | `build.gradle.kts` 確認 |
+| A2 | versionName 更新 | `build.gradle.kts` 確認 |
+| A3-A5 | SDK バージョン (compile=35, target=35, min=26) | `build.gradle.kts` 確認 |
+| A6-A7 | R8 有効 (minify + shrink) | `build.gradle.kts` release ブロック確認 |
+| A8 | ProGuard ルール存在 | ファイル存在確認 |
+| AS1 | release signingConfig 設定 | `build.gradle.kts` 確認 |
+| AS3 | keystore が .gitignore に含まれる | `.gitignore` 確認 |
 
-### iOS 固有
-- Bundle Version の更新
-- App Store メタデータ（日英）
-- Provisioning Profile
+各項目を**1つずつ**確認し、結果をチェックリスト形式で報告する。
 
-### C# (WPF) 固有
-- AssemblyVersion / FileVersion の更新
-- Syncfusion ライセンスのハードコード禁止
-- ファイル関連付け（独自拡張子）
+### Phase 4: ストアメタデータ確認
 
-### React 固有
-- TypeScript strict mode
-- console.log の残存チェック
-- ビルド成功確認
+モバイルアプリ（Android / iOS / Expo）の場合のみ実行。
 
-### Python 固有
-- バージョン番号の更新
-- 依存パッケージのピン留め
+**Android (Play Store):**
+
+| # | チェック項目 | 確認方法 |
+|---|------------|---------|
+| AP1 | `fastlane/metadata/android/ja-JP/title.txt` 存在 (30文字以内) | ファイル確認 + 文字数カウント |
+| AP2 | `fastlane/metadata/android/en-US/title.txt` 存在 (30文字以内) | ファイル確認 + 文字数カウント |
+| AP3 | `short_description.txt` 日英存在 (80文字以内) | ファイル確認 + 文字数カウント |
+| AP4 | `full_description.txt` 日英存在 (4000文字以内) | ファイル確認 + 文字数カウント |
+| AP5 | `changelogs/default.txt` 日英存在 (500文字以内) | ファイル確認 + 文字数カウント |
+| AP7 | スクリーンショット準備 | ユーザーに確認 |
+
+ファイルが存在しない場合は、テンプレートを提示して作成を提案する。
+`standards/LOCALIZATION.md` §6 を参照。
+
+**iOS (App Store):**
+
+| # | チェック項目 | 確認方法 |
+|---|------------|---------|
+| IA1 | `name.txt` 日英存在 (30文字以内) | ファイル確認 |
+| IA2 | `subtitle.txt` 日英存在 (30文字以内) | ファイル確認 |
+| IA3 | `description.txt` 日英存在 | ファイル確認 |
+| IA5 | `release_notes.txt` 日英存在 | ファイル確認 |
+| IA6 | スクリーンショット準備 | ユーザーに確認 |
+
+### Phase 5: 最終確認・サマリー
+
+全フェーズの結果を統合し、最終サマリーを表示する:
+
+```
+========================================
+ リリースチェック 最終サマリー
+========================================
+
+対象: [プロジェクトパス]
+プラットフォーム: [検出されたプラットフォーム]
+実行日時: [日時]
+
+Phase 1: 標準検証         ✅ 完了 (エラー: 0)
+Phase 2: コード品質       ✅ 完了 (エラー: 0, 警告: 1)
+Phase 3: プラットフォーム  ✅ 完了 (エラー: 0)
+Phase 4: ストアメタデータ  ✅ 完了
+
+合計: エラー 0件 / 警告 1件 / 手動確認 3件
+
+手動確認が必要な項目:
+1. [ ] スクリーンショットの準備
+2. [ ] Release APK/AAB のインストール・動作確認
+3. [ ] リリースノートの内容承認
+
+→ 全エラーが解消されていればリリース可能です。
+========================================
+```
+
+## プラットフォーム別の専用スキル
+
+より詳細なプラットフォーム固有チェックが必要な場合は、専用スキルを使用してください:
+
+- `/release-check-android` — Android (Native Kotlin) 専用の詳細チェック
 
 ## 参照ドキュメント
 
-- `standards/RELEASE_CHECKLIST.md` — 全チェック項目の詳細
+- `standards/RELEASE_CHECKLIST.md` — 全チェック項目の詳細定義（チェック ID 付き）
 - `standards/LOCALIZATION.md` — ストアメタデータのローカライゼーション
 - `CLAUDE.md` §12 — 開発完了チェックリスト
+- `CLAUDE.md` §13 — リリースチェック概要
