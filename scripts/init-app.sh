@@ -922,6 +922,26 @@ ANDROIDSKILLEOF
     fi
 fi
 
+# .claude/settings.json（SessionStart フックでスキル自動同期）
+cat > .claude/settings.json << 'SETTINGSEOF'
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+SETTINGSEOF
+echo -e "  ${GREEN}✓${NC} .claude/settings.json (SessionStart sync-skills フック)"
+
 # CLAUDE.md（アプリ側用 — プラットフォーム別に生成）
 if [ "$PLATFORM" = "android" ]; then
     cat > CLAUDE.md << 'CLEOF'
