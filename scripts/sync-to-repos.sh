@@ -81,6 +81,93 @@ for arg in "$@"; do
 done
 
 # --- Functions ---
+sync_claude_skills() {
+  local repo_dir="$1" copy_mode="$2"
+  local skills_dir="$INSIGHT_COMMON_ROOT/.claude/commands"
+
+  # .claude/commands ディレクトリ作成
+  mkdir -p "$repo_dir/.claude/commands"
+
+  # 共通スキル: release-check
+  if [ -f "$skills_dir/release-check.md" ]; then
+    cp "$skills_dir/release-check.md" "$repo_dir/.claude/commands/release-check.md"
+  fi
+
+  # Android 固有スキル: release-check-android
+  if [ "$copy_mode" = "android_native" ] || [ "$copy_mode" = "expo" ]; then
+    if [ -f "$skills_dir/release-check-android.md" ]; then
+      cp "$skills_dir/release-check-android.md" "$repo_dir/.claude/commands/release-check-android.md"
+    fi
+  fi
+
+  # CLAUDE.md の生成（既存ファイルがない場合のみ）
+  if [ ! -f "$repo_dir/CLAUDE.md" ]; then
+    local release_skill="/release-check"
+    local platform_std=""
+    case "$copy_mode" in
+      android_native)
+        release_skill="/release-check-android"
+        platform_std="cat insight-common/standards/ANDROID.md             # Android 開発標準"
+        ;;
+      expo)
+        release_skill="/release-check"
+        platform_std="cat insight-common/standards/ANDROID.md             # Android (Expo) 開発標準"
+        ;;
+      ico_png)
+        platform_std="cat insight-common/standards/CSHARP_WPF.md          # C# WPF 開発標準"
+        ;;
+      web)
+        platform_std="cat insight-common/standards/REACT.md               # React 開発標準"
+        ;;
+    esac
+
+    cat > "$repo_dir/CLAUDE.md" << CLEOF
+# 開発ガイド
+
+> このプロジェクトは \`insight-common/CLAUDE.md\` の全標準に準拠します。
+> 開発・レビュー・リリース前に必ず参照してください。
+
+## 標準ドキュメント
+
+\`\`\`bash
+cat insight-common/CLAUDE.md                       # 全体ガイド
+${platform_std}
+cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
+cat insight-common/standards/LOCALIZATION.md        # ローカライゼーション
+\`\`\`
+
+## 検証コマンド
+
+\`\`\`bash
+# 開発中の標準検証
+./insight-common/scripts/validate-standards.sh .
+
+# リリース前の包括チェック
+./insight-common/scripts/release-check.sh .
+\`\`\`
+
+## AI アシスタント自動行動ルール
+
+| トリガー（ユーザーの発言・状況） | 自動アクション |
+|-------------------------------|--------------|
+| 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | \`${release_skill}\` を提案・実行 |
+| 「PR 作って」「プルリク」「マージ」 | \`${release_skill}\` の実行を推奨 |
+| 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認 |
+| ストアメタデータ・スクリーンショットの話題 | \`insight-common/standards/LOCALIZATION.md\` §6 を参照 |
+
+## ⚠️ 重要ルール
+
+- リリース前に \`${release_skill}\` を**必ず**実行すること
+- \`${release_skill}\` は**フェーズ別に対話的に実行**する（一気にやらない）
+- デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
+- Blue (#2563EB) をプライマリとして使用**禁止**
+- TODO/FIXME を残したままリリース**禁止**
+- API キー・シークレットのハードコード**禁止**
+CLEOF
+    echo "        CLAUDE.md generated"
+  fi
+}
+
 copy_icons() {
   local icon_src="$1" icon_dest="$2" name="$3" mode="$4" repo_dir="$5"
 
@@ -160,7 +247,11 @@ for entry in "${REPOS[@]}"; do
     echo "        WARN: no insight-common submodule found"
   fi
 
-  # 2. アイコンコピー
+  # 2. Claude Code スキル同期
+  sync_claude_skills "$REPO_DIR" "$copy_mode"
+  echo "        skills synced"
+
+  # 3. アイコンコピー
   if copy_icons "$icon_src" "$icon_dest" "$name" "$copy_mode" "$REPO_DIR"; then
     echo "        icons copied ($copy_mode)"
   else
@@ -190,7 +281,8 @@ for entry in "${REPOS[@]}"; do
       git commit -m "chore: update insight-common to $SHORT_SHA
 
 - サブモジュール更新
-- アイコンファイル同期"
+- アイコンファイル同期
+- Claude Code スキル同期"
     )
     echo "        committed"
   fi
