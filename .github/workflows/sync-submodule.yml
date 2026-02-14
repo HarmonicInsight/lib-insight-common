@@ -102,7 +102,7 @@ jobs:
 
           - repo: win-app-insight-py-pro
             product: INPY
-            name: "InsightPy (PRO)"
+            name: InsightPy
             icon_src: InsightPy
             icon_dest: resources
             copy_mode: ico_png
