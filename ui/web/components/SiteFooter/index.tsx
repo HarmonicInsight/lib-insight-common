@@ -171,7 +171,7 @@ export function SiteFooter({
               <h3 className={styles.linkGroupTitle}>法的情報</h3>
               <ul className={styles.linkList}>
                 <li>
-                  <a href="https://h-insight.jp/privacy" className={styles.link}>
+                  <a href="https://www.insight-office.com/ja/privacy" className={styles.link}>
                     プライバシーポリシー
                   </a>
                 </li>

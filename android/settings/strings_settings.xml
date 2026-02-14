@@ -45,7 +45,7 @@
 
     <!-- ===== 設定画面: 法的情報 URL ===== -->
     <!-- 全アプリ共通。変更する場合は insight-common/config/app-settings.ts と合わせて更新 -->
-    <string name="url_privacy_policy" translatable="false">https://h-insight.jp/privacy</string>
+    <string name="url_privacy_policy" translatable="false">https://www.insight-office.com/ja/privacy</string>
     <string name="url_terms_of_service" translatable="false">https://www.insight-office.com/ja/terms</string>
 
     <!-- ===== 設定画面: エラーメッセージ ===== -->

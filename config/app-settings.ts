@@ -27,7 +27,7 @@
  */
 export const LEGAL_URLS = {
   /** プライバシーポリシー */
-  privacyPolicy: 'https://h-insight.jp/privacy',
+  privacyPolicy: 'https://www.insight-office.com/ja/privacy',
   /** 利用規約 */
   termsOfService: 'https://www.insight-office.com/ja/terms',
 } as const;
