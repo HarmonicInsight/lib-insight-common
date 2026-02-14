@@ -269,8 +269,9 @@ const ANDROID_TARGETS: IconTarget[] = [
   },
 ];
 
-/** Android Native (vector drawable) 向けターゲット */
+/** Android Native (vector drawable + mipmap PNGs) 向けターゲット */
 const ANDROID_NATIVE_TARGETS: IconTarget[] = [
+  // --- Vector Drawables (SVG → XML) ---
   {
     path: 'app/src/main/res/drawable/ic_launcher_foreground.xml',
     format: 'vector_drawable',
@@ -292,6 +293,78 @@ const ANDROID_NATIVE_TARGETS: IconTarget[] = [
     description: 'Android 13+ themed icon monochrome (vector drawable)',
     descriptionJa: 'Android 13+ テーマアイコン モノクロ (vector drawable)',
   },
+  // --- Mipmap PNGs (master PNG → resized) ---
+  {
+    path: 'app/src/main/res/mipmap-mdpi/ic_launcher.png',
+    format: 'png',
+    sizes: [48],
+    description: 'Android mipmap-mdpi launcher icon',
+    descriptionJa: 'Android mipmap-mdpi ランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-mdpi/ic_launcher_round.png',
+    format: 'png',
+    sizes: [48],
+    description: 'Android mipmap-mdpi round launcher icon',
+    descriptionJa: 'Android mipmap-mdpi ラウンドランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-hdpi/ic_launcher.png',
+    format: 'png',
+    sizes: [72],
+    description: 'Android mipmap-hdpi launcher icon',
+    descriptionJa: 'Android mipmap-hdpi ランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-hdpi/ic_launcher_round.png',
+    format: 'png',
+    sizes: [72],
+    description: 'Android mipmap-hdpi round launcher icon',
+    descriptionJa: 'Android mipmap-hdpi ラウンドランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-xhdpi/ic_launcher.png',
+    format: 'png',
+    sizes: [96],
+    description: 'Android mipmap-xhdpi launcher icon',
+    descriptionJa: 'Android mipmap-xhdpi ランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-xhdpi/ic_launcher_round.png',
+    format: 'png',
+    sizes: [96],
+    description: 'Android mipmap-xhdpi round launcher icon',
+    descriptionJa: 'Android mipmap-xhdpi ラウンドランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-xxhdpi/ic_launcher.png',
+    format: 'png',
+    sizes: [144],
+    description: 'Android mipmap-xxhdpi launcher icon',
+    descriptionJa: 'Android mipmap-xxhdpi ランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png',
+    format: 'png',
+    sizes: [144],
+    description: 'Android mipmap-xxhdpi round launcher icon',
+    descriptionJa: 'Android mipmap-xxhdpi ラウンドランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-xxxhdpi/ic_launcher.png',
+    format: 'png',
+    sizes: [192],
+    description: 'Android mipmap-xxxhdpi launcher icon',
+    descriptionJa: 'Android mipmap-xxxhdpi ランチャーアイコン',
+  },
+  {
+    path: 'app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png',
+    format: 'png',
+    sizes: [192],
+    description: 'Android mipmap-xxxhdpi round launcher icon',
+    descriptionJa: 'Android mipmap-xxxhdpi ラウンドランチャーアイコン',
+  },
+  // --- Adaptive Icon Definitions ---
   {
     path: 'app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml',
     format: 'vector_drawable',
@@ -532,6 +605,67 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     masterPng: 'brand/icons/png/icon-camera.png',
     motif: 'Camera lens with gold accent + sparkle',
     motifJa: 'カメラレンズ + ゴールドアクセント + スパークル',
+    platforms: [
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
+    ],
+  },
+  {
+    productCode: 'VOICE_CLOCK',
+    productName: 'InsightVoiceClock',
+    masterSvg: 'brand/icons/svg/icon-voice-clock.svg',
+    masterPng: 'brand/icons/png/icon-voice-clock.png',
+    motif: 'Clock face with voice wave + sparkle',
+    motifJa: '時計 + 音声波形 + スパークル',
+    platforms: [
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
+    ],
+  },
+  {
+    productCode: 'INCLINE',
+    productName: 'InclineInsight',
+    masterSvg: 'brand/icons/svg/icon-incline.svg',
+    motif: 'Inclinometer + measurement',
+    motifJa: '傾斜計 + 計測',
+    platforms: [
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
+    ],
+  },
+  {
+    productCode: 'CONSUL_TYPE',
+    productName: 'InsightConsulType',
+    masterSvg: 'brand/icons/svg/icon-consul-type.svg',
+    motif: 'Typing evaluation + assessment',
+    motifJa: 'タイピング評価 + アセスメント',
+    platforms: [
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
+    ],
+  },
+  {
+    productCode: 'HOROSCOPE',
+    productName: 'HarmonicHoroscope',
+    masterSvg: 'brand/icons/svg/icon-horoscope.svg',
+    motif: 'Zodiac + stars + fortune',
+    motifJa: '星座 + 星 + 占い',
+    platforms: [
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
+    ],
+  },
+  {
+    productCode: 'FOOD_MEDICINE',
+    productName: 'FoodMedicineInsight',
+    masterSvg: 'brand/icons/svg/icon-food-medicine.svg',
+    motif: 'Food + medicine + health',
+    motifJa: '食品 + 医薬 + 健康',
+    platforms: [
+      { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
+    ],
+  },
+  {
+    productCode: 'CONSUL_EVALUATE',
+    productName: 'InsightConsulEvaluate',
+    masterSvg: 'brand/icons/svg/icon-consul-evaluate.svg',
+    motif: 'Evaluation chart + assessment',
+    motifJa: '評価チャート + アセスメント',
     platforms: [
       { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
     ],
