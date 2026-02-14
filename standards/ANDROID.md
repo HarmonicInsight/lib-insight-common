@@ -681,9 +681,9 @@ val InsightTypography = Typography(
 
 ---
 
-## 8. ProGuard / R8（リリースビルド必須）
+## 8. ProGuard / R8 / AAB（リリースビルド必須）
 
-### build.gradle.kts
+### build.gradle.kts — buildTypes
 
 ```kotlin
 buildTypes {
@@ -701,6 +701,28 @@ buildTypes {
     }
 }
 ```
+
+### build.gradle.kts — bundle（AAB 最適化）
+
+Play Store は AAB（Android App Bundle）でのアップロードが**必須**。
+以下の `bundle` ブロックで分割配信を有効にする。
+
+```kotlin
+bundle {
+    language {
+        enableSplit = true   // 言語リソースを端末に応じて配信
+    }
+    density {
+        enableSplit = true   // 画面密度リソースを端末に応じて配信
+    }
+    abi {
+        enableSplit = true   // ABI（CPU アーキテクチャ）を端末に応じて配信
+    }
+}
+```
+
+> **ビルドコマンド**: `./gradlew bundleRelease` で AAB を生成。
+> 出力先: `app/build/outputs/bundle/release/app-release.aab`
 
 ### proguard-rules.pro（標準テンプレート）
 
@@ -828,6 +850,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -902,9 +926,10 @@ jobs:
       - name: Display build artifact sizes
         run: |
           echo "=== Release APK ==="
-          find app/build/outputs/apk/release/ -name "*.apk" -exec ls -lh {} \; 2>/dev/null || true
+          find app/build/outputs/apk/release/ -name "*.apk" -exec ls -lh {} \; 2>/dev/null || echo "No APK found"
+          echo ""
           echo "=== Release AAB ==="
-          find app/build/outputs/bundle/release/ -name "*.aab" -exec ls -lh {} \; 2>/dev/null || true
+          find app/build/outputs/bundle/release/ -name "*.aab" -exec ls -lh {} \; 2>/dev/null || echo "No AAB found"
 
       # --- アーティファクトアップロード ---
       - name: Upload AAB
@@ -945,6 +970,7 @@ jobs:
 |------|------|
 | JDK | 17 (Temurin) |
 | Gradle | `gradle/actions/setup-gradle@v4` |
+| サブモジュール | `submodules: true`（insight-common 使用時） |
 | トリガー | `main`, `claude/**` ブランチ + `v*` タグ |
 | ビルド | `bundleRelease`（AAB）+ `assembleRelease`（APK）の**両方** |
 | 署名 | `secrets.KEYSTORE_BASE64` 経由（CI 上で復元） |
@@ -1327,7 +1353,9 @@ import { colors } from '@/lib/colors';
 - [ ] `.github/workflows/build.yml` が標準テンプレートに準拠
 - [ ] JDK 17 + Temurin
 - [ ] `gradle/actions/setup-gradle@v4` を使用
+- [ ] `submodules: true` が設定されている（insight-common 使用時）
 - [ ] Release APK **と AAB の両方**をビルド・アップロード
+- [ ] `bundle {}` ブロックで language / density / abi split が有効
 - [ ] 署名設定が secrets 経由（`KEYSTORE_BASE64` 等）
 - [ ] `v*` タグで GitHub Release が自動作成される
 - [ ] `--stacktrace` フラグ付きでビルド

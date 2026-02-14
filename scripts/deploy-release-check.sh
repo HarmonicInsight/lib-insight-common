@@ -173,7 +173,54 @@ for repo in "${REPOS[@]}"; do
     fi
 
     # --------------------------------------------------------
-    # 2. CLAUDE.md にリリースチェック情報を追加/更新
+    # 2. .claude/settings.json に SessionStart フックを追加
+    #    → 全ブランチでスキル自動同期を保証
+    # --------------------------------------------------------
+    SETTINGS_FILE=".claude/settings.json"
+    SYNC_HOOK_CMD='bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh'
+
+    if [ -f "$SETTINGS_FILE" ]; then
+        if ! grep -q "sync-skills.sh" "$SETTINGS_FILE" 2>/dev/null; then
+            # 既存の settings.json に SessionStart フックを追加
+            # jq が使える場合は jq で、なければ手動追記
+            if command -v jq >/dev/null 2>&1; then
+                jq --arg cmd "$SYNC_HOOK_CMD" '
+                  .hooks.SessionStart = (.hooks.SessionStart // []) + [{
+                    "matcher": "",
+                    "hooks": [{"type": "command", "command": $cmd}]
+                  }]
+                ' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp" && mv "${SETTINGS_FILE}.tmp" "$SETTINGS_FILE"
+                echo -e "  ${GREEN}✓${NC} .claude/settings.json に sync-skills フック追加"
+            else
+                echo -e "  ${YELLOW}!${NC} jq 未インストール — .claude/settings.json の手動更新が必要"
+            fi
+        else
+            echo -e "  ${YELLOW}!${NC} sync-skills フックは既に存在（スキップ）"
+        fi
+    else
+        # 新規作成
+        cat > "$SETTINGS_FILE" << SETTINGSEOF
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$SYNC_HOOK_CMD"
+          }
+        ]
+      }
+    ]
+  }
+}
+SETTINGSEOF
+        echo -e "  ${GREEN}✓${NC} .claude/settings.json 新規作成（sync-skills フック）"
+    fi
+
+    # --------------------------------------------------------
+    # 3. CLAUDE.md にリリースチェック情報を追加/更新
     # --------------------------------------------------------
     if [ -f "CLAUDE.md" ]; then
         if grep -q "release-check\|リリースチェック" CLAUDE.md 2>/dev/null; then
@@ -188,7 +235,7 @@ for repo in "${REPOS[@]}"; do
     fi
 
     # --------------------------------------------------------
-    # 3. コミット & プッシュ
+    # 4. コミット & プッシュ
     # --------------------------------------------------------
     if [ "$changed" = true ]; then
         if [ "$DRY_RUN" = true ]; then
@@ -197,18 +244,20 @@ for repo in "${REPOS[@]}"; do
         else
             git add .claude/commands/release-check.md \
                      .claude/commands/release-check-android.md \
+                     .claude/settings.json \
                      CLAUDE.md 2>/dev/null || true
             if git diff --cached --quiet 2>/dev/null; then
                 echo -e "  ${YELLOW}!${NC} 変更なし（スキップ）"
                 ((SKIPPED++)) || true
             else
-                git commit -m "feat: deploy standardized /release-check skill
+                git commit -m "feat: deploy standardized /release-check skill + auto-sync hook
 
 Deploy the full standardized release-check skill from insight-common.
 This version includes:
 - Phase 0: Auto-bootstrap of insight-common submodule
 - Phase 1-5: Standardized phased checking with table format output
 - Platform-specific checks with expected values
+- SessionStart hook for auto-syncing skills from submodule
 - Consistent summary format across all repositories
 
 See: insight-common/standards/RELEASE_CHECKLIST.md"
@@ -243,5 +292,6 @@ echo ""
 echo -e "${CYAN}配布内容:${NC}"
 echo "  - .claude/commands/release-check.md（標準版・全リポ）"
 echo "  - .claude/commands/release-check-android.md（Android リポのみ）"
+echo "  - .claude/settings.json（SessionStart sync-skills フック）"
 echo "  - CLAUDE.md（自動行動ルール追加）"
 echo ""

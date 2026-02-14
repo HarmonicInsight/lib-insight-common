@@ -100,6 +100,43 @@ sync_claude_skills() {
     fi
   fi
 
+  # .claude/settings.json に SessionStart フック追加（sync-skills 自動同期）
+  local settings_file="$repo_dir/.claude/settings.json"
+  local sync_hook_cmd='bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh'
+
+  if [ -f "$settings_file" ]; then
+    if ! grep -q "sync-skills.sh" "$settings_file" 2>/dev/null; then
+      if command -v jq >/dev/null 2>&1; then
+        jq --arg cmd "$sync_hook_cmd" '
+          .hooks.SessionStart = (.hooks.SessionStart // []) + [{
+            "matcher": "",
+            "hooks": [{"type": "command", "command": $cmd}]
+          }]
+        ' "$settings_file" > "${settings_file}.tmp" && mv "${settings_file}.tmp" "$settings_file"
+        echo "        settings.json: sync-skills hook added"
+      fi
+    fi
+  else
+    cat > "$settings_file" << SETTINGSEOF
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$sync_hook_cmd"
+          }
+        ]
+      }
+    ]
+  }
+}
+SETTINGSEOF
+    echo "        settings.json: created with sync-skills hook"
+  fi
+
   # CLAUDE.md の生成（既存ファイルがない場合のみ）
   if [ ! -f "$repo_dir/CLAUDE.md" ]; then
     local release_skill="/release-check"
