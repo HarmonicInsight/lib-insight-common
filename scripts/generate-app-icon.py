@@ -30,7 +30,7 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 
 # Brand colors
@@ -83,7 +83,7 @@ LAUNCHER_GRID_SIZES = {
 #   python         → Windows ICO + PNGs (PyInstaller bundled apps)
 #   tauri          → Windows ICO + PNGs + icon.png (Tauri desktop apps)
 #   expo           → iOS icon.png (1024x1024) + Android mipmap PNGs
-#   android_native → Android vector drawable XMLs (SVG → ic_launcher_foreground.xml)
+#   android_native → Android vector drawable XMLs + mipmap PNGs (SVG + master PNG)
 #   web            → favicon.ico + apple-touch-icon + manifest PNGs
 #   service        → Windows ICO (tray icon only)
 # =============================================================================
@@ -183,6 +183,41 @@ UTILITY_ICONS = {
         'name': 'InsightVoiceClock',
         'icon': 'icon-voice-clock.png',
         'svg': 'icon-voice-clock.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
+    },
+    'INCLINE': {
+        'name': 'InclineInsight',
+        'icon': 'icon-incline.png',
+        'svg': 'icon-incline.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
+    },
+    'CONSUL_TYPE': {
+        'name': 'InsightConsulType',
+        'icon': 'icon-consul-type.png',
+        'svg': 'icon-consul-type.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
+    },
+    'HOROSCOPE': {
+        'name': 'HarmonicHoroscope',
+        'icon': 'icon-horoscope.png',
+        'svg': 'icon-horoscope.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
+    },
+    'FOOD_MEDICINE': {
+        'name': 'FoodMedicineInsight',
+        'icon': 'icon-food-medicine.png',
+        'svg': 'icon-food-medicine.svg',
+        'platform': 'android_native',
+        'build_path': 'app/src/main/res/',
+    },
+    'CONSUL_EVALUATE': {
+        'name': 'InsightConsulEvaluate',
+        'icon': 'icon-consul-evaluate.png',
+        'svg': 'icon-consul-evaluate.svg',
         'platform': 'android_native',
         'build_path': 'app/src/main/res/',
     },
@@ -332,15 +367,33 @@ def generate_tauri(master: Image.Image, name: str, output_dir: str):
     print(f"  Tauri: icon.ico + icon.png + {len(TAURI_PNG_SIZES)} sized PNGs + Store logos")
 
 
-def generate_android(master: Image.Image, name: str, output_dir: str):
-    """Generate Android mipmap PNGs."""
+def make_round_icon(img: Image.Image) -> Image.Image:
+    """Apply circular mask to create a round icon variant."""
+    size = img.size[0]
+    if img.mode != 'RGBA':
+        img = img.convert('RGBA')
+    mask = Image.new('L', (size, size), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0, size - 1, size - 1), fill=255)
+    result = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    result.paste(img, mask=mask)
+    return result
+
+
+def generate_android(master: Image.Image, name: str, output_dir: str,
+                     include_round: bool = True):
+    """Generate Android mipmap PNGs (ic_launcher + ic_launcher_round)."""
     for density, size in ANDROID_SIZES.items():
         density_dir = os.path.join(output_dir, f"mipmap-{density}")
         os.makedirs(density_dir, exist_ok=True)
         img = resize_icon(master, size)
         img.save(os.path.join(density_dir, "ic_launcher.png"))
+        if include_round:
+            round_img = make_round_icon(img)
+            round_img.save(os.path.join(density_dir, "ic_launcher_round.png"))
 
-    print(f"  Android: {len(ANDROID_SIZES)} density variants")
+    round_label = " + round" if include_round else ""
+    print(f"  Android: {len(ANDROID_SIZES)} density variants{round_label}")
 
 
 def generate_ios(master: Image.Image, name: str, output_dir: str):
@@ -556,15 +609,36 @@ def get_monochrome_svg_path(svg_path: str) -> Path:
     return monochrome_path
 
 
-def generate_android_native(svg_path: str, name: str, output_dir: str):
-    """Generate Android native vector drawable icons from SVG.
+def generate_android_native(svg_path: str, name: str, output_dir: str,
+                            master: 'Image.Image | None' = None):
+    """Generate Android native icons: vector drawable XMLs + mipmap PNGs.
+
+    Combines SVG → vector drawable conversion AND master PNG → mipmap generation
+    to produce the complete Android res/ icon set.
 
     Output structure:
-      drawable/ic_launcher_foreground.xml
-      drawable/ic_launcher_background.xml
-      drawable/ic_launcher_monochrome.xml  (if monochrome SVG exists)
-      mipmap-anydpi-v26/ic_launcher.xml
-      mipmap-anydpi-v26/ic_launcher_round.xml
+      drawable/ic_launcher_foreground.xml     (SVG → vector drawable)
+      drawable/ic_launcher_background.xml     (Ivory fill)
+      drawable/ic_launcher_monochrome.xml     (if monochrome SVG exists)
+      mipmap-mdpi/ic_launcher.png             (master PNG → 48px)
+      mipmap-mdpi/ic_launcher_round.png       (master PNG → 48px circular)
+      mipmap-hdpi/ic_launcher.png             (master PNG → 72px)
+      mipmap-hdpi/ic_launcher_round.png       (master PNG → 72px circular)
+      mipmap-xhdpi/ic_launcher.png            (master PNG → 96px)
+      mipmap-xhdpi/ic_launcher_round.png      (master PNG → 96px circular)
+      mipmap-xxhdpi/ic_launcher.png           (master PNG → 144px)
+      mipmap-xxhdpi/ic_launcher_round.png     (master PNG → 144px circular)
+      mipmap-xxxhdpi/ic_launcher.png          (master PNG → 192px)
+      mipmap-xxxhdpi/ic_launcher_round.png    (master PNG → 192px circular)
+      mipmap-anydpi-v26/ic_launcher.xml       (adaptive icon definition)
+      mipmap-anydpi-v26/ic_launcher_round.xml (adaptive icon definition)
+
+    Args:
+        svg_path: Path to the SVG master icon for vector drawable conversion.
+        name: Product/app name for logging.
+        output_dir: Target res/ directory.
+        master: Optional PIL Image (1024x1024 master PNG) for mipmap generation.
+                If None, only vector drawable XMLs are generated.
     """
     foreground_xml, background_xml = svg_to_android_drawables(svg_path)
 
@@ -584,6 +658,12 @@ def generate_android_native(svg_path: str, name: str, output_dir: str):
         with open(os.path.join(drawable_dir, 'ic_launcher_monochrome.xml'), 'w') as f:
             f.write(monochrome_xml)
 
+    # mipmap PNGs (from master PNG)
+    if master is not None:
+        generate_android(master, name, output_dir, include_round=True)
+    else:
+        print(f"  [WARN] No master PNG — skipping mipmap PNG generation for {name}")
+
     # mipmap-anydpi-v26/
     adaptive_xml = ADAPTIVE_ICON_WITH_MONOCHROME_XML if has_monochrome else ADAPTIVE_ICON_XML
     mipmap_dir = os.path.join(output_dir, 'mipmap-anydpi-v26')
@@ -594,7 +674,8 @@ def generate_android_native(svg_path: str, name: str, output_dir: str):
         f.write(adaptive_xml)
 
     mono_label = " + monochrome" if has_monochrome else ""
-    print(f"  Android Native: drawable/ic_launcher_{{foreground,background}}.xml{mono_label} + mipmap-anydpi-v26/ic_launcher{{,_round}}.xml")
+    mipmap_label = f" + {len(ANDROID_SIZES)} mipmap densities (png + round)" if master is not None else ""
+    print(f"  Android Native: drawable/ic_launcher_{{foreground,background}}.xml{mono_label} + mipmap-anydpi-v26/ic_launcher{{,_round}}.xml{mipmap_label}")
 
 
 def generate_web(master: Image.Image, name: str, output_dir: str):
@@ -650,6 +731,8 @@ def generate_launcher_all(output_dir: str):
         'ISOF': 'senior',
         'CAMERA': 'utility', 'VOICE_CLOCK': 'utility', 'QR': 'utility',
         'PINBOARD': 'utility', 'VOICE_MEMO': 'utility',
+        'INCLINE': 'utility', 'CONSUL_TYPE': 'utility', 'HOROSCOPE': 'utility',
+        'FOOD_MEDICINE': 'utility', 'CONSUL_EVALUATE': 'utility',
     }
 
     # Display order for manifest
@@ -659,6 +742,8 @@ def generate_launcher_all(output_dir: str):
         'INCA': 300, 'INBT': 310, 'IVIN': 320,
         'CAMERA': 400, 'VOICE_CLOCK': 410, 'PINBOARD': 420,
         'VOICE_MEMO': 430, 'QR': 440,
+        'INCLINE': 450, 'CONSUL_TYPE': 460, 'HOROSCOPE': 470,
+        'FOOD_MEDICINE': 480, 'CONSUL_EVALUATE': 490,
     }
 
     # Process all icons (products + utilities, excluding LAUNCHER itself)
@@ -734,8 +819,10 @@ def generate_for_platform(platform: str, master: Image.Image, name: str, output_
     elif platform == 'expo':
         generate_expo(master, name, output_dir)
     elif platform == 'android_native':
-        # android_native is handled separately (SVG-based, not PNG)
-        pass
+        # android_native mipmap PNGs are generated via generate_android_native()
+        # which is called separately with both SVG and master PNG.
+        # If called here (e.g., via --platform override), generate mipmaps only.
+        generate_android(master, name, output_dir, include_round=True)
     elif platform == 'web':
         generate_web(master, name, output_dir)
     elif platform == 'service':
@@ -762,7 +849,7 @@ def generate_for_platform(platform: str, master: Image.Image, name: str, output_
 
 def list_icons():
     """List all available icons with platform info."""
-    print("\n=== Product Icons (10) ===")
+    print(f"\n=== Product Icons ({len(PRODUCT_ICONS)}) ===")
     print(f"  {'Code':<6s}  {'Name':<30s}  {'Platform':<32s}  {'Build Path'}")
     print(f"  {'----':<6s}  {'----':<30s}  {'--------':<32s}  {'----------'}")
     for code, info in PRODUCT_ICONS.items():
@@ -771,7 +858,7 @@ def list_icons():
         platform_label = PLATFORM_LABELS.get(info['platform'], info['platform'])
         print(f"  [{exists}] {code:<6s}  {info['name']:<30s}  {platform_label:<32s}  {info['build_path']}")
 
-    print("\n=== Utility Icons (6) ===")
+    print(f"\n=== Utility Icons ({len(UTILITY_ICONS)}) ===")
     print(f"  {'Code':<12s}  {'Name':<30s}  {'Platform':<32s}  {'Build Path'}")
     print(f"  {'----':<12s}  {'----':<30s}  {'--------':<32s}  {'----------'}")
     for code, info in UTILITY_ICONS.items():
@@ -837,8 +924,16 @@ def main():
                     if not svg_path.exists():
                         print(f"[SKIP] {code}: SVG not found at {svg_path}")
                         continue
+                    # Load master PNG for mipmap generation
+                    master_img = None
+                    try:
+                        png_path = get_master_icon_path(code)
+                        if png_path.exists():
+                            master_img = Image.open(png_path).convert('RGBA')
+                    except (ValueError, FileNotFoundError):
+                        pass
                     print(f"\n[{code}] {info['name']} ({platform_label})")
-                    generate_android_native(str(svg_path), info['name'], product_dir)
+                    generate_android_native(str(svg_path), info['name'], product_dir, master=master_img)
                 else:
                     path = get_master_icon_path(code)
                     if not path.exists():
@@ -869,19 +964,28 @@ def main():
         name = args.name or ALL_ICONS[key]['name']
         platform = args.platform or ALL_ICONS[key]['platform']
 
-        # android_native uses SVG source, not PNG
+        # android_native uses SVG + master PNG
         if platform == 'android_native':
             svg_path = get_svg_icon_path(key)
             if not svg_path.exists():
                 print(f"Error: SVG icon not found: {svg_path}")
                 sys.exit(1)
+            # Load master PNG for mipmap generation
+            master_img = None
+            try:
+                png_path = get_master_icon_path(key)
+                if png_path.exists():
+                    master_img = Image.open(png_path).convert('RGBA')
+            except (ValueError, FileNotFoundError):
+                pass
             platform_label = PLATFORM_LABELS.get(platform, platform)
             print(f"SVG: {svg_path}")
+            print(f"PNG: {png_path if master_img else '(none)'}")
             print(f"Name: {name}")
             print(f"Output: {args.output}")
             print(f"Platform: {platform_label}")
             print()
-            generate_android_native(str(svg_path), name, args.output)
+            generate_android_native(str(svg_path), name, args.output, master=master_img)
             print("\nDone!")
             return
 
