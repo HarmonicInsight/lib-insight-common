@@ -170,6 +170,14 @@ jobs:
             copy_mode: web
 
     steps:
+      - name: Validate SYNC_PAT secret
+        run: |
+          if [ -z "${{ secrets.SYNC_PAT }}" ]; then
+            echo "::error::SYNC_PAT secret is not configured. Please add a Personal Access Token with 'repo' scope to the repository secrets."
+            echo "::error::Settings → Secrets and variables → Actions → New repository secret → Name: SYNC_PAT"
+            exit 1
+          fi
+
       - name: Check if repo should be synced
         id: check
         run: |
