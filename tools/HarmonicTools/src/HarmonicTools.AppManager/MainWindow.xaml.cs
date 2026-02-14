@@ -470,6 +470,14 @@ public partial class MainWindow : Window
             return;
         }
         var cmdPath = Path.Combine(_selectedApp.BasePath, _selectedApp.BuildCommand);
+
+        if (!File.Exists(cmdPath))
+        {
+            AppendOutput($"[エラー] ビルドスクリプトが見つかりません: {cmdPath}\n");
+            AppendOutput("[ヒント] リポジトリに build.ps1 を作成してください。\n");
+            return;
+        }
+
         var args = extraArgs ?? "";
 
         if (_selectedApp.BuildCommand.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase))
@@ -494,6 +502,15 @@ public partial class MainWindow : Window
             return false;
         }
         var cmdPath = Path.Combine(_selectedApp.BasePath, _selectedApp.BuildCommand);
+
+        if (!File.Exists(cmdPath))
+        {
+            AppendOutput($"[エラー] ビルドスクリプトが見つかりません: {cmdPath}\n");
+            AppendOutput("[ヒント] リポジトリに build.ps1 を作成してください。\n");
+            SetRunning(false);
+            return false;
+        }
+
         var args = extraArgs ?? "";
 
         if (_selectedApp.BuildCommand.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase))
