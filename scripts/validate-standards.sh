@@ -62,6 +62,19 @@ if [ ! -d "$PROJECT_DIR" ]; then
     exit 1
 fi
 
+# ============================================================
+# insight-common サブモジュール自動セットアップ
+# ============================================================
+if [ -f "$PROJECT_DIR/.gitmodules" ] && grep -q "insight-common" "$PROJECT_DIR/.gitmodules" 2>/dev/null; then
+    if [ ! -f "$PROJECT_DIR/insight-common/CLAUDE.md" ]; then
+        echo -e "${YELLOW}insight-common サブモジュールを初期化しています...${NC}"
+        git -C "$PROJECT_DIR" submodule init 2>/dev/null || true
+        git -C "$PROJECT_DIR" submodule update --recursive 2>/dev/null || true
+    fi
+    # スクリプトの実行権限を付与
+    chmod +x "$PROJECT_DIR/insight-common/scripts/"*.sh 2>/dev/null || true
+fi
+
 print_header
 echo "検証対象: $PROJECT_DIR"
 echo ""

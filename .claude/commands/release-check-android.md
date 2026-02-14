@@ -12,11 +12,41 @@ Android (Kotlin + Jetpack Compose) アプリ専用のリリース前チェック
 - エラーが見つかったらその場で修正案を提示し、ユーザーの承認後に修正する。
 - 各フェーズ完了時に「次のフェーズに進みますか？」と確認する。
 
-## Phase 0: 準備
+## Phase 0: 準備・環境セットアップ
 
 1. `$ARGUMENTS` が指定されている場合はそのディレクトリ、未指定の場合はカレントディレクトリを対象にする。
-2. `build.gradle.kts` の存在を確認し、Android プロジェクトであることを検証する。
-3. TODO リストに以下のフェーズを登録する:
+
+2. **insight-common サブモジュールの自動セットアップ**（依存リポジトリの場合）:
+
+   このスキルが insight-common 本体**以外**のリポジトリで実行されている場合、
+   以下の手順でサブモジュールを自動的に初期化・更新する。**ユーザーに確認せず自動実行すること。**
+
+   ```bash
+   # サブモジュールの存在確認
+   if [ -f ".gitmodules" ] && grep -q "insight-common" .gitmodules 2>/dev/null; then
+     # サブモジュールが初期化されていない場合
+     if [ ! -f "insight-common/CLAUDE.md" ]; then
+       echo "insight-common サブモジュールを初期化しています..."
+       git submodule init
+       git submodule update --recursive
+     fi
+     # 最新に更新
+     echo "insight-common を最新に更新しています..."
+     git submodule update --remote --merge insight-common 2>/dev/null || true
+   fi
+   ```
+
+   サブモジュールのセットアップに失敗した場合はエラーを報告し、手動セットアップの手順を提示する。
+
+3. **スクリプトの実行権限を設定する**:
+
+   ```bash
+   chmod +x ./insight-common/scripts/release-check.sh 2>/dev/null || true
+   chmod +x ./insight-common/scripts/validate-standards.sh 2>/dev/null || true
+   ```
+
+4. `build.gradle.kts` の存在を確認し、Android プロジェクトであることを検証する。
+5. TODO リストに以下のフェーズを登録する:
    - Phase 1: ビルド設定チェック (A1-A8)
    - Phase 2: 署名・セキュリティ (AS1-AS4, S1-S4)
    - Phase 3: デザイン標準 (D1-D4)
