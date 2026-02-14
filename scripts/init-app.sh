@@ -768,6 +768,79 @@ elif [ "$PLATFORM" = "web" ]; then
 fi
 
 # =============================================
+# Claude Code スキル配置（全プラットフォーム共通）
+# =============================================
+echo -e "${YELLOW}  Claude Code スキルを配置中...${NC}"
+mkdir -p .claude/commands
+
+# release-check スキル
+cat > .claude/commands/release-check.md << 'SKILLEOF'
+# リリースチェック
+
+リリース前の包括チェック（標準検証 + リリース固有チェック）を実行します。
+
+## 実行手順
+
+1. `$ARGUMENTS` が指定されている場合はそのディレクトリを対象に、未指定の場合はカレントディレクトリを対象にする
+2. `insight-common/scripts/release-check.sh` を実行する
+
+```bash
+bash ./insight-common/scripts/release-check.sh ${ARGUMENTS:-.}
+```
+
+3. エラーがあれば修正案を具体的に提示する
+4. 警告があれば確認すべき内容を説明する
+5. 手動確認項目の一覧を表示する
+
+検証に失敗した場合は `standards/RELEASE_CHECKLIST.md` を参照して対応案を提示してください。
+
+検証項目:
+- デザイン標準（Ivory & Gold）
+- バージョン番号の更新
+- TODO/FIXME/HACK の残存
+- デバッグ出力の残存
+- ハードコードされたシークレット
+- ローカライゼーション（日本語 + 英語）
+- ライセンス管理
+- Git 状態
+- プラットフォーム固有チェック
+SKILLEOF
+
+# CLAUDE.md（アプリ側用）
+cat > CLAUDE.md << 'CLEOF'
+# 開発ガイド
+
+> このプロジェクトは `insight-common/CLAUDE.md` の全標準に準拠します。
+> 開発・レビュー・リリース前に必ず参照してください。
+
+## 標準ドキュメント
+
+```bash
+cat insight-common/CLAUDE.md           # 全体ガイド
+cat insight-common/standards/RELEASE_CHECKLIST.md  # リリースチェック
+```
+
+## 検証コマンド
+
+```bash
+# 開発中の標準検証
+./insight-common/scripts/validate-standards.sh .
+
+# リリース前の包括チェック
+./insight-common/scripts/release-check.sh .
+```
+
+## AI アシスタント自動行動ルール
+
+| トリガー | アクション |
+|---------|----------|
+| 「リリース」「デプロイ」「公開」「本番」 | `/release-check` を提案・実行 |
+| 新規 UI 実装 | Ivory & Gold デザイン標準を確認 |
+CLEOF
+
+echo -e "${GREEN}  Claude Code スキル配置完了${NC}"
+
+# =============================================
 # 初回コミット
 # =============================================
 echo -e "${YELLOW}[5/5] 初回コミット...${NC}"
