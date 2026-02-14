@@ -303,7 +303,7 @@ layout.tsx で CSS 変数として定義：
 | 小説プラットフォーム | https://www.insight-novels.com |
 | コンサルタント紹介 | https://erikhiroyuki.com |
 | GitHub | https://github.com/HarmonicInsight |
-| プライバシーポリシー | https://h-insight.jp/privacy |
+| プライバシーポリシー | https://www.insight-office.com/ja/privacy |
 | 利用規約 | https://www.insight-office.com/ja/terms |
 
 **禁止事項:**
