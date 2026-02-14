@@ -176,7 +176,7 @@ export function SiteFooter({
                   </a>
                 </li>
                 <li>
-                  <a href="https://h-insight.jp/terms" className={styles.link}>
+                  <a href="https://www.insight-office.com/ja/terms" className={styles.link}>
                     利用規約
                   </a>
                 </li>

@@ -29,7 +29,7 @@ export const LEGAL_URLS = {
   /** プライバシーポリシー */
   privacyPolicy: 'https://h-insight.jp/privacy',
   /** 利用規約 */
-  termsOfService: 'https://h-insight.jp/terms',
+  termsOfService: 'https://www.insight-office.com/ja/terms',
 } as const;
 
 /**
