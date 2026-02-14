@@ -31,8 +31,6 @@ brand/icons/
 │   ├── icon-qr.png                   # Insight QR
 │   ├── icon-pinboard.png             # Insight PinBoard
 │   └── icon-voice-memo.png           # Insight Voice Memo
-├── svg/                              # SVG アイコン（参考・フォールバック用）
-│   └── icon-*.svg
 ├── generated/                        # generate-app-icon.py による生成済みアイコン
 │   ├── InsightOfficeSheet/           # WPF: .ico + 個別PNG
 │   ├── InsightNoCodeAnalyzer/        # Tauri: icon.ico + icon.png + sized PNGs
@@ -97,7 +95,7 @@ brand/icons/
 | **Tauri + React** | `icon.ico` + `icon.png` + sized PNGs + Store logos | INCA, IVIN |
 | **Windows Service** | `.ico` (16-256px) + 個別 PNG | INBT |
 | **Expo (iOS/Android)** | `icon.png` (1024x1024) + Android mipmap + splash | QR, VOICE_TASK_CALENDAR, VOICE_MEMO |
-| **Android Native** | Vector drawable XML + mipmap PNG | CAMERA, VOICE_CLOCK, INCLINE, etc. |
+| **Android Native** | mipmap PNG + round PNG | CAMERA, VOICE_CLOCK, INCLINE, etc. |
 | **Next.js (Web)** | `favicon.ico` + manifest PNGs | QR |
 
 ## 使用方法

@@ -8,12 +8,11 @@
  * 全製品のアイコンを「マスターソース → プラットフォーム別出力」の
  * パイプラインとして一元管理する。
  *
- * ## マスターソース (brand/icons/)
+ * ## マスターソース (brand/icons/png/)
  *
  * ```
- * brand/icons/
- * ├── icon-insight-sheet.svg      # ベクターマスター（推奨）
- * ├── InsightSheet.png            # 高解像度ラスターマスター
+ * brand/icons/png/
+ * ├── icon-insight-sheet.png      # マスター PNG（1024x1024）— 唯一の正
  * └── ...
  * ```
  *
@@ -62,8 +61,7 @@
  *
  * // 製品のアイコン構成を取得
  * const config = getIconConfig('IOSH');
- * config.masterSvg;  // 'brand/icons/icon-insight-sheet.svg'
- * config.masterPng;  // 'brand/icons/InsightSheet.png'
+ * config.masterPng;  // 'brand/icons/png/icon-insight-sheet.png'
  * config.motifJa;    // 'スプレッドシートグリッド + ヘッダー行'
  *
  * // プラットフォーム別の出力先を取得
@@ -95,7 +93,7 @@ export type IconPlatform =
   | 'electron';        // Electron デスクトップアプリ
 
 /** アイコンフォーマット */
-export type IconFormat = 'ico' | 'png' | 'svg' | 'icns' | 'vector_drawable';
+export type IconFormat = 'ico' | 'png' | 'icns';
 
 /** プラットフォーム別アイコン出力ターゲット */
 export interface IconTarget {
@@ -125,10 +123,8 @@ export interface AppIconConfig {
   productCode: ProductCode | string;
   /** 製品名 */
   productName: string;
-  /** マスター SVG ソース（リポジトリルートからの相対パス） */
-  masterSvg: string;
-  /** マスター PNG ソース（高解像度ラスター、リポジトリルートからの相対パス） */
-  masterPng?: string;
+  /** マスター PNG ソース（1024x1024、リポジトリルートからの相対パス） — 唯一の正 */
+  masterPng: string;
   /** アイコンモチーフ説明（英語） */
   motif: string;
   /** アイコンモチーフ説明（日本語） */
@@ -269,31 +265,8 @@ const ANDROID_TARGETS: IconTarget[] = [
   },
 ];
 
-/** Android Native (vector drawable + mipmap PNGs) 向けターゲット */
+/** Android Native (mipmap PNGs only — master PNG is the single source of truth) */
 const ANDROID_NATIVE_TARGETS: IconTarget[] = [
-  // --- Vector Drawables (SVG → XML) ---
-  {
-    path: 'app/src/main/res/drawable/ic_launcher_foreground.xml',
-    format: 'vector_drawable',
-    sizes: [108],
-    description: 'Android adaptive icon foreground (vector drawable)',
-    descriptionJa: 'Android Adaptive Icon フォアグラウンド (vector drawable)',
-  },
-  {
-    path: 'app/src/main/res/drawable/ic_launcher_background.xml',
-    format: 'vector_drawable',
-    sizes: [108],
-    description: 'Android adaptive icon background (vector drawable)',
-    descriptionJa: 'Android Adaptive Icon バックグラウンド (vector drawable)',
-  },
-  {
-    path: 'app/src/main/res/drawable/ic_launcher_monochrome.xml',
-    format: 'vector_drawable',
-    sizes: [108],
-    description: 'Android 13+ themed icon monochrome (vector drawable)',
-    descriptionJa: 'Android 13+ テーマアイコン モノクロ (vector drawable)',
-  },
-  // --- Mipmap PNGs (master PNG → resized) ---
   {
     path: 'app/src/main/res/mipmap-mdpi/ic_launcher.png',
     format: 'png',
@@ -364,21 +337,6 @@ const ANDROID_NATIVE_TARGETS: IconTarget[] = [
     description: 'Android mipmap-xxxhdpi round launcher icon',
     descriptionJa: 'Android mipmap-xxxhdpi ラウンドランチャーアイコン',
   },
-  // --- Adaptive Icon Definitions ---
-  {
-    path: 'app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml',
-    format: 'vector_drawable',
-    sizes: [],
-    description: 'Android adaptive icon definition',
-    descriptionJa: 'Android Adaptive Icon 定義',
-  },
-  {
-    path: 'app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml',
-    format: 'vector_drawable',
-    sizes: [],
-    description: 'Android adaptive icon definition (round)',
-    descriptionJa: 'Android Adaptive Icon 定義 (round)',
-  },
 ];
 
 /** iOS 向けターゲット */
@@ -428,7 +386,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INCA',
     productName: 'InsightNoCodeAnalyzer',
-    masterSvg: 'brand/icons/svg/icon-insight-nca.svg',
     masterPng: 'brand/icons/png/icon-insight-nca.png',
     motif: 'Flowchart + gear',
     motifJa: 'フローチャート + ギア',
@@ -439,7 +396,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INBT',
     productName: 'InsightBot',
-    masterSvg: 'brand/icons/svg/icon-insight-bot.svg',
     masterPng: 'brand/icons/png/icon-insight-bot.png',
     motif: 'Cute robot + chat bubble',
     motifJa: 'かわいいロボット + チャット吹き出し',
@@ -450,7 +406,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'IVIN',
     productName: 'InterviewInsight',
-    masterSvg: 'brand/icons/svg/icon-interview-insight.svg',
     masterPng: 'brand/icons/png/icon-interview-insight.png',
     motif: 'Robot + microphone + clipboard',
     motifJa: 'ロボット + マイク + クリップボード',
@@ -465,7 +420,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INMV',
     productName: 'InsightMovie',
-    masterSvg: 'brand/icons/svg/icon-insight-movie.svg',
     masterPng: 'brand/icons/png/icon-insight-movie.png',
     motif: 'Projector + film strip + gear',
     motifJa: '映写機 + フィルムストリップ + ギア',
@@ -476,7 +430,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INIG',
     productName: 'InsightImageGen',
-    masterSvg: 'brand/icons/svg/icon-insight-imagegen.svg',
     masterPng: 'brand/icons/png/icon-insight-imagegen.png',
     motif: 'Monitor + aperture + image + gear',
     motifJa: 'モニター + アパーチャ + 画像 + ギア',
@@ -491,7 +444,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INSS',
     productName: 'InsightOfficeSlide',
-    masterSvg: 'brand/icons/svg/icon-insight-slide.svg',
     masterPng: 'brand/icons/png/icon-insight-slide.png',
     motif: 'Presentation board + gear + arrows',
     motifJa: 'プレゼンボード + ギア + 矢印',
@@ -502,7 +454,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'IOSH',
     productName: 'InsightOfficeSheet',
-    masterSvg: 'brand/icons/svg/icon-insight-sheet.svg',
     masterPng: 'brand/icons/png/icon-insight-sheet.png',
     motif: 'Spreadsheet grid + gear',
     motifJa: 'スプレッドシートグリッド + ギア',
@@ -513,7 +464,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'IOSD',
     productName: 'InsightOfficeDoc',
-    masterSvg: 'brand/icons/svg/icon-insight-doc.svg',
     masterPng: 'brand/icons/png/icon-insight-doc.png',
     motif: 'Document + gear + DB',
     motifJa: 'ドキュメント + ギア + DB',
@@ -524,7 +474,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INPY',
     productName: 'InsightPy',
-    masterSvg: 'brand/icons/svg/icon-insight-py.svg',
     masterPng: 'brand/icons/png/icon-insight-py.png',
     motif: 'Python snake + circuit board',
     motifJa: 'Python ヘビ + 回路基板',
@@ -539,7 +488,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'ISOF',
     productName: 'InsightSeniorOffice',
-    masterSvg: '',
     masterPng: 'brand/icons/png/icon-senior-office.png',
     motif: 'Calendar + document + mail + gear',
     motifJa: 'カレンダー + 文書 + メール + ギア',
@@ -554,7 +502,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'QR',
     productName: 'InsightQR',
-    masterSvg: 'brand/icons/svg/icon-qr.svg',
     masterPng: 'brand/icons/png/icon-qr.png',
     motif: 'QR code pattern',
     motifJa: 'QR コードパターン',
@@ -570,7 +517,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INBA',
     productName: 'InsightBrowser AI',
-    masterSvg: '',
     masterPng: '',
     motif: 'Browser + AI sparkle',
     motifJa: 'ブラウザ + AI スパークル',
@@ -586,7 +532,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'LAUNCHER',
     productName: 'Insight Launcher',
-    masterSvg: 'brand/icons/svg/icon-launcher.svg',
     masterPng: 'brand/icons/png/icon-launcher.png',
     motif: '2x2 grid + rocket + circuit board',
     motifJa: '2x2 グリッド + ロケット + 回路基板',
@@ -601,7 +546,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'CAMERA',
     productName: 'InsightCamera',
-    masterSvg: 'brand/icons/svg/icon-camera.svg',
     masterPng: 'brand/icons/png/icon-camera.png',
     motif: 'Camera lens with gold accent + sparkle',
     motifJa: 'カメラレンズ + ゴールドアクセント + スパークル',
@@ -612,7 +556,6 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'VOICE_CLOCK',
     productName: 'InsightVoiceClock',
-    masterSvg: 'brand/icons/svg/icon-voice-clock.svg',
     masterPng: 'brand/icons/png/icon-voice-clock.png',
     motif: 'Clock face with voice wave + sparkle',
     motifJa: '時計 + 音声波形 + スパークル',
@@ -623,7 +566,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'INCLINE',
     productName: 'InclineInsight',
-    masterSvg: 'brand/icons/svg/icon-incline.svg',
+    masterPng: 'brand/icons/png/icon-incline.png',
     motif: 'Inclinometer + measurement',
     motifJa: '傾斜計 + 計測',
     platforms: [
@@ -633,7 +576,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'CONSUL_TYPE',
     productName: 'InsightConsulType',
-    masterSvg: 'brand/icons/svg/icon-consul-type.svg',
+    masterPng: 'brand/icons/png/icon-consul-type.png',
     motif: 'Typing evaluation + assessment',
     motifJa: 'タイピング評価 + アセスメント',
     platforms: [
@@ -643,7 +586,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'HOROSCOPE',
     productName: 'HarmonicHoroscope',
-    masterSvg: 'brand/icons/svg/icon-horoscope.svg',
+    masterPng: 'brand/icons/png/icon-horoscope.png',
     motif: 'Zodiac + stars + fortune',
     motifJa: '星座 + 星 + 占い',
     platforms: [
@@ -653,7 +596,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'FOOD_MEDICINE',
     productName: 'FoodMedicineInsight',
-    masterSvg: 'brand/icons/svg/icon-food-medicine.svg',
+    masterPng: 'brand/icons/png/icon-food-medicine.png',
     motif: 'Food + medicine + health',
     motifJa: '食品 + 医薬 + 健康',
     platforms: [
@@ -663,7 +606,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   {
     productCode: 'CONSUL_EVALUATE',
     productName: 'InsightConsulEvaluate',
-    masterSvg: 'brand/icons/svg/icon-consul-evaluate.svg',
+    masterPng: 'brand/icons/png/icon-consul-evaluate.png',
     motif: 'Evaluation chart + assessment',
     motifJa: '評価チャート + アセスメント',
     platforms: [
@@ -735,13 +678,12 @@ export function getIconPlatforms(productCode: string): IconPlatform[] {
  *
  * @example
  * ```typescript
- * resolveProductByIconFile('icon-insight-sheet.svg');  // 'IOSH'
- * resolveProductByIconFile('InsightSheet.png');         // 'IOSH'
+ * resolveProductByIconFile('icon-insight-sheet.png');  // 'IOSH'
  * ```
  */
 export function resolveProductByIconFile(filename: string): string | undefined {
   for (const config of APP_ICON_CONFIGS) {
-    if (config.masterSvg.endsWith(filename) || config.masterPng?.endsWith(filename)) {
+    if (config.masterPng.endsWith(filename)) {
       return config.productCode;
     }
   }

@@ -50,8 +50,8 @@ python scripts/generate-app-icon.py --product <製品コード>
 ソース（insight-common）とターゲット（アプリリポジトリ）の各ファイルを比較する。
 
 **Android Native の場合:**
-- ソース: `brand/icons/generated/<Dir>/drawable/` → ターゲット: `app/src/main/res/drawable/`
-- ソース: `brand/icons/generated/<Dir>/mipmap-anydpi-v26/` → ターゲット: `app/src/main/res/mipmap-anydpi-v26/`
+- ソース: `brand/icons/generated/<Dir>/mipmap-*/` → ターゲット: `app/src/main/res/mipmap-*/`
+- **注意**: ターゲットに `drawable/ic_launcher_foreground.xml` や `mipmap-anydpi-v26/` が残っている場合は削除すること（mipmap PNG を上書きしてしまうため）
 
 **WPF の場合:**
 - ソース: `brand/icons/generated/<Dir>/` → ターゲット: `Resources/`
@@ -88,7 +88,7 @@ python scripts/generate-app-icon.py --product <製品コード>
 ファイル数が多い場合は `sync-app-icons.sh` を活用できる:
 
 ```bash
-# Android（drawable + mipmap）
+# Android（mipmap PNGs）
 ./scripts/sync-app-icons.sh --product VOICE_CLOCK /path/to/app/src/main/res/
 
 # WPF

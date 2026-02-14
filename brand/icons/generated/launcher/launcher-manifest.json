@@ -192,6 +192,21 @@
       }
     },
     {
+      "code": "VOICE_TASK_CALENDAR",
+      "name": "VoiceTaskCalendar",
+      "masterIcon": "brand/icons/png/icon-voice-clock.png",
+      "category": "utility",
+      "displayOrder": 415,
+      "isProduct": false,
+      "densities": {
+        "mdpi": 48,
+        "hdpi": 72,
+        "xhdpi": 96,
+        "xxhdpi": 144,
+        "xxxhdpi": 192
+      }
+    },
+    {
       "code": "PINBOARD",
       "name": "InsightPinBoard",
       "masterIcon": "brand/icons/png/icon-pinboard.png",
