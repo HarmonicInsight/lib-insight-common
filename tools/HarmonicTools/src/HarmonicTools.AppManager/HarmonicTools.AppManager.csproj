@@ -19,4 +19,8 @@
     <Resource Include="Assets\app.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Data\mobile-apps.json" />
+  </ItemGroup>
+
 </Project>

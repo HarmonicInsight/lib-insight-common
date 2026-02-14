@@ -202,6 +202,10 @@
                                         Padding="12,4" Click="MoveUp_Click"/>
                                 <Button Content="▼ 下へ" Style="{StaticResource SecondaryButton}"
                                         Padding="12,4" Margin="8,0,0,0" Click="MoveDown_Click"/>
+                                <Button x:Name="ImportBtn" Content="一括インポート" Style="{StaticResource SecondaryButton}"
+                                        Padding="12,4" Margin="8,0,0,0" Click="ImportApps_Click"/>
+                                <Button Content="エクスポート" Style="{StaticResource SecondaryButton}"
+                                        Padding="12,4" Margin="8,0,0,0" Click="ExportApps_Click"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
