@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HARMONIC insight - 設定画面 標準文字列リソース（日本語）
+
+  使い方:
+    このファイルの内容を各 Android アプリの values/strings.xml にコピーしてください。
+    %s にはアプリ名が入ります（getString(R.string.settings_about, appName) で使用）。
+
+  対象アプリ:
+    - Voice Task Calendar (com.harmonicinsight.voicetask)
+    - Voice Clock (com.insightvoiceclock)
+    - Insight Camera (com.harmonic.insight.camera)
+    - Insight QR (com.harmonicinsight.insightqr)
+
+  参照: standards/APP_SETTINGS.md
+-->
+<resources>
+
+    <!-- ===== 設定画面: セクションヘッダー ===== -->
+    <string name="settings_title">設定</string>
+    <string name="settings_general">一般</string>
+    <string name="settings_appearance">外観</string>
+    <string name="settings_about">%sについて</string>
+    <string name="settings_legal">法的情報</string>
+
+    <!-- ===== 設定画面: 外観 ===== -->
+    <string name="settings_dark_mode">ダークモード</string>
+    <string name="settings_dark_mode_desc">ダークテーマに切り替える</string>
+    <string name="settings_theme">テーマ</string>
+    <string name="settings_theme_light">ライト</string>
+    <string name="settings_theme_dark">ダーク</string>
+    <string name="settings_theme_system">システム設定に従う</string>
+
+    <!-- ===== 設定画面: このアプリについて ===== -->
+    <string name="settings_version">バージョン</string>
+    <string name="settings_version_value">バージョン %s</string>
+    <string name="settings_developer">開発元</string>
+    <string name="settings_developer_name">HARMONIC insight</string>
+    <string name="settings_copyright">© %d HARMONIC insight. All rights reserved.</string>
+
+    <!-- ===== 設定画面: 法的情報 ===== -->
+    <string name="settings_privacy_policy">プライバシーポリシー</string>
+    <string name="settings_terms_of_service">利用規約</string>
+    <string name="settings_oss_licenses">オープンソースライセンス</string>
+
+    <!-- ===== 設定画面: 法的情報 URL ===== -->
+    <!-- 全アプリ共通。変更する場合は insight-common/config/app-settings.ts と合わせて更新 -->
+    <string name="url_privacy_policy" translatable="false">https://h-insight.jp/privacy</string>
+    <string name="url_terms_of_service" translatable="false">https://h-insight.jp/terms</string>
+
+    <!-- ===== 設定画面: エラーメッセージ ===== -->
+    <string name="settings_url_open_error">URLを開けませんでした</string>
+
+</resources>

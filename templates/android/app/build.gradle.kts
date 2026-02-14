@@ -7,6 +7,8 @@
 // __APP_PACKAGE__ → 完全なパッケージ名 (例: com.harmonic.insight.camera)
 // ============================================================
 
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -30,7 +32,24 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
+        resourceConfigurations += listOf("ja", "en")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // --- 署名設定 ---
+    signingConfigs {
+        create("release") {
+            val props = rootProject.file("keystore.properties")
+            if (props.exists()) {
+                val keystoreProps = Properties().apply {
+                    props.inputStream().use { load(it) }
+                }
+                storeFile = file(keystoreProps["storeFile"] as String)
+                storePassword = keystoreProps["storePassword"] as String
+                keyAlias = keystoreProps["keyAlias"] as String
+                keyPassword = keystoreProps["keyPassword"] as String
+            }
+        }
     }
 
     buildTypes {
@@ -41,6 +60,12 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            val releaseConfig = signingConfigs.findByName("release")
+            signingConfig = if (releaseConfig?.storeFile != null) {
+                releaseConfig
+            } else {
+                signingConfigs.getByName("debug")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -60,6 +85,17 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // --- ABI Split（ネイティブライブラリ使用時） ---
+    // ネイティブライブラリ（CameraX, ML Kit 等）を使う場合は有効化
+    // splits {
+    //     abi {
+    //         isEnable = true
+    //         reset()
+    //         include("arm64-v8a", "armeabi-v7a")
+    //         isUniversalApk = false  // 【必須】Universal APK 禁止
+    //     }
+    // }
 }
 
 dependencies {

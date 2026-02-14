@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HARMONIC insight - Settings Screen Standard String Resources (English)
+
+  Usage:
+    Copy these strings into your app's values-en/strings.xml (or values/strings.xml
+    if English is the default locale).
+
+  Target apps:
+    - Voice Task Calendar (com.harmonicinsight.voicetask)
+    - Voice Clock (com.insightvoiceclock)
+    - Insight Camera (com.harmonic.insight.camera)
+    - Insight QR (com.harmonicinsight.insightqr)
+
+  Reference: standards/APP_SETTINGS.md
+-->
+<resources>
+
+    <!-- ===== Settings Screen: Section Headers ===== -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_general">General</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_about">About %s</string>
+    <string name="settings_legal">Legal</string>
+
+    <!-- ===== Settings Screen: Appearance ===== -->
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_dark_mode_desc">Switch to dark theme</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_system">System</string>
+
+    <!-- ===== Settings Screen: About ===== -->
+    <string name="settings_version">Version</string>
+    <string name="settings_version_value">Version %s</string>
+    <string name="settings_developer">Developer</string>
+    <string name="settings_developer_name">HARMONIC insight</string>
+    <string name="settings_copyright">© %d HARMONIC insight. All rights reserved.</string>
+
+    <!-- ===== Settings Screen: Legal ===== -->
+    <string name="settings_privacy_policy">Privacy Policy</string>
+    <string name="settings_terms_of_service">Terms of Service</string>
+    <string name="settings_oss_licenses">Open Source Licenses</string>
+
+    <!-- ===== Settings Screen: Error Messages ===== -->
+    <string name="settings_url_open_error">Could not open URL</string>
+
+</resources>

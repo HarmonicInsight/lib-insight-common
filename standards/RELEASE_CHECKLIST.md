@@ -141,10 +141,12 @@
 | # | チェック項目 | 自動 | 説明 |
 |---|------------|:----:|------|
 | AC1 | `.github/workflows/build.yml` が存在 | ✅ | |
-| AC2 | CI で APK ビルド（`assembleRelease`）が成功している | ⚠️ | GitHub Actions 確認 |
-| AC3 | CI で AAB ビルド（`bundleRelease`）が成功している | ⚠️ | **Play Store 必須** |
+| AC2 | CI でリリースビルドが成功している（APK + AAB） | ⚠️ | GitHub Actions 確認 |
+| AC3 | CI で AAB **と** APK の両方がビルドされている | ✅ | `bundleRelease` + `assembleRelease` |
 | AC4 | `bundle {}` ブロックで language/density/abi split が有効 | ✅ | AAB 最適化 |
-| AC5 | `submodules: true` が設定されている | ✅ | insight-common 使用時 |
+| AC5 | 署名設定が secrets 経由 | ✅ | `KEYSTORE_BASE64` 等 |
+| AC6_2 | `submodules: true` が設定されている | ✅ | insight-common 使用時 |
+| AC7 | `v*` タグで GitHub Release が自動作成される | ✅ | `softprops/action-gh-release` |
 | AC6 | google-services.json の CI プレースホルダーが設定済み | ✅ | Firebase 使用時 |
 
 ---

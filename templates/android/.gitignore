@@ -36,4 +36,5 @@ Thumbs.db
 # Secrets
 *.keystore
 *.jks
+keystore.properties
 .env
