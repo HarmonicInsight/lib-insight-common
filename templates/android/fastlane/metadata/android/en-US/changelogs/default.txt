@@ -1,0 +1,2 @@
+Initial release
+• Implemented core app features
