@@ -1,11 +1,10 @@
-name: Sync insight-common to dependent repos
+name: Sync icons to dependent repos
 
-# insight-common の main に push されたとき、
-# 各アプリリポジトリのサブモジュールを更新する PR を自動作成する。
+# 手動実行のみ。
+# brand/icons を変更した後、必要なリポジトリにアイコンをコピーして PR を作成する。
+# push トリガーは無効化済み（無限 PR 生成を防止）。
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       repos:
@@ -17,13 +16,17 @@ on:
         required: false
         type: boolean
         default: false
+      sync_submodule:
+        description: 'サブモジュール参照も更新する'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 env:
   ICON_SRC_BASE: brand/icons/generated
-  # 各リポジトリ内の insight-common サブモジュールパス
   SUBMODULE_PATH: insight-common
 
 jobs:
@@ -208,13 +211,13 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Update submodule reference
-        if: steps.check.outputs.skip != 'true'
+      - name: Update submodule reference (optional)
+        if: steps.check.outputs.skip != 'true' && inputs.sync_submodule == true
         working-directory: target-repo
         run: |
           COMMON_SHA="${{ github.sha }}"
 
-          # Auto-detect submodule path (some repos use 'lib-insight-common')
+          # Auto-detect submodule path
           SUBMODULE=""
           for path in insight-common lib-insight-common; do
             if [ -d "$path" ]; then
@@ -224,16 +227,13 @@ jobs:
           done
 
           if [ -z "$SUBMODULE" ]; then
-            echo "No submodule found — adding insight-common to ${{ matrix.repo }}"
-            git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
-            SUBMODULE="insight-common"
+            echo "No submodule found — skipping submodule update for ${{ matrix.repo }}"
+            exit 0
           fi
 
           echo "Detected submodule path: $SUBMODULE"
 
-          # サブモジュールを最新の insight-common main に更新
           cd "$SUBMODULE"
-          # Ensure we fetch from cross-lib-insight-common (some repos may reference lib-insight-common)
           CURRENT_URL=$(git remote get-url origin)
           if [[ "$CURRENT_URL" != *"cross-lib-insight-common"* ]]; then
             echo "Updating remote URL from $CURRENT_URL to cross-lib-insight-common"
@@ -242,8 +242,6 @@ jobs:
           git fetch origin main
           git checkout "$COMMON_SHA"
           cd ..
-
-          echo "submodule_updated=true" >> "$GITHUB_ENV"
 
       - name: Copy icons
         if: steps.check.outputs.skip != 'true'
@@ -259,18 +257,15 @@ jobs:
 
           case "$MODE" in
             dir)
-              # ディレクトリ丸ごとコピー（Tauri）
               cp -r "$SRC_BASE/$ICON_SRC"* "$DEST_BASE/$ICON_DEST"
               echo "Copied directory: $ICON_SRC -> $ICON_DEST"
               ;;
             ico_png)
-              # .ico + _256.png をコピー（WPF / Python / Service）
               cp "$SRC_BASE/$ICON_SRC/$NAME.ico" "$DEST_BASE/$ICON_DEST/$NAME.ico"
               cp "$SRC_BASE/$ICON_SRC/${NAME}_256.png" "$DEST_BASE/$ICON_DEST/${NAME}_256.png"
               echo "Copied: $NAME.ico + ${NAME}_256.png -> $ICON_DEST"
               ;;
             android_native)
-              # Android Native vector drawable XMLs
               for subdir in drawable mipmap-anydpi-v26; do
                 if [ -d "$SRC_BASE/$ICON_SRC/$subdir" ]; then
                   mkdir -p "$DEST_BASE/$ICON_DEST/$subdir"
@@ -280,18 +275,15 @@ jobs:
               echo "Copied Android native drawables -> $ICON_DEST"
               ;;
             expo)
-              # Expo / React Native アイコンセット
               for f in icon.png adaptive-icon.png notification-icon.png splash-icon.png favicon.png; do
                 [ -f "$SRC_BASE/$ICON_SRC/$f" ] && cp "$SRC_BASE/$ICON_SRC/$f" "$DEST_BASE/$ICON_DEST/$f"
               done
-              # Android mipmap ディレクトリ
               if [ -d "$SRC_BASE/$ICON_SRC/android" ]; then
                 cp -r "$SRC_BASE/$ICON_SRC/android/"* "$DEST_BASE/$ICON_DEST/" 2>/dev/null || true
               fi
               echo "Copied Expo icons + Android mipmaps -> $ICON_DEST"
               ;;
             web)
-              # Web アイコンセット
               cp "$SRC_BASE/$ICON_SRC/favicon.ico" "$DEST_BASE/$ICON_DEST/favicon.ico"
               cp "$SRC_BASE/$ICON_SRC/favicon-16.png" "$DEST_BASE/$ICON_DEST/favicon-16x16.png" 2>/dev/null || true
               cp "$SRC_BASE/$ICON_SRC/favicon-32.png" "$DEST_BASE/$ICON_DEST/favicon-32x32.png" 2>/dev/null || true
@@ -302,22 +294,32 @@ jobs:
               ;;
           esac
 
-      - name: Check for changes
+      - name: Check for icon file changes only
         if: steps.check.outputs.skip != 'true'
         id: changes
         working-directory: target-repo
         run: |
-          git add -A
+          # アイコンファイルのみステージング（サブモジュール参照は除外）
+          ICON_DEST="${{ matrix.icon_dest }}"
+          git add "$ICON_DEST"
+
+          # サブモジュール更新がある場合のみステージング
+          if [ "${{ inputs.sync_submodule }}" = "true" ]; then
+            for path in insight-common lib-insight-common; do
+              [ -d "$path" ] && git add "$path"
+            done
+          fi
+
           if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            echo "No changes in ${{ matrix.repo }}"
+            echo "No icon changes in ${{ matrix.repo }}"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
-            echo "Changes detected in ${{ matrix.repo }}:"
+            echo "Icon changes detected in ${{ matrix.repo }}:"
             git diff --cached --stat
           fi
 
-      - name: Create PR
+      - name: Create or update PR
         if: >-
           steps.check.outputs.skip != 'true' &&
           steps.changes.outputs.has_changes == 'true' &&
@@ -327,40 +329,42 @@ jobs:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          BRANCH="chore/sync-insight-common-${SHORT_SHA}"
-          COMMIT_MSG="chore: update insight-common to ${SHORT_SHA}"
+          # 固定ブランチ名を使用（SHA ごとに新ブランチを作らない）
+          BRANCH="chore/sync-icons"
+          COMMIT_MSG="chore: sync icons from insight-common (${SHORT_SHA})"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # 既存のリモートブランチがあれば削除してから作成
+          git push origin --delete "$BRANCH" 2>/dev/null || true
           git checkout -b "$BRANCH"
           git commit -m "$COMMIT_MSG"
           git push -u origin "$BRANCH"
 
-          # 既存の PR がなければ作成
-          EXISTING=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
-          if [ -z "$EXISTING" ]; then
+          # 既存の PR を探す
+          EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists — branch updated with latest icons"
+          else
             gh pr create \
               --title "$COMMIT_MSG" \
               --body "$(cat <<EOF
-          ## insight-common サブモジュール自動更新
+          ## アイコン同期
 
           **変更元**: HarmonicInsight/cross-lib-insight-common@${SHORT_SHA}
           **対象製品**: ${{ matrix.name }} (${{ matrix.product }})
 
           ### 変更内容
-          - insight-common サブモジュールを最新に更新
-          - アイコンファイルを同期
+          - アイコンファイルを insight-common から同期
 
           ### 確認手順
           1. ビルドが通ることを確認
           2. アイコンが正しく表示されることを確認
 
           ---
-          *This PR was automatically created by [sync-submodule](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+          *This PR was created by [sync-icons](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
           EOF
           )"
             echo "PR created for ${{ matrix.repo }}"
-          else
-            echo "PR #$EXISTING already exists for ${{ matrix.repo }}"
           fi
