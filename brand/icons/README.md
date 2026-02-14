@@ -82,7 +82,8 @@ brand/icons/
 |---------|--------|:---------------:|---------|
 | `icon-launcher.png` | Insight Launcher | C# WPF | 2x2 グリッド + ロケット + 回路基板 |
 | `icon-camera.png` | Insight Camera | Expo (iOS/Android) | カメラ + アパーチャ |
-| `icon-voice-clock.png` | Insight Voice Clock | Expo (iOS/Android) | 目覚まし時計 + マイク + 音波 |
+| `icon-voice-clock.png` | Insight Voice Clock | Android Native (Kotlin) | 目覚まし時計 + マイク + 音波 |
+| `icon-voice-clock.png` | VoiceTaskCalendar | Expo (iOS/Android) | 目覚まし時計 + マイク + 音波（VOICE_CLOCK と共有） |
 | `icon-qr.png` | Insight QR | Next.js (Web) | QR コードパターン |
 | `icon-pinboard.png` | Insight PinBoard | Expo (iOS/Android) | コルクボード + 付箋メモ |
 | `icon-voice-memo.png` | Insight Voice Memo | Expo (iOS/Android) | マイク + 回路基板 + 波形 |
@@ -95,7 +96,8 @@ brand/icons/
 | **Python/PyInstaller** | `.ico` (16-256px) + 個別 PNG | INPY, INMV, INIG |
 | **Tauri + React** | `icon.ico` + `icon.png` + sized PNGs + Store logos | INCA, IVIN |
 | **Windows Service** | `.ico` (16-256px) + 個別 PNG | INBT |
-| **Expo (iOS/Android)** | `icon.png` (1024x1024) + Android mipmap + splash | CAMERA, VOICE_CLOCK, PINBOARD, VOICE_MEMO |
+| **Expo (iOS/Android)** | `icon.png` (1024x1024) + Android mipmap + splash | QR, VOICE_TASK_CALENDAR, VOICE_MEMO |
+| **Android Native** | Vector drawable XML + mipmap PNG | CAMERA, VOICE_CLOCK, INCLINE, etc. |
 | **Next.js (Web)** | `favicon.ico` + manifest PNGs | QR |
 
 ## 使用方法
