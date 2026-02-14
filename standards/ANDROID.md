@@ -681,9 +681,9 @@ val InsightTypography = Typography(
 
 ---
 
-## 8. ProGuard / R8（リリースビルド必須）
+## 8. ProGuard / R8 / AAB（リリースビルド必須）
 
-### build.gradle.kts
+### build.gradle.kts — buildTypes
 
 ```kotlin
 buildTypes {
@@ -701,6 +701,28 @@ buildTypes {
     }
 }
 ```
+
+### build.gradle.kts — bundle（AAB 最適化）
+
+Play Store は AAB（Android App Bundle）でのアップロードが**必須**。
+以下の `bundle` ブロックで分割配信を有効にする。
+
+```kotlin
+bundle {
+    language {
+        enableSplit = true   // 言語リソースを端末に応じて配信
+    }
+    density {
+        enableSplit = true   // 画面密度リソースを端末に応じて配信
+    }
+    abi {
+        enableSplit = true   // ABI（CPU アーキテクチャ）を端末に応じて配信
+    }
+}
+```
+
+> **ビルドコマンド**: `./gradlew bundleRelease` で AAB を生成。
+> 出力先: `app/build/outputs/bundle/release/app-release.aab`
 
 ### proguard-rules.pro（標準テンプレート）
 
@@ -804,7 +826,7 @@ buildTypes {
 ## 9. CI/CD ワークフロー（GitHub Actions 標準テンプレート）
 
 ```yaml
-name: Build APK
+name: Build Android
 
 on:
   push:
@@ -820,6 +842,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -859,16 +883,29 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Display APK size
+      - name: Build Release AAB
+        run: ./gradlew bundleRelease --stacktrace
+
+      - name: Display build output sizes
         run: |
           echo "=== Release APK ==="
-          find app/build/outputs/apk/release/ -name "*.apk" -exec ls -lh {} \;
+          find app/build/outputs/apk/release/ -name "*.apk" -exec ls -lh {} \; 2>/dev/null || echo "No APK found"
+          echo ""
+          echo "=== Release AAB ==="
+          find app/build/outputs/bundle/release/ -name "*.aab" -exec ls -lh {} \; 2>/dev/null || echo "No AAB found"
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
+          name: app-release-apk
           path: app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: Upload Release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: app/build/outputs/bundle/release/*.aab
           retention-days: 30
 ```
 
@@ -878,8 +915,10 @@ jobs:
 |------|------|
 | JDK | 17 (Temurin) |
 | Gradle | `gradle/actions/setup-gradle@v4` |
+| サブモジュール | `submodules: true`（insight-common 使用時） |
 | トリガー | `main`, `claude/**` ブランチ |
-| ビルド | `assembleRelease` |
+| ビルド（APK） | `assembleRelease`（テスト配布・社内用） |
+| ビルド（AAB） | `bundleRelease`（**Play Store 必須**） |
 | アーティファクト保持 | 30日 |
 | google-services.json | CI プレースホルダー自動生成 |
 
@@ -1231,7 +1270,10 @@ import { colors } from '@/lib/colors';
 - [ ] `.github/workflows/build.yml` が標準テンプレートに準拠
 - [ ] JDK 17 + Temurin
 - [ ] `gradle/actions/setup-gradle@v4` を使用
-- [ ] Release APK をビルド・アップロード
+- [ ] `submodules: true` が設定されている（insight-common 使用時）
+- [ ] Release APK をビルド・アップロード（`assembleRelease`）
+- [ ] Release AAB をビルド・アップロード（`bundleRelease`）— **Play Store 必須**
+- [ ] `bundle {}` ブロックで language / density / abi split が有効
 
 ### ライセンス（InsightOffice 製品のみ）
 

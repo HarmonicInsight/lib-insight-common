@@ -81,7 +81,7 @@ echo ""
 
 # プラットフォーム検出
 detect_platform() {
-    if ls "$PROJECT_DIR"/*.csproj 2>/dev/null | head -1 > /dev/null 2>&1; then
+    if compgen -G "$PROJECT_DIR"/*.csproj > /dev/null 2>&1; then
         echo "csharp"
     elif [ -f "$PROJECT_DIR/build.gradle.kts" ] || [ -f "$PROJECT_DIR/build.gradle" ]; then
         echo "android"
@@ -166,7 +166,7 @@ check_license_manager() {
     return 0
 }
 
-check_license_manager
+check_license_manager || true
 
 # ========================================
 # 3. 製品コード検証
@@ -185,7 +185,7 @@ check_product_code() {
     return 0
 }
 
-check_product_code
+check_product_code || true
 
 # ========================================
 # 4. Android 固有検証
@@ -373,6 +373,86 @@ if [ "$PLATFORM" = "android" ]; then
         fi
     else
         print_warning "ic_launcher_background.xml が見つかりません"
+    fi
+
+    # 4.9 AAB bundle config
+    if [ -n "$build_file" ]; then
+        if grep -q "bundle\s*{" "$build_file" 2>/dev/null; then
+            print_ok "bundle {} ブロックが存在（AAB 最適化）"
+            if grep -q "enableSplit\s*=\s*true" "$build_file" 2>/dev/null; then
+                print_ok "AAB split 配信が有効"
+            else
+                print_warning "AAB split 配信 (enableSplit = true) が見つかりません"
+            fi
+        else
+            print_error "bundle {} ブロックが見つかりません（Play Store の AAB ビルドに必要）"
+        fi
+    fi
+
+    # 4.10 CI/CD ワークフロー
+    ci_workflow=$(find "$PROJECT_DIR" -name "build.yml" -path "*/.github/workflows/*" 2>/dev/null | head -1)
+    if [ -n "$ci_workflow" ]; then
+        print_ok ".github/workflows/build.yml が存在"
+        if grep -q "assembleRelease" "$ci_workflow" 2>/dev/null; then
+            print_ok "CI: APK ビルド (assembleRelease) が設定されている"
+        else
+            print_warning "CI: assembleRelease が見つかりません"
+        fi
+        if grep -q "bundleRelease" "$ci_workflow" 2>/dev/null; then
+            print_ok "CI: AAB ビルド (bundleRelease) が設定されている"
+        else
+            print_error "CI: bundleRelease が見つかりません（Play Store 必須）"
+        fi
+        if grep -q "submodules" "$ci_workflow" 2>/dev/null; then
+            print_ok "CI: submodules が設定されている"
+        else
+            if [ -f "$PROJECT_DIR/.gitmodules" ]; then
+                print_warning "CI: サブモジュールが存在するが submodules: true が設定されていません"
+            fi
+        fi
+    else
+        print_warning ".github/workflows/build.yml が見つかりません"
+    fi
+
+    # 4.11 Play Store メタデータ
+    if [ -d "$PROJECT_DIR/fastlane/metadata/android" ]; then
+        print_ok "fastlane/metadata/android/ が存在"
+        for locale in "ja-JP" "en-US"; do
+            locale_dir="$PROJECT_DIR/fastlane/metadata/android/$locale"
+            if [ -d "$locale_dir" ]; then
+                print_ok "ストアメタデータ ($locale) が存在"
+                for file in "title.txt" "short_description.txt" "full_description.txt"; do
+                    if [ -f "$locale_dir/$file" ]; then
+                        print_ok "  $locale/$file が存在"
+                    else
+                        print_warning "  $locale/$file が見つかりません"
+                    fi
+                done
+            else
+                print_warning "ストアメタデータ ($locale) が見つかりません"
+            fi
+        done
+    else
+        print_warning "fastlane/metadata/android/ が見つかりません（Play Store リリース時に必要）"
+    fi
+
+    # 4.12 Keystore 設定
+    if [ -f "$PROJECT_DIR/keystore.properties" ] || [ -f "$PROJECT_DIR/keystore.properties.example" ]; then
+        print_ok "keystore.properties(.example) が存在"
+    else
+        print_warning "keystore.properties が見つかりません（リリースビルドの署名に必要）"
+    fi
+
+    # keystore がリポジトリに含まれていないことを確認
+    if find "$PROJECT_DIR" -name "*.jks" -o -name "*.keystore" 2>/dev/null | grep -v ".gitignore" | head -1 | grep -q .; then
+        gitignore_file="$PROJECT_DIR/.gitignore"
+        if [ -f "$gitignore_file" ]; then
+            if grep -q "\.jks" "$gitignore_file" 2>/dev/null && grep -q "\.keystore" "$gitignore_file" 2>/dev/null; then
+                print_ok ".gitignore: keystore ファイルが除外されている"
+            else
+                print_error ".gitignore: *.jks / *.keystore が除外されていません"
+            fi
+        fi
     fi
 fi
 
