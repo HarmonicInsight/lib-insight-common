@@ -277,6 +277,60 @@
 
 ---
 
+## 9. リリース管理（GitHub Release）
+
+### 9.1 リリースフロー
+
+```
+バージョン更新 → リリースチェック → コミット → タグ → プッシュ → 自動ビルド → GitHub Release
+```
+
+| # | チェック項目 | 自動 | 説明 |
+|---|------------|:----:|------|
+| RM1 | versionName / version がセマンティックバージョニングに準拠 | ✅ | MAJOR.MINOR.PATCH |
+| RM2 | versionCode がインクリメントされている（Android） | ✅ | Play Store は同一値を拒否 |
+| RM3 | Git タグが `v` + バージョン名の形式 | ✅ | 例: `v1.0.0` |
+| RM4 | build.yml が `v*` タグで GitHub Release を作成する | ✅ | `softprops/action-gh-release` |
+| RM5 | リリースノートが用意されている | ⚠️ | 自動生成 + 手動編集 |
+
+### 9.2 ヘルパースクリプト
+
+```bash
+# 通常のリリース
+./insight-common/scripts/create-release.sh <project-directory>
+
+# バージョン指定
+./insight-common/scripts/create-release.sh <project-directory> --version 1.1.0
+
+# 既存リリースの上書き（初期開発時のみ推奨）
+./insight-common/scripts/create-release.sh <project-directory> --version 1.0.0 --overwrite
+
+# プレリリース
+./insight-common/scripts/create-release.sh <project-directory> --prerelease rc.1
+
+# 確認のみ（実行しない）
+./insight-common/scripts/create-release.sh <project-directory> --dry-run
+```
+
+### 9.3 初回リリース（v1.0.0）の上書き
+
+初期開発時は同じバージョンを修正して再リリースしたい場合がある。
+
+```bash
+# 方法1: ヘルパースクリプト
+./insight-common/scripts/create-release.sh . --version 1.0.0 --overwrite
+
+# 方法2: 手動
+gh release delete v1.0.0 --yes          # GitHub Release 削除
+git push origin --delete v1.0.0         # リモートタグ削除
+git tag -d v1.0.0                       # ローカルタグ削除
+git tag v1.0.0 && git push origin v1.0.0  # タグ再作成・プッシュ
+```
+
+> **注意**: 安定版以降（v1.1.0+）は上書きではなく新バージョンで対応すること。
+
+---
+
 ## 自動検証の実行方法
 
 ### スクリプト
@@ -292,6 +346,9 @@
 ./insight-common/scripts/release-check.sh <project-directory> --platform react
 ./insight-common/scripts/release-check.sh <project-directory> --platform python
 ./insight-common/scripts/release-check.sh <project-directory> --platform expo
+
+# リリース作成（チェック + タグ + プッシュ）
+./insight-common/scripts/create-release.sh <project-directory>
 ```
 
 ### Claude Code スキル
@@ -349,6 +406,7 @@
 
 - **標準検証**: `scripts/validate-standards.sh`
 - **リリース検証**: `scripts/release-check.sh`
+- **リリース作成**: `scripts/create-release.sh`
 - **デザイン標準**: `brand/colors.json`
 - **ローカライゼーション**: `standards/LOCALIZATION.md`
 - **AI アシスタント**: `standards/AI_ASSISTANT.md`

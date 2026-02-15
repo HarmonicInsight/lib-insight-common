@@ -143,3 +143,5 @@ jobs:
         with:
           files: release-artifacts/*
           generate_release_notes: true
+          # -rc, -beta, -alpha サフィックス付きタグは prerelease として作成
+          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-beta') || contains(github.ref, '-alpha') }}
