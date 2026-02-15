@@ -8,6 +8,14 @@
 #   __APP_DISPLAY_NAME__ → アーティファクト名 (例: InsightCamera)
 #   __APP_PACKAGE__      → 完全パッケージ名 (例: com.harmonic.insight.camera)
 # Firebase を使わない場合は google-services.json ステップを削除。
+#
+# 【必須 GitHub Secrets】
+# リリース署名には以下の 4 つのシークレットが必要です:
+#   KEYSTORE_BASE64    → base64 エンコードされたリリース keystore
+#   KEYSTORE_PASSWORD  → keystore のパスワード
+#   KEY_ALIAS          → 署名キーのエイリアス
+#   KEY_PASSWORD       → 署名キーのパスワード
+# 未設定の場合、タグリリースは失敗します。
 # ============================================================
 
 name: Build Android
@@ -19,6 +27,9 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -41,22 +52,36 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # --- 署名シークレットの検証（タグリリース時は必須） ---
+      - name: Require signing for releases
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          if [ -z "$HAS_SIGNING_KEY" ]; then
+            echo "::error::KEYSTORE_BASE64 シークレットが未設定です。タグリリースにはリリース署名が必須です。"
+            echo "::error::GitHub Settings > Secrets and variables > Actions で以下を設定してください:"
+            echo "::error::  KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD"
+            exit 1
+          fi
+
+      # --- 署名未設定の警告（通常ビルド時） ---
+      - name: Warn if signing not configured
+        if: env.HAS_SIGNING_KEY == ''
+        run: |
+          echo "::warning::署名シークレットが未設定のため、デバッグ署名でビルドされます。"
+          echo "::warning::Play Store にアップロードするにはリリース署名が必要です。"
+
       # --- 署名設定（secrets が設定されている場合のみ） ---
       - name: Setup signing
         if: env.HAS_SIGNING_KEY != ''
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > app/release.keystore
-          cat > keystore.properties <<PROPS
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/release.keystore
+          cat > keystore.properties <<EOF
           storeFile=release.keystore
-          storePassword=$KEYSTORE_PASSWORD
-          keyAlias=$KEY_ALIAS
-          keyPassword=$KEY_PASSWORD
-          PROPS
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          EOF
+          echo "✅ リリース署名を設定しました"
 
       # Firebase を使用している場合のみ（不要なら削除）
       - name: Create google-services.json for CI
@@ -90,6 +115,49 @@ jobs:
 
       - name: Build Release APK
         run: ./gradlew assembleRelease --stacktrace
+
+      # --- 署名検証（apksigner で v1/v2/v3 全スキーム対応） ---
+      - name: Verify APK signing
+        run: |
+          APK=$(find app/build/outputs/apk/release/ -name "*.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "::error::Release APK が見つかりません"
+            exit 1
+          fi
+
+          echo "=== 署名検証: $APK ==="
+
+          # Android SDK の build-tools から apksigner を探す
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name "apksigner" -type f | sort -V | tail -1)
+          if [ -n "$APKSIGNER" ]; then
+            echo "--- apksigner verify ---"
+            VERIFY_OUTPUT=$("$APKSIGNER" verify --print-certs "$APK" 2>&1) || true
+            echo "$VERIFY_OUTPUT"
+
+            # デバッグ署名の検出（CN=Android Debug を含む場合）
+            if echo "$VERIFY_OUTPUT" | grep -qi "CN=Android Debug"; then
+              echo ""
+              echo "::error::APK がデバッグ署名されています！Play Store にアップロードできません。"
+              echo "::error::GitHub Secrets に KEYSTORE_BASE64 等のリリース署名情報を設定してください。"
+              if [ "${{ startsWith(github.ref, 'refs/tags/v') }}" = "true" ]; then
+                exit 1
+              else
+                echo "::warning::デバッグ署名のままビルドされました（タグリリースではないため続行）"
+              fi
+            else
+              echo "✅ リリース署名を確認しました"
+            fi
+          else
+            echo "::warning::apksigner が見つかりません。keytool でフォールバック検証します。"
+            CERT_INFO=$(keytool -printcert -jarfile "$APK" 2>&1) || true
+            echo "$CERT_INFO"
+            if echo "$CERT_INFO" | grep -qi "CN=Android Debug"; then
+              echo "::error::APK がデバッグ署名されています！"
+              if [ "${{ startsWith(github.ref, 'refs/tags/v') }}" = "true" ]; then
+                exit 1
+              fi
+            fi
+          fi
 
       # --- アーティファクト名をアプリ名に変更 ---
       - name: Rename artifacts
