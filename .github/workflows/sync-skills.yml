@@ -1,0 +1,308 @@
+name: Sync skills to dependent repos
+
+# 手動実行のみ。
+# .claude/commands/ のスキルファイルを全依存リポジトリに同期し、
+# SessionStart フックも設定して以降の自動同期を有効化する。
+
+on:
+  workflow_dispatch:
+    inputs:
+      repos:
+        description: '同期対象リポジトリ（カンマ区切り、空=全て）'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run（PR を作成しない）'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        include:
+          # ── Tier 1: 業務変革ツール ──
+          - repo: win-app-nocode-analyzer
+            product: INCA
+            name: InsightNoCodeAnalyzer
+          - repo: win-app-insight-bot
+            product: INBT
+            name: InsightBot
+          - repo: web-app-auto-interview
+            product: IVIN
+            name: InterviewInsight
+
+          # ── Tier 2: AI活用ツール ──
+          - repo: win-app-insight-movie-gen
+            product: INMV
+            name: InsightMovie
+          - repo: win-app-insight-image-gen
+            product: INIG
+            name: InsightImageGen
+
+          # ── Tier 3: InsightOffice Suite ──
+          - repo: win-app-insight-slide
+            product: INSS
+            name: InsightOfficeSlide
+          - repo: win-app-insight-sheet
+            product: IOSH
+            name: InsightOfficeSheet
+          - repo: win-app-insight-doc
+            product: IOSD
+            name: InsightOfficeDoc
+          - repo: win-app-insight-py
+            product: INPY
+            name: InsightPy
+          - repo: win-app-insight-py-pro
+            product: INPY
+            name: InsightPy (PRO)
+
+          # ── Tier 4: シニア向け ──
+          - repo: win-app-insight-sheet-senior
+            product: ISOF
+            name: InsightSeniorOffice
+
+          # ── ユーティリティ ──
+          - repo: win-app-insight-launcher
+            product: LAUNCHER
+            name: InsightLauncher
+          - repo: android-app-insight-launcher
+            product: LAUNCHER_ANDROID
+            name: InsightLauncherAndroid
+
+          # ── Android Native (Kotlin/Compose) ──
+          - repo: android-app-insight-voice-clock
+            product: VOICE_CLOCK
+            name: InsightVoiceClock
+          - repo: android-app-insight-camera
+            product: CAMERA
+            name: InsightCamera
+
+          # ── Expo / React Native ──
+          - repo: mobile-app-voice-memo
+            product: VOICE_MEMO
+            name: InsightVoiceMemo
+
+          # ── WPF (C#) ──
+          - repo: win-app-insight-pinboard
+            product: PINBOARD
+            name: InsightPinBoard
+
+          # ── Web / Android QR ──
+          - repo: web-app-insight-qr
+            product: QR
+            name: InsightQR (Web)
+          - repo: android-app-insight-qr
+            product: QR
+            name: InsightQR (Android)
+
+    steps:
+      - name: Validate SYNC_PAT secret
+        run: |
+          if [ -z "${{ secrets.SYNC_PAT }}" ]; then
+            echo "::error::SYNC_PAT secret is not configured."
+            exit 1
+          fi
+
+      - name: Check if repo should be synced
+        id: check
+        run: |
+          FILTER="${{ inputs.repos }}"
+          if [ -n "$FILTER" ]; then
+            if echo "$FILTER" | grep -qw "${{ matrix.repo }}"; then
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout insight-common
+        if: steps.check.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          path: insight-common
+
+      - name: Checkout target repo
+        if: steps.check.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: HarmonicInsight/${{ matrix.repo }}
+          token: ${{ secrets.SYNC_PAT }}
+          path: target-repo
+          fetch-depth: 0
+
+      - name: Sync skill files
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          SRC="insight-common/.claude/commands"
+          DEST="target-repo/.claude/commands"
+
+          mkdir -p "$DEST"
+
+          # 全スキルファイルをコピー
+          SYNCED=0
+          for src_file in "$SRC"/*.md; do
+            [ -f "$src_file" ] || continue
+            filename="$(basename "$src_file")"
+            dest_file="$DEST/$filename"
+
+            if [ -f "$dest_file" ] && cmp -s "$src_file" "$dest_file"; then
+              echo "  unchanged: $filename"
+              continue
+            fi
+
+            cp "$src_file" "$dest_file"
+            SYNCED=$((SYNCED + 1))
+            echo "  synced: $filename"
+          done
+
+          echo "skills_synced=$SYNCED" >> "$GITHUB_ENV"
+          echo "Total skills synced: $SYNCED"
+
+      - name: Ensure SessionStart hook for sync-skills
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          SETTINGS="target-repo/.claude/settings.json"
+          SYNC_CMD='bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh'
+
+          # sync-skills.sh もコピー
+          if [ -d "target-repo/insight-common/scripts" ]; then
+            echo "insight-common submodule detected — sync-skills.sh available via submodule"
+          else
+            echo "No insight-common submodule — sync-skills hook will work after submodule init"
+          fi
+
+          if [ -f "$SETTINGS" ]; then
+            # settings.json が既に存在する場合、sync-skills フックがあるか確認
+            if grep -q "sync-skills.sh" "$SETTINGS" 2>/dev/null; then
+              echo "SessionStart hook already configured"
+              echo "hook_updated=false" >> "$GITHUB_ENV"
+            else
+              echo "Adding sync-skills hook to existing settings.json"
+              # jq で SessionStart フックを追加（既存のフックを壊さない）
+              if command -v jq &> /dev/null; then
+                HOOK='{"type":"command","command":"bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh"}'
+                ENTRY="{\"matcher\":\"\",\"hooks\":[$HOOK]}"
+
+                # SessionStart キーが存在するか確認
+                if jq -e '.hooks.SessionStart' "$SETTINGS" > /dev/null 2>&1; then
+                  # 既存の SessionStart 配列に追加
+                  jq --argjson entry "$ENTRY" '.hooks.SessionStart += [$entry]' "$SETTINGS" > "${SETTINGS}.tmp"
+                else
+                  # hooks.SessionStart を新規作成
+                  jq --argjson entry "$ENTRY" '.hooks.SessionStart = [$entry]' "$SETTINGS" > "${SETTINGS}.tmp"
+                fi
+                mv "${SETTINGS}.tmp" "$SETTINGS"
+                echo "hook_updated=true" >> "$GITHUB_ENV"
+              else
+                echo "::warning::jq not available — cannot merge settings.json safely"
+                echo "hook_updated=false" >> "$GITHUB_ENV"
+              fi
+            fi
+          else
+            # settings.json が存在しない場合は新規作成
+            echo "Creating new .claude/settings.json"
+            mkdir -p "$(dirname "$SETTINGS")"
+            cat > "$SETTINGS" << 'SETTINGSEOF'
+          {
+            "hooks": {
+              "SessionStart": [
+                {
+                  "matcher": "",
+                  "hooks": [
+                    {
+                      "type": "command",
+                      "command": "bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+          SETTINGSEOF
+            echo "hook_updated=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Check for changes
+        if: steps.check.outputs.skip != 'true'
+        id: changes
+        working-directory: target-repo
+        run: |
+          git add .claude/
+          if git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No skill changes in ${{ matrix.repo }}"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Skill changes detected in ${{ matrix.repo }}:"
+            git diff --cached --stat
+          fi
+
+      - name: Create or update PR
+        if: >-
+          steps.check.outputs.skip != 'true' &&
+          steps.changes.outputs.has_changes == 'true' &&
+          inputs.dry_run != true
+        working-directory: target-repo
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          BRANCH="chore/sync-skills"
+          COMMIT_MSG="chore: sync Claude Code skills from insight-common (${SHORT_SHA})"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 既存のリモートブランチがあれば削除してから作成
+          git push origin --delete "$BRANCH" 2>/dev/null || true
+          git checkout -b "$BRANCH"
+          git commit -m "$COMMIT_MSG"
+          git push -u origin "$BRANCH"
+
+          # 既存の PR を探す
+          EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists — branch updated with latest skills"
+          else
+            gh pr create \
+              --title "$COMMIT_MSG" \
+              --body "$(cat <<EOF
+          ## スキル同期
+
+          **変更元**: HarmonicInsight/cross-lib-insight-common@${SHORT_SHA}
+          **対象製品**: ${{ matrix.name }} (${{ matrix.product }})
+
+          ### 変更内容
+          - Claude Code スキルファイル (.claude/commands/*.md) を insight-common から同期
+          - SessionStart フックで以降の自動同期を設定
+
+          ### 同期されるスキル
+          - \`/release-check\` — リリース前チェック（全プラットフォーム共通）
+          - \`/release-check-android\` — Android リリースチェック
+          - \`/validate\` — 標準検証
+          - \`/dev-cycle\` — 開発サイクル
+          - \`/review-standards\` — 標準レビュー
+          - \`/sync-icons\` — アイコン同期
+          - \`/add-product\` — 新規製品追加
+
+          ### 確認手順
+          1. \`.claude/commands/\` にスキルファイルが配置されていること
+          2. \`.claude/settings.json\` に SessionStart フックが設定されていること
+          3. Claude Code セッションで \`/release-check\` が認識されること
+
+          ---
+          *This PR was created by [sync-skills](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+          EOF
+          )"
+            echo "PR created for ${{ matrix.repo }}"
+          fi
