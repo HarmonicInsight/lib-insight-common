@@ -1057,6 +1057,8 @@ jobs:
         with:
           files: release-artifacts/*
           generate_release_notes: true
+          # -rc, -beta, -alpha サフィックス付きタグは prerelease として作成
+          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-beta') || contains(github.ref, '-alpha') }}
 ```
 
 ### 統一ポイント
@@ -1086,7 +1088,7 @@ jobs:
 > **注意**: Secrets が未設定の場合、署名ステップはスキップされ debug 署名でビルドされる。
 > Play Store にアップロードするには release 署名が必須。
 
-### リリースフロー
+### リリースフロー（基本）
 
 ```bash
 # 1. バージョン更新（build.gradle.kts の versionCode / versionName）
@@ -1099,6 +1101,199 @@ git push origin main --tags
 #   - AAB + APK をビルド
 #   - GitHub Release を作成（AAB + APK を添付）
 ```
+
+> **詳細なリリース管理**: §9.5 を参照。
+
+---
+
+## 9.5 リリース管理（Release Management）
+
+### 概要
+
+GitHub の **タグ + GitHub Releases** を使ってバージョン管理・リリース管理を行う。
+
+```
+バージョン管理フロー:
+
+  build.gradle.kts          Git タグ              GitHub Release
+  ┌────────────────┐      ┌──────────┐          ┌──────────────────┐
+  │ versionCode: 1 │      │          │          │                  │
+  │ versionName:   │──→   │  v1.0.0  │──push──→ │  Release v1.0.0  │
+  │  "1.0.0"       │      │          │          │  ├── app.aab     │
+  └────────────────┘      └──────────┘          │  ├── app.apk     │
+                                                 │  └── Release Notes│
+  versionCode: 2                                 └──────────────────┘
+  versionName: "1.1.0" ──→  v1.1.0  ──push──→  Release v1.1.0
+  ...
+```
+
+### バージョニング規則
+
+| 項目 | 規則 | 例 |
+|------|------|-----|
+| **versionName** | セマンティックバージョニング（MAJOR.MINOR.PATCH） | `1.0.0`, `1.1.0`, `2.0.0` |
+| **versionCode** | リリースごとに +1（Play Store は同一値を拒否） | `1`, `2`, `3` |
+| **Git タグ** | `v` + versionName | `v1.0.0`, `v1.1.0` |
+
+#### セマンティックバージョニング
+
+| 変更内容 | バージョン更新 | 例 |
+|---------|:------------:|-----|
+| バグ修正・微調整 | PATCH +1 | `1.0.0` → `1.0.1` |
+| 新機能追加・UI 改善 | MINOR +1 | `1.0.0` → `1.1.0` |
+| 破壊的変更・大幅リニューアル | MAJOR +1 | `1.0.0` → `2.0.0` |
+
+### リリースの作成手順
+
+#### 手順 1: バージョン更新
+
+`app/build.gradle.kts` の `versionCode` と `versionName` を更新:
+
+```kotlin
+android {
+    defaultConfig {
+        versionCode = 2          // 前回から +1
+        versionName = "1.1.0"   // セマンティックバージョニング
+    }
+}
+```
+
+#### 手順 2: リリースチェック（推奨）
+
+```bash
+./insight-common/scripts/release-check.sh . --platform android
+```
+
+#### 手順 3: コミット・タグ・プッシュ
+
+```bash
+# コミット
+git add .
+git commit -m "release: v1.1.0"
+
+# タグ作成
+git tag v1.1.0
+
+# プッシュ（コミット + タグ）
+git push origin main --tags
+```
+
+#### 手順 4: 自動リリース
+
+`v*` タグの push をトリガーに GitHub Actions が自動実行:
+
+1. AAB + APK をビルド
+2. GitHub Release を作成（`softprops/action-gh-release@v2`）
+3. AAB + APK を Release に添付
+4. コミット履歴からリリースノートを自動生成
+
+#### ヘルパースクリプト（推奨）
+
+```bash
+# 通常のリリース
+./insight-common/scripts/create-release.sh .
+
+# バージョン指定
+./insight-common/scripts/create-release.sh . --version 1.1.0
+
+# 既存リリースの上書き（初期開発時）
+./insight-common/scripts/create-release.sh . --version 1.0.0 --overwrite
+```
+
+### 既存リリースの上書き（v1.0.0 の再リリース）
+
+初期開発時は同じバージョンを修正して再リリースしたい場合がある。
+以下の手順で既存の GitHub Release とタグを削除し、再作成する。
+
+#### 手動での上書き手順
+
+```bash
+# 1. 既存の GitHub Release を削除
+gh release delete v1.0.0 --yes
+
+# 2. リモートタグを削除
+git push origin --delete v1.0.0
+
+# 3. ローカルタグを削除
+git tag -d v1.0.0
+
+# 4. 修正をコミット
+git add .
+git commit -m "release: v1.0.0 (修正)"
+
+# 5. タグを再作成
+git tag v1.0.0
+
+# 6. プッシュ
+git push origin main --tags
+
+# → GitHub Actions が再度 Release を作成
+```
+
+#### ヘルパースクリプトでの上書き
+
+```bash
+# --overwrite フラグで上記を自動実行
+./insight-common/scripts/create-release.sh . --version 1.0.0 --overwrite
+```
+
+> **注意**: Play Store に既にアップロード済みの場合、同じ `versionCode` は拒否される。
+> Play Store 向けには `versionCode` を +1 すること（`versionName` は同じでも可）。
+
+### プレリリース（テスト版）
+
+テスト版を配布したい場合、`-rc` / `-beta` / `-alpha` サフィックスを使用:
+
+```bash
+# リリース候補
+git tag v1.0.0-rc.1
+git push origin v1.0.0-rc.1
+# → GitHub Release が prerelease: true で作成される
+```
+
+テンプレートの `build.yml` を以下のように拡張すると、プレリリースを自動判定できる:
+
+```yaml
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-artifacts/*
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-beta') || contains(github.ref, '-alpha') }}
+```
+
+### ドラフトリリース
+
+GitHub 上で確認してから公開したい場合:
+
+```yaml
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-artifacts/*
+          generate_release_notes: true
+          draft: true    # ← ドラフトとして作成（手動で Publish する）
+```
+
+### リリース管理のベストプラクティス
+
+| フェーズ | 推奨戦略 | 理由 |
+|---------|---------|------|
+| **初期開発**（v1.0.0） | 上書き可。`--overwrite` を活用 | 安定版ができるまで試行錯誤 |
+| **安定版以降**（v1.1.0+） | 上書き禁止。新バージョンで対応 | リリース履歴の追跡性を確保 |
+| **ホットフィックス** | PATCH バージョン（v1.0.1） | 既存機能への影響を最小化 |
+| **Play Store 提出前** | `-rc.N` でテスト版を配布 | 社内テスト・QA を経てから正式版 |
+
+### GitHub Release ページの活用
+
+| 用途 | 説明 |
+|------|------|
+| **APK の社内配布** | Release の Assets から APK を直接ダウンロード |
+| **AAB の Play Store 提出** | Release の Assets から AAB をダウンロードし Play Console にアップロード |
+| **リリースノート** | 自動生成 + 手動編集で変更履歴を管理 |
+| **過去バージョンの参照** | 任意のバージョンの APK/AAB にいつでもアクセス可能 |
 
 ---
 
