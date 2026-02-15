@@ -443,12 +443,29 @@ if [ "$PLATFORM" = "android" ]; then
         print_warning "keystore.properties が見つかりません（リリースビルドの署名に必要）"
     fi
 
-    # keystore がリポジトリに含まれていないことを確認
-    if find "$PROJECT_DIR" -name "*.jks" -o -name "*.keystore" 2>/dev/null | grep -v ".gitignore" | head -1 | grep -q .; then
+    # 4.13 開発用 keystore（上書きインストール対策）
+    if [ -f "$PROJECT_DIR/app/dev.keystore" ]; then
+        print_ok "app/dev.keystore が存在（チーム共有の debug 署名）"
+    else
+        print_warning "app/dev.keystore が見つかりません（上書きインストールに必要 — §8.5 参照）"
+    fi
+
+    # 4.14 debug signingConfig の確認
+    local app_gradle="$PROJECT_DIR/app/build.gradle.kts"
+    if [ -f "$app_gradle" ]; then
+        if grep -q 'getByName("debug")' "$app_gradle" 2>/dev/null && grep -q "dev.keystore" "$app_gradle" 2>/dev/null; then
+            print_ok "debug signingConfig が dev.keystore を参照"
+        else
+            print_warning "debug signingConfig が dev.keystore を参照していません（§8.5 参照）"
+        fi
+    fi
+
+    # keystore がリポジトリに含まれていないことを確認（dev.keystore は除外）
+    if find "$PROJECT_DIR" \( -name "*.jks" -o -name "*.keystore" \) ! -name "dev.keystore" 2>/dev/null | head -1 | grep -q .; then
         gitignore_file="$PROJECT_DIR/.gitignore"
         if [ -f "$gitignore_file" ]; then
             if grep -q "\.jks" "$gitignore_file" 2>/dev/null && grep -q "\.keystore" "$gitignore_file" 2>/dev/null; then
-                print_ok ".gitignore: keystore ファイルが除外されている"
+                print_ok ".gitignore: release keystore ファイルが除外されている"
             else
                 print_error ".gitignore: *.jks / *.keystore が除外されていません"
             fi

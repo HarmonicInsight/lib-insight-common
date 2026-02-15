@@ -113,8 +113,10 @@
 |---|------------|:----:|------|
 | AS1 | release の signingConfig が設定されている | ✅ | `signingConfigs.release` |
 | AS2 | keystore ファイルが存在する（ローカル） | ⚠️ | CI では secrets 経由 |
-| AS3 | keystore がリポジトリに含まれていない | ✅ | .gitignore 確認 |
+| AS3 | release keystore がリポジトリに含まれていない | ✅ | .gitignore 確認 |
 | AS4 | `keystore.properties` / 環境変数で参照 | ✅ | ハードコード禁止 |
+| AS5 | `app/dev.keystore` がリポジトリに含まれている | ✅ | 上書きインストール対策 |
+| AS6 | debug の signingConfig が `dev.keystore` を参照 | ✅ | チーム共有の署名キー |
 
 ### 2.3 Play Store メタデータ
 

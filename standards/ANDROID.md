@@ -200,6 +200,7 @@ com.harmonic.insight.<アプリ名>
 │   └── libs.versions.toml              # 【必須】Version Catalog
 ├── app/
 │   ├── build.gradle.kts                # アプリレベルのビルド設定
+│   ├── dev.keystore                    # 【必須】開発用署名キー（リポジトリに含める）
 │   ├── proguard-rules.pro              # 【必須】R8/ProGuard ルール
 │   └── src/main/
 │       ├── kotlin/com/harmonic/insight/<appname>/
@@ -690,6 +691,7 @@ buildTypes {
     debug {
         isMinifyEnabled = false
         isShrinkResources = false
+        signingConfig = signingConfigs.getByName("debug")  // dev.keystore を使用
     }
     release {
         isMinifyEnabled = true       // 【必須】 R8 有効
@@ -820,6 +822,99 @@ bundle {
 
 > **原則**: サードパーティライブラリの keep は「リフレクション・シリアライゼーションで必要な最小限のクラス」に絞る。
 > R8 ビルド後にクラッシュが発生した場合のみ、必要なクラスを追加していくこと。
+
+---
+
+## 8.5. 署名設定（Signing）
+
+### 開発用 keystore（dev.keystore）— 上書きインストール対策
+
+Android は署名キーが異なる APK の上書きインストールを拒否する。
+チーム全員が同じ debug 署名を使うため、**プロジェクトごとに `app/dev.keystore` をリポジトリに含める**。
+
+```
+プロジェクトルート/
+├── app/
+│   ├── dev.keystore          # ✅ リポジトリに含める（開発用）
+│   └── build.gradle.kts
+├── keystore.properties       # ❌ リポジトリに含めない（リリース用）
+└── .gitignore
+```
+
+> **重要**: `dev.keystore` は開発用のため、パスワードは固定値（`android`）で問題ない。
+> **release keystore は絶対にリポジトリに含めないこと。**
+
+### dev.keystore の生成
+
+`init-app.sh` で自動生成されるが、手動で生成する場合:
+
+```bash
+keytool -genkeypair \
+    -alias androiddebugkey \
+    -keypass android \
+    -keystore app/dev.keystore \
+    -storepass android \
+    -dname "CN=Android Debug,O=Android,C=US" \
+    -keyalg RSA \
+    -keysize 2048 \
+    -validity 36500
+```
+
+### build.gradle.kts — signingConfigs
+
+```kotlin
+signingConfigs {
+    // 開発用署名（チーム共有の dev.keystore を使用）
+    getByName("debug") {
+        val devKeystore = rootProject.file("app/dev.keystore")
+        if (devKeystore.exists()) {
+            storeFile = devKeystore
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+    create("release") {
+        val props = rootProject.file("keystore.properties")
+        if (props.exists()) {
+            val keystoreProps = Properties().apply {
+                props.inputStream().use { load(it) }
+            }
+            storeFile = file(keystoreProps["storeFile"] as String)
+            storePassword = keystoreProps["storePassword"] as String
+            keyAlias = keystoreProps["keyAlias"] as String
+            keyPassword = keystoreProps["keyPassword"] as String
+        }
+    }
+}
+```
+
+### .gitignore の設定
+
+```gitignore
+# Secrets
+*.keystore
+!app/dev.keystore     # 開発用 keystore はリポジトリに含める
+*.jks
+keystore.properties
+.env
+```
+
+### keystore のルール
+
+| 種類 | ファイル | リポジトリ | パスワード | 用途 |
+|------|---------|:--------:|----------|------|
+| 開発用 | `app/dev.keystore` | ✅ 含める | 固定 `android` | debug ビルド、上書きインストール |
+| リリース用 | `release.keystore` | ❌ 含めない | GitHub Secrets 経由 | Play Store 提出 |
+
+### アプリ間での keystore 共有について
+
+- **開発用 keystore**: アプリごとに**別々**の `dev.keystore` を生成・管理する
+- **リリース用 keystore**: アプリごとに**別々**の `release.keystore` を使用する
+- insight-common で共通の keystore を持つことは**しない**
+
+> **理由**: 同一署名キーで異なる `applicationId` のアプリを署名しても直接的な問題は起きないが、
+> keystore のローテーション・漏洩時の影響範囲を限定するため、アプリごとに独立させる。
 
 ---
 
@@ -1318,13 +1413,15 @@ import { colors } from '@/lib/colors';
 - [ ] `InsightTypography` が標準定義に準拠
 - [ ] `themes.xml` が transparent ステータスバー/ナビゲーションバー
 
-### ビルド
+### ビルド・署名
 
 - [ ] `gradle/libs.versions.toml` が存在し、バージョンが一元管理されている
 - [ ] compileSdk = 35, targetSdk = 35, minSdk = 26
 - [ ] JVM Target = 17
 - [ ] Release ビルドで `isMinifyEnabled = true`, `isShrinkResources = true`
 - [ ] `proguard-rules.pro` が標準テンプレートに準拠
+- [ ] `app/dev.keystore` がリポジトリに含まれている（上書きインストール対策）
+- [ ] debug ビルドが `dev.keystore` を使用する signingConfig になっている
 
 ### APK サイズ最適化（§2.1）
 

@@ -115,12 +115,14 @@ Android (Kotlin + Jetpack Compose) アプリ専用のリリース前チェック
 |---|------------|---------|
 | AS1 | release の signingConfig が設定されている | `build.gradle.kts` で `signingConfigs` ブロックと `signingConfig = signingConfigs.getByName("release")` を確認 |
 | AS2 | keystore ファイルの存在（ローカル） | プロジェクト内で `*.jks` / `*.keystore` を検索 |
-| AS3 | keystore がリポジトリに含まれていない | `.gitignore` で `*.jks` / `*.keystore` が除外されているか確認 |
+| AS3 | release keystore がリポジトリに含まれていない | `.gitignore` で `*.jks` / `*.keystore` が除外されているか確認 |
 | AS4 | keystore.properties / 環境変数で参照 | `build.gradle.kts` で `keystore.properties` または `System.getenv()` を使用しているか確認 |
+| AS5 | `app/dev.keystore` がリポジトリに含まれている | 上書きインストール対策。`dev.keystore` はチーム共有の debug 署名キー |
+| AS6 | debug の signingConfig が `dev.keystore` を参照 | `getByName("debug")` で `dev.keystore` を参照しているか確認 |
 | S1 | .env が .gitignore に含まれる | `.gitignore` を確認 |
 | S2 | API キーがソースコードに埋め込まれていない | `grep -rn "sk-\|AIza\|AKIA\|api_key.*=.*\"" --include="*.kt"` |
 | S3 | google-services.json がリポジトリに含まれていない | `.gitignore` と `git ls-files` で確認 |
-| S4 | keystore ファイルがリポジトリに含まれていない | `git ls-files` で `*.jks` / `*.keystore` を確認 |
+| S4 | release keystore ファイルがリポジトリに含まれていない | `git ls-files` で `*.jks` / `*.keystore`（`dev.keystore` 除く）を確認 |
 
 **報告フォーマット:**
 
@@ -131,12 +133,14 @@ Android (Kotlin + Jetpack Compose) アプリ専用のリリース前チェック
 |---|------------|:----:|------|
 | AS1 | release signingConfig | ✅ | signingConfigs.release 設定済み |
 | AS2 | keystore 存在 | ⚠️ | ローカル確認が必要（CI では secrets 経由） |
-| AS3 | keystore が .gitignore | ✅ | *.jks, *.keystore 除外済み |
+| AS3 | release keystore が .gitignore | ✅ | *.jks, *.keystore 除外済み |
 | AS4 | keystore.properties 参照 | ✅ | keystore.properties から読み込み |
+| AS5 | dev.keystore 存在 | ✅ | app/dev.keystore がリポジトリに含まれている |
+| AS6 | debug signingConfig | ✅ | dev.keystore を参照 |
 | S1 | .env 除外 | ✅ | .gitignore に含まれる |
 | S2 | API キー埋め込みなし | ✅ | ハードコード検出なし |
 | S3 | google-services.json | ✅ | .gitignore に含まれる |
-| S4 | keystore 未追跡 | ✅ | git ls-files に含まれない |
+| S4 | release keystore 未追跡 | ✅ | git ls-files に含まれない（dev.keystore 除く） |
 ```
 
 ---

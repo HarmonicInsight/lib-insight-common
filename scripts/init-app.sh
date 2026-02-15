@@ -199,6 +199,25 @@ XMLEOF
     # .gitignore
     cp "$TEMPLATE_DIR/.gitignore" ./.gitignore
 
+    # 開発用 keystore の生成（チーム全員で同じ debug 署名を共有）
+    echo -e "${YELLOW}  開発用 keystore を生成中...${NC}"
+    if command -v keytool &> /dev/null; then
+        keytool -genkeypair \
+            -alias androiddebugkey \
+            -keypass android \
+            -keystore app/dev.keystore \
+            -storepass android \
+            -dname "CN=Android Debug,O=Android,C=US" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 36500 \
+            2>/dev/null
+        echo -e "  ${GREEN}✓${NC} app/dev.keystore を生成しました（リポジトリに含めます）"
+    else
+        echo -e "  ${YELLOW}⚠ keytool が見つかりません。JDK をインストール後、以下を実行してください:${NC}"
+        echo -e "    keytool -genkeypair -alias androiddebugkey -keypass android -keystore app/dev.keystore -storepass android -dname \"CN=Android Debug,O=Android,C=US\" -keyalg RSA -keysize 2048 -validity 36500"
+    fi
+
     # AndroidManifest.xml
     cat > app/src/main/AndroidManifest.xml << MFEOF
 <?xml version="1.0" encoding="utf-8"?>
