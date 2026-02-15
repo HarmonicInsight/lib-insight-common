@@ -24,11 +24,14 @@
 
 ## デザイン方針
 
-- **背景**: ダークグレー〜ブラック（#1A1A2E / #16213E）で高級感
-- **アクセント**: ティールブルー（#0F969C）+ ホワイト（#FFFFFF）
+- **背景**: アイボリー（#FAF8F5）〜 ウォームホワイト のグラデーション
+- **プライマリ**: ゴールド（#B8942F）— タイトル、アクセント、CTA
+- **テキスト**: ダークブラウン（#1C1917）、サブテキスト（#57534E）
+- **カード**: ホワイト（#FFFFFF）+ ボーダー（#E7E2DA）
 - **フォント**: モダンなゴシック体、太字のキャッチコピー
 - **端末モック**: ベゼルレスの最新スマートフォンモックアップ
-- **共通要素**: アプリアイコン + アプリ名「Simple QR」を全画像に含める
+- **共通要素**: アプリアイコン（ゴールド QR コインデザイン）+ アプリ名「Simple QR」を全画像に含める
+- **トーン**: 高級感・信頼感。金属的なゴールドの質感を活かす
 
 ---
 
@@ -40,38 +43,40 @@
 
 ```
 A premium Google Play Store feature graphic (1024x500px, landscape).
-Dark gradient background from deep navy (#16213E) to charcoal (#1A1A2E).
+Warm ivory-to-gold gradient background (#FAF8F5 to #D4A84B), elegant and luxurious.
 
 Center composition: A modern bezel-less smartphone displaying a QR code scanning
-interface with a glowing teal (#0F969C) scan line animating across a QR code.
-Around the phone, floating translucent UI elements: a green shield icon with
-a checkmark (URL safety), a QR code being generated, and a lock icon (encrypted history).
+interface with a glowing gold (#B8942F) scan line animating across a QR code.
+Around the phone, floating translucent UI elements with gold borders: a shield icon
+with a checkmark (URL safety), a QR code being generated, and a lock icon (encrypted history).
 
-Left side: App icon (a minimalist QR code design with teal accent).
-Right side: Bold Japanese text "シンプルに、安全に。" in white,
-with subtitle "QRコード スキャン & 生成" in light gray below.
+Left side: App icon — a golden coin with an embossed 3D QR code pattern and
+circuit board traces, metallic gold finish.
+Right side: Bold Japanese text "シンプルに、安全に。" in dark brown (#1C1917),
+with subtitle "QRコード スキャン & 生成" in warm gray (#57534E) below.
 
-Clean, modern, flat design with subtle glassmorphism effects. No photorealism.
-Professional tech-app aesthetic. High contrast, sharp edges.
+Elegant, premium design with metallic gold accents on ivory background.
+Luxurious tech aesthetic. Warm tones, clean layout, no photorealism.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A premium Google Play Store feature graphic (1024x500px, landscape).
-Dark gradient background from deep navy (#16213E) to charcoal (#1A1A2E).
+Warm ivory-to-gold gradient background (#FAF8F5 to #D4A84B), elegant and luxurious.
 
 Center composition: A modern bezel-less smartphone displaying a QR code scanning
-interface with a glowing teal (#0F969C) scan line animating across a QR code.
-Around the phone, floating translucent UI elements: a green shield icon with
-a checkmark (URL safety), a QR code being generated, and a lock icon (encrypted history).
+interface with a glowing gold (#B8942F) scan line animating across a QR code.
+Around the phone, floating translucent UI elements with gold borders: a shield icon
+with a checkmark (URL safety), a QR code being generated, and a lock icon (encrypted history).
 
-Left side: App icon (a minimalist QR code design with teal accent).
-Right side: Bold English text "Simple. Secure. Smart." in white,
-with subtitle "QR Code Scanner & Generator" in light gray below.
+Left side: App icon — a golden coin with an embossed 3D QR code pattern and
+circuit board traces, metallic gold finish.
+Right side: Bold English text "Simple. Secure. Smart." in dark brown (#1C1917),
+with subtitle "QR Code Scanner & Generator" in warm gray (#57534E) below.
 
-Clean, modern, flat design with subtle glassmorphism effects. No photorealism.
-Professional tech-app aesthetic. High contrast, sharp edges.
+Elegant, premium design with metallic gold accents on ivory background.
+Luxurious tech aesthetic. Warm tones, clean layout, no photorealism.
 ```
 
 ---
@@ -84,45 +89,45 @@ Professional tech-app aesthetic. High contrast, sharp edges.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating bezel-less smartphone in the center-bottom area showing a camera
-scanning interface: live viewfinder with a semi-transparent dark overlay,
-a bright teal (#0F969C) animated scan frame targeting a QR code, and a small
-green badge at the top-right corner of the scan frame reading "安全" (safe)
+scanning interface: live viewfinder with a semi-transparent overlay,
+a bright gold (#B8942F) animated scan frame targeting a QR code, and a small
+gold badge at the top-right corner of the scan frame reading "安全" (safe)
 with a shield icon.
 
 Above the phone mockup:
-- Large bold Japanese headline: "かざすだけで、安全に。"
-- Smaller subtitle: "高速スキャン & URL 安全性チェック"
-Both in white text, center-aligned.
+- Large bold Japanese headline: "かざすだけで、安全に。" in dark brown (#1C1917)
+- Smaller subtitle: "高速スキャン & URL 安全性チェック" in warm gray (#57534E)
+Both center-aligned.
 
-At the very bottom: A row of three small icons with labels:
+At the very bottom: A row of three small gold-bordered icons with labels:
 "1D/2D対応" | "即時判定" | "自動コピー"
 
-Flat design, minimal, professional. Teal and white on dark background.
+Elegant, minimal, premium. Gold accents on ivory background.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating bezel-less smartphone in the center-bottom area showing a camera
-scanning interface: live viewfinder with a semi-transparent dark overlay,
-a bright teal (#0F969C) animated scan frame targeting a QR code, and a small
-green badge at the top-right corner reading "Safe" with a shield icon.
+scanning interface: live viewfinder with a semi-transparent overlay,
+a bright gold (#B8942F) animated scan frame targeting a QR code, and a small
+gold badge at the top-right corner reading "Safe" with a shield icon.
 
 Above the phone mockup:
-- Large bold headline: "Scan Instantly. Stay Safe."
-- Smaller subtitle: "Fast scanning with URL safety check"
-Both in white text, center-aligned.
+- Large bold headline: "Scan Instantly. Stay Safe." in dark brown (#1C1917)
+- Smaller subtitle: "Fast scanning with URL safety check" in warm gray (#57534E)
+Both center-aligned.
 
-At the very bottom: A row of three small icons with labels:
+At the very bottom: A row of three small gold-bordered icons with labels:
 "1D/2D Support" | "Instant Check" | "Auto Copy"
 
-Flat design, minimal, professional. Teal and white on dark background.
+Elegant, minimal, premium. Gold accents on ivory background.
 ```
 
 ---
@@ -135,44 +140,46 @@ Flat design, minimal, professional. Teal and white on dark background.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating smartphone showing a QR code generation screen: a clean form UI
 with input fields for URL, text, Wi-Fi, contact card, and email. Below the
-form, a large generated QR code with a subtle teal border. Share and save
-buttons are visible at the bottom of the phone screen.
+form, a large generated QR code with a gold (#B8942F) border. Gold share and
+save buttons are visible at the bottom of the phone screen.
 
 Above the phone:
-- Large bold headline: "テキストもWi-Fiも、すぐQRに。"
-- Subtitle: "URL・テキスト・Wi-Fi・連絡先を瞬時に変換"
-White text on dark background, center-aligned.
+- Large bold headline: "テキストもWi-Fiも、すぐQRに。" in dark brown (#1C1917)
+- Subtitle: "URL・テキスト・Wi-Fi・連絡先を瞬時に変換" in warm gray (#57534E)
+Center-aligned.
 
-To the left of the phone, four small floating badges arranged vertically:
+To the left of the phone, four small floating badges with gold borders
+arranged vertically:
 "URL" "テキスト" "Wi-Fi" "連絡先" — each with a distinct minimal icon.
 
-Modern flat design. Teal accents on dark background.
+Elegant flat design. Gold accents on ivory background. Premium feel.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating smartphone showing a QR code generation screen: a clean form UI
 with input fields for URL, text, Wi-Fi, contact card, and email. Below the
-form, a large generated QR code with a subtle teal border. Share and save
-buttons are visible at the bottom of the phone screen.
+form, a large generated QR code with a gold (#B8942F) border. Gold share and
+save buttons are visible at the bottom of the phone screen.
 
 Above the phone:
-- Large bold headline: "Generate QR Codes Instantly."
-- Subtitle: "URL, text, Wi-Fi, contacts — all in one tap"
-White text on dark background, center-aligned.
+- Large bold headline: "Generate QR Codes Instantly." in dark brown (#1C1917)
+- Subtitle: "URL, text, Wi-Fi, contacts — all in one tap" in warm gray (#57534E)
+Center-aligned.
 
-To the left of the phone, four small floating badges arranged vertically:
+To the left of the phone, four small floating badges with gold borders
+arranged vertically:
 "URL" "Text" "Wi-Fi" "Contact" — each with a distinct minimal icon.
 
-Modern flat design. Teal accents on dark background.
+Elegant flat design. Gold accents on ivory background. Premium feel.
 ```
 
 ---
@@ -185,51 +192,52 @@ Modern flat design. Teal accents on dark background.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating smartphone displaying a history list screen with several scanned
-QR code entries. Each entry shows: a small QR code thumbnail, a title
-(URL or text snippet), a timestamp, and a small lock icon (🔒) indicating
-encryption. One entry is expanded to show full details with "コピー" and
-"共有" action buttons.
+QR code entries on white (#FFFFFF) cards with light borders (#E7E2DA).
+Each entry shows: a small QR code thumbnail, a title (URL or text snippet),
+a timestamp, and a small gold lock icon indicating encryption. One entry is
+expanded to show full details with gold "コピー" and "共有" action buttons.
 
 Above the phone:
-- Large bold headline: "作れる、残せる、守られる。"
-- Subtitle: "AES-256 暗号化で履歴を安全に保存"
-White text, center-aligned.
+- Large bold headline: "作れる、残せる、守られる。" in dark brown (#1C1917)
+- Subtitle: "AES-256 暗号化で履歴を安全に保存" in warm gray (#57534E)
+Center-aligned.
 
-A floating shield icon with "AES-256" text beside it, positioned to the
-right of the phone with a subtle glow effect.
+A floating gold shield icon with "AES-256" text beside it, positioned to the
+right of the phone with a subtle warm glow effect.
 
-At the bottom: Three small icons with labels:
+At the bottom: Three small gold-bordered icons with labels:
 "暗号化保存" | "CSV出力" | "一括削除"
 
-Clean, secure-feeling design. Teal and white on dark.
+Elegant, trust-building design. Gold and ivory tones. Premium and secure.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating smartphone displaying a history list screen with several scanned
-QR code entries. Each entry shows: a small QR code thumbnail, a title
-(URL or text snippet), a timestamp, and a small lock icon indicating encryption.
-One entry is expanded to show full details with "Copy" and "Share" action buttons.
+QR code entries on white (#FFFFFF) cards with light borders (#E7E2DA).
+Each entry shows: a small QR code thumbnail, a title (URL or text snippet),
+a timestamp, and a small gold lock icon indicating encryption. One entry is
+expanded to show full details with gold "Copy" and "Share" action buttons.
 
 Above the phone:
-- Large bold headline: "Create. Save. Protect."
-- Subtitle: "AES-256 encrypted history storage"
-White text, center-aligned.
+- Large bold headline: "Create. Save. Protect." in dark brown (#1C1917)
+- Subtitle: "AES-256 encrypted history storage" in warm gray (#57534E)
+Center-aligned.
 
-A floating shield icon with "AES-256" text beside it, positioned to the right
-of the phone with a subtle glow effect.
+A floating gold shield icon with "AES-256" text beside it, positioned to the
+right of the phone with a subtle warm glow effect.
 
-At the bottom: Three small icons with labels:
+At the bottom: Three small gold-bordered icons with labels:
 "Encrypted" | "CSV Export" | "Bulk Delete"
 
-Clean, secure-feeling design. Teal and white on dark.
+Elegant, trust-building design. Gold and ivory tones. Premium and secure.
 ```
 
 ---
@@ -242,44 +250,46 @@ Clean, secure-feeling design. Teal and white on dark.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 Two floating smartphones side by side, slightly overlapping and tilted:
-- Left phone: Light mode settings screen with ivory/white background, showing
-  toggles for vibration, sound, auto-copy, and theme selection.
+- Left phone: Light mode settings screen with ivory (#FAF8F5) background,
+  gold (#B8942F) toggle switches, showing toggles for vibration, sound,
+  auto-copy, and theme selection.
 - Right phone: Dark mode of the same settings screen with deep dark background,
-  showing the same toggles in inverted colors.
+  gold accent toggles and text highlights.
 
-A curved arrow connects the two phones, suggesting seamless switching.
+A curved gold arrow connects the two phones, suggesting seamless switching.
 
 Above the phones:
-- Large bold headline: "あなた好みに、カスタマイズ。"
-- Subtitle: "ダークモード・音・振動・自動コピー"
-White text, center-aligned.
+- Large bold headline: "あなた好みに、カスタマイズ。" in dark brown (#1C1917)
+- Subtitle: "ダークモード・音・振動・自動コピー" in warm gray (#57534E)
+Center-aligned.
 
-Minimal, clean design. Shows contrast between light and dark themes.
+Elegant, clean design. Gold accents on ivory. Shows contrast between themes.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 Two floating smartphones side by side, slightly overlapping and tilted:
-- Left phone: Light mode settings screen with ivory/white background, showing
-  toggles for vibration, sound, auto-copy, and theme selection.
+- Left phone: Light mode settings screen with ivory (#FAF8F5) background,
+  gold (#B8942F) toggle switches, showing toggles for vibration, sound,
+  auto-copy, and theme selection.
 - Right phone: Dark mode of the same settings screen with deep dark background,
-  showing the same toggles in inverted colors.
+  gold accent toggles and text highlights.
 
-A curved arrow connects the two phones, suggesting seamless switching.
+A curved gold arrow connects the two phones, suggesting seamless switching.
 
 Above the phones:
-- Large bold headline: "Your Way. Your Style."
-- Subtitle: "Dark mode, sounds, vibration, auto-copy"
-White text, center-aligned.
+- Large bold headline: "Your Way. Your Style." in dark brown (#1C1917)
+- Subtitle: "Dark mode, sounds, vibration, auto-copy" in warm gray (#57534E)
+Center-aligned.
 
-Minimal, clean design. Shows contrast between light and dark themes.
+Elegant, clean design. Gold accents on ivory. Shows contrast between themes.
 ```
 
 ---
@@ -292,44 +302,46 @@ Minimal, clean design. Shows contrast between light and dark themes.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating smartphone showing a batch scan results screen: a list of 8-10
-scanned QR codes with checkboxes, a "全選択" (Select All) toggle at the top,
-and a prominent "CSVエクスポート" button at the bottom of the phone screen.
-A floating CSV file icon with an arrow is emerging from the phone to the right.
+scanned QR codes with gold checkboxes on white cards, a "全選択" (Select All)
+gold toggle at the top, and a prominent gold (#B8942F) "CSVエクスポート"
+button at the bottom of the phone screen.
+A floating gold CSV file icon with an arrow is emerging from the phone to the right.
 
 Above the phone:
-- Large bold headline: "まとめてスキャン、一括出力。"
-- Subtitle: "CSV エクスポートで業務効率化"
-White text, center-aligned.
+- Large bold headline: "まとめてスキャン、一括出力。" in dark brown (#1C1917)
+- Subtitle: "CSV エクスポートで業務効率化" in warm gray (#57534E)
+Center-aligned.
 
-A small spreadsheet/table icon floating to the right side showing exported
-data rows, connected to the phone with a dotted line.
+A small spreadsheet/table icon in gold floating to the right side showing
+exported data rows, connected to the phone with a dotted gold line.
 
-Professional, business-oriented aesthetic. Teal accents on dark.
+Professional, business-oriented aesthetic. Gold accents on ivory.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 A floating smartphone showing a batch scan results screen: a list of 8-10
-scanned QR codes with checkboxes, a "Select All" toggle at the top,
-and a prominent "Export CSV" button at the bottom of the phone screen.
-A floating CSV file icon with an arrow is emerging from the phone to the right.
+scanned QR codes with gold checkboxes on white cards, a "Select All"
+gold toggle at the top, and a prominent gold (#B8942F) "Export CSV"
+button at the bottom of the phone screen.
+A floating gold CSV file icon with an arrow is emerging from the phone to the right.
 
 Above the phone:
-- Large bold headline: "Batch Scan. Bulk Export."
-- Subtitle: "CSV export for business workflows"
-White text, center-aligned.
+- Large bold headline: "Batch Scan. Bulk Export." in dark brown (#1C1917)
+- Subtitle: "CSV export for business workflows" in warm gray (#57534E)
+Center-aligned.
 
-A small spreadsheet/table icon floating to the right side showing exported
-data rows, connected to the phone with a dotted line.
+A small spreadsheet/table icon in gold floating to the right side showing
+exported data rows, connected to the phone with a dotted gold line.
 
-Professional, business-oriented aesthetic. Teal accents on dark.
+Professional, business-oriented aesthetic. Gold accents on ivory.
 ```
 
 ---
@@ -342,50 +354,52 @@ Professional, business-oriented aesthetic. Teal accents on dark.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 Center composition: A grid of barcode/QR code format icons arranged in a
-3x4 grid, each in a rounded card with subtle teal borders:
+3x4 grid, each in a white (#FFFFFF) rounded card with gold (#B8942F) borders:
 QR Code | Data Matrix | Aztec Code
 PDF417 | EAN-13 | EAN-8
 UPC-A | Code 128 | Code 39
 ITF | Codabar | (more)
 
-Each card has the format name below a visual example of that barcode type.
+Each card has the format name in dark brown below a visual example of that
+barcode type rendered in gold tones.
 
 Above the grid:
-- Large bold headline: "あらゆるコードに対応。"
-- Subtitle: "QR・バーコード・DataMatrix — 20種類以上"
-White text, center-aligned.
+- Large bold headline: "あらゆるコードに対応。" in dark brown (#1C1917)
+- Subtitle: "QR・バーコード・DataMatrix — 20種類以上" in warm gray (#57534E)
+Center-aligned.
 
-Below the grid: A teal banner reading "1D & 2D バーコード完全対応"
+Below the grid: A gold (#B8942F) banner reading "1D & 2D バーコード完全対応"
 
-Clean infographic style. Well-organized grid layout on dark background.
+Clean infographic style. Well-organized grid on ivory background. Premium gold accents.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 Center composition: A grid of barcode/QR code format icons arranged in a
-3x4 grid, each in a rounded card with subtle teal borders:
+3x4 grid, each in a white (#FFFFFF) rounded card with gold (#B8942F) borders:
 QR Code | Data Matrix | Aztec Code
 PDF417 | EAN-13 | EAN-8
 UPC-A | Code 128 | Code 39
 ITF | Codabar | (more)
 
-Each card has the format name below a visual example of that barcode type.
+Each card has the format name in dark brown below a visual example of that
+barcode type rendered in gold tones.
 
 Above the grid:
-- Large bold headline: "Every Code. One App."
-- Subtitle: "QR, barcodes, DataMatrix — 20+ formats"
-White text, center-aligned.
+- Large bold headline: "Every Code. One App." in dark brown (#1C1917)
+- Subtitle: "QR, barcodes, DataMatrix — 20+ formats" in warm gray (#57534E)
+Center-aligned.
 
-Below the grid: A teal banner reading "Full 1D & 2D barcode support"
+Below the grid: A gold (#B8942F) banner reading "Full 1D & 2D barcode support"
 
-Clean infographic style. Well-organized grid layout on dark background.
+Clean infographic style. Well-organized grid on ivory background. Premium gold accents.
 ```
 
 ---
@@ -398,46 +412,48 @@ Clean infographic style. Well-organized grid layout on dark background.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
-Center: A large translucent shield icon with a checkmark, rendered in teal
-with a subtle glow. Inside and around the shield, floating text labels:
+Center: A large translucent gold (#B8942F) shield icon with a checkmark,
+with a subtle warm glow. Inside and around the shield, floating white cards
+with gold borders containing text labels:
 "データ収集なし" "広告なし" "AES-256暗号化" "オフライン動作" "オープンソース"
 
-Each label has a small green checkmark icon beside it.
+Each label has a small gold checkmark icon beside it.
 
 Above the shield:
-- Large bold headline: "あなたのデータは、あなただけのもの。"
-- Subtitle: "収集しない。追跡しない。広告もない。"
-White text, center-aligned.
+- Large bold headline: "あなたのデータは、あなただけのもの。" in dark brown (#1C1917)
+- Subtitle: "収集しない。追跡しない。広告もない。" in warm gray (#57534E)
+Center-aligned.
 
-Below the shield: The app icon and "Simple QR" text in white.
+Below the shield: The app icon (golden QR coin) and "Simple QR" text
+in dark brown.
 
-Trust-building design. Dark background with teal/green security accents.
-Minimal and authoritative.
+Trust-building design. Gold and ivory tones. Premium, authoritative, warm.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
-Center: A large translucent shield icon with a checkmark, rendered in teal
-with a subtle glow. Inside and around the shield, floating text labels:
+Center: A large translucent gold (#B8942F) shield icon with a checkmark,
+with a subtle warm glow. Inside and around the shield, floating white cards
+with gold borders containing text labels:
 "No data collection" "No ads" "AES-256 encryption" "Works offline" "Open source"
 
-Each label has a small green checkmark icon beside it.
+Each label has a small gold checkmark icon beside it.
 
 Above the shield:
-- Large bold headline: "Your Data. Your Device. Period."
-- Subtitle: "No tracking. No ads. No collection."
-White text, center-aligned.
+- Large bold headline: "Your Data. Your Device. Period." in dark brown (#1C1917)
+- Subtitle: "No tracking. No ads. No collection." in warm gray (#57534E)
+Center-aligned.
 
-Below the shield: The app icon and "Simple QR" text in white.
+Below the shield: The app icon (golden QR coin) and "Simple QR" text
+in dark brown.
 
-Trust-building design. Dark background with teal/green security accents.
-Minimal and authoritative.
+Trust-building design. Gold and ivory tones. Premium, authoritative, warm.
 ```
 
 ---
@@ -450,7 +466,7 @@ Minimal and authoritative.
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 Three floating smartphones arranged in a fan layout (left tilted left,
 center straight, right tilted right). Each phone shows the same scan
@@ -459,23 +475,23 @@ screen but in a different language:
 - Center: English UI (slightly larger, in front)
 - Right: Chinese UI (中文)
 
-Language labels float below each phone: "日本語" "English" "中文"
+Gold-bordered language labels float below each phone: "日本語" "English" "中文"
 
 Above the phones:
-- Large bold headline: "世界中で使える。"
-- Subtitle: "日本語・英語・中国語対応"
-White text, center-aligned.
+- Large bold headline: "世界中で使える。" in dark brown (#1C1917)
+- Subtitle: "日本語・英語・中国語対応" in warm gray (#57534E)
+Center-aligned.
 
-A subtle globe icon with connection lines in the background.
+A subtle gold globe icon with connection lines in the background.
 
-International, inclusive design. Teal accents on dark.
+International, inclusive design. Gold accents on ivory. Premium feel.
 ```
 
 ### プロンプト（英語版）
 
 ```
 A Google Play Store screenshot mockup (1080x1920px, 9:16 portrait).
-Solid dark background (#121212).
+Warm ivory background (#FAF8F5) with subtle gold gradient at top.
 
 Three floating smartphones arranged in a fan layout (left tilted left,
 center straight, right tilted right). Each phone shows the same scan
@@ -484,16 +500,16 @@ screen but in a different language:
 - Center: English UI (slightly larger, in front)
 - Right: Chinese UI
 
-Language labels float below each phone: "日本語" "English" "中文"
+Gold-bordered language labels float below each phone: "日本語" "English" "中文"
 
 Above the phones:
-- Large bold headline: "One App. Every Language."
-- Subtitle: "Japanese, English, Chinese supported"
-White text, center-aligned.
+- Large bold headline: "One App. Every Language." in dark brown (#1C1917)
+- Subtitle: "Japanese, English, Chinese supported" in warm gray (#57534E)
+Center-aligned.
 
-A subtle globe icon with connection lines in the background.
+A subtle gold globe icon with connection lines in the background.
 
-International, inclusive design. Teal accents on dark.
+International, inclusive design. Gold accents on ivory. Premium feel.
 ```
 
 ---
