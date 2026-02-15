@@ -43,8 +43,8 @@
  *
  * ## Stripe 製品構成
  * - 各製品 × 各プラン = 1 Stripe Product + 1 Stripe Price
- * - サブスクリプション（年間） = recurring price
- * - AI アドオン = one-time price
+ * - サブスクリプション（年間） = recurring（価格は Stripe ダッシュボードで設定）
+ * - AI アドオン = one-time（価格は Stripe ダッシュボードで設定）
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -64,8 +64,6 @@ export interface StripeProductMapping {
   stripeProductIdEnvKey: string;
   /** Stripe Price ID（環境変数から注入） */
   stripePriceIdEnvKey: string;
-  /** 価格（JPY, 税抜） */
-  priceJpy: number;
   /** 課金タイプ */
   billingType: 'recurring' | 'one_time';
   /** 課金間隔（recurring の場合） */
@@ -139,17 +137,11 @@ export interface StripeCustomerInfo {
  *
  * 【重要】Stripe Product ID / Price ID は環境変数から注入する。
  * ここでは環境変数キー名のみ定義し、ID のハードコードは行わない。
+ * 価格は Stripe ダッシュボード上で設定する（パートナーとの協議により決定）。
  *
  * 命名規則:
  * - 環境変数: STRIPE_{PRODUCT_CODE}_{PLAN}_PRODUCT_ID / STRIPE_{PRODUCT_CODE}_{PLAN}_PRICE_ID
  * - 例: STRIPE_INSS_STD_PRODUCT_ID, STRIPE_INSS_STD_PRICE_ID
- */
-/**
- * Stripe 製品マッピング
- *
- * 【重要】価格は Stripe ダッシュボード上で設定し、環境変数で Price ID を注入する。
- * priceJpy はサーバーサイドの参照用であり、Stripe ダッシュボード側の価格が正となる。
- * 価格はパートナーとの協議により決定後、Stripe に設定する。
  */
 export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
   // --- InsightOffice Suite（Tier 3）---
@@ -159,7 +151,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'STD',
     stripeProductIdEnvKey: 'STRIPE_INSS_STD_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_INSS_STD_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightOfficeSlide Standard (Annual)',
@@ -169,7 +161,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'PRO',
     stripeProductIdEnvKey: 'STRIPE_INSS_PRO_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_INSS_PRO_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightOfficeSlide Professional (Annual)',
@@ -181,7 +173,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'STD',
     stripeProductIdEnvKey: 'STRIPE_IOSH_STD_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_IOSH_STD_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightOfficeSheet Standard (Annual)',
@@ -191,7 +183,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'PRO',
     stripeProductIdEnvKey: 'STRIPE_IOSH_PRO_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_IOSH_PRO_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightOfficeSheet Professional (Annual)',
@@ -203,7 +195,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'STD',
     stripeProductIdEnvKey: 'STRIPE_IOSD_STD_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_IOSD_STD_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightOfficeDoc Standard (Annual)',
@@ -213,7 +205,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'PRO',
     stripeProductIdEnvKey: 'STRIPE_IOSD_PRO_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_IOSD_PRO_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightOfficeDoc Professional (Annual)',
@@ -225,7 +217,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'STD',
     stripeProductIdEnvKey: 'STRIPE_INPY_STD_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_INPY_STD_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightPy Standard (Annual)',
@@ -235,7 +227,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'PRO',
     stripeProductIdEnvKey: 'STRIPE_INPY_PRO_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_INPY_PRO_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'recurring',
     billingInterval: 'year',
     description: 'InsightPy Professional (Annual)',
@@ -247,7 +239,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'STD', // プランに関係なく購入可能（metadata で制御）
     stripeProductIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'one_time',
     description: 'AI Credits - Standard 200 (up to Sonnet)',
   },
@@ -256,7 +248,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     plan: 'STD', // プランに関係なく購入可能（metadata で制御）
     stripeProductIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRICE_ID',
-    priceJpy: 0, // Stripe ダッシュボードで設定
+
     billingType: 'one_time',
     description: 'AI Credits - Premium 200 (including Opus)',
   },
@@ -490,7 +482,6 @@ export function getStripePriceId(productCode: ProductCode, plan: PlanCode): stri
 export function getStripePurchasableProducts(): Array<{
   productCode: ProductCode;
   plan: PlanCode;
-  priceJpy: number;
   billingType: 'recurring' | 'one_time';
 }> {
   return STRIPE_PRODUCT_MAPPINGS
@@ -498,7 +489,6 @@ export function getStripePurchasableProducts(): Array<{
     .map(m => ({
       productCode: m.productCode,
       plan: m.plan,
-      priceJpy: m.priceJpy,
       billingType: m.billingType,
     }));
 }

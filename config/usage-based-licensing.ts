@@ -94,16 +94,12 @@ export interface AiQuotaDefinition {
   descriptionEn: string;
 }
 
-/** アドオンパック定義 */
+/** アドオンパック定義（価格は Stripe ダッシュボードで設定） */
 export interface AddonPackDefinition {
   /** パック ID */
   id: string;
   /** クレジット数 */
   credits: number;
-  /** 価格（税抜） */
-  price: number;
-  /** 通貨 */
-  currency: 'JPY' | 'USD';
   /** 有効期間（日数） */
   validDays: number;
   /** 利用可能なモデルティア */
@@ -295,8 +291,6 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   {
     id: 'ai_credits_200_standard',
     credits: 200,
-    price: 0, // Stripe ダッシュボードで設定（パートナーとの協議により決定）
-    currency: 'JPY',
     validDays: 365,
     modelTier: 'standard',
     descriptionJa: 'AI標準パック 200回（Sonnetまで）',
@@ -305,8 +299,6 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   {
     id: 'ai_credits_200_premium',
     credits: 200,
-    price: 0, // Stripe ダッシュボードで設定（パートナーとの協議により決定）
-    currency: 'JPY',
     validDays: 365,
     modelTier: 'premium',
     descriptionJa: 'AIプレミアムパック 200回（Opus対応）',
@@ -314,11 +306,6 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   },
 ];
 
-/** USD 参考価格（グローバル展開用 — パートナーとの協議により決定） */
-export const AI_ADDON_PACKS_USD: Record<string, number> = {
-  ai_credits_200_standard: 0, // Stripe ダッシュボードで設定
-  ai_credits_200_premium: 0,  // Stripe ダッシュボードで設定
-};
 
 // =============================================================================
 // クレジット計算関数
@@ -848,7 +835,6 @@ export default {
   // 定義データ
   AI_QUOTA_BY_PLAN,
   AI_ADDON_PACKS,
-  AI_ADDON_PACKS_USD,
   USAGE_API_ENDPOINTS,
   DB_SCHEMA_REFERENCE,
   RPC_FUNCTIONS_REFERENCE,
