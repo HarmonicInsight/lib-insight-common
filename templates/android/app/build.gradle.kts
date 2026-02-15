@@ -38,6 +38,18 @@ android {
 
     // --- 署名設定 ---
     signingConfigs {
+        // 開発用署名（チーム共有の dev.keystore を使用）
+        // dev.keystore をリポジトリに含めることで、全員が同じ署名でビルドし
+        // 上書きインストールが可能になる。
+        getByName("debug") {
+            val devKeystore = rootProject.file("app/dev.keystore")
+            if (devKeystore.exists()) {
+                storeFile = devKeystore
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
+        }
         create("release") {
             val props = rootProject.file("keystore.properties")
             if (props.exists()) {
@@ -56,6 +68,7 @@ android {
         debug {
             isMinifyEnabled = false
             isShrinkResources = false
+            signingConfig = signingConfigs.getByName("debug")
         }
         release {
             isMinifyEnabled = true

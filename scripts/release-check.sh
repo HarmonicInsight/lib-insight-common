@@ -339,12 +339,19 @@ if [ "$PLATFORM" = "android" ]; then
         print_ok "google-services.json はリポジトリに含まれていない"
     fi
 
-    # keystore チェック
-    keystore_in_repo=$(git -C "$PROJECT_DIR" ls-files "*.jks" "*.keystore" 2>/dev/null | head -1)
+    # keystore チェック（dev.keystore は許可）
+    keystore_in_repo=$(git -C "$PROJECT_DIR" ls-files "*.jks" "*.keystore" 2>/dev/null | grep -v "dev.keystore" | head -1)
     if [ -n "$keystore_in_repo" ]; then
-        print_error "keystore ファイルがリポジトリに含まれています: $keystore_in_repo"
+        print_error "release keystore ファイルがリポジトリに含まれています: $keystore_in_repo"
     else
-        print_ok "keystore ファイルはリポジトリに含まれていない"
+        print_ok "release keystore ファイルはリポジトリに含まれていない"
+    fi
+
+    # dev.keystore の存在チェック
+    if [ -f "$PROJECT_DIR/app/dev.keystore" ]; then
+        print_ok "app/dev.keystore が存在（チーム共有の debug 署名）"
+    else
+        print_warning "app/dev.keystore が見つかりません（上書きインストールに必要）"
     fi
 fi
 
@@ -462,6 +469,13 @@ if [ "$PLATFORM" = "android" ]; then
                 print_ok "release ビルドに signingConfig が適用されている"
             else
                 print_warning "release ビルドに signingConfig が適用されていない可能性"
+            fi
+
+            # debug signingConfig の dev.keystore 参照チェック
+            if grep -q 'getByName("debug")' "$build_file" 2>/dev/null && grep -q "dev.keystore" "$build_file" 2>/dev/null; then
+                print_ok "debug signingConfig が dev.keystore を参照"
+            else
+                print_warning "debug signingConfig が dev.keystore を参照していません（上書きインストール問題の原因）"
             fi
         else
             print_warning "signingConfigs が未定義（リリースビルドには署名設定が必要）"
