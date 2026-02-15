@@ -247,62 +247,19 @@ jobs:
             git diff --cached --stat
           fi
 
-      - name: Create or update PR
+      - name: Commit and push directly to main
         if: >-
           steps.check.outputs.skip != 'true' &&
           steps.changes.outputs.has_changes == 'true' &&
           inputs.dry_run != true
         working-directory: target-repo
-        env:
-          GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          BRANCH="chore/sync-skills"
           COMMIT_MSG="chore: sync Claude Code skills from insight-common (${SHORT_SHA})"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 既存のリモートブランチがあれば削除してから作成
-          git push origin --delete "$BRANCH" 2>/dev/null || true
-          git checkout -b "$BRANCH"
           git commit -m "$COMMIT_MSG"
-          git push -u origin "$BRANCH"
-
-          # 既存の PR を探す
-          EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
-          if [ -n "$EXISTING" ]; then
-            echo "PR #$EXISTING already exists — branch updated with latest skills"
-          else
-            gh pr create \
-              --title "$COMMIT_MSG" \
-              --body "$(cat <<EOF
-          ## スキル同期
-
-          **変更元**: HarmonicInsight/cross-lib-insight-common@${SHORT_SHA}
-          **対象製品**: ${{ matrix.name }} (${{ matrix.product }})
-
-          ### 変更内容
-          - Claude Code スキルファイル (.claude/commands/*.md) を insight-common から同期
-          - SessionStart フックで以降の自動同期を設定
-
-          ### 同期されるスキル
-          - \`/release-check\` — リリース前チェック（全プラットフォーム共通）
-          - \`/release-check-android\` — Android リリースチェック
-          - \`/validate\` — 標準検証
-          - \`/dev-cycle\` — 開発サイクル
-          - \`/review-standards\` — 標準レビュー
-          - \`/sync-icons\` — アイコン同期
-          - \`/add-product\` — 新規製品追加
-
-          ### 確認手順
-          1. \`.claude/commands/\` にスキルファイルが配置されていること
-          2. \`.claude/settings.json\` に SessionStart フックが設定されていること
-          3. Claude Code セッションで \`/release-check\` が認識されること
-
-          ---
-          *This PR was created by [sync-skills](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
-          EOF
-          )"
-            echo "PR created for ${{ matrix.repo }}"
-          fi
+          git push origin HEAD
+          echo "Pushed skill sync to main for ${{ matrix.repo }}"
