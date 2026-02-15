@@ -399,7 +399,7 @@ async function getUserFromFirebaseUid(uid: string): Promise<AuthenticatedUser | 
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  // ユーザー + ライセンス情報を取得
+  // ユーザー + ライセンス + メンバーシップ情報を取得
   const { data: user, error } = await supabase
     .from('users')
     .select(`
@@ -411,6 +411,10 @@ async function getUserFromFirebaseUid(uid: string): Promise<AuthenticatedUser | 
         plan,
         is_active,
         expires_at
+      ),
+      memberships (
+        tenant_id,
+        role
       )
     `)
     .eq('firebase_uid', uid)
@@ -425,13 +429,16 @@ async function getUserFromFirebaseUid(uid: string): Promise<AuthenticatedUser | 
     l => l.is_active && (!l.expires_at || new Date(l.expires_at) > new Date())
   );
 
+  // メンバーシップからテナントIDを取得（最初のメンバーシップを使用）
+  const membership = (user.memberships as Array<{ tenant_id: string; role: string }> | null)?.[0] ?? null;
+
   return {
     uid: user.firebase_uid,
     userId: user.id,
     email: user.email,
     displayName: user.display_name,
     plan: activeLicense?.plan || 'FREE',
-    tenantId: null, // TODO: テナント情報取得
+    tenantId: membership?.tenant_id ?? null,
   };
 }
 
