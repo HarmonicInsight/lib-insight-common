@@ -172,6 +172,14 @@ jobs:
             icon_dest: assets
             copy_mode: expo
 
+          # ── Android Native (Voice Task Calendar) ──
+          - repo: android-app-voice-tesk-calendar
+            product: VOICE_TASK_CALENDAR
+            name: InsightVoiceTaskCalendar
+            icon_src: InsightVoiceTaskCalendar
+            icon_dest: app/src/main/res
+            copy_mode: android_native
+
     steps:
       - name: Validate SYNC_PAT secret
         run: |

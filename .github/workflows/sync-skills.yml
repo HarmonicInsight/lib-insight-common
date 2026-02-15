@@ -108,6 +108,11 @@ jobs:
             product: CONSUL_EVAL
             name: ConsulEvaluate
 
+          # ── Android Native (Voice Task Calendar) ──
+          - repo: android-app-voice-tesk-calendar
+            product: VOICE_TASK_CALENDAR
+            name: InsightVoiceTaskCalendar
+
     steps:
       - name: Validate SYNC_PAT secret
         run: |

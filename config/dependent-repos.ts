@@ -282,6 +282,13 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
     iconCopy: [],
     enabled: true,
   },
+  {
+    repo: 'android-app-voice-tesk-calendar',
+    productCode: 'VOICE_TASK_CALENDAR',
+    productName: 'InsightVoiceTaskCalendar',
+    iconCopy: [],
+    enabled: true,
+  },
 ];
 
 // =============================================================================
