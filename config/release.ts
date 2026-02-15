@@ -425,7 +425,7 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
   CAMERA: {
     code: 'CAMERA',
     name: 'InsightCamera',
-    nameJa: 'Insight Camera',
+    nameJa: 'スッキリカメラ',
     platform: 'android_native',
     storeDistribution: 'play_store',
     versioningScheme: 'semver_with_build_number',
@@ -932,11 +932,11 @@ export const RELEASE_CHECKLIST: ReleaseCheckItem[] = [
 ];
 
 // =============================================================================
-// Insight Camera Play Store メタデータテンプレート
+// スッキリカメラ Play Store メタデータテンプレート
 // =============================================================================
 
 /**
- * Insight Camera 用の Play Store メタデータテンプレート
+ * スッキリカメラ用の Play Store メタデータテンプレート
  *
  * このテンプレートを基に fastlane/metadata/android/ ディレクトリを構成する。
  * 文字数は各フィールドの上限値内に収める必要がある。
@@ -944,10 +944,10 @@ export const RELEASE_CHECKLIST: ReleaseCheckItem[] = [
 export const CAMERA_STORE_METADATA: Record<string, StoreMetadata> = {
   'ja-JP': {
     locale: 'ja-JP',
-    title: 'Insight Camera',  // 14文字（上限30）
+    title: 'スッキリカメラ',  // 6文字（上限30）
     shortDescription: 'シンプルで綺麗に撮れるカメラ。常時ライト・ワンタップ操作・OEM画質自動適用。',  // 37文字（上限80）
     fullDescription:
-      'Insight Camera は「難しいことを考えなくても綺麗な写真が撮れる」をコンセプトにした、シンプルなカメラアプリです。\n\n' +
+      'スッキリカメラは「難しいことを考えなくても綺麗な写真が撮れる」をコンセプトにした、シンプルなカメラアプリです。\n\n' +
       '■ 主な特徴\n' +
       '・常時ライト点灯 — 撮影構図を確認しながらフラッシュライトを常時 ON にできます\n' +
       '・OEM 画質の自動適用 — CameraX Extensions により端末メーカーの画像処理（HDR・夜景・ボケ）を自動活用\n' +

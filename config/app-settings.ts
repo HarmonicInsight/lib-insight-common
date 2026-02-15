@@ -180,7 +180,7 @@ export const ANDROID_UTILITY_APPS: Record<string, AndroidUtilityApp> = {
   'insight-camera': {
     id: 'insight-camera',
     packageName: 'com.harmonic.insight.camera',
-    displayNameJa: 'Insight Camera',
+    displayNameJa: 'スッキリカメラ',
     displayNameEn: 'Insight Camera',
     descriptionJa: 'シンプルで使いやすいカメラアプリ',
     descriptionEn: 'Simple and easy-to-use camera app',
