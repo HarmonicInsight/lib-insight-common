@@ -283,6 +283,76 @@ export const AUTO_RESPONSE_TEMPLATES_JA: AutoResponseTemplate[] = [
 ];
 
 // =============================================================================
+// 自動応答テンプレート（英語）
+// =============================================================================
+
+export const AUTO_RESPONSE_TEMPLATES_EN: AutoResponseTemplate[] = [
+  {
+    category: 'bug',
+    locale: 'en',
+    template: `Thank you for contacting us. We apologize for the inconvenience caused by {specific_impact}.
+
+We have started investigating this as {priority}. {workaround_if_any}
+
+We will report our findings within {sla_timeframe}.`,
+  },
+  {
+    category: 'how-to',
+    locale: 'en',
+    template: `Thank you for your inquiry.
+
+{direct_answer_or_steps}
+
+Please don't hesitate to contact us if you have any further questions.`,
+  },
+  {
+    category: 'license',
+    locale: 'en',
+    template: `Thank you for your license-related inquiry.
+
+{license_status_or_action}
+
+Please let us know if you have any additional questions.`,
+  },
+  {
+    category: 'ai-assistant',
+    locale: 'en',
+    template: `Thank you for your inquiry about the AI assistant feature.
+
+{ai_specific_response}
+
+{remaining_credits_info}`,
+  },
+  {
+    category: 'feature-request',
+    locale: 'en',
+    template: `Thank you for your valuable suggestion. We understand that adding {capability} would benefit your workflow.
+
+We have shared this with our product team. While we cannot commit to a specific timeline, your feedback directly influences our roadmap priorities.
+
+{alternative_if_exists}`,
+  },
+  {
+    category: 'security',
+    locale: 'en',
+    template: `Thank you for reporting this security concern. Security issues are handled with the highest priority.
+
+This has been immediately escalated to our security team. We will report our findings within {sla_timeframe}.
+
+{protective_action_if_needed}`,
+  },
+  {
+    category: 'partner',
+    locale: 'en',
+    template: `Thank you for your inquiry, partner.
+
+{partner_specific_response}
+
+Our partner support team will contact you within {sla_timeframe}.`,
+  },
+];
+
+// =============================================================================
 // ユーティリティ関数
 // =============================================================================
 
@@ -366,7 +436,7 @@ export function getAutoResponseTemplate(
   category: TicketCategory,
   locale: 'ja' | 'en' = 'ja',
 ): string | undefined {
-  const templates = locale === 'ja' ? AUTO_RESPONSE_TEMPLATES_JA : AUTO_RESPONSE_TEMPLATES_JA; // TODO: 英語テンプレート追加
+  const templates = locale === 'ja' ? AUTO_RESPONSE_TEMPLATES_JA : AUTO_RESPONSE_TEMPLATES_EN;
   return templates.find(t => t.category === category)?.template;
 }
 
