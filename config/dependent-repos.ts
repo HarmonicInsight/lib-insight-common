@@ -285,7 +285,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   {
     repo: 'android-app-voice-tesk-calendar',
     productCode: 'VOICE_TASK_CALENDAR',
-    productName: 'InsightVoiceTaskCalendar',
+    productName: 'しゃべってカレンダー',
     iconCopy: [],
     enabled: true,
   },

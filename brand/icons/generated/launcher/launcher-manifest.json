@@ -193,7 +193,7 @@
     },
     {
       "code": "VOICE_TASK_CALENDAR",
-      "name": "VoiceTaskCalendar",
+      "name": "しゃべってカレンダー",
       "masterIcon": "brand/icons/png/icon-voice-clock.png",
       "category": "utility",
       "displayOrder": 415,
