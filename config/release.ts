@@ -59,13 +59,11 @@
  */
 
 import type { ProductCode } from './products';
+import type { UtilityCode } from './product-catalog';
 
 // =============================================================================
 // 型定義
 // =============================================================================
-
-/** ユーティリティアプリコード */
-export type UtilityCode = 'LAUNCHER' | 'CAMERA' | 'VOICE_CLOCK' | 'QR' | 'PINBOARD' | 'VOICE_MEMO';
 
 /** リリース対象コード（製品 + ユーティリティ） */
 export type ReleaseTargetCode = ProductCode | UtilityCode;
