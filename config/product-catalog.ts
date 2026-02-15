@@ -62,7 +62,7 @@ export const STATUS_LABELS: Record<CatalogStatus, Record<CatalogLocale, string>>
 };
 
 /** ユーティリティアプリコード */
-export type UtilityCode = 'LAUNCHER' | 'CAMERA' | 'VOICE_CLOCK' | 'QR' | 'PINBOARD' | 'VOICE_MEMO';
+export type UtilityCode = 'LAUNCHER' | 'CAMERA' | 'VOICE_CLOCK' | 'QR' | 'PINBOARD' | 'VOICE_MEMO' | 'VOICE_TASK_CALENDAR';
 
 /** カタログで扱う全コード */
 export type CatalogCode = ProductCode | UtilityCode;
@@ -1081,6 +1081,38 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
       en: ['Meeting recording and transcription', 'Field notes capture'],
       ja: ['会議の録音・文字起こし', 'フィールドノートの記録'],
       zh: ['会议录音与转录', '现场笔记记录'],
+    },
+    releases: {},
+  },
+  {
+    code: 'VOICE_TASK_CALENDAR',
+    slug: 'insight-voice-task-calendar',
+    status: 'hidden',
+    displayOrder: 70,
+    category: 'utility',
+    svgIcon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+    colorGradient: 'from-blue-400 to-indigo-500',
+    platforms: ['android'],
+    name: { en: 'Insight Voice Task Calendar', ja: 'Insight Voice Task Calendar', zh: 'Insight Voice Task Calendar' },
+    tagline: {
+      en: 'Voice-powered task management calendar',
+      ja: '音声対応タスク管理カレンダー',
+      zh: '语音驱动的任务管理日历',
+    },
+    description: {
+      en: 'A calendar app with voice-powered task management. Add and manage tasks using voice input for hands-free productivity.',
+      ja: '音声でタスクを追加・管理できるカレンダーアプリ。ハンズフリーで生産性を向上させます。',
+      zh: '通过语音添加和管理任务的日历应用，实现免提高效工作。',
+    },
+    features: {
+      en: ['Voice task input', 'Calendar view', 'Task management', 'Reminders'],
+      ja: ['音声タスク入力', 'カレンダー表示', 'タスク管理', 'リマインダー'],
+      zh: ['语音任务输入', '日历视图', '任务管理', '提醒功能'],
+    },
+    useCases: {
+      en: ['Hands-free task scheduling', 'Voice-powered daily planning'],
+      ja: ['ハンズフリーのタスクスケジューリング', '音声による日次計画'],
+      zh: ['免提任务安排', '语音驱动的日常规划'],
     },
     releases: {},
   },

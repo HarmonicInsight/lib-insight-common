@@ -75,6 +75,7 @@ REPOS=(
     "win-app-insight-pinboard"
     "web-app-insight-qr"
     "android-app-insight-qr"
+    "android-app-voice-tesk-calendar"
 )
 
 WORK_DIR=$(mktemp -d)

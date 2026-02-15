@@ -517,6 +517,26 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
     ],
     notes: 'Expo / React Native。音声メモアプリ。',
   },
+
+  VOICE_TASK_CALENDAR: {
+    code: 'VOICE_TASK_CALENDAR',
+    name: 'InsightVoiceTaskCalendar',
+    nameJa: 'Insight Voice Task Calendar',
+    platform: 'android_native',
+    storeDistribution: 'play_store',
+    versioningScheme: 'semver_with_build_number',
+    signingMethod: 'android_keystore',
+    packageName: 'com.harmonicinsight.insightvoicetaskcalendar',
+    repository: 'HarmonicInsight/android-app-voice-tesk-calendar',
+    requiredLocales: ANDROID_LOCALES,
+    characterLimits: PLAY_STORE_LIMITS,
+    metadataBasePath: 'fastlane/metadata/android',
+    buildCommands: [
+      './gradlew bundleRelease --stacktrace',
+      './gradlew assembleRelease --stacktrace',
+    ],
+    notes: 'Android ネイティブ。音声タスク管理カレンダーアプリ。',
+  },
 };
 
 // =============================================================================
