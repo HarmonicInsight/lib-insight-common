@@ -74,10 +74,12 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             val releaseConfig = signingConfigs.findByName("release")
-            signingConfig = if (releaseConfig?.storeFile != null) {
-                releaseConfig
+            if (releaseConfig?.storeFile != null) {
+                signingConfig = releaseConfig
             } else {
-                signingConfigs.getByName("debug")
+                logger.warn("⚠️ リリース署名が未設定です。デバッグ署名にフォールバックします。")
+                logger.warn("⚠️ Play Store 用ビルドには keystore.properties または環境変数の設定が必要です。")
+                signingConfig = signingConfigs.getByName("debug")
             }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
