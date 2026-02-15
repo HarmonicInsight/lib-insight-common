@@ -1,33 +1,32 @@
 ---
-description: 製品の価格情報・販売戦略・パートナーコミッションを参照。見積もり作成や価格確認に使用。
-argument-hint: "[product-code] [plan]"
+description: 製品の販売情報・パートナーティア別販売条件を参照。見積もり依頼や販売チャネル確認に使用。
+argument-hint: "[product-code]"
 ---
 
-# 価格・販売戦略参照
+# 製品販売情報参照
 
 製品コード: $0
-プラン: $1
 
-## 価格表の参照
+## 販売情報の参照
 
-`insight-common/config/pricing.ts` から該当製品の価格を取得して表示。
+`insight-common/config/pricing.ts` から該当製品の販売情報を取得して表示。
 
 ```typescript
-import { getPrice, getSalesChannel } from '@/insight-common/config/pricing';
+import { getSalesChannel, getProductTier, getProductSalesInfo } from '@/insight-common/config/pricing';
 
-const price = getPrice('$0', '$1');
-// { annualPrice, currency, monthlyEquivalent, unit }
+const info = getProductSalesInfo('$0');
+// { productCode, channel, channelDescription, tier, pricingUnit, notes }
 ```
 
-## パートナー販売価格の計算
+## パートナー販売条件
 
 ```typescript
-import { calculateWholesalePrice } from '@/insight-common/config/reseller-strategy';
+import { getResellerProducts } from '@/insight-common/config/reseller-strategy';
 
-// 各ティアの仕入れ価格を表示
-calculateWholesalePrice(price.annualPrice, 'registered');  // 20% off
-calculateWholesalePrice(price.annualPrice, 'silver');       // 30% off
-calculateWholesalePrice(price.annualPrice, 'gold');         // 40% off
+// ティア別の販売可能製品を確認
+getResellerProducts('registered');
+getResellerProducts('silver');
+getResellerProducts('gold');
 ```
 
 ## 表示フォーマット
@@ -35,18 +34,15 @@ calculateWholesalePrice(price.annualPrice, 'gold');         // 40% off
 以下の形式で回答:
 
 ```
-【$0 — $1 プラン】
-定価: ¥XXX,XXX/年（税抜）
-月額換算: ¥XX,XXX/月
-
-パートナー仕入れ価格:
-  Registered (20% off): ¥XXX,XXX/年
-  Silver (30% off):     ¥XXX,XXX/年
-  Gold (40% off):       ¥XXX,XXX/年
+【$0】
+販売チャネル: コンサルティング連動
+製品ティア: Tier X
+価格単位: per_company / per_user
+価格: 個別見積もり（パートナーと協議の上決定）
 ```
 
 ## 詳細リファレンス
 
-- `insight-common/config/pricing.ts` — 全製品価格定義
+- `insight-common/config/pricing.ts` — 製品販売情報
 - `insight-common/config/reseller-strategy.ts` — パートナー戦略
 - `insight-common/config/sales-strategy.ts` — 販売戦略

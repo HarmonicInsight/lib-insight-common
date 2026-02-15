@@ -103,6 +103,11 @@ jobs:
             product: QR
             name: InsightQR (Android)
 
+          # ── コンサルティングツール ──
+          - repo: android-app-consul-evaluate
+            product: CONSUL_EVAL
+            name: ConsulEvaluate
+
     steps:
       - name: Validate SYNC_PAT secret
         run: |

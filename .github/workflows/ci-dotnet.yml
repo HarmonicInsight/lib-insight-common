@@ -48,4 +48,4 @@ jobs:
         with:
           name: test-results
           path: '**/test-results.trx'
-          retention-days: 30
+          retention-days: 7

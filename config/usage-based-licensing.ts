@@ -23,8 +23,9 @@
  * │                                                                │
  * │   アドオンパック（追加購入・2ティア制）                           │
  * │   ┌──────────────────────────────────────────────┐             │
- * │   │  Standard  ¥10,000 / 200回（Sonnet まで）     │             │
- * │   │  Premium   ¥20,000 / 200回（Opus 対応）       │             │
+ * │   │  Standard  200回（Sonnet まで）                │             │
+ * │   │  Premium   200回（Opus 対応）                  │             │
+ * │   │  価格: パートナーとの協議により決定              │             │
  * │   │  有効期限: 購入日から365日                      │             │
  * │   │  複数パック購入可能（クレジットは累積加算）     │             │
  * │   └──────────────────────────────────────────────┘             │
@@ -93,16 +94,12 @@ export interface AiQuotaDefinition {
   descriptionEn: string;
 }
 
-/** アドオンパック定義 */
+/** アドオンパック定義（価格は Stripe ダッシュボードで設定） */
 export interface AddonPackDefinition {
   /** パック ID */
   id: string;
   /** クレジット数 */
   credits: number;
-  /** 価格（税抜） */
-  price: number;
-  /** 通貨 */
-  currency: 'JPY' | 'USD';
   /** 有効期間（日数） */
   validDays: number;
   /** 利用可能なモデルティア */
@@ -281,8 +278,9 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
 /**
  * AI クレジット アドオンパック（2ティア制）
  *
- * - Standard: ¥10,000 / 200回（Sonnet まで）
- * - Premium:  ¥20,000 / 200回（Opus 対応）
+ * - Standard: 200回（Sonnet まで）
+ * - Premium:  200回（Opus 対応）
+ * - 価格はパートナーとの協議により決定（Stripe ダッシュボードで設定）
  * - 全プランで購入可能（STD でもアドオンでAI利用可能に）
  * - 複数パック購入可能（クレジットは累積加算）
  * - 有効期限: 購入日から365日
@@ -293,8 +291,6 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   {
     id: 'ai_credits_200_standard',
     credits: 200,
-    price: 10_000,
-    currency: 'JPY',
     validDays: 365,
     modelTier: 'standard',
     descriptionJa: 'AI標準パック 200回（Sonnetまで）',
@@ -303,8 +299,6 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   {
     id: 'ai_credits_200_premium',
     credits: 200,
-    price: 20_000,
-    currency: 'JPY',
     validDays: 365,
     modelTier: 'premium',
     descriptionJa: 'AIプレミアムパック 200回（Opus対応）',
@@ -312,11 +306,6 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   },
 ];
 
-/** USD 参考価格（グローバル展開用） */
-export const AI_ADDON_PACKS_USD: Record<string, number> = {
-  ai_credits_200_standard: 67,  // $67 ≈ ¥10,000
-  ai_credits_200_premium: 133,  // $133 ≈ ¥20,000
-};
 
 // =============================================================================
 // クレジット計算関数
@@ -846,7 +835,6 @@ export default {
   // 定義データ
   AI_QUOTA_BY_PLAN,
   AI_ADDON_PACKS,
-  AI_ADDON_PACKS_USD,
   USAGE_API_ENDPOINTS,
   DB_SCHEMA_REFERENCE,
   RPC_FUNCTIONS_REFERENCE,
