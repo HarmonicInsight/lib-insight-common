@@ -75,7 +75,7 @@
 │  insight-common (サブモジュール)                             │
 │  ├── standards/      # プラットフォーム別開発標準            │
 │  ├── brand/          # カラー・フォント・ロゴ               │
-│  ├── config/         # 製品・価格・販売戦略・リセラー・ライセンスサーバー │
+│  ├── config/         # 製品・販売戦略・リセラー・ライセンスサーバー │
 │  ├── infrastructure/ # 認証・DB・API Gateway              │
 │  ├── nlp/           # 日本語NLP (JBCA)                    │
 │  └── docs/          # プラットフォーム標準                 │
@@ -167,6 +167,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | **Blue (#2563EB) をプライマリに使用** | **Gold (#B8942F) を使用** |
 | ハードコードされた色値 | StaticResource/変数を使用 |
 | 独自のライセンス実装 | `InsightLicenseManager` を使用 |
+| 価格情報をWebサイト・公開資料に掲載 | 個別見積もり。パートナーとの協議により決定 |
 | サードパーティキーを各アプリに直書き | `config/third-party-licenses.json` で共通管理 |
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
@@ -179,73 +180,80 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | TODO/FIXME を残したままリリース | リリース前に全て解決する |
 | API キー・シークレットのハードコード | 環境変数 / .env / secrets 経由で参照 |
 
-## 5. 製品コード一覧・価格戦略
+## 5. 製品コード一覧
 
-### 販売チャネルと価格帯（全製品 法人向け B2B Only）
+### 製品ティアと販売チャネル（全製品 法人向け B2B Only）
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  Tier 1: 業務変革ツール（高単価）                                │
+│  Tier 1: 業務変革ツール                                         │
 │  INCA / INBT / IVIN                                            │
-│  年額 98万円〜398万円                                           │
 ├──────────────────────────────────────────────────────────────────┤
-│  Tier 2: AI活用ツール（中単価）                                  │
+│  Tier 2: AI活用ツール                                           │
 │  INMV / INIG                                                    │
-│  年額 48万円〜198万円                                           │
 ├──────────────────────────────────────────────────────────────────┤
 │  Tier 3: InsightOffice Suite（導入ツール）                       │
 │  INSS / IOSH / IOSD / INPY                                     │
-│  年額 ¥39,800〜¥49,800（1ユーザー/年）                          │
 │  コンサル案件のクライアントに業務ツールとして導入                  │
+├──────────────────────────────────────────────────────────────────┤
+│  Tier 4: InsightSeniorOffice（社会貢献ツール）                   │
+│  ISOF                                                           │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
 > 全製品をコンサルティング案件の一環として法人向けに提供。
 > 個人向け（B2C）販売は行わない。決済は Stripe（自社サイト）/ 請求書払い。
+> **価格は全製品個別見積もり。パートナー（販売代理店）との協議により決定。Webサイト等での価格公開は行わない。**
 
 ### Tier 1: 業務変革ツール
 
-| コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
-|-------|-------|------|---------------|---------------|-----|
-| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント | ¥1,980,000 | ¥3,980,000 | 個別見積 |
-| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA + Orchestrator | ¥1,480,000 | ¥2,980,000 | 個別見積 |
-| IVIN | InterviewInsight | 自動ヒアリング・業務調査支援 | 個別見積 | 個別見積 | 個別見積 |
+| コード | 製品名 | 説明 |
+|-------|-------|------|
+| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
+| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA + Orchestrator |
+| IVIN | InterviewInsight | 自動ヒアリング・業務調査支援 |
 
 ### Tier 2: AI活用ツール
 
-| コード | 製品名 | 説明 | STD（税抜/年） | PRO（税抜/年） | ENT |
-|-------|-------|------|---------------|---------------|-----|
-| INMV | InsightMovie | 画像・テキストから動画作成 | ¥980,000 | ¥1,980,000 | 個別見積 |
-| INIG | InsightImageGen | 業務資料向けAI画像の大量自動生成 | ¥480,000 | ¥980,000 | 個別見積 |
+| コード | 製品名 | 説明 |
+|-------|-------|------|
+| INMV | InsightMovie | 画像・テキストから動画作成 |
+| INIG | InsightImageGen | 業務資料向けAI画像の大量自動生成 |
 
 ### Tier 3: InsightOffice Suite
 
-| コード | 製品名 | 説明 | STD（税抜/人/年） | PRO（税抜/人/年） | ENT |
-|-------|-------|------|------------------|------------------|-----|
-| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー | ¥39,800 | ¥49,800 | 個別見積 |
-| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 | ¥39,800 | ¥49,800 | 個別見積 |
-| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 | ¥39,800 | ¥49,800 | 個別見積 |
-| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 | ¥39,800 | ¥49,800 | 個別見積 |
+| コード | 製品名 | 説明 |
+|-------|-------|------|
+| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー |
+| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 |
+| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 |
+| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 |
+
+### Tier 4: InsightSeniorOffice
+
+| コード | 製品名 | 説明 |
+|-------|-------|------|
+| ISOF | InsightSeniorOffice | AIアシスタント搭載 — シニア向け統合オフィスツール |
 
 > **考え方**: 全製品コンサルティング案件の一環として提供。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。パートナー（代理店）経由での販売も可能。
 
-### 価格定義ファイル
+### 製品情報の参照
 
 ```typescript
-import { getPrice, getSalesChannel } from '@/insight-common/config/pricing';
+import { getSalesChannel, getProductTier } from '@/insight-common/config/pricing';
 
 // 製品の販売チャネルを確認（全製品 consulting）
 getSalesChannel('INCA');  // 'consulting'
 getSalesChannel('INSS');  // 'consulting'
 
-// 価格を取得
-getPrice('INSS', 'STD');  // { annualPrice: 39800, currency: 'JPY', monthlyEquivalent: 3317, unit: 'per_user' }
-getPrice('INCA', 'PRO');  // { annualPrice: 3980000, currency: 'JPY', monthlyEquivalent: 331667 }
+// 製品のティアを確認
+getProductTier('INCA');   // 1
+getProductTier('INSS');   // 3
 ```
 
 **新規製品を追加する場合:**
 1. `config/products.ts` に登録
-2. `config/pricing.ts` に価格を設定
+2. `config/pricing.ts` に販売情報を設定
 3. `config/sales-strategy.ts` に販売戦略を設定
 4. この一覧に追加
 5. ライセンス機能マトリクスを定義
@@ -290,7 +298,7 @@ import { getSalesStrategy, getProductsByRegion } from '@/insight-common/config/s
 // 製品の販売戦略を取得
 const strategy = getSalesStrategy('INSS');
 strategy.targetMarkets;     // Phase別の展開マーケット
-strategy.positioning;       // 'PowerPointのコンテンツ抽出・一括更新を自動化...'
+strategy.positioning;       // ポジショニング文
 
 // 地域で販売可能な製品を取得
 getProductsByRegion('JP');   // 全製品
@@ -306,50 +314,38 @@ getProductsByRegion('SEA');  // 全製品
 │  Registered  │    Silver     │     Gold      │
 │  登録パートナー│  シルバー      │    ゴールド    │
 ├──────────────┼───────────────┼───────────────┤
-│  誰でも参加可 │  年間5件以上   │  年間20件以上  │
-│  仕入値引 20% │  仕入値引 30%  │  仕入値引 40% │
+│  誰でも参加可 │  実績に基づく   │  上位実績      │
 │  非独占       │  非独占        │  地域独占可    │
 │  セルフサーブ │  専任担当      │  専任+共同マーケ│
 └──────────────┴───────────────┴───────────────┘
 ```
 
-### コミッション構造（仕入れ値引きモデル）
-
-| ティア | 仕入れ値引き | 初年度コミッション | 更新コミッション | 紹介のみ |
-|:------:|:----------:|:----------------:|:--------------:|:-------:|
-| Registered | 20% | 20% | 10% | 15% |
-| Silver | 30% | 30% | 15% | 20% |
-| Gold | 40% | 40% | 20% | 25% |
+> 仕入れ値引率・コミッション率はパートナーとの個別協議により決定。
 
 ### リセラー対象製品（ティア別）
 
-| 製品 | 最低ティア | 最低販売価格 | デモ | NFR |
-|------|:--------:|:----------:|:----:|:---:|
-| INSS / IOSH / IOSD / INPY（Tier 3） | Registered | 定価の80%以上 | 5本 | 2本 |
-| INMV / INIG（Tier 2） | Silver | 定価の80%以上 | 3本 | 1本 |
-| INCA / INBT / IVIN（Tier 1） | Gold | 定価の85%以上 | 2本 | 1本 |
+| 製品 | 最低ティア | デモ | NFR |
+|------|:--------:|:----:|:---:|
+| INSS / IOSH / IOSD / INPY / ISOF（Tier 3+4） | Registered | 5本 | 2本 |
+| INMV / INIG（Tier 2） | Silver | 3本 | 1本 |
+| INCA / INBT / IVIN（Tier 1） | Gold | 2本 | 1本 |
 
-> **全製品がパートナー経由で販売可能**。ただし高単価製品はティア制限あり。
+> **全製品がパートナー経由で販売可能**。ただし Tier 1 製品はティア制限あり。
 
 ### 契約条件
 
 - **契約期間**: 12ヶ月（自動更新）、解約は3ヶ月前通知
 - **支払サイト**: 30日
-- **初年度ノルマ**: なし（2年目以降、ティア維持には最低件数が必要）
 - **顧客所有権**: ライセンス契約はHARMONIC insightが締結。顧客リストは共有。
 - **サポート分担**: 1次（操作）=パートナー、2次（バグ・技術）=HARMONIC insight
 
 ```typescript
-import { calculateWholesalePrice, getResellerProducts } from '@/insight-common/config/reseller-strategy';
+import { getResellerProducts } from '@/insight-common/config/reseller-strategy';
 
 // ティア別の販売可能製品
-getResellerProducts('registered');  // ['INSS', 'IOSH', 'IOSD', 'INPY']
-getResellerProducts('silver');      // ['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INIG']
+getResellerProducts('registered');  // ['INSS', 'IOSH', 'IOSD', 'INPY', 'ISOF']
+getResellerProducts('silver');      // ['INSS', 'IOSH', 'IOSD', 'INPY', 'ISOF', 'INMV', 'INIG']
 getResellerProducts('gold');        // 全製品
-
-// Silver パートナーがINSS STD（¥39,800/人/年）を販売した場合
-calculateWholesalePrice(39800, 'silver');
-// { wholesalePrice: 27860, partnerProfit: 11940, discount: 0.30 }
 ```
 
 ## 8. ライセンスシステム
@@ -396,7 +392,7 @@ calculateWholesalePrice(39800, 'silver');
 | Standard ティア | Sonnet（基本プラン / Standard アドオン） |
 | Premium ティア | Opus（Premium アドオン / TRIAL / ENT） |
 | ライセンス制御 | FREE: 20回 / PRO: 100回 / ENT: 無制限（STD は AI なし） |
-| 追加パック | Standard ¥10,000 / 200回、Premium ¥20,000 / 200回 |
+| 追加パック | Standard / Premium（価格はパートナーと協議の上決定） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
 **モデルティア:**

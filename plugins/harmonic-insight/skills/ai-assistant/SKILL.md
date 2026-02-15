@@ -44,7 +44,7 @@ const model = getModelForTier(balance.effectiveModelTier);
 ## クレジットプール
 
 - `ai_assistant` + `ai_editor` で**共有プール**
-- 追加パック: Standard ¥10,000/200回、Premium ¥20,000/200回
+- 追加パック: Standard 200回 / Premium 200回（価格はパートナーと協議の上決定）
 - Standard クレジットを先に消費、次に Premium
 
 ## Tool Use（IOSH スプレッドシート操作）

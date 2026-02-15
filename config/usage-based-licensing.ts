@@ -23,8 +23,9 @@
  * │                                                                │
  * │   アドオンパック（追加購入・2ティア制）                           │
  * │   ┌──────────────────────────────────────────────┐             │
- * │   │  Standard  ¥10,000 / 200回（Sonnet まで）     │             │
- * │   │  Premium   ¥20,000 / 200回（Opus 対応）       │             │
+ * │   │  Standard  200回（Sonnet まで）                │             │
+ * │   │  Premium   200回（Opus 対応）                  │             │
+ * │   │  価格: パートナーとの協議により決定              │             │
  * │   │  有効期限: 購入日から365日                      │             │
  * │   │  複数パック購入可能（クレジットは累積加算）     │             │
  * │   └──────────────────────────────────────────────┘             │
@@ -281,8 +282,9 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
 /**
  * AI クレジット アドオンパック（2ティア制）
  *
- * - Standard: ¥10,000 / 200回（Sonnet まで）
- * - Premium:  ¥20,000 / 200回（Opus 対応）
+ * - Standard: 200回（Sonnet まで）
+ * - Premium:  200回（Opus 対応）
+ * - 価格はパートナーとの協議により決定（Stripe ダッシュボードで設定）
  * - 全プランで購入可能（STD でもアドオンでAI利用可能に）
  * - 複数パック購入可能（クレジットは累積加算）
  * - 有効期限: 購入日から365日
@@ -293,7 +295,7 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   {
     id: 'ai_credits_200_standard',
     credits: 200,
-    price: 10_000,
+    price: 0, // Stripe ダッシュボードで設定（パートナーとの協議により決定）
     currency: 'JPY',
     validDays: 365,
     modelTier: 'standard',
@@ -303,7 +305,7 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   {
     id: 'ai_credits_200_premium',
     credits: 200,
-    price: 20_000,
+    price: 0, // Stripe ダッシュボードで設定（パートナーとの協議により決定）
     currency: 'JPY',
     validDays: 365,
     modelTier: 'premium',
@@ -312,10 +314,10 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
   },
 ];
 
-/** USD 参考価格（グローバル展開用） */
+/** USD 参考価格（グローバル展開用 — パートナーとの協議により決定） */
 export const AI_ADDON_PACKS_USD: Record<string, number> = {
-  ai_credits_200_standard: 67,  // $67 ≈ ¥10,000
-  ai_credits_200_premium: 133,  // $133 ≈ ¥20,000
+  ai_credits_200_standard: 0, // Stripe ダッシュボードで設定
+  ai_credits_200_premium: 0,  // Stripe ダッシュボードで設定
 };
 
 // =============================================================================
