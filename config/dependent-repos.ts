@@ -271,6 +271,17 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
     ],
     enabled: true,
   },
+
+  // ══════════════════════════════════════════════════════
+  // コンサルティングツール
+  // ══════════════════════════════════════════════════════
+  {
+    repo: 'android-app-consul-evaluate',
+    productCode: 'CONSUL_EVAL',
+    productName: 'ConsulEvaluate',
+    iconCopy: [],
+    enabled: true,
+  },
 ];
 
 // =============================================================================
