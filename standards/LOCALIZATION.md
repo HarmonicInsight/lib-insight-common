@@ -93,7 +93,7 @@ app/src/main/res/
 ```xml
 <!-- values/strings.xml (日本語) -->
 <resources>
-    <string name="app_name">Insight Camera</string>
+    <string name="app_name">スッキリカメラ</string>
     <string name="capture_button">撮影</string>
     <string name="flash_auto">自動</string>
     <string name="flash_on">オン</string>

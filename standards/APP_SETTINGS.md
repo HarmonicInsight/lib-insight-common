@@ -12,7 +12,7 @@
 |-------|------------|-----------|
 | Voice Task Calendar | `com.harmonicinsight.voicetask` | `android-app-voice-tesk-calendar` |
 | Voice Clock | `com.insightvoiceclock` | `android-app-insight-voice-clock` |
-| Insight Camera | `com.harmonic.insight.camera` | `android-app-insight-camera` |
+| スッキリカメラ | `com.harmonic.insight.camera` | `android-app-insight-camera` |
 | Insight QR | `com.harmonicinsight.insightqr` | `android-app-insight-qr` |
 
 ---
@@ -60,7 +60,7 @@
 |-------|------------|
 | Voice Task Calendar | テーマ（ライト/ダーク/システム）、リマインダー通知 |
 | Voice Clock | （なし — 外観セクションのみ） |
-| Insight Camera | （なし — 外観セクションのみ） |
+| スッキリカメラ | （なし — 外観セクションのみ） |
 | Insight QR | URLを自動で開く、触覚フィードバック、履歴保存、URL安全性チェック |
 
 ### 2.2 外観セクション（共通）
@@ -233,7 +233,7 @@ fun StandardSettingsFooter(
 |-------|:--------:|:--------:|------|
 | Voice Task Calendar | なし | なし | 全データローカル保存 |
 | Voice Clock | あり | Crashlytics + Analytics | クラッシュログ・使用統計 |
-| Insight Camera | なし | なし | 写真・動画はデバイスに保存 |
+| スッキリカメラ | なし | なし | 写真・動画はデバイスに保存 |
 | Insight QR | なし | なし | スキャン履歴はローカル暗号化保存 |
 
 ### Data Safety 回答テンプレート（データ収集なしのアプリ）

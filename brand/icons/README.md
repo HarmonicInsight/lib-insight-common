@@ -26,7 +26,7 @@ brand/icons/
 │   ├── icon-interview-insight.png    # IVIN - InterviewInsight
 │   ├── icon-senior-office.png        # ISOF - InsightSeniorOffice
 │   ├── icon-launcher.png             # Insight Launcher
-│   ├── icon-camera.png               # Insight Camera
+│   ├── icon-camera.png               # スッキリカメラ
 │   ├── icon-voice-clock.png          # Insight Voice Clock
 │   ├── icon-qr.png                   # Insight QR
 │   ├── icon-pinboard.png             # Insight PinBoard
@@ -79,7 +79,7 @@ brand/icons/
 | ファイル | アプリ | プラットフォーム | モチーフ |
 |---------|--------|:---------------:|---------|
 | `icon-launcher.png` | Insight Launcher | C# WPF | 2x2 グリッド + ロケット + 回路基板 |
-| `icon-camera.png` | Insight Camera | Expo (iOS/Android) | カメラ + アパーチャ |
+| `icon-camera.png` | スッキリカメラ | Expo (iOS/Android) | カメラ + アパーチャ |
 | `icon-voice-clock.png` | Insight Voice Clock | Android Native (Kotlin) | 目覚まし時計 + マイク + 音波 |
 | `icon-voice-clock.png` | しゃべってカレンダー | Expo (iOS/Android) | 目覚まし時計 + マイク + 音波（VOICE_CLOCK と共有） |
 | `icon-qr.png` | Insight QR | Next.js (Web) | QR コードパターン |

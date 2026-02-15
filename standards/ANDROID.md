@@ -59,7 +59,7 @@ templates/android/
 | `__APPNAME__` | パッケージ名末尾 | `camera` |
 | `__AppName__` | テーマ関数名 | `Camera` |
 | `__APP_PACKAGE__` | 完全パッケージ名 | `com.harmonic.insight.camera` |
-| `__app_display_name__` | 表示名 | `Insight Camera` |
+| `__app_display_name__` | 表示名 | `スッキリカメラ` |
 | `__PRODUCT_CODE__` | 製品コード | `IOSH` |
 
 ### 標準検証
@@ -173,7 +173,7 @@ com.harmonic.insight.<アプリ名>
 
 | アプリ | パッケージ名 | 種別 |
 |--------|------------|------|
-| Insight Camera | `com.harmonic.insight.camera` | Native Kotlin |
+| スッキリカメラ | `com.harmonic.insight.camera` | Native Kotlin |
 | Insight Launcher | `com.harmonic.insight.launcher` | Native Kotlin |
 | Insight Voice Clock | `com.harmonic.insight.voiceclock` | Native Kotlin |
 | InclineInsight | `com.harmonic.inclineinsight` | Native Kotlin |
@@ -1573,7 +1573,7 @@ import { colors } from '@/lib/colors';
 |--------|----------|--------|:---------------:|:--------:|:---:|:---:|:------:|
 | Insight Voice Clock | ❌ `com.insightvoiceclock` | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 80% |
 | Insight Launcher | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
-| Insight Camera | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
+| スッキリカメラ | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
 | InclineInsight | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
 | ConsulType（コンサル評価）| ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |
 | Harmonic Horoscope | ✅ | ✅ Ivory & Gold | ✅ | ✅ | ✅ 35 | ✅ 17 | 90% |

@@ -132,8 +132,8 @@ getLocalesForPhase(2);  // [ja, en, th, vi]
 getAndroidValuesDir('en');  // 'values-en'
 
 // Play Store メタデータの文字数検証
-validateStoreMetadata('play', 'title', 'Insight Camera');
-// { valid: true, length: 14, limit: 30 }
+validateStoreMetadata('play', 'title', 'スッキリカメラ');
+// { valid: true, length: 6, limit: 30 }
 ```
 
 ## 新しい言語の追加
