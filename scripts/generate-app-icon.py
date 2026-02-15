@@ -229,7 +229,7 @@ UTILITY_ICONS = {
         'build_path': 'Resources/',
     },
     'VOICE_TASK_CALENDAR': {
-        'name': 'VoiceTaskCalendar',
+        'name': 'しゃべってカレンダー',
         'icon': 'icon-voice-clock.png',
         'platform': 'expo',
         'build_path': 'assets/',

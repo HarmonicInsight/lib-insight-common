@@ -520,8 +520,8 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
 
   VOICE_TASK_CALENDAR: {
     code: 'VOICE_TASK_CALENDAR',
-    name: 'InsightVoiceTaskCalendar',
-    nameJa: 'Insight Voice Task Calendar',
+    name: 'Shabette Calendar',
+    nameJa: 'しゃべってカレンダー',
     platform: 'android_native',
     storeDistribution: 'play_store',
     versioningScheme: 'semver_with_build_number',
@@ -535,7 +535,7 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
       './gradlew bundleRelease --stacktrace',
       './gradlew assembleRelease --stacktrace',
     ],
-    notes: 'Android ネイティブ。音声タスク管理カレンダーアプリ。',
+    notes: 'Android ネイティブ。しゃべってカレンダー — 音声入力でタスク・メモ・予定をサクッと管理。',
   },
 };
 
