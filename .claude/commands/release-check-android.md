@@ -43,6 +43,7 @@ Android (Kotlin + Jetpack Compose) アプリ専用のリリース前チェック
    ```bash
    chmod +x ./insight-common/scripts/release-check.sh 2>/dev/null || true
    chmod +x ./insight-common/scripts/validate-standards.sh 2>/dev/null || true
+   chmod +x ./insight-common/scripts/create-release.sh 2>/dev/null || true
    ```
 
 4. `build.gradle.kts` の存在を確認し、Android プロジェクトであることを検証する。
@@ -300,6 +301,11 @@ Phase 7: CI/CD               ✅ 完了 (3/3 OK)
 4. [ ] keystore の存在確認（ローカル / CI secrets）
 
 → 全エラーが解消されていればリリース可能です。
+
+次のステップ（GitHub Release 作成）:
+  ./insight-common/scripts/create-release.sh .
+  # 初回 v1.0.0 の上書き: --version 1.0.0 --overwrite
+  # 詳細: standards/ANDROID.md §9.5
 ============================================================
 ```
 
@@ -307,7 +313,8 @@ Phase 7: CI/CD               ✅ 完了 (3/3 OK)
 
 ## 参照ドキュメント
 
-- `standards/ANDROID.md` — Android 開発標準（§15 チェックリスト）
-- `standards/RELEASE_CHECKLIST.md` — 全プラットフォーム共通リリースチェックリスト（§2 Android 固有）
+- `standards/ANDROID.md` — Android 開発標準（§9.5 リリース管理、§15 チェックリスト）
+- `standards/RELEASE_CHECKLIST.md` — 全プラットフォーム共通リリースチェックリスト（§2 Android 固有、§9 リリース管理）
 - `standards/LOCALIZATION.md` — ストアメタデータのローカライゼーション（§6）
+- `scripts/create-release.sh` — リリース作成ヘルパースクリプト（タグ作成・プッシュ・上書き対応）
 - `CLAUDE.md` §12 — 開発完了チェックリスト

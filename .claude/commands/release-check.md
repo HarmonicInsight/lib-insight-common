@@ -42,8 +42,10 @@
    ```bash
    chmod +x ./insight-common/scripts/release-check.sh 2>/dev/null || true
    chmod +x ./insight-common/scripts/validate-standards.sh 2>/dev/null || true
+   chmod +x ./insight-common/scripts/create-release.sh 2>/dev/null || true
    chmod +x ./scripts/release-check.sh 2>/dev/null || true
    chmod +x ./scripts/validate-standards.sh 2>/dev/null || true
+   chmod +x ./scripts/create-release.sh 2>/dev/null || true
    ```
 
 4. プラットフォームを自動検出する:
@@ -269,6 +271,10 @@ Phase 4: ストアメタデータ  ✅ 完了
 3. [ ] リリースノートの内容承認
 
 → 全エラーが解消されていればリリース可能です。
+
+次のステップ（リリース作成）:
+  ./insight-common/scripts/create-release.sh .
+  # 上書きの場合: --overwrite オプションを追加
 ========================================
 ```
 
@@ -282,5 +288,6 @@ Phase 4: ストアメタデータ  ✅ 完了
 
 - `standards/RELEASE_CHECKLIST.md` — 全チェック項目の詳細定義（チェック ID 付き）
 - `standards/LOCALIZATION.md` — ストアメタデータのローカライゼーション
+- `scripts/create-release.sh` — リリース作成ヘルパースクリプト（タグ作成・プッシュ）
 - `CLAUDE.md` §12 — 開発完了チェックリスト
 - `CLAUDE.md` §13 — リリースチェック概要
