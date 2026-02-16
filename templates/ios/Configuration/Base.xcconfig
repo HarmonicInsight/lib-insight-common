@@ -1,0 +1,33 @@
+// ============================================================
+// Base.xcconfig — 全ビルド構成共通の設定
+//
+// Xcode GUI でビルド設定を変更する代わりに、ここで一元管理する。
+// → Xcode 上で誤って設定を変更しても、xcconfig が優先される。
+// → テキストファイルなので diff / レビュー / マージが容易。
+//
+// __APP_BUNDLE_ID__ を実際の Bundle ID に置換してください。
+// ============================================================
+
+// --- バージョン管理 ---
+// Makefile の bump-version で自動更新される
+MARKETING_VERSION = 1.0.0
+CURRENT_PROJECT_VERSION = 1
+
+// --- ターゲット ---
+IPHONEOS_DEPLOYMENT_TARGET = 16.0
+SWIFT_VERSION = 5.9
+TARGETED_DEVICE_FAMILY = 1,2
+
+// --- Bundle ID ---
+PRODUCT_BUNDLE_IDENTIFIER = __APP_BUNDLE_ID__
+
+// --- 言語 ---
+SWIFT_EMIT_LOC_STRINGS = YES
+
+// --- 警告を厳格に ---
+SWIFT_STRICT_CONCURRENCY = complete
+SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
+GCC_TREAT_WARNINGS_AS_ERRORS = YES
+
+// --- セキュリティ ---
+ENABLE_HARDENED_RUNTIME = YES

@@ -1,7 +1,7 @@
-# Xcode
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
-*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+# Xcode — XcodeGen で生成するため .xcodeproj 自体をコミットしない
+# これにより .pbxproj マージコンフリクト地獄を完全に回避
+*.xcodeproj/
+*.xcworkspace/
 DerivedData/
 build/
 *.moved-aside
@@ -14,8 +14,9 @@ build/
 
 # Swift Package Manager
 .build/
-.swiftpm/
-Package.resolved
+.swiftpm/xcode/
+# Package.resolved はアプリではコミットする（再現性のため）
+# ライブラリの場合は gitignore に追加すること
 
 # CocoaPods (if ever used)
 Pods/

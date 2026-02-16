@@ -1,0 +1,27 @@
+// ============================================================
+// Release.xcconfig — リリースビルド固有の設定
+// ============================================================
+
+#include "Base.xcconfig"
+
+// --- 最適化 ---
+SWIFT_OPTIMIZATION_LEVEL = -O
+SWIFT_COMPILATION_MODE = wholemodule
+GCC_OPTIMIZATION_LEVEL = s
+
+// --- デバッグ情報 ---
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+SWIFT_ACTIVE_COMPILATION_CONDITIONS =
+
+// --- コードサイズ削減 ---
+DEAD_CODE_STRIPPING = YES
+STRIP_INSTALLED_PRODUCT = YES
+
+// --- 署名（手動 — CI / App Store 配布用） ---
+// ローカル開発で自動署名を使いたい場合は Automatic に変更
+CODE_SIGN_STYLE = Manual
+// CODE_SIGN_IDENTITY = Apple Distribution
+// PROVISIONING_PROFILE_SPECIFIER = your-profile-name
+
+// --- Bitcode (Xcode 14+ で廃止済みだが明示) ---
+ENABLE_BITCODE = NO

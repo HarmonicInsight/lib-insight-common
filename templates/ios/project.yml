@@ -2,9 +2,15 @@
 # XcodeGen プロジェクト定義
 #
 # 使い方:
-#   brew install xcodegen
-#   xcodegen generate
-#   open __AppName__.xcodeproj
+#   make setup          # XcodeGen インストール + プロジェクト生成
+#   make open           # Xcode で開く
+#   make bump-patch     # バージョン +1
+#
+# .xcodeproj は gitignore されるため、コミットしない。
+# → .pbxproj マージコンフリクト地獄を完全回避。
+#
+# ビルド設定は Configuration/*.xcconfig で管理。
+# → Xcode GUI で設定を変更しても xcconfig が優先される。
 #
 # __AppName__ を実際のアプリ名 (PascalCase) に置換してください。
 # __APPNAME__ を実際のターゲット名 (小文字) に置換してください。
@@ -18,8 +24,15 @@ options:
   deploymentTarget:
     iOS: "16.0"
   developmentLanguage: ja
-  xcodeVersion: "15.0"
+  xcodeVersion: "16.2"
   generateEmptyDirectories: true
+  # .xcodeproj 内のビルド設定を最小化（xcconfig に委譲）
+  minimumXcodeGenVersion: "2.38.0"
+
+# xcconfig でビルド設定を一元管理
+configFiles:
+  Debug: Configuration/Debug.xcconfig
+  Release: Configuration/Release.xcconfig
 
 settings:
   base:
@@ -42,6 +55,9 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         SUPPORTED_INTERFACE_ORIENTATIONS: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         SUPPORTED_INTERFACE_ORIENTATIONS~ipad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+    configFiles:
+      Debug: Configuration/Debug.xcconfig
+      Release: Configuration/Release.xcconfig
     # SPM 依存を追加する場合:
     # dependencies:
     #   - package: KeychainAccess
