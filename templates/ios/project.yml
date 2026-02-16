@@ -1,0 +1,54 @@
+# ============================================================
+# XcodeGen プロジェクト定義
+#
+# 使い方:
+#   brew install xcodegen
+#   xcodegen generate
+#   open __AppName__.xcodeproj
+#
+# __AppName__ を実際のアプリ名 (PascalCase) に置換してください。
+# __APPNAME__ を実際のターゲット名 (小文字) に置換してください。
+# __APP_BUNDLE_ID__ を Bundle Identifier に置換してください。
+# ============================================================
+
+name: __AppName__
+
+options:
+  bundleIdPrefix: com.harmonic.insight
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: ja
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: 1
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  __AppName__:
+    type: application
+    platform: iOS
+    sources:
+      - path: __APPNAME__
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: __APP_BUNDLE_ID__
+        INFOPLIST_FILE: __APPNAME__/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SUPPORTED_INTERFACE_ORIENTATIONS: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        SUPPORTED_INTERFACE_ORIENTATIONS~ipad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+    # SPM 依存を追加する場合:
+    # dependencies:
+    #   - package: KeychainAccess
+    #     product: KeychainAccess
+
+# SPM パッケージを追加する場合:
+# packages:
+#   KeychainAccess:
+#     url: https://github.com/kishikawakatsumi/KeychainAccess.git
+#     from: "4.2.2"

@@ -1,0 +1,37 @@
+/*
+  English string resources
+  __app_display_name__ should match the Japanese Localizable.strings app name.
+*/
+
+/* === Common UI === */
+"app_name" = "__app_display_name__";
+"ok" = "OK";
+"cancel" = "Cancel";
+"close" = "Close";
+"save" = "Save";
+"delete" = "Delete";
+"edit" = "Edit";
+"settings" = "Settings";
+"back" = "Back";
+"next" = "Next";
+"done" = "Done";
+"loading" = "Loading...";
+"error_generic" = "An error occurred";
+"retry" = "Retry";
+
+/* === License === */
+"license_title" = "License Activation";
+"license_current_plan" = "Current Plan";
+"license_expiry" = "Expiry Date";
+"license_email_hint" = "Email Address";
+"license_key_hint" = "License Key";
+"license_activate" = "Activate";
+"license_clear" = "Clear";
+"license_activated" = "License activated successfully";
+"license_invalid_key" = "Invalid license key format";
+"license_wrong_product" = "This key is not for this product";
+"license_features" = "Features";
+"license_feature_available" = "Available";
+"license_feature_unavailable" = "Unavailable";
+
+/* === App-specific strings go here === */
