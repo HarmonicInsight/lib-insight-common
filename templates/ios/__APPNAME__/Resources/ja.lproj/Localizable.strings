@@ -1,0 +1,42 @@
+/*
+  日本語（デフォルト）文字列リソース
+  __app_display_name__ をアプリの表示名に置換してください。
+
+  ルール:
+  - UI テキストはすべてここで管理。SwiftUI 内のハードコード禁止。
+  - NSLocalizedString("xxx", comment: "") を使用。
+  - Android の strings.xml とキーを一致させること。
+*/
+
+/* === 共通 UI === */
+"app_name" = "__app_display_name__";
+"ok" = "OK";
+"cancel" = "キャンセル";
+"close" = "閉じる";
+"save" = "保存";
+"delete" = "削除";
+"edit" = "編集";
+"settings" = "設定";
+"back" = "戻る";
+"next" = "次へ";
+"done" = "完了";
+"loading" = "読み込み中...";
+"error_generic" = "エラーが発生しました";
+"retry" = "再試行";
+
+/* === ライセンス === */
+"license_title" = "ライセンス認証";
+"license_current_plan" = "現在のプラン";
+"license_expiry" = "有効期限";
+"license_email_hint" = "メールアドレス";
+"license_key_hint" = "ライセンスキー";
+"license_activate" = "アクティベート";
+"license_clear" = "クリア";
+"license_activated" = "ライセンスが有効化されました";
+"license_invalid_key" = "無効なライセンスキー形式です";
+"license_wrong_product" = "この製品用のキーではありません";
+"license_features" = "機能一覧";
+"license_feature_available" = "利用可能";
+"license_feature_unavailable" = "利用不可";
+
+/* === アプリ固有の文字列はここに追加 === */

@@ -1,0 +1,10 @@
+__FULL_DESCRIPTION_JA__
+
+主な機能:
+• 機能1の説明
+• 機能2の説明
+• 機能3の説明
+
+HARMONIC insight が提供する業務支援ツールです。
+
+お問い合わせ: support@harmonicinsight.com
