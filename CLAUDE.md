@@ -15,6 +15,8 @@
 | 新規プロジェクト作成・UI 実装開始 | デザイン標準（Ivory & Gold）を確認 |
 | AI アシスタント機能の実装 | `standards/AI_ASSISTANT.md` を確認 |
 | ストアメタデータ・スクリーンショットの話題 | `standards/LOCALIZATION.md` §6 を参照 |
+| ライブラリ更新・バージョンアップ・依存関係の変更 | `compatibility/` の互換性マトリクスを確認 |
+| 「バージョン」「アップグレード」「アップデート」 | `config/app-versions.ts` と `compatibility/` を参照 |
 
 ---
 
@@ -758,6 +760,8 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **ローカライゼーション**: 日本語（デフォルト）+ 英語の翻訳が完全に用意されている
 - [ ] **ローカライゼーション**: ストアメタデータ（タイトル・説明）が日英で用意されている（モバイルアプリのみ）
 - [ ] **検証**: `validate-standards.sh` が成功する
+- [ ] **バージョン**: `config/app-versions.ts` のバージョン・ビルド番号が更新されている
+- [ ] **互換性**: `compatibility/` の NG 組み合わせに該当していない
 
 ## 13. リリースチェック
 
@@ -821,7 +825,96 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **バージョン**: pyproject.toml のバージョンが更新されている
 - [ ] **依存**: 全パッケージがピン留め（`==`）されている
 
-## 14. 困ったときは
+## 14. アプリバージョン管理
+
+### バージョンレジストリ
+
+全製品のバージョン・ビルド番号は `config/app-versions.ts` で一元管理しています。
+
+```typescript
+import { getAppVersion, getBuildNumber, toAndroidVersionCode, toIosBundleVersion } from '@/insight-common/config/app-versions';
+
+// バージョン取得
+getAppVersion('INSS');        // '2.1.0'
+getBuildNumber('INSS');       // 45
+
+// プラットフォーム固有の形式
+toAndroidVersionCode('INSS'); // 2001045
+toIosBundleVersion('INSS');   // '2.1.0.45'
+```
+
+### バージョン更新手順
+
+1. `config/app-versions.ts` の該当製品の `version` / `buildNumber` を更新
+2. `releaseHistory` に新エントリを追加
+3. `toolchain` がアプリの実際のツールチェーンと一致することを確認
+4. `validate-standards.sh` で検証
+
+## 15. ライブラリ互換性マトリクス
+
+### 概要
+
+`compatibility/` ディレクトリでプラットフォーム別のツールチェーン・ライブラリ互換性を管理しています。
+バージョンアップ時の衝突（NG 組み合わせ）を事前に検知するための知識ベースです。
+
+```
+compatibility/
+├── index.ts            # 統合エントリポイント
+├── android-matrix.ts   # Android: AGP/Gradle/Kotlin/Compose/ライブラリ
+└── ios-matrix.ts       # iOS: Xcode/Swift/ライブラリ
+```
+
+### Android の主要 NG 組み合わせ
+
+| 組み合わせ | 問題 | 深刻度 |
+|-----------|------|:------:|
+| AGP 9.0 + Gradle 8.x | ビルド失敗 | critical |
+| AGP 9.0 + KSP1 | 非互換 | critical |
+| Kotlin 2.0+ + 旧 composeOptions | ビルド失敗 | critical |
+| KSP1 + Kotlin 2.3+ | 非互換 | critical |
+| Firebase BOM 34.x + firebase-*-ktx | artifact 削除済み | high |
+| Dagger 2.57+ + Gradle ≤8.10.2 | 互換性問題 | high |
+| Ktor 3.2.0 + minSdk <30 | D8 互換性問題 | high |
+
+### iOS の主要 NG 組み合わせ
+
+| 組み合わせ | 問題 | 深刻度 |
+|-----------|------|:------:|
+| Xcode 26 + macOS <15.6 | 起動不可 | critical |
+| macOS Tahoe + Xcode ≤16.3 | 動作不可 | critical |
+| Swift 6.1 OSS + Xcode 26 | Foundation ビルド失敗 | critical |
+| Alamofire 5.11 + Xcode <16.0 | Swift 6.0 必須 | critical |
+| Swift 6 mode + 未対応ライブラリ | 大量の concurrency エラー | high |
+| Realm <10.54 + Xcode 26 | コンパイル不可 | high |
+
+### 推奨プロファイル
+
+```typescript
+import { getRecommendedProfile, getRecommendedIosProfile } from '@/insight-common/compatibility';
+
+// Android
+const androidProfile = getRecommendedProfile('stable');
+// → { agp: '8.9.0', gradle: '8.11.1', kotlin: '2.2.20', ... }
+
+// iOS
+const iosProfile = getRecommendedIosProfile('cutting_edge');
+// → { xcode: '26.2', swift: '6.2.3', deploymentTarget: 'iOS 17.0', ... }
+```
+
+### App Store / Google Play 期限
+
+| プラットフォーム | 期限 | 要件 |
+|----------------|------|------|
+| **Google Play** | 2026-08-31 | targetSdk 36 (Android 16) |
+| **App Store** | 2026-04-28 | Xcode 26 / iOS 26 SDK |
+
+### 互換性マトリクスの更新
+
+- 主要ライブラリのリリース時に `compatibility/*.ts` を更新
+- `ANDROID_LIBRARIES` / `IOS_LIBRARIES` の `lastVerified` 日付を確認
+- 新たな NG 組み合わせを発見したら `*_CONFLICT_RULES` に追加
+
+## 16. 困ったときは
 
 ```bash
 # 標準検証
