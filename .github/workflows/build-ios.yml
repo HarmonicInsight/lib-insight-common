@@ -1,0 +1,125 @@
+name: Build iOS (Reusable)
+
+# ============================================================================
+# iOS ビルドの再利用可能ワークフロー
+#
+# 使い方（アプリリポジトリ側）:
+#   jobs:
+#     build-ios:
+#       uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/build-ios.yml@main
+#       with:
+#         scheme: YourAppName
+#         project_path: '.'
+#
+# 前提:
+#   - macOS 15 ランナー（Xcode 26.2 プリインストール）
+#   - ⚠️ macOS ランナーは Linux の約10倍のコスト
+#     分あたり課金のため、ビルドキャッシュを活用すること
+# ============================================================================
+
+on:
+  workflow_call:
+    inputs:
+      scheme:
+        description: 'Xcode scheme name'
+        required: true
+        type: string
+      project_path:
+        description: 'Path to .xcodeproj or workspace'
+        required: false
+        type: string
+        default: '.'
+      xcode_version:
+        description: 'Xcode version to use'
+        required: false
+        type: string
+        default: '26.2'
+      destination:
+        description: 'Build destination'
+        required: false
+        type: string
+        default: 'platform=iOS Simulator,name=iPhone 16,OS=latest'
+      run_tests:
+        description: 'Run unit tests'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    name: iOS Build & Test
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Select Xcode ${{ inputs.xcode_version }}
+        run: |
+          XCODE_PATH="/Applications/Xcode_${{ inputs.xcode_version }}.app/Contents/Developer"
+          if [ -d "$XCODE_PATH" ]; then
+            sudo xcode-select -s "$XCODE_PATH"
+          else
+            echo "Xcode ${{ inputs.xcode_version }} not found. Using default."
+            xcode-select -p
+          fi
+
+      - name: Show environment
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+            .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Resolve packages
+        working-directory: ${{ inputs.project_path }}
+        run: |
+          if [ -f "*.xcodeproj/project.pbxproj" ] || ls *.xcodeproj 1>/dev/null 2>&1; then
+            xcodebuild -resolvePackageDependencies \
+              -scheme ${{ inputs.scheme }} \
+              -project $(ls -d *.xcodeproj | head -1)
+          elif [ -f "Package.swift" ]; then
+            swift package resolve
+          fi
+
+      - name: Build
+        working-directory: ${{ inputs.project_path }}
+        run: |
+          if ls *.xcodeproj 1>/dev/null 2>&1; then
+            xcodebuild build \
+              -project $(ls -d *.xcodeproj | head -1) \
+              -scheme ${{ inputs.scheme }} \
+              -destination '${{ inputs.destination }}' \
+              -configuration Debug \
+              CODE_SIGNING_ALLOWED=NO \
+              | xcpretty || true
+          elif [ -f "Package.swift" ]; then
+            swift build
+          fi
+
+      - name: Test
+        if: inputs.run_tests
+        working-directory: ${{ inputs.project_path }}
+        run: |
+          if ls *.xcodeproj 1>/dev/null 2>&1; then
+            xcodebuild test \
+              -project $(ls -d *.xcodeproj | head -1) \
+              -scheme ${{ inputs.scheme }} \
+              -destination '${{ inputs.destination }}' \
+              -configuration Debug \
+              CODE_SIGNING_ALLOWED=NO \
+              | xcpretty || true
+          elif [ -f "Package.swift" ]; then
+            swift test
+          fi

@@ -1,88 +1,43 @@
 import SwiftUI
 
 // ============================================================
-// Insight テーマ (SwiftUI Environment)
+// Insight デザインシステムの共通修飾子・スタイル
 //
+// 【このファイルについて】
+// IOS.md §6.4 に準拠した静的テーマ定数 + CardModifier。
 // Android の Theme.kt に相当。
-// Light / Dark モードの切り替えを環境変数で管理。
 //
 // 使い方:
-//   @Environment(\.insightTheme) var theme
-//   Text("Hello").foregroundColor(theme.primary)
-//
-// ルートビューに .insightTheme() を適用:
-//   ContentView().insightTheme()
+//   VStack { ... }.insightCard()
+//   .padding(InsightTheme.padding)
 // ============================================================
 
-struct InsightTheme {
-    let primary: Color
-    let onPrimary: Color
-    let primaryContainer: Color
-    let background: Color
-    let surface: Color
-    let onSurface: Color
-    let onSurfaceVariant: Color
-    let outline: Color
-    let error: Color
-    let success: Color
-    let warning: Color
+enum InsightTheme {
+    static func card() -> some ViewModifier { CardModifier() }
 
-    static let light = InsightTheme(
-        primary: InsightColors.primary,
-        onPrimary: InsightColors.textOnPrimary,
-        primaryContainer: InsightColors.primaryLight,
-        background: InsightColors.bgPrimary,
-        surface: InsightColors.bgCard,
-        onSurface: InsightColors.textPrimary,
-        onSurfaceVariant: InsightColors.textSecondary,
-        outline: InsightColors.border,
-        error: InsightColors.error,
-        success: InsightColors.success,
-        warning: InsightColors.warning
-    )
-
-    static let dark = InsightTheme(
-        primary: InsightColors.Dark.primary,
-        onPrimary: InsightColors.accent900,
-        primaryContainer: InsightColors.accent800,
-        background: InsightColors.Dark.bgPrimary,
-        surface: InsightColors.Dark.bgCard,
-        onSurface: InsightColors.Dark.textPrimary,
-        onSurfaceVariant: InsightColors.Dark.textSecondary,
-        outline: InsightColors.Dark.border,
-        error: InsightColors.error,
-        success: InsightColors.success,
-        warning: InsightColors.warning
-    )
+    static let cornerRadius: CGFloat = 12
+    static let padding: CGFloat = 16
+    static let paddingSmall: CGFloat = 8
+    static let paddingLarge: CGFloat = 24
 }
 
-// MARK: - Environment Key
+// MARK: - Card Modifier
 
-private struct InsightThemeKey: EnvironmentKey {
-    static let defaultValue = InsightTheme.light
-}
-
-extension EnvironmentValues {
-    var insightTheme: InsightTheme {
-        get { self[InsightThemeKey.self] }
-        set { self[InsightThemeKey.self] = newValue }
-    }
-}
-
-// MARK: - View Modifier
-
-struct InsightThemeModifier: ViewModifier {
-    @Environment(\.colorScheme) var colorScheme
-
+private struct CardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .environment(\.insightTheme, colorScheme == .dark ? .dark : .light)
-            .tint(colorScheme == .dark ? InsightColors.Dark.primary : InsightColors.primary)
+            .padding(InsightTheme.padding)
+            .background(InsightColors.bgCard)
+            .clipShape(RoundedRectangle(cornerRadius: InsightTheme.cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: InsightTheme.cornerRadius)
+                    .stroke(InsightColors.border, lineWidth: 1)
+            )
     }
 }
 
 extension View {
-    func insightTheme() -> some View {
-        modifier(InsightThemeModifier())
+    func insightCard() -> some View {
+        modifier(InsightTheme.card())
     }
 }

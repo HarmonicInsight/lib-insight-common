@@ -18,13 +18,16 @@ import SwiftUI
 //   - formattedExpiry
 //   - isActivated / isExpired / isValid
 //
+// iOS 17+: @Observable + @MainActor パターンを使用。
 // config/license-server.ts と連携してオンライン認証を追加可能。
 // ============================================================
 
-class LicenseManager: ObservableObject {
-    static let productCode = "__PRODUCT_CODE__"
+@MainActor
+@Observable
+final class LicenseManager {
+    let productCode: String
 
-    private static let keyPattern = try! NSRegularExpression(
+    private let keyPattern = try! NSRegularExpression(
         pattern: "^([A-Z]{4})-(TRIAL|STD|PRO|ENT)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
     )
 
@@ -35,11 +38,11 @@ class LicenseManager: ObservableObject {
         static let expiry = "insight_license_expiry"
     }
 
-    @Published var currentPlan: PlanCode?
-    @Published var email: String?
-    @Published var expiryDate: Date?
+    var currentPlan: PlanCode = .trial
+    var email: String = ""
+    var expiryDate: Date?
 
-    var isActivated: Bool { currentPlan != nil }
+    var isActivated: Bool { currentPlan != .trial }
 
     var isExpired: Bool {
         guard let expiry = expiryDate else { return false }
@@ -48,7 +51,8 @@ class LicenseManager: ObservableObject {
 
     var isValid: Bool { isActivated && !isExpired }
 
-    init(productCode: String = LicenseManager.productCode) {
+    init(productCode: String) {
+        self.productCode = productCode
         loadLicense()
     }
 
@@ -58,17 +62,13 @@ class LicenseManager: ObservableObject {
         let normalizedKey = key.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         let range = NSRange(normalizedKey.startIndex..., in: normalizedKey)
 
-        guard let match = Self.keyPattern.firstMatch(in: normalizedKey, range: range) else {
+        guard let match = keyPattern.firstMatch(in: normalizedKey, range: range) else {
             return .failure(.invalidFormat)
         }
 
-        guard let productRange = Range(match.range(at: 1), in: normalizedKey) else {
-            return .failure(.invalidFormat)
-        }
-        let productCode = String(normalizedKey[productRange])
-
-        guard productCode == Self.productCode else {
-            return .failure(.wrongProduct(productCode))
+        guard let productRange = Range(match.range(at: 1), in: normalizedKey),
+              String(normalizedKey[productRange]) == productCode else {
+            return .failure(.wrongProduct)
         }
 
         guard let planRange = Range(match.range(at: 2), in: normalizedKey),
@@ -81,7 +81,7 @@ class LicenseManager: ObservableObject {
         }
         let yymm = String(normalizedKey[yymmRange])
 
-        // YYMM から有効期限を計算 (発行月から duration 日)
+        // YYMM から有効期限を計算（発行月から duration 日）
         let year = 2000 + (Int(yymm.prefix(2)) ?? 0)
         let month = Int(yymm.suffix(2)) ?? 1
         var components = DateComponents()
@@ -91,24 +91,31 @@ class LicenseManager: ObservableObject {
         guard let issueDate = Calendar.current.date(from: components) else {
             return .failure(.invalidFormat)
         }
-        let expiry = Calendar.current.date(
-            byAdding: .day,
-            value: plan.defaultDurationDays,
-            to: issueDate
-        )!
+
+        let durationDays = plan.defaultDurationDays
+        let expiry: Date?
+        if durationDays > 0 {
+            expiry = Calendar.current.date(byAdding: .day, value: durationDays, to: issueDate)
+        } else {
+            expiry = nil // ENT: 無期限
+        }
 
         // 保存
         let defaults = UserDefaults.standard
         defaults.set(email, forKey: StoreKey.email)
         defaults.set(normalizedKey, forKey: StoreKey.licenseKey)
         defaults.set(plan.rawValue, forKey: StoreKey.plan)
-        defaults.set(ISO8601DateFormatter().string(from: expiry), forKey: StoreKey.expiry)
+        if let expiry {
+            defaults.set(ISO8601DateFormatter().string(from: expiry), forKey: StoreKey.expiry)
+        } else {
+            defaults.removeObject(forKey: StoreKey.expiry)
+        }
 
         self.email = email
         self.currentPlan = plan
         self.expiryDate = expiry
 
-        return .success(plan.displayNameJa)
+        return .success(String(localized: "licenseActivated"))
     }
 
     // MARK: - Deactivate
@@ -120,8 +127,8 @@ class LicenseManager: ObservableObject {
         defaults.removeObject(forKey: StoreKey.plan)
         defaults.removeObject(forKey: StoreKey.expiry)
 
-        currentPlan = nil
-        email = nil
+        currentPlan = .trial
+        email = ""
         expiryDate = nil
     }
 
@@ -131,8 +138,8 @@ class LicenseManager: ObservableObject {
         _ feature: String,
         featureMatrix: [String: Set<PlanCode>]
     ) -> Bool {
-        guard let plan = currentPlan, isValid else { return false }
-        return featureMatrix[feature]?.contains(plan) == true
+        guard isValid else { return false }
+        return featureMatrix[feature]?.contains(currentPlan) == true
     }
 
     // MARK: - Formatted Expiry
@@ -148,30 +155,33 @@ class LicenseManager: ObservableObject {
 
     private func loadLicense() {
         let defaults = UserDefaults.standard
-        guard let planStr = defaults.string(forKey: StoreKey.plan),
-              let expiryStr = defaults.string(forKey: StoreKey.expiry) else { return }
+        email = defaults.string(forKey: StoreKey.email) ?? ""
 
-        currentPlan = PlanCode(rawValue: planStr)
-        email = defaults.string(forKey: StoreKey.email)
-        expiryDate = ISO8601DateFormatter().date(from: expiryStr)
+        guard let planStr = defaults.string(forKey: StoreKey.plan),
+              let plan = PlanCode(rawValue: planStr) else { return }
+
+        currentPlan = plan
+
+        if let expiryStr = defaults.string(forKey: StoreKey.expiry) {
+            expiryDate = ISO8601DateFormatter().date(from: expiryStr)
+        }
     }
 }
 
 // MARK: - License Error
 
-enum LicenseError: LocalizedError {
+enum LicenseError: LocalizedError, Sendable {
     case invalidFormat
-    case wrongProduct(String)
+    case wrongProduct
+    case expired
+    case networkError
 
     var errorDescription: String? {
         switch self {
-        case .invalidFormat:
-            return NSLocalizedString("license_invalid_key", comment: "")
-        case .wrongProduct(let code):
-            return String(
-                format: NSLocalizedString("license_wrong_product", comment: ""),
-                code
-            )
+        case .invalidFormat: return String(localized: "errorInvalidFormat")
+        case .wrongProduct: return String(localized: "errorWrongProduct")
+        case .expired: return String(localized: "errorExpired")
+        case .networkError: return String(localized: "errorNetwork")
         }
     }
 }

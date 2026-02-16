@@ -9,53 +9,62 @@ import SwiftUI
 // ============================================================
 
 struct ContentView: View {
-    @EnvironmentObject var licenseManager: LicenseManager
-    @Environment(\.insightTheme) var theme
-    @State private var showLicense = false
+    @Environment(LicenseManager.self) var licenseManager
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
-                Spacer()
+            ScrollView {
+                VStack(spacing: InsightTheme.paddingLarge) {
+                    // Hero
+                    VStack(spacing: 8) {
+                        Text("__app_display_name__")
+                            .font(InsightTypography.headlineLarge)
+                            .fontWeight(.bold)
+                            .foregroundStyle(InsightColors.primary)
 
-                Text(NSLocalizedString("app_name", comment: ""))
-                    .font(InsightTypography.headlineLarge)
-                    .fontWeight(.bold)
-                    .foregroundColor(theme.primary)
+                        Text(String(localized: "subtitle"))
+                            .font(InsightTypography.bodyMedium)
+                            .foregroundStyle(InsightColors.textSecondary)
+                    }
+                    .padding(.top, 40)
 
-                if licenseManager.isValid, let plan = licenseManager.currentPlan {
-                    Text(plan.displayName)
-                        .font(InsightTypography.titleMedium)
-                        .foregroundColor(plan.color)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 6)
-                        .background(plan.color.opacity(0.1))
-                        .cornerRadius(8)
+                    // Plan Badge
+                    HStack {
+                        Text(String(localized: "currentPlan"))
+                            .font(InsightTypography.labelMedium)
+                            .foregroundStyle(InsightColors.textSecondary)
+                        Text(licenseManager.currentPlan.displayName)
+                            .font(InsightTypography.labelMedium)
+                            .fontWeight(.bold)
+                            .foregroundStyle(licenseManager.currentPlan.color)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule()
+                                    .fill(licenseManager.currentPlan.color.opacity(0.12))
+                            )
+                    }
+
+                    // Main Content
+                    VStack(spacing: InsightTheme.padding) {
+                        Text(String(localized: "welcomeMessage"))
+                            .font(InsightTypography.titleLarge)
+                            .foregroundStyle(InsightColors.textPrimary)
+                    }
+                    .insightCard()
+
+                    Spacer()
                 }
-
-                Spacer()
+                .padding()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(theme.background.ignoresSafeArea())
+            .background(InsightColors.bgPrimary)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showLicense = true }) {
+                    NavigationLink {
+                        LicenseView()
+                    } label: {
                         Image(systemName: "key")
-                    }
-                }
-            }
-            .sheet(isPresented: $showLicense) {
-                NavigationStack {
-                    LicenseView(
-                        licenseManager: licenseManager,
-                        appDisplayName: NSLocalizedString("app_name", comment: "")
-                    )
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(NSLocalizedString("close", comment: "")) {
-                                showLicense = false
-                            }
-                        }
+                            .foregroundStyle(InsightColors.primary)
                     }
                 }
             }

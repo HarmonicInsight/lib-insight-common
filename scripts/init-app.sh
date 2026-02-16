@@ -16,6 +16,9 @@
 #   # Expo (React Native)
 #   ./init-app.sh my-app-name --platform expo --package com.harmonicinsight.myapp
 #
+#   # iOS (Swift/SwiftUI)
+#   ./init-app.sh my-app-name --platform ios --bundle-id com.harmonic.insight.myapp
+#
 # 機能:
 #   - 新規リポジトリ作成
 #   - insight-common サブモジュール追加
@@ -52,7 +55,7 @@ while [[ $# -gt 0 ]]; do
             PLATFORM="$2"
             shift 2
             ;;
-        --package)
+        --package|--bundle-id)
             PACKAGE_NAME="$2"
             shift 2
             ;;
@@ -84,9 +87,9 @@ if [ -d "$APP_NAME" ]; then
 fi
 
 # プラットフォーム検証
-if [[ "$PLATFORM" != "web" && "$PLATFORM" != "android" && "$PLATFORM" != "expo" ]]; then
+if [[ "$PLATFORM" != "web" && "$PLATFORM" != "android" && "$PLATFORM" != "expo" && "$PLATFORM" != "ios" ]]; then
     echo -e "${RED}サポートされていないプラットフォーム: $PLATFORM${NC}"
-    echo "サポート: web, android, expo"
+    echo "サポート: web, android, expo, ios"
     exit 1
 fi
 
@@ -776,12 +779,187 @@ VSEOF
 }
 
 # =============================================
+# iOS (Swift/SwiftUI) 初期化
+# =============================================
+init_ios() {
+    echo -e "${YELLOW}[3/5] iOS テンプレート展開...${NC}"
+
+    TEMPLATE_DIR="$COMMON_DIR/templates/ios"
+
+    if [ ! -d "$TEMPLATE_DIR" ]; then
+        echo -e "${RED}テンプレートが見つかりません: $TEMPLATE_DIR${NC}"
+        echo "insight-common を最新版に更新してください。"
+        exit 1
+    fi
+
+    # Bundle ID の解決
+    if [ -z "$PACKAGE_NAME" ]; then
+        local clean_name=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]' | tr '-' '' | sed 's/[^a-z0-9]//g')
+        PACKAGE_NAME="com.harmonic.insight.${clean_name}"
+        echo -e "${YELLOW}  Bundle ID を自動推定: $PACKAGE_NAME${NC}"
+    fi
+
+    # アプリ名部分を PascalCase に変換
+    local app_suffix=$(echo "$APP_NAME" | tr '-' ' ' | sed 's/\b\(.\)/\u\1/g' | tr -d ' ')
+
+    # プロジェクトディレクトリ作成（IOS.md §4 準拠: <AppName>/ 構造）
+    local app_dir="${app_suffix}"
+    mkdir -p "$app_dir/Theme"
+    mkdir -p "$app_dir/License"
+    mkdir -p "$app_dir/Views/Screens"
+    mkdir -p "$app_dir/Views/Components"
+    mkdir -p "$app_dir/Models"
+    mkdir -p "$app_dir/ViewModels"
+    mkdir -p "$app_dir/Services"
+    mkdir -p "$app_dir/Navigation"
+    mkdir -p "$app_dir/Resources/Assets.xcassets/AccentColor.colorset"
+    mkdir -p "$app_dir/Resources/Assets.xcassets/AppIcon.appiconset"
+    mkdir -p "$app_dir/Resources/Assets.xcassets/Colors"
+
+    # テンプレートコピー（__APPNAME__/ ディレクトリから）
+    echo -e "${YELLOW}  テンプレートファイルをコピー中...${NC}"
+
+    local tpl="$TEMPLATE_DIR/__APPNAME__"
+
+    # Swift ソース
+    cp "$tpl/__APPNAME__App.swift" "$app_dir/${app_suffix}App.swift"
+    cp "$tpl/ContentView.swift" "$app_dir/ContentView.swift"
+    cp "$tpl/Theme/InsightColors.swift" "$app_dir/Theme/InsightColors.swift"
+    cp "$tpl/Theme/InsightTypography.swift" "$app_dir/Theme/InsightTypography.swift"
+    cp "$tpl/Theme/InsightTheme.swift" "$app_dir/Theme/InsightTheme.swift"
+    cp "$tpl/License/PlanCode.swift" "$app_dir/License/PlanCode.swift"
+    cp "$tpl/License/LicenseManager.swift" "$app_dir/License/LicenseManager.swift"
+    cp "$tpl/License/LicenseView.swift" "$app_dir/License/LicenseView.swift"
+    mkdir -p "$app_dir/Extensions"
+    cp "$tpl/Extensions/Color+Hex.swift" "$app_dir/Extensions/Color+Hex.swift"
+
+    # リソース
+    cp "$tpl/Resources/Assets.xcassets/Contents.json" "$app_dir/Resources/Assets.xcassets/Contents.json"
+    cp "$tpl/Resources/Assets.xcassets/AccentColor.colorset/Contents.json" "$app_dir/Resources/Assets.xcassets/AccentColor.colorset/Contents.json"
+    cp "$tpl/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json" "$app_dir/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json"
+    # 個別カラーアセット
+    cp -r "$tpl/Resources/Assets.xcassets/Colors/" "$app_dir/Resources/Assets.xcassets/Colors/"
+    cp "$tpl/Info.plist" "$app_dir/Info.plist"
+    cp "$tpl/Resources/Localizable.xcstrings" "$app_dir/Resources/Localizable.xcstrings"
+    cp "$tpl/Resources/InfoPlist.xcstrings" "$app_dir/Resources/InfoPlist.xcstrings"
+
+    # ビルド設定
+    cp "$TEMPLATE_DIR/project.yml" ./project.yml
+    cp "$TEMPLATE_DIR/Package.swift" ./Package.swift
+
+    # CI/CD
+    mkdir -p .github/workflows
+    cp "$TEMPLATE_DIR/.github/workflows/build.yml" .github/workflows/build.yml
+
+    # .gitignore
+    cp "$TEMPLATE_DIR/.gitignore" ./.gitignore
+
+    # fastlane メタデータ
+    mkdir -p fastlane/metadata/ja
+    mkdir -p fastlane/metadata/en-US
+    cp "$TEMPLATE_DIR/fastlane/metadata/ja/name.txt" fastlane/metadata/ja/name.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/ja/subtitle.txt" fastlane/metadata/ja/subtitle.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/ja/description.txt" fastlane/metadata/ja/description.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/ja/keywords.txt" fastlane/metadata/ja/keywords.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/ja/release_notes.txt" fastlane/metadata/ja/release_notes.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/ja/promotional_text.txt" fastlane/metadata/ja/promotional_text.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/en-US/name.txt" fastlane/metadata/en-US/name.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/en-US/subtitle.txt" fastlane/metadata/en-US/subtitle.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/en-US/description.txt" fastlane/metadata/en-US/description.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/en-US/keywords.txt" fastlane/metadata/en-US/keywords.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/en-US/release_notes.txt" fastlane/metadata/en-US/release_notes.txt
+    cp "$TEMPLATE_DIR/fastlane/metadata/en-US/promotional_text.txt" fastlane/metadata/en-US/promotional_text.txt
+
+    # APP_SPEC.md
+    cp "$TEMPLATE_DIR/APP_SPEC.md" ./APP_SPEC.md
+
+    # プレースホルダー置換
+    local app_lower=$(echo "$app_suffix" | tr '[:upper:]' '[:lower:]')
+    echo -e "${YELLOW}[4/5] プレースホルダーを置換中...${NC}"
+    find . -type f \( -name "*.swift" -o -name "*.plist" -o -name "*.yml" -o -name "*.md" -o -name "*.xcstrings" -o -name "*.txt" -o -name "*.json" \) \
+        ! -path "./insight-common/*" ! -path "./.git/*" \
+        -exec sed -i \
+            -e "s/__AppName__/${app_suffix}/g" \
+            -e "s/__APPNAME__/${app_lower}/g" \
+            -e "s/__APP_BUNDLE_ID__/${PACKAGE_NAME}/g" \
+            -e "s/__BUNDLE_ID__/${PACKAGE_NAME}/g" \
+            -e "s/__app_display_name__/${APP_NAME}/g" \
+            -e "s/__PRODUCT_CODE__/XXXX/g" \
+            {} +
+
+    # README
+    cat > README.md << RDEOF
+# ${APP_NAME}
+
+HARMONIC insight iOS アプリ
+
+## セットアップ
+
+\`\`\`bash
+# Xcode で ${app_suffix}.xcodeproj を開く
+# または
+xcodebuild build -scheme ${app_suffix} -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+\`\`\`
+
+## 開発標準
+
+このプロジェクトは \`insight-common/standards/IOS.md\` に準拠しています。
+
+- Ivory & Gold カラーシステム
+- SwiftUI + @Observable (iOS 17+)
+- Swift 6 Strict Concurrency
+- Swift Package Manager
+
+## アーキテクチャ
+
+\`\`\`
+${app_suffix}/
+├── ${app_suffix}App.swift        # エントリーポイント
+├── ContentView.swift             # ルートビュー
+├── Info.plist
+├── Theme/                        # Ivory & Gold テーマ
+├── License/                      # ライセンス管理
+├── Views/
+│   ├── Screens/                  # 画面ごとのフォルダ
+│   └── Components/               # 共通コンポーネント
+├── Models/                       # データモデル
+├── ViewModels/                   # ViewModel (@Observable)
+├── Services/                     # ビジネスロジック
+├── Navigation/                   # ナビゲーション
+└── Resources/
+    ├── Assets.xcassets/           # アセット
+    ├── Localizable.xcstrings      # String Catalog
+    └── InfoPlist.xcstrings        # Info.plist ローカライゼーション
+\`\`\`
+RDEOF
+
+    # 標準チェックワークフロー
+    cat > .github/workflows/validate-standards.yml << 'VSEOF'
+name: Validate Design Standards
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+jobs:
+  validate:
+    uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/reusable-validate.yml@main
+    with:
+      project_path: '.'
+VSEOF
+
+    echo -e "${GREEN}  iOS テンプレート展開完了${NC}"
+}
+
+# =============================================
 # 関数実行 (引数解析後)
 # =============================================
 if [ "$PLATFORM" = "android" ]; then
     init_android
 elif [ "$PLATFORM" = "expo" ]; then
     init_expo
+elif [ "$PLATFORM" = "ios" ]; then
+    init_ios
 elif [ "$PLATFORM" = "web" ]; then
     init_web
 fi
@@ -962,7 +1140,53 @@ SETTINGSEOF
 echo -e "  ${GREEN}✓${NC} .claude/settings.json (SessionStart sync-skills フック)"
 
 # CLAUDE.md（アプリ側用 — プラットフォーム別に生成）
-if [ "$PLATFORM" = "android" ]; then
+if [ "$PLATFORM" = "ios" ]; then
+    cat > CLAUDE.md << 'CLEOF'
+# 開発ガイド
+
+> このプロジェクトは `insight-common/CLAUDE.md` の全標準に準拠します。
+> 開発・レビュー・リリース前に必ず参照してください。
+
+## 標準ドキュメント
+
+```bash
+cat insight-common/CLAUDE.md                       # 全体ガイド
+cat insight-common/standards/IOS.md                # iOS 開発標準
+cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
+cat insight-common/standards/LOCALIZATION.md        # ローカライゼーション
+```
+
+## 検証コマンド
+
+```bash
+# 開発中の標準検証
+./insight-common/scripts/validate-standards.sh .
+
+# リリース前の包括チェック
+./insight-common/scripts/release-check.sh .
+```
+
+## AI アシスタント自動行動ルール
+
+| トリガー（ユーザーの発言・状況） | 自動アクション |
+|-------------------------------|--------------|
+| 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | `/release-check-ios` を提案・実行 |
+| 「PR 作って」「プルリク」「マージ」 | `/release-check-ios` の実行を推奨 |
+| 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認（`insight-common/CLAUDE.md` §1） |
+| ストアメタデータ・スクリーンショットの話題 | `insight-common/standards/LOCALIZATION.md` §6 を参照 |
+
+## ⚠️ 重要ルール
+
+- リリース前に `/release-check-ios` を**必ず**実行すること
+- `/release-check-ios` は**フェーズ別に対話的に実行**する（一気にやらない）
+- デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
+- **iOS デフォルトの Blue tint を Gold に上書きすること**（`.tint(InsightColors.primary)`）
+- Blue (#2563EB) をプライマリとして使用**禁止**
+- TODO/FIXME を残したままリリース**禁止**
+- API キー・シークレットのハードコード**禁止**
+- CocoaPods / Carthage の使用**禁止**（SPM のみ）
+CLEOF
+elif [ "$PLATFORM" = "android" ]; then
     cat > CLAUDE.md << 'CLEOF'
 # 開発ガイド
 
@@ -1068,7 +1292,19 @@ echo -e "${GOLD}║  初期化完了！                                         
 echo -e "${GOLD}╚══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-if [ "$PLATFORM" = "android" ]; then
+if [ "$PLATFORM" = "ios" ]; then
+    echo -e "次のステップ:"
+    echo ""
+    echo -e "  ${BLUE}1.${NC} cd ${APP_NAME}"
+    echo -e "  ${BLUE}2.${NC} Xcode で新規プロジェクト作成（同名、Swift/SwiftUI）"
+    echo -e "  ${BLUE}3.${NC} 生成されたファイルを Xcode プロジェクトに追加"
+    echo -e "  ${BLUE}4.${NC} Bundle ID を ${PACKAGE_NAME} に設定"
+    echo -e "  ${BLUE}5.${NC} アプリアイコン（1024x1024 PNG）を AppIcon.appiconset に配置"
+    echo -e "  ${BLUE}6.${NC} APP_SPEC.md に仕様を記入"
+    echo ""
+    echo -e "標準ガイド: ${BLUE}insight-common/standards/IOS.md${NC}"
+    echo -e "テンプレート: ${BLUE}insight-common/templates/ios/${NC}"
+elif [ "$PLATFORM" = "android" ]; then
     echo -e "次のステップ:"
     echo ""
     echo -e "  ${BLUE}1.${NC} cd ${APP_NAME}"

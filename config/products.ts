@@ -71,7 +71,7 @@ export interface ProjectFileConfig {
 }
 
 /** アプリのターゲットプラットフォーム */
-export type AppPlatform = 'wpf' | 'python' | 'tauri' | 'expo' | 'android_native' | 'web' | 'service';
+export type AppPlatform = 'wpf' | 'python' | 'tauri' | 'expo' | 'android_native' | 'ios_native' | 'web' | 'service';
 
 /** 製品情報 */
 export interface ProductInfo {
