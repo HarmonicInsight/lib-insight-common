@@ -144,7 +144,7 @@ detect_platform() {
         echo "$FORCE_PLATFORM"
         return
     fi
-    if ls "$PROJECT_DIR"/*.csproj 2>/dev/null | head -1 > /dev/null 2>&1; then
+    if compgen -G "$PROJECT_DIR"/*.csproj > /dev/null 2>&1; then
         echo "csharp"
     elif [ -f "$PROJECT_DIR/build.gradle.kts" ] || [ -f "$PROJECT_DIR/build.gradle" ]; then
         echo "android"
@@ -156,7 +156,7 @@ detect_platform() {
         fi
     elif [ -f "$PROJECT_DIR/requirements.txt" ] || [ -f "$PROJECT_DIR/pyproject.toml" ]; then
         echo "python"
-    elif [ -f "$PROJECT_DIR/Package.swift" ]; then
+    elif [ -f "$PROJECT_DIR/Package.swift" ] || [ -f "$PROJECT_DIR/project.yml" ]; then
         echo "ios"
     else
         echo "unknown"
@@ -605,23 +605,146 @@ fi
 if [ "$PLATFORM" = "ios" ]; then
     print_phase "Phase 2.5: iOS 固有リリースチェック"
 
-    print_section "I" "バージョン"
+    # --- プロジェクト構成 ---
+    print_section "I" "プロジェクト構成・バージョン"
 
-    # Info.plist からバージョン取得
-    info_plist=$(find "$PROJECT_DIR" -name "Info.plist" -not -path "*/build/*" -not -path "*/Pods/*" 2>/dev/null | head -1)
-    if [ -n "$info_plist" ]; then
-        print_ok "Info.plist が存在: $info_plist"
+    if [ -f "$PROJECT_DIR/project.yml" ]; then
+        print_ok "project.yml が存在（XcodeGen プロジェクト定義）"
+    elif [ -f "$PROJECT_DIR/Package.swift" ]; then
+        print_ok "Package.swift が存在"
     else
-        print_warning "Info.plist が見つかりません"
+        print_error "project.yml も Package.swift も見つかりません"
     fi
 
-    # App Store メタデータ
+    # xcconfig
+    if [ -f "$PROJECT_DIR/Configuration/Base.xcconfig" ]; then
+        print_ok "Configuration/Base.xcconfig が存在"
+
+        mkt_ver=$(grep "MARKETING_VERSION" "$PROJECT_DIR/Configuration/Base.xcconfig" 2>/dev/null | head -1 | sed 's/.*= *//')
+        if [ -n "$mkt_ver" ]; then
+            print_ok "MARKETING_VERSION: $mkt_ver"
+        else
+            print_warning "MARKETING_VERSION が設定されていません"
+        fi
+
+        build_num=$(grep "CURRENT_PROJECT_VERSION" "$PROJECT_DIR/Configuration/Base.xcconfig" 2>/dev/null | head -1 | sed 's/.*= *//')
+        if [ -n "$build_num" ]; then
+            print_ok "CURRENT_PROJECT_VERSION: $build_num"
+        else
+            print_warning "CURRENT_PROJECT_VERSION が設定されていません"
+        fi
+    else
+        # Info.plist フォールバック
+        info_plist=$(find "$PROJECT_DIR" -name "Info.plist" -not -path "*/build/*" -not -path "*/Pods/*" 2>/dev/null | head -1)
+        if [ -n "$info_plist" ]; then
+            print_ok "Info.plist が存在: $info_plist"
+        else
+            print_warning "xcconfig も Info.plist も見つかりません"
+        fi
+    fi
+
+    if [ -f "$PROJECT_DIR/Configuration/Debug.xcconfig" ]; then
+        print_ok "Debug.xcconfig が存在"
+    else
+        print_warning "Debug.xcconfig が見つかりません"
+    fi
+
+    if [ -f "$PROJECT_DIR/Configuration/Release.xcconfig" ]; then
+        print_ok "Release.xcconfig が存在"
+    else
+        print_warning "Release.xcconfig が見つかりません"
+    fi
+
+    # .xcode-version
+    if [ -f "$PROJECT_DIR/.xcode-version" ]; then
+        print_ok ".xcode-version: $(cat "$PROJECT_DIR/.xcode-version" | tr -d '[:space:]')"
+    else
+        print_warning ".xcode-version が見つかりません"
+    fi
+
+    # .gitignore — .xcodeproj 除外チェック
+    if [ -f "$PROJECT_DIR/.gitignore" ]; then
+        if grep -q '\.xcodeproj' "$PROJECT_DIR/.gitignore" 2>/dev/null; then
+            print_ok ".xcodeproj が .gitignore で除外されている"
+        else
+            print_warning ".xcodeproj が .gitignore で除外されていません"
+        fi
+    fi
+
+    # Makefile
+    if [ -f "$PROJECT_DIR/Makefile" ]; then
+        print_ok "Makefile が存在"
+    else
+        print_warning "Makefile が見つかりません"
+    fi
+
+    # --- デザイン標準 ---
+    print_section "ID" "iOS デザイン標準"
+
+    colors_swift=$(find "$PROJECT_DIR" -name "InsightColors.swift" -not -path "*/build/*" 2>/dev/null | head -1)
+    if [ -n "$colors_swift" ]; then
+        print_ok "InsightColors.swift が存在"
+        if grep -q "B8942F" "$colors_swift" 2>/dev/null; then
+            print_ok "Gold (#B8942F) が定義されている"
+        else
+            print_error "Gold (#B8942F) が InsightColors.swift に見つかりません"
+        fi
+    else
+        print_warning "InsightColors.swift が見つかりません"
+    fi
+
+    primary_colorset=$(find "$PROJECT_DIR" -path "*/InsightPrimary.colorset/Contents.json" 2>/dev/null | head -1)
+    if [ -n "$primary_colorset" ]; then
+        print_ok "InsightPrimary.colorset が存在"
+    else
+        print_warning "InsightPrimary.colorset が見つかりません"
+    fi
+
+    # --- ローカライゼーション ---
+    print_section "IL" "iOS ローカライゼーション"
+
+    ja_strings=$(find "$PROJECT_DIR" -path "*/ja.lproj/Localizable.strings" -not -path "*/build/*" 2>/dev/null | head -1)
+    en_strings=$(find "$PROJECT_DIR" -path "*/en.lproj/Localizable.strings" -not -path "*/build/*" 2>/dev/null | head -1)
+
+    if [ -n "$ja_strings" ]; then
+        print_ok "ja.lproj/Localizable.strings が存在"
+    else
+        print_error "ja.lproj/Localizable.strings が見つかりません"
+    fi
+
+    if [ -n "$en_strings" ]; then
+        print_ok "en.lproj/Localizable.strings が存在"
+    else
+        print_error "en.lproj/Localizable.strings が見つかりません"
+    fi
+
+    if [ -n "$ja_strings" ] && [ -n "$en_strings" ]; then
+        ja_keys=$(grep -o '^"[^"]*"' "$ja_strings" 2>/dev/null | sort)
+        en_keys=$(grep -o '^"[^"]*"' "$en_strings" 2>/dev/null | sort)
+        ja_only=$(comm -23 <(echo "$ja_keys") <(echo "$en_keys") 2>/dev/null)
+        en_only=$(comm -13 <(echo "$ja_keys") <(echo "$en_keys") 2>/dev/null)
+
+        if [ -z "$ja_only" ] && [ -z "$en_only" ]; then
+            print_ok "日英ローカライゼーションキーが一致"
+        else
+            print_error "日英ローカライゼーションキーが不一致"
+        fi
+    fi
+
+    # --- App Store メタデータ ---
     print_section "J" "App Store メタデータ"
     ios_metadata="$PROJECT_DIR/fastlane/metadata"
     if [ -d "$ios_metadata" ]; then
         for locale in "ja" "en-US"; do
             if [ -d "$ios_metadata/$locale" ]; then
                 print_ok "$locale メタデータディレクトリが存在"
+                for file in name.txt subtitle.txt description.txt release_notes.txt; do
+                    if [ -f "$ios_metadata/$locale/$file" ]; then
+                        print_ok "$locale/$file が存在"
+                    else
+                        print_warning "$locale/$file が見つかりません"
+                    fi
+                done
             else
                 print_error "$locale メタデータディレクトリが見つかりません"
             fi
@@ -630,9 +753,11 @@ if [ "$PLATFORM" = "ios" ]; then
         print_warning "fastlane/metadata/ が見つかりません"
     fi
 
+    # --- 手動確認項目 ---
     print_manual "Archive ビルドが成功することを確認してください"
     print_manual "Provisioning Profile の有効期限を確認してください"
     print_manual "スクリーンショットが日英で用意されているか確認してください"
+    print_manual "App Store Connect でアプリ情報が正しいか確認してください"
 fi
 
 # ----------------------------------------------------------

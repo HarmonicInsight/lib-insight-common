@@ -93,7 +93,7 @@ detect_platform() {
         fi
     elif [ -f "$PROJECT_DIR/requirements.txt" ] || [ -f "$PROJECT_DIR/pyproject.toml" ]; then
         echo "python"
-    elif [ -f "$PROJECT_DIR/Package.swift" ]; then
+    elif [ -f "$PROJECT_DIR/Package.swift" ] || [ -f "$PROJECT_DIR/project.yml" ]; then
         echo "ios"
     else
         echo "unknown"
@@ -610,6 +610,172 @@ if [ "$PLATFORM" = "expo" ]; then
 fi
 
 # ========================================
+# 6. iOS 固有チェック
+# ========================================
+if [ "$PLATFORM" = "ios" ]; then
+    print_section "6" "iOS 固有チェック"
+
+    # 6.1 project.yml (XcodeGen)
+    if [ -f "$PROJECT_DIR/project.yml" ]; then
+        print_ok "project.yml が存在（XcodeGen プロジェクト定義）"
+
+        if grep -q "deploymentTarget" "$PROJECT_DIR/project.yml" 2>/dev/null; then
+            print_ok "project.yml: deploymentTarget が設定されている"
+        else
+            print_warning "project.yml: deploymentTarget が設定されていません"
+        fi
+
+        if grep -q "xcodeVersion" "$PROJECT_DIR/project.yml" 2>/dev/null; then
+            print_ok "project.yml: xcodeVersion が設定されている"
+        else
+            print_warning "project.yml: xcodeVersion が設定されていません"
+        fi
+
+        if grep -q "configFiles" "$PROJECT_DIR/project.yml" 2>/dev/null; then
+            print_ok "project.yml: configFiles が参照されている"
+        else
+            print_warning "project.yml: configFiles（xcconfig 参照）が設定されていません"
+        fi
+    elif [ -f "$PROJECT_DIR/Package.swift" ]; then
+        print_ok "Package.swift が存在（Swift Package プロジェクト）"
+    else
+        print_error "project.yml も Package.swift も見つかりません"
+    fi
+
+    # 6.2 xcconfig ファイル
+    if [ -f "$PROJECT_DIR/Configuration/Base.xcconfig" ]; then
+        print_ok "Configuration/Base.xcconfig が存在"
+
+        if grep -q "MARKETING_VERSION" "$PROJECT_DIR/Configuration/Base.xcconfig" 2>/dev/null; then
+            mkt_ver=$(grep "MARKETING_VERSION" "$PROJECT_DIR/Configuration/Base.xcconfig" | head -1 | sed 's/.*= *//')
+            print_ok "MARKETING_VERSION: $mkt_ver"
+        else
+            print_warning "Base.xcconfig: MARKETING_VERSION が設定されていません"
+        fi
+
+        if grep -q "SWIFT_TREAT_WARNINGS_AS_ERRORS" "$PROJECT_DIR/Configuration/Base.xcconfig" 2>/dev/null; then
+            print_ok "SWIFT_TREAT_WARNINGS_AS_ERRORS が設定されている"
+        else
+            print_warning "Base.xcconfig: SWIFT_TREAT_WARNINGS_AS_ERRORS が未設定"
+        fi
+    else
+        print_warning "Configuration/Base.xcconfig が見つかりません"
+    fi
+
+    if [ -f "$PROJECT_DIR/Configuration/Debug.xcconfig" ]; then
+        print_ok "Configuration/Debug.xcconfig が存在"
+    else
+        print_warning "Configuration/Debug.xcconfig が見つかりません"
+    fi
+
+    if [ -f "$PROJECT_DIR/Configuration/Release.xcconfig" ]; then
+        print_ok "Configuration/Release.xcconfig が存在"
+    else
+        print_warning "Configuration/Release.xcconfig が見つかりません"
+    fi
+
+    # 6.3 .xcode-version
+    if [ -f "$PROJECT_DIR/.xcode-version" ]; then
+        print_ok ".xcode-version: $(cat "$PROJECT_DIR/.xcode-version" | tr -d '[:space:]')"
+    else
+        print_warning ".xcode-version が見つかりません（チームの Xcode バージョン統一に推奨）"
+    fi
+
+    # 6.4 .gitignore
+    if [ -f "$PROJECT_DIR/.gitignore" ]; then
+        if grep -q '\.xcodeproj' "$PROJECT_DIR/.gitignore" 2>/dev/null; then
+            print_ok ".gitignore: *.xcodeproj が除外されている"
+        else
+            print_error ".gitignore: *.xcodeproj が除外されていません（XcodeGen 使用時は必須）"
+        fi
+    fi
+
+    # 6.5 Makefile
+    if [ -f "$PROJECT_DIR/Makefile" ]; then
+        print_ok "Makefile が存在（ビルド自動化）"
+    else
+        print_warning "Makefile が見つかりません（推奨）"
+    fi
+
+    # 6.6 InsightColors.swift
+    colors_swift=$(find "$PROJECT_DIR" -name "InsightColors.swift" -not -path "*/build/*" 2>/dev/null | head -1)
+    if [ -n "$colors_swift" ]; then
+        print_ok "InsightColors.swift: $colors_swift"
+        if grep -q "B8942F" "$colors_swift" 2>/dev/null; then
+            print_ok "InsightColors.swift: Gold (#B8942F) が定義されている"
+        else
+            print_error "InsightColors.swift: Gold (#B8942F) が見つかりません"
+        fi
+    else
+        print_warning "InsightColors.swift が見つかりません"
+    fi
+
+    # 6.7 Asset Catalog — InsightPrimary
+    primary_colorset=$(find "$PROJECT_DIR" -path "*/InsightPrimary.colorset/Contents.json" 2>/dev/null | head -1)
+    if [ -n "$primary_colorset" ]; then
+        print_ok "InsightPrimary.colorset が存在"
+    else
+        print_warning "InsightPrimary.colorset が見つかりません"
+    fi
+
+    # 6.8 ローカライゼーション
+    ja_strings=$(find "$PROJECT_DIR" -path "*/ja.lproj/Localizable.strings" -not -path "*/build/*" 2>/dev/null | head -1)
+    en_strings=$(find "$PROJECT_DIR" -path "*/en.lproj/Localizable.strings" -not -path "*/build/*" 2>/dev/null | head -1)
+
+    if [ -n "$ja_strings" ]; then
+        print_ok "ja.lproj/Localizable.strings が存在"
+    else
+        print_error "ja.lproj/Localizable.strings が見つかりません"
+    fi
+
+    if [ -n "$en_strings" ]; then
+        print_ok "en.lproj/Localizable.strings が存在"
+    else
+        print_error "en.lproj/Localizable.strings が見つかりません"
+    fi
+
+    if [ -n "$ja_strings" ] && [ -n "$en_strings" ]; then
+        ja_keys=$(grep -o '^"[^"]*"' "$ja_strings" 2>/dev/null | sort)
+        en_keys=$(grep -o '^"[^"]*"' "$en_strings" 2>/dev/null | sort)
+
+        ja_only=$(comm -23 <(echo "$ja_keys") <(echo "$en_keys") 2>/dev/null)
+        en_only=$(comm -13 <(echo "$ja_keys") <(echo "$en_keys") 2>/dev/null)
+
+        if [ -z "$ja_only" ] && [ -z "$en_only" ]; then
+            print_ok "日英のローカライゼーションキーが完全一致"
+        else
+            print_error "日英のローカライゼーションキーが不一致"
+            if [ -n "$ja_only" ]; then
+                echo "      日本語のみ: $(echo "$ja_only" | head -3 | tr '\n' ' ')"
+            fi
+            if [ -n "$en_only" ]; then
+                echo "      英語のみ: $(echo "$en_only" | head -3 | tr '\n' ' ')"
+            fi
+        fi
+    fi
+
+    # 6.9 CI/CD
+    if [ -f "$PROJECT_DIR/.github/workflows/build.yml" ]; then
+        print_ok ".github/workflows/build.yml が存在"
+    else
+        print_warning ".github/workflows/build.yml が見つかりません"
+    fi
+
+    # 6.10 App Store メタデータ
+    if [ -d "$PROJECT_DIR/fastlane/metadata" ]; then
+        for locale in "ja" "en-US"; do
+            if [ -d "$PROJECT_DIR/fastlane/metadata/$locale" ]; then
+                print_ok "fastlane/metadata/$locale が存在"
+            else
+                print_warning "fastlane/metadata/$locale が見つかりません"
+            fi
+        done
+    else
+        print_warning "fastlane/metadata/ が見つかりません"
+    fi
+fi
+
+# ========================================
 # 結果サマリー
 # ========================================
 echo ""
@@ -638,6 +804,10 @@ if [ "$PLATFORM" = "android" ]; then
 elif [ "$PLATFORM" = "expo" ]; then
     echo -e "参照: ${BLUE}insight-common/standards/ANDROID.md §13${NC}"
     echo -e "テンプレート: ${BLUE}insight-common/templates/expo/${NC}"
+elif [ "$PLATFORM" = "ios" ]; then
+    echo -e "参照: ${BLUE}insight-common/standards/IOS.md${NC}"
+    echo -e "テンプレート: ${BLUE}insight-common/templates/ios/${NC}"
+    echo -e "管理ツール: ${BLUE}insight-common/scripts/ios-manage.sh${NC}"
 else
     echo -e "参照: ${BLUE}insight-common/standards/README.md${NC}"
 fi

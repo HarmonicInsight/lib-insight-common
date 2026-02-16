@@ -13,6 +13,9 @@
 #   # Android (Kotlin/Compose)
 #   ./init-app.sh my-app-name --platform android --package com.harmonic.insight.myapp
 #
+#   # iOS (Swift/SwiftUI + XcodeGen)
+#   ./init-app.sh my-app-name --platform ios --package com.harmonic.insight.myapp
+#
 #   # Expo (React Native)
 #   ./init-app.sh my-app-name --platform expo --package com.harmonicinsight.myapp
 #
@@ -84,9 +87,9 @@ if [ -d "$APP_NAME" ]; then
 fi
 
 # プラットフォーム検証
-if [[ "$PLATFORM" != "web" && "$PLATFORM" != "android" && "$PLATFORM" != "expo" ]]; then
+if [[ "$PLATFORM" != "web" && "$PLATFORM" != "android" && "$PLATFORM" != "expo" && "$PLATFORM" != "ios" ]]; then
     echo -e "${RED}サポートされていないプラットフォーム: $PLATFORM${NC}"
-    echo "サポート: web, android, expo"
+    echo "サポート: web, android, expo, ios"
     exit 1
 fi
 
@@ -776,12 +779,221 @@ VSEOF
 }
 
 # =============================================
+# iOS (Swift/SwiftUI + XcodeGen) 初期化
+# =============================================
+init_ios() {
+    echo -e "${YELLOW}[3/5] iOS テンプレート展開...${NC}"
+
+    TEMPLATE_DIR="$COMMON_DIR/templates/ios"
+
+    if [ ! -d "$TEMPLATE_DIR" ]; then
+        echo -e "${RED}テンプレートが見つかりません: $TEMPLATE_DIR${NC}"
+        echo "insight-common を最新版に更新してください。"
+        exit 1
+    fi
+
+    # Bundle ID の解決
+    if [ -z "$PACKAGE_NAME" ]; then
+        local clean_name=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]' | tr '-' '.' | sed 's/[^a-z0-9.]//g')
+        PACKAGE_NAME="com.harmonic.insight.${clean_name}"
+        echo -e "${YELLOW}  Bundle ID を自動推定: $PACKAGE_NAME${NC}"
+    fi
+
+    # アプリ名の各形式を生成
+    local app_suffix=$(echo "$PACKAGE_NAME" | awk -F. '{print $NF}')
+    local app_name_pascal=$(echo "$app_suffix" | sed 's/\b\(.\)/\u\1/g')
+    local app_name_lower=$(echo "$app_suffix" | tr '[:upper:]' '[:lower:]')
+
+    # テンプレートコピー
+    echo -e "${YELLOW}  テンプレートファイルをコピー中...${NC}"
+
+    # ルートファイル
+    cp "$TEMPLATE_DIR/project.yml" ./project.yml
+    cp "$TEMPLATE_DIR/.gitignore" ./.gitignore
+    cp "$TEMPLATE_DIR/Makefile" ./Makefile
+    cp "$TEMPLATE_DIR/.xcode-version" ./.xcode-version
+
+    # Configuration
+    mkdir -p Configuration
+    cp "$TEMPLATE_DIR/Configuration/Base.xcconfig" ./Configuration/Base.xcconfig
+    cp "$TEMPLATE_DIR/Configuration/Debug.xcconfig" ./Configuration/Debug.xcconfig
+    cp "$TEMPLATE_DIR/Configuration/Release.xcconfig" ./Configuration/Release.xcconfig
+
+    # ソースディレクトリ
+    mkdir -p "${app_name_lower}/Extensions"
+    mkdir -p "${app_name_lower}/Theme"
+    mkdir -p "${app_name_lower}/License"
+    mkdir -p "${app_name_lower}/Resources/Assets.xcassets/Colors"
+
+    # Swift ソース
+    cp "$TEMPLATE_DIR/__APPNAME__/__APPNAME__App.swift" "${app_name_lower}/${app_name_pascal}App.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/ContentView.swift" "${app_name_lower}/ContentView.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/Info.plist" "${app_name_lower}/Info.plist"
+    cp "$TEMPLATE_DIR/__APPNAME__/Extensions/Color+Hex.swift" "${app_name_lower}/Extensions/Color+Hex.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/Theme/InsightColors.swift" "${app_name_lower}/Theme/InsightColors.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/Theme/InsightTheme.swift" "${app_name_lower}/Theme/InsightTheme.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/Theme/InsightTypography.swift" "${app_name_lower}/Theme/InsightTypography.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/License/PlanCode.swift" "${app_name_lower}/License/PlanCode.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/License/LicenseManager.swift" "${app_name_lower}/License/LicenseManager.swift"
+    cp "$TEMPLATE_DIR/__APPNAME__/License/LicenseView.swift" "${app_name_lower}/License/LicenseView.swift"
+
+    # Asset Catalog
+    local template_assets="$TEMPLATE_DIR/__APPNAME__/Resources/Assets.xcassets"
+    cp "$template_assets/Contents.json" "${app_name_lower}/Resources/Assets.xcassets/Contents.json"
+
+    # AppIcon + AccentColor
+    for colorset in AccentColor.colorset AppIcon.appiconset; do
+        if [ -d "$template_assets/$colorset" ]; then
+            mkdir -p "${app_name_lower}/Resources/Assets.xcassets/$colorset"
+            cp "$template_assets/$colorset/Contents.json" "${app_name_lower}/Resources/Assets.xcassets/$colorset/Contents.json"
+        fi
+    done
+
+    # Colors
+    for colorset_dir in "$template_assets/Colors"/*.colorset; do
+        if [ -d "$colorset_dir" ]; then
+            local colorset_name=$(basename "$colorset_dir")
+            mkdir -p "${app_name_lower}/Resources/Assets.xcassets/Colors/$colorset_name"
+            cp "$colorset_dir/Contents.json" "${app_name_lower}/Resources/Assets.xcassets/Colors/$colorset_name/Contents.json"
+        fi
+    done
+
+    # ローカライゼーション
+    mkdir -p "${app_name_lower}/Resources/ja.lproj"
+    mkdir -p "${app_name_lower}/Resources/en.lproj"
+    cp "$TEMPLATE_DIR/__APPNAME__/Resources/ja.lproj/Localizable.strings" "${app_name_lower}/Resources/ja.lproj/Localizable.strings"
+    cp "$TEMPLATE_DIR/__APPNAME__/Resources/en.lproj/Localizable.strings" "${app_name_lower}/Resources/en.lproj/Localizable.strings"
+
+    # CI/CD
+    mkdir -p .github/workflows
+    cp "$TEMPLATE_DIR/.github/workflows/build.yml" .github/workflows/build.yml
+
+    # Fastlane メタデータ
+    for locale in ja en-US; do
+        if [ -d "$TEMPLATE_DIR/fastlane/metadata/$locale" ]; then
+            mkdir -p "fastlane/metadata/$locale"
+            cp "$TEMPLATE_DIR/fastlane/metadata/$locale/"*.txt "fastlane/metadata/$locale/" 2>/dev/null || true
+        fi
+    done
+
+    # プレースホルダー置換
+    echo -e "${YELLOW}[4/5] プレースホルダーを置換中...${NC}"
+    find . -type f \( -name "*.swift" -o -name "*.yml" -o -name "*.plist" -o -name "*.xcconfig" -o -name "*.strings" -o -name "Makefile" \) \
+        ! -path "./insight-common/*" ! -path "./.git/*" \
+        -exec sed -i \
+            -e "s/__APPNAME__/${app_name_lower}/g" \
+            -e "s/__AppName__/${app_name_pascal}/g" \
+            -e "s/__APP_BUNDLE_ID__/${PACKAGE_NAME}/g" \
+            -e "s/__app_display_name__/${APP_NAME}/g" \
+            -e "s/__PRODUCT_CODE__/XXXX/g" \
+            {} +
+
+    # APP_SPEC.md
+    cat > APP_SPEC.md << SPECEOF
+# ${APP_NAME} 仕様書
+
+## 概要
+- **製品コード**: (config/products.ts に登録後に記入)
+- **Bundle ID**: $PACKAGE_NAME
+- **プラットフォーム**: iOS (Swift/SwiftUI)
+- **デザインシステム**: Ivory & Gold
+
+## 機能
+(機能一覧を記入)
+
+## 参照
+- \`insight-common/standards/IOS.md\` — iOS 開発標準
+- \`insight-common/CLAUDE.md\` — プロジェクト全体ガイドライン
+SPECEOF
+
+    # README
+    cat > README.md << RDEOF
+# ${APP_NAME}
+
+HARMONIC insight iOS アプリ
+
+## セットアップ
+
+\`\`\`bash
+# 初回セットアップ（XcodeGen インストール + プロジェクト生成）
+make setup
+
+# Xcode で開く
+make open
+\`\`\`
+
+## 開発標準
+
+このプロジェクトは \`insight-common/standards/IOS.md\` に準拠しています。
+
+- Ivory & Gold カラーシステム
+- SwiftUI + iOS 16.0+
+- XcodeGen (project.yml)
+- xcconfig によるビルド設定管理
+
+## アーキテクチャ
+
+\`\`\`
+${app_name_lower}/
+├── ${app_name_pascal}App.swift     # @main エントリポイント
+├── ContentView.swift               # メインビュー
+├── Extensions/                     # Swift 拡張
+├── Theme/                          # Ivory & Gold テーマ
+├── License/                        # ライセンス管理
+└── Resources/
+    ├── Assets.xcassets/            # カラー・アイコン
+    ├── ja.lproj/                   # 日本語
+    └── en.lproj/                   # 英語
+\`\`\`
+
+## Makefile コマンド
+
+| コマンド | 説明 |
+|---------|------|
+| \`make setup\` | 初回セットアップ |
+| \`make generate\` | XcodeGen でプロジェクト再生成 |
+| \`make build\` | Debug ビルド |
+| \`make clean\` | ビルドキャッシュ削除 |
+| \`make nuke\` | DerivedData + .xcodeproj 完全削除 |
+| \`make open\` | Xcode で開く |
+| \`make bump-patch\` | パッチバージョンアップ |
+RDEOF
+
+    # 標準チェックワークフロー
+    cat > .github/workflows/validate-standards.yml << 'VSEOF'
+name: Validate Design Standards
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+jobs:
+  validate:
+    uses: HarmonicInsight/cross-lib-insight-common/.github/workflows/reusable-validate.yml@main
+    with:
+      project_path: '.'
+VSEOF
+
+    # XcodeGen 実行（利用可能な場合）
+    if command -v xcodegen &> /dev/null; then
+        echo -e "${YELLOW}  XcodeGen でプロジェクトを生成中...${NC}"
+        xcodegen generate 2>/dev/null && echo -e "  ${GREEN}✓${NC} .xcodeproj を生成しました" || echo -e "  ${YELLOW}⚠ XcodeGen 実行に失敗しました。make generate で再試行してください${NC}"
+    else
+        echo -e "  ${YELLOW}⚠ XcodeGen が見つかりません。brew install xcodegen 後に make generate を実行してください${NC}"
+    fi
+
+    echo -e "${GREEN}  iOS テンプレート展開完了${NC}"
+}
+
+# =============================================
 # 関数実行 (引数解析後)
 # =============================================
 if [ "$PLATFORM" = "android" ]; then
     init_android
 elif [ "$PLATFORM" = "expo" ]; then
     init_expo
+elif [ "$PLATFORM" = "ios" ]; then
+    init_ios
 elif [ "$PLATFORM" = "web" ]; then
     init_web
 fi
@@ -941,6 +1153,72 @@ ANDROIDSKILLEOF
     fi
 fi
 
+# iOS 固有スキルの配置
+if [ "$PLATFORM" = "ios" ]; then
+    if [ -f "insight-common/.claude/commands/release-check-ios.md" ]; then
+        cp insight-common/.claude/commands/release-check-ios.md .claude/commands/release-check-ios.md
+        echo -e "  ${GREEN}✓${NC} release-check-ios スキル (insight-common から同期)"
+    else
+        cat > .claude/commands/release-check-ios.md << 'IOSSKILLEOF'
+# iOS リリースチェック（Swift / SwiftUI）
+
+iOS (Swift + SwiftUI + XcodeGen) アプリ専用のリリース前チェックを**対話的チェックリスト形式**で実行します。
+
+## 重要: 実行ルール
+
+- **チェックリストの各項目を1つずつ確認**し、結果をユーザーに報告する。
+- 一気に全項目をチェックして結果だけ出すのは**禁止**。フェーズごとに報告・確認を挟む。
+- TODO ツールで全フェーズの進捗を管理する。
+- エラーが見つかったらその場で修正案を提示し、ユーザーの承認後に修正する。
+
+## Phase 0: 準備
+
+1. `$ARGUMENTS` が指定されている場合はそのディレクトリ、未指定の場合はカレントディレクトリを対象にする。
+2. `project.yml` または `Package.swift` の存在を確認し、iOS プロジェクトであることを検証する。
+3. TODO リストに Phase 1〜8 を登録する。
+
+## Phase 1: ビルド設定チェック (I1-I8)
+
+project.yml, xcconfig, .xcode-version を確認する。
+
+## Phase 2: 署名・セキュリティ (IS1-IS6, S1-S4)
+
+CODE_SIGN_STYLE, Provisioning Profile, .gitignore, API キー埋め込みを確認する。
+
+## Phase 3: デザイン標準 Ivory & Gold (D1-D7)
+
+Gold (#B8942F) プライマリ, Ivory (#FAF8F5) 背景, InsightColors, InsightTheme を確認する。
+
+## Phase 4: ローカライゼーション (L1-L5)
+
+Localizable.strings 日英存在, キー一致, ハードコード文字列を確認する。
+
+## Phase 5: App Store メタデータ (IA1-IA6)
+
+fastlane/metadata/ の name, subtitle, description, release_notes を確認する。
+
+## Phase 6: コード品質 (Q1-Q5)
+
+TODO/FIXME, print/NSLog, API キー, force unwrap を確認する。
+
+## Phase 7: CI/CD (IC1-IC3)
+
+.github/workflows/build.yml, XcodeGen, Archive ジョブを確認する。
+
+## Phase 8: 最終確認・サマリー
+
+全フェーズの結果を統合して最終サマリーを表示する。
+
+## 参照ドキュメント
+
+- `insight-common/standards/IOS.md` — iOS 開発標準
+- `insight-common/standards/RELEASE_CHECKLIST.md` — 全プラットフォーム共通リリースチェックリスト
+- `insight-common/scripts/ios-manage.sh` — iOS プロジェクト管理 CLI
+IOSSKILLEOF
+        echo -e "  ${GREEN}✓${NC} release-check-ios スキル (テンプレートから生成)"
+    fi
+fi
+
 # .claude/settings.json（SessionStart フックでスキル自動同期）
 cat > .claude/settings.json << 'SETTINGSEOF'
 {
@@ -962,7 +1240,59 @@ SETTINGSEOF
 echo -e "  ${GREEN}✓${NC} .claude/settings.json (SessionStart sync-skills フック)"
 
 # CLAUDE.md（アプリ側用 — プラットフォーム別に生成）
-if [ "$PLATFORM" = "android" ]; then
+if [ "$PLATFORM" = "ios" ]; then
+    cat > CLAUDE.md << 'CLEOF'
+# 開発ガイド
+
+> このプロジェクトは `insight-common/CLAUDE.md` の全標準に準拠します。
+> 開発・レビュー・リリース前に必ず参照してください。
+
+## 標準ドキュメント
+
+```bash
+cat insight-common/CLAUDE.md                       # 全体ガイド
+cat insight-common/standards/IOS.md                # iOS 開発標準
+cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
+cat insight-common/standards/LOCALIZATION.md        # ローカライゼーション
+```
+
+## 検証コマンド
+
+```bash
+# 開発中の標準検証
+./insight-common/scripts/validate-standards.sh .
+
+# iOS 固有の検証
+./insight-common/scripts/ios-manage.sh validate .
+
+# カラー同期（brand/colors.json から再生成）
+./insight-common/scripts/ios-manage.sh sync-colors .
+
+# リリース前の包括チェック
+./insight-common/scripts/release-check.sh .
+```
+
+## AI アシスタント自動行動ルール
+
+| トリガー（ユーザーの発言・状況） | 自動アクション |
+|-------------------------------|--------------|
+| 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | `/release-check-ios` を提案・実行 |
+| 「PR 作って」「プルリク」「マージ」 | `/release-check-ios` の実行を推奨 |
+| 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認（`insight-common/CLAUDE.md` §1） |
+| ストアメタデータ・スクリーンショットの話題 | `insight-common/standards/LOCALIZATION.md` §6 を参照 |
+| Xcode 関連の問題 | `make nuke && make generate` を提案 |
+
+## ⚠️ 重要ルール
+
+- リリース前に `/release-check-ios` を**必ず**実行すること
+- `/release-check-ios` は**フェーズ別に対話的に実行**する（一気にやらない）
+- デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
+- Blue (#2563EB) をプライマリとして使用**禁止**
+- TODO/FIXME を残したままリリース**禁止**
+- API キー・シークレットのハードコード**禁止**
+- .xcodeproj はコミット**禁止**（XcodeGen で生成）
+CLEOF
+elif [ "$PLATFORM" = "android" ]; then
     cat > CLAUDE.md << 'CLEOF'
 # 開発ガイド
 
@@ -1068,7 +1398,19 @@ echo -e "${GOLD}║  初期化完了！                                         
 echo -e "${GOLD}╚══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-if [ "$PLATFORM" = "android" ]; then
+if [ "$PLATFORM" = "ios" ]; then
+    echo -e "次のステップ:"
+    echo ""
+    echo -e "  ${BLUE}1.${NC} cd ${APP_NAME}"
+    echo -e "  ${BLUE}2.${NC} make setup  (XcodeGen インストール + プロジェクト生成)"
+    echo -e "  ${BLUE}3.${NC} make open   (Xcode で開く)"
+    echo -e "  ${BLUE}4.${NC} AppIcon をカスタマイズ"
+    echo -e "  ${BLUE}5.${NC} APP_SPEC.md に仕様を記入"
+    echo ""
+    echo -e "標準ガイド: ${BLUE}insight-common/standards/IOS.md${NC}"
+    echo -e "テンプレート: ${BLUE}insight-common/templates/ios/${NC}"
+    echo -e "管理ツール: ${BLUE}insight-common/scripts/ios-manage.sh${NC}"
+elif [ "$PLATFORM" = "android" ]; then
     echo -e "次のステップ:"
     echo ""
     echo -e "  ${BLUE}1.${NC} cd ${APP_NAME}"

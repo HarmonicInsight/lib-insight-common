@@ -54,9 +54,11 @@
    - `package.json` → React / Next.js
    - `*.csproj` → C# (WPF)
    - `pyproject.toml` / `requirements.txt` → Python
-   - `Package.swift` → iOS
+   - `Package.swift` / `project.yml` → iOS
 
 5. 検出したプラットフォームをユーザーに通知する。
+   - Android (Native Kotlin) を検出した場合は `/release-check-android` スキルに切り替える。
+   - iOS を検出した場合は `/release-check-ios` スキルに切り替える。
 
 6. TODO リストに以下のフェーズを登録する:
    - Phase 1: 標準検証（自動スクリプト）
@@ -283,6 +285,7 @@ Phase 4: ストアメタデータ  ✅ 完了
 より詳細なプラットフォーム固有チェックが必要な場合は、専用スキルを使用してください:
 
 - `/release-check-android` — Android (Native Kotlin) 専用の詳細チェック
+- `/release-check-ios` — iOS (Swift / SwiftUI) 専用の詳細チェック
 
 ## 参照ドキュメント
 
