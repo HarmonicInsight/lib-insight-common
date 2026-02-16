@@ -47,11 +47,6 @@ enum InsightColors {
     static let info = Color(hex: "2563EB")
     static let infoLight = Color(hex: "DBEAFE")
 
-    // MARK: - Category
-    static let catRpa = Color(hex: "16A34A")
-    static let catLowcode = Color(hex: "7C3AED")
-    static let catDoc = Color(hex: "2563EB")
-
     // MARK: - Text
     static let textPrimary = Color(hex: "1C1917")
     static let textSecondary = Color(hex: "57534E")
@@ -65,8 +60,7 @@ enum InsightColors {
     static let borderLight = Color(hex: "F3F0EB")
     static let borderFocus = Color(hex: "B8942F")
 
-    // MARK: - Plan
-    static let planFree = Color(hex: "A8A29E")
+    // MARK: - Plan (FREE 廃止 — CLAUDE.md §8 準拠)
     static let planTrial = Color(hex: "2563EB")
     static let planStd = Color(hex: "16A34A")
     static let planPro = Color(hex: "B8942F")
@@ -89,4 +83,8 @@ enum InsightColors {
         static let border = Color(hex: "3D3835")
         static let borderLight = Color(hex: "292524")
     }
+
+    // MARK: - Adaptive Colors（Asset Catalog から Light/Dark 自動切替）
+    static let background = Color("InsightBackground")
+    static let surface = Color("InsightSurface")
 }

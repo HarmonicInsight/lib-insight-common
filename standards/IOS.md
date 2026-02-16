@@ -421,9 +421,8 @@ enum InsightColors {
     static let darkTextSecondary = Color(hex: "D6D3D1")
     static let darkBorder = Color(hex: "3D3835")
 
-    // MARK: - Plan
+    // MARK: - Plan（FREE 廃止 — CLAUDE.md §8 準拠）
 
-    static let planFree = Color(hex: "A8A29E")
     static let planTrial = Color(hex: "2563EB")
     static let planStd = Color(hex: "16A34A")
     static let planPro = Color(hex: "B8942F")
@@ -1078,11 +1077,13 @@ InsightOffice 製品（INSS/IOSH/IOSD 等）の iOS 版では、ライセンス�
 
 ### PlanCode.swift
 
+> **注意**: CLAUDE.md §8 に基づき、FREE プランは廃止。TRIAL が最下位プラン。
+
 ```swift
 import SwiftUI
 
+/// ライセンスプランコード（全製品 法人向け — FREE 廃止）
 enum PlanCode: String, CaseIterable, Sendable {
-    case free = "FREE"
     case trial = "TRIAL"
     case std = "STD"
     case pro = "PRO"
@@ -1090,13 +1091,41 @@ enum PlanCode: String, CaseIterable, Sendable {
 
     var displayName: String { rawValue }
 
+    var displayNameJa: String {
+        switch self {
+        case .trial: return "トライアル"
+        case .std: return "スタンダード"
+        case .pro: return "プロ"
+        case .ent: return "エンタープライズ"
+        }
+    }
+
     var color: Color {
         switch self {
-        case .free: return InsightColors.planFree
         case .trial: return InsightColors.planTrial
         case .std: return InsightColors.planStd
         case .pro: return InsightColors.planPro
         case .ent: return InsightColors.planEnt
+        }
+    }
+
+    /// プラン優先度（高いほど上位プラン、TRIAL=4 で全機能利用可能）
+    var priority: Int {
+        switch self {
+        case .trial: return 4
+        case .std: return 1
+        case .pro: return 2
+        case .ent: return 3
+        }
+    }
+
+    /// デフォルト有効期間（日）
+    var defaultDurationDays: Int {
+        switch self {
+        case .trial: return 14
+        case .std: return 365
+        case .pro: return 365
+        case .ent: return -1
         }
     }
 }
@@ -1104,32 +1133,38 @@ enum PlanCode: String, CaseIterable, Sendable {
 
 ### LicenseManager.swift
 
+> **テンプレート**: `templates/ios/__APPNAME__/License/LicenseManager.swift` に完全な実装あり。
+
 ```swift
 import Foundation
-import Observation
+import SwiftUI
 
+/// ライセンス管理
+///
+/// ライセンスキー形式: `{製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}`
+/// 例: `INSS-STD-2601-XXXX-XXXX-XXXX`
 @MainActor
 @Observable
 final class LicenseManager {
-    static let shared = LicenseManager()
+    let productCode: String
 
-    private let productCode: String
     private let keyPattern = try! NSRegularExpression(
-        pattern: "^([A-Z]{4})-(TRIAL|STD|PRO)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+        pattern: "^([A-Z]{4})-(TRIAL|STD|PRO|ENT)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
     )
 
-    var currentPlan: PlanCode = .free
+    var currentPlan: PlanCode = .trial
     var expiryDate: Date?
+    var email: String = ""
 
-    var isActivated: Bool { currentPlan != .free }
+    var isActivated: Bool { currentPlan != .trial }
 
-    init(productCode: String = "XXXX") {
+    init(productCode: String) {
         self.productCode = productCode
         loadLicense()
     }
 
     func activate(email: String, key: String) -> Result<String, LicenseError> {
-        let upperKey = key.uppercased()
+        let upperKey = key.uppercased().trimmingCharacters(in: .whitespacesAndNewlines)
         let range = NSRange(upperKey.startIndex..., in: upperKey)
 
         guard let match = keyPattern.firstMatch(in: upperKey, range: range) else {
@@ -1141,26 +1176,32 @@ final class LicenseManager {
             return .failure(.wrongProduct)
         }
 
+        guard let planRange = Range(match.range(at: 2), in: upperKey),
+              let plan = PlanCode(rawValue: String(upperKey[planRange])) else {
+            return .failure(.invalidFormat)
+        }
+
         // UserDefaults に保存（機密データは Keychain を推奨）
         UserDefaults.standard.set(email, forKey: "license_email")
         UserDefaults.standard.set(upperKey, forKey: "license_key")
 
-        if let planRange = Range(match.range(at: 2), in: upperKey),
-           let plan = PlanCode(rawValue: String(upperKey[planRange])) {
-            currentPlan = plan
-        }
+        self.email = email
+        self.currentPlan = plan
 
-        return .success(String(localized: "ライセンスが有効化されました"))
+        return .success(String(localized: "licenseActivated"))
     }
 
     func deactivate() {
         UserDefaults.standard.removeObject(forKey: "license_email")
         UserDefaults.standard.removeObject(forKey: "license_key")
-        currentPlan = .free
+        currentPlan = .trial
         expiryDate = nil
+        email = ""
     }
 
     private func loadLicense() {
+        email = UserDefaults.standard.string(forKey: "license_email") ?? ""
+
         guard let key = UserDefaults.standard.string(forKey: "license_key") else { return }
         let range = NSRange(key.startIndex..., in: key)
         guard let match = keyPattern.firstMatch(in: key, range: range),
@@ -1173,11 +1214,15 @@ final class LicenseManager {
 enum LicenseError: LocalizedError, Sendable {
     case invalidFormat
     case wrongProduct
+    case expired
+    case networkError
 
     var errorDescription: String? {
         switch self {
-        case .invalidFormat: return String(localized: "無効なライセンスキー形式です")
-        case .wrongProduct: return String(localized: "この製品用のキーではありません")
+        case .invalidFormat: return String(localized: "errorInvalidFormat")
+        case .wrongProduct: return String(localized: "errorWrongProduct")
+        case .expired: return String(localized: "errorExpired")
+        case .networkError: return String(localized: "errorNetwork")
         }
     }
 }

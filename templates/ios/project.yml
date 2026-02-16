@@ -7,7 +7,7 @@
 #   open __AppName__.xcodeproj
 #
 # __AppName__ を実際のアプリ名 (PascalCase) に置換してください。
-# __APPNAME__ を実際のターゲット名 (小文字) に置換してください。
+# __APPNAME__ を実際のターゲット名に置換してください。
 # __APP_BUNDLE_ID__ を Bundle Identifier に置換してください。
 # ============================================================
 
@@ -16,14 +16,14 @@ name: __AppName__
 options:
   bundleIdPrefix: com.harmonic.insight
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "17.0"
   developmentLanguage: ja
-  xcodeVersion: "15.0"
+  xcodeVersion: "16.0"
   generateEmptyDirectories: true
 
 settings:
   base:
-    SWIFT_VERSION: "5.9"
+    SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: 1
     DEVELOPMENT_TEAM: ""

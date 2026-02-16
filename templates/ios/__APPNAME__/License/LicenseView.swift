@@ -29,47 +29,49 @@ import SwiftUI
 // ============================================================
 
 struct LicenseView: View {
-    @ObservedObject var licenseManager: LicenseManager
-    var appDisplayName: String = "__app_display_name__"
+    @Environment(LicenseManager.self) var licenseManager
     var features: [FeatureItem] = []
 
     @State private var emailInput = ""
     @State private var keyInput = ""
-    @State private var alertMessage: String?
-    @State private var showAlert = false
+    @State private var message: String?
+    @State private var isError = false
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: InsightTheme.paddingLarge) {
                 // --- アプリ名 (Gold) ---
-                Text(appDisplayName)
+                Text("__app_display_name__")
                     .font(InsightTypography.headlineMedium)
                     .fontWeight(.bold)
-                    .foregroundColor(InsightColors.primary)
+                    .foregroundStyle(InsightColors.primary)
                     .multilineTextAlignment(.center)
+                    .padding(.top, 20)
 
                 // --- 現在のプラン ---
                 VStack(spacing: 8) {
-                    Text(NSLocalizedString("license_current_plan", comment: ""))
+                    Text(String(localized: "currentPlan"))
                         .font(InsightTypography.bodyMedium)
-                        .foregroundColor(InsightColors.textSecondary)
+                        .foregroundStyle(InsightColors.textSecondary)
 
-                    Text(licenseManager.currentPlan?.displayName ?? "---")
+                    Text(licenseManager.currentPlan.displayName)
                         .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(licenseManager.currentPlan?.color ?? InsightColors.textSecondary)
+                        .foregroundStyle(licenseManager.currentPlan.color)
 
-                    Text("\(NSLocalizedString("license_expiry", comment: "")): \(licenseManager.formattedExpiry())")
-                        .font(InsightTypography.bodyMedium)
-                        .foregroundColor(InsightColors.textSecondary)
+                    if let expiry = licenseManager.expiryDate {
+                        Text(String(localized: "expiryDate \(expiry.formatted(date: .long, time: .omitted))"))
+                            .font(InsightTypography.bodyMedium)
+                            .foregroundStyle(InsightColors.textSecondary)
+                    }
                 }
 
                 // --- 機能一覧カード ---
                 if !features.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(NSLocalizedString("license_features", comment: ""))
+                        Text(String(localized: "featureList"))
                             .font(InsightTypography.titleMedium)
                             .fontWeight(.bold)
-                            .foregroundColor(InsightColors.textPrimary)
+                            .foregroundStyle(InsightColors.textPrimary)
 
                         ForEach(features, id: \.key) { feature in
                             let isAvailable = licenseManager.canUseFeature(
@@ -80,7 +82,7 @@ struct LicenseView: View {
                             HStack {
                                 Text(feature.displayName)
                                     .font(InsightTypography.bodyMedium)
-                                    .foregroundColor(InsightColors.textPrimary)
+                                    .foregroundStyle(InsightColors.textPrimary)
 
                                 Spacer()
 
@@ -89,84 +91,86 @@ struct LicenseView: View {
                                         .fill(isAvailable ? InsightColors.success : InsightColors.textMuted)
                                         .frame(width: 8, height: 8)
 
-                                    Text(NSLocalizedString(
-                                        isAvailable ? "license_feature_available" : "license_feature_unavailable",
-                                        comment: ""
-                                    ))
+                                    Text(isAvailable
+                                        ? String(localized: "featureAvailable")
+                                        : String(localized: "featureUnavailable"))
                                     .font(InsightTypography.bodySmall)
-                                    .foregroundColor(isAvailable ? InsightColors.success : InsightColors.textSecondary)
+                                    .foregroundStyle(isAvailable ? InsightColors.success : InsightColors.textSecondary)
                                 }
                             }
                             .padding(.vertical, 4)
                         }
                     }
-                    .padding(16)
-                    .background(InsightColors.bgCard)
-                    .cornerRadius(12)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(InsightColors.border, lineWidth: 1)
-                    )
+                    .insightCard()
                 }
 
                 // --- ライセンス認証カード ---
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(NSLocalizedString("license_title", comment: ""))
+                VStack(alignment: .leading, spacing: InsightTheme.padding) {
+                    Text(String(localized: "licenseAuth"))
                         .font(InsightTypography.titleMedium)
                         .fontWeight(.bold)
-                        .foregroundColor(InsightColors.textPrimary)
+                        .foregroundStyle(InsightColors.textPrimary)
 
-                    TextField(
-                        NSLocalizedString("license_email_hint", comment: ""),
-                        text: $emailInput
-                    )
-                    .textFieldStyle(.roundedBorder)
-                    .textContentType(.emailAddress)
-                    .keyboardType(.emailAddress)
-                    .autocapitalization(.none)
+                    TextField(String(localized: "emailPlaceholder"), text: $emailInput)
+                        .textFieldStyle(.roundedBorder)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
 
-                    TextField(
-                        NSLocalizedString("license_key_hint", comment: ""),
-                        text: $keyInput
-                    )
-                    .textFieldStyle(.roundedBorder)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
+                    TextField(String(localized: "keyPlaceholder"), text: $keyInput)
+                        .textFieldStyle(.roundedBorder)
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+
+                    if let message {
+                        Text(message)
+                            .font(InsightTypography.bodySmall)
+                            .foregroundStyle(isError ? InsightColors.error : InsightColors.success)
+                    }
 
                     HStack(spacing: 12) {
-                        Button(action: activateLicense) {
-                            Text(NSLocalizedString("license_activate", comment: ""))
+                        Button {
+                            activateLicense()
+                        } label: {
+                            Text(String(localized: "activate"))
+                                .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(InsightColors.primary)
 
-                        Button(action: clearForm) {
-                            Text(NSLocalizedString("license_clear", comment: ""))
-                                .frame(maxWidth: .infinity)
+                        Button {
+                            emailInput = ""
+                            keyInput = ""
+                            message = nil
+                        } label: {
+                            Text(String(localized: "clear"))
                         }
                         .buttonStyle(.bordered)
+
+                        if licenseManager.isActivated {
+                            Button(role: .destructive) {
+                                licenseManager.deactivate()
+                                message = String(localized: "deactivated")
+                                isError = false
+                            } label: {
+                                Text(String(localized: "deactivateButton"))
+                            }
+                            .buttonStyle(.bordered)
+                        }
                     }
                 }
-                .padding(16)
-                .background(InsightColors.bgCard)
-                .cornerRadius(12)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(InsightColors.border, lineWidth: 1)
-                )
+                .insightCard()
+
+                Spacer()
             }
-            .padding(24)
+            .padding()
         }
-        .background(InsightColors.bgPrimary.ignoresSafeArea())
-        .alert(
-            alertMessage ?? "",
-            isPresented: $showAlert
-        ) {
-            Button(NSLocalizedString("ok", comment: "")) {}
-        }
+        .background(InsightColors.bgPrimary)
+        .navigationTitle(String(localized: "licenseTitle"))
         .onAppear {
-            emailInput = licenseManager.email ?? ""
+            emailInput = licenseManager.email
         }
     }
 
@@ -175,18 +179,13 @@ struct LicenseView: View {
     private func activateLicense() {
         let result = licenseManager.activate(email: emailInput, key: keyInput)
         switch result {
-        case .success:
-            alertMessage = NSLocalizedString("license_activated", comment: "")
+        case .success(let msg):
+            message = msg
+            isError = false
         case .failure(let error):
-            alertMessage = error.localizedDescription
+            message = error.localizedDescription
+            isError = true
         }
-        showAlert = true
-    }
-
-    private func clearForm() {
-        licenseManager.deactivate()
-        emailInput = ""
-        keyInput = ""
     }
 }
 

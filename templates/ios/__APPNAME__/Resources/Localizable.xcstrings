@@ -1,0 +1,126 @@
+{
+  "sourceLanguage": "ja",
+  "strings": {
+    "subtitle": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "HARMONIC insight シリーズ" } },
+        "en": { "stringUnit": { "state": "translated", "value": "HARMONIC insight Series" } }
+      }
+    },
+    "currentPlan": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "現在のプラン" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Current Plan" } }
+      }
+    },
+    "welcomeMessage": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ようこそ" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Welcome" } }
+      }
+    },
+    "licenseTitle": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ライセンス" } },
+        "en": { "stringUnit": { "state": "translated", "value": "License" } }
+      }
+    },
+    "licenseAuth": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ライセンス認証" } },
+        "en": { "stringUnit": { "state": "translated", "value": "License Authentication" } }
+      }
+    },
+    "emailPlaceholder": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "メールアドレス" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Email Address" } }
+      }
+    },
+    "keyPlaceholder": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ライセンスキー" } },
+        "en": { "stringUnit": { "state": "translated", "value": "License Key" } }
+      }
+    },
+    "activate": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "アクティベート" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Activate" } }
+      }
+    },
+    "clear": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "クリア" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Clear" } }
+      }
+    },
+    "deactivateButton": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "解除" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Deactivate" } }
+      }
+    },
+    "deactivated": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ライセンスを解除しました" } },
+        "en": { "stringUnit": { "state": "translated", "value": "License deactivated" } }
+      }
+    },
+    "licenseActivated": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ライセンスが有効化されました" } },
+        "en": { "stringUnit": { "state": "translated", "value": "License activated successfully" } }
+      }
+    },
+    "expiryDate %@": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "有効期限: %@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Expires: %@" } }
+      }
+    },
+    "featureList": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "機能一覧" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Features" } }
+      }
+    },
+    "featureAvailable": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "利用可能" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Available" } }
+      }
+    },
+    "featureUnavailable": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "利用不可" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Unavailable" } }
+      }
+    },
+    "errorInvalidFormat": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "無効なライセンスキー形式です" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Invalid license key format" } }
+      }
+    },
+    "errorWrongProduct": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "この製品用のキーではありません" } },
+        "en": { "stringUnit": { "state": "translated", "value": "This key is not for this product" } }
+      }
+    },
+    "errorExpired": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ライセンスの有効期限が切れています" } },
+        "en": { "stringUnit": { "state": "translated", "value": "License has expired" } }
+      }
+    },
+    "errorNetwork": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "ネットワークエラーが発生しました" } },
+        "en": { "stringUnit": { "state": "translated", "value": "A network error occurred" } }
+      }
+    }
+  },
+  "version": "1.0"
+}

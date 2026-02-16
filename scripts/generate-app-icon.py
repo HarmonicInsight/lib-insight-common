@@ -87,6 +87,7 @@ LAUNCHER_GRID_SIZES = {
 #   tauri          → Windows ICO + PNGs + icon.png (Tauri desktop apps)
 #   expo           → iOS icon.png (1024x1024) + Android mipmap PNGs
 #   android_native → Android mipmap PNGs + round variants (master PNG only)
+#   ios_native     → iOS 1024x1024 PNG + xcassets bundle (AppIcon.appiconset)
 #   web            → favicon.ico + apple-touch-icon + manifest PNGs
 #   service        → Windows ICO (tray icon only)
 # =============================================================================
@@ -251,6 +252,7 @@ PLATFORM_LABELS = {
     'tauri': 'Tauri + React (Desktop)',
     'expo': 'Expo/React Native (iOS/Android)',
     'android_native': 'Android Native (Kotlin/Compose)',
+    'ios_native': 'iOS Native (Swift/SwiftUI)',
     'web': 'Next.js/React (Web)',
     'service': 'Windows Service + Tray',
 }
@@ -436,6 +438,51 @@ def generate_expo(master: Image.Image, name: str, output_dir: str):
     print(f"  Expo: icon.png + adaptive-icon.png + notification-icon.png + splash-icon.png + favicon.png + Android mipmaps")
 
 
+def generate_ios_native(master: Image.Image, name: str, output_dir: str):
+    """Generate iOS native icons: 1024x1024 PNG + xcassets bundle.
+
+    Creates an AppIcon.appiconset directory with:
+      - AppIcon.png (1024x1024, RGB, no alpha — required by App Store)
+      - Contents.json (Xcode asset catalog metadata)
+
+    Args:
+        master: PIL Image (1024x1024 master PNG).
+        name: Product/app name for logging.
+        output_dir: Target directory (typically <AppName>/Resources/Assets.xcassets/).
+    """
+    import json
+
+    # AppIcon.appiconset directory
+    appiconset_dir = os.path.join(output_dir, 'AppIcon.appiconset')
+    os.makedirs(appiconset_dir, exist_ok=True)
+
+    # 1024x1024 PNG without alpha (App Store requirement)
+    img = resize_icon(master, IOS_SIZE)
+    img = flatten_to_rgb(img)
+    img.save(os.path.join(appiconset_dir, 'AppIcon.png'))
+
+    # Contents.json
+    contents = {
+        "images": [
+            {
+                "filename": "AppIcon.png",
+                "idiom": "universal",
+                "platform": "ios",
+                "size": "1024x1024"
+            }
+        ],
+        "info": {"version": 1, "author": "xcode"}
+    }
+    with open(os.path.join(appiconset_dir, 'Contents.json'), 'w') as f:
+        json.dump(contents, f, indent=2)
+
+    # Also save standalone icon.png for convenience
+    os.makedirs(output_dir, exist_ok=True)
+    img.save(os.path.join(output_dir, 'icon.png'))
+
+    print(f"  iOS Native: AppIcon.appiconset/AppIcon.png (1024x1024) + Contents.json")
+
+
 def generate_android_native(master: Image.Image, name: str, output_dir: str):
     """Generate Android native icons: mipmap PNGs only (from master PNG).
 
@@ -609,6 +656,8 @@ def generate_for_platform(platform: str, master: Image.Image, name: str, output_
         generate_expo(master, name, output_dir)
     elif platform == 'android_native':
         generate_android_native(master, name, output_dir)
+    elif platform == 'ios_native':
+        generate_ios_native(master, name, output_dir)
     elif platform == 'web':
         generate_web(master, name, output_dir)
     elif platform == 'service':
@@ -674,7 +723,7 @@ def main():
     parser.add_argument('--master', '-m', help='Path to master PNG (overrides product lookup)')
     parser.add_argument('--name', '-n', help='Output name (default: derived from product)')
     parser.add_argument('--output', '-o', default='./generated-icons', help='Output directory')
-    parser.add_argument('--platform', choices=['windows', 'android', 'ios', 'web', 'wpf', 'python', 'tauri', 'expo', 'android_native', 'service', 'all'],
+    parser.add_argument('--platform', choices=['windows', 'android', 'ios', 'ios_native', 'web', 'wpf', 'python', 'tauri', 'expo', 'android_native', 'service', 'all'],
                         default=None,
                         help='Target platform (default: auto-detect from product)')
     parser.add_argument('--all', action='store_true', help='Generate icons for ALL products (using each product\'s platform)')

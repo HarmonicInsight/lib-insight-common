@@ -1,0 +1,12 @@
+{
+  "sourceLanguage": "ja",
+  "strings": {
+    "CFBundleDisplayName": {
+      "localizations": {
+        "ja": { "stringUnit": { "state": "translated", "value": "__app_display_name__" } },
+        "en": { "stringUnit": { "state": "translated", "value": "__app_display_name__" } }
+      }
+    }
+  },
+  "version": "1.0"
+}
