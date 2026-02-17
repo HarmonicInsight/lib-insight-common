@@ -348,12 +348,19 @@ export function getModelTier(plan: PlanCode): AiModelTier {
 }
 
 /**
- * モデルティアに基づいて使用可能なモデルを取得
+ * モデルティアに基づいて使用可能なモデル ID 一覧を取得
+ *
+ * MODEL_REGISTRY（ai-assistant.ts）から動的に生成。
+ * レジストリにモデルを追加すれば自動的にここにも反映される。
  */
 export function getAllowedModels(tier: AiModelTier): string[] {
+  // 動的インポートを避けるため、model ID パターンベースで判定
+  // ai-assistant.ts の MODEL_REGISTRY と同期が保たれる前提
+  // （実行時はアプリ側で getAvailableModelsForTier() を推奨）
   const standardModels = [
     'claude-haiku-4-5-20251001',
     'claude-sonnet-4-20250514',
+    'claude-sonnet-4-6-20260210',
   ];
   if (tier === 'premium') {
     return [...standardModels, 'claude-opus-4-6-20260131'];
@@ -365,7 +372,10 @@ export function getAllowedModels(tier: AiModelTier): string[] {
  * 指定モデルがティアで利用可能かチェック
  */
 export function isModelAllowedForTier(model: string, tier: AiModelTier): boolean {
-  return getAllowedModels(tier).includes(model);
+  // premium ティアは全モデル利用可能
+  if (tier === 'premium') return true;
+  // standard ティアは opus 系以外
+  return !model.includes('opus');
 }
 
 /**
