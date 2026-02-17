@@ -831,6 +831,127 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
   },
 
   // =========================================================================
+  // テキスト読み上げ（TTS） — config/tts.ts で標準化
+  // =========================================================================
+  tts_reader: {
+    id: 'tts_reader',
+    name: 'Text-to-Speech Reader',
+    nameJa: 'テキスト読み上げ',
+    description: 'Read document text aloud using standardized TTS engines (Web Speech API / VoiceVox / ElevenLabs). Supports queue-based paragraph reading, speed control, and phoneme extraction for avatar lip-sync.',
+    descriptionJa: '標準化 TTS エンジン（Web Speech API / VoiceVox / ElevenLabs）でドキュメントテキストを読み上げ。段落キュー読み上げ、速度調整、アバターリップシンク用フォネーム抽出に対応。',
+    version: '1.0.0',
+    distribution: 'bundled',
+    panelPosition: 'dialog',
+    requiredFeatureKey: 'tts_reader',
+    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    dependencies: [],
+    ioContracts: [
+      {
+        id: 'speak',
+        name: 'Speak Text',
+        nameJa: 'テキスト読み上げ',
+        description: 'Convert text to speech audio and play it. Optionally returns phoneme data for lip-sync.',
+        input: [
+          { key: 'text', type: 'string', description: '読み上げるテキスト', required: true, example: 'こんにちは、今日の業績を報告します。' },
+          { key: 'speed', type: 'number', description: '速度（0.5〜2.0、デフォルト: 1.0）', required: false, example: '1.0' },
+          { key: 'voice_preset_id', type: 'string', description: '音声プリセット ID（config/tts.ts で定義）', required: false, example: 'ja_female_default' },
+          { key: 'engine', type: 'string', description: 'TTS エンジン（web_speech / voicevox / elevenlabs）', required: false, example: 'web_speech' },
+        ],
+        process: 'TTS エンジンでテキストを音声合成 → 再生。長文は自動分割。VoiceVox の場合はフォネームも抽出。',
+        output: [
+          { key: 'success', type: 'boolean', description: '成功したか', required: true },
+          { key: 'duration_ms', type: 'number', description: '再生時間（ミリ秒）', required: false },
+          { key: 'phonemes', type: 'json', description: 'フォネーム配列 [{ timeMs, phoneme, durationMs }]（VoiceVox のみ）', required: false },
+          { key: 'error', type: 'json', description: 'エラー情報 { code, message, messageJa }', required: false },
+        ],
+        transport: 'in_process',
+        async: true,
+        streaming: false,
+      },
+      {
+        id: 'speak_queue',
+        name: 'Queue Speak',
+        nameJa: 'キュー読み上げ',
+        description: 'Queue multiple text segments for sequential reading. Ideal for paragraph-by-paragraph reading of documents.',
+        input: [
+          { key: 'texts', type: 'json', description: '読み上げテキスト配列 ["段落1", "段落2", ...]', required: true },
+          { key: 'speed', type: 'number', description: '速度（0.5〜2.0）', required: false },
+          { key: 'voice_preset_id', type: 'string', description: '音声プリセット ID', required: false },
+        ],
+        process: 'テキスト配列をキューに登録 → 順次読み上げ。途中停止可能。',
+        output: [
+          { key: 'queue_length', type: 'number', description: 'キュー内のアイテム数', required: true },
+          { key: 'queue_items', type: 'json', description: 'キュー内容 [{ id, text, state }]', required: true },
+        ],
+        transport: 'in_process',
+        async: true,
+        streaming: true,
+      },
+    ],
+    tools: [],
+    requiresModules: [],
+    icon: 'Volume2',
+    themeColor: '#B8942F',
+    settingsSchema: [
+      {
+        key: 'tts_engine',
+        name: 'TTS Engine',
+        nameJa: 'TTS エンジン',
+        type: 'select',
+        defaultValue: 'web_speech',
+        options: [
+          { value: 'web_speech', label: 'Web Speech API (Free)', labelJa: 'Web Speech API（無料）' },
+          { value: 'voicevox', label: 'VoiceVox (Local)', labelJa: 'VoiceVox（ローカル高品質）' },
+          { value: 'elevenlabs', label: 'ElevenLabs (Cloud)', labelJa: 'ElevenLabs（クラウド多言語）' },
+        ],
+      },
+      {
+        key: 'voice_preset',
+        name: 'Voice Preset',
+        nameJa: '音声プリセット',
+        type: 'select',
+        defaultValue: 'ja_female_default',
+        options: [
+          { value: 'ja_female_default', label: 'Japanese Female (Default)', labelJa: '日本語（女性・標準）' },
+          { value: 'ja_female_slow', label: 'Japanese Female (Slow)', labelJa: '日本語（女性・ゆっくり）' },
+          { value: 'ja_male_default', label: 'Japanese Male', labelJa: '日本語（男性・標準）' },
+          { value: 'ja_female_narrator', label: 'Japanese Narrator', labelJa: '日本語（女性・ナレーター）' },
+          { value: 'en_female_default', label: 'English Female', labelJa: '英語（女性・標準）' },
+          { value: 'en_male_default', label: 'English Male', labelJa: '英語（男性・標準）' },
+        ],
+      },
+      {
+        key: 'speed',
+        name: 'Speed',
+        nameJa: '速度',
+        type: 'number',
+        defaultValue: 1.0,
+      },
+      {
+        key: 'voicevox_base_url',
+        name: 'VoiceVox URL',
+        nameJa: 'VoiceVox URL',
+        type: 'string',
+        defaultValue: 'http://localhost:50021',
+      },
+      {
+        key: 'voicevox_speaker_id',
+        name: 'VoiceVox Speaker',
+        nameJa: 'VoiceVox スピーカー',
+        type: 'number',
+        defaultValue: 3,
+      },
+      {
+        key: 'elevenlabs_api_key',
+        name: 'ElevenLabs API Key',
+        nameJa: 'ElevenLabs API キー',
+        type: 'string',
+        defaultValue: '',
+      },
+    ],
+  },
+
+  // =========================================================================
   // Python スクリプトランナー（InsightPy 相当のスクリプト一覧 UI）
   // =========================================================================
   python_scripts: {
@@ -1130,6 +1251,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'python_scripts',
       'reference_materials',
       'voice_input',
+      'tts_reader',
       'vrm_avatar',
       'bot_agent',
       'local_workflow',
@@ -1146,6 +1268,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'board',
       'messaging',
       'voice_input',
+      'tts_reader',
       'vrm_avatar',
       'bot_agent',
       'local_workflow',
@@ -1160,6 +1283,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'python_scripts',
       'reference_materials',
       'voice_input',
+      'tts_reader',
       'vrm_avatar',
       'bot_agent',
       'local_workflow',
