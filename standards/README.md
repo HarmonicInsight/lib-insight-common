@@ -13,6 +13,7 @@
 |----------------|---------|---------|
 | **公開Webサイト** | [WEBSITE.md](./WEBSITE.md) | **製品HP・会社HP・LP（色・デザイン統一）** |
 | **アプリアイコン** | [APP_ICONS.md](./APP_ICONS.md) | **全製品共通アイコン仕様** |
+| **寒色系カラー標準** | [COOL_COLOR.md](./COOL_COLOR.md) | **業務系アプリ向け Cool Blue & Slate テーマ** |
 | **ローカライゼーション** | [LOCALIZATION.md](./LOCALIZATION.md) | **多言語対応標準（全プラットフォーム共通）** |
 | C# (WPF) | [CSHARP_WPF.md](./CSHARP_WPF.md) | Windows デスクトップアプリ |
 | Python | [PYTHON.md](./PYTHON.md) | CLI ツール、バックエンド |

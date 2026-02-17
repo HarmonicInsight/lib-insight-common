@@ -12,7 +12,8 @@
 |-------------------------------|--------------|
 | 「リリース」「デプロイ」「ストアに出す」「公開」「本番」「ship」「release」 | `/release-check` を提案・実行 |
 | 「PR 作って」「プルリク」「マージ」 | `/release-check` の実行を推奨 |
-| 新規プロジェクト作成・UI 実装開始 | デザイン標準（Ivory & Gold）を確認 |
+| 新規プロジェクト作成・UI 実装開始 | デザイン標準（Ivory & Gold / Cool Blue & Slate）を確認 |
+| 業務系アプリ（INBT/INCA/IVIN）のUI 実装 | `standards/COOL_COLOR.md` と `brand/colors-cool.json` を確認 |
 | AI アシスタント機能の実装 | `standards/AI_ASSISTANT.md` を確認 |
 | ストアメタデータ・スクリーンショットの話題 | `standards/LOCALIZATION.md` §6 を参照 |
 | ライブラリ更新・バージョンアップ・依存関係の変更 | `compatibility/` の互換性マトリクスを確認 |
@@ -24,7 +25,13 @@
 
 **新規プロジェクト作成・UI 実装・デザイン変更を行う前に、以下を確認してください：**
 
-### デザインシステム: Ivory & Gold Theme
+### デザインシステム
+
+> 製品カテゴリに応じて2つのテーマから選択してください。
+
+#### テーマ A: Ivory & Gold（デフォルト）
+
+**対象**: InsightOffice 系（INSS/IOSH/IOSD/INPY）、ISOF、マーケティング系（INMV/INIG）、公開 Web サイト
 
 ```
 ❌ 絶対禁止: Blue (#2563EB) をプライマリカラーとして使用
@@ -44,6 +51,33 @@
 | **Warning** | `#CA8A04` | 警告ステータス |
 | **Error** | `#DC2626` | エラーステータス |
 
+#### テーマ B: Cool Blue & Slate（業務系アプリケーション向け）
+
+**対象**: 業務ツール系（INBT/INCA/IVIN）、データダッシュボード、管理画面
+
+> 詳細は `standards/COOL_COLOR.md` を参照
+
+```
+❌ 絶対禁止: Gold (#B8942F) をプライマリカラーとして使用
+❌ 絶対禁止: Ivory (#FAF8F5) を背景として使用
+✅ 必須: Blue (#2563EB) をプライマリカラーとして使用
+✅ 必須: Slate (#F8FAFC) を背景色として使用
+```
+
+| 用途 | カラーコード | 備考 |
+|-----|-------------|------|
+| **Primary (Blue)** | `#2563EB` | アクセント、CTA、選択状態 |
+| **Background (Slate)** | `#F8FAFC` | メイン背景（寒色系オフホワイト） |
+| **Background Card** | `#FFFFFF` | カード、モーダル |
+| **Sidebar** | `#1E293B` | ダークサイドバー（業務系推奨） |
+| **Text Primary** | `#0F172A` | 本文、見出し（高コントラスト） |
+| **Text Secondary** | `#475569` | サブテキスト |
+| **Border** | `#E2E8F0` | ボーダー |
+| **Success** | `#16A34A` | 成功ステータス |
+| **Warning** | `#D97706` | 警告ステータス |
+| **Error** | `#DC2626` | エラーステータス |
+| **Info** | `#0EA5E9` | 情報ステータス |
+
 ### プラットフォーム別標準
 
 実装前に該当するガイドを確認:
@@ -55,12 +89,16 @@
 - **AI アシスタント**: `standards/AI_ASSISTANT.md`（InsightOffice 系アプリ共通）
 - **ローカライゼーション**: `standards/LOCALIZATION.md`（全プラットフォーム共通）
 - **リリースチェック**: `standards/RELEASE_CHECKLIST.md`（全プラットフォーム共通）
+- **寒色系カラー標準**: `standards/COOL_COLOR.md`（業務系アプリ: INBT/INCA/IVIN）
 
 ### 検証スクリプト
 
 ```bash
-# 開発中の標準検証
+# 開発中の標準検証（Ivory & Gold テーマ）
 ./scripts/validate-standards.sh <project-directory>
+
+# 開発中の標準検証（Cool Blue & Slate テーマ — 業務系アプリ）
+./scripts/validate-cool-color.sh <project-directory>
 
 # リリース前の包括チェック（標準検証 + リリース固有チェック）
 ./scripts/release-check.sh <project-directory>
