@@ -174,7 +174,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
-| 独自のモデル選択UI | モデルはティア（Standard/Premium）で自動決定 |
+| モデル ID のハードコード | `MODEL_REGISTRY` / `resolveModel()` を使用（ユーザー選択対応） |
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
 | UI テキストのハードコード | リソースファイル / 翻訳定義から参照（`standards/LOCALIZATION.md`） |
 | 英語翻訳の省略 | 日本語 + 英語の両方を必ず用意 |
@@ -390,27 +390,30 @@ getResellerProducts('gold');        // 全製品
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
-| モデル選択 | ティアで自動決定（ユーザーは選べない） |
-| Standard ティア | Sonnet（基本プラン / Standard アドオン） |
-| Premium ティア | Opus（Premium アドオン / TRIAL / ENT） |
+| モデル管理 | `MODEL_REGISTRY` で一元管理（`config/ai-assistant.ts`） |
+| モデル選択 | ティアでデフォルト決定 + **ユーザーがティア内で変更可能** |
+| Standard ティア | Sonnet 系（デフォルト: 最新 Sonnet） |
+| Premium ティア | 全モデル利用可能（デフォルト: 最新 Opus） |
 | ライセンス制御 | FREE: 20回 / PRO: 100回 / ENT: 無制限（STD は AI なし） |
 | 追加パック | Standard / Premium（価格はパートナーと協議の上決定） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
 **モデルティア:**
 
-| ティア | モデル | 利用条件 |
-|--------|--------|---------|
-| Standard | Sonnet | 基本プラン（FREE/PRO）、Standard アドオン |
-| Premium | Opus | Premium アドオン購入、TRIAL、ENT |
+| ティア | デフォルトモデル | 利用可能モデル | 利用条件 |
+|--------|----------------|---------------|---------|
+| Standard | 最新 Sonnet | Haiku + Sonnet 系 | 基本プラン（FREE/PRO）、Standard アドオン |
+| Premium | 最新 Opus | 全モデル | Premium アドオン購入、TRIAL、ENT |
 
 ```typescript
 import {
-  getModelForTier,
+  resolveModel,
+  getAvailableModelsForTier,
   getBaseSystemPrompt,
   canUseAiAssistant,
   getAiCreditLabel,
   SPREADSHEET_TOOLS,
+  MODEL_REGISTRY,
 } from '@/insight-common/config/ai-assistant';
 import { calculateCreditBalance } from '@/insight-common/config/usage-based-licensing';
 
@@ -419,14 +422,19 @@ canUseAiAssistant('PRO');   // true
 canUseAiAssistant('FREE');  // true（20回制限）
 canUseAiAssistant('STD');   // false
 
-// モデル決定（ティアから自動）
-const balance = calculateCreditBalance('PRO', 10, addonPacks);
-const model = getModelForTier(balance.effectiveModelTier);
-// → 'claude-sonnet-4-20250514'（Premium アドオンがあれば 'claude-opus-4-6-20260131'）
+// モデル選択 UI: ティアで利用可能なモデル一覧
+const models = getAvailableModelsForTier('standard');
+// → [Haiku 4.5, Sonnet 4, Sonnet 4.6]
 
-// クレジット表示
-getAiCreditLabel(balance, 'ja');
-// → "AIアシスタント（スタンダード（Sonnet））— 残り 90回"
+// モデル決定（ユーザー選択を考慮）
+const balance = calculateCreditBalance('PRO', 10, addonPacks);
+const model = resolveModel(balance.effectiveModelTier, userPreference);
+// → ユーザー未選択: 'claude-sonnet-4-6-20260210'（Standard デフォルト）
+// → ユーザーが Sonnet 4 を選択: 'claude-sonnet-4-20250514'
+
+// クレジット表示（ユーザー選択モデル名を含む）
+getAiCreditLabel(balance, 'ja', userPreference);
+// → "AIアシスタント（スタンダード（Sonnet 4.6））— 残り 90回"
 ```
 
 ### ライセンスキー形式

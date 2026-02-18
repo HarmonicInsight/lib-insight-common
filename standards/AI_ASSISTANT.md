@@ -20,26 +20,99 @@ InsightOffice 系アプリには、Claude API を利用した AI アシスタン
 ### 設計原則
 
 1. **BYOK（Bring Your Own Key）モデル** — ユーザーが自身の Claude API キーを入力
-2. **ペルソナシステム** — 3 つの AI キャラクターでモデルを使い分け
+2. **モデルレジストリ + ユーザー選択** — MODEL_REGISTRY で一元管理、ユーザーがティア内でモデルを選択可能
 3. **プロダクトコンテキスト** — 開いているファイルの内容を AI に自動提供
 4. **ライセンス制御** — FREE（20クレジット）/ TRIAL / PRO / ENT で利用可能（STD は不可）
 5. **Tool Use 対応** — スプレッドシート等で AI がデータを直接操作可能
 
 ---
 
-## 2. ペルソナシステム
+## 2. モデル選択システム
 
-### 2.1 ペルソナ定義
+### 2.1 モデルレジストリ
 
-全製品共通で 3 つのペルソナを提供する。各ペルソナは異なる Claude モデルにマッピングされる。
+全利用可能モデルは `config/ai-assistant.ts` の `MODEL_REGISTRY` で一元管理する。
+新モデルのリリース時はレジストリに1エントリ追加するだけで全製品に反映される。
 
-| ID | 日本語名 | 英語名 | モデル | テーマカラー | 性格・用途 |
-|-----|----------|--------|--------|-------------|-----------|
-| `shunsuke` | Claude 俊 | Claude Shun | `claude-haiku-4-5-20251001` | `#4696DC` | 素早く簡潔。軽い確認・ちょっとした修正に最適 |
-| `megumi` | Claude 恵 | Claude Megumi | `claude-sonnet-4-20250514` | `#B8942F` (Gold) | 万能で丁寧。編集・要約・翻訳のバランス型 |
-| `manabu` | Claude 学 | Claude Manabu | `claude-opus-4-6-20260131` | `#8C64C8` | 深い思考力。レポート・精密な文書に最適 |
+```typescript
+// 新モデル追加の例（Sonnet 4.6 追加時）
+{
+  id: 'claude-sonnet-4-6-20260210',
+  family: 'sonnet',
+  displayName: 'Sonnet 4.6',
+  version: '4.6',
+  releaseDate: '2026-02-10',
+  minimumTier: 'standard',
+  inputPer1M: 3,
+  outputPer1M: 15,
+  maxContextTokens: 200_000,
+  icon: '⭐',
+  status: 'active',
+  isDefaultForTier: 'standard',  // ← これでデフォルトに設定
+  descriptionJa: '最新の万能型。...',
+  descriptionEn: 'Latest balanced model. ...',
+}
+```
 
-### 2.2 ペルソナアイコン
+### 2.2 ティアとデフォルトモデル
+
+| ティア | デフォルトモデル | 利用可能モデル |
+|--------|----------------|---------------|
+| Standard | 最新 Sonnet（`isDefaultForTier: 'standard'`） | Haiku 系 + Sonnet 系 |
+| Premium | 最新 Opus（`isDefaultForTier: 'premium'`） | 全モデル（Haiku + Sonnet + Opus） |
+
+### 2.3 ユーザーモデル選択
+
+ユーザーは設定画面から、自分のティア内で利用可能なモデルを選択できる。
+
+```typescript
+// TypeScript
+import { resolveModel, getAvailableModelsForTier } from '@/insight-common/config/ai-assistant';
+
+// 設定画面: 利用可能モデル一覧を取得
+const models = getAvailableModelsForTier('standard');
+// → [Haiku 4.5, Sonnet 4, Sonnet 4.6]
+
+// API コール時: ユーザー選択を考慮してモデルを解決
+const modelId = resolveModel(balance.effectiveModelTier, userPreference);
+```
+
+```csharp
+// C# (WPF)
+// 設定画面: 利用可能モデル一覧を取得
+var models = ClaudeModels.GetAvailableModelsForTier("standard");
+
+// API コール時: ユーザー選択を考慮してモデルを解決
+var modelId = ClaudeModels.ResolveModel(tier, userPreferredModelId);
+```
+
+**設定の永続化:**
+
+```json
+// settings.json
+{
+  "claudeApiKey": "sk-ant-...",
+  "language": "ja",
+  "chatPanelWidth": 300,
+  "userModelPreference": {
+    "standardTierModel": "claude-sonnet-4-6-20260210",
+    "premiumTierModel": null
+  }
+}
+```
+
+### 2.4 ペルソナシステム（内部用）
+
+ペルソナはタスクコンテキスト推奨エンジンの内部実装として存続する（UIには非公開）。
+各ペルソナのモデルはレジストリのデフォルトから自動解決される。
+
+| ID | 日本語名 | 英語名 | モデルファミリー | テーマカラー | 性格・用途 |
+|-----|----------|--------|----------------|-------------|-----------|
+| `shunsuke` | Claude 俊 | Claude Shun | Haiku（最新） | `#4696DC` | 素早く簡潔。軽い確認・ちょっとした修正に最適 |
+| `megumi` | Claude 恵 | Claude Megumi | Sonnet（Standard デフォルト） | `#B8942F` (Gold) | 万能で丁寧。編集・要約・翻訳のバランス型 |
+| `manabu` | Claude 学 | Claude Manabu | Opus（Premium デフォルト） | `#8C64C8` | 深い思考力。レポート・精密な文書に最適 |
+
+### 2.5 ペルソナアイコン
 
 - 各ペルソナに **32px** および **48px** のピクセルアートアイコンを用意
 - 格納場所: `Assets/Personas/{id}_32.png`, `Assets/Personas/{id}_48.png`
@@ -51,12 +124,6 @@ InsightOffice 系アプリには、Claude API を利用した AI アシスタン
        RenderOptions.BitmapScalingMode="NearestNeighbor"
        Width="32" Height="32" />
 ```
-
-### 2.3 デフォルト設定
-
-- 初回起動時のデフォルトペルソナ: **`megumi`**（Sonnet）
-- ユーザーがペルソナを切り替えると、使用するモデルが自動的に変更される
-- ペルソナの選択状態はローカル設定に永続化する
 
 ---
 
@@ -606,9 +673,13 @@ public class ToolResultBlock
 {
   "claudeApiKey": "sk-ant-...",
   "selectedPersonaId": "megumi",
-  "selectedModel": "claude-sonnet-4-20250514",
+  "selectedModel": "claude-sonnet-4-6-20260210",
   "language": "ja",
-  "chatPanelWidth": 300
+  "chatPanelWidth": 300,
+  "userModelPreference": {
+    "standardTierModel": "claude-sonnet-4-6-20260210",
+    "premiumTierModel": null
+  }
 }
 ```
 

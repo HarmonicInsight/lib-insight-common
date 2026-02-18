@@ -5,11 +5,14 @@
  * AI アシスタントのプロンプト・ツール定義・モデル選択・型定義
  *
  * 【設計方針】
- * - ペルソナ（3キャラクター）は廃止。AIアシスタントは1つ。
- * - モデルはユーザーが選ぶのではなく、購入パックのティアで決まる。
- *   - Standard（基本プラン/Standardアドオン）: Sonnet を使用
- *   - Premium（Premiumアドオン/TRIAL/ENT）: Opus を使用
- * - UIには「AIアシスタント」のみ表示。モデル名は出さない。
+ * - ペルソナ（3キャラクター）は内部用。UIには公開しない。
+ * - モデル選択は MODEL_REGISTRY で一元管理。
+ *   - ティア（Standard/Premium）でデフォルトモデルが決まる。
+ *   - ユーザーはティア内で利用可能なモデルを選択できる。
+ *   - 新モデル追加時はレジストリに1エントリ追加するだけ。
+ * - Standard ティア: Sonnet 系（デフォルト: 最新 Sonnet）
+ * - Premium ティア: Opus 系（デフォルト: 最新 Opus）
+ * - 設定画面でモデル選択 UI を表示し、ユーザーが変更可能。
  *
  * 詳細仕様: standards/AI_ASSISTANT.md
  */
@@ -112,6 +115,8 @@ export interface AiAssistantSettings {
   claudeApiKey: string;
   language: 'ja' | 'en';
   chatPanelWidth: number;
+  /** ユーザーが選択したモデル（ティアごと） */
+  userModelPreference?: UserModelPreference;
 }
 
 /** デフォルト設定値 */
@@ -120,6 +125,320 @@ export const DEFAULT_AI_SETTINGS: AiAssistantSettings = {
   language: 'ja',
   chatPanelWidth: 400,
 };
+
+// =============================================================================
+// モデルレジストリ（全利用可能モデルの単一ソース）
+// =============================================================================
+
+/**
+ * モデルのステータス
+ *
+ * - active: 現在利用可能（UI に表示）
+ * - deprecated: 非推奨（既存ユーザーは引き続き利用可能、新規選択不可）
+ * - preview: プレビュー（ENT のみ利用可能）
+ */
+export type ModelStatus = 'active' | 'deprecated' | 'preview';
+
+/**
+ * モデルファミリー
+ *
+ * Anthropic のモデルラインナップに対応。
+ * 新しいファミリーが追加された場合はここに追記。
+ */
+export type ModelFamily = 'haiku' | 'sonnet' | 'opus';
+
+/**
+ * モデルレジストリエントリ
+ *
+ * 新モデルのリリース時にこのレジストリに1エントリ追加するだけで
+ * 全製品のモデル選択UIに反映される。
+ */
+export interface ModelDefinition {
+  /** モデル ID（API に渡す値） */
+  id: string;
+  /** モデルファミリー */
+  family: ModelFamily;
+  /** 表示名（例: "Sonnet 4"） */
+  displayName: string;
+  /** バージョン表示名（例: "4", "4.5", "4.6"） */
+  version: string;
+  /** リリース日（ISO 8601） */
+  releaseDate: string;
+  /** 利用に必要な最低ティア */
+  minimumTier: AiModelTier;
+  /** 入力コスト（USD / 1M tokens） */
+  inputPer1M: number;
+  /** 出力コスト（USD / 1M tokens） */
+  outputPer1M: number;
+  /** 最大コンテキストトークン数 */
+  maxContextTokens: number;
+  /** 表示アイコン */
+  icon: string;
+  /** モデルの状態 */
+  status: ModelStatus;
+  /** このモデルが属するティアのデフォルトか */
+  isDefaultForTier?: AiModelTier;
+  /** 説明（日本語） */
+  descriptionJa: string;
+  /** 説明（英語） */
+  descriptionEn: string;
+}
+
+/**
+ * モデルレジストリ
+ *
+ * 【新モデル追加手順】
+ * 1. このレジストリに新エントリを追加
+ * 2. isDefaultForTier を設定して旧デフォルトの isDefaultForTier を削除
+ * 3. MODEL_PRICING は自動的にこのレジストリから生成される
+ * 4. 各製品アプリの再ビルドで反映（コード変更不要）
+ *
+ * 【モデル非推奨化手順】
+ * 1. status を 'deprecated' に変更
+ * 2. isDefaultForTier を削除
+ * 3. 新しいデフォルトモデルに isDefaultForTier を設定
+ */
+export const MODEL_REGISTRY: ModelDefinition[] = [
+  // --- Haiku ---
+  {
+    id: 'claude-haiku-4-5-20251001',
+    family: 'haiku',
+    displayName: 'Haiku 4.5',
+    version: '4.5',
+    releaseDate: '2025-10-01',
+    minimumTier: 'standard',
+    inputPer1M: 1,
+    outputPer1M: 5,
+    maxContextTokens: 200_000,
+    icon: '⚡',
+    status: 'active',
+    descriptionJa: '高速・低コスト。軽い確認やちょっとした修正に最適',
+    descriptionEn: 'Fast and affordable. Best for quick checks and light edits.',
+  },
+  // --- Sonnet ---
+  {
+    id: 'claude-sonnet-4-20250514',
+    family: 'sonnet',
+    displayName: 'Sonnet 4',
+    version: '4',
+    releaseDate: '2025-05-14',
+    minimumTier: 'standard',
+    inputPer1M: 3,
+    outputPer1M: 15,
+    maxContextTokens: 200_000,
+    icon: '⭐',
+    status: 'active',
+    descriptionJa: '万能バランス型。編集・要約・翻訳に最適',
+    descriptionEn: 'Versatile and balanced. Great for editing, summaries, and translations.',
+  },
+  {
+    id: 'claude-sonnet-4-6-20260210',
+    family: 'sonnet',
+    displayName: 'Sonnet 4.6',
+    version: '4.6',
+    releaseDate: '2026-02-10',
+    minimumTier: 'standard',
+    inputPer1M: 3,
+    outputPer1M: 15,
+    maxContextTokens: 200_000,
+    icon: '⭐',
+    status: 'active',
+    isDefaultForTier: 'standard',
+    descriptionJa: '最新の万能型。Sonnet 4 の後継。コンピュータ操作も人間レベル',
+    descriptionEn: 'Latest balanced model. Successor to Sonnet 4. Human-level computer use.',
+  },
+  // --- Opus ---
+  {
+    id: 'claude-opus-4-6-20260131',
+    family: 'opus',
+    displayName: 'Opus 4.6',
+    version: '4.6',
+    releaseDate: '2026-01-31',
+    minimumTier: 'premium',
+    inputPer1M: 15,
+    outputPer1M: 75,
+    maxContextTokens: 200_000,
+    icon: '💎',
+    status: 'active',
+    isDefaultForTier: 'premium',
+    descriptionJa: '最高性能。レポート・精密文書・深い分析に最適',
+    descriptionEn: 'Most capable. Best for reports, precision documents, and deep analysis.',
+  },
+];
+
+/**
+ * ユーザーのモデル選択設定
+ *
+ * ユーザーが自分のティア内で利用可能なモデルを選択できる。
+ * 未設定の場合はティアのデフォルトモデルが使用される。
+ */
+export interface UserModelPreference {
+  /** Standard ティアで使用するモデル ID */
+  standardTierModel?: string;
+  /** Premium ティアで使用するモデル ID */
+  premiumTierModel?: string;
+}
+
+// --- レジストリアクセス関数 ---
+
+/** レジストリからモデルを ID で取得 */
+export function getModelFromRegistry(modelId: string): ModelDefinition | undefined {
+  return MODEL_REGISTRY.find(m => m.id === modelId);
+}
+
+/**
+ * ティアで利用可能なモデル一覧を取得
+ *
+ * ユーザーのモデル選択 UI で表示するリスト。
+ * active なモデルのみ返す（deprecated / preview は含まない）。
+ * preview は includePreview: true で含められる（ENT 向け）。
+ */
+export function getAvailableModelsForTier(
+  tier: AiModelTier,
+  options?: { includePreview?: boolean; includeDeprecated?: boolean },
+): ModelDefinition[] {
+  return MODEL_REGISTRY.filter(m => {
+    // ティアチェック
+    if (tier === 'standard' && m.minimumTier === 'premium') return false;
+
+    // ステータスチェック
+    if (m.status === 'deprecated' && !options?.includeDeprecated) return false;
+    if (m.status === 'preview' && !options?.includePreview) return false;
+
+    return true;
+  });
+}
+
+/**
+ * ティアのデフォルトモデル ID を取得
+ *
+ * レジストリの isDefaultForTier から自動解決。
+ * デフォルトが見つからない場合はファミリー内の最新 active モデルにフォールバック。
+ */
+export function getDefaultModelForTier(tier: AiModelTier): string {
+  // 1. 明示的にデフォルト指定されたモデルを探す
+  const explicit = MODEL_REGISTRY.find(
+    m => m.isDefaultForTier === tier && m.status === 'active',
+  );
+  if (explicit) return explicit.id;
+
+  // 2. フォールバック: ティアで利用可能な最新の active モデル
+  const available = getAvailableModelsForTier(tier);
+  if (available.length === 0) {
+    // 最終フォールバック
+    return tier === 'premium' ? 'claude-opus-4-6-20260131' : 'claude-sonnet-4-6-20260210';
+  }
+
+  // リリース日が最新のものを返す
+  return available.sort(
+    (a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime(),
+  )[0].id;
+}
+
+/**
+ * ユーザー選択を考慮してモデルを解決
+ *
+ * 1. ユーザーが明示的に選択 → そのモデル（ティアチェック済みなら採用）
+ * 2. 未選択 / 選択モデルが無効 → ティアのデフォルト
+ *
+ * @param tier - 有効なモデルティア（calculateCreditBalance で算出）
+ * @param userPreference - ユーザーの設定（ローカルストレージから取得）
+ * @returns 使用するモデル ID
+ */
+export function resolveModel(
+  tier: AiModelTier,
+  userPreference?: UserModelPreference,
+): string {
+  if (userPreference) {
+    const preferredId = tier === 'premium'
+      ? userPreference.premiumTierModel
+      : userPreference.standardTierModel;
+
+    if (preferredId) {
+      const model = getModelFromRegistry(preferredId);
+      // モデルが存在し、ティアで利用可能で、deprecated でないこと
+      if (model && model.status !== 'deprecated') {
+        if (tier === 'premium' || model.minimumTier === 'standard') {
+          return model.id;
+        }
+      }
+    }
+  }
+
+  return getDefaultModelForTier(tier);
+}
+
+/**
+ * モデル選択 UI 用のラベルを生成
+ *
+ * @example
+ * ```typescript
+ * getModelSelectionLabel('claude-sonnet-4-6-20260210', 'ja');
+ * // → "⭐ Sonnet 4.6（デフォルト）"
+ *
+ * getModelSelectionLabel('claude-sonnet-4-20250514', 'ja');
+ * // → "⭐ Sonnet 4"
+ * ```
+ */
+export function getModelSelectionLabel(
+  modelId: string,
+  locale: 'ja' | 'en' = 'ja',
+  isDefault: boolean = false,
+): string {
+  const model = getModelFromRegistry(modelId);
+  if (!model) return modelId;
+
+  const defaultSuffix = isDefault
+    ? (locale === 'ja' ? '（デフォルト）' : ' (Default)')
+    : '';
+  return `${model.icon} ${model.displayName}${defaultSuffix}`;
+}
+
+/**
+ * ユーザーのモデル選択が有効かバリデーション
+ *
+ * 設定画面でユーザーがモデルを選択した際に呼び出す。
+ * ティアに対して選択可能なモデルかチェックする。
+ */
+export function validateModelSelection(
+  modelId: string,
+  tier: AiModelTier,
+): { valid: boolean; reason?: string; reasonJa?: string } {
+  const model = getModelFromRegistry(modelId);
+  if (!model) {
+    return {
+      valid: false,
+      reason: `Model "${modelId}" not found in registry`,
+      reasonJa: `モデル "${modelId}" はレジストリに存在しません`,
+    };
+  }
+
+  if (model.status === 'deprecated') {
+    return {
+      valid: false,
+      reason: `Model "${model.displayName}" is deprecated`,
+      reasonJa: `モデル "${model.displayName}" は非推奨です`,
+    };
+  }
+
+  if (model.status === 'preview' && tier !== 'premium') {
+    return {
+      valid: false,
+      reason: `Preview model "${model.displayName}" requires Premium tier`,
+      reasonJa: `プレビューモデル "${model.displayName}" は Premium ティアが必要です`,
+    };
+  }
+
+  if (tier === 'standard' && model.minimumTier === 'premium') {
+    return {
+      valid: false,
+      reason: `Model "${model.displayName}" requires Premium tier`,
+      reasonJa: `モデル "${model.displayName}" は Premium ティアが必要です`,
+    };
+  }
+
+  return { valid: true };
+}
 
 // =============================================================================
 // 内部ペルソナ定義（タスクコンテキスト推奨の内部実装用）
@@ -143,13 +462,14 @@ export interface AiPersona {
  *
  * タスクコンテキスト推奨エンジンが最適モデルを決定する際に使用。
  * ユーザーにはペルソナ名・モデル名は表示しない。
+ * モデル ID はレジストリのデフォルトから自動解決。
  */
 const AI_PERSONAS: AiPersona[] = [
   {
     id: 'shunsuke',
     nameJa: 'Claude 俊',
     nameEn: 'Claude Shun',
-    model: 'claude-haiku-4-5-20251001',
+    model: MODEL_REGISTRY.find(m => m.family === 'haiku' && m.status === 'active')?.id ?? 'claude-haiku-4-5-20251001',
     themeColor: '#4696DC',
     descriptionJa: '素早く簡潔。軽い確認・ちょっとした修正に最適',
     descriptionEn: 'Quick and concise. Best for quick checks and light edits.',
@@ -160,7 +480,7 @@ const AI_PERSONAS: AiPersona[] = [
     id: 'megumi',
     nameJa: 'Claude 恵',
     nameEn: 'Claude Megumi',
-    model: 'claude-sonnet-4-20250514',
+    model: getDefaultModelForTier('standard'),
     themeColor: '#B8942F',
     descriptionJa: '万能で丁寧。編集・要約・翻訳のバランス型',
     descriptionEn: 'Versatile and thorough. Great for editing, summaries, translations.',
@@ -171,7 +491,7 @@ const AI_PERSONAS: AiPersona[] = [
     id: 'manabu',
     nameJa: 'Claude 学',
     nameEn: 'Claude Manabu',
-    model: 'claude-opus-4-6-20260131',
+    model: getDefaultModelForTier('premium'),
     themeColor: '#8C64C8',
     descriptionJa: '深い思考力。レポート・ドキュメント評価・精密な文書に最適',
     descriptionEn: 'Deep thinker. Best for reports, document evaluation, and documents requiring precision.',
@@ -186,41 +506,49 @@ function getPersona(id: string): AiPersona | undefined {
 }
 
 // =============================================================================
-// モデル選択（ティアベース — 公開API）
+// モデル選択（ティアベース + ユーザー選択 — 公開API）
 // =============================================================================
 
 /**
  * ティアに応じた使用モデルを決定
  *
- * ユーザーはモデルを選ばない。購入パック（Standard/Premium）のティアで
- * 使用モデルが自動的に決まる。
+ * ユーザーが明示的にモデルを選択していない場合は、ティアのデフォルトを返す。
+ * ユーザーが選択している場合は resolveModel() を使用すること。
  *
- * | ティア    | 使用モデル   |
- * |----------|-------------|
- * | standard | Sonnet      |
- * | premium  | Opus        |
+ * @deprecated resolveModel() を使用してください（ユーザー選択対応版）
  */
 export function getModelForTier(tier: AiModelTier): string {
-  switch (tier) {
-    case 'premium':
-      return 'claude-opus-4-6-20260131';
-    case 'standard':
-    default:
-      return 'claude-sonnet-4-20250514';
-  }
+  return getDefaultModelForTier(tier);
 }
 
 /**
  * ティアの表示名を取得
+ *
+ * ユーザーが明示的にモデルを選択している場合は、そのモデル名を含む。
  */
 export function getModelTierLabel(
   tier: AiModelTier,
   locale: 'ja' | 'en' = 'ja',
+  userPreference?: UserModelPreference,
 ): string {
+  const resolvedModelId = resolveModel(tier, userPreference);
+  const model = getModelFromRegistry(resolvedModelId);
+  const defaultId = getDefaultModelForTier(tier);
+  const isCustom = resolvedModelId !== defaultId;
+
   if (tier === 'premium') {
-    return locale === 'ja' ? 'プレミアム（Opus）' : 'Premium (Opus)';
+    const base = locale === 'ja' ? 'プレミアム' : 'Premium';
+    const modelName = model?.displayName ?? 'Opus';
+    return isCustom
+      ? `${base}（${modelName}）`
+      : (locale === 'ja' ? `プレミアム（${modelName}）` : `Premium (${modelName})`);
   }
-  return locale === 'ja' ? 'スタンダード（Sonnet）' : 'Standard (Sonnet)';
+
+  const base = locale === 'ja' ? 'スタンダード' : 'Standard';
+  const modelName = model?.displayName ?? 'Sonnet';
+  return isCustom
+    ? `${base}（${modelName}）`
+    : (locale === 'ja' ? `スタンダード（${modelName}）` : `Standard (${modelName})`);
 }
 
 // =============================================================================
@@ -231,18 +559,21 @@ export function getModelTierLabel(
 export const CLAUDE_API_CONFIG = {
   endpoint: 'https://api.anthropic.com/v1/messages',
   version: '2023-06-01',
-  defaultModel: 'claude-sonnet-4-20250514',
+  defaultModel: getDefaultModelForTier('standard'),
   maxTokens: 4096,
   httpTimeoutMs: 90_000,
   cancellationTimeoutMs: 120_000,
 } as const;
 
-/** モデル別コスト（USD per 1M tokens） */
-export const MODEL_PRICING: Record<string, { inputPer1M: number; outputPer1M: number }> = {
-  'claude-haiku-4-5-20251001': { inputPer1M: 1, outputPer1M: 5 },
-  'claude-sonnet-4-20250514': { inputPer1M: 3, outputPer1M: 15 },
-  'claude-opus-4-6-20260131': { inputPer1M: 15, outputPer1M: 75 },
-};
+/**
+ * モデル別コスト（USD per 1M tokens）
+ *
+ * MODEL_REGISTRY から自動生成。レジストリにモデルを追加すれば自動反映。
+ */
+export const MODEL_PRICING: Record<string, { inputPer1M: number; outputPer1M: number }> =
+  Object.fromEntries(
+    MODEL_REGISTRY.map(m => [m.id, { inputPer1M: m.inputPer1M, outputPer1M: m.outputPer1M }]),
+  );
 
 /** 推定コストを計算 */
 export function estimateCost(
@@ -1595,6 +1926,7 @@ export function canUseAiEditor(plan: PlanCode): boolean {
 export function getAiCreditLabel(
   credits: CreditBalance | null,
   locale: 'ja' | 'en' = 'ja',
+  userPreference?: UserModelPreference,
 ): string {
   const name = locale === 'ja' ? 'AIアシスタント' : 'AI Assistant';
 
@@ -1610,7 +1942,7 @@ export function getAiCreditLabel(
       : `${name} (No credits)`;
   }
 
-  const tierLabel = getModelTierLabel(credits.effectiveModelTier, locale);
+  const tierLabel = getModelTierLabel(credits.effectiveModelTier, locale, userPreference);
   return locale === 'ja'
     ? `${name}（${tierLabel}）— 残り ${credits.totalRemaining}回`
     : `${name} (${tierLabel}) — ${credits.totalRemaining} credits left`;
@@ -1763,7 +2095,16 @@ export function getMemoryStatus(plan: PlanCode): {
 // =============================================================================
 
 export default {
-  // モデル選択
+  // モデルレジストリ
+  MODEL_REGISTRY,
+  getModelFromRegistry,
+  getAvailableModelsForTier,
+  getDefaultModelForTier,
+  resolveModel,
+  getModelSelectionLabel,
+  validateModelSelection,
+
+  // モデル選択（レガシー互換 + 新API）
   getModelForTier,
   getModelTierLabel,
   DEFAULT_AI_SETTINGS,

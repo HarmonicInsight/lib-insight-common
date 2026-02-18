@@ -68,6 +68,7 @@
 
 import type { ProductCode, PlanCode } from './products';
 import type { AiModelTier } from './usage-based-licensing';
+import { getDefaultModelForTier } from './ai-assistant';
 
 // =============================================================================
 // 型定義
@@ -1331,7 +1332,7 @@ export function getRecommendedModelForEvaluation(): {
   reasonEn: string;
 } {
   return {
-    modelId: 'claude-opus-4-6-20260131',
+    modelId: getDefaultModelForTier('premium'),
     tier: 'premium',
     reasonJa: 'ドキュメント評価には Opus 4.6 の拡張コンテキストと深い分析力を推奨します。文書全体を俯瞰的に把握し、構造的な問題まで検出します',
     reasonEn: 'Opus 4.6 with extended context is recommended for document evaluation. It can holistically analyze the entire document and detect structural issues',
