@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Insight Series ブランドカラー定義 - Cool Blue & Slate Theme（業務系アプリケーション向け）",
+  "version": "1.0.0",
+  "theme": "Cool Blue & Slate",
+
+  "background": {
+    "primary": "#F8FAFC",
+    "secondary": "#F1F5F9",
+    "card": "#FFFFFF",
+    "hover": "#E2E8F0",
+    "sidebar": "#1E293B",
+    "tableStripe": "#F8FAFC"
+  },
+
+  "accent": {
+    "blue": {
+      "50": "#EFF6FF",
+      "100": "#DBEAFE",
+      "200": "#BFDBFE",
+      "300": "#93C5FD",
+      "400": "#60A5FA",
+      "500": "#3B82F6",
+      "600": "#2563EB",
+      "700": "#1D4ED8",
+      "800": "#1E40AF",
+      "900": "#1E3A8A"
+    }
+  },
+
+  "brand": {
+    "primary": "#2563EB",
+    "primaryHover": "#1D4ED8",
+    "primaryLight": "#DBEAFE",
+    "primaryDark": "#1E40AF",
+    "secondary": "#64748B",
+    "accent": "#3B82F6"
+  },
+
+  "semantic": {
+    "success": "#16A34A",
+    "successLight": "#DCFCE7",
+    "warning": "#D97706",
+    "warningLight": "#FEF3C7",
+    "error": "#DC2626",
+    "errorLight": "#FEE2E2",
+    "info": "#0EA5E9",
+    "infoLight": "#E0F2FE"
+  },
+
+  "category": {
+    "rpa": "#2563EB",
+    "lowcode": "#7C3AED",
+    "doc": "#0891B2",
+    "pptx": "#D97706",
+    "json": "#059669",
+    "api": "#0891B2"
+  },
+
+  "text": {
+    "primary": "#0F172A",
+    "secondary": "#475569",
+    "tertiary": "#94A3B8",
+    "muted": "#CBD5E1",
+    "accent": "#1D4ED8",
+    "onPrimary": "#FFFFFF"
+  },
+
+  "link": {
+    "default": "#2563EB",
+    "hover": "#1D4ED8",
+    "visited": "#1E40AF"
+  },
+
+  "border": {
+    "default": "#E2E8F0",
+    "light": "#F1F5F9",
+    "focus": "#2563EB"
+  },
+
+  "plan": {
+    "trial": "#8B5CF6",
+    "std": "#16A34A",
+    "pro": "#2563EB",
+    "ent": "#7C3AED"
+  },
+
+  "darkMode": {
+    "background": {
+      "primary": "#0F172A",
+      "secondary": "#1E293B",
+      "card": "#1E293B",
+      "hover": "#334155"
+    },
+    "text": {
+      "primary": "#F8FAFC",
+      "secondary": "#CBD5E1",
+      "tertiary": "#94A3B8"
+    },
+    "border": {
+      "default": "#334155",
+      "light": "#1E293B"
+    }
+  },
+
+  "dataTable": {
+    "headerBackground": "#F1F5F9",
+    "headerText": "#0F172A",
+    "rowStripe": "#F8FAFC",
+    "rowHover": "#EFF6FF",
+    "selectedRow": "#DBEAFE",
+    "selectedRowBorder": "#2563EB",
+    "cellBorder": "#E2E8F0"
+  },
+
+  "dashboard": {
+    "sidebar": {
+      "background": "#1E293B",
+      "text": "#CBD5E1",
+      "textActive": "#FFFFFF",
+      "activeItem": "#2563EB",
+      "activeItemBackground": "rgba(37, 99, 235, 0.15)",
+      "hoverBackground": "#334155",
+      "divider": "#334155"
+    },
+    "header": {
+      "background": "#FFFFFF",
+      "border": "#E2E8F0"
+    },
+    "kpiCard": {
+      "background": "#FFFFFF",
+      "border": "#E2E8F0",
+      "valueText": "#0F172A",
+      "labelText": "#64748B",
+      "trendUp": "#16A34A",
+      "trendDown": "#DC2626"
+    }
+  },
+
+  "status": {
+    "running": { "background": "#DBEAFE", "text": "#1D4ED8", "dot": "#2563EB" },
+    "success": { "background": "#DCFCE7", "text": "#15803D", "dot": "#16A34A" },
+    "warning": { "background": "#FEF3C7", "text": "#A16207", "dot": "#D97706" },
+    "error":   { "background": "#FEE2E2", "text": "#B91C1C", "dot": "#DC2626" },
+    "idle":    { "background": "#F1F5F9", "text": "#475569", "dot": "#94A3B8" },
+    "queued":  { "background": "#F3E8FF", "text": "#7C3AED", "dot": "#8B5CF6" }
+  },
+
+  "usage": {
+    "notes": [
+      "Primary (Blue #2563EB) はアクセント、CTAボタン、選択状態に使用",
+      "Background Primary (#F8FAFC) は全体背景に使用（寒色系オフホワイト）",
+      "Background Card (#FFFFFF) はカード、モーダル、コンテンツ領域に使用",
+      "Text Primary (#0F172A) は本文、見出しに使用（高コントラスト）",
+      "Semantic colors はステータス表示に使用",
+      "dataTable セクションはデータテーブルの交互色・選択状態に使用",
+      "dashboard セクションはダッシュボード・管理画面のサイドバー・KPIカードに使用",
+      "status セクションはRPAジョブ・プロセス実行状態の表示に使用",
+      "Sidebar (#1E293B) はダークサイドバーとして使用（業務系アプリ推奨）"
+    ],
+    "targetApplications": [
+      "RPA / プロセス自動化ツール（INBT: InsightBot）",
+      "ノーコード解析ツール（INCA: InsightNoCodeAnalyzer）",
+      "ヒアリング・調査ツール（IVIN: InterviewInsight）",
+      "データダッシュボード・管理画面",
+      "長時間利用する業務アプリケーション全般"
+    ]
+  }
+}
