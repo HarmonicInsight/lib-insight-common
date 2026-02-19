@@ -238,6 +238,10 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 ├──────────────────────────────────────────────────────────────────┤
 │  Tier 4: InsightSeniorOffice（社会貢献ツール）                   │
 │  ISOF                                                           │
+├──────────────────────────────────────────────────────────────────┤
+│  ユーティリティ（非公開・補助ツール）                              │
+│  LAUNCHER / CAMERA / VOICE_CLOCK / QR / PINBOARD / VOICE_MEMO  │
+│  VOICE_TASK_CALENDAR / CONSUL_EVAL                              │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -245,35 +249,303 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 > 個人向け（B2C）販売は行わない。決済は Stripe（自社サイト）/ 請求書払い。
 > **価格は全製品個別見積もり。パートナー（販売代理店）との協議により決定。Webサイト等での価格公開は行わない。**
 
+### 製品サマリー
+
+| 区分 | 製品数 | 安定版 | 開発中 | リポジトリ数 |
+|------|:------:|:-----:|:-----:|:-----------:|
+| メイン製品 (Tier 1-4) | 11 | 3 (INSS, IOSH, ISOF) | 8 | 12 |
+| ユーティリティ | 8 | — | — | 9 |
+| **合計** | **19** | **3** | **8** | **21** |
+
+### 技術スタック分布
+
+| 技術 | 対象製品 |
+|------|---------|
+| **C# WPF (.NET 8.0)** | INSS, IOSH, IOSD, INPY, ISOF, INBT, LAUNCHER(Win), PINBOARD |
+| **Tauri (Rust + TypeScript)** | INCA, IVIN |
+| **Python (CustomTkinter)** | INMV, INIG |
+| **Android Kotlin Native** | CAMERA, VOICE_CLOCK, QR(Android), LAUNCHER(Android), CONSUL_EVAL, VOICE_TASK_CALENDAR |
+| **Expo (React Native)** | QR(iOS), VOICE_MEMO |
+
+---
+
 ### Tier 1: 業務変革ツール
 
-| コード | 製品名 | 説明 |
-|-------|-------|------|
-| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
-| INBT | InsightBot | AIエディタ搭載 — 業務最適化RPA + Orchestrator |
-| IVIN | InterviewInsight | 自動ヒアリング・業務調査支援 |
+#### INCA — InsightNoCodeAnalyzer
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | RPA・ローコードのマイグレーション自動化ツール |
+| **技術** | Tauri (Rust + TypeScript) |
+| **バージョン** | 1.0.0 — 開発中 |
+| **リポジトリ** | `win-app-nocode-analyzer` |
+| **カラーテーマ** | Cool Blue & Slate |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| RPA解析 | ○ | ○ | ○ | BizRobo等のRPAソース解析 |
+| ローコード解析 | ○ | ○ | ○ | Forguncy等のローコードツール解析 |
+| 移行アセスメント | ○ | ○ | ○ | 工数見積もり・複雑度分析 |
+| akaBot変換 | — | ○ | ○ | BizRoboからakaBotへの変換 |
+| JSON出力 | ○ | ○ | ○ | 解析結果のJSON形式出力 |
+| Markdown出力 | ○ | ○ | ○ | 解析結果のMarkdown形式出力 |
+
+#### INBT — InsightBot
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | AIエディタ搭載 — 業務最適化RPA + Orchestrator |
+| **技術** | C# WPF (.NET 8.0) |
+| **バージョン** | 1.0.0 — 開発中 |
+| **リポジトリ** | `win-app-insight-bot` |
+| **カラーテーマ** | Cool Blue & Slate |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| スクリプト実行 | ○ | ○ | ○ | RPAスクリプトの実行 |
+| プリセット利用 | ○ | ○ | ○ | 定義済みスクリプトテンプレート |
+| JOB保存数 | 50 | 無制限 | 無制限 | 保存可能なJOB数 |
+| クラウド同期 | — | ○ | ○ | JOBのクラウド同期 |
+| AIコードエディター | 月50回 | 月200回 | 無制限 | AIによるPythonコード生成・編集 |
+| オーケストレーター | — | ○ | ○ | Agent集中管理・JOB配信・実行監視 |
+| Agent管理 | — | 50台 | 無制限 | 管理可能なInsightOffice端末数 |
+| JOBスケジューラー | — | ○ | ○ | 定期実行スケジュール設定 |
+
+#### IVIN — InterviewInsight
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | 自動ヒアリング・業務調査支援 |
+| **技術** | Tauri (Rust + TypeScript) |
+| **バージョン** | 1.0.0 — 開発中 |
+| **リポジトリ** | `web-app-auto-interview` |
+| **カラーテーマ** | Cool Blue & Slate |
+
+> 機能定義は開発進行に合わせて追加予定
+
+---
 
 ### Tier 2: AI活用ツール
 
-| コード | 製品名 | 説明 |
-|-------|-------|------|
-| INMV | InsightMovie | 画像・テキストから動画作成 |
-| INIG | InsightImageGen | 業務資料向けAI画像の大量自動生成 |
+#### INMV — InsightMovie
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | 画像とテキストから動画を自動作成 |
+| **技術** | Python (CustomTkinter + PyInstaller) |
+| **バージョン** | 1.0.0 — 開発中 |
+| **リポジトリ** | `win-app-insight-movie-gen` |
+| **カラーテーマ** | Ivory & Gold |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| 動画生成 | ○ | ○ | ○ | 画像・テキストから動画を生成 |
+| 字幕 | — | ○ | ○ | 動画への字幕追加 |
+| 字幕スタイル選択 | — | ○ | ○ | フォント・色・位置のカスタマイズ |
+| トランジション | — | ○ | ○ | シーン間のトランジション効果 |
+| PPTX取込 | — | ○ | ○ | PowerPointファイルからの素材取込 |
+
+**プラン別制限（INMV固有）:** STD: 最大200MB / 1080p、PRO+: 無制限 / 4K
+
+#### INIG — InsightImageGen
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | 業務資料向けAI画像の大量自動生成ツール |
+| **技術** | Python (CustomTkinter + PyInstaller) |
+| **バージョン** | 1.0.0 — 開発中 |
+| **リポジトリ** | `win-app-insight-image-gen` |
+| **カラーテーマ** | Ivory & Gold |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| 画像生成 | ○ | ○ | ○ | Stable Diffusionによる画像生成 |
+| バッチ画像生成 | ○ | ○ | ○ | 複数画像の一括生成 |
+| 音声生成 | ○ | ○ | ○ | VOICEVOXによる音声生成 |
+| キャラクタープロンプト | 20個 | 無制限 | 無制限 | 保存可能なプロンプト数 |
+| 高解像度出力 | — | ○ | ○ | 高解像度画像の生成 |
+| クラウド同期 | — | ○ | ○ | プロンプト・設定の同期 |
+
+---
 
 ### Tier 3: InsightOffice Suite
 
-| コード | 製品名 | 説明 |
-|-------|-------|------|
-| INSS | InsightOfficeSlide | AIアシスタント搭載 — PowerPointテキスト抽出・レビュー |
-| IOSH | InsightOfficeSheet | AIアシスタント搭載 — 経営数値管理・予実管理 |
-| IOSD | InsightOfficeDoc | AIアシスタント搭載 — 参照資料付きWord文書管理 |
-| INPY | InsightPy | AIエディタ搭載 — 業務調査・データ収集Python実行基盤 |
+> InsightOffice 系は共通で AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> 独自プロジェクトファイル形式（.inss / .iosh / .iosd）対応、AI メモリ機能あり。
+
+#### INSS — InsightOfficeSlide
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール |
+| **技術** | C# WPF (.NET 8.0) + Syncfusion |
+| **バージョン** | **2.1.0** (build 45) — **安定版** |
+| **リポジトリ** | `win-app-insight-slide` |
+| **プロジェクトファイル** | `.inss`（内包: .pptx）、右クリック対象: .pptx, .ppt |
+| **カラーテーマ** | Ivory & Gold |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| コンテンツ抽出 | ○ | ○ | ○ | PowerPointからテキスト・画像を抽出 |
+| スライド一括更新 | ○ | ○ | ○ | スライドの一括更新 |
+| JSON入出力 | ○ | ○ | ○ | JSON形式でのデータ入出力 |
+| フォルダ一括処理 | ○ | ○ | ○ | 複数ファイルの一括処理 |
+| 2ファイル比較 | ○ | ○ | ○ | 2つのPowerPointファイルの差分比較 |
+| 自動バックアップ | — | ○ | ○ | 編集前の自動バックアップ作成 |
+| AIアシスタント | 月50回 | 月200回 | 無制限 | AIによるスライドテキストの校正・改善提案 |
+| AIコードエディター | — | 月200回 | 無制限 | AIによるPython自動処理 |
+| 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
+| ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
+| 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
+| VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
+
+#### IOSH — InsightOfficeSheet
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション |
+| **技術** | C# WPF (.NET 8.0) + Syncfusion |
+| **バージョン** | **2.0.0** (build 38) — **安定版** |
+| **リポジトリ** | `win-app-insight-sheet` |
+| **プロジェクトファイル** | `.iosh`（内包: .xlsx）、右クリック対象: .xlsx, .xls, .csv |
+| **カラーテーマ** | Ivory & Gold |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| Excel読み込み・編集 | ○ | ○ | ○ | Excelファイルの読み込み・編集 |
+| バージョン管理 | ○ | ○ | ○ | ファイルのバージョン管理・履歴保持 |
+| 差分比較 | ○ | ○ | ○ | バージョン間のセル差分比較 |
+| セル変更ログ | ○ | ○ | ○ | セル単位の変更履歴の記録・表示 |
+| エクスポート | ○ | ○ | ○ | 変更履歴・差分のエクスポート出力 |
+| 2ファイル比較 | ○ | ○ | ○ | 2つのExcelファイルのセル単位差分比較 |
+| 変更者表示 | — | ○ | ○ | 変更者（誰が変更したか）を表示 |
+| 掲示板 | — | ○ | ○ | チーム向け掲示板機能 |
+| 付箋 | ○ | ○ | ○ | セルに付箋（メモ）を貼り付け |
+| メッセージ送信 | — | ○ | ○ | チームメンバーへのメッセージ送信 |
+| AIアシスタント | 月50回 | 月200回 | 無制限 | AIチャットによるExcel操作支援 |
+| AIコードエディター | — | 月200回 | 無制限 | AIによるPython自動処理 |
+| 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
+| ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
+| 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
+| VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
+
+#### IOSD — InsightOfficeDoc
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | AIアシスタント搭載 — 参照資料付きWord文書管理ツール |
+| **技術** | C# WPF (.NET 8.0) + Syncfusion |
+| **バージョン** | 1.0.0 — 開発中 |
+| **リポジトリ** | `win-app-insight-doc` |
+| **プロジェクトファイル** | `.iosd`（内包: .docx）、右クリック対象: .docx, .doc |
+| **カラーテーマ** | Ivory & Gold |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| ドキュメント読取 | ○ | ○ | ○ | Wordドキュメントの読み取り |
+| ドキュメント書込 | ○ | ○ | ○ | Wordドキュメントへの書き込み |
+| フォーマット変換 | ○ | ○ | ○ | PDF・HTML等へのフォーマット変換 |
+| テンプレート | — | ○ | ○ | テンプレートからのドキュメント生成 |
+| バッチ処理 | — | ○ | ○ | 複数ドキュメントの一括処理 |
+| マクロ実行 | — | ○ | ○ | VBAマクロの実行・変換 |
+| AIアシスタント | 月50回 | 月200回 | 無制限 | AIによるドキュメントの校正・要約・構成提案 |
+| AIコードエディター | — | 月200回 | 無制限 | AIによるPython自動処理 |
+| 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
+| ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
+| 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
+| VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
+
+#### INPY — InsightPy
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤 |
+| **技術** | C# WPF (.NET 8.0) |
+| **バージョン** | 1.0.0 — 開発中 |
+| **リポジトリ** | `win-app-insight-py` / `win-app-insight-py-pro` |
+| **カラーテーマ** | Ivory & Gold |
+
+**主要機能:**
+
+| 機能 | STD | PRO | ENT | 説明 |
+|------|:---:|:---:|:---:|------|
+| コード実行 | ○ | ○ | ○ | Pythonコードの実行 |
+| プリセット利用 | ○ | ○ | ○ | 定義済みスクリプトテンプレート |
+| スクリプト保存数 | 50 | 無制限 | 無制限 | 保存可能なスクリプト数 |
+| クラウド同期 | — | ○ | ○ | スクリプトのクラウド同期 |
+| AIコードエディター | 月50回 | 月200回 | 無制限 | AIによるPythonコード生成・編集・デバッグ |
+
+---
 
 ### Tier 4: InsightSeniorOffice
 
-| コード | 製品名 | 説明 |
-|-------|-------|------|
-| ISOF | InsightSeniorOffice | AIアシスタント搭載 — シニア向け統合オフィスツール |
+#### ISOF — InsightSeniorOffice
+
+| 項目 | 内容 |
+|------|------|
+| **説明** | AIアシスタント搭載 — シニア向け統合オフィスツール（表計算・文書・iCloudメール） |
+| **技術** | C# WPF (.NET 8.0) + Syncfusion |
+| **バージョン** | **1.5.0** (build 22) — **安定版** |
+| **リポジトリ** | `win-app-insight-sheet-senior` |
+| **カラーテーマ** | Ivory & Gold |
+| **プラン体系** | STD / ENT のみ（PROなし） |
+
+**主要機能:**
+
+| 機能 | STD | ENT | 説明 |
+|------|:---:|:---:|------|
+| 表計算 | ○ | ○ | Excelファイルの読み込み・編集・保存 |
+| 文書作成 | ○ | ○ | Wordドキュメントの読み込み・編集・保存 |
+| iCloudメール | ○ | ○ | iCloudメールの送受信（iPhoneと同じメールをPCで閲覧） |
+| AIアシスタント | 月50回 | 無制限 | 自然言語操作支援（「A2に1万円入れて」等） |
+| 音声入力 | ○ | ○ | 音声認識によるハンズフリー入力 |
+| 読み上げ | ○ | ○ | メール・文書の音声読み上げ |
+| 文字サイズ調整 | ○ | ○ | 50%〜200%の拡大縮小 |
+| 初期設定ウィザード | ○ | ○ | 5ステップの簡単初期設定 |
+| チュートリアル | ○ | ○ | 10ステップの対話型ガイドツアー |
+| 印刷 | ○ | ○ | シニア向け大きい文字での印刷 |
+| 連絡先管理 | ○ | ○ | グループ別連絡先管理 |
+
+---
+
+### ユーティリティアプリ（非公開・社内/補助ツール）
+
+| コード | 製品名 | プラットフォーム | 技術スタック | リポジトリ |
+|--------|--------|:---------------:|-------------|-----------|
+| LAUNCHER | InsightLauncher | Windows | C# WPF | `win-app-insight-launcher` |
+| LAUNCHER | InsightLauncher Android | Android | Kotlin Native | `android-app-insight-launcher` |
+| CAMERA | スッキリカメラ | Android | Kotlin Native | `android-app-insight-camera` |
+| VOICE_CLOCK | InsightVoiceClock | Android/iOS | Kotlin Native | `android-app-insight-voice-clock` |
+| QR | InsightQR | Android/iOS/Web | Expo + Kotlin Native | `web-app-insight-qr` / `android-app-insight-qr` |
+| PINBOARD | InsightPinBoard | Windows | C# WPF | `win-app-insight-pinboard` |
+| VOICE_MEMO | InsightVoiceMemo | Android/iOS | Expo (React Native) | `mobile-app-voice-memo` |
+| VOICE_TASK_CALENDAR | しゃべってカレンダー | Android | Kotlin Native | `android-app-voice-tesk-calendar` |
+| CONSUL_EVAL | ConsulEvaluate | Android | Kotlin Native | `android-app-consul-evaluate` |
+
+---
+
+### 全製品共通機能（ENT/PRO）
+
+| 機能 | PRO | ENT | 説明 |
+|------|:---:|:---:|------|
+| API利用 | — | ○ | 外部システムからのAPI経由アクセス |
+| シングルサインオン | — | ○ | 企業の認証基盤との連携 |
+| 監査ログ | — | ○ | 操作履歴の詳細記録 |
+| 優先サポート | ○ | ○ | 優先的なサポート対応 |
 
 > **考え方**: 全製品コンサルティング案件の一環として提供。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。パートナー（代理店）経由での販売も可能。
 
