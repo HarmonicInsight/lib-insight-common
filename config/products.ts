@@ -1152,11 +1152,100 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // InterviewInsight (IVIN)
+  // InterviewInsight (IVIN) — Tier 1
   // 自動ヒアリング・業務調査支援
+  // Syncfusion ej2-react-grids によるグリッド機能搭載
   // ========================================
   IVIN: [
-    // 機能定義は開発進行に合わせて追加予定
+    {
+      key: 'interview_session',
+      name: 'Interview Session',
+      nameJa: 'インタビューセッション',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'AIインタビューセッションの作成・実行',
+    },
+    {
+      key: 'voice_input',
+      name: 'Voice Input',
+      nameJa: '音声入力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '音声認識によるインタビュー回答の入力',
+    },
+    {
+      key: 'voice_synthesis',
+      name: 'Voice Synthesis',
+      nameJa: '音声合成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'AI面接官の質問読み上げ（TTS）',
+    },
+    {
+      key: 'excel_grid',
+      name: 'Excel Grid View',
+      nameJa: 'Excelグリッド表示',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Syncfusion ej2-react-grids によるインタビュー結果の一覧表示・ソート・フィルタ',
+    },
+    {
+      key: 'excel_import',
+      name: 'Excel Import',
+      nameJa: 'Excelインポート',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'Excel ファイルからのデータ取り込み（テンプレート・回答者・案件の一括登録）',
+    },
+    {
+      key: 'excel_export',
+      name: 'Excel Export',
+      nameJa: 'Excelエクスポート',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'インタビュー結果のExcel形式エクスポート',
+    },
+    {
+      key: 'ai_analysis',
+      name: 'AI Analysis',
+      nameJa: 'AI分析',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
+      descriptionJa: 'AIによる回答の構造化・感情分析・課題抽出（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+    },
+    {
+      key: 'data_mart',
+      name: 'Data Mart',
+      nameJa: 'データマート',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'インタビュー結果の自動分類・ナレッジマート生成',
+    },
+    {
+      key: 'search',
+      name: 'Full-text Search',
+      nameJa: '全文検索',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'インタビュー回答のハイブリッド検索',
+    },
+    {
+      key: 'vrm_avatar',
+      name: 'VRM Avatar',
+      nameJa: 'VRMアバター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'VRM 3Dアバターによる面接官キャラクター表示',
+    },
+    {
+      key: 'batch_interview',
+      name: 'Batch Interview',
+      nameJa: 'バッチインタビュー',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '複数回答者への一括インタビュー配信・管理',
+    },
   ],
 };
 
