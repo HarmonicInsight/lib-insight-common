@@ -18,6 +18,7 @@
 | ストアメタデータ・スクリーンショットの話題 | `standards/LOCALIZATION.md` §6 を参照 |
 | ライブラリ更新・バージョンアップ・依存関係の変更 | `compatibility/` の互換性マトリクスを確認 |
 | 「バージョン」「アップグレード」「アップデート」 | `config/app-versions.ts` と `compatibility/` を参照 |
+| 「Syncfusion」「NuGet」「Essential Studio」「ライセンスキー期限切れ」 | `docs/SYNCFUSION_SETUP.md` と `config/third-party-licenses.json` を確認 |
 
 ---
 
@@ -173,13 +174,22 @@ from your_app.ui.colors import Colors
 
 Syncfusion 等のサードパーティライセンスキーは `config/third-party-licenses.json` で**全製品共通管理**されています。
 
-### Syncfusion Essential Studio
+### Syncfusion Essential Studio（Community License）
+
+> **セットアップ手順の詳細**: `docs/SYNCFUSION_SETUP.md` を参照
+
+**ライセンス形態**: Community License（無償・年間売上 100 万 USD 未満 / 開発者 5 名以下）
+
+**構成の原則**:
+- PC にインストール + NuGet で参照管理（DLL は GitHub にコミットしない）
+- `dotnet restore` で自動復元
 
 ```json
 // config/third-party-licenses.json
 {
   "syncfusion": {
-    "licenseKey": "Ngo9BigBOggjHTQxAR8/...",
+    "licenseKey": "取得したキーをここに設定",
+    "type": "community",
     "usedBy": ["INSS", "IOSH", "IOSD"]
   }
 }
@@ -1253,6 +1263,9 @@ cat insight-common/standards/IOS.md         # iOS
 
 # リリースチェックリスト
 cat insight-common/standards/RELEASE_CHECKLIST.md
+
+# Syncfusion セットアップ（Community License）
+cat insight-common/docs/SYNCFUSION_SETUP.md
 ```
 
 ---
