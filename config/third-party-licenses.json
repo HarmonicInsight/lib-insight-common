@@ -1,37 +1,52 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Insight Series サードパーティライセンスキー（全製品共通）",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "_note": "このファイルのキーはすべての HARMONIC insight 製品で共有されます。製品固有のキーは各製品リポジトリで管理してください。",
 
   "syncfusion": {
     "provider": "Syncfusion",
-    "description": "Essential Studio® - UI コンポーネントスイート",
+    "description": "Essential Studio® UI Edition - Community License",
     "licenseUrl": "https://www.syncfusion.com/products/communitylicense",
-    "licenseKey": "Ngo9BigBOggjHTQxAR8/V1JGaF5cXGpCfExxWmFZfVhgd19EaFZQRGYuP1ZhSXxVdkRgWH9dcnxURmheWUB9XEA=",
-    "type": "essentialStudio7Day",
-    "issuedDate": "2026-01-31",
-    "expiresDate": "2026-02-07",
+    "licenseKey": "Ngo9BigBOggjGyl/VkR+XU9Ff1RDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS3hTdEdjWXpfcXdSR2NZWE91XQ==",
+    "type": "communityLicense",
+    "essentialStudioVersion": "32.x",
+    "issuedDate": "2026-02-20",
+    "expiresDate": "2027-02-20",
     "envVar": "SYNCFUSION_LICENSE_KEY",
-    "usedBy": ["IOSH", "IOSD", "INSS"],
+    "_licenseNote": "Community License は WPF と JavaScript/React の両プラットフォームをカバー。年次更新が必要。",
+    "usedBy": ["IOSH", "IOSD", "INSS", "IVIN"],
     "components": {
       "IOSH": {
+        "platform": "wpf",
         "name": "XlsIO + SfSpreadsheet",
         "description": "Excel (.xlsx/.xls) の読み書き・表示",
         "packages": ["Syncfusion.SfSpreadsheet.WPF", "Syncfusion.XlsIO.WPF"]
       },
       "IOSD": {
+        "platform": "wpf",
         "name": "DocIO + SfRichTextBoxAdv",
         "description": "Word (.docx/.doc) の読み書き・表示",
         "packages": ["Syncfusion.SfRichTextBoxAdv.WPF", "Syncfusion.DocIO.WPF", "Syncfusion.DocToPDFConverter.WPF"]
       },
       "INSS": {
+        "platform": "wpf",
         "name": "Presentation",
         "description": "PowerPoint (.pptx/.ppt) の読み書き・サムネイル生成・PDF変換",
         "packages": [
           "Syncfusion.Presentation.WPF",
           "Syncfusion.PresentationToPdfConverter.WPF",
           "Syncfusion.PresentationRenderer.WPF"
+        ]
+      },
+      "IVIN": {
+        "platform": "react",
+        "name": "ej2-react-grids + ej2-react-spreadsheet",
+        "description": "インタビュー結果のExcelグリッド表示・インポート・エクスポート",
+        "packages": [
+          "@syncfusion/ej2-react-grids",
+          "@syncfusion/ej2-react-spreadsheet",
+          "@syncfusion/ej2-locale"
         ]
       }
     }

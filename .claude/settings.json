@@ -24,8 +24,6 @@
     ]
   },
   "permissions": {
-    "deny": [
-      "Edit(config/third-party-licenses.json)"
-    ]
+    "deny": []
   }
 }
