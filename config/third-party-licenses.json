@@ -38,6 +38,12 @@
         "description": "DOCX 編集コンポーネント。",
         "licenseKey": "",
         "envVar": "SYNCFUSION_LICENSE_KEY_DOCXEDITOR"
+      },
+      "spreadsheetEditor": {
+        "name": "Essential Studio® Spreadsheet Editor",
+        "description": "スプレッドシート編集コンポーネント。",
+        "licenseKey": "",
+        "envVar": "SYNCFUSION_LICENSE_KEY_SPREADSHEET"
       }
     },
 

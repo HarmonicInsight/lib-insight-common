@@ -193,6 +193,7 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 | **Document SDK** | ドキュメント処理のみ | — |
 | **PDF Viewer** | PDF 表示コンポーネント | — |
 | **DOCX Editor** | DOCX 編集コンポーネント | — |
+| **Spreadsheet Editor** | スプレッドシート編集コンポーネント | — |
 
 ```json
 // config/third-party-licenses.json（v2 — Edition 別キー）
@@ -206,7 +207,8 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
       },
       "documentSdk": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_DOCSDK" },
       "pdfViewer": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_PDFVIEWER" },
-      "docxEditor": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_DOCXEDITOR" }
+      "docxEditor": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_DOCXEDITOR" },
+      "spreadsheetEditor": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_SPREADSHEET" }
     },
     "usedBy": ["INSS", "IOSH", "IOSD", "IVIN"]
   }

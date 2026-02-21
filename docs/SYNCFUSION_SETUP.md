@@ -38,6 +38,7 @@ Syncfusion は **Edition ごとに異なるライセンスキー**を発行し�
 | **Document SDK** | ドキュメント処理ライブラリのみ（XlsIO / DocIO / Presentation / PDF） | — |
 | **PDF Viewer** | PDF 表示・注釈コンポーネント | — |
 | **DOCX Editor** | DOCX 編集コンポーネント | — |
+| **Spreadsheet Editor** | スプレッドシート編集コンポーネント | — |
 
 > 現在の HARMONIC insight 製品は全て **UI Edition** のキーを使用しています。
 > 将来、Document SDK 単体で利用するケースが出た場合は、該当 Edition のキーを追加取得してください。
@@ -80,6 +81,7 @@ Syncfusion Community License は以下の条件を満たす個人・企業が無
    │ Essential Studio® Document SDK            [Get License Key] │
    │ Essential Studio® PDF Viewer              [Get License Key] │
    │ Essential Studio® DOCX Editor             [Get License Key] │
+   │ Essential Studio® Spreadsheet Editor     [Get License Key] │
    └─────────────────────────────────────────────────────────┘
    ```
 
@@ -194,6 +196,11 @@ dotnet restore
         "name": "Essential Studio® DOCX Editor",
         "licenseKey": "",
         "envVar": "SYNCFUSION_LICENSE_KEY_DOCXEDITOR"
+      },
+      "spreadsheetEditor": {
+        "name": "Essential Studio® Spreadsheet Editor",
+        "licenseKey": "",
+        "envVar": "SYNCFUSION_LICENSE_KEY_SPREADSHEET"
       }
     },
     "components": {

@@ -25,6 +25,7 @@ public static class ThirdPartyLicenseProvider
         public const string DocumentSdk = "documentSdk";
         public const string PdfViewer = "pdfViewer";
         public const string DocxEditor = "docxEditor";
+        public const string SpreadsheetEditor = "spreadsheetEditor";
     }
 
     /// <summary>
@@ -42,6 +43,7 @@ public static class ThirdPartyLicenseProvider
             ["documentSdk"] = "SYNCFUSION_LICENSE_KEY_DOCSDK",
             ["pdfViewer"] = "SYNCFUSION_LICENSE_KEY_PDFVIEWER",
             ["docxEditor"] = "SYNCFUSION_LICENSE_KEY_DOCXEDITOR",
+            ["spreadsheetEditor"] = "SYNCFUSION_LICENSE_KEY_SPREADSHEET",
         };
 
         if (editionEnvVars.TryGetValue(edition, out var envName))
