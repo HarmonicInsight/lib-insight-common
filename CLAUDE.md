@@ -887,50 +887,98 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 // { allowed: true, remaining: 2 }
 ```
 
-## 10. プロジェクトファイル（独自拡張子 + コンテキストメニュー）
+## 10. プロジェクトファイル（ZIP パッケージ形式）
+
+> **仕様定義**: `config/project-file.ts` — ZIP 内部構造・メタデータスキーマ・バリデーション
+
+### 設計思想
+
+InsightOffice のプロジェクトファイル（.inss / .iosh / .iosd）は **ZIP 形式のアーカイブ**。
+Office ドキュメント + メタデータ + 付随データを 1 ファイルに集約し、ファイル 1 つ移動すれば全データが移動する。
+.docx / .xlsx / .pptx / .epub 等と同じ業界標準の ZIP ベースアプローチ。
 
 ### ファイル関連付け
 
-InsightOffice 各アプリは独自のプロジェクトファイル形式を持つ。
-ダブルクリックでアプリが自動起動し、右クリックから「〜で開く」も可能。
-
-| 製品 | 独自拡張子 | 内包形式 | 右クリック対象 |
-|------|----------|---------|--------------|
-| INSS | `.inss` | .pptx + メタデータ | .pptx, .ppt |
-| IOSH | `.iosh` | .xlsx + メタデータ | .xlsx, .xls, .csv |
-| IOSD | `.iosd` | .docx + メタデータ | .docx, .doc |
+| 製品 | 独自拡張子 | 内包 Office 形式 | 右クリック対象 |
+|------|----------|-----------------|--------------|
+| INSS | `.inss` | .pptx | .pptx, .ppt |
+| IOSH | `.iosh` | .xlsx | .xlsx, .xls, .csv |
+| IOSD | `.iosd` | .docx | .docx, .doc |
 
 ### プロジェクトファイル構造（ZIP 形式）
 
 ```
-report.iosh
-├── document.xlsx          # 元の Office ファイル
-├── metadata.json          # バージョン、作成者、最終更新日
-├── history/               # バージョン履歴
-├── sticky_notes.json      # 付箋データ
-├── references/            # 参考資料
-├── scripts/               # Python スクリプト
-└── ai_chat_history.json   # AI チャット履歴
+report.iosh (ZIP archive)
+├── [content_types].xml          # コンテントタイプ定義（OPC 準拠）
+├── metadata.json                # プロジェクトメタデータ（バージョン、作成者、最終更新日）
+├── document.xlsx                # 元の Office ファイル（製品により .pptx / .docx）
+├── sticky_notes.json            # 付箋データ
+├── ai_memory.json               # AI ホットキャッシュ
+├── ai_memory_deep/              # AI ディープストレージ（PRO+）
+│   ├── glossary.json
+│   ├── people.json
+│   ├── projects.json
+│   └── context.json
+├── ai_chat_history.json         # AI チャット履歴
+├── history/                     # バージョン履歴
+│   ├── index.json               # 履歴インデックス
+│   └── snapshots/               # 過去バージョンのスナップショット
+├── references/                  # 参考資料
+│   ├── index.json               # 参考資料インデックス
+│   └── files/                   # 添付ファイル本体
+└── scripts/                     # Python スクリプト
+    ├── index.json               # スクリプトインデックス
+    └── files/
 ```
+
+### 実装ガイドライン（C# WPF）
+
+- `System.IO.Compression.ZipArchive`（.NET 標準）を使用、外部ライブラリ不要
+- **保存時**: 一時ファイルに書き込み → 完了後にリネーム（アトミック保存で破損防止）
+- **読込時**: 一時ディレクトリに展開 → アプリ終了時にクリーンアップ
+- **マイグレーション**: 既存 .xlsx を右クリック→「InsightOfficeSheet で開く」で .iosh に自動変換
 
 ### API
 
 ```typescript
+// ファイル関連付け（config/products.ts）
 import {
   resolveProductByExtension,
   getContextMenuProducts,
   getFileAssociationInfo,
 } from '@/insight-common/config/products';
 
-// 独自拡張子 → 製品解決
 resolveProductByExtension('iosh');  // 'IOSH'
+getContextMenuProducts('xlsx');     // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
+getFileAssociationInfo('IOSH');     // { progId: 'HarmonicInsight.InsightOfficeSheet', ... }
 
-// コンテキストメニュー対象
-getContextMenuProducts('xlsx');  // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
+// ZIP パッケージ仕様（config/project-file.ts）
+import {
+  PROJECT_FILE_PATHS,
+  PROJECT_FILE_LIMITS,
+  getInnerDocumentName,
+  getInitialEntries,
+  createEmptyMetadata,
+  validateMetadata,
+  checkProjectFileLimits,
+  generateContentTypesXml,
+} from '@/insight-common/config/project-file';
 
-// インストーラー用ファイル関連付け情報
-getFileAssociationInfo('IOSH');
-// { progId: 'HarmonicInsight.InsightOfficeSheet', extension: '.iosh', ... }
+// ZIP 内パス参照
+PROJECT_FILE_PATHS.METADATA;        // 'metadata.json'
+PROJECT_FILE_PATHS.HISTORY_INDEX;   // 'history/index.json'
+getInnerDocumentName('IOSH');       // 'document.xlsx'
+
+// 新規プロジェクト作成時のエントリ一覧
+const entries = getInitialEntries('IOSH');
+// → [{ path: 'metadata.json', type: 'json', required: true }, ...]
+
+// メタデータ生成
+const metadata = createEmptyMetadata('IOSH', '売上報告.xlsx', '山田太郎', '2.0.0', 38);
+
+// プラン別容量制限チェック
+checkProjectFileLimits('STD', { historyVersions: 25 });
+// → { withinLimits: false, exceeded: ['history_versions (25/20)'] }
 ```
 
 ## 11. InsightBot Orchestrator / Agent アーキテクチャ
