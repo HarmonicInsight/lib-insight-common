@@ -183,32 +183,29 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 **構成の原則**:
 - PC にインストール + NuGet で参照管理（DLL は GitHub にコミットしない）
 - `dotnet restore` で自動復元
-- **Edition ごとにライセンスキーが異なる**（1つのキーで全 Edition をカバーしない）
+- **全製品「Claim License Key」の Enterprise Edition キーを使用**
 
-**Edition 構成:**
+> **⚠️ 「Claim License Key」と「Get License Key」を間違えないこと！**
+>
+> | ページ | 生成されるキー | 結果 |
+> |--------|---------------|------|
+> | ❌ Downloads & Keys →「Get License Key」 | Binary License キー（Edition 別） | **invalid エラー** |
+> | ✅ 左メニュー →「**Claim License Key**」 | Enterprise Edition キー | **正常動作** |
 
-| Edition | 説明 | 使用製品 |
-|---------|------|---------|
-| **UI Edition** | UI コントロール全般（Document SDK 包含） | IOSH, IOSD, INSS, IVIN |
-| **Document SDK** | ドキュメント処理のみ | — |
-| **PDF Viewer** | PDF 表示コンポーネント | — |
-| **DOCX Editor** | DOCX 編集コンポーネント | — |
-| **Spreadsheet Editor** | スプレッドシート編集コンポーネント | — |
+**使用 Edition:**
+
+現在の全製品（IOSH / IOSD / INSS / IVIN）は **Enterprise Edition（Community License の Claim License Key）** のキー1つでカバーされます。
 
 ```json
-// config/third-party-licenses.json（v2 — Edition 別キー）
+// config/third-party-licenses.json
 {
   "syncfusion": {
     "editions": {
       "uiEdition": {
-        "name": "Essential Studio® UI Edition",
-        "licenseKey": "取得したキーをここに設定",
+        "name": "Essential Studio® Enterprise Edition (Community License)",
+        "licenseKey": "Claim License Key から取得したキーをここに設定",
         "envVar": "SYNCFUSION_LICENSE_KEY_UI"
-      },
-      "documentSdk": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_DOCSDK" },
-      "pdfViewer": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_PDFVIEWER" },
-      "docxEditor": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_DOCXEDITOR" },
-      "spreadsheetEditor": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_SPREADSHEET" }
+      }
     },
     "usedBy": ["INSS", "IOSH", "IOSD", "IVIN"]
   }
@@ -225,7 +222,7 @@ using InsightCommon.License;
 ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 ```
 
-**キー更新時:** `config/third-party-licenses.json` の `editions.<edition>.licenseKey` を書き換えるだけで該当 Edition を使用する全製品に反映されます。
+**キー更新時:** `config/third-party-licenses.json` の `editions.uiEdition.licenseKey` を書き換えるだけで全製品に反映されます。ダッシュボード左メニューの「**Claim License Key**」から取得してください。
 
 ---
 
@@ -238,6 +235,7 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 | 独自のライセンス実装 | `InsightLicenseManager` を使用 |
 | 価格情報をWebサイト・公開資料に掲載 | 個別見積もり。パートナーとの協議により決定 |
 | サードパーティキーを各アプリに直書き | `config/third-party-licenses.json` で共通管理 |
+| Syncfusion「Get License Key」(Binary License) を使用 | 「**Claim License Key**」(Enterprise Edition) を使用 |
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |

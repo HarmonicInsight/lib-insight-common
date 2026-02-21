@@ -12,13 +12,13 @@
     "essentialStudioVersion": "32.x",
     "issuedDate": "2026-02-20",
     "expiresDate": "2027-02-20",
-    "_licenseNote": "Edition ごとにライセンスキーが異なります。各製品は使用する Edition のキーを登録してください。年次更新が必要。",
+    "_licenseNote": "Claim License Key（Enterprise Edition）を使用。Downloads & Keys の Get License Key（Binary License）ではない。年次更新が必要。",
 
     "editions": {
       "uiEdition": {
-        "name": "Essential Studio® UI Edition",
-        "description": "UI コントロール全般（WPF / JavaScript / React）。Document SDK コンポーネントを包含。",
-        "licenseKey": "Ngo9BigBOggjGyl/VkR+XU9Ff1RDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS3hTdEdjWXpfcXdSR2NZWE91XQ==",
+        "name": "Essential Studio® Enterprise Edition (Community License)",
+        "description": "Community License の Claim License Key。UI コントロール全般（WPF / JavaScript / React）+ Document SDK を包含。",
+        "licenseKey": "Ngo9BigBOggjHTQxAR8/V1JGaF1cWGhIfEx1RHxQdId5ZFRHaIlYTnNWUj0eQnxTdENjW31fcXRUQmBbWUZ0WkleYQ==",
         "envVar": "SYNCFUSION_LICENSE_KEY_UI"
       },
       "documentSdk": {

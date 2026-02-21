@@ -68,24 +68,20 @@ Syncfusion Community License は以下の条件を満たす個人・企業が無
    - 「Claim License」をクリック
    - 適格条件を確認して申請
 
-3. **ライセンスキー生成（Edition ごとに実施）**
-   - ダッシュボード → 「Downloads & Keys」
-   - 使用する Edition の「Get License Key」をクリック
-   - プラットフォーム・バージョンを選択
-   - 生成されたキーをコピー
+3. **ライセンスキー取得**
+   - ダッシュボード左メニュー → 「**Claim License Key**」をクリック
+   - **Essential Studio® Enterprise Edition** のキーをコピー
 
-   ```
-   ダッシュボードに表示される Edition 一覧:
-   ┌─────────────────────────────────────────────────────────┐
-   │ Essential Studio® UI Edition              [Get License Key] │ ← IOSH/IOSD/INSS/IVIN で使用
-   │ Essential Studio® Document SDK            [Get License Key] │
-   │ Essential Studio® PDF Viewer              [Get License Key] │
-   │ Essential Studio® DOCX Editor             [Get License Key] │
-   │ Essential Studio® Spreadsheet Editor     [Get License Key] │
-   └─────────────────────────────────────────────────────────┘
-   ```
-
-   > **重要**: 各 Edition の「Get License Key」で生成されるキーは**それぞれ異なります**。
+   > **⚠️ 「Claim License Key」と「Get License Key」は別物です！**
+   >
+   > | ページ | メニュー位置 | 生成されるキー | 用途 |
+   > |--------|------------|---------------|------|
+   > | **Claim License Key** | 左メニュー | Enterprise Edition キー | **こちらを使用** |
+   > | **Get License Key** | Downloads & Keys 内 | Binary License キー（Edition 別） | 使用しない |
+   >
+   > 「Get License Key」（Downloads & Keys）で生成される Binary License キーは
+   > Edition 別のキーであり、Community License では**無効**になります。
+   > 必ず「**Claim License Key**」から取得した Enterprise Edition キーを使用してください。
 
 ---
 
@@ -263,10 +259,11 @@ protected override void OnStartup(StartupEventArgs e)
 Community License キーの有効期限が切れた場合:
 
 1. Syncfusion ダッシュボードにログイン
-2. 使用中の **各 Edition** の「Get License Key」で新しいキーを生成
-3. `config/third-party-licenses.json` の該当 `editions.<edition>.licenseKey` を書き換え
-4. `issuedDate` / `expiresDate` を更新
-5. コミット & プッシュ → 全製品に自動反映
+2. 左メニュー → 「**Claim License Key**」をクリック
+3. Enterprise Edition のキーをコピー
+4. `config/third-party-licenses.json` の `editions.uiEdition.licenseKey` を書き換え
+5. `issuedDate` / `expiresDate` を更新
+6. コミット & プッシュ → 全製品に自動反映
 
 ```bash
 # 更新後の確認
@@ -274,7 +271,7 @@ dotnet build
 # ライセンス警告が出なければ OK
 ```
 
-> **注意**: Edition ごとにキーが異なるため、使用中の Edition すべてのキーを更新してください。
+> **⚠️ 注意**: 「Downloads & Keys」→「Get License Key」ではなく、「**Claim License Key**」のキーを使用してください。
 
 ---
 
@@ -286,18 +283,22 @@ dotnet build
 | ライセンスキーを各アプリに直書き | `config/third-party-licenses.json` で共通管理 |
 | DLL を ZIP で共有・手動コピー | `dotnet restore` で自動復元 |
 | 期限切れキーを放置 | ダッシュボードで再生成して JSON 更新 |
-| 全 Edition に同じキーを設定 | Edition ごとに正しいキーを設定 |
+| 「Get License Key」(Binary License) を使用 | 「**Claim License Key**」(Enterprise Edition) を使用 |
 
 ---
 
 ## 7. トラブルシューティング
 
-### ライセンス警告バナーが表示される
+### 「The included Syncfusion® license key is invalid」エラー
 
-- `third-party-licenses.json` の `editions.<使用中のEdition>.licenseKey` が正しいか確認
-- 使用している Edition のキーか確認（UI Edition のキーを Document SDK に使っていないか等）
-- `Syncfusion.Licensing` NuGet パッケージが参照されているか確認
-- `App.xaml.cs` の `OnStartup` で `RegisterSyncfusion` が呼ばれているか確認
+**最も多い原因: 「Get License Key」と「Claim License Key」を間違えている**
+
+1. **まず確認**: 使用中のキーが「**Claim License Key**」から取得したものか確認
+   - ❌ 「Downloads & Keys」→「Get License Key」= Binary License キー（**無効**）
+   - ✅ 左メニュー →「Claim License Key」= Enterprise Edition キー（**有効**）
+2. `third-party-licenses.json` の `editions.uiEdition.licenseKey` が Claim License Key のキーか確認
+3. `Syncfusion.Licensing` NuGet パッケージが参照されているか確認
+4. `App.xaml.cs` の `OnStartup` で `RegisterSyncfusion` が呼ばれているか確認
 
 ### dotnet restore でパッケージが見つからない
 
@@ -313,10 +314,10 @@ dotnet build
 - `dotnet restore` を再実行
 - Visual Studio の場合は NuGet パッケージマネージャーで復元
 
-### Edition を間違えてキーを設定した
+### 間違ったキーを設定してしまった
 
-- ダッシュボードで正しい Edition の「Get License Key」を再度クリック
-- 生成されたキーで `third-party-licenses.json` の該当 Edition を更新
+- ダッシュボード左メニュー →「**Claim License Key**」でキーを再取得
+- `third-party-licenses.json` の `editions.uiEdition.licenseKey` を更新
 
 ---
 
