@@ -388,7 +388,8 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ### Tier 3: InsightOffice Suite
 
-> InsightOffice 系は共通で AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> InsightOffice 系は共通で **新規ドキュメント作成（MS Office 不要）**、AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> Syncfusion で Office 互換ファイル（.xlsx / .docx / .pptx）を直接生成するため、MS Office を購入せずにドキュメントの作成・編集・保存がすべて完結する。
 > 独自プロジェクトファイル形式（.inss / .iosh / .iosd）対応、AI メモリ機能あり。
 
 #### INSS — InsightOfficeSlide
@@ -406,6 +407,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | PRO | ENT | 説明 |
 |------|:---:|:---:|:---:|------|
+| **新規作成** | **○** | **○** | **○** | **空の PowerPoint を新規作成（MS Office 不要）** |
 | コンテンツ抽出 | ○ | ○ | ○ | PowerPointからテキスト・画像を抽出 |
 | スライド一括更新 | ○ | ○ | ○ | スライドの一括更新 |
 | JSON入出力 | ○ | ○ | ○ | JSON形式でのデータ入出力 |
@@ -434,6 +436,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | PRO | ENT | 説明 |
 |------|:---:|:---:|:---:|------|
+| **新規作成** | **○** | **○** | **○** | **空の Excel スプレッドシートを新規作成（MS Office 不要）** |
 | Excel読み込み・編集 | ○ | ○ | ○ | Excelファイルの読み込み・編集 |
 | バージョン管理 | ○ | ○ | ○ | ファイルのバージョン管理・履歴保持 |
 | 差分比較 | ○ | ○ | ○ | バージョン間のセル差分比較 |
@@ -466,6 +469,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | PRO | ENT | 説明 |
 |------|:---:|:---:|:---:|------|
+| **新規作成** | **○** | **○** | **○** | **空の Word ドキュメントを新規作成（MS Office 不要）** |
 | ドキュメント読取 | ○ | ○ | ○ | Wordドキュメントの読み取り |
 | ドキュメント書込 | ○ | ○ | ○ | Wordドキュメントへの書き込み |
 | フォーマット変換 | ○ | ○ | ○ | PDF・HTML等へのフォーマット変換 |
@@ -518,6 +522,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | ENT | 説明 |
 |------|:---:|:---:|------|
+| **新規作成** | **○** | **○** | **空の表計算・文書を新規作成（MS Office 不要）** |
 | 表計算 | ○ | ○ | Excelファイルの読み込み・編集・保存 |
 | 文書作成 | ○ | ○ | Wordドキュメントの読み込み・編集・保存 |
 | iCloudメール | ○ | ○ | iCloudメールの送受信（iPhoneと同じメールをPCで閲覧） |
@@ -959,6 +964,8 @@ import {
   getInnerDocumentName,
   getInitialEntries,
   createEmptyMetadata,
+  getNewDocumentTemplates,
+  createNewDocumentMetadata,
   validateMetadata,
   checkProjectFileLimits,
   generateContentTypesXml,
@@ -973,8 +980,14 @@ getInnerDocumentName('IOSH');       // 'document.xlsx'
 const entries = getInitialEntries('IOSH');
 // → [{ path: 'metadata.json', type: 'json', required: true }, ...]
 
-// メタデータ生成
+// 既存ファイルインポート時のメタデータ生成
 const metadata = createEmptyMetadata('IOSH', '売上報告.xlsx', '山田太郎', '2.0.0', 38);
+
+// 新規作成（MS Office 不要 — Syncfusion で空の Office ファイルを生成）
+const templates = getNewDocumentTemplates('IOSH');
+// → [{ type: 'blank_spreadsheet', nameJa: '空のスプレッドシート', syncfusionApi: 'Syncfusion.XlsIO.ExcelEngine', ... }]
+const newMeta = createNewDocumentMetadata('IOSH', 'blank_spreadsheet', '山田太郎', '2.0.0', 38);
+// → metadata.originalFileName === '新しいスプレッドシート.xlsx'
 
 // プラン別容量制限チェック
 checkProjectFileLimits('STD', { historyVersions: 25 });

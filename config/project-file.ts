@@ -787,6 +787,202 @@ export function getInitialEntries(product: ProductCode): Array<{
 }
 
 // =============================================================================
+// 新規ドキュメント作成
+// =============================================================================
+
+/**
+ * 新規作成時のドキュメント種別
+ */
+export type NewDocumentType = 'blank_spreadsheet' | 'blank_document' | 'blank_presentation';
+
+/**
+ * 新規ドキュメント作成テンプレート定義
+ *
+ * Syncfusion を使って空の Office ドキュメントを生成する際の情報。
+ * MS Office を購入せずに、InsightOffice 単体で Office 互換ファイルの
+ * 作成・編集・保存がすべて完結する。
+ *
+ * ## C# WPF 実装例
+ *
+ * ```csharp
+ * // IOSH: 空のスプレッドシート作成
+ * using var workbook = new Syncfusion.XlsIO.ExcelEngine().Excel.Workbooks.Create(1);
+ * workbook.SaveAs(tempPath);
+ *
+ * // IOSD: 空のドキュメント作成
+ * using var document = new Syncfusion.DocIO.DLS.WordDocument();
+ * document.EnsureMinimal();  // 最低限のセクション・段落を追加
+ * document.Save(tempPath, Syncfusion.DocIO.FormatType.Docx);
+ *
+ * // INSS: 空のプレゼンテーション作成
+ * using var presentation = Syncfusion.Presentation.Presentation.Create();
+ * presentation.Slides.Add(Syncfusion.Presentation.SlideLayoutType.Blank);
+ * presentation.Save(tempPath);
+ * ```
+ */
+export interface NewDocumentTemplate {
+  /** テンプレート種別 */
+  type: NewDocumentType;
+  /** 製品コード */
+  product: ProductCode;
+  /** 表示名（英語） */
+  name: string;
+  /** 表示名（日本語） */
+  nameJa: string;
+  /** 生成される内包ファイル名（ZIP 内） */
+  innerDocumentName: string;
+  /** デフォルトのファイル名（保存ダイアログ用） */
+  defaultFileName: string;
+  /** デフォルトのファイル名（日本語） */
+  defaultFileNameJa: string;
+  /** 生成される Office 形式の拡張子 */
+  officeExtension: string;
+  /** Syncfusion API のガイド（C# クラス名） */
+  syncfusionApi: string;
+  /** 説明 */
+  description: string;
+  descriptionJa: string;
+}
+
+/**
+ * 新規ドキュメント作成テンプレート一覧
+ */
+export const NEW_DOCUMENT_TEMPLATES: NewDocumentTemplate[] = [
+  {
+    type: 'blank_spreadsheet',
+    product: 'IOSH',
+    name: 'Blank Spreadsheet',
+    nameJa: '空のスプレッドシート',
+    innerDocumentName: 'document.xlsx',
+    defaultFileName: 'New Spreadsheet',
+    defaultFileNameJa: '新しいスプレッドシート',
+    officeExtension: '.xlsx',
+    syncfusionApi: 'Syncfusion.XlsIO.ExcelEngine',
+    description: 'Create a blank Excel-compatible spreadsheet',
+    descriptionJa: '空の Excel 互換スプレッドシートを作成',
+  },
+  {
+    type: 'blank_document',
+    product: 'IOSD',
+    name: 'Blank Document',
+    nameJa: '空のドキュメント',
+    innerDocumentName: 'document.docx',
+    defaultFileName: 'New Document',
+    defaultFileNameJa: '新しいドキュメント',
+    officeExtension: '.docx',
+    syncfusionApi: 'Syncfusion.DocIO.DLS.WordDocument',
+    description: 'Create a blank Word-compatible document',
+    descriptionJa: '空の Word 互換ドキュメントを作成',
+  },
+  {
+    type: 'blank_presentation',
+    product: 'INSS',
+    name: 'Blank Presentation',
+    nameJa: '空のプレゼンテーション',
+    innerDocumentName: 'document.pptx',
+    defaultFileName: 'New Presentation',
+    defaultFileNameJa: '新しいプレゼンテーション',
+    officeExtension: '.pptx',
+    syncfusionApi: 'Syncfusion.Presentation.Presentation',
+    description: 'Create a blank PowerPoint-compatible presentation',
+    descriptionJa: '空の PowerPoint 互換プレゼンテーションを作成',
+  },
+];
+
+/**
+ * ISOF（シニア向け）で利用可能な新規作成テンプレート
+ *
+ * ISOF は表計算 + 文書作成の統合アプリなので、スプレッドシートとドキュメントの両方を作成可能。
+ */
+export const ISOF_NEW_DOCUMENT_TEMPLATES: NewDocumentTemplate[] = [
+  {
+    type: 'blank_spreadsheet',
+    product: 'ISOF',
+    name: 'Blank Spreadsheet',
+    nameJa: '空の表計算',
+    innerDocumentName: 'document.xlsx',
+    defaultFileName: 'New Spreadsheet',
+    defaultFileNameJa: '新しい表計算',
+    officeExtension: '.xlsx',
+    syncfusionApi: 'Syncfusion.XlsIO.ExcelEngine',
+    description: 'Create a blank spreadsheet',
+    descriptionJa: '空の表計算シートを作成',
+  },
+  {
+    type: 'blank_document',
+    product: 'ISOF',
+    name: 'Blank Document',
+    nameJa: '空の文書',
+    innerDocumentName: 'document.docx',
+    defaultFileName: 'New Document',
+    defaultFileNameJa: '新しい文書',
+    officeExtension: '.docx',
+    syncfusionApi: 'Syncfusion.DocIO.DLS.WordDocument',
+    description: 'Create a blank document',
+    descriptionJa: '空の文書を作成',
+  },
+];
+
+/**
+ * 製品コードから新規作成可能なテンプレートを取得
+ *
+ * @example
+ * ```typescript
+ * getNewDocumentTemplates('IOSH');
+ * // → [{ type: 'blank_spreadsheet', nameJa: '空のスプレッドシート', ... }]
+ *
+ * getNewDocumentTemplates('ISOF');
+ * // → [{ type: 'blank_spreadsheet', ... }, { type: 'blank_document', ... }]
+ * ```
+ */
+export function getNewDocumentTemplates(product: ProductCode): NewDocumentTemplate[] {
+  if (product === 'ISOF') {
+    return ISOF_NEW_DOCUMENT_TEMPLATES;
+  }
+  return NEW_DOCUMENT_TEMPLATES.filter(t => t.product === product);
+}
+
+/**
+ * 新規作成用のメタデータを生成
+ *
+ * 既存ファイルのインポートではなく、アプリ内で空の Office ドキュメントを
+ * 新規作成する場合に使用する。originalFileName は自動生成される。
+ *
+ * @example
+ * ```typescript
+ * const metadata = createNewDocumentMetadata('IOSH', 'blank_spreadsheet', '山田太郎', '2.0.0', 38);
+ * // metadata.originalFileName === '新しいスプレッドシート.xlsx'
+ * // metadata.title === '新しいスプレッドシート'
+ * ```
+ */
+export function createNewDocumentMetadata(
+  product: ProductCode,
+  docType: NewDocumentType,
+  author: string,
+  appVersion: string,
+  appBuildNumber: number,
+  locale: 'en' | 'ja' = 'ja',
+): ProjectFileMetadata {
+  const templates = product === 'ISOF' ? ISOF_NEW_DOCUMENT_TEMPLATES : NEW_DOCUMENT_TEMPLATES;
+  const template = templates.find(t => t.type === docType && t.product === product);
+
+  if (!template) {
+    // フォールバック: 製品のデフォルトテンプレートを使用
+    const defaultTemplate = NEW_DOCUMENT_TEMPLATES.find(t => t.product === product);
+    const fileName = locale === 'ja'
+      ? (defaultTemplate?.defaultFileNameJa ?? '新しいドキュメント') + (defaultTemplate?.officeExtension ?? '.xlsx')
+      : (defaultTemplate?.defaultFileName ?? 'New Document') + (defaultTemplate?.officeExtension ?? '.xlsx');
+    return createEmptyMetadata(product, fileName, author, appVersion, appBuildNumber);
+  }
+
+  const fileName = locale === 'ja'
+    ? template.defaultFileNameJa + template.officeExtension
+    : template.defaultFileName + template.officeExtension;
+
+  return createEmptyMetadata(product, fileName, author, appVersion, appBuildNumber);
+}
+
+// =============================================================================
 // マイグレーション
 // =============================================================================
 
@@ -969,6 +1165,12 @@ export default {
   MIGRATION_GUIDE,
   EXTERNAL_FILE_EXTENSIONS,
   LOCK_CONFIG,
+
+  // 新規ドキュメント作成
+  NEW_DOCUMENT_TEMPLATES,
+  ISOF_NEW_DOCUMENT_TEMPLATES,
+  getNewDocumentTemplates,
+  createNewDocumentMetadata,
 
   // ファクトリ
   createEmptyMetadata,

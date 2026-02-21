@@ -433,6 +433,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // ========================================
   INSS: [
     {
+      key: 'create_new',
+      name: 'Create New Presentation',
+      nameJa: '新規プレゼンテーション作成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '空の PowerPoint プレゼンテーションを新規作成（MS Office 不要）',
+    },
+    {
       key: 'extract',
       name: 'Content Extraction',
       nameJa: 'コンテンツ抽出',
@@ -539,6 +547,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // AIアシスタント搭載Excel管理ツール
   // ========================================
   IOSH: [
+    {
+      key: 'create_new',
+      name: 'Create New Spreadsheet',
+      nameJa: '新規スプレッドシート作成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '空の Excel スプレッドシートを新規作成（MS Office 不要）',
+    },
     {
       key: 'read_excel',
       name: 'Read Excel',
@@ -677,6 +693,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // AIアシスタント搭載Word管理ツール
   // ========================================
   IOSD: [
+    {
+      key: 'create_new',
+      name: 'Create New Document',
+      nameJa: '新規ドキュメント作成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '空の Word ドキュメントを新規作成（MS Office 不要）',
+    },
     {
       key: 'read_doc',
       name: 'Read Document',
@@ -1060,6 +1084,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // シニア向け統合オフィスツール
   // ========================================
   ISOF: [
+    {
+      key: 'create_new',
+      name: 'Create New Document',
+      nameJa: '新規作成',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'ENT'],
+      descriptionJa: '空の Excel スプレッドシート・Word ドキュメントを新規作成（MS Office 不要）',
+    },
     {
       key: 'spreadsheet',
       name: 'Spreadsheet',
