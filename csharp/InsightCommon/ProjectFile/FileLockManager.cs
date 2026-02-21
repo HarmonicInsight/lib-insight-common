@@ -34,6 +34,18 @@ public class FileLockManager
     /// <summary>ハートビートが更新されなかった場合にスタルとみなす閾値（分）</summary>
     private const int StaleThresholdMinutes = 30;
 
+    /// <summary>読み取り用JsonSerializerOptions（キャッシュ）</summary>
+    private static readonly JsonSerializerOptions ReadOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    /// <summary>書き込み用JsonSerializerOptions（キャッシュ）</summary>
+    private static readonly JsonSerializerOptions WriteOptions = new()
+    {
+        WriteIndented = true
+    };
+
     /// <summary>ロックファイルのパスを生成</summary>
     public static string GetLockFilePath(string projectFilePath)
         => projectFilePath + LockExtension;
@@ -193,8 +205,7 @@ public class FileLockManager
         {
             if (!File.Exists(lockPath)) return null;
             var json = File.ReadAllText(lockPath);
-            return JsonSerializer.Deserialize<FileLockInfo>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return JsonSerializer.Deserialize<FileLockInfo>(json, ReadOptions);
         }
         catch
         {
@@ -204,8 +215,7 @@ public class FileLockManager
 
     private static void WriteLockFile(string lockPath, FileLockInfo lockInfo)
     {
-        var json = JsonSerializer.Serialize(lockInfo,
-            new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(lockInfo, WriteOptions);
 
         // FileShare.None で排他的にロックファイルを作成
         using var fs = new FileStream(lockPath, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -218,8 +228,7 @@ public class FileLockManager
         try
         {
             lockInfo.Heartbeat = DateTime.UtcNow.ToString("o");
-            var json = JsonSerializer.Serialize(lockInfo,
-                new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(lockInfo, WriteOptions);
             File.WriteAllText(lockPath, json);
         }
         catch (IOException)
