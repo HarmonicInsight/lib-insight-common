@@ -432,6 +432,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // AIアシスタント搭載PowerPointツール
   // ========================================
   INSS: [
+    // ------------------------------------------------------------------
+    // 基本操作（ファイルタブ相当）— 全プラン共通
+    // ------------------------------------------------------------------
     {
       key: 'create_new',
       name: 'Create New Presentation',
@@ -449,20 +452,12 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'スライドのテキスト・レイアウト編集（MS Office 不要 — Syncfusion エンジン）',
     },
     {
-      key: 'insert_image',
-      name: 'Insert Image',
-      nameJa: '画像・図形挿入',
+      key: 'save_as',
+      name: 'Save As',
+      nameJa: '名前を付けて保存',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '画像・図形・テキストボックス・SmartArt のスライドへの挿入・配置',
-    },
-    {
-      key: 'slide_master',
-      name: 'Slide Master',
-      nameJa: 'スライドマスター',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'スライドマスター・レイアウトの編集によるデザイン統一',
+      descriptionJa: '.pptx / .ppt 形式での保存',
     },
     {
       key: 'print',
@@ -481,6 +476,41 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'プレゼンテーションをPDF形式でエクスポート',
     },
     {
+      key: 'undo_redo',
+      name: 'Undo / Redo',
+      nameJa: '元に戻す・やり直し',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '操作の取り消し・やり直し（複数レベル対応）',
+    },
+    {
+      key: 'clipboard',
+      name: 'Clipboard',
+      nameJa: 'クリップボード',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'コピー・切り取り・貼り付け・形式を選択して貼り付け',
+    },
+    // ------------------------------------------------------------------
+    // ホームタブ相当（テキスト書式・スライド操作）— 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'text_formatting',
+      name: 'Text Formatting',
+      nameJa: 'テキスト書式',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'フォント（種類・サイズ・太字・斜体・下線・影・色）、段落（配置・行間・箇条書き・番号付き）',
+    },
+    {
+      key: 'slide_management',
+      name: 'Slide Management',
+      nameJa: 'スライド操作',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライドの追加・複製・削除・並べ替え・レイアウト変更・セクション管理',
+    },
+    {
       key: 'find_replace',
       name: 'Find & Replace',
       nameJa: '検索・置換',
@@ -488,13 +518,118 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'スライド内テキストの検索・一括置換',
     },
+    // ------------------------------------------------------------------
+    // 挿入タブ相当 — 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'insert_image',
+      name: 'Insert Image',
+      nameJa: '画像挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '画像ファイルの挿入・トリミング・サイズ変更・位置調整',
+    },
+    {
+      key: 'insert_shape',
+      name: 'Insert Shape',
+      nameJa: '図形挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '図形・矢印・吹き出し・テキストボックス・ワードアートの挿入・書式設定',
+    },
+    {
+      key: 'insert_table',
+      name: 'Insert Table',
+      nameJa: '表の挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライドへの表の挿入・行列追加・セル結合・スタイル設定',
+    },
+    {
+      key: 'insert_chart',
+      name: 'Insert Chart',
+      nameJa: 'グラフの挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '棒・折れ線・円・散布図等のグラフをスライドに挿入・データ編集',
+    },
+    {
+      key: 'insert_smartart',
+      name: 'Insert SmartArt',
+      nameJa: 'SmartArt挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'SmartArt（リスト・手順・循環・階層・関係等）の挿入・編集',
+    },
+    {
+      key: 'insert_media',
+      name: 'Insert Media',
+      nameJa: 'メディア挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '動画・音声ファイルの挿入・再生設定',
+    },
+    {
+      key: 'hyperlink',
+      name: 'Hyperlink',
+      nameJa: 'ハイパーリンク',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'テキスト・オブジェクトへのハイパーリンク挿入（URL・スライド内・メール）',
+    },
+    {
+      key: 'comments',
+      name: 'Comments',
+      nameJa: 'コメント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライドへのコメント挿入・返信・解決',
+    },
+    {
+      key: 'header_footer',
+      name: 'Header & Footer',
+      nameJa: 'ヘッダーとフッター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライド番号・日付・フッターテキストの設定',
+    },
+    // ------------------------------------------------------------------
+    // デザインタブ相当
+    // ------------------------------------------------------------------
+    {
+      key: 'design_theme',
+      name: 'Design Theme',
+      nameJa: 'デザインテーマ',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'テーマ・バリエーションの適用・配色/フォント/効果のカスタマイズ',
+    },
+    {
+      key: 'slide_size',
+      name: 'Slide Size',
+      nameJa: 'スライドのサイズ',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライドサイズの設定（標準 4:3 / ワイド 16:9 / カスタム）',
+    },
+    {
+      key: 'slide_master',
+      name: 'Slide Master',
+      nameJa: 'スライドマスター',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'スライドマスター・レイアウトの編集によるデザイン統一',
+    },
+    // ------------------------------------------------------------------
+    // 画面切り替え・アニメーションタブ相当 — PRO/ENT
+    // ------------------------------------------------------------------
     {
       key: 'slide_transition',
       name: 'Slide Transition',
       nameJa: 'スライド切替効果',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'スライド間のトランジション効果の設定',
+      descriptionJa: 'スライド間のトランジション効果の設定（フェード・プッシュ・ワイプ等）',
     },
     {
       key: 'animation',
@@ -502,7 +637,45 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       nameJa: 'アニメーション',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'オブジェクトのアニメーション効果（開始・強調・終了）の設定',
+      descriptionJa: 'オブジェクトのアニメーション効果（開始・強調・終了・軌跡）の設定・タイミング調整',
+    },
+    // ------------------------------------------------------------------
+    // オブジェクト操作（書式タブ相当）— 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'object_formatting',
+      name: 'Object Formatting',
+      nameJa: 'オブジェクト書式',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '図形・画像の塗りつぶし・枠線・効果（影・反射・光彩）・サイズ・回転',
+    },
+    {
+      key: 'arrange_objects',
+      name: 'Arrange Objects',
+      nameJa: 'オブジェクトの整列',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'オブジェクトの整列・配置・グループ化・前面/背面移動・回転',
+    },
+    // ------------------------------------------------------------------
+    // スライドショータブ相当 — 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'slideshow',
+      name: 'Slide Show',
+      nameJa: 'スライドショー',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライドショーの再生（最初から・現在のスライドから）',
+    },
+    {
+      key: 'presenter_view',
+      name: 'Presenter View',
+      nameJa: '発表者ツール',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '発表者ツール（ノート表示・次スライドプレビュー・タイマー・レーザーポインター）',
     },
     {
       key: 'speaker_notes',
@@ -512,6 +685,20 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'スライドごとの発表者メモの編集・印刷',
     },
+    // ------------------------------------------------------------------
+    // 校閲タブ相当
+    // ------------------------------------------------------------------
+    {
+      key: 'spell_check',
+      name: 'Spell Check',
+      nameJa: 'スペルチェック',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'スライド内テキストのスペルチェック',
+    },
+    // ------------------------------------------------------------------
+    // 独自機能（InsightOffice 固有）
+    // ------------------------------------------------------------------
     {
       key: 'extract',
       name: 'Content Extraction',
@@ -561,6 +748,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: '編集前の自動バックアップ作成',
     },
+    // ------------------------------------------------------------------
+    // AI・アシスタント機能
+    // ------------------------------------------------------------------
     {
       key: 'ai_assistant',
       name: 'AI Assistant',
@@ -619,6 +809,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // AIアシスタント搭載Excel管理ツール
   // ========================================
   IOSH: [
+    // ------------------------------------------------------------------
+    // 基本操作（ファイル・ホームタブ相当）— 全プラン共通
+    // ------------------------------------------------------------------
     {
       key: 'create_new',
       name: 'Create New Spreadsheet',
@@ -634,6 +827,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
       descriptionJa: 'Excelファイルの読み込み・編集・保存（MS Office 不要 — Syncfusion エンジン）',
+    },
+    {
+      key: 'save_as',
+      name: 'Save As',
+      nameJa: '名前を付けて保存',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '.xlsx / .xls / .csv / .tsv 形式での保存',
     },
     {
       key: 'print',
@@ -652,6 +853,114 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'スプレッドシートをPDF形式でエクスポート',
     },
     {
+      key: 'undo_redo',
+      name: 'Undo / Redo',
+      nameJa: '元に戻す・やり直し',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '操作の取り消し・やり直し（複数レベル対応）',
+    },
+    {
+      key: 'clipboard',
+      name: 'Clipboard',
+      nameJa: 'クリップボード',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'コピー・切り取り・貼り付け・形式を選択して貼り付け',
+    },
+    // ------------------------------------------------------------------
+    // セル書式設定（ホームタブ — フォント・配置・数値）— 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'cell_formatting',
+      name: 'Cell Formatting',
+      nameJa: 'セル書式設定',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'フォント（種類・サイズ・太字・斜体・下線・色）、セル背景色・罫線の設定',
+    },
+    {
+      key: 'number_format',
+      name: 'Number Format',
+      nameJa: '表示形式',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '数値・通貨・日付・パーセント・会計・分数・文字列等のセル表示形式設定',
+    },
+    {
+      key: 'alignment',
+      name: 'Alignment',
+      nameJa: '配置',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '水平・垂直配置、折り返し、縮小して全体を表示、インデント、テキスト方向',
+    },
+    {
+      key: 'merge_cells',
+      name: 'Merge Cells',
+      nameJa: 'セルの結合',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セルの結合・結合解除（横方向・縦方向・結合して中央揃え）',
+    },
+    // ------------------------------------------------------------------
+    // 行・列・シート操作 — 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'row_column_ops',
+      name: 'Row & Column Operations',
+      nameJa: '行と列の操作',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '行・列の挿入・削除・非表示・再表示・高さ/幅の調整・自動調整',
+    },
+    {
+      key: 'sheet_management',
+      name: 'Sheet Management',
+      nameJa: 'シート管理',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'シートの追加・削除・名前変更・移動・コピー・タブ色設定・非表示/再表示',
+    },
+    {
+      key: 'freeze_panes',
+      name: 'Freeze Panes',
+      nameJa: 'ウィンドウ枠の固定',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '先頭行・先頭列・任意セル位置でのウィンドウ枠固定',
+    },
+    // ------------------------------------------------------------------
+    // 数式・関数（数式タブ相当）— 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'formulas',
+      name: 'Formulas & Functions',
+      nameJa: '数式と関数',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '数式入力・関数挿入（SUM / VLOOKUP / IF / COUNT 等 400+ 関数）、オートSUM',
+    },
+    {
+      key: 'named_ranges',
+      name: 'Named Ranges',
+      nameJa: '名前の定義',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セル範囲への名前定義・名前の管理・数式での名前参照',
+    },
+    {
+      key: 'formula_auditing',
+      name: 'Formula Auditing',
+      nameJa: '数式の検証',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '参照元/参照先トレース・エラーチェック・数式の評価',
+    },
+    // ------------------------------------------------------------------
+    // 検索・フィルタ・並べ替え — 全プラン共通
+    // ------------------------------------------------------------------
+    {
       key: 'find_replace',
       name: 'Find & Replace',
       nameJa: '検索・置換',
@@ -665,16 +974,73 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       nameJa: 'ソート・フィルタ',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '列のソート・オートフィルタ・カスタムフィルタ',
+      descriptionJa: '列のソート・オートフィルタ・カスタムフィルタ・色フィルタ',
     },
+    {
+      key: 'auto_fill',
+      name: 'Auto Fill',
+      nameJa: 'オートフィル',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '連続データの自動入力（数値・日付・曜日・カスタムリスト）',
+    },
+    // ------------------------------------------------------------------
+    // 挿入タブ相当 — 全プラン共通
+    // ------------------------------------------------------------------
     {
       key: 'chart',
       name: 'Chart',
       nameJa: 'グラフ作成',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '棒・折れ線・円グラフ等の作成・編集（Syncfusion Chart）',
+      descriptionJa: '棒・折れ線・円・散布図・面・レーダー等のグラフ作成・編集（Syncfusion Chart）',
     },
+    {
+      key: 'insert_image',
+      name: 'Insert Image',
+      nameJa: '画像の挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '画像ファイルの挿入・サイズ変更・位置調整',
+    },
+    {
+      key: 'insert_shape',
+      name: 'Insert Shape',
+      nameJa: '図形の挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '図形・テキストボックス・ワードアートの挿入',
+    },
+    {
+      key: 'hyperlink',
+      name: 'Hyperlink',
+      nameJa: 'ハイパーリンク',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セルへのハイパーリンクの挿入・編集（URL・メール・シート内参照）',
+    },
+    {
+      key: 'comments',
+      name: 'Comments',
+      nameJa: 'コメント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セルへのコメント挿入・編集・削除・スレッド表示',
+    },
+    // ------------------------------------------------------------------
+    // ページレイアウトタブ相当 — 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'page_setup',
+      name: 'Page Setup',
+      nameJa: 'ページ設定',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '用紙サイズ・余白・印刷の向き・拡大縮小・印刷範囲・改ページの設定',
+    },
+    // ------------------------------------------------------------------
+    // データタブ相当（上級）— PRO/ENT
+    // ------------------------------------------------------------------
     {
       key: 'conditional_formatting',
       name: 'Conditional Formatting',
@@ -699,6 +1065,60 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'セルへの入力制限・ドロップダウンリスト・エラーメッセージ設定',
     },
+    {
+      key: 'text_to_columns',
+      name: 'Text to Columns',
+      nameJa: '区切り位置',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'テキストデータを区切り文字で複数列に分割',
+    },
+    {
+      key: 'remove_duplicates',
+      name: 'Remove Duplicates',
+      nameJa: '重複の削除',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '選択範囲内の重複データを検出・削除',
+    },
+    {
+      key: 'group_outline',
+      name: 'Group & Outline',
+      nameJa: 'グループ化とアウトライン',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '行・列のグループ化・アウトライン表示・小計',
+    },
+    {
+      key: 'goal_seek',
+      name: 'Goal Seek',
+      nameJa: 'ゴールシーク',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: '目標値に対するセル値の逆算（What-If 分析）',
+    },
+    // ------------------------------------------------------------------
+    // 校閲タブ相当
+    // ------------------------------------------------------------------
+    {
+      key: 'spell_check',
+      name: 'Spell Check',
+      nameJa: 'スペルチェック',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'セル内テキストのスペルチェック',
+    },
+    {
+      key: 'protect_sheet',
+      name: 'Protect Sheet / Workbook',
+      nameJa: 'シート・ブックの保護',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'シート保護（パスワード付き）・ブック構成の保護・セルのロック/解除',
+    },
+    // ------------------------------------------------------------------
+    // 独自機能（InsightOffice 固有）
+    // ------------------------------------------------------------------
     {
       key: 'version_control',
       name: 'Version Control',
@@ -756,15 +1176,6 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'チーム向け掲示板機能',
     },
     {
-      key: 'ai_assistant',
-      name: 'AI Assistant',
-      nameJa: 'AIアシスタント',
-      type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIチャットによるExcel操作支援（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
-    },
-    {
       key: 'sticky_notes',
       name: 'Sticky Notes',
       nameJa: '付箋',
@@ -779,6 +1190,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'チームメンバーへのメッセージ送信',
+    },
+    // ------------------------------------------------------------------
+    // AI・アシスタント機能
+    // ------------------------------------------------------------------
+    {
+      key: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AIアシスタント',
+      type: 'limit',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
+      descriptionJa: 'AIチャットによるExcel操作支援（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
     },
     {
       key: 'ai_editor',
@@ -829,6 +1252,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // AIアシスタント搭載Word管理ツール
   // ========================================
   IOSD: [
+    // ------------------------------------------------------------------
+    // 基本操作（ファイルタブ相当）— 全プラン共通
+    // ------------------------------------------------------------------
     {
       key: 'create_new',
       name: 'Create New Document',
@@ -840,19 +1266,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
     {
       key: 'read_doc',
       name: 'Read Document',
-      nameJa: 'ドキュメント読取',
+      nameJa: 'ドキュメント読取・書込',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'Wordドキュメントの読み取り',
+      descriptionJa: 'Wordドキュメントの読み込み・編集・保存（MS Office 不要 — Syncfusion エンジン）',
     },
     {
-      key: 'write_doc',
-      name: 'Write Document',
-      nameJa: 'ドキュメント書込',
-      type: 'limit',
+      key: 'save_as',
+      name: 'Save As',
+      nameJa: '名前を付けて保存',
+      type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
-      descriptionJa: 'Wordドキュメントへの書き込み・編集・保存（MS Office 不要 — Syncfusion エンジン）',
+      descriptionJa: '.docx / .doc / .rtf / .txt 形式での保存',
     },
     {
       key: 'print',
@@ -863,28 +1288,130 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'ドキュメントの印刷（ページ範囲指定・部数・用紙サイズ対応）',
     },
     {
+      key: 'pdf_export',
+      name: 'PDF Export',
+      nameJa: 'PDF出力',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'ドキュメントをPDF形式でエクスポート',
+    },
+    {
+      key: 'undo_redo',
+      name: 'Undo / Redo',
+      nameJa: '元に戻す・やり直し',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '操作の取り消し・やり直し（複数レベル対応）',
+    },
+    {
+      key: 'clipboard',
+      name: 'Clipboard',
+      nameJa: 'クリップボード',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'コピー・切り取り・貼り付け・形式を選択して貼り付け',
+    },
+    // ------------------------------------------------------------------
+    // ホームタブ相当（フォント・段落・スタイル）— 全プラン共通
+    // ------------------------------------------------------------------
+    {
+      key: 'font_formatting',
+      name: 'Font Formatting',
+      nameJa: 'フォント書式',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'フォント種類・サイズ・太字・斜体・下線・取り消し線・上付き/下付き・文字色・蛍光ペン',
+    },
+    {
+      key: 'paragraph_formatting',
+      name: 'Paragraph Formatting',
+      nameJa: '段落書式',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '配置（左揃え・中央・右揃え・両端揃え）・行間・段落前後の間隔・インデント',
+    },
+    {
+      key: 'bullets_numbering',
+      name: 'Bullets & Numbering',
+      nameJa: '箇条書きと段落番号',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '箇条書き・番号付きリスト・アウトライン番号・リストレベルの変更',
+    },
+    {
+      key: 'styles',
+      name: 'Styles',
+      nameJa: 'スタイル',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '見出しスタイル（H1〜H6）・本文・引用・リスト等の適用・カスタムスタイル作成',
+    },
+    {
       key: 'find_replace',
       name: 'Find & Replace',
       nameJa: '検索・置換',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'テキストの検索・一括置換（正規表現対応）',
+      descriptionJa: 'テキストの検索・一括置換（正規表現対応・書式検索）',
     },
+    // ------------------------------------------------------------------
+    // 挿入タブ相当 — 全プラン共通
+    // ------------------------------------------------------------------
     {
       key: 'insert_table',
       name: 'Insert Table',
       nameJa: '表の挿入・編集',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '表の挿入・行列追加・セル結合・罫線スタイル設定',
+      descriptionJa: '表の挿入・行列追加・セル結合・罫線スタイル設定・表スタイルの適用',
     },
     {
       key: 'insert_image',
       name: 'Insert Image',
-      nameJa: '画像・図形挿入',
+      nameJa: '画像挿入',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '画像・図形・テキストボックスの挿入・配置',
+      descriptionJa: '画像ファイルの挿入・トリミング・サイズ変更・文字列の折り返し設定',
+    },
+    {
+      key: 'insert_shape',
+      name: 'Insert Shape',
+      nameJa: '図形挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '図形・テキストボックス・ワードアートの挿入・書式設定',
+    },
+    {
+      key: 'insert_chart',
+      name: 'Insert Chart',
+      nameJa: 'グラフの挿入',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'グラフの挿入・データ編集（棒・折れ線・円等）',
+    },
+    {
+      key: 'hyperlink',
+      name: 'Hyperlink',
+      nameJa: 'ハイパーリンク',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'テキスト・画像へのハイパーリンク挿入（URL・メール・文書内参照）',
+    },
+    {
+      key: 'bookmark',
+      name: 'Bookmark',
+      nameJa: 'ブックマーク',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'ブックマークの挿入・管理・相互参照',
+    },
+    {
+      key: 'comments',
+      name: 'Comments',
+      nameJa: 'コメント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'テキストへのコメント挿入・返信・解決・削除',
     },
     {
       key: 'header_footer',
@@ -892,24 +1419,78 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       nameJa: 'ヘッダー・フッター',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'ページヘッダー・フッターの編集（ページ番号・日付・ロゴ）',
+      descriptionJa: 'ページヘッダー・フッターの編集（ページ番号・日付・ロゴ・奇数/偶数ページ別）',
     },
+    {
+      key: 'page_break',
+      name: 'Page Break',
+      nameJa: '改ページ・セクション区切り',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '改ページ・セクション区切り（次のページ・現在の位置・偶数/奇数ページ）の挿入',
+    },
+    {
+      key: 'insert_symbol',
+      name: 'Insert Symbol',
+      nameJa: '記号と特殊文字',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '特殊文字・記号・絵文字の挿入',
+    },
+    {
+      key: 'footnote_endnote',
+      name: 'Footnote & Endnote',
+      nameJa: '脚注・文末脚注',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '脚注・文末脚注の挿入・編集・番号書式設定',
+    },
+    // ------------------------------------------------------------------
+    // ページレイアウトタブ相当 — 全プラン共通
+    // ------------------------------------------------------------------
     {
       key: 'page_setup',
       name: 'Page Setup',
       nameJa: 'ページ設定',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: '用紙サイズ・余白・段組み・ページの向き設定',
+      descriptionJa: '用紙サイズ・余白・ページの向き（縦/横）・段組み設定',
     },
     {
-      key: 'convert',
-      name: 'Convert Format',
-      nameJa: 'フォーマット変換',
+      key: 'borders_shading',
+      name: 'Borders & Shading',
+      nameJa: '罫線と網かけ',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      descriptionJa: 'PDF・HTML等へのフォーマット変換',
+      descriptionJa: 'ページ罫線・段落罫線・網かけの設定',
     },
+    {
+      key: 'columns',
+      name: 'Columns',
+      nameJa: '段組み',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '文書の段組みレイアウト（1段・2段・3段・カスタム）',
+    },
+    {
+      key: 'watermark',
+      name: 'Watermark',
+      nameJa: '透かし',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'テキスト・画像の透かし挿入（「社外秘」「下書き」等）',
+    },
+    {
+      key: 'line_numbers',
+      name: 'Line Numbers',
+      nameJa: '行番号',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '行番号の表示設定（連続・ページごとにリセット・セクションごと）',
+    },
+    // ------------------------------------------------------------------
+    // 参考資料タブ相当 — PRO/ENT
+    // ------------------------------------------------------------------
     {
       key: 'table_of_contents',
       name: 'Table of Contents',
@@ -917,6 +1498,25 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: '見出しスタイルから目次を自動生成・更新',
+    },
+    // ------------------------------------------------------------------
+    // 校閲タブ相当
+    // ------------------------------------------------------------------
+    {
+      key: 'spell_check',
+      name: 'Spell Check',
+      nameJa: 'スペルチェック',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '文書内テキストのスペルチェック・文章校正',
+    },
+    {
+      key: 'word_count',
+      name: 'Word Count',
+      nameJa: '文字カウント',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '文字数・単語数・段落数・行数のカウント表示',
     },
     {
       key: 'track_changes',
@@ -927,6 +1527,25 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: '編集内容の変更履歴を記録・承認・却下（Word 互換の変更追跡）',
     },
     {
+      key: 'protect_document',
+      name: 'Protect Document',
+      nameJa: '文書の保護',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: '編集制限・パスワード保護・読み取り専用の設定',
+    },
+    // ------------------------------------------------------------------
+    // フォーマット変換・テンプレート — 全プラン/PRO
+    // ------------------------------------------------------------------
+    {
+      key: 'convert',
+      name: 'Convert Format',
+      nameJa: 'フォーマット変換',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      descriptionJa: 'PDF・HTML・RTF・テキスト等へのフォーマット変換',
+    },
+    {
       key: 'template',
       name: 'Template',
       nameJa: 'テンプレート',
@@ -935,11 +1554,19 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'テンプレートからのドキュメント生成',
     },
     {
+      key: 'mail_merge',
+      name: 'Mail Merge',
+      nameJa: '差し込み印刷',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      descriptionJa: 'データソース（Excel/CSV）からの差し込み印刷・文書生成',
+    },
+    {
       key: 'batch',
       name: 'Batch Processing',
       nameJa: 'バッチ処理',
       type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: '複数ドキュメントの一括処理',
     },
     {
@@ -950,6 +1577,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['PRO', 'ENT'],
       descriptionJa: 'VBAマクロの実行・変換',
     },
+    // ------------------------------------------------------------------
+    // AI・アシスタント機能
+    // ------------------------------------------------------------------
     {
       key: 'ai_assistant',
       name: 'AI Assistant',
