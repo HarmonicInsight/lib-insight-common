@@ -951,53 +951,37 @@ public void ConvertToPdf(IPresentation presentation, string outputPath)
 }
 ```
 
-### 必須実装: ThirdPartyLicenses.cs
+### 必須実装: ThirdPartyLicenseProvider（insight-common 共通クラス）
 
-各アプリに `ThirdPartyLicenses.cs` を作成し、共通 JSON からキーを読み込みます。
+各アプリは `InsightCommon.License.ThirdPartyLicenseProvider` を使用して、Edition 指定でキーを取得・登録します。
+
+> **重要**: Syncfusion は Edition ごとに異なるライセンスキーを発行します。詳細は `docs/SYNCFUSION_SETUP.md` を参照。
 
 ```csharp
-internal static class ThirdPartyLicenses
-{
-    public static string GetSyncfusionKey()
-    {
-        // 1. insight-common/config/third-party-licenses.json から読み込み
-        try
-        {
-            var path = FindConfigPath();
-            if (path != null && File.Exists(path))
-            {
-                var json = File.ReadAllText(path);
-                using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("syncfusion", out var sf) &&
-                    sf.TryGetProperty("licenseKey", out var key))
-                {
-                    var value = key.GetString();
-                    if (!string.IsNullOrEmpty(value))
-                        return value;
-                }
-            }
-        }
-        catch { }
+using InsightCommon.License;
 
-        // 2. ハードコードフォールバック
-        return "YOUR_FALLBACK_KEY";
-    }
-}
+// Edition を指定してキーを取得
+// 優先順位: Edition 別環境変数 > 汎用環境変数 > JSON(editions) > JSON(レガシー)
+var key = ThirdPartyLicenseProvider.GetSyncfusionKey("uiEdition");
+
+// Edition を指定してライセンス登録（推奨）
+ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
+
+// Edition 省略時は uiEdition がデフォルト
+ThirdPartyLicenseProvider.RegisterSyncfusion();
 ```
 
 ### App.xaml.cs での登録
 
 ```csharp
+using InsightCommon.License;
+
 protected override void OnStartup(StartupEventArgs e)
 {
     base.OnStartup(e);
 
-    // サードパーティライセンス登録（環境変数 > JSON > フォールバック）
-    var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
-    if (string.IsNullOrEmpty(licenseKey))
-        licenseKey = ThirdPartyLicenses.GetSyncfusionKey();
-    if (!string.IsNullOrEmpty(licenseKey))
-        Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
+    // Syncfusion ライセンス登録（Edition 指定）
+    ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 
     // ...
 }
@@ -1005,8 +989,8 @@ protected override void OnStartup(StartupEventArgs e)
 
 ### チェックリスト
 
-- [ ] `ThirdPartyLicenses.cs` が作成されている
-- [ ] App.xaml.cs の OnStartup で Syncfusion キーを登録している
+- [ ] App.xaml.cs の OnStartup で `ThirdPartyLicenseProvider.RegisterSyncfusion()` を呼んでいる
+- [ ] 正しい Edition を指定している（現在の全製品は `uiEdition`）
 - [ ] キーがハードコード**のみ**で管理されて**いない**（JSON読み込み優先）
 
 ---

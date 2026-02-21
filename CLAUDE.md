@@ -183,14 +183,32 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 **構成の原則**:
 - PC にインストール + NuGet で参照管理（DLL は GitHub にコミットしない）
 - `dotnet restore` で自動復元
+- **Edition ごとにライセンスキーが異なる**（1つのキーで全 Edition をカバーしない）
+
+**Edition 構成:**
+
+| Edition | 説明 | 使用製品 |
+|---------|------|---------|
+| **UI Edition** | UI コントロール全般（Document SDK 包含） | IOSH, IOSD, INSS, IVIN |
+| **Document SDK** | ドキュメント処理のみ | — |
+| **PDF Viewer** | PDF 表示コンポーネント | — |
+| **DOCX Editor** | DOCX 編集コンポーネント | — |
 
 ```json
-// config/third-party-licenses.json
+// config/third-party-licenses.json（v2 — Edition 別キー）
 {
   "syncfusion": {
-    "licenseKey": "取得したキーをここに設定",
-    "type": "community",
-    "usedBy": ["INSS", "IOSH", "IOSD"]
+    "editions": {
+      "uiEdition": {
+        "name": "Essential Studio® UI Edition",
+        "licenseKey": "取得したキーをここに設定",
+        "envVar": "SYNCFUSION_LICENSE_KEY_UI"
+      },
+      "documentSdk": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_DOCSDK" },
+      "pdfViewer": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_PDFVIEWER" },
+      "docxEditor": { "licenseKey": "", "envVar": "SYNCFUSION_LICENSE_KEY_DOCXEDITOR" }
+    },
+    "usedBy": ["INSS", "IOSH", "IOSD", "IVIN"]
   }
 }
 ```
@@ -199,14 +217,13 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 
 ```csharp
 // App.xaml.cs の OnStartup 冒頭で呼び出す
-// 優先順位: 環境変数 > third-party-licenses.json > ハードコードフォールバック
-var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
-if (string.IsNullOrEmpty(licenseKey))
-    licenseKey = ThirdPartyLicenses.GetSyncfusionKey();  // JSONから読み込み
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
+// 優先順位: Edition 別環境変数 > 汎用環境変数 > JSON(editions) > JSON(レガシー)
+using InsightCommon.License;
+
+ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 ```
 
-**キー更新時:** `config/third-party-licenses.json` の `licenseKey` を書き換えるだけで全製品に反映されます。
+**キー更新時:** `config/third-party-licenses.json` の `editions.<edition>.licenseKey` を書き換えるだけで該当 Edition を使用する全製品に反映されます。
 
 ---
 
