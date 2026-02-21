@@ -62,10 +62,29 @@
  * - 読込時: 一時ディレクトリに展開 → アプリ終了時にクリーンアップ
  * - 圧縮レベル: `CompressionLevel.Optimal`（Office ファイルは既に圧縮済みなので効果は限定的）
  *
+ * ## 共有サーバー対応（B 方式: コラボレーション分離）
+ *
+ * ドキュメント本体（ZIP）はロックファイルで排他制御し、
+ * 掲示板・付箋・メッセージは外部 JSON ファイルに分離する。
+ *
+ * ```
+ * 共有サーバー上:
+ * report.iosh              ← 本体 ZIP（排他ロック）
+ * report.iosh.lock         ← ロックファイル（編集者情報）
+ * report.iosh.collab.json  ← コラボレーションデータ（複数人同時アクセス可）
+ * ```
+ *
+ * - ドキュメント編集: 1 人のみ（ロックファイル方式 — Word と同じ UX）
+ * - 掲示板・付箋・メッセージ: 複数人同時読み書き可能（楽観ロック）
+ * - 閉じるとき: 外部 JSON の付箋データを ZIP 内に統合（バックアップ目的）
+ *
  * 参照:
  * - config/products.ts — ProjectFileConfig（拡張子・MIME タイプ定義）
  * - config/ai-memory.ts — AI メモリの ZIP 内パス定義
  * - config/sticky-notes.ts — 付箋データモデル
+ * - csharp/InsightCommon/ProjectFile/FileLockManager.cs — ロック管理
+ * - csharp/InsightCommon/ProjectFile/CollaborationFileManager.cs — コラボデータ管理
+ * - csharp/InsightCommon/ProjectFile/CollaborationModels.cs — データモデル
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -800,6 +819,142 @@ export const MIGRATION_GUIDE = {
 } as const;
 
 // =============================================================================
+// 共有サーバー対応（B 方式: コラボレーション分離）
+// =============================================================================
+
+/**
+ * 外部ファイルのパス規則
+ *
+ * プロジェクトファイルと同じディレクトリに配置される。
+ * 例: report.iosh → report.iosh.lock, report.iosh.collab.json
+ */
+export const EXTERNAL_FILE_EXTENSIONS = {
+  /** ロックファイル */
+  LOCK: '.lock',
+  /** コラボレーションデータ */
+  COLLABORATION: '.collab.json',
+} as const;
+
+/**
+ * ロックファイルの内容
+ */
+export interface LockFileInfo {
+  /** ロックしたユーザー名 */
+  lockedBy: string;
+  /** マシン名 */
+  machineName: string;
+  /** プロセス ID */
+  processId: number;
+  /** ロック取得日時（ISO 8601） */
+  lockedAt: string;
+  /** 最終ハートビート日時（ISO 8601） */
+  heartbeat: string;
+  /** アプリケーション名 */
+  application: string;
+}
+
+/**
+ * コラボレーションデータ（.collab.json）
+ */
+export interface CollaborationData {
+  version: '1.0';
+  updatedAt: string;
+  boardPosts: BoardPost[];
+  stickyNotes: CollabStickyNote[];
+  messages: CollabMessage[];
+}
+
+/**
+ * 掲示板投稿
+ */
+export interface BoardPost {
+  id: string;
+  author: string;
+  content: string;
+  createdAt: string;
+  updatedAt?: string;
+  /** 返信先の投稿 ID（null = トップレベル） */
+  replyTo?: string;
+  /** ピン留め */
+  pinned: boolean;
+}
+
+/**
+ * コラボレーション付箋
+ */
+export interface CollabStickyNote {
+  id: string;
+  author: string;
+  content: string;
+  /** セル参照（スプレッドシート製品のみ） */
+  cellRef?: string;
+  /** シート名（スプレッドシート製品のみ） */
+  sheetName?: string;
+  /** スライド番号（プレゼンテーション製品のみ） */
+  slideNumber?: number;
+  /** 段落番号（文書製品のみ） */
+  paragraphNumber?: number;
+  /** 付箋の色（#RRGGBB） */
+  color: string;
+  createdAt: string;
+  updatedAt?: string;
+  /** 解決済みフラグ */
+  resolved: boolean;
+}
+
+/**
+ * ダイレクトメッセージ
+ */
+export interface CollabMessage {
+  id: string;
+  from: string;
+  /** 宛先（null = 全員宛） */
+  to?: string;
+  content: string;
+  createdAt: string;
+  /** 既読ユーザー */
+  readBy: string[];
+}
+
+/**
+ * ロック設定
+ */
+export const LOCK_CONFIG = {
+  /** ハートビート更新間隔（分） */
+  heartbeatIntervalMinutes: 5,
+  /** スタルロック判定閾値（分） */
+  staleThresholdMinutes: 30,
+  /** コラボレーションデータのポーリング間隔（秒） */
+  collabPollingIntervalSeconds: 10,
+} as const;
+
+/**
+ * 空のコラボレーションデータを生成
+ */
+export function createEmptyCollaborationData(): CollaborationData {
+  return {
+    version: '1.0',
+    updatedAt: new Date().toISOString(),
+    boardPosts: [],
+    stickyNotes: [],
+    messages: [],
+  };
+}
+
+/**
+ * 外部ファイルパスを生成
+ */
+export function getExternalFilePaths(projectFilePath: string): {
+  lockFile: string;
+  collabFile: string;
+} {
+  return {
+    lockFile: projectFilePath + EXTERNAL_FILE_EXTENSIONS.LOCK,
+    collabFile: projectFilePath + EXTERNAL_FILE_EXTENSIONS.COLLABORATION,
+  };
+}
+
+// =============================================================================
 // エクスポート
 // =============================================================================
 
@@ -812,6 +967,8 @@ export default {
   REQUIRED_ENTRIES,
   OPTIONAL_ENTRIES,
   MIGRATION_GUIDE,
+  EXTERNAL_FILE_EXTENSIONS,
+  LOCK_CONFIG,
 
   // ファクトリ
   createEmptyMetadata,
@@ -819,11 +976,13 @@ export default {
   createEmptyReferencesIndex,
   createEmptyScriptsIndex,
   createEmptyAiChatHistory,
+  createEmptyCollaborationData,
   generateContentTypesXml,
 
   // ユーティリティ
   getInnerDocumentName,
   getInitialEntries,
+  getExternalFilePaths,
   validateMetadata,
   checkProjectFileLimits,
 };
