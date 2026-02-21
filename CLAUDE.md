@@ -388,14 +388,15 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ### Tier 3: InsightOffice Suite
 
-> InsightOffice 系は共通で AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> InsightOffice 系は共通で **新規ドキュメント作成（MS Office 不要）**、AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> Syncfusion で Office 互換ファイル（.xlsx / .docx / .pptx）を直接生成するため、MS Office を購入せずにドキュメントの作成・編集・保存がすべて完結する。
 > 独自プロジェクトファイル形式（.inss / .iosh / .iosd）対応、AI メモリ機能あり。
 
 #### INSS — InsightOfficeSlide
 
 | 項目 | 内容 |
 |------|------|
-| **説明** | AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール |
+| **説明** | AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
 | **バージョン** | **2.1.0** (build 45) — **安定版** |
 | **リポジトリ** | `win-app-insight-slide` |
@@ -406,6 +407,16 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | PRO | ENT | 説明 |
 |------|:---:|:---:|:---:|------|
+| **新規作成** | **○** | **○** | **○** | **空の PowerPoint を新規作成（MS Office 不要）** |
+| スライド編集 | ○ | ○ | ○ | スライドのテキスト・レイアウト編集 |
+| 画像・図形挿入 | ○ | ○ | ○ | 画像・図形・テキストボックス・SmartArt の挿入 |
+| 印刷 | ○ | ○ | ○ | 配布資料・ノート付き印刷 |
+| PDF出力 | ○ | ○ | ○ | PDF形式でエクスポート |
+| 検索・置換 | ○ | ○ | ○ | スライド内テキストの検索・一括置換 |
+| 発表者ノート | ○ | ○ | ○ | スライドごとの発表者メモの編集・印刷 |
+| スライドマスター | — | ○ | ○ | スライドマスター・レイアウトの編集 |
+| スライド切替効果 | — | ○ | ○ | スライド間のトランジション効果 |
+| アニメーション | — | ○ | ○ | オブジェクトのアニメーション効果 |
 | コンテンツ抽出 | ○ | ○ | ○ | PowerPointからテキスト・画像を抽出 |
 | スライド一括更新 | ○ | ○ | ○ | スライドの一括更新 |
 | JSON入出力 | ○ | ○ | ○ | JSON形式でのデータ入出力 |
@@ -423,7 +434,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 項目 | 内容 |
 |------|------|
-| **説明** | AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション |
+| **説明** | AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
 | **バージョン** | **2.0.0** (build 38) — **安定版** |
 | **リポジトリ** | `win-app-insight-sheet` |
@@ -434,7 +445,16 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | PRO | ENT | 説明 |
 |------|:---:|:---:|:---:|------|
-| Excel読み込み・編集 | ○ | ○ | ○ | Excelファイルの読み込み・編集 |
+| **新規作成** | **○** | **○** | **○** | **空の Excel スプレッドシートを新規作成（MS Office 不要）** |
+| Excel読み込み・編集 | ○ | ○ | ○ | Excelファイルの読み込み・編集・保存 |
+| 印刷 | ○ | ○ | ○ | 範囲指定・ヘッダーフッター・改ページ設定対応 |
+| PDF出力 | ○ | ○ | ○ | PDF形式でエクスポート |
+| 検索・置換 | ○ | ○ | ○ | セル値の検索・一括置換 |
+| ソート・フィルタ | ○ | ○ | ○ | 列のソート・オートフィルタ |
+| グラフ作成 | ○ | ○ | ○ | 棒・折れ線・円グラフ等の作成・編集 |
+| 条件付き書式 | — | ○ | ○ | カラースケール・データバー・アイコンセット |
+| ピボットテーブル | — | ○ | ○ | データの集計・クロス分析 |
+| データ入力規則 | — | ○ | ○ | 入力制限・ドロップダウンリスト |
 | バージョン管理 | ○ | ○ | ○ | ファイルのバージョン管理・履歴保持 |
 | 差分比較 | ○ | ○ | ○ | バージョン間のセル差分比較 |
 | セル変更ログ | ○ | ○ | ○ | セル単位の変更履歴の記録・表示 |
@@ -455,7 +475,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 項目 | 内容 |
 |------|------|
-| **説明** | AIアシスタント搭載 — 参照資料付きWord文書管理ツール |
+| **説明** | AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
 | **バージョン** | 1.0.0 — 開発中 |
 | **リポジトリ** | `win-app-insight-doc` |
@@ -466,9 +486,17 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | PRO | ENT | 説明 |
 |------|:---:|:---:|:---:|------|
-| ドキュメント読取 | ○ | ○ | ○ | Wordドキュメントの読み取り |
-| ドキュメント書込 | ○ | ○ | ○ | Wordドキュメントへの書き込み |
+| **新規作成** | **○** | **○** | **○** | **空の Word ドキュメントを新規作成（MS Office 不要）** |
+| ドキュメント読取・書込 | ○ | ○ | ○ | Word ドキュメントの読み込み・編集・保存 |
+| 印刷 | ○ | ○ | ○ | ページ範囲指定・部数・用紙サイズ対応 |
+| 検索・置換 | ○ | ○ | ○ | テキストの検索・一括置換 |
+| 表の挿入・編集 | ○ | ○ | ○ | 行列追加・セル結合・罫線スタイル設定 |
+| 画像・図形挿入 | ○ | ○ | ○ | 画像・図形・テキストボックスの挿入 |
+| ヘッダー・フッター | ○ | ○ | ○ | ページ番号・日付・ロゴの設定 |
+| ページ設定 | ○ | ○ | ○ | 用紙サイズ・余白・段組み・ページの向き |
 | フォーマット変換 | ○ | ○ | ○ | PDF・HTML等へのフォーマット変換 |
+| 目次生成 | — | ○ | ○ | 見出しスタイルから目次を自動生成・更新 |
+| 変更履歴の記録 | — | ○ | ○ | 変更追跡・承認・却下（Word 互換） |
 | テンプレート | — | ○ | ○ | テンプレートからのドキュメント生成 |
 | バッチ処理 | — | ○ | ○ | 複数ドキュメントの一括処理 |
 | マクロ実行 | — | ○ | ○ | VBAマクロの実行・変換 |
@@ -518,6 +546,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 機能 | STD | ENT | 説明 |
 |------|:---:|:---:|------|
+| **新規作成** | **○** | **○** | **空の表計算・文書を新規作成（MS Office 不要）** |
 | 表計算 | ○ | ○ | Excelファイルの読み込み・編集・保存 |
 | 文書作成 | ○ | ○ | Wordドキュメントの読み込み・編集・保存 |
 | iCloudメール | ○ | ○ | iCloudメールの送受信（iPhoneと同じメールをPCで閲覧） |
@@ -887,50 +916,106 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 // { allowed: true, remaining: 2 }
 ```
 
-## 10. プロジェクトファイル（独自拡張子 + コンテキストメニュー）
+## 10. プロジェクトファイル（ZIP パッケージ形式）
+
+> **仕様定義**: `config/project-file.ts` — ZIP 内部構造・メタデータスキーマ・バリデーション
+
+### 設計思想
+
+InsightOffice のプロジェクトファイル（.inss / .iosh / .iosd）は **ZIP 形式のアーカイブ**。
+Office ドキュメント + メタデータ + 付随データを 1 ファイルに集約し、ファイル 1 つ移動すれば全データが移動する。
+.docx / .xlsx / .pptx / .epub 等と同じ業界標準の ZIP ベースアプローチ。
 
 ### ファイル関連付け
 
-InsightOffice 各アプリは独自のプロジェクトファイル形式を持つ。
-ダブルクリックでアプリが自動起動し、右クリックから「〜で開く」も可能。
-
-| 製品 | 独自拡張子 | 内包形式 | 右クリック対象 |
-|------|----------|---------|--------------|
-| INSS | `.inss` | .pptx + メタデータ | .pptx, .ppt |
-| IOSH | `.iosh` | .xlsx + メタデータ | .xlsx, .xls, .csv |
-| IOSD | `.iosd` | .docx + メタデータ | .docx, .doc |
+| 製品 | 独自拡張子 | 内包 Office 形式 | 右クリック対象 |
+|------|----------|-----------------|--------------|
+| INSS | `.inss` | .pptx | .pptx, .ppt |
+| IOSH | `.iosh` | .xlsx | .xlsx, .xls, .csv |
+| IOSD | `.iosd` | .docx | .docx, .doc |
 
 ### プロジェクトファイル構造（ZIP 形式）
 
 ```
-report.iosh
-├── document.xlsx          # 元の Office ファイル
-├── metadata.json          # バージョン、作成者、最終更新日
-├── history/               # バージョン履歴
-├── sticky_notes.json      # 付箋データ
-├── references/            # 参考資料
-├── scripts/               # Python スクリプト
-└── ai_chat_history.json   # AI チャット履歴
+report.iosh (ZIP archive)
+├── [content_types].xml          # コンテントタイプ定義（OPC 準拠）
+├── metadata.json                # プロジェクトメタデータ（バージョン、作成者、最終更新日）
+├── document.xlsx                # 元の Office ファイル（製品により .pptx / .docx）
+├── sticky_notes.json            # 付箋データ
+├── ai_memory.json               # AI ホットキャッシュ
+├── ai_memory_deep/              # AI ディープストレージ（PRO+）
+│   ├── glossary.json
+│   ├── people.json
+│   ├── projects.json
+│   └── context.json
+├── ai_chat_history.json         # AI チャット履歴
+├── history/                     # バージョン履歴
+│   ├── index.json               # 履歴インデックス
+│   └── snapshots/               # 過去バージョンのスナップショット
+├── references/                  # 参考資料
+│   ├── index.json               # 参考資料インデックス
+│   └── files/                   # 添付ファイル本体
+└── scripts/                     # Python スクリプト
+    ├── index.json               # スクリプトインデックス
+    └── files/
 ```
+
+### 実装ガイドライン（C# WPF）
+
+- `System.IO.Compression.ZipArchive`（.NET 標準）を使用、外部ライブラリ不要
+- **保存時**: 一時ファイルに書き込み → 完了後にリネーム（アトミック保存で破損防止）
+- **読込時**: 一時ディレクトリに展開 → アプリ終了時にクリーンアップ
+- **マイグレーション**: 既存 .xlsx を右クリック→「InsightOfficeSheet で開く」で .iosh に自動変換
 
 ### API
 
 ```typescript
+// ファイル関連付け（config/products.ts）
 import {
   resolveProductByExtension,
   getContextMenuProducts,
   getFileAssociationInfo,
 } from '@/insight-common/config/products';
 
-// 独自拡張子 → 製品解決
 resolveProductByExtension('iosh');  // 'IOSH'
+getContextMenuProducts('xlsx');     // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
+getFileAssociationInfo('IOSH');     // { progId: 'HarmonicInsight.InsightOfficeSheet', ... }
 
-// コンテキストメニュー対象
-getContextMenuProducts('xlsx');  // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
+// ZIP パッケージ仕様（config/project-file.ts）
+import {
+  PROJECT_FILE_PATHS,
+  PROJECT_FILE_LIMITS,
+  getInnerDocumentName,
+  getInitialEntries,
+  createEmptyMetadata,
+  getNewDocumentTemplates,
+  createNewDocumentMetadata,
+  validateMetadata,
+  checkProjectFileLimits,
+  generateContentTypesXml,
+} from '@/insight-common/config/project-file';
 
-// インストーラー用ファイル関連付け情報
-getFileAssociationInfo('IOSH');
-// { progId: 'HarmonicInsight.InsightOfficeSheet', extension: '.iosh', ... }
+// ZIP 内パス参照
+PROJECT_FILE_PATHS.METADATA;        // 'metadata.json'
+PROJECT_FILE_PATHS.HISTORY_INDEX;   // 'history/index.json'
+getInnerDocumentName('IOSH');       // 'document.xlsx'
+
+// 新規プロジェクト作成時のエントリ一覧
+const entries = getInitialEntries('IOSH');
+// → [{ path: 'metadata.json', type: 'json', required: true }, ...]
+
+// 既存ファイルインポート時のメタデータ生成
+const metadata = createEmptyMetadata('IOSH', '売上報告.xlsx', '山田太郎', '2.0.0', 38);
+
+// 新規作成（MS Office 不要 — Syncfusion で空の Office ファイルを生成）
+const templates = getNewDocumentTemplates('IOSH');
+// → [{ type: 'blank_spreadsheet', nameJa: '空のスプレッドシート', syncfusionApi: 'Syncfusion.XlsIO.ExcelEngine', ... }]
+const newMeta = createNewDocumentMetadata('IOSH', 'blank_spreadsheet', '山田太郎', '2.0.0', 38);
+// → metadata.originalFileName === '新しいスプレッドシート.xlsx'
+
+// プラン別容量制限チェック
+checkProjectFileLimits('STD', { historyVersions: 25 });
+// → { withinLimits: false, exceeded: ['history_versions (25/20)'] }
 ```
 
 ## 11. InsightBot Orchestrator / Agent アーキテクチャ
