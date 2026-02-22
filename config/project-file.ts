@@ -164,6 +164,17 @@ export const PROJECT_FILE_PATHS = {
   SCRIPTS_INDEX: 'scripts/index.json',
   /** スクリプトファイルディレクトリ */
   SCRIPTS_FILES_DIR: 'scripts/files/',
+
+  // --- データ収集（Data Collection） ---
+
+  /** データ収集テンプレートインデックス（ダウンロード済みテンプレートのローカルキャッシュ） */
+  DATA_COLLECTION_INDEX: 'data_collection/index.json',
+  /** データ収集テンプレートファイルディレクトリ */
+  DATA_COLLECTION_TEMPLATES_DIR: 'data_collection/templates/',
+  /** データ収集下書きディレクトリ（テンプレートごとの入力途中データ） */
+  DATA_COLLECTION_DRAFTS_DIR: 'data_collection/drafts/',
+  /** データ収集マッピング定義ディレクトリ（Named Range ↔ DB マッピング） */
+  DATA_COLLECTION_MAPPINGS_DIR: 'data_collection/mappings/',
 } as const;
 
 /**
