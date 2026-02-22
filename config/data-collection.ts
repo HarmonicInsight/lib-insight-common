@@ -496,97 +496,334 @@ export const DATA_COLLECTION_API = {
 } as const;
 
 // =============================================================================
+// DB アーキテクチャ — AI 対応 JSON ストレージ
+// =============================================================================
+
+/**
+ * データベースアーキテクチャ設計方針
+ *
+ * ============================================================================
+ * 【Stravis 型「汎用テーブル」パターンの進化版】
+ * ============================================================================
+ *
+ * Stravis（連結会計システム）には2種類のテーブルがあった:
+ *
+ * 1. **固定テーブル**: 連結会計の勘定科目等、スキーマが決まっているデータ
+ *    → 物理カラムで定義（高速だがスキーマ変更に DDL が必要）
+ *
+ * 2. **汎用テーブル**: 1つの物理テーブルに複数の論理テーブルを格納
+ *    → レコードの中にテーブル識別子を持ち、論理的に分離
+ *    → 新しい収集項目が追加されても DDL 変更不要
+ *
+ * 本システムでは Stravis の汎用テーブルパターンを **JSONB** で進化させる:
+ *
+ * ```
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │  dc_collected_data（物理テーブル: 1つだけ）                    │
+ * │                                                              │
+ * │  ┌──────────┬──────────────────────────────────────────────┐ │
+ * │  │ 共通列    │ template_id, tenant_id, submitter, status   │ │
+ * │  │ (物理)   │ submitted_at, reviewed_at, ...              │ │
+ * │  ├──────────┼──────────────────────────────────────────────┤ │
+ * │  │ データ列  │ data JSONB ← ★ ここに収集データ全体が入る    │ │
+ * │  │ (論理)   │                                              │ │
+ * │  │          │ テンプレート A の場合:                         │ │
+ * │  │          │ { "revenue": 1000, "cost": 500, ... }        │ │
+ * │  │          │                                              │ │
+ * │  │          │ テンプレート B の場合:                         │ │
+ * │  │          │ { "employee_count": 50, "dept": "営業", ... } │ │
+ * │  │          │                                              │ │
+ * │  │          │ → 論理スキーマは template の schema_json が定義 │ │
+ * │  └──────────┴──────────────────────────────────────────────┘ │
+ * └──────────────────────────────────────────────────────────────┘
+ * ```
+ *
+ * ## 従来アプローチとの比較
+ *
+ * | 方式 | Stravis 固定テーブル | Stravis 汎用テーブル | IOSH JSONB 方式 |
+ * |------|--------------------|--------------------|-----------------|
+ * | スキーマ変更 | DDL 必要 | 不要 | **不要** |
+ * | データ型定義 | SQL カラム定義 | レコード内メタデータ | **JSON Schema** |
+ * | AI 可読性 | SQL 解析が必要 | 解析が必要 | **そのまま読める** |
+ * | クエリ性能 | 最速 | 中程度 | 中程度（GIN 索引） |
+ * | 柔軟性 | 低い | 高い | **最も高い** |
+ * | テンプレート追加 | テーブル作成 | 不要 | **不要** |
+ *
+ * ## AI にとっての利点
+ *
+ * - JSON はそのまま Claude API のコンテキストに渡せる
+ * - スキーマ定義（JSON Schema）も JSON なので AI が理解しやすい
+ * - AI 検証時に過去データも JSON で比較できる
+ * - AI 転記結果をそのまま data JSONB カラムに格納できる
+ *
+ * ## PostgreSQL JSONB の活用
+ *
+ * ```sql
+ * -- GIN インデックスで JSONB 内を高速検索
+ * CREATE INDEX idx_dc_data_gin ON dc_collected_data USING GIN (data);
+ *
+ * -- 特定フィールドの集計（テンプレートの論理カラムに対するクエリ）
+ * SELECT
+ *   data->>'department' AS department,
+ *   SUM((data->>'revenue')::numeric) AS total_revenue
+ * FROM dc_collected_data
+ * WHERE template_id = 'xxx' AND status = 'accepted'
+ * GROUP BY data->>'department';
+ *
+ * -- AI 検証用: 過去データとの比較
+ * SELECT data FROM dc_collected_data
+ * WHERE template_id = 'xxx'
+ * ORDER BY submitted_at DESC LIMIT 12;  -- 過去12回分
+ * ```
+ */
+
+// =============================================================================
+// JSON Schema — テンプレートの論理スキーマ定義
+// =============================================================================
+
+/**
+ * テンプレートの JSON Schema 定義
+ *
+ * 各テンプレートが「このテンプレートで収集するデータの構造」を定義する。
+ * dc_collected_data.data JSONB カラムに格納されるデータの型を規定。
+ *
+ * Stravis の汎用テーブルにおける「論理テーブル定義」に相当する。
+ */
+export interface TemplateDataSchema {
+  /** スキーマバージョン（テンプレート更新時にインクリメント） */
+  version: number;
+  /** 論理テーブル名（人間が読む識別名、例: "monthly_budget_report"） */
+  logicalTableName: string;
+  /** 論理テーブル名（日本語、例: "月次予算報告"） */
+  logicalTableNameJa: string;
+  /** フィールド定義 */
+  fields: SchemaField[];
+  /** 複合キー（同一テンプレート内でのユニーク制約、例: ["department", "fiscal_month"]） */
+  uniqueKeys?: string[];
+}
+
+/** JSON Schema のフィールド定義 */
+export interface SchemaField {
+  /** フィールド名（JSON のキー名、DB カラム相当） */
+  key: string;
+  /** 表示名（英語） */
+  label: string;
+  /** 表示名（日本語） */
+  labelJa: string;
+  /** データ型 */
+  type: MappingFieldType;
+  /** 必須項目か */
+  required: boolean;
+  /** デフォルト値 */
+  defaultValue?: unknown;
+  /** 説明（日本語、ツールチップ表示） */
+  descriptionJa?: string;
+  /** 小数点以下桁数（number/currency） */
+  decimalPlaces?: number;
+  /** 通貨コード（currency） */
+  currencyCode?: string;
+  /** 日付フォーマット（date） */
+  dateFormat?: string;
+  /** 列挙値（ドロップダウン候補） */
+  enumValues?: Array<{ value: string; label: string; labelJa: string }>;
+  /**
+   * AI 転記ヒント
+   * AI が転記元 Excel から該当データを探す際のキーワード。
+   * 例: ["売上", "revenue", "sales", "売上高"]
+   */
+  aiTransferHints?: string[];
+  /**
+   * Excel Named Range 名
+   * テンプレート Excel のどの Named Range にこのフィールドが対応するか。
+   */
+  namedRange: string;
+}
+
+// =============================================================================
 // DB テーブル定義（Supabase / PostgreSQL）
 // =============================================================================
 
 /**
  * データ収集サーバーの DB テーブル構成
  *
- * 既存のライセンスサーバー DB（Supabase）に追加する形で構築可能。
+ * **設計原則**: 物理テーブルは最小限。データ本体は JSONB。
+ * テンプレートの JSON Schema が論理スキーマを定義する。
+ *
+ * ```
+ * dc_templates          → テンプレート定義 + JSON Schema（論理テーブル定義）
+ * dc_collected_data     → ★ 全テンプレートの収集データを格納する汎用テーブル
+ * dc_drafts             → 下書き（JSONB）
+ * dc_ai_logs            → AI 転記・検証のログ
+ * ```
  */
 export const DB_TABLES = {
-  /** テンプレート管理 */
+  // -------------------------------------------------------------------------
+  // テンプレート管理
+  // -------------------------------------------------------------------------
+  /** テンプレート定義（= 論理テーブル定義） */
   dc_templates: {
-    description: 'データ収集テンプレートのメタデータ・マッピング定義',
+    description: 'テンプレートのメタデータ + JSON Schema（論理テーブル定義）+ マッピング定義',
     columns: [
-      'id UUID PRIMARY KEY',
-      'tenant_id UUID REFERENCES tenants(id)',
+      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
+      'tenant_id UUID NOT NULL',
       'name TEXT NOT NULL',
       'name_ja TEXT NOT NULL',
       'category TEXT',
       'description TEXT',
       'description_ja TEXT',
       'version INTEGER DEFAULT 1',
-      'status TEXT DEFAULT \'draft\'',
-      'schedule TEXT DEFAULT \'once\'',
+      'status TEXT DEFAULT \'draft\'',           // draft / published / archived
+      'schedule TEXT DEFAULT \'once\'',           // once / monthly / quarterly / yearly / custom
       'deadline TIMESTAMPTZ',
-      'template_file_path TEXT',
-      'mapping_json JSONB NOT NULL',
-      'validation_rules JSONB DEFAULT \'[]\'',
+      'template_file_path TEXT',                  // サーバー上の .xlsx ファイルパス
+      'schema_json JSONB NOT NULL',              // ★ 論理テーブル定義（TemplateDataSchema）
+      'mapping_json JSONB NOT NULL',             // Named Range ↔ schema_json.fields のマッピング
+      'validation_rules JSONB DEFAULT \'[]\'',   // ルールベース検証ルール
       'tab_color TEXT DEFAULT \'#2563EB\'',
       'created_by TEXT NOT NULL',
       'created_at TIMESTAMPTZ DEFAULT NOW()',
       'updated_at TIMESTAMPTZ DEFAULT NOW()',
     ],
+    indexes: [
+      'CREATE INDEX idx_dc_templates_tenant ON dc_templates(tenant_id)',
+      'CREATE INDEX idx_dc_templates_status ON dc_templates(status)',
+      'CREATE INDEX idx_dc_templates_category ON dc_templates(category)',
+    ],
   },
-  /** 送信データ */
-  dc_submissions: {
-    description: '収集されたデータの送信レコード',
+
+  // -------------------------------------------------------------------------
+  // 収集データ（汎用テーブル — Stravis 型進化版）
+  // -------------------------------------------------------------------------
+  /**
+   * ★ 全テンプレートの収集データを格納する汎用テーブル
+   *
+   * 1つの物理テーブルに全テンプレートのデータが入る。
+   * template_id で論理的にテーブルを分離。
+   * data JSONB カラムの構造は dc_templates.schema_json が定義。
+   *
+   * Stravis の汎用テーブルと同じ考え方:
+   * - 物理テーブル: 1つ（dc_collected_data）
+   * - 論理テーブル: テンプレート数だけ存在（template_id で識別）
+   * - 論理スキーマ: dc_templates.schema_json が定義
+   */
+  dc_collected_data: {
+    description: '全テンプレートの収集データを格納する汎用テーブル（data JSONB に論理レコードを格納）',
     columns: [
-      'id UUID PRIMARY KEY',
-      'template_id UUID REFERENCES dc_templates(id)',
-      'template_version INTEGER',
-      'tenant_id UUID',
+      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
+      // --- 共通メタデータ（全テンプレート共通の物理カラム） ---
+      'template_id UUID NOT NULL REFERENCES dc_templates(id)',
+      'template_version INTEGER NOT NULL',       // 送信時点のテンプレートバージョン
+      'tenant_id UUID NOT NULL',
       'submitter_email TEXT NOT NULL',
       'submitter_name TEXT',
-      'status TEXT DEFAULT \'submitted\'',
-      'data JSONB NOT NULL',
+      'status TEXT DEFAULT \'submitted\'',        // draft / submitted / accepted / rejected / pending_review
+      'comment TEXT',                             // 送信時コメント
       'submitted_at TIMESTAMPTZ DEFAULT NOW()',
       'reviewed_at TIMESTAMPTZ',
       'reviewed_by TEXT',
       'rejection_reason TEXT',
-      'comment TEXT',
-      'ai_validation_snapshot JSONB',
+      // --- データ本体（テンプレートごとに構造が異なる JSONB） ---
+      'data JSONB NOT NULL',                     // ★ 収集データ本体（論理レコード）
+      // --- AI 関連 ---
+      'ai_validation_snapshot JSONB',            // AI 検証結果のスナップショット
+      'ai_transfer_used BOOLEAN DEFAULT FALSE',  // AI 自動転記を使用したか
+    ],
+    indexes: [
+      '-- テンプレート別検索（最も頻繁なクエリパターン）',
+      'CREATE INDEX idx_dc_data_template ON dc_collected_data(template_id)',
+      '-- テナント別検索',
+      'CREATE INDEX idx_dc_data_tenant ON dc_collected_data(tenant_id)',
+      '-- 送信者別検索（回収管理用）',
+      'CREATE INDEX idx_dc_data_submitter ON dc_collected_data(submitter_email)',
+      '-- ステータス別検索（回収状況確認用）',
+      'CREATE INDEX idx_dc_data_status ON dc_collected_data(template_id, status)',
+      '-- JSONB 内検索用 GIN インデックス（AI クエリ・集計用）',
+      'CREATE INDEX idx_dc_data_gin ON dc_collected_data USING GIN (data)',
+      '-- 時系列検索（過去データ比較用）',
+      'CREATE INDEX idx_dc_data_timeline ON dc_collected_data(template_id, submitted_at DESC)',
+    ],
+    /** JSONB クエリ例 */
+    queryExamples: [
+      '-- テンプレート別のフィールド集計（売上合計など）',
+      'SELECT SUM((data->>\'revenue\')::numeric) FROM dc_collected_data WHERE template_id = $1 AND status = \'accepted\'',
+      '',
+      '-- 部門別クロス集計',
+      'SELECT data->>\'department\' AS dept, SUM((data->>\'revenue\')::numeric) AS total',
+      'FROM dc_collected_data WHERE template_id = $1 GROUP BY data->>\'department\'',
+      '',
+      '-- AI 検証用: 同一テンプレートの過去12回分データ取得',
+      'SELECT data, submitted_at FROM dc_collected_data',
+      'WHERE template_id = $1 AND status = \'accepted\' ORDER BY submitted_at DESC LIMIT 12',
+      '',
+      '-- 特定フィールドが閾値を超えるレコード検出（異常値アラート）',
+      'SELECT * FROM dc_collected_data',
+      'WHERE template_id = $1 AND (data->>\'expense\')::numeric > 1000000',
     ],
   },
-  /** 下書き */
+
+  // -------------------------------------------------------------------------
+  // 下書き
+  // -------------------------------------------------------------------------
+  /** 下書きデータ（ユーザー × テンプレートで一意） */
   dc_drafts: {
-    description: '入力途中の下書きデータ（ユーザー × テンプレートで一意）',
+    description: '入力途中の下書きデータ（data JSONB に未完成の論理レコードを格納）',
     columns: [
-      'id UUID PRIMARY KEY',
-      'template_id UUID REFERENCES dc_templates(id)',
-      'tenant_id UUID',
+      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
+      'template_id UUID NOT NULL REFERENCES dc_templates(id)',
+      'tenant_id UUID NOT NULL',
       'user_email TEXT NOT NULL',
-      'data JSONB NOT NULL',
+      'data JSONB NOT NULL',                     // 下書きデータ（dc_collected_data.data と同じ構造）
       'saved_at TIMESTAMPTZ DEFAULT NOW()',
-      'UNIQUE(template_id, user_email)',
+      'UNIQUE(template_id, user_email)',          // 1ユーザー1テンプレートにつき1下書き
+    ],
+    indexes: [
+      'CREATE INDEX idx_dc_drafts_user ON dc_drafts(user_email)',
     ],
   },
-  /** AI 転記ログ */
-  dc_ai_transfer_logs: {
-    description: 'AI 自動転記の実行ログ（品質追跡用）',
+
+  // -------------------------------------------------------------------------
+  // AI ログ
+  // -------------------------------------------------------------------------
+  /** AI 転記・検証の実行ログ（品質追跡・利用量カウント用） */
+  dc_ai_logs: {
+    description: 'AI 自動転記・AI 検証の実行ログ',
     columns: [
-      'id UUID PRIMARY KEY',
-      'template_id UUID REFERENCES dc_templates(id)',
+      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
+      'template_id UUID NOT NULL REFERENCES dc_templates(id)',
+      'tenant_id UUID NOT NULL',
       'user_email TEXT NOT NULL',
-      'source_file_name TEXT',
-      'total_transferred INTEGER',
-      'total_skipped INTEGER',
-      'total_review INTEGER',
-      'result_json JSONB',
+      'action TEXT NOT NULL',                    // 'transfer' / 'validate'
+      'source_file_name TEXT',                   // 転記元ファイル名（transfer の場合）
+      'result_summary JSONB',                    // 結果サマリー（件数・エラー数等）
       'executed_at TIMESTAMPTZ DEFAULT NOW()',
     ],
+    indexes: [
+      '-- 利用量カウント用（月次集計）',
+      'CREATE INDEX idx_dc_ai_logs_usage ON dc_ai_logs(tenant_id, user_email, action, executed_at)',
+    ],
   },
-  /** 回収ステータスビュー（集計用） */
+
+  // -------------------------------------------------------------------------
+  // ビュー（集計用）
+  // -------------------------------------------------------------------------
+  /** 回収ステータスビュー */
   dc_collection_status_view: {
     description: 'テンプレートごとの回収状況集計ビュー',
-    columns: [
-      '-- CREATE VIEW dc_collection_status AS',
-      '-- SELECT template_id, COUNT(*) FILTER (WHERE status = \'submitted\') as submitted_count,',
-      '--   COUNT(*) FILTER (WHERE status = \'accepted\') as accepted_count,',
-      '--   COUNT(*) FILTER (WHERE status = \'rejected\') as rejected_count,',
-      '--   COUNT(*) FILTER (WHERE status = \'draft\') as draft_count',
-      '-- FROM dc_submissions GROUP BY template_id',
+    ddl: [
+      'CREATE OR REPLACE VIEW dc_collection_status AS',
+      'SELECT',
+      '  t.id AS template_id,',
+      '  t.name_ja AS template_name,',
+      '  t.deadline,',
+      '  COUNT(*) FILTER (WHERE d.status = \'submitted\') AS submitted_count,',
+      '  COUNT(*) FILTER (WHERE d.status = \'accepted\') AS accepted_count,',
+      '  COUNT(*) FILTER (WHERE d.status = \'rejected\') AS rejected_count,',
+      '  COUNT(*) FILTER (WHERE d.status = \'pending_review\') AS pending_count,',
+      '  (SELECT COUNT(*) FROM dc_drafts dr WHERE dr.template_id = t.id) AS draft_count',
+      'FROM dc_templates t',
+      'LEFT JOIN dc_collected_data d ON d.template_id = t.id',
+      'WHERE t.status = \'published\'',
+      'GROUP BY t.id, t.name_ja, t.deadline;',
     ],
   },
 } as const;
