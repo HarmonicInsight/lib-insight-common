@@ -1,36 +1,71 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Insight Series サードパーティライセンスキー（全製品共通）",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "_note": "このファイルのキーはすべての HARMONIC insight 製品で共有されます。製品固有のキーは各製品リポジトリで管理してください。",
 
   "syncfusion": {
     "provider": "Syncfusion",
-    "description": "Essential Studio® UI Edition - Community License",
+    "description": "Essential Studio® - Community License",
     "licenseUrl": "https://www.syncfusion.com/products/communitylicense",
-    "licenseKey": "Ngo9BigBOggjGyl/VkR+XU9Ff1RDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS3hTdEdjWXpfcXdSR2NZWE91XQ==",
     "type": "communityLicense",
     "essentialStudioVersion": "32.x",
     "issuedDate": "2026-02-20",
     "expiresDate": "2027-02-20",
-    "envVar": "SYNCFUSION_LICENSE_KEY",
-    "_licenseNote": "Community License は WPF と JavaScript/React の両プラットフォームをカバー。年次更新が必要。",
+    "_licenseNote": "Claim License Key（Enterprise Edition）を使用。Downloads & Keys の Get License Key（Binary License）ではない。年次更新が必要。",
+
+    "editions": {
+      "uiEdition": {
+        "name": "Essential Studio® Enterprise Edition (Community License)",
+        "description": "Community License の Claim License Key。UI コントロール全般（WPF / JavaScript / React）+ Document SDK を包含。",
+        "licenseKey": "Ngo9BigBOggjHTQxAR8/V1JGaF1cWGhIfEx1RHxQdId5ZFRHaIlYTnNWUj0eQnxTdENjW31fcXRUQmBbWUZ0WkleYQ==",
+        "envVar": "SYNCFUSION_LICENSE_KEY_UI"
+      },
+      "documentSdk": {
+        "name": "Essential Studio® Document SDK",
+        "description": "ドキュメント処理ライブラリ（XlsIO / DocIO / Presentation / PDF）。UI コントロールなし。",
+        "licenseKey": "",
+        "envVar": "SYNCFUSION_LICENSE_KEY_DOCSDK"
+      },
+      "pdfViewer": {
+        "name": "Essential Studio® PDF Viewer",
+        "description": "PDF 表示・注釈コンポーネント。",
+        "licenseKey": "",
+        "envVar": "SYNCFUSION_LICENSE_KEY_PDFVIEWER"
+      },
+      "docxEditor": {
+        "name": "Essential Studio® DOCX Editor",
+        "description": "DOCX 編集コンポーネント。",
+        "licenseKey": "",
+        "envVar": "SYNCFUSION_LICENSE_KEY_DOCXEDITOR"
+      },
+      "spreadsheetEditor": {
+        "name": "Essential Studio® Spreadsheet Editor",
+        "description": "スプレッドシート編集コンポーネント。",
+        "licenseKey": "",
+        "envVar": "SYNCFUSION_LICENSE_KEY_SPREADSHEET"
+      }
+    },
+
     "usedBy": ["IOSH", "IOSD", "INSS", "IVIN"],
     "components": {
       "IOSH": {
         "platform": "wpf",
+        "edition": "uiEdition",
         "name": "XlsIO + SfSpreadsheet",
         "description": "Excel (.xlsx/.xls) の読み書き・表示",
         "packages": ["Syncfusion.SfSpreadsheet.WPF", "Syncfusion.XlsIO.WPF"]
       },
       "IOSD": {
         "platform": "wpf",
+        "edition": "uiEdition",
         "name": "DocIO + SfRichTextBoxAdv",
         "description": "Word (.docx/.doc) の読み書き・表示",
         "packages": ["Syncfusion.SfRichTextBoxAdv.WPF", "Syncfusion.DocIO.WPF", "Syncfusion.DocToPDFConverter.WPF"]
       },
       "INSS": {
         "platform": "wpf",
+        "edition": "uiEdition",
         "name": "Presentation",
         "description": "PowerPoint (.pptx/.ppt) の読み書き・サムネイル生成・PDF変換",
         "packages": [
@@ -41,6 +76,7 @@
       },
       "IVIN": {
         "platform": "react",
+        "edition": "uiEdition",
         "name": "ej2-react-grids + ej2-react-spreadsheet",
         "description": "インタビュー結果のExcelグリッド表示・インポート・エクスポート",
         "packages": [

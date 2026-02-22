@@ -327,7 +327,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       expectedConversionRate: 0.40,
       noCreditCardRequired: true,
     },
-    positioning: 'PowerPointのコンテンツ抽出・一括更新を自動化。コンサル案件でクライアントのOffice業務を効率化するツール。',
+    positioning: 'MS Office不要のプレゼンテーション作成・編集ツール。コンサル案件でクライアントのOffice業務を効率化。',
   },
 
   IOSH: {
@@ -341,7 +341,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       expectedConversionRate: 0.45,
       noCreditCardRequired: true,
     },
-    positioning: 'Excelに「Gitのようなバージョン管理」を。コンサル案件でクライアントの経営数値管理・予実管理を効率化。',
+    positioning: 'MS Office不要のスプレッドシート作成・編集ツール。バージョン管理・AIアシスタントでクライアントのExcel業務を効率化。',
   },
 
   IOSD: {
@@ -355,7 +355,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       expectedConversionRate: 0.40,
       noCreditCardRequired: true,
     },
-    positioning: 'Word操作を自動化。コンサル案件でクライアントのドキュメント管理・テンプレート活用を効率化。',
+    positioning: 'MS Office不要のドキュメント作成・編集ツール。コンサル案件でクライアントのWord業務を効率化。',
   },
 
   INPY: {
