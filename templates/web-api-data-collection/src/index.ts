@@ -11,6 +11,7 @@ import { adminTenantRoutes } from './routes/admin/tenants';
 import { adminProvisioningRoutes } from './routes/admin/provisioning';
 import { adminDistributionRoutes } from './routes/admin/distribution';
 import { adminAnalyticsRoutes } from './routes/admin/analytics';
+import { adminTemplateDesignerRoutes } from './routes/admin/template-designer';
 import { healthRoute } from './routes/health';
 
 const app = new Hono();
@@ -54,6 +55,7 @@ app.route('/admin/tenants', adminTenantRoutes);
 app.route('/admin/provisioning', adminProvisioningRoutes);
 app.route('/admin/templates', adminDistributionRoutes);
 app.route('/admin/analytics', adminAnalyticsRoutes);
+app.route('/admin/template-designer', adminTemplateDesignerRoutes);
 
 // ---------------------------------------------------------------------------
 // Start
