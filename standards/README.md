@@ -20,6 +20,7 @@
 | React/Next.js | [REACT.md](./REACT.md) | Web アプリケーション（アプリUI） |
 | Android | [ANDROID.md](./ANDROID.md) | Android アプリ |
 | iOS | [IOS.md](./IOS.md) | iOS アプリ |
+| **Build Doctor** | [BUILD_DOCTOR.md](./BUILD_DOCTOR.md) | **ビルドエラー自律解消エージェント（全プラットフォーム）** |
 
 ## 共通ルール（全プラットフォーム必須）
 

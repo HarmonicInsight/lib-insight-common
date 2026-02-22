@@ -20,6 +20,7 @@
 | 「バージョン」「アップグレード」「アップデート」 | `config/app-versions.ts` と `compatibility/` を参照 |
 | 「リモートコンフィグ」「API キーローテーション」「自動更新」「OTA」 | `config/remote-config.ts` を確認 |
 | 「Syncfusion」「NuGet」「Essential Studio」「ライセンスキー期限切れ」 | `docs/SYNCFUSION_SETUP.md` と `config/third-party-licenses.json` を確認 |
+| 「ビルドエラー」「build failed」「コンパイルエラー」「リンクエラー」「署名エラー」 | `scripts/build-doctor.sh` を実行、`config/build-doctor.ts` と `standards/BUILD_DOCTOR.md` を参照 |
 
 ---
 
@@ -1524,6 +1525,9 @@ const iosProfile = getRecommendedIosProfile('cutting_edge');
 
 # リリースチェック（包括的）
 ./insight-common/scripts/release-check.sh .
+
+# ビルドエラー自動解消（iOS/Android/WPF/React/Python/Tauri）
+./insight-common/scripts/build-doctor.sh .
 
 # セットアップ確認
 ./insight-common/scripts/check-app.sh
