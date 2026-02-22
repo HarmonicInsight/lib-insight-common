@@ -183,14 +183,31 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 **構成の原則**:
 - PC にインストール + NuGet で参照管理（DLL は GitHub にコミットしない）
 - `dotnet restore` で自動復元
+- **全製品「Claim License Key」の Enterprise Edition キーを使用**
+
+> **⚠️ 「Claim License Key」と「Get License Key」を間違えないこと！**
+>
+> | ページ | 生成されるキー | 結果 |
+> |--------|---------------|------|
+> | ❌ Downloads & Keys →「Get License Key」 | Binary License キー（Edition 別） | **invalid エラー** |
+> | ✅ 左メニュー →「**Claim License Key**」 | Enterprise Edition キー | **正常動作** |
+
+**使用 Edition:**
+
+現在の全製品（IOSH / IOSD / INSS / IVIN）は **Enterprise Edition（Community License の Claim License Key）** のキー1つでカバーされます。
 
 ```json
 // config/third-party-licenses.json
 {
   "syncfusion": {
-    "licenseKey": "取得したキーをここに設定",
-    "type": "community",
-    "usedBy": ["INSS", "IOSH", "IOSD"]
+    "editions": {
+      "uiEdition": {
+        "name": "Essential Studio® Enterprise Edition (Community License)",
+        "licenseKey": "Claim License Key から取得したキーをここに設定",
+        "envVar": "SYNCFUSION_LICENSE_KEY_UI"
+      }
+    },
+    "usedBy": ["INSS", "IOSH", "IOSD", "IVIN"]
   }
 }
 ```
@@ -199,14 +216,13 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 
 ```csharp
 // App.xaml.cs の OnStartup 冒頭で呼び出す
-// 優先順位: 環境変数 > third-party-licenses.json > ハードコードフォールバック
-var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
-if (string.IsNullOrEmpty(licenseKey))
-    licenseKey = ThirdPartyLicenses.GetSyncfusionKey();  // JSONから読み込み
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
+// 優先順位: Edition 別環境変数 > 汎用環境変数 > JSON(editions) > JSON(レガシー)
+using InsightCommon.License;
+
+ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 ```
 
-**キー更新時:** `config/third-party-licenses.json` の `licenseKey` を書き換えるだけで全製品に反映されます。
+**キー更新時:** `config/third-party-licenses.json` の `editions.uiEdition.licenseKey` を書き換えるだけで全製品に反映されます。ダッシュボード左メニューの「**Claim License Key**」から取得してください。
 
 ---
 
@@ -219,6 +235,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 独自のライセンス実装 | `InsightLicenseManager` を使用 |
 | 価格情報をWebサイト・公開資料に掲載 | 個別見積もり。パートナーとの協議により決定 |
 | サードパーティキーを各アプリに直書き | `config/third-party-licenses.json` で共通管理 |
+| Syncfusion「Get License Key」(Binary License) を使用 | 「**Claim License Key**」(Enterprise Edition) を使用 |
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
