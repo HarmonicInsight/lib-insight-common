@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 12;
+    private const int CurrentConfigVersion = 13;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -280,7 +280,7 @@ public class AppConfig
             Apps = new List<AppDefinition>
             {
                 // ══════════════════════════════════════════════════════
-                // Tier 1: 業務変革ツール（年額 98万〜398万円）
+                // Tier 1: 業務変革ツール
                 // ══════════════════════════════════════════════════════
                 new()
                 {
@@ -306,11 +306,11 @@ public class AppConfig
                     ExeRelativePath = @"csharp\src\InsightBotRPA.Studio\bin\{config}\net8.0-windows\InsightBotRPA.Studio.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "[Tier1] AIエディタ搭載 — 業務最適化RPA製品"
+                    Description = "[Tier1] AIエディタ搭載 — 業務最適化RPA + Orchestrator"
                 },
 
                 // ══════════════════════════════════════════════════════
-                // Tier 2: AI活用ツール（年額 48万〜198万円）
+                // Tier 2: AI活用ツール
                 // ══════════════════════════════════════════════════════
                 new()
                 {
@@ -340,7 +340,7 @@ public class AppConfig
                 },
 
                 // ══════════════════════════════════════════════════════
-                // Tier 3: InsightOffice Suite（年額 3.98万〜4.98万円/人）
+                // Tier 3: InsightOffice Suite
                 // ══════════════════════════════════════════════════════
                 new()
                 {
@@ -353,7 +353,7 @@ public class AppConfig
                     ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "[Tier3] AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール"
+                    Description = "[Tier3] AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要）"
                 },
                 new()
                 {
@@ -366,7 +366,7 @@ public class AppConfig
                     ExeRelativePath = @"src\InsightOfficeSheet.App\bin\{config}\net8.0-windows\InsightOfficeSheet.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "[Tier3] AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション"
+                    Description = "[Tier3] AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要）"
                 },
                 new()
                 {
@@ -379,7 +379,7 @@ public class AppConfig
                     ExeRelativePath = @"src\InsightOfficeDoc.App\bin\{config}\net8.0-windows\InsightOfficeDoc.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "[Tier3] AIアシスタント搭載 — 参照資料付きWord文書管理ツール"
+                    Description = "[Tier3] AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要）"
                 },
                 new()
                 {
@@ -396,7 +396,7 @@ public class AppConfig
                 },
 
                 // ══════════════════════════════════════════════════════
-                // Tier 4: シニア向け社会貢献ツール（年額 0.98万円/人）
+                // Tier 4: InsightSeniorOffice（社会貢献ツール）
                 // ══════════════════════════════════════════════════════
                 new()
                 {
@@ -409,7 +409,7 @@ public class AppConfig
                     ExeRelativePath = @"src\HarmonicSheet.App\bin\{config}\net8.0-windows\HarmonicSheet.App.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
-                    Description = "[Tier4] AIアシスタント搭載 — シニア向け統合オフィスツール"
+                    Description = "[Tier4] AIアシスタント搭載 — シニア向け統合オフィスツール（表計算・文書・iCloudメール）"
                 },
 
                 // ══════════════════════════════════════════════════════
