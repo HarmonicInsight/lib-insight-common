@@ -20,6 +20,8 @@
 | 「バージョン」「アップグレード」「アップデート」 | `config/app-versions.ts` と `compatibility/` を参照 |
 | 「リモートコンフィグ」「API キーローテーション」「自動更新」「OTA」 | `config/remote-config.ts` を確認 |
 | 「Syncfusion」「NuGet」「Essential Studio」「ライセンスキー期限切れ」 | `docs/SYNCFUSION_SETUP.md` と `config/third-party-licenses.json` を確認 |
+| 「メニューアイコン」「ツールバー」「アイコン統一」「Lucide」 | `standards/MENU_ICONS.md` と `brand/menu-icons.json` を確認 |
+| メニュー・ツールバー・サイドバーの UI 実装 | `brand/menu-icons.json` のアイコン定義を参照、`config/menu-icons.ts` の API を使用 |
 
 ---
 
@@ -92,6 +94,7 @@
 - **ローカライゼーション**: `standards/LOCALIZATION.md`（全プラットフォーム共通）
 - **リリースチェック**: `standards/RELEASE_CHECKLIST.md`（全プラットフォーム共通）
 - **寒色系カラー標準**: `standards/COOL_COLOR.md`（業務系アプリ: INBT/INCA/IVIN）
+- **メニューアイコン標準**: `standards/MENU_ICONS.md`（全製品共通 — Lucide Icons）
 
 ### 検証スクリプト
 
@@ -101,6 +104,9 @@
 
 # 開発中の標準検証（Cool Blue & Slate テーマ — 業務系アプリ）
 ./scripts/validate-cool-color.sh <project-directory>
+
+# メニューアイコン標準検証（Lucide Icons 統一）
+./scripts/validate-menu-icons.sh <project-directory>
 
 # リリース前の包括チェック（標準検証 + リリース固有チェック）
 ./scripts/release-check.sh <project-directory>
@@ -242,6 +248,8 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
 | モデル ID のハードコード | `MODEL_REGISTRY` / `resolveModel()` を使用（ユーザー選択対応） |
 | AI 機能のライセンスチェック省略 | `checkFeature(product, 'ai_assistant', plan)` を必ず実行 |
+| Material Design Icons / Font Awesome 等をメニューに使用 | **Lucide Icons** に統一（`brand/menu-icons.json`） |
+| `brand/menu-icons.json` に未定義のアイコンをメニューに使用 | 先に `brand/menu-icons.json` に登録してから使用 |
 | UI テキストのハードコード | リソースファイル / 翻訳定義から参照（`standards/LOCALIZATION.md`） |
 | 英語翻訳の省略 | 日本語 + 英語の両方を必ず用意 |
 | リリースチェックなしでリリース | `/release-check` または `release-check.sh` を必ず実行 |
@@ -1355,6 +1363,9 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
 - [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT PRO+ のみ）
 - [ ] **ローカルワークフロー**: PRO InsightOffice でローカル連続処理が動作する（PRO+ のみ）
+- [ ] **メニューアイコン**: `brand/menu-icons.json` の定義に従っている（Lucide Icons 統一）
+- [ ] **メニューアイコン**: 非標準アイコンライブラリ（Material Design / Font Awesome 等）を使用して**いない**
+- [ ] **メニューアイコン**: `validate-menu-icons.sh` が成功する
 - [ ] **ローカライゼーション**: UI テキストがハードコードされて**いない**（リソースファイル経由）
 - [ ] **ローカライゼーション**: 日本語（デフォルト）+ 英語の翻訳が完全に用意されている
 - [ ] **ローカライゼーション**: ストアメタデータ（タイトル・説明）が日英で用意されている（モバイルアプリのみ）
@@ -1525,6 +1536,9 @@ const iosProfile = getRecommendedIosProfile('cutting_edge');
 # リリースチェック（包括的）
 ./insight-common/scripts/release-check.sh .
 
+# メニューアイコン標準検証
+./insight-common/scripts/validate-menu-icons.sh .
+
 # セットアップ確認
 ./insight-common/scripts/check-app.sh
 
@@ -1534,6 +1548,9 @@ cat insight-common/standards/PYTHON.md      # Python
 cat insight-common/standards/REACT.md       # React
 cat insight-common/standards/ANDROID.md     # Android
 cat insight-common/standards/IOS.md         # iOS
+
+# メニューアイコン標準
+cat insight-common/standards/MENU_ICONS.md
 
 # リリースチェックリスト
 cat insight-common/standards/RELEASE_CHECKLIST.md
