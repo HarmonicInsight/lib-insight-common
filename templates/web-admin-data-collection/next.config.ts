@@ -1,0 +1,8 @@
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  // Strict mode for better development
+  reactStrictMode: true,
+};
+
+export default nextConfig;
