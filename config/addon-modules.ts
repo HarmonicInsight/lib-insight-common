@@ -1229,6 +1229,11 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
   // =========================================================================
   // ※ 定義は PRODUCT_ADDON_SUPPORT の後に BOT_AGENT_MODULE として配置
   // ※ ここでは参照のみ（初期化順序の都合で後から代入）
+
+  // =========================================================================
+  // データ収集（Data Collection Platform — 詳細は DATA_COLLECTION_MODULE を参照）
+  // =========================================================================
+  // ※ BOT_AGENT_MODULE と同様、後から代入
 };
 
 // =============================================================================
@@ -1272,6 +1277,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'vrm_avatar',
       'bot_agent',
       'local_workflow',
+      'data_collection',
     ],
     defaultEnabled: ['ai_assistant', 'board', 'messaging'],
   },
@@ -1651,6 +1657,348 @@ export const LOCAL_WORKFLOW_MODULE: AddonModuleDefinition = {
 ADDON_MODULES.local_workflow = LOCAL_WORKFLOW_MODULE;
 
 // =============================================================================
+// データ収集モジュール（Enterprise Data Collection Platform）
+// =============================================================================
+
+/**
+ * データ収集プラットフォームモジュール
+ *
+ * サーバー管理の Excel テンプレートを IOSH 内でシームレスに表示・入力・送信する。
+ * ストラヴィス / Oracle FCCS / Tagetik 型のエンタープライズデータ収集を、
+ * IOSH 一体型で実現する。
+ *
+ * ## 従来システムとの差別化
+ *
+ * | 項目 | 従来（Stravis/Oracle/Tagetik） | IOSH + データ収集 |
+ * |------|------------------------------|-------------------|
+ * | テンプレート表示 | Excel Add-in or Web | **ネイティブ Excel UI（Syncfusion）** |
+ * | データ入力 | 手動コピペ | **AI が既存 Excel から自動転記** |
+ * | データ検証 | ルールベース | **AI が文脈・過去データも考慮して検証** |
+ * | MS Office | 必要 | **不要（Syncfusion で完全互換）** |
+ * | オフライン | 不可 | **下書き保存 → 接続回復時に送信** |
+ *
+ * ## アーキテクチャ
+ *
+ * ```
+ * ┌──────────────────────────────────────────────────────┐
+ * │  IOSH（データ収集モード）                              │
+ * │                                                      │
+ * │  ┌────────────────────┐  ┌────────────────────────┐  │
+ * │  │ SfSpreadsheet      │  │ 右ペイン               │  │
+ * │  │                    │  │ ・テンプレート一覧      │  │
+ * │  │ テンプレートシート   │  │ ・締切・ステータス      │  │
+ * │  │ ■ 色付きタブ       │  │ ・[AI転記] ボタン      │  │
+ * │  │ ■ レイアウトロック  │  │ ・[AI検証] ボタン      │  │
+ * │  │ ■ 入力セルのみ編集 │  │ ・[送信] ボタン        │  │
+ * │  └────────────────────┘  └────────────────────────┘  │
+ * └────────────────────────────┬─────────────────────────┘
+ *                              │ REST API
+ * ┌────────────────────────────┴─────────────────────────┐
+ * │  データ収集サーバー                                    │
+ * │  テンプレート管理 / マッピング / データ格納 / 回収管理   │
+ * └──────────────────────────────────────────────────────┘
+ * ```
+ *
+ * ## 認証レベル
+ *
+ * - Level 0: 認証なし（ローカルテンプレートのみ）
+ * - Level 1: ライセンスキー認証（推奨デフォルト — 既存ライセンス基盤を流用）
+ * - Level 2: ユーザー識別（メールアドレスで誰が入力したか記録）
+ * - Level 3: SSO 連携（ENT のみ・オプション）
+ *
+ * ## UX 設計
+ *
+ * - データ収集シートはタブの色で通常シートと区別（デフォルト: 青）
+ * - リボンの書式系ボタンはグレーアウト（レイアウト変更不可）
+ * - Named Ranges で定義された入力セルのみ編集可能
+ * - 通常の .iosh ファイルにデータ収集シートを混在可能
+ */
+export const DATA_COLLECTION_MODULE: AddonModuleDefinition = {
+  id: 'data_collection',
+  name: 'Data Collection',
+  nameJa: 'データ収集',
+  description: 'Enterprise data collection platform with server-managed Excel templates. AI auto-fills data from existing spreadsheets and validates before submission. Template sheets display with colored tabs and locked layout.',
+  descriptionJa: 'エンタープライズデータ収集プラットフォーム。サーバー管理テンプレートをIOSH内で表示し、AIが既存Excelから自動転記・検証。色付きタブ＋レイアウトロックでテンプレートシートを区別。',
+  version: '1.0.0',
+  distribution: 'bundled',
+  panelPosition: 'right',
+  requiredFeatureKey: 'data_collection',
+  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+  dependencies: [],
+  ioContracts: [
+    // -----------------------------------------------------------------
+    // テンプレート管理
+    // -----------------------------------------------------------------
+    {
+      id: 'fetch_templates',
+      name: 'Fetch Templates',
+      nameJa: 'テンプレート一覧取得',
+      description: 'Get available data collection templates from the server. Displayed in the right panel for user selection.',
+      input: [
+        { key: 'category', type: 'string', description: 'カテゴリフィルタ（省略時: 全件）', required: false },
+      ],
+      process: 'データ収集サーバーの /api/templates エンドポイントからテンプレート一覧を取得。ライセンスキーで認証。',
+      output: [
+        { key: 'templates', type: 'json', description: 'テンプレート一覧 [{ id, name, nameJa, category, deadline, version, status }]', required: true },
+        { key: 'categories', type: 'json', description: 'カテゴリ一覧 ["月次報告", "経費精算", ...]', required: true },
+      ],
+      transport: 'http',
+      async: true,
+      streaming: false,
+    },
+    {
+      id: 'download_template',
+      name: 'Download Template',
+      nameJa: 'テンプレートダウンロード',
+      description: 'Download a template .xlsx and its mapping definition from the server. Opens in SfSpreadsheet with colored tabs and locked layout.',
+      input: [
+        { key: 'template_id', type: 'string', description: 'テンプレート ID', required: true },
+        { key: 'existing_data_id', type: 'string', description: '既存データ ID（再編集・差し戻し時に値を復元）', required: false },
+      ],
+      process: 'サーバーからテンプレート .xlsx + mapping.json をダウンロード → SfSpreadsheet で表示。シートタブに色を適用。Sheet Protection で入力セル以外をロック。既存データがある場合は Named Ranges に値を復元。',
+      output: [
+        { key: 'template_path', type: 'file_path', description: 'ダウンロードしたテンプレートのローカルパス', required: true },
+        { key: 'mapping', type: 'json', description: 'Named Range ↔ DB カラムのマッピング定義', required: true },
+        { key: 'tab_color', type: 'string', description: 'シートタブの色（Hex）', required: true },
+        { key: 'editable_ranges', type: 'json', description: '入力可能なセル範囲の配列（Named Ranges）', required: true },
+      ],
+      transport: 'http',
+      async: true,
+      streaming: false,
+    },
+    // -----------------------------------------------------------------
+    // AI 自動転記 — 既存 Excel データからテンプレートへの自動マッピング
+    // ★ Stravis/Oracle/Tagetik にはない差別化機能
+    // -----------------------------------------------------------------
+    {
+      id: 'ai_transfer',
+      name: 'AI Auto-Transfer',
+      nameJa: 'AI 自動転記',
+      description: 'AI reads data from an existing Excel file (user\'s own spreadsheet) and automatically fills the data collection template. Maps columns/cells by understanding content semantics, not just position.',
+      input: [
+        { key: 'source_path', type: 'file_path', description: '転記元の Excel ファイルパス（ユーザーの既存データ）', required: true },
+        { key: 'template_path', type: 'file_path', description: '転記先のテンプレートファイルパス', required: true },
+        { key: 'mapping', type: 'json', description: 'テンプレートの Named Range ↔ DB マッピング定義', required: true },
+        { key: 'source_sheet_name', type: 'string', description: '転記元のシート名（省略時: アクティブシート）', required: false },
+        { key: 'hints', type: 'string', description: 'ユーザーからの補足指示（例: "4月分の売上データを転記して"）', required: false },
+      ],
+      process: '① XlsIO で転記元 Excel の構造・データを読み取り → ② Claude API にテンプレートの Named Ranges 一覧 + 転記元データを送信 → ③ AI がセマンティックに列・セルをマッチング（列名の意味、データ型、位置関係を総合判断）→ ④ マッチング結果をユーザーに提示（確認画面）→ ⑤ 承認後、テンプレートの入力セルに値を書き込み',
+      output: [
+        { key: 'transferred_fields', type: 'json', description: '転記されたフィールド [{ namedRange, sourceCell, value, confidence }]', required: true },
+        { key: 'skipped_fields', type: 'json', description: '転記できなかったフィールド [{ namedRange, reason, reasonJa }]', required: true },
+        { key: 'total_transferred', type: 'number', description: '転記成功フィールド数', required: true },
+        { key: 'total_skipped', type: 'number', description: '転記スキップフィールド数', required: true },
+        { key: 'requires_review', type: 'json', description: '要確認フィールド（confidence < 0.8）[{ namedRange, suggestedValue, alternatives }]', required: false },
+      ],
+      transport: 'http',
+      async: true,
+      streaming: true,
+    },
+    // -----------------------------------------------------------------
+    // AI 検証 — 入力データの妥当性を AI が文脈を含めてチェック
+    // ★ ルールベース検証 + AI による異常値・整合性検出
+    // -----------------------------------------------------------------
+    {
+      id: 'ai_validate',
+      name: 'AI Validation',
+      nameJa: 'AI 検証',
+      description: 'AI validates filled data considering context, historical data, and cross-field consistency. Goes beyond rule-based validation: detects anomalies, warns about unusual values, and suggests corrections.',
+      input: [
+        { key: 'template_id', type: 'string', description: 'テンプレート ID', required: true },
+        { key: 'data', type: 'json', description: '現在の入力データ（extract_data の出力）', required: true },
+        { key: 'mapping', type: 'json', description: 'マッピング定義', required: true },
+        { key: 'historical_context', type: 'json', description: '過去の送信データ（比較用、サーバーから取得）', required: false },
+        { key: 'validation_rules', type: 'json', description: 'テンプレート付属のルールベース検証ルール', required: false },
+      ],
+      process: '① ルールベース検証（必須チェック・型チェック・範囲チェック）→ ② Claude API で文脈検証（前月比の異常値検出、フィールド間の整合性、業界相場との乖離等）→ ③ 検証結果をセルにマッピングして色分け表示（緑=OK、黄=警告、赤=エラー）',
+      output: [
+        { key: 'valid', type: 'boolean', description: '全項目がパスしたか', required: true },
+        { key: 'results', type: 'json', description: '検証結果 [{ namedRange, status, message, messageJa, severity, suggestedValue? }]', required: true },
+        { key: 'summary', type: 'string', description: 'AI による検証サマリー（全体的な所見）', required: true },
+        { key: 'error_count', type: 'number', description: 'エラー数（送信ブロック）', required: true },
+        { key: 'warning_count', type: 'number', description: '警告数（送信可能だが要確認）', required: true },
+      ],
+      transport: 'http',
+      async: true,
+      streaming: true,
+    },
+    // -----------------------------------------------------------------
+    // データ抽出・送信・下書き
+    // -----------------------------------------------------------------
+    {
+      id: 'extract_data',
+      name: 'Extract Data from Cells',
+      nameJa: 'セルデータ抽出',
+      description: 'Extract values from mapped Named Ranges in the current spreadsheet using XlsIO.',
+      input: [
+        { key: 'mapping', type: 'json', description: 'Named Range ↔ DB マッピング定義', required: true },
+        { key: 'document_path', type: 'file_path', description: '現在のドキュメントパス', required: true },
+      ],
+      process: 'XlsIO で Named Ranges を巡回し、マッピング定義に従って値を抽出。型変換（string/number/date/boolean）を適用。必須項目の未入力チェック。',
+      output: [
+        { key: 'data', type: 'json', description: '抽出データ { fieldName: value, ... }', required: true },
+        { key: 'valid', type: 'boolean', description: 'ルールベースバリデーション通過したか', required: true },
+        { key: 'errors', type: 'json', description: 'バリデーションエラー [{ field, message, messageJa }]', required: false },
+      ],
+      transport: 'in_process',
+      async: false,
+      streaming: false,
+    },
+    {
+      id: 'submit_data',
+      name: 'Submit Data',
+      nameJa: 'データ送信',
+      description: 'Submit extracted data to the data collection server for storage.',
+      input: [
+        { key: 'template_id', type: 'string', description: 'テンプレート ID', required: true },
+        { key: 'data', type: 'json', description: '送信データ（extract_data の出力）', required: true },
+        { key: 'submitter_email', type: 'string', description: '送信者メールアドレス', required: true },
+        { key: 'comment', type: 'string', description: '送信時コメント（任意）', required: false },
+      ],
+      process: 'データ収集サーバーの /api/submissions に POST。ライセンスキーで認証。サーバー側で再バリデーション → DB 格納。',
+      output: [
+        { key: 'submission_id', type: 'string', description: '送信 ID', required: true },
+        { key: 'status', type: 'string', description: '送信結果（accepted / rejected / pending_review）', required: true },
+        { key: 'message', type: 'string', description: 'サーバーからのメッセージ', required: false },
+      ],
+      transport: 'http',
+      async: true,
+      streaming: false,
+    },
+    {
+      id: 'save_draft',
+      name: 'Save Draft',
+      nameJa: '下書き保存',
+      description: 'Save current input as draft locally and/or on server. Users can resume editing later.',
+      input: [
+        { key: 'template_id', type: 'string', description: 'テンプレート ID', required: true },
+        { key: 'data', type: 'json', description: '現在の入力データ', required: true },
+        { key: 'save_to_server', type: 'boolean', description: 'サーバーにも保存するか（デフォルト: true）', required: false },
+      ],
+      process: 'ローカルの .iosh プロジェクトファイル内の data_collection/ に下書きを保存。save_to_server=true の場合はサーバーにも同期。',
+      output: [
+        { key: 'draft_id', type: 'string', description: '下書き ID', required: true },
+        { key: 'saved_at', type: 'string', description: '保存日時（ISO 8601）', required: true },
+        { key: 'synced', type: 'boolean', description: 'サーバーに同期済みか', required: true },
+      ],
+      transport: 'http',
+      async: true,
+      streaming: false,
+    },
+    {
+      id: 'get_submission_status',
+      name: 'Get Submission Status',
+      nameJa: '送信ステータス確認',
+      description: 'Check status of submitted data (accepted / rejected / pending_review).',
+      input: [
+        { key: 'template_id', type: 'string', description: 'テンプレート ID（フィルタ用）', required: false },
+      ],
+      process: 'サーバーから送信履歴を取得。テンプレート別のステータス・締切・差し戻し理由を返却。',
+      output: [
+        { key: 'submissions', type: 'json', description: '送信履歴 [{ id, templateId, templateName, status, submittedAt, reviewedAt, rejectionReason? }]', required: true },
+      ],
+      transport: 'http',
+      async: true,
+      streaming: false,
+    },
+  ],
+  tools: [
+    {
+      name: 'list_data_collection_templates',
+      description: 'List available data collection templates from the server',
+      input_schema: {
+        type: 'object',
+        properties: {
+          category: { type: 'string', description: 'Filter by category' },
+        },
+        required: [],
+      },
+    },
+    {
+      name: 'ai_transfer_to_template',
+      description: 'AI reads an existing Excel file and auto-fills the data collection template by semantically matching columns and cells',
+      input_schema: {
+        type: 'object',
+        properties: {
+          source_path: { type: 'string', description: 'Path to the source Excel file with existing data' },
+          hints: { type: 'string', description: 'Optional hints for the AI (e.g., "transfer April sales data")' },
+        },
+        required: ['source_path'],
+      },
+    },
+    {
+      name: 'ai_validate_collection_data',
+      description: 'AI validates the filled data collection sheet: checks for anomalies, cross-field consistency, and comparison with historical data',
+      input_schema: {
+        type: 'object',
+        properties: {
+          include_historical: { type: 'boolean', description: 'Include historical data comparison (default: true)' },
+        },
+        required: [],
+      },
+    },
+    {
+      name: 'submit_data_collection',
+      description: 'Submit the current data collection sheet to the server',
+      input_schema: {
+        type: 'object',
+        properties: {
+          template_id: { type: 'string', description: 'Template ID to submit data for' },
+          comment: { type: 'string', description: 'Optional submission comment' },
+        },
+        required: ['template_id'],
+      },
+    },
+  ],
+  requiresModules: [],
+  icon: 'CloudArrowUp',
+  themeColor: '#2563EB',
+  settingsSchema: [
+    {
+      key: 'server_url',
+      name: 'Data Collection Server URL',
+      nameJa: 'データ収集サーバー URL',
+      type: 'string',
+      defaultValue: '',
+      descriptionJa: 'データ収集サーバーの接続先 URL',
+    },
+    {
+      key: 'auto_sync_templates',
+      name: 'Auto Sync Templates on Startup',
+      nameJa: 'テンプレート自動同期',
+      type: 'boolean',
+      defaultValue: true,
+      descriptionJa: 'アプリ起動時にサーバーからテンプレート一覧を自動同期する',
+    },
+    {
+      key: 'draft_auto_save_interval',
+      name: 'Draft Auto-Save Interval (seconds)',
+      nameJa: '下書き自動保存間隔（秒）',
+      type: 'number',
+      defaultValue: 60,
+      descriptionJa: '入力中の下書きを自動保存する間隔（0 で無効）',
+    },
+    {
+      key: 'template_tab_color',
+      name: 'Template Sheet Tab Color',
+      nameJa: 'テンプレートシートのタブ色',
+      type: 'select',
+      defaultValue: '#2563EB',
+      options: [
+        { value: '#2563EB', label: 'Blue', labelJa: '青' },
+        { value: '#16A34A', label: 'Green', labelJa: '緑' },
+        { value: '#7C3AED', label: 'Purple', labelJa: '紫' },
+        { value: '#D97706', label: 'Orange', labelJa: 'オレンジ' },
+      ],
+      descriptionJa: 'データ収集シートのタブ色（通常シートと視覚的に区別）',
+    },
+  ],
+};
+
+// DATA_COLLECTION_MODULE を ADDON_MODULES に登録
+ADDON_MODULES.data_collection = DATA_COLLECTION_MODULE;
+
+// =============================================================================
 // 管理者プロファイル — コンサル/SIer が現場に合わせてモジュール構成を制御
 // =============================================================================
 
@@ -1836,6 +2184,18 @@ export const ADMIN_PROFILE_TEMPLATES: Record<string, Omit<AdminDeployProfile, 'p
     ],
   },
 
+  /** データ収集テンプレート: テンプレート選択→AI転記→AI検証→送信のワークフローに最適化 */
+  data_collection: {
+    name: 'Data Collection',
+    description: 'データ収集クライアント用。テンプレート選択→入力（AI自動転記）→AI検証→送信のワークフローに最適化。',
+    forcedEnabledModules: ['ai_assistant', 'data_collection'],
+    disabledModules: ['python_runtime', 'ai_code_editor', 'python_scripts', 'vrm_avatar', 'local_workflow', 'bot_agent'],
+    moduleSettings: {
+      data_collection: { auto_sync_templates: true, draft_auto_save_interval: 60 },
+    },
+    preloadedScripts: [],
+  },
+
   /** セキュア環境テンプレート: AI とクラウドを無効化した閉域ネットワーク向け */
   secure_offline: {
     name: 'Secure Offline',
@@ -2008,6 +2368,7 @@ export default {
   ADDON_MODULES,
   BOT_AGENT_MODULE,
   LOCAL_WORKFLOW_MODULE,
+  DATA_COLLECTION_MODULE,
   PRODUCT_ADDON_SUPPORT,
   ADMIN_PROFILE_TEMPLATES,
 
