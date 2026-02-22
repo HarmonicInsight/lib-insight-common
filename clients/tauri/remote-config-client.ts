@@ -234,6 +234,7 @@ export class RemoteConfigClient {
   private pollTimerId: ReturnType<typeof setInterval> | null = null;
   private consecutiveErrors = 0;
   private disposed = false;
+  private decryptedKeyCache = new Map<string, { plainKey: string; keyVersion: number }>();
 
   // --- イベントリスナー ---
   private listeners = {
@@ -404,6 +405,11 @@ export class RemoteConfigClient {
       this.consecutiveErrors = 0;
       this.resetPollingInterval();
 
+      // 暗号化キーを事前復号（バックグラウンド）
+      for (const key of config.apiKeys) {
+        if (key.encrypted) this.decryptApiKeyAsync(key).catch(() => {});
+      }
+
       this.emit('configFetched', config);
       if (config.updateCheck.updateAvailable) {
         this.emit('updateAvailable', config.updateCheck);
@@ -498,19 +504,70 @@ export class RemoteConfigClient {
   private decryptApiKey(keyResponse: ApiKeyResponse): string {
     if (!keyResponse.encrypted) return keyResponse.key;
 
-    // ブラウザ環境では Web Crypto API で AES-256-GCM 復号
-    // Tauri では tauri-plugin-stronghold を使う方が望ましい
-    // 簡易実装: サーバー側で licenseKey+deviceId に基づく暗号化を行い、
-    // クライアント側で同じキー派生を行う
-    //
-    // 本番実装時は以下を使用:
-    // const derivedKey = await deriveKey(this.opts.licenseKey, this.opts.deviceId);
-    // return await decryptAesGcm(derivedKey, keyResponse);
-    //
-    // フォールバック: サーバーにプレーンテキスト取得を許可する場合は
-    // encrypted: false で配信
-    console.warn('[RemoteConfig] Encrypted API key received — implement decryption');
-    return keyResponse.key;
+    // 同期的に復号済みキーを返すため、事前に復号しておく必要がある。
+    // fetchConfig 時に非同期で復号し、結果をキャッシュに保持する。
+    // ここでは復号済みキャッシュから取得を試みる。
+    const cached = this.decryptedKeyCache.get(keyResponse.provider);
+    if (cached && cached.keyVersion === keyResponse.keyVersion) return cached.plainKey;
+
+    // 未復号の場合はバックグラウンドで復号開始
+    this.decryptApiKeyAsync(keyResponse).catch(() => {});
+    return '';
+  }
+
+  /**
+   * AES-256-GCM + HKDF で API キーを非同期復号
+   *
+   * Web Crypto API を使用。WPF / Python と同じキー派生パラメータ。
+   */
+  private async decryptApiKeyAsync(keyResponse: ApiKeyResponse): Promise<string> {
+    if (!keyResponse.encrypted) return keyResponse.key;
+
+    try {
+      const enc = new TextEncoder();
+      const ikm = enc.encode(`${this.opts.licenseKey}:${this.opts.deviceId}`);
+      const salt = enc.encode('harmonic-insight-remote-config-v1');
+      const info = enc.encode('api-key-encryption');
+
+      // HKDF でキー派生
+      const baseKey = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, ['deriveKey']);
+      const aesKey = await crypto.subtle.deriveKey(
+        { name: 'HKDF', hash: 'SHA-256', salt, info },
+        baseKey,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt'],
+      );
+
+      // 復号
+      const iv = base64ToBytes(keyResponse.encryption!.iv);
+      const authTag = base64ToBytes(keyResponse.encryption!.authTag);
+      const cipherText = base64ToBytes(keyResponse.key);
+
+      // Web Crypto API: ciphertext + authTag を結合
+      const combined = new Uint8Array(cipherText.length + authTag.length);
+      combined.set(cipherText);
+      combined.set(authTag, cipherText.length);
+
+      const plainBuffer = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        aesKey,
+        combined,
+      );
+
+      const plainKey = new TextDecoder().decode(plainBuffer);
+
+      // キャッシュに保存
+      this.decryptedKeyCache.set(keyResponse.provider, {
+        plainKey,
+        keyVersion: keyResponse.keyVersion,
+      });
+
+      return plainKey;
+    } catch (err) {
+      console.error('[RemoteConfig] API key decryption failed:', err);
+      return '';
+    }
   }
 
   // =========================================================================
@@ -589,6 +646,16 @@ function compareVersions(a: string, b: string): number {
     if (numA !== numB) return numA - numB;
   }
   return 0;
+}
+
+/** Base64 → Uint8Array */
+function base64ToBytes(base64: string): Uint8Array {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
 }
 
 /** FNV-1a ハッシュ → 0-99 */
