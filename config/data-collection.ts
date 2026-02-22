@@ -438,7 +438,16 @@ export const DEFAULT_SHEET_STYLE: DataCollectionSheetStyle = {
  * データ収集サーバーの API エンドポイント定義
  *
  * ライセンスサーバー（Hono + Supabase）と同じ技術基盤で構築。
- * 同居 or 独立デプロイのどちらにも対応。
+ * 同一 Supabase プロジェクト内に dc_ テーブルを追加。サーバーは Railway で独立デプロイ。
+ *
+ * ```typescript
+ * // サーバー側の Supabase 接続例
+ * import { createClient } from '@supabase/supabase-js';
+ * const supabase = createClient(
+ *   process.env.SUPABASE_URL!,
+ *   process.env.SUPABASE_SERVICE_ROLE_KEY!  // サーバー側は service_role
+ * );
+ * ```
  */
 export const DATA_COLLECTION_API = {
   /** デフォルトポート */
@@ -496,11 +505,108 @@ export const DATA_COLLECTION_API = {
 } as const;
 
 // =============================================================================
-// DB アーキテクチャ — AI 対応 JSON ストレージ
+// インフラストラクチャ — Supabase (PostgreSQL)
+// =============================================================================
+
+/**
+ * データ収集プラットフォームのインフラ構成
+ *
+ * ライセンスサーバー（license.harmonicinsight.com）と同じ技術基盤を使用。
+ * 同一 Supabase プロジェクト内に dc_ プレフィックスのテーブルを追加する。
+ *
+ * ```
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │  データ収集サーバー (Hono on Railway)                         │
+ * │  https://dc.harmonicinsight.com                              │
+ * │                                                              │
+ * │  ┌────────────────────────────────────────────────────────┐  │
+ * │  │  Hono (TypeScript)                                     │  │
+ * │  │  ├ テンプレート管理 API                                  │  │
+ * │  │  ├ データ受信・保存 API                                  │  │
+ * │  │  ├ AI 転記・検証 API → Claude API                       │  │
+ * │  │  └ 回収状況ダッシュボード API                             │  │
+ * │  └────────────────────────────────────────────────────────┘  │
+ * │                          │                                    │
+ * │                          ▼                                    │
+ * │  ┌────────────────────────────────────────────────────────┐  │
+ * │  │  Supabase (PostgreSQL 15+)                             │  │
+ * │  │                                                        │  │
+ * │  │  既存テーブル:                                          │  │
+ * │  │  ├ licenses          (ライセンスサーバー)                │  │
+ * │  │  ├ registrations     (ライセンスサーバー)                │  │
+ * │  │  ├ partners          (ライセンスサーバー)                │  │
+ * │  │  └ ...                                                 │  │
+ * │  │                                                        │  │
+ * │  │  データ収集テーブル（dc_ プレフィックス）:                 │  │
+ * │  │  ├ dc_templates      → テンプレート定義 + JSON Schema   │  │
+ * │  │  ├ dc_collected_data → ★ 汎用テーブル（JSONB）          │  │
+ * │  │  ├ dc_drafts         → 下書き（JSONB）                  │  │
+ * │  │  └ dc_ai_logs        → AI 転記・検証ログ                │  │
+ * │  │                                                        │  │
+ * │  │  主要機能:                                              │  │
+ * │  │  ├ JSONB + GIN インデックス（高速 JSON クエリ）           │  │
+ * │  │  ├ Row Level Security（テナント分離）                    │  │
+ * │  │  ├ Realtime（回収状況のリアルタイム更新）                 │  │
+ * │  │  └ Edge Functions（軽量処理の分散実行）                   │  │
+ * │  └────────────────────────────────────────────────────────┘  │
+ * │                                                              │
+ * │  Auth: ライセンスキー (Level 1) / Firebase (Level 2+)        │
+ * │  Storage: Supabase Storage（テンプレート .xlsx ファイル）      │
+ * │  AI: Claude API (Anthropic)                                  │
+ * └──────────────────────────────────────────────────────────────┘
+ * ```
+ */
+export const DATA_COLLECTION_INFRASTRUCTURE = {
+  /** 物理データベースエンジン */
+  database: {
+    engine: 'PostgreSQL' as const,
+    minVersion: '15',
+    hosting: 'Supabase' as const,
+    /** ライセンスサーバーと同一プロジェクト（テーブルは dc_ プレフィックスで分離） */
+    sharedProject: true,
+    tablePrefix: 'dc_',
+    requiredExtensions: [] as string[],  // JSONB + GIN は PostgreSQL 標準
+    features: [
+      'JSONB',
+      'GIN Index',
+      'Row Level Security',
+      'Realtime',
+      'Edge Functions',
+      'Supabase Storage',
+    ],
+  },
+
+  /** アプリケーションサーバー */
+  server: {
+    runtime: 'Hono' as const,
+    hosting: 'Railway' as const,
+    language: 'TypeScript' as const,
+  },
+
+  /** ファイルストレージ（テンプレート .xlsx） */
+  storage: {
+    provider: 'Supabase Storage' as const,
+    bucket: 'dc-templates',
+    maxFileSize: '50MB',
+  },
+
+  /** AI プロバイダー */
+  ai: {
+    provider: 'Anthropic' as const,
+    api: 'Claude API' as const,
+  },
+} as const;
+
+// =============================================================================
+// DB アーキテクチャ — AI 対応 JSON ストレージ (Supabase / PostgreSQL)
 // =============================================================================
 
 /**
  * データベースアーキテクチャ設計方針
+ *
+ * **物理 DB**: Supabase (PostgreSQL 15+)
+ * **選定理由**: JSONB + GIN ネイティブサポート、既存ライセンスサーバーと同一基盤、
+ *             Row Level Security によるテナント分離、Realtime で回収状況をリアルタイム配信
  *
  * ============================================================================
  * 【Stravis 型「汎用テーブル」パターンの進化版】
@@ -825,6 +931,39 @@ export const DB_TABLES = {
       'WHERE t.status = \'published\'',
       'GROUP BY t.id, t.name_ja, t.deadline;',
     ],
+  },
+
+  // -------------------------------------------------------------------------
+  // Row Level Security（Supabase テナント分離）
+  // -------------------------------------------------------------------------
+  /** RLS ポリシー — テナント単位でデータを分離 */
+  _rls_policies: {
+    description: 'Supabase Row Level Security によるテナント分離',
+    ddl: [
+      '-- テナント分離: 全 dc_ テーブルに RLS を有効化',
+      'ALTER TABLE dc_templates ENABLE ROW LEVEL SECURITY;',
+      'ALTER TABLE dc_collected_data ENABLE ROW LEVEL SECURITY;',
+      'ALTER TABLE dc_drafts ENABLE ROW LEVEL SECURITY;',
+      'ALTER TABLE dc_ai_logs ENABLE ROW LEVEL SECURITY;',
+      '',
+      '-- テンプレート: 同一テナントのみ閲覧可',
+      'CREATE POLICY "tenant_isolation" ON dc_templates',
+      '  USING (tenant_id = auth.uid()::uuid);',
+      '',
+      '-- 収集データ: 同一テナントのみ閲覧可',
+      'CREATE POLICY "tenant_isolation" ON dc_collected_data',
+      '  USING (tenant_id = auth.uid()::uuid);',
+      '',
+      '-- 下書き: 本人の下書きのみ',
+      'CREATE POLICY "own_drafts" ON dc_drafts',
+      '  USING (user_email = auth.jwt()->>\'email\');',
+      '',
+      '-- AI ログ: 同一テナントのみ',
+      'CREATE POLICY "tenant_isolation" ON dc_ai_logs',
+      '  USING (tenant_id = auth.uid()::uuid);',
+    ],
+    note: 'サーバー側は service_role キーで接続するため RLS をバイパスする。'
+        + 'クライアント直接アクセス（Supabase JS Client）時のみ RLS が適用される。',
   },
 } as const;
 
