@@ -18,6 +18,7 @@
 | ストアメタデータ・スクリーンショットの話題 | `standards/LOCALIZATION.md` §6 を参照 |
 | ライブラリ更新・バージョンアップ・依存関係の変更 | `compatibility/` の互換性マトリクスを確認 |
 | 「バージョン」「アップグレード」「アップデート」 | `config/app-versions.ts` と `compatibility/` を参照 |
+| 「リモートコンフィグ」「API キーローテーション」「自動更新」「OTA」 | `config/remote-config.ts` を確認 |
 | 「Syncfusion」「NuGet」「Essential Studio」「ライセンスキー期限切れ」 | `docs/SYNCFUSION_SETUP.md` と `config/third-party-licenses.json` を確認 |
 
 ---
@@ -993,7 +994,115 @@ canPartnerIssueSpecialKey(partner, 'INSS', 'nfr');
 // { allowed: true, remaining: 2 }
 ```
 
-## 10. プロジェクトファイル（ZIP パッケージ形式）
+## 10. リモートコンフィグ & アプリ自動更新
+
+> **仕様定義**: `config/remote-config.ts` — リモート構成管理・バージョンチェック・API キーローテーション
+
+### 設計思想
+
+デスクトップアプリ（WPF / Tauri / Python）において、**アプリ再ビルドなし**で以下を配信する：
+
+1. **バージョンチェック & 自動更新通知** — 新バージョンのリリース時にアプリ内で通知
+2. **API キーローテーション** — Claude API キー / Syncfusion キーをサーバーから配信
+3. **モデルレジストリのホットアップデート** — 新しい Claude モデルの追加・非推奨化を即座に反映
+4. **フィーチャーフラグ** — 段階的ロールアウト、プラン別機能制御
+
+### アーキテクチャ
+
+```
+ライセンスサーバー (既存インフラを拡張)
+https://license.harmonicinsight.com
+
+  /api/v1/remote-config/
+  ├── config          POST  統合コンフィグ取得（起動時1回）
+  ├── versions/:code  GET   バージョンチェック
+  ├── api-keys        POST  API キー取得（暗号化配信）
+  ├── models          GET   モデルレジストリ
+  └── features/:code  GET   フィーチャーフラグ
+
+  /api/v1/admin/remote-config/
+  ├── PUT             コンフィグ更新
+  ├── rotate-key      API キーローテーション
+  ├── releases        リリース登録
+  ├── features/:key   フラグ更新
+  └── log             変更ログ（監査）
+
+        ▲ HTTPS + ETag (ポーリング: 起動時 + 4時間ごと)
+        │
+  デスクトップアプリ
+  ├── RemoteConfigClient (共通 HTTP ポーリング)
+  ├── ローカルキャッシュ (オフライン対応)
+  └── AutoUpdater
+      ├── WPF   → Velopack (差分更新)
+      ├── Tauri → tauri-plugin-updater
+      └── Python → カスタム
+```
+
+### API キーローテーション
+
+| プロバイダー | 暗号化 | ローテーション間隔 | キャッシュ TTL |
+|------------|:------:|:----------------:|:------------:|
+| Claude API | AES-256-GCM | 90日 | 24時間 |
+| Syncfusion | なし（公開情報） | 365日 | 7日 |
+
+- Claude API キーはモデル更新・アカウント変更時にサーバー側でローテーション
+- クライアントは起動時 + 24時間ごとにポーリングで最新キーを取得
+- ローテーション時は**旧キーを7日間有効**に保ち、全クライアントが移行する猶予を確保
+
+### 使い方
+
+```typescript
+import {
+  checkForUpdates,
+  isFeatureEnabled,
+  isCacheValid,
+  getAutoUpdateManifestUrl,
+  getUpdateNotificationType,
+  REMOTE_CONFIG_ENDPOINTS,
+  REMOTE_CONFIG_SETTINGS,
+  AUTO_UPDATE_CONFIG,
+  API_KEY_POLICIES,
+} from '@/insight-common/config/remote-config';
+
+import {
+  isUpdateAvailable,
+  meetsMinimumVersion,
+  compareVersions,
+} from '@/insight-common/config/app-versions';
+
+// バージョンチェック（ローカル比較）
+isUpdateAvailable('INSS', '2.2.0', 50);  // true（現在 2.1.0 build 45）
+meetsMinimumVersion('INSS', '2.0.0', 30); // true（強制更新不要）
+
+// サーバーレスポンスから更新判定
+const result = checkForUpdates(releaseInfo, '2.1.0', 45);
+const notifyType = getUpdateNotificationType(result);
+// → 'dialog' | 'banner' | 'badge' | 'none' | 'force_dialog'
+
+// フィーチャーフラグ判定
+isFeatureEnabled(flag, { productCode: 'INSS', userId: 'user-123', plan: 'PRO' });
+
+// ポーリング間隔
+REMOTE_CONFIG_SETTINGS.polling.defaultIntervalMs;  // 4時間
+REMOTE_CONFIG_SETTINGS.cacheTtl.apiKeys;           // 24時間
+
+// プラットフォーム別の自動更新 URL
+getAutoUpdateManifestUrl('wpf', 'INSS');
+// → 'https://releases.harmonicinsight.com/wpf/INSS/RELEASES'
+```
+
+### DB テーブル（Supabase 追加）
+
+| テーブル | 役割 |
+|---------|------|
+| `app_releases` | リリース情報・DLリンク・自動更新マニフェスト |
+| `api_key_vault` | 暗号化 API キー保管庫（バージョン管理付き） |
+| `feature_flags` | フラグ定義・ロールアウト率・対象プラン |
+| `remote_config_log` | 全変更の監査ログ |
+
+---
+
+## 11. プロジェクトファイル（ZIP パッケージ形式）
 
 > **仕様定義**: `config/project-file.ts` — ZIP 内部構造・メタデータスキーマ・バリデーション
 
@@ -1095,7 +1204,7 @@ checkProjectFileLimits('STD', { historyVersions: 25 });
 // → { withinLimits: false, exceeded: ['history_versions (25/20)'] }
 ```
 
-## 11. InsightBot Orchestrator / Agent アーキテクチャ
+## 12. InsightBot Orchestrator / Agent アーキテクチャ
 
 ### 概要
 
@@ -1229,7 +1338,7 @@ ORCHESTRATOR_API.endpoints.workflows.dispatch;   // POST /api/workflows/:workflo
 ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflowId/executions
 ```
 
-## 12. 開発完了チェックリスト
+## 13. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
@@ -1252,8 +1361,11 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **検証**: `validate-standards.sh` が成功する
 - [ ] **バージョン**: `config/app-versions.ts` のバージョン・ビルド番号が更新されている
 - [ ] **互換性**: `compatibility/` の NG 組み合わせに該当していない
+- [ ] **リモートコンフィグ**: 起動時のバージョンチェックが実装されている（`remote-config.ts`）
+- [ ] **リモートコンフィグ**: API キー（Claude/Syncfusion）がリモート取得に対応している
+- [ ] **リモートコンフィグ**: モデルレジストリがリモート更新に対応している（AI 搭載アプリのみ）
 
-## 13. リリースチェック
+## 14. リリースチェック
 
 > **リリース前に必ず実行。** 詳細は `standards/RELEASE_CHECKLIST.md` を参照。
 
@@ -1315,7 +1427,7 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **バージョン**: pyproject.toml のバージョンが更新されている
 - [ ] **依存**: 全パッケージがピン留め（`==`）されている
 
-## 14. アプリバージョン管理
+## 15. アプリバージョン管理
 
 ### バージョンレジストリ
 
@@ -1340,7 +1452,7 @@ toIosBundleVersion('INSS');   // '2.1.0.45'
 3. `toolchain` がアプリの実際のツールチェーンと一致することを確認
 4. `validate-standards.sh` で検証
 
-## 15. ライブラリ互換性マトリクス
+## 16. ライブラリ互換性マトリクス
 
 ### 概要
 
@@ -1404,7 +1516,7 @@ const iosProfile = getRecommendedIosProfile('cutting_edge');
 - `ANDROID_LIBRARIES` / `IOS_LIBRARIES` の `lastVerified` 日付を確認
 - 新たな NG 組み合わせを発見したら `*_CONFLICT_RULES` に追加
 
-## 16. 困ったときは
+## 17. 困ったときは
 
 ```bash
 # 標準検証

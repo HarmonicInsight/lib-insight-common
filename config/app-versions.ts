@@ -420,3 +420,72 @@ export function getAllVersionsSummary(): Array<{
 export function getToolchain(productCode: ProductCode): ToolchainInfo {
   return APP_VERSIONS[productCode].toolchain;
 }
+
+// =============================================================================
+// リモートバージョンチェック用ヘルパー
+// =============================================================================
+
+/**
+ * セマンティックバージョンを比較
+ *
+ * @returns 負数: a < b, 0: a == b, 正数: a > b
+ */
+export function compareVersions(a: string, b: string): number {
+  const partsA = a.split('.').map(Number);
+  const partsB = b.split('.').map(Number);
+  const maxLen = Math.max(partsA.length, partsB.length);
+
+  for (let i = 0; i < maxLen; i++) {
+    const numA = partsA[i] ?? 0;
+    const numB = partsB[i] ?? 0;
+    if (numA !== numB) return numA - numB;
+  }
+  return 0;
+}
+
+/**
+ * 製品のバージョンがリモートの最新版より古いかチェック
+ *
+ * リモートコンフィグから取得した最新バージョンと比較する際に使用。
+ *
+ * @example
+ * ```typescript
+ * const needsUpdate = isUpdateAvailable('INSS', '2.2.0', 50);
+ * // → INSS は現在 2.1.0 build 45 なので true
+ * ```
+ */
+export function isUpdateAvailable(
+  productCode: ProductCode,
+  remoteVersion: string,
+  remoteBuildNumber: number,
+): boolean {
+  const current = APP_VERSIONS[productCode];
+  const versionDiff = compareVersions(remoteVersion, current.version);
+  if (versionDiff > 0) return true;
+  if (versionDiff === 0 && remoteBuildNumber > current.buildNumber) return true;
+  return false;
+}
+
+/**
+ * 製品のバージョンが最低必須バージョンを満たしているか
+ *
+ * 強制更新が必要かの判定に使用。
+ *
+ * @example
+ * ```typescript
+ * const mustUpdate = !meetsMinimumVersion('INSS', '2.0.0', 30);
+ * // → INSS は 2.1.0 build 45 なので false（更新不要）
+ * ```
+ */
+export function meetsMinimumVersion(
+  productCode: ProductCode,
+  minimumVersion: string,
+  minimumBuildNumber: number,
+): boolean {
+  const current = APP_VERSIONS[productCode];
+  const versionDiff = compareVersions(current.version, minimumVersion);
+  if (versionDiff > 0) return true;
+  if (versionDiff === 0 && current.buildNumber >= minimumBuildNumber) return true;
+  if (versionDiff < 0) return false;
+  return false;
+}
