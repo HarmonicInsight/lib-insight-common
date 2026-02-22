@@ -172,9 +172,9 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
     platforms: ['windows'],
     name: { en: 'InsightBot', ja: 'InsightBot', zh: 'InsightBot' },
     tagline: {
-      en: 'AI Editor-Powered Business Optimization RPA',
-      ja: 'AIエディタ搭載 — 業務最適化RPA製品',
-      zh: '搭载AI编辑器 — 业务优化RPA产品',
+      en: 'AI Editor-Powered Business Optimization RPA + Orchestrator',
+      ja: 'AIエディタ搭載 — 業務最適化RPA + Orchestrator',
+      zh: '搭载AI编辑器 — 业务优化RPA + Orchestrator',
     },
     description: {
       en: 'Built-in AI Editor automatically generates bot scripts from natural language instructions. Turn the generated Python into production bots and visually orchestrate them into automated workflows. From AI-driven bot creation to visual job design, InsightBot streamlines business process automation delivery.',
@@ -387,9 +387,9 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
     platforms: ['windows'],
     name: { en: 'InsightOfficeSheet', ja: 'InsightOfficeSheet', zh: 'InsightOfficeSheet' },
     tagline: {
-      en: 'AI Assistant-Powered Management Metrics, Budget Tracking & Planning Simulation on Excel',
-      ja: 'AIアシスタント搭載 — 経営数値管理・予実管理・計画シミュレーション',
-      zh: '搭载AI助手 — 经营数值管理・预实管理・计划模拟',
+      en: 'AI Assistant-Powered Spreadsheet Creation & Editing Tool — MS Office Not Required',
+      ja: 'AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要）',
+      zh: '搭载AI助手 — 电子表格创建与编辑工具（无需MS Office）',
     },
     description: {
       en: 'Open your existing Excel files with InsightOfficeSheet to unlock version control, cell-level change history, a built-in bulletin board, and AI chat — all on top of your familiar Excel workflow. The AI assistant reviews and corrects values and formulas, ensuring accuracy across complex financial models. No cloud environment required: simply place the file on a shared server and multiple people can collaborate on a single file, tracking who changed what and when as they work.',
@@ -535,9 +535,9 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
     platforms: ['windows'],
     name: { en: 'InsightOfficeDoc', ja: 'InsightOfficeDoc', zh: 'InsightOfficeDoc' },
     tagline: {
-      en: 'AI Assistant-Powered Word Document Management with Reference Materials',
-      ja: 'AIアシスタント搭載 — 参照資料付きWord文書管理ツール',
-      zh: '搭载AI助手 — 带参考资料的Word文档管理工具',
+      en: 'AI Assistant-Powered Document Creation & Editing Tool — MS Office Not Required',
+      ja: 'AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要）',
+      zh: '搭载AI助手 — 文档创建与编辑工具（无需MS Office）',
     },
     description: {
       en: 'Open your Word files with InsightOfficeDoc to get full version history — one file, all revisions preserved. Register reference materials (Excel, Word) and the AI assistant uses them to advise on your document content. Ask questions like \'Summarize this document\' or \'What should I write in Chapter 3?\' and get context-aware answers based on your registered references.',
@@ -601,11 +601,11 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
     svgIcon: 'M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122',
     colorGradient: 'from-orange-400 to-amber-600',
     platforms: ['windows'],
-    name: { en: 'InsightSlide', ja: 'InsightSlide', zh: 'InsightSlide' },
+    name: { en: 'InsightOfficeSlide', ja: 'InsightOfficeSlide', zh: 'InsightOfficeSlide' },
     tagline: {
-      en: 'AI Assistant-Powered PowerPoint Text Extraction & Review Tool',
-      ja: 'AIアシスタント搭載 — PowerPointテキスト抽出・レビューツール',
-      zh: '搭载AI助手 — PowerPoint文本提取与审阅工具',
+      en: 'AI Assistant-Powered Presentation Creation & Editing Tool — MS Office Not Required',
+      ja: 'AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要）',
+      zh: '搭载AI助手 — 演示文稿创建与编辑工具（无需MS Office）',
     },
     description: {
       en: 'Extract all text from PowerPoint slides and export it to a screen view or Excel for efficient editing. The built-in AI assistant reviews and corrects presentation content — checking logical consistency, data accuracy, and messaging clarity. Reviewing hundreds of PowerPoint pages is extremely inefficient — by exporting to Excel, you can easily check the overall structure, catch typos, and review content at scale.',
