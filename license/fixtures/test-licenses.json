@@ -1,0 +1,81 @@
+{
+  "_comment": "テスト用ライセンスキー（PRO版・全製品）— 開発・テスト環境専用",
+  "_generated": "2026-02-21",
+  "_email": "test@example.com",
+  "_plan": "PRO",
+  "_expiresAt": "2027-02-21",
+  "licenses": [
+    {
+      "product": "INSS",
+      "productName": "InsightOfficeSlide",
+      "plan": "PRO",
+      "licenseKey": "INSS-PRO-2702-S467-NWPG-ABCW",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "IOSH",
+      "productName": "InsightOfficeSheet",
+      "plan": "PRO",
+      "licenseKey": "IOSH-PRO-2702-S467-AUIS-K6CX",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "IOSD",
+      "productName": "InsightOfficeDoc",
+      "plan": "PRO",
+      "licenseKey": "IOSD-PRO-2702-S467-XRAS-IYNN",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "INPY",
+      "productName": "InsightPy",
+      "plan": "PRO",
+      "licenseKey": "INPY-PRO-2702-S467-XWGP-QMLJ",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "INMV",
+      "productName": "InsightMovie",
+      "plan": "PRO",
+      "licenseKey": "INMV-PRO-2702-S467-SKVW-RYSG",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "INIG",
+      "productName": "InsightImageGen",
+      "plan": "PRO",
+      "licenseKey": "INIG-PRO-2702-S467-ZGTG-VEMD",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "INBT",
+      "productName": "InsightBot",
+      "plan": "PRO",
+      "licenseKey": "INBT-PRO-2702-S467-2YQQ-EZQ2",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "INCA",
+      "productName": "InsightNoCodeAnalyzer",
+      "plan": "PRO",
+      "licenseKey": "INCA-PRO-2702-S467-M37C-YJYH",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    },
+    {
+      "product": "IVIN",
+      "productName": "InterviewInsight",
+      "plan": "PRO",
+      "licenseKey": "IVIN-PRO-2702-S467-53DC-LVT2",
+      "email": "test@example.com",
+      "expiresAt": "2027-02-21"
+    }
+  ]
+}
