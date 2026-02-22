@@ -41,7 +41,82 @@ log_step()    { echo -e "${CYAN}[BUILD-DOCTOR] →${NC} $*"; }
 log_header()  { echo -e "\n${BOLD}══════════════════════════════════════════════════${NC}"; echo -e "${BOLD}  $*${NC}"; echo -e "${BOLD}══════════════════════════════════════════════════${NC}\n"; }
 
 timestamp() { date '+%Y%m%d_%H%M%S'; }
-iso_timestamp() { date '+%Y-%m-%dT%H:%M:%S'; }
+iso_timestamp() { date '+%Y-%m-%dT%H:%M:%S%z'; }
+
+# =============================================================================
+# JSON レポート出力
+# =============================================================================
+
+# グローバルレポート変数
+REPORT_LOOPS="[]"
+REPORT_FILE=""
+
+json_escape() {
+  local str="$1"
+  str="${str//\\/\\\\}"
+  str="${str//\"/\\\"}"
+  str="${str//$'\n'/\\n}"
+  str="${str//$'\r'/}"
+  str="${str//$'\t'/\\t}"
+  echo -n "$str"
+}
+
+# ループ結果を JSON 配列に追加
+add_loop_report() {
+  local loop_num="$1"
+  local ts="$2"
+  local log_file="$3"
+  local category="$4"
+  local status="$5"     # building / fixed / needs_info / escalate / resolved
+  local fix_desc="$6"
+  local error_lines="$7"
+
+  local escaped_fix
+  escaped_fix=$(json_escape "$fix_desc")
+  local escaped_errors
+  escaped_errors=$(json_escape "$error_lines")
+  local escaped_log
+  escaped_log=$(json_escape "$log_file")
+
+  local entry
+  entry=$(cat <<JSONEOF
+{"loop":${loop_num},"timestamp":"${ts}","logFile":"${escaped_log}","category":"${category}","status":"${status}","fix":"${escaped_fix}","errorSummary":"${escaped_errors}"}
+JSONEOF
+)
+
+  if [[ "$REPORT_LOOPS" == "[]" ]]; then
+    REPORT_LOOPS="[${entry}]"
+  else
+    REPORT_LOOPS="${REPORT_LOOPS%]},${entry}]"
+  fi
+}
+
+# 最終レポートを JSON ファイルに書き出す
+write_report() {
+  local platform="$1"
+  local project_dir="$2"
+  local final_status="$3"
+  local total_loops="$4"
+
+  local report_dir="$project_dir/build_logs"
+  mkdir -p "$report_dir"
+  REPORT_FILE="$report_dir/report_$(timestamp).json"
+
+  cat > "$REPORT_FILE" <<JSONEOF
+{
+  "version": "1.0.0",
+  "generatedAt": "$(iso_timestamp)",
+  "projectDir": "$(json_escape "$project_dir")",
+  "platform": "${platform}",
+  "status": "${final_status}",
+  "totalLoops": ${total_loops},
+  "maxLoops": ${max_loops:-2},
+  "loops": ${REPORT_LOOPS}
+}
+JSONEOF
+
+  log_info "レポート: ${REPORT_FILE}"
+}
 
 # =============================================================================
 # プラットフォーム検出
@@ -724,6 +799,8 @@ main() {
     # =========================================================================
     if check_build_success "$platform" "$log_file"; then
       log_success "ビルド成功！"
+      add_loop_report "$loop" "$(iso_timestamp)" "$log_file" "-" "resolved" "ビルド成功" ""
+      write_report "$platform" "$project_dir" "resolved" "$loop"
       echo ""
       log_info "=== 結果サマリー ==="
       log_info "ループ数: $loop"
@@ -764,8 +841,14 @@ main() {
     local fix_result=$?
     set -e
 
+    # エラー関連行を変数に保存
+    local error_summary
+    error_summary=$(echo "$log_tail" | grep -Ei "error:|Error:|ERROR:|fatal:|FATAL:|failed|FAILED" | tail -10)
+
     if [[ $fix_result -ne 0 ]]; then
       log_warn "自動修正を適用できませんでした"
+      add_loop_report "$loop" "$(iso_timestamp)" "$log_file" "$category" "needs_info" "自動修正不可" "$error_summary"
+      write_report "$platform" "$project_dir" "needs_info" "$loop"
 
       # 追加情報収集
       gather_info "$platform" "$category" "$project_dir"
@@ -782,6 +865,7 @@ main() {
       exit 1
     fi
 
+    add_loop_report "$loop" "$(iso_timestamp)" "$log_file" "$category" "fixed" "修正適用済み — 再ビルドへ" "$error_summary"
     log_success "修正を適用しました — 再ビルドで検証します"
     echo ""
   done
@@ -790,6 +874,8 @@ main() {
   # ループ上限到達
   # =========================================================================
   log_header "ループ上限 (${max_loops}) に到達"
+
+  write_report "$platform" "$project_dir" "escalate" "$max_loops"
 
   # 最終情報収集
   gather_info "$platform" "${category:-Compile}" "$project_dir"
@@ -808,6 +894,8 @@ main() {
   log_info "  1. ログファイルのエラー詳細"
   log_info "  2. 上記の環境情報"
   log_info "  3. compatibility/ の既知 NG 組み合わせ"
+  log_info ""
+  log_info "GUI で確認: ./scripts/build-doctor-ui.sh $project_dir"
   exit 1
 }
 
