@@ -24,7 +24,11 @@ export default function RootLayout({
             <nav className="mt-4 space-y-1 px-3">
               <NavLink href="/" label="ダッシュボード" />
               <NavLink href="/tenants" label="テナント管理" />
-              <NavLink href="/templates" label="テンプレート配布" />
+              <NavGroup label="テンプレート">
+                <NavLink href="/templates" label="テンプレート一覧" />
+                <NavLink href="/templates/designer" label="新規デザイン" />
+                <NavLink href="/templates/distribute" label="配布" />
+              </NavGroup>
               <NavLink href="/collection" label="回収状況" />
               <NavLink href="/ai-usage" label="AI 利用量" />
               <NavLink href="/migration" label="マイグレーション" />
@@ -48,5 +52,16 @@ function NavLink({ href, label }: { href: string; label: string }) {
     >
       {label}
     </a>
+  );
+}
+
+function NavGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+        {label}
+      </p>
+      <div className="ml-2 space-y-1 border-l border-slate-600 pl-2">{children}</div>
+    </div>
   );
 }
