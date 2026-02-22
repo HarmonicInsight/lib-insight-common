@@ -32,9 +32,9 @@
 
 ### Tier 3: InsightOffice Suite
 
-6. **InsightOfficeSlide (INSS)** - AIアシスタント搭載 PowerPointテキスト抽出・レビュー
-7. **InsightOfficeSheet (IOSH)** - AIアシスタント搭載 経営数値管理・予実管理
-8. **InsightOfficeDoc (IOSD)** - AIアシスタント搭載 参照資料付きWord文書管理
+6. **InsightOfficeSlide (INSS)** - AIアシスタント搭載 プレゼンテーション作成・編集（MS Office 不要）
+7. **InsightOfficeSheet (IOSH)** - AIアシスタント搭載 スプレッドシート作成・編集（MS Office 不要）
+8. **InsightOfficeDoc (IOSD)** - AIアシスタント搭載 ドキュメント作成・編集（MS Office 不要）
 9. **InsightPy (INPY)** - AIエディタ搭載 業務調査・データ収集Python実行基盤
 
 ## 価値観
