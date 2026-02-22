@@ -90,6 +90,8 @@ class BuildDoctorHandler(http.server.BaseHTTPRequestHandler):
 
         if path == '/api/reports':
             self.send_reports()
+        elif path == '/api/session':
+            self.send_session()
         elif path == '/api/logs' and parsed.query:
             self.send_log_file(parsed.query)
         elif path == '/' or path == '/index.html':
@@ -115,6 +117,28 @@ class BuildDoctorHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         self.wfile.write(json.dumps(reports, ensure_ascii=False).encode('utf-8'))
+
+    def send_session(self):
+        session_file = Path(LOG_DIR) / 'session_report.json'
+        if session_file.exists():
+            try:
+                with open(session_file, 'r', encoding='utf-8') as fh:
+                    data = json.load(fh)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps(data, ensure_ascii=False).encode('utf-8'))
+            except (json.JSONDecodeError, IOError):
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(b'{}')
+        else:
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(b'{}')
 
     def send_log_file(self, query):
         # query: file=xxx.log

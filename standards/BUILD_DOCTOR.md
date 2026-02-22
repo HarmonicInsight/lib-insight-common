@@ -279,6 +279,105 @@ const iosConflicts = IOS_CONFLICT_RULES.filter(r => r.severity === 'critical');
 }
 ```
 
+## Claude Code 連携
+
+### 自動ビルド監視フック
+
+Claude Code CLI がビルドコマンドを実行するたびに、`PostToolUse` フックが自動的に:
+
+1. **ビルドコマンドかどうか判定** — `xcodebuild`, `gradlew`, `dotnet build`, `npm run build` 等を検知
+2. **失敗時にエラーを自動分類** — 6カテゴリ（Compile / Link / Dependency / ScriptPhase / Environment / CodeSign）
+3. **JSON レポートに記録** — `build_logs/session_report.json` に追記
+4. **Claude Code にガイダンスを出力** — STDERR 経由で修正の手がかりを提供
+
+```
+Claude Code CLI
+  │
+  ├─ Bash: xcodebuild build ...
+  │       ↓
+  │  PostToolUse Hook (build-doctor-hook.sh)
+  │       ├─ ビルドコマンド? → Yes
+  │       ├─ 失敗? → Yes (exit code ≠ 0)
+  │       ├─ カテゴリ分類 → "Dependency"
+  │       ├─ build_logs/session_report.json に記録
+  │       └─ STDERR にガイダンス出力
+  │
+  ├─ Claude Code: エラーを読んで修正
+  │
+  ├─ Bash: xcodebuild build ... (再ビルド)
+  │       ↓
+  │  PostToolUse Hook → 成功を記録
+  │
+  └─ 完了
+```
+
+### GUI ダッシュボード
+
+別ターミナルで起動しておくと、Claude Code のビルド → 修正 → 再ビルドの流れをリアルタイムで確認できます。
+
+```bash
+# ダッシュボード起動（5秒ごとに自動更新）
+./scripts/build-doctor-ui.sh /path/to/project
+
+# → http://localhost:8787 が自動で開く
+```
+
+ダッシュボードは2種類のデータを表示:
+
+| データソース | ファイル | 生成元 |
+|-------------|---------|--------|
+| Build Doctor レポート | `build_logs/report_*.json` | `build-doctor.sh` 直接実行 |
+| Claude Code セッション | `build_logs/session_report.json` | PostToolUse フック自動記録 |
+
+### フック設定
+
+`.claude/settings.json` に以下が設定されています:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/scripts/build-doctor-hook.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### セッションレポート形式
+
+```json
+{
+  "version": "1.1.0",
+  "type": "claude_code_session",
+  "startedAt": "2026-02-22T14:00:00+0900",
+  "projectDir": "/path/to/project",
+  "platform": "ios",
+  "status": "in_progress",
+  "totalBuilds": 5,
+  "failedBuilds": 2,
+  "events": [
+    {
+      "timestamp": "2026-02-22T14:01:00+0900",
+      "command": "xcodebuild -scheme MyApp ...",
+      "platform": "ios",
+      "category": "Dependency",
+      "exitCode": 65,
+      "status": "build_failed",
+      "logFile": "build_logs/ios_build_20260222_140100.log",
+      "errorSummary": "Dependencies could not be resolved..."
+    }
+  ]
+}
+```
+
 ## 制約事項
 
 - **CodeSign カテゴリ**は証明書・プロファイルの操作を伴うため、自動修正は限定的

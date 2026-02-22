@@ -475,6 +475,13 @@
       <div class="category-card"><div class="cat-icon">&#x1F511;</div><div class="cat-name">CodeSign</div><div class="cat-count" id="catCodeSign">0</div></div>
     </div>
 
+    <!-- Claude Code Live Session -->
+    <div class="section-header" id="sessionHeader" style="display:none">
+      <h2>Claude Code Session <span class="status-badge in_progress" id="sessionStatus" style="font-size:11px;margin-left:8px">Live</span></h2>
+      <span class="report-meta" id="sessionMeta"></span>
+    </div>
+    <div class="report-list" id="sessionList" style="margin-bottom:32px"></div>
+
     <!-- Reports List -->
     <div class="section-header">
       <h2>Build Reports</h2>
@@ -484,7 +491,7 @@
       <div class="empty-state" id="emptyState">
         <div class="icon">&#x1F3D7;</div>
         <h3>No reports yet</h3>
-        <p>Run Build Doctor on your project to generate reports.</p>
+        <p>Run Build Doctor on your project, or let Claude Code build automatically.</p>
         <code>./scripts/build-doctor.sh /path/to/project</code>
       </div>
     </div>
@@ -495,6 +502,7 @@
 // Data store
 // =========================================================================
 let allReports = [];
+let sessionReport = null;
 let autoRefreshTimer = null;
 
 // =========================================================================
@@ -502,10 +510,23 @@ let autoRefreshTimer = null;
 // =========================================================================
 async function loadReports() {
   try {
-    const resp = await fetch('/api/reports');
-    if (!resp.ok) throw new Error('Failed to load');
-    allReports = await resp.json();
-    allReports.sort((a, b) => (b.generatedAt || '').localeCompare(a.generatedAt || ''));
+    const [reportsResp, sessionResp] = await Promise.all([
+      fetch('/api/reports'),
+      fetch('/api/session'),
+    ]);
+
+    if (reportsResp.ok) {
+      allReports = await reportsResp.json();
+      allReports.sort((a, b) => (b.generatedAt || '').localeCompare(a.generatedAt || ''));
+    }
+
+    if (sessionResp.ok) {
+      const data = await sessionResp.json();
+      sessionReport = data && data.events ? data : null;
+    } else {
+      sessionReport = null;
+    }
+
     render();
   } catch (e) {
     console.error('Load error:', e);
@@ -518,21 +539,31 @@ async function loadReports() {
 function render() {
   renderStatusCards();
   renderCategoryGrid();
+  renderSessionPanel();
   renderReportList();
 }
 
 function renderStatusCards() {
-  document.getElementById('totalReports').textContent = allReports.length;
+  // Count from both report_*.json and session events
+  const sessionBuilds = sessionReport ? (sessionReport.totalBuilds || 0) : 0;
+  const sessionFails = sessionReport ? (sessionReport.failedBuilds || 0) : 0;
+
+  document.getElementById('totalReports').textContent = allReports.length + (sessionBuilds > 0 ? ` +${sessionBuilds}` : '');
   document.getElementById('resolvedCount').textContent = allReports.filter(r => r.status === 'resolved').length;
-  document.getElementById('needsInfoCount').textContent = allReports.filter(r => r.status === 'needs_info').length;
+  document.getElementById('needsInfoCount').textContent = allReports.filter(r => r.status === 'needs_info').length + (sessionFails > 0 ? ` +${sessionFails}` : '');
   document.getElementById('escalateCount').textContent = allReports.filter(r => r.status === 'escalate').length;
 
-  const platforms = [...new Set(allReports.map(r => r.platform).filter(Boolean))];
+  const platforms = [...new Set([
+    ...allReports.map(r => r.platform),
+    sessionReport ? sessionReport.platform : null,
+  ].filter(Boolean))];
   document.getElementById('platformDisplay').textContent = platforms.length > 0 ? platforms.join(', ') : '-';
 }
 
 function renderCategoryGrid() {
   const cats = { Compile: 0, Link: 0, Dependency: 0, ScriptPhase: 0, Environment: 0, CodeSign: 0 };
+
+  // From build-doctor.sh reports
   for (const report of allReports) {
     for (const loop of (report.loops || [])) {
       if (loop.category && loop.category !== '-' && cats[loop.category] !== undefined) {
@@ -540,10 +571,85 @@ function renderCategoryGrid() {
       }
     }
   }
+
+  // From Claude Code session events
+  if (sessionReport) {
+    for (const evt of (sessionReport.events || [])) {
+      if (evt.category && cats[evt.category] !== undefined) {
+        cats[evt.category]++;
+      }
+    }
+  }
+
   for (const [cat, count] of Object.entries(cats)) {
     const el = document.getElementById('cat' + cat);
     if (el) el.textContent = count;
   }
+}
+
+// =========================================================================
+// Claude Code Session Panel
+// =========================================================================
+function renderSessionPanel() {
+  const header = document.getElementById('sessionHeader');
+  const container = document.getElementById('sessionList');
+  const statusBadge = document.getElementById('sessionStatus');
+  const meta = document.getElementById('sessionMeta');
+
+  if (!sessionReport || !sessionReport.events || sessionReport.events.length === 0) {
+    header.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  header.style.display = '';
+  statusBadge.textContent = sessionReport.status === 'in_progress' ? 'Live' : 'Done';
+  statusBadge.className = 'status-badge ' + (sessionReport.status === 'in_progress' ? 'fixed' : 'resolved');
+
+  const events = sessionReport.events;
+  meta.textContent = `${events.length} builds / ${sessionReport.failedBuilds || 0} failed`;
+
+  container.innerHTML = `
+    <div class="report-card open">
+      <div class="report-card-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="report-card-left">
+          <span class="platform-badge ${sessionReport.platform || ''}">${(sessionReport.platform || '?').toUpperCase()}</span>
+          <span class="report-meta">Claude Code Auto-Build Session</span>
+          <span class="report-meta">${sessionReport.startedAt ? new Date(sessionReport.startedAt).toLocaleString('ja-JP', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : ''}</span>
+        </div>
+        <div class="report-card-right">
+          <span class="status-badge ${sessionReport.failedBuilds > 0 ? 'needs_info' : 'resolved'}">${sessionReport.failedBuilds || 0} failed</span>
+          <span class="report-meta">${events.length} builds</span>
+          <span class="chevron">&#x25B6;</span>
+        </div>
+      </div>
+      <div class="report-detail">
+        <div class="loop-timeline">
+          ${events.map((evt, i) => `
+            <div class="loop-item">
+              <div class="loop-marker">
+                <div class="loop-dot ${evt.status === 'build_failed' ? 'needs_info' : 'resolved'}"></div>
+                ${i < events.length - 1 ? '<div class="loop-line"></div>' : ''}
+              </div>
+              <div class="loop-content">
+                <h4>
+                  Build #${i + 1}
+                  ${evt.category ? `<span class="category-tag ${evt.category}">${evt.category}</span>` : ''}
+                  <span class="status-badge ${evt.status === 'build_failed' ? 'escalate' : 'resolved'}" style="font-size:10px">${evt.status === 'build_failed' ? 'Failed' : 'OK'}</span>
+                </h4>
+                <p class="fix-text"><code style="font-size:12px;color:var(--cyan)">${escapeHtml((evt.command || '').substring(0, 120))}</code></p>
+                ${evt.errorSummary ? `<div class="error-block">${escapeHtml(evt.errorSummary)}</div>` : ''}
+                <p class="meta-line">${evt.timestamp || ''} &mdash; exit ${evt.exitCode || '?'}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="meta-line" style="margin-top:12px">
+          Project: ${escapeHtml(sessionReport.projectDir || '-')}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderReportList() {
