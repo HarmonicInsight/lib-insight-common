@@ -26,6 +26,8 @@
  * - **Syncfusion SfSpreadsheet**: WPF 上の Excel 互換 UI コントロール
  * - **Claude API**: AI 自動転記（セマンティックマッチング）・AI 検証（異常値検出）
  * - **Hono + Supabase**: サーバー側のテンプレート管理・データ格納・回収管理
+ * - **顧客別 Supabase プロジェクト**: 顧客ごとにDB環境を物理分離（StravisLINK と同方式）
+ * - **DC Admin Console (Next.js)**: 全テナントの一括管理・プロビジョニング・監視
  *
  * ## 認証設計（ライトウェイト）
  *
@@ -505,55 +507,64 @@ export const DATA_COLLECTION_API = {
 } as const;
 
 // =============================================================================
-// インフラストラクチャ — Supabase (PostgreSQL)
+// インフラストラクチャ — 顧客別 Supabase プロジェクト (PostgreSQL)
 // =============================================================================
 
 /**
  * データ収集プラットフォームのインフラ構成
  *
- * ライセンスサーバー（license.harmonicinsight.com）と同じ技術基盤を使用。
- * 同一 Supabase プロジェクト内に dc_ プレフィックスのテーブルを追加する。
+ * ============================================================================
+ * 【テナント分離方式: 顧客ごとに Supabase プロジェクトを作成】
+ * ============================================================================
+ *
+ * StravisLINK と同様に、顧客ごとに独立した DB 環境を提供する。
+ * コンサルタントが導入時に顧客用の Supabase プロジェクトをプロビジョニングする。
+ *
+ * **選定理由**:
+ * - コンサル導入が前提 → 顧客追加は手動プロビジョニングで問題ない
+ * - 顧客データの完全な物理分離（財務・業務データの混在を回避）
+ * - 顧客ごとにバックアップ・リストア・削除が独立
+ * - 障害の影響範囲が顧客単位に限定される
  *
  * ```
  * ┌──────────────────────────────────────────────────────────────┐
- * │  データ収集サーバー (Hono on Railway)                         │
- * │  https://dc.harmonicinsight.com                              │
+ * │  管理系（HARMONIC insight 共通）                               │
  * │                                                              │
  * │  ┌────────────────────────────────────────────────────────┐  │
- * │  │  Hono (TypeScript)                                     │  │
- * │  │  ├ テンプレート管理 API                                  │  │
- * │  │  ├ データ受信・保存 API                                  │  │
- * │  │  ├ AI 転記・検証 API → Claude API                       │  │
- * │  │  └ 回収状況ダッシュボード API                             │  │
- * │  └────────────────────────────────────────────────────────┘  │
- * │                          │                                    │
- * │                          ▼                                    │
- * │  ┌────────────────────────────────────────────────────────┐  │
- * │  │  Supabase (PostgreSQL 15+)                             │  │
- * │  │                                                        │  │
- * │  │  既存テーブル:                                          │  │
- * │  │  ├ licenses          (ライセンスサーバー)                │  │
- * │  │  ├ registrations     (ライセンスサーバー)                │  │
- * │  │  ├ partners          (ライセンスサーバー)                │  │
- * │  │  └ ...                                                 │  │
- * │  │                                                        │  │
- * │  │  データ収集テーブル（dc_ プレフィックス）:                 │  │
- * │  │  ├ dc_templates      → テンプレート定義 + JSON Schema   │  │
- * │  │  ├ dc_collected_data → ★ 汎用テーブル（JSONB）          │  │
- * │  │  ├ dc_drafts         → 下書き（JSONB）                  │  │
- * │  │  └ dc_ai_logs        → AI 転記・検証ログ                │  │
- * │  │                                                        │  │
- * │  │  主要機能:                                              │  │
- * │  │  ├ JSONB + GIN インデックス（高速 JSON クエリ）           │  │
- * │  │  ├ Row Level Security（テナント分離）                    │  │
- * │  │  ├ Realtime（回収状況のリアルタイム更新）                 │  │
- * │  │  └ Edge Functions（軽量処理の分散実行）                   │  │
+ * │  │  ライセンスサーバー Supabase                             │  │
+ * │  │  ├ licenses / partners / registrations                 │  │
+ * │  │  └ dc_tenant_registry ← ★ 顧客環境の接続先を管理       │  │
  * │  └────────────────────────────────────────────────────────┘  │
  * │                                                              │
- * │  Auth: ライセンスキー (Level 1) / Firebase (Level 2+)        │
- * │  Storage: Supabase Storage（テンプレート .xlsx ファイル）      │
- * │  AI: Claude API (Anthropic)                                  │
+ * │  ┌────────────────────────────────────────────────────────┐  │
+ * │  │  データ収集 API サーバー (Hono on Railway)               │  │
+ * │  │  ├ テンプレート管理 / データ受信 / AI 転記・検証          │  │
+ * │  │  └ ★ リクエストのテナント情報から接続先 DB を切り替え     │  │
+ * │  └────────────────────────────────────────────────────────┘  │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │  顧客環境（顧客ごとに Supabase プロジェクトを作成）            │
+ * │                                                              │
+ * │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+ * │  │ A社 Supabase │  │ B社 Supabase │  │ C社 Supabase │      │
+ * │  │ Project      │  │ Project      │  │ Project      │      │
+ * │  │              │  │              │  │              │      │
+ * │  │ dc_templates │  │ dc_templates │  │ dc_templates │      │
+ * │  │ dc_collected │  │ dc_collected │  │ dc_collected │      │
+ * │  │ dc_drafts    │  │ dc_drafts    │  │ dc_drafts    │      │
+ * │  │ dc_ai_logs   │  │ dc_ai_logs   │  │ dc_ai_logs   │      │
+ * │  │              │  │              │  │              │      │
+ * │  │ Storage:     │  │ Storage:     │  │ Storage:     │      │
+ * │  │ テンプレート  │  │ テンプレート  │  │ テンプレート  │      │
+ * │  │ .xlsx        │  │ .xlsx        │  │ .xlsx        │      │
+ * │  └──────────────┘  └──────────────┘  └──────────────┘      │
  * └──────────────────────────────────────────────────────────────┘
+ *
+ * 導入フロー:
+ * 1. コンサルが顧客を受注
+ * 2. Supabase プロジェクトを作成（CLI or ダッシュボード）
+ * 3. マイグレーション実行（dc_ テーブル作成）
+ * 4. dc_tenant_registry に接続情報を登録
+ * 5. 顧客の IOSH にライセンスキー + テナント ID を設定
  * ```
  */
 export const DATA_COLLECTION_INFRASTRUCTURE = {
@@ -562,17 +573,41 @@ export const DATA_COLLECTION_INFRASTRUCTURE = {
     engine: 'PostgreSQL' as const,
     minVersion: '15',
     hosting: 'Supabase' as const,
-    /** ライセンスサーバーと同一プロジェクト（テーブルは dc_ プレフィックスで分離） */
-    sharedProject: true,
+    /**
+     * テナント分離方式: 顧客ごとに独立した Supabase プロジェクト
+     *
+     * - ライセンスサーバーの Supabase とは別プロジェクト
+     * - コンサル導入時にプロビジョニング
+     * - dc_tenant_registry（管理用 Supabase）で接続先を管理
+     */
+    tenantIsolation: 'project_per_tenant' as const,
     tablePrefix: 'dc_',
     requiredExtensions: [] as string[],  // JSONB + GIN は PostgreSQL 標準
     features: [
       'JSONB',
       'GIN Index',
-      'Row Level Security',
       'Realtime',
-      'Edge Functions',
       'Supabase Storage',
+    ],
+  },
+
+  /** テナントレジストリ（管理用 Supabase に配置） */
+  tenantRegistry: {
+    /** ライセンスサーバーの Supabase に dc_tenant_registry テーブルを追加 */
+    location: 'license_server_supabase' as const,
+    table: 'dc_tenant_registry',
+    columns: [
+      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
+      'tenant_name TEXT NOT NULL',                     // 顧客企業名
+      'tenant_code TEXT UNIQUE NOT NULL',              // 短縮コード（例: 'acme-corp'）
+      'supabase_url TEXT NOT NULL',                    // 顧客用 Supabase プロジェクト URL
+      'supabase_anon_key TEXT NOT NULL',               // anon key（クライアント用）
+      'supabase_service_role_key_encrypted TEXT NOT NULL', // service_role key（サーバー用・暗号化）
+      'status TEXT DEFAULT \'active\'',                // active / suspended / decommissioned
+      'license_key TEXT',                              // 紐づくライセンスキー
+      'provisioned_by TEXT NOT NULL',                  // プロビジョニングしたコンサル
+      'provisioned_at TIMESTAMPTZ DEFAULT NOW()',
+      'notes TEXT',
     ],
   },
 
@@ -581,11 +616,14 @@ export const DATA_COLLECTION_INFRASTRUCTURE = {
     runtime: 'Hono' as const,
     hosting: 'Railway' as const,
     language: 'TypeScript' as const,
+    /** サーバーは1つ。リクエストのテナント情報から接続先 Supabase を動的に切り替え */
+    multiTenantRouting: true,
   },
 
   /** ファイルストレージ（テンプレート .xlsx） */
   storage: {
     provider: 'Supabase Storage' as const,
+    /** 各顧客の Supabase Storage 内にバケットを作成 */
     bucket: 'dc-templates',
     maxFileSize: '50MB',
   },
@@ -771,7 +809,7 @@ export const DB_TABLES = {
     description: 'テンプレートのメタデータ + JSON Schema（論理テーブル定義）+ マッピング定義',
     columns: [
       'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
-      'tenant_id UUID NOT NULL',
+      // tenant_id 不要 — 顧客ごとに Supabase プロジェクトが分離されている
       'name TEXT NOT NULL',
       'name_ja TEXT NOT NULL',
       'category TEXT',
@@ -791,7 +829,6 @@ export const DB_TABLES = {
       'updated_at TIMESTAMPTZ DEFAULT NOW()',
     ],
     indexes: [
-      'CREATE INDEX idx_dc_templates_tenant ON dc_templates(tenant_id)',
       'CREATE INDEX idx_dc_templates_status ON dc_templates(status)',
       'CREATE INDEX idx_dc_templates_category ON dc_templates(category)',
     ],
@@ -819,7 +856,7 @@ export const DB_TABLES = {
       // --- 共通メタデータ（全テンプレート共通の物理カラム） ---
       'template_id UUID NOT NULL REFERENCES dc_templates(id)',
       'template_version INTEGER NOT NULL',       // 送信時点のテンプレートバージョン
-      'tenant_id UUID NOT NULL',
+      // tenant_id 不要 — DB 自体が顧客専用
       'submitter_email TEXT NOT NULL',
       'submitter_name TEXT',
       'status TEXT DEFAULT \'submitted\'',        // draft / submitted / accepted / rejected / pending_review
@@ -837,8 +874,6 @@ export const DB_TABLES = {
     indexes: [
       '-- テンプレート別検索（最も頻繁なクエリパターン）',
       'CREATE INDEX idx_dc_data_template ON dc_collected_data(template_id)',
-      '-- テナント別検索',
-      'CREATE INDEX idx_dc_data_tenant ON dc_collected_data(tenant_id)',
       '-- 送信者別検索（回収管理用）',
       'CREATE INDEX idx_dc_data_submitter ON dc_collected_data(submitter_email)',
       '-- ステータス別検索（回収状況確認用）',
@@ -876,7 +911,6 @@ export const DB_TABLES = {
     columns: [
       'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
       'template_id UUID NOT NULL REFERENCES dc_templates(id)',
-      'tenant_id UUID NOT NULL',
       'user_email TEXT NOT NULL',
       'data JSONB NOT NULL',                     // 下書きデータ（dc_collected_data.data と同じ構造）
       'saved_at TIMESTAMPTZ DEFAULT NOW()',
@@ -896,7 +930,6 @@ export const DB_TABLES = {
     columns: [
       'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
       'template_id UUID NOT NULL REFERENCES dc_templates(id)',
-      'tenant_id UUID NOT NULL',
       'user_email TEXT NOT NULL',
       'action TEXT NOT NULL',                    // 'transfer' / 'validate'
       'source_file_name TEXT',                   // 転記元ファイル名（transfer の場合）
@@ -905,7 +938,7 @@ export const DB_TABLES = {
     ],
     indexes: [
       '-- 利用量カウント用（月次集計）',
-      'CREATE INDEX idx_dc_ai_logs_usage ON dc_ai_logs(tenant_id, user_email, action, executed_at)',
+      'CREATE INDEX idx_dc_ai_logs_usage ON dc_ai_logs(user_email, action, executed_at)',
     ],
   },
 
@@ -934,36 +967,195 @@ export const DB_TABLES = {
   },
 
   // -------------------------------------------------------------------------
-  // Row Level Security（Supabase テナント分離）
+  // Row Level Security（ユーザーレベルのアクセス制御）
   // -------------------------------------------------------------------------
-  /** RLS ポリシー — テナント単位でデータを分離 */
+  /**
+   * RLS ポリシー — ユーザーレベルのアクセス制御
+   *
+   * テナント分離は DB 自体が顧客ごとに分離されているため不要。
+   * RLS はオプションで、下書きの本人制限など軽量な用途のみ。
+   * Hono サーバー経由のアクセスは service_role で RLS をバイパスする。
+   */
   _rls_policies: {
-    description: 'Supabase Row Level Security によるテナント分離',
+    description: 'ユーザーレベルのアクセス制御（テナント分離は DB 分離で実現済み）',
     ddl: [
-      '-- テナント分離: 全 dc_ テーブルに RLS を有効化',
-      'ALTER TABLE dc_templates ENABLE ROW LEVEL SECURITY;',
-      'ALTER TABLE dc_collected_data ENABLE ROW LEVEL SECURITY;',
+      '-- 下書き: 本人の下書きのみ閲覧・編集可（Level 2+ の場合のみ有効化）',
       'ALTER TABLE dc_drafts ENABLE ROW LEVEL SECURITY;',
-      'ALTER TABLE dc_ai_logs ENABLE ROW LEVEL SECURITY;',
-      '',
-      '-- テンプレート: 同一テナントのみ閲覧可',
-      'CREATE POLICY "tenant_isolation" ON dc_templates',
-      '  USING (tenant_id = auth.uid()::uuid);',
-      '',
-      '-- 収集データ: 同一テナントのみ閲覧可',
-      'CREATE POLICY "tenant_isolation" ON dc_collected_data',
-      '  USING (tenant_id = auth.uid()::uuid);',
-      '',
-      '-- 下書き: 本人の下書きのみ',
-      'CREATE POLICY "own_drafts" ON dc_drafts',
+      'CREATE POLICY "own_drafts_only" ON dc_drafts',
       '  USING (user_email = auth.jwt()->>\'email\');',
-      '',
-      '-- AI ログ: 同一テナントのみ',
-      'CREATE POLICY "tenant_isolation" ON dc_ai_logs',
-      '  USING (tenant_id = auth.uid()::uuid);',
     ],
-    note: 'サーバー側は service_role キーで接続するため RLS をバイパスする。'
-        + 'クライアント直接アクセス（Supabase JS Client）時のみ RLS が適用される。',
+    note: 'テナント分離は Supabase プロジェクト分離で実現。RLS は補助的な用途のみ。'
+        + 'サーバー側は service_role キーで接続するため RLS をバイパスする。',
+  },
+} as const;
+
+// =============================================================================
+// テナント管理コンソール（HARMONIC insight 管理者用 Web UI）
+// =============================================================================
+
+/**
+ * データ収集テナント管理コンソール
+ *
+ * 導入企業が増えるにつれ、各顧客の Supabase プロジェクトを個別に管理するのは
+ * 煩雑になる。全テナントを一覧・監視・操作できるグラフィカルな管理ツールが必要。
+ *
+ * ```
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │  DC Admin Console (React / Next.js)                              │
+ * │  https://dc-admin.harmonicinsight.com                            │
+ * │                                                                  │
+ * │  ┌────────────────────────────────────────────────────────────┐  │
+ * │  │  ダッシュボード                                             │  │
+ * │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐     │  │
+ * │  │  │ 稼働中   │ │ テンプレ │ │ 回収率   │ │ AI利用量 │     │  │
+ * │  │  │ 12 社    │ │ 総数 45  │ │ 78%     │ │ 1,234回  │     │  │
+ * │  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘     │  │
+ * │  └────────────────────────────────────────────────────────────┘  │
+ * │                                                                  │
+ * │  ┌────────────────────────────────────────────────────────────┐  │
+ * │  │  テナント一覧                                               │  │
+ * │  │  ┌─────────┬────────┬──────┬───────┬──────┬─────────────┐ │  │
+ * │  │  │ 企業名   │ ステータス│ テンプレ│ 回収率 │ AI利用│ 操作          │ │  │
+ * │  │  ├─────────┼────────┼──────┼───────┼──────┼─────────────┤ │  │
+ * │  │  │ A社     │ ● 稼働  │  5   │ 92%  │ 120  │ [詳細][設定] │ │  │
+ * │  │  │ B社     │ ● 稼働  │  8   │ 65%  │ 340  │ [詳細][設定] │ │  │
+ * │  │  │ C社     │ ○ 停止  │  3   │ --   │  0   │ [詳細][再開] │ │  │
+ * │  │  └─────────┴────────┴──────┴───────┴──────┴─────────────┘ │  │
+ * │  └────────────────────────────────────────────────────────────┘  │
+ * │                                                                  │
+ * │  機能:                                                           │
+ * │  ├ テナント新規作成（Supabase プロジェクト自動プロビジョニング）     │
+ * │  ├ テナント一覧・検索・ステータス管理（稼働/停止/廃止）             │
+ * │  ├ テナント詳細（接続情報・テンプレート・回収状況・AI利用量）        │
+ * │  ├ テンプレート配布（全テナントへの一括配布 or 選択配布）            │
+ * │  ├ 回収状況の横断集計（全テナントの回収率を一覧）                   │
+ * │  ├ AI 利用量モニタリング（月次集計・アラート）                      │
+ * │  ├ マイグレーション実行（スキーマ更新を全テナントに適用）            │
+ * │  └ ヘルスチェック（全テナントの DB 接続確認・ストレージ使用量）       │
+ * └──────────────────────────────────────────────────────────────────┘
+ * ```
+ */
+export const TENANT_ADMIN_CONSOLE = {
+  /** 技術スタック */
+  tech: {
+    framework: 'Next.js' as const,
+    ui: 'React' as const,
+    hosting: 'Vercel' as const,
+    /** 管理用 Supabase（ライセンスサーバーと同一プロジェクト）への接続 */
+    registryDb: 'license_server_supabase' as const,
+  },
+
+  /** 認証（管理者のみアクセス可能） */
+  auth: {
+    provider: 'Firebase' as const,
+    /** HARMONIC insight 社員 + 認定パートナーのみ */
+    allowedRoles: ['admin', 'consultant', 'partner_admin'] as const,
+  },
+
+  /** 画面一覧 */
+  pages: {
+    dashboard: {
+      path: '/',
+      description: '全テナントの概況（稼働数・テンプレート総数・回収率・AI利用量）',
+    },
+    tenantList: {
+      path: '/tenants',
+      description: 'テナント一覧（検索・フィルタ・ステータス管理）',
+    },
+    tenantDetail: {
+      path: '/tenants/:tenantId',
+      description: 'テナント詳細（接続情報・テンプレート・回収状況・AI利用ログ）',
+    },
+    tenantCreate: {
+      path: '/tenants/new',
+      description: 'テナント新規作成ウィザード（Supabase プロジェクト自動プロビジョニング）',
+    },
+    templateDistribution: {
+      path: '/templates/distribute',
+      description: 'テンプレートの一括配布・選択配布',
+    },
+    collectionOverview: {
+      path: '/collection',
+      description: '全テナント横断の回収状況ダッシュボード',
+    },
+    aiUsage: {
+      path: '/ai-usage',
+      description: 'AI 利用量モニタリング（テナント別・月次推移・アラート設定）',
+    },
+    migration: {
+      path: '/migration',
+      description: 'スキーママイグレーション（全テナント or 選択テナントに適用）',
+    },
+    health: {
+      path: '/health',
+      description: 'ヘルスチェック（DB 接続・ストレージ使用量・API レスポンスタイム）',
+    },
+  },
+
+  /** テナント管理 API（管理コンソール → Hono サーバー） */
+  adminApi: {
+    /** テナントの CRUD */
+    tenants: {
+      list: { method: 'GET' as const, path: '/admin/tenants' },
+      get: { method: 'GET' as const, path: '/admin/tenants/:tenantId' },
+      create: { method: 'POST' as const, path: '/admin/tenants' },
+      update: { method: 'PUT' as const, path: '/admin/tenants/:tenantId' },
+      suspend: { method: 'POST' as const, path: '/admin/tenants/:tenantId/suspend' },
+      resume: { method: 'POST' as const, path: '/admin/tenants/:tenantId/resume' },
+      decommission: { method: 'POST' as const, path: '/admin/tenants/:tenantId/decommission' },
+    },
+    /** プロビジョニング */
+    provisioning: {
+      /** Supabase プロジェクト作成 + マイグレーション + レジストリ登録を一括実行 */
+      provision: { method: 'POST' as const, path: '/admin/provisioning/provision' },
+      /** マイグレーション実行（全テナント or 選択テナント） */
+      migrate: { method: 'POST' as const, path: '/admin/provisioning/migrate' },
+      /** ヘルスチェック（全テナントの DB 接続確認） */
+      healthCheck: { method: 'GET' as const, path: '/admin/provisioning/health' },
+    },
+    /** テンプレート配布 */
+    distribution: {
+      /** テンプレートを選択テナントに配布 */
+      distribute: { method: 'POST' as const, path: '/admin/templates/distribute' },
+      /** 配布状況確認 */
+      status: { method: 'GET' as const, path: '/admin/templates/distribute/status' },
+    },
+    /** 横断集計 */
+    analytics: {
+      /** 全テナントの回収状況サマリー */
+      collectionSummary: { method: 'GET' as const, path: '/admin/analytics/collection' },
+      /** AI 利用量サマリー */
+      aiUsageSummary: { method: 'GET' as const, path: '/admin/analytics/ai-usage' },
+      /** ストレージ使用量 */
+      storageSummary: { method: 'GET' as const, path: '/admin/analytics/storage' },
+    },
+  },
+
+  /** 自動プロビジョニングスクリプト */
+  provisioning: {
+    /**
+     * テナント作成時に自動実行されるステップ:
+     *
+     * 1. Supabase CLI でプロジェクト作成
+     *    `supabase projects create <tenant-code> --org-id <org-id>`
+     *
+     * 2. マイグレーション実行（dc_ テーブル作成）
+     *    `supabase db push --project-ref <ref>`
+     *
+     * 3. Storage バケット作成
+     *    `dc-templates` バケットを作成
+     *
+     * 4. dc_tenant_registry に接続情報を登録
+     *
+     * 5. 初期テンプレートの配布（任意）
+     */
+    steps: [
+      'create_supabase_project',
+      'run_migration',
+      'create_storage_bucket',
+      'register_tenant',
+      'distribute_initial_templates',
+    ] as const,
   },
 } as const;
 
