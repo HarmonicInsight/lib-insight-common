@@ -1246,34 +1246,15 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
     // ------------------------------------------------------------------
-    // データ収集プラットフォーム（Data Collection Platform）
-    // サーバー管理テンプレート + AI 自動転記 + AI 検証
+    // データ収集基盤（ENT 専用）
     // ------------------------------------------------------------------
     {
       key: 'data_collection',
       name: 'Data Collection',
       nameJa: 'データ収集',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'サーバー管理テンプレートによるエンタープライズデータ収集（テンプレート選択→入力→送信）',
-    },
-    {
-      key: 'data_collection_ai_transfer',
-      name: 'AI Auto-Transfer',
-      nameJa: 'AI 自動転記',
-      type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AI が既存 Excel データをデータ収集テンプレートに自動転記（PRO: 月200回 / ENT: 無制限）',
-    },
-    {
-      key: 'data_collection_ai_validate',
-      name: 'AI Validation',
-      nameJa: 'AI 検証',
-      type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AI による入力データの妥当性検証・異常値検出・整合性チェック（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['TRIAL', 'ENT'],
+      descriptionJa: 'エンタープライズ データ収集基盤。Excel テンプレートに論理テーブルをマッピングし、クライアントに配信・データ入力・回収・集約。CCH Tagetik / STRAVIS-LINK / Forguncy パターン。',
     },
   ],
 
