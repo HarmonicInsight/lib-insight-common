@@ -233,8 +233,8 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
   INSS: {
     productCode: 'INSS',
     platform: 'wpf',
-    version: '2.1.0',
-    buildNumber: 45,
+    version: '2.2.0',
+    buildNumber: 50,
     status: 'stable',
     toolchain: {
       language: 'C#',
@@ -249,8 +249,29 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
         syncfusionVersion: '27.2',
       },
     } as WpfToolchain,
-    releaseHistory: [],
-    lastUpdated: '2026-02-16',
+    releaseHistory: [
+      {
+        version: '2.2.0',
+        buildNumber: 50,
+        date: '2026-02-23',
+        channel: 'production',
+        changelog: {
+          ja: 'リモートコンフィグ対応: API キーローテーション、モデルレジストリのホットアップデート、Velopack 自動更新、フィーチャーフラグを追加',
+          en: 'Remote config support: API key rotation, model registry hot-update, Velopack auto-update, and feature flags',
+        },
+      },
+      {
+        version: '2.1.0',
+        buildNumber: 45,
+        date: '2026-02-16',
+        channel: 'production',
+        changelog: {
+          ja: '安定版リリース',
+          en: 'Stable release',
+        },
+      },
+    ],
+    lastUpdated: '2026-02-23',
   },
 
   IOSH: {
@@ -279,8 +300,8 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
   IOSD: {
     productCode: 'IOSD',
     platform: 'wpf',
-    version: '1.0.0',
-    buildNumber: 1,
+    version: '1.1.0',
+    buildNumber: 5,
     status: 'development',
     toolchain: {
       language: 'C#',
@@ -295,8 +316,19 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
         syncfusionVersion: '27.2',
       },
     } as WpfToolchain,
-    releaseHistory: [],
-    lastUpdated: '2026-02-16',
+    releaseHistory: [
+      {
+        version: '1.1.0',
+        buildNumber: 5,
+        date: '2026-02-23',
+        channel: 'development',
+        changelog: {
+          ja: 'リモートコンフィグ対応: API キーローテーション、モデルレジストリのホットアップデート、Velopack 自動更新、フィーチャーフラグを追加',
+          en: 'Remote config support: API key rotation, model registry hot-update, Velopack auto-update, and feature flags',
+        },
+      },
+    ],
+    lastUpdated: '2026-02-23',
   },
 
   INPY: {
@@ -450,8 +482,8 @@ export function compareVersions(a: string, b: string): number {
  *
  * @example
  * ```typescript
- * const needsUpdate = isUpdateAvailable('INSS', '2.2.0', 50);
- * // → INSS は現在 2.1.0 build 45 なので true
+ * const needsUpdate = isUpdateAvailable('INSS', '2.3.0', 55);
+ * // → INSS は現在 2.2.0 build 50 なので true
  * ```
  */
 export function isUpdateAvailable(
@@ -474,7 +506,7 @@ export function isUpdateAvailable(
  * @example
  * ```typescript
  * const mustUpdate = !meetsMinimumVersion('INSS', '2.0.0', 30);
- * // → INSS は 2.1.0 build 45 なので false（更新不要）
+ * // → INSS は 2.2.0 build 50 なので false（更新不要）
  * ```
  */
 export function meetsMinimumVersion(

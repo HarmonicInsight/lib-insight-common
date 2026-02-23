@@ -399,7 +399,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 |------|------|
 | **説明** | AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
-| **バージョン** | **2.1.0** (build 45) — **安定版** |
+| **バージョン** | **2.2.0** (build 50) — **安定版** |
 | **リポジトリ** | `win-app-insight-slide` |
 | **プロジェクトファイル** | `.inss`（内包: .pptx）、右クリック対象: .pptx, .ppt |
 | **カラーテーマ** | Ivory & Gold |
@@ -517,7 +517,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 |------|------|
 | **説明** | AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
-| **バージョン** | 1.0.0 — 開発中 |
+| **バージョン** | 1.1.0 (build 5) — 開発中 |
 | **リポジトリ** | `win-app-insight-doc` |
 | **プロジェクトファイル** | `.iosd`（内包: .docx）、右クリック対象: .docx, .doc |
 | **カラーテーマ** | Ivory & Gold |
@@ -1054,11 +1054,11 @@ import {
 } from '@/insight-common/config/app-versions';
 
 // バージョンチェック（ローカル比較）
-isUpdateAvailable('INSS', '2.2.0', 50);  // true（現在 2.1.0 build 45）
+isUpdateAvailable('INSS', '2.3.0', 55);  // true（現在 2.2.0 build 50）
 meetsMinimumVersion('INSS', '2.0.0', 30); // true（強制更新不要）
 
 // サーバーレスポンスから更新判定
-const result = checkForUpdates(releaseInfo, '2.1.0', 45);
+const result = checkForUpdates(releaseInfo, '2.2.0', 50);
 const notifyType = getUpdateNotificationType(result);
 // → 'dialog' | 'banner' | 'badge' | 'none' | 'force_dialog'
 
