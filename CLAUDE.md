@@ -1420,12 +1420,12 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 import { getAppVersion, getBuildNumber, toAndroidVersionCode, toIosBundleVersion } from '@/insight-common/config/app-versions';
 
 // バージョン取得
-getAppVersion('INSS');        // '2.1.0'
-getBuildNumber('INSS');       // 45
+getAppVersion('INSS');        // '2.2.0'
+getBuildNumber('INSS');       // 50
 
 // プラットフォーム固有の形式
-toAndroidVersionCode('INSS'); // 2001045
-toIosBundleVersion('INSS');   // '2.1.0.45'
+toAndroidVersionCode('INSS'); // 2002050
+toIosBundleVersion('INSS');   // '2.2.0.50'
 ```
 
 ### バージョン更新手順

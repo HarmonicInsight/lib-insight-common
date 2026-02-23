@@ -37,8 +37,8 @@
 //        // --- リモートコンフィグ初期化 ---
 //        _remoteConfig = new InsightOfficeRemoteConfig(
 //            productCode: "INSS",          // or "IOSD", "IOSH", "ISOF"
-//            appVersion: "2.1.0",          // 現在のバージョン
-//            buildNumber: 45,              // 現在のビルド番号
+//            appVersion: "2.2.0",          // 現在のバージョン
+//            buildNumber: 50,              // 現在のビルド番号
 //            licenseKey: license.Key,
 //            plan: license.Plan            // "STD" / "PRO" / "ENT"
 //        );

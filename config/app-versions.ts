@@ -401,7 +401,7 @@ export function getBuildNumber(productCode: ProductCode): number {
 
 /**
  * Android versionCode 形式のバージョン文字列を生成
- * 例: "2.1.0" buildNumber=45 → "2001045"
+ * 例: "2.2.0" buildNumber=50 → "2002050"
  */
 export function toAndroidVersionCode(productCode: ProductCode): number {
   const info = APP_VERSIONS[productCode];
@@ -411,7 +411,7 @@ export function toAndroidVersionCode(productCode: ProductCode): number {
 
 /**
  * iOS Bundle Version 文字列を生成
- * 例: "2.1.0" buildNumber=45 → "2.1.0.45"
+ * 例: "2.2.0" buildNumber=50 → "2.2.0.50"
  */
 export function toIosBundleVersion(productCode: ProductCode): string {
   const info = APP_VERSIONS[productCode];
@@ -420,7 +420,7 @@ export function toIosBundleVersion(productCode: ProductCode): string {
 
 /**
  * WPF AssemblyVersion 文字列を生成
- * 例: "2.1.0" buildNumber=45 → "2.1.0.45"
+ * 例: "2.2.0" buildNumber=50 → "2.2.0.50"
  */
 export function toAssemblyVersion(productCode: ProductCode): string {
   const info = APP_VERSIONS[productCode];
