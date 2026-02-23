@@ -528,6 +528,7 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 | ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
+| データ収集 | — | — | ○ | エンタープライズ データ収集基盤（テンプレート配信・回収・集約） |
 
 #### IOSD — InsightOfficeDoc
 
@@ -808,6 +809,7 @@ getResellerProducts('gold');        // 全製品
 | AIコードエディター | ✅ | ❌ | ✅(200回) | ✅ |
 | Pythonスクリプト | ✅ | ❌ | ✅ | ✅ |
 | メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
+| データ収集 | ✅ | ❌ | ❌ | ✅ |
 
 ### InsightOffice AI アシスタント共通仕様
 
@@ -1205,7 +1207,110 @@ checkProjectFileLimits('STD', { historyVersions: 25 });
 // → { withinLimits: false, exceeded: ['history_versions (25/20)'] }
 ```
 
-## 12. InsightBot Orchestrator アーキテクチャ
+## 12. データ収集基盤（IOSH ENT モジュール）
+
+> **仕様定義**: `config/data-collection.ts` — 論理テーブル・マッピング・配信・提出・集約
+
+### 概要
+
+InsightOfficeSheet (IOSH) の ENT 専用モジュール。
+CCH Tagetik / STRAVIS-LINK / Forguncy と同じ **「Excel がフォーム UI、テーブル単位で DB マッピング」** パターンを実装。
+
+**RDB ではなく JSON ベースの論理テーブル** — スキーマは管理者が自由に定義でき、固定的な DB テーブル設計は不要。
+
+### アーキテクチャ
+
+```
+管理者（IOSH ENT）                クライアント（IOSH ENT）
+┌───────────────────┐            ┌───────────────────┐
+│ ① Excel テンプレート│            │ ④ テンプレートを開く│
+│    デザイン         │            │    入力可能セルに  │
+│                    │            │    データ入力      │
+│ ② 論理テーブル定義  │   配信     │                    │
+│    Excel Table ↔   │──────────→│ ⑤ 保存・提出       │
+│    JSON マッピング  │            │    テーブル→JSON   │
+│                    │            │    バリデーション   │
+│ ③ テンプレート配信  │   回収     │    サーバー送信    │
+│                    │←──────────│                    │
+│ ⑥ 集約・承認       │            └───────────────────┘
+│    ダッシュボード   │
+│    エクスポート     │
+└───────────────────┘
+         ↕
+   Supabase (JSONB)
+   dc_templates / dc_submissions / dc_master_tables
+```
+
+### 論理テーブル（JSON ベース）
+
+| 種類 | 説明 | 例 |
+|------|------|-----|
+| `input` | クライアントが入力するメインデータ | 売上実績、作業報告 |
+| `header` | テンプレートヘッダー（1行） | 案件名、報告期間、担当者 |
+| `master` | マスタデータ（ドロップダウンソース） | 部門マスタ、勘定科目 |
+| `summary` | 集計テーブル（数式で自動計算） | 合計行、KPI |
+
+### API
+
+```typescript
+import {
+  validateTableData,
+  generateExcelValidationRules,
+  convertExcelRowsToLogicalData,
+  aggregateSubmissions,
+  createEmptySubmission,
+  DATA_COLLECTION_PATHS,
+  DATA_COLLECTION_API,
+  DATA_COLLECTION_LIMITS,
+} from '@/insight-common/config/data-collection';
+
+// テンプレートのバリデーションルール → Excel データ入力規則
+const rules = generateExcelValidationRules(logicalTable);
+// → [{ columnId, excelValidationType: 'List', dropdownValues: [...] }, ...]
+
+// Excel Table のデータを論理テーブル行データに変換
+const rows = convertExcelRowsToLogicalData(mapping, table, excelRows);
+
+// 提出前バリデーション
+const result = validateTableData(table, rows);
+// → { valid: false, errors: [{ type: 'required', messageJa: '売上高は必須です' }] }
+
+// 全提出データの集約（管理者用）
+const aggregated = aggregateSubmissions(submissions, 'sales_report');
+// → { columns: [...], rows: [{ _submitted_by, _organization, ...data }] }
+
+// プラン制限
+DATA_COLLECTION_LIMITS.ENT.maxTemplates;  // -1（無制限）
+DATA_COLLECTION_LIMITS.TRIAL.maxTemplates; // 3
+```
+
+### .iosh ファイル内の配置
+
+```
+report.iosh (ZIP archive)
+├── ... (既存エントリ)
+├── data_collection/
+│   ├── template.json        # テンプレート定義（論理テーブル + マッピング）
+│   ├── master_tables/       # マスタ論理テーブル
+│   │   ├── departments.json
+│   │   └── accounts.json
+│   ├── submission.json      # 入力中のドラフト
+│   └── submission_history/  # 過去の提出履歴
+```
+
+### DB テーブル（Supabase 追加）
+
+| テーブル | 役割 |
+|---------|------|
+| `dc_templates` | テンプレート定義（JSONB で論理テーブルスキーマ含む） |
+| `dc_master_tables` | マスタ論理テーブル（組織レベルで共有） |
+| `dc_distributions` | 配信レコード（誰に・いつ配信したか） |
+| `dc_submissions` | 提出データ（JSONB — 論理テーブル単位） |
+| `dc_audit_log` | 監査ログ |
+
+---
+
+## 13. InsightBot Orchestrator アーキテクチャ
 
 ### 概要
 
@@ -1257,7 +1362,7 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 // { allowed: false, reasonJa: 'ローカルワークフローには TRIAL/PRO/ENT プランが必要です' }
 ```
 
-## 13. 開発完了チェックリスト
+## 14. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
@@ -1281,8 +1386,11 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 - [ ] **リモートコンフィグ**: 起動時のバージョンチェックが実装されている（`remote-config.ts`）
 - [ ] **リモートコンフィグ**: API キー（Claude/Syncfusion）がリモート取得に対応している
 - [ ] **リモートコンフィグ**: モデルレジストリがリモート更新に対応している（AI 搭載アプリのみ）
+- [ ] **データ収集**: `config/data-collection.ts` に準拠（IOSH ENT のみ）
+- [ ] **データ収集**: テンプレートデザイナー UI が実装されている（IOSH ENT のみ）
+- [ ] **データ収集**: 提出・回収・集約フローが動作する（IOSH ENT のみ）
 
-## 14. リリースチェック
+## 15. リリースチェック
 
 > **リリース前に必ず実行。** 詳細は `standards/RELEASE_CHECKLIST.md` を参照。
 
@@ -1344,7 +1452,7 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 - [ ] **バージョン**: pyproject.toml のバージョンが更新されている
 - [ ] **依存**: 全パッケージがピン留め（`==`）されている
 
-## 15. アプリバージョン管理
+## 16. アプリバージョン管理
 
 ### バージョンレジストリ
 
@@ -1369,7 +1477,7 @@ toIosBundleVersion('INSS');   // '2.1.0.45'
 3. `toolchain` がアプリの実際のツールチェーンと一致することを確認
 4. `validate-standards.sh` で検証
 
-## 16. ライブラリ互換性マトリクス
+## 17. ライブラリ互換性マトリクス
 
 ### 概要
 
@@ -1433,7 +1541,7 @@ const iosProfile = getRecommendedIosProfile('cutting_edge');
 - `ANDROID_LIBRARIES` / `IOS_LIBRARIES` の `lastVerified` 日付を確認
 - 新たな NG 組み合わせを発見したら `*_CONFLICT_RULES` に追加
 
-## 17. 困ったときは
+## 18. 困ったときは
 
 ```bash
 # 標準検証

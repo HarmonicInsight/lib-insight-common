@@ -1245,6 +1245,17 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
+    // ------------------------------------------------------------------
+    // データ収集基盤（ENT 専用）
+    // ------------------------------------------------------------------
+    {
+      key: 'data_collection',
+      name: 'Data Collection',
+      nameJa: 'データ収集',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'ENT'],
+      descriptionJa: 'エンタープライズ データ収集基盤。Excel テンプレートに論理テーブルをマッピングし、クライアントに配信・データ入力・回収・集約。CCH Tagetik / STRAVIS-LINK / Forguncy パターン。',
+    },
   ],
 
   // ========================================
