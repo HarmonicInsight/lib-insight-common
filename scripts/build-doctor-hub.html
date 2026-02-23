@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Doctor Hub</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-hover: #334155;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-dim: #64748b;
+    --border: #334155;
+    --accent: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --orange: #f97316;
+    --cyan: #06b6d4;
+    --purple: #a855f7;
+    --pink: #ec4899;
+    --gold: #B8942F;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--gold), #D4A843);
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: #1C1917;
+  }
+  .header h1 { font-size: 18px; font-weight: 700; }
+  .header h1 span { color: var(--text-secondary); font-weight: 400; font-size: 13px; margin-left: 8px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .btn {
+    padding: 6px 14px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--bg-card); color: var(--text); font-size: 12px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; transition: all .15s;
+  }
+  .btn:hover { background: var(--bg-card-hover); }
+
+  /* Main */
+  .main { max-width: 1500px; margin: 0 auto; padding: 20px 32px; }
+
+  /* Summary bar */
+  .summary-bar {
+    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .summary-chip {
+    padding: 8px 16px; border-radius: 8px; background: var(--bg-card);
+    border: 1px solid var(--border); font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .summary-chip .num { font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .summary-chip.green .num { color: var(--green); }
+  .summary-chip.red .num { color: var(--red); }
+  .summary-chip.yellow .num { color: var(--yellow); }
+  .summary-chip.blue .num { color: var(--accent); }
+
+  /* Tier sections */
+  .tier-section { margin-bottom: 28px; }
+  .tier-header {
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tier-badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700;
+    background: var(--bg); border: 1px solid var(--border);
+  }
+  .tier-badge.t1 { color: var(--gold); border-color: var(--gold); }
+  .tier-badge.t2 { color: var(--purple); border-color: var(--purple); }
+  .tier-badge.t3 { color: var(--accent); border-color: var(--accent); }
+  .tier-badge.t4 { color: var(--cyan); border-color: var(--cyan); }
+  .tier-badge.t0 { color: var(--text-dim); border-color: var(--text-dim); }
+
+  /* Project grid */
+  .project-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;
+  }
+
+  .project-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; position: relative; overflow: hidden; cursor: pointer; transition: all .15s;
+  }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .project-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .project-card.status-resolved::before { background: var(--green); }
+  .project-card.status-build_failed::before,
+  .project-card.status-escalate::before { background: var(--red); }
+  .project-card.status-needs_info::before { background: var(--yellow); }
+  .project-card.status-in_progress::before { background: var(--accent); }
+  .project-card.status-unknown::before { background: var(--border); }
+
+  .pc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .pc-code { font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--text-dim); }
+  .pc-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .pc-tech { font-size: 11px; color: var(--text-dim); }
+
+  .pc-status {
+    padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; white-space: nowrap;
+  }
+  .pc-status.resolved { background: rgba(34,197,94,.15); color: var(--green); }
+  .pc-status.build_failed,
+  .pc-status.escalate { background: rgba(239,68,68,.15); color: var(--red); }
+  .pc-status.needs_info { background: rgba(234,179,8,.15); color: var(--yellow); }
+  .pc-status.in_progress { background: rgba(59,130,246,.15); color: var(--accent); }
+  .pc-status.unknown { background: rgba(100,116,139,.15); color: var(--text-dim); }
+  .pc-status.no_data { background: transparent; color: var(--text-dim); border: 1px dashed var(--border); }
+
+  .pc-stats { display: flex; gap: 12px; margin-top: 10px; }
+  .pc-stat { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+  .pc-stat .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .pc-stat .dot.green { background: var(--green); }
+  .pc-stat .dot.red { background: var(--red); }
+  .pc-stat .dot.blue { background: var(--accent); }
+
+  .pc-cats { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  .pc-cat {
+    padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 600;
+    background: var(--bg); border: 1px solid var(--border);
+  }
+  .pc-cat.Compile { color: var(--red); border-color: rgba(239,68,68,.4); }
+  .pc-cat.Link { color: var(--orange); border-color: rgba(249,115,22,.4); }
+  .pc-cat.Dependency { color: var(--yellow); border-color: rgba(234,179,8,.4); }
+  .pc-cat.ScriptPhase { color: var(--purple); border-color: rgba(168,85,247,.4); }
+  .pc-cat.Environment { color: var(--cyan); border-color: rgba(6,182,212,.4); }
+  .pc-cat.CodeSign { color: var(--pink); border-color: rgba(236,72,153,.4); }
+
+  .pc-time { font-size: 10px; color: var(--text-dim); margin-top: 6px; }
+
+  /* Detail Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    z-index: 200; justify-content: center; align-items: flex-start; padding: 40px 20px;
+    overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+    max-width: 900px; width: 100%; max-height: 85vh; overflow-y: auto;
+  }
+  .modal-header {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0;
+    background: var(--bg-card); z-index: 10; border-radius: 14px 14px 0 0;
+  }
+  .modal-header h2 { font-size: 16px; }
+  .modal-close {
+    background: none; border: none; color: var(--text-secondary);
+    font-size: 20px; cursor: pointer; padding: 4px 8px;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 20px 24px; }
+
+  /* Timeline in modal */
+  .timeline { display: flex; flex-direction: column; gap: 12px; }
+  .tl-item { display: flex; gap: 12px; }
+  .tl-marker { display: flex; flex-direction: column; align-items: center; width: 24px; flex-shrink: 0; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; }
+  .tl-dot.ok { border-color: var(--green); background: var(--green); }
+  .tl-dot.fail { border-color: var(--red); background: var(--red); }
+  .tl-dot.fix { border-color: var(--accent); background: var(--accent); }
+  .tl-line { width: 2px; flex: 1; background: var(--border); min-height: 12px; }
+  .tl-content { flex: 1; min-width: 0; }
+  .tl-content h4 { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .tl-content .cmd { font-size: 11px; font-family: monospace; color: var(--cyan); word-break: break-all; }
+  .tl-content .errors {
+    background: #0c0c0c; border: 1px solid #2a2a2a; border-radius: 6px;
+    padding: 8px 12px; font-family: monospace; font-size: 11px; line-height: 1.5;
+    color: #e06c75; max-height: 150px; overflow-y: auto; white-space: pre-wrap;
+    word-break: break-all; margin-top: 6px;
+  }
+  .tl-content .meta { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+
+  /* Empty */
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+  .empty .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty h3 { font-size: 16px; color: var(--text); margin-bottom: 6px; }
+  .empty code {
+    display: inline-block; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 12px; font-family: monospace; margin-top: 12px;
+    font-size: 12px; color: var(--cyan);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .main { padding: 12px; }
+    .project-grid { grid-template-columns: 1fr; }
+    .summary-bar { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <div class="header-icon">H</div>
+      <h1>Build Doctor Hub <span>All Projects</span></h1>
+    </div>
+    <div class="header-right">
+      <div class="pulse"></div>
+      <button class="btn" onclick="loadProjects()">&#x21bb; Reload</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="summary-bar" id="summaryBar"></div>
+    <div id="projectContent"></div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">-</h2>
+        <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+<script>
+let projects = [];
+
+async function loadProjects() {
+  try {
+    const resp = await fetch('/api/projects');
+    if (resp.ok) {
+      projects = await resp.json();
+      render();
+    }
+  } catch (e) { console.error(e); }
+}
+
+function render() {
+  renderSummary();
+  renderProjects();
+}
+
+function renderSummary() {
+  const total = projects.length;
+  const withBuilds = projects.filter(p => p.totalBuilds > 0);
+  const ok = projects.filter(p => p.lastStatus === 'resolved').length;
+  const failing = projects.filter(p => ['build_failed','escalate','needs_info'].includes(p.lastStatus)).length;
+  const live = projects.filter(p => p.hasSession).length;
+  const totalBuilds = projects.reduce((s, p) => s + p.totalBuilds, 0);
+
+  document.getElementById('summaryBar').innerHTML = `
+    <div class="summary-chip"><span class="num">${total}</span> Projects</div>
+    <div class="summary-chip green"><span class="num">${ok}</span> OK</div>
+    <div class="summary-chip red"><span class="num">${failing}</span> Failing</div>
+    <div class="summary-chip blue"><span class="num">${live}</span> Live Sessions</div>
+    <div class="summary-chip yellow"><span class="num">${totalBuilds}</span> Total Builds</div>
+  `;
+}
+
+function renderProjects() {
+  const container = document.getElementById('projectContent');
+
+  if (projects.length === 0) {
+    container.innerHTML = `
+      <div class="empty">
+        <div class="icon">&#x1F4C1;</div>
+        <h3>No projects found</h3>
+        <p>Point the hub at a directory containing your project repos.</p>
+        <code>./scripts/build-doctor-hub.sh ~/Projects</code>
+      </div>`;
+    return;
+  }
+
+  // Group by tier
+  const tiers = {
+    1: { label: 'Tier 1 — Business Transformation', cls: 't1', projects: [] },
+    2: { label: 'Tier 2 — AI Tools', cls: 't2', projects: [] },
+    3: { label: 'Tier 3 — InsightOffice Suite', cls: 't3', projects: [] },
+    4: { label: 'Tier 4 — InsightSeniorOffice', cls: 't4', projects: [] },
+    0: { label: 'Utilities', cls: 't0', projects: [] },
+    '-1': { label: 'Other Projects', cls: 't0', projects: [] },
+  };
+
+  for (const p of projects) {
+    const key = p.tier >= 0 ? String(p.tier) : '-1';
+    if (tiers[key]) tiers[key].projects.push(p);
+    else tiers['-1'].projects.push(p);
+  }
+
+  let html = '';
+  for (const [, tier] of Object.entries(tiers)) {
+    if (tier.projects.length === 0) continue;
+    html += `
+      <div class="tier-section">
+        <div class="tier-header">
+          <span class="tier-badge ${tier.cls}">${tier.projects.length}</span>
+          ${tier.label}
+        </div>
+        <div class="project-grid">
+          ${tier.projects.map(renderProjectCard).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+function renderProjectCard(p) {
+  const statusCls = p.totalBuilds > 0 ? p.lastStatus : 'unknown';
+  const statusText = p.totalBuilds > 0 ? statusLabel(p.lastStatus) : 'No builds';
+  const statusBadgeCls = p.totalBuilds > 0 ? p.lastStatus : 'no_data';
+
+  const cats = Object.entries(p.categories || {})
+    .sort((a,b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([cat, count]) => `<span class="pc-cat ${cat}">${cat} ${count}</span>`)
+    .join('');
+
+  const timeStr = p.lastBuildAt
+    ? new Date(p.lastBuildAt).toLocaleString('ja-JP', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' })
+    : '';
+
+  return `
+    <div class="project-card status-${statusCls}" onclick="openProject('${esc(p.dirName)}')">
+      <div class="pc-top">
+        <div>
+          <div class="pc-code">${esc(p.code)}</div>
+          <div class="pc-name">${esc(p.name)}</div>
+          <div class="pc-tech">${esc(p.tech)} ${p.platform ? '(' + p.platform + ')' : ''}</div>
+        </div>
+        <span class="pc-status ${statusBadgeCls}">${statusText}</span>
+      </div>
+      <div class="pc-stats">
+        ${p.totalBuilds > 0 ? `
+          <span class="pc-stat"><span class="dot blue"></span>${p.totalBuilds} builds</span>
+          <span class="pc-stat"><span class="dot red"></span>${p.failedBuilds} failed</span>
+          ${p.hasSession ? '<span class="pc-stat"><span class="dot green"></span>session</span>' : ''}
+        ` : '<span class="pc-stat">No build data</span>'}
+      </div>
+      ${cats ? `<div class="pc-cats">${cats}</div>` : ''}
+      ${timeStr ? `<div class="pc-time">${timeStr}</div>` : ''}
+    </div>
+  `;
+}
+
+// =========================================================================
+// Project Detail Modal
+// =========================================================================
+async function openProject(dirName) {
+  const p = projects.find(x => x.dirName === dirName);
+  if (!p) return;
+
+  document.getElementById('modalTitle').textContent = `${p.code} — ${p.name}`;
+  document.getElementById('modalBody').innerHTML = '<p style="color:var(--text-secondary)">Loading...</p>';
+  document.getElementById('modalOverlay').classList.add('open');
+
+  // Fetch reports + session in parallel
+  const [reportsResp, sessionResp] = await Promise.all([
+    fetch(`/api/project/reports?dir=${encodeURIComponent(dirName)}`),
+    fetch(`/api/project/session?dir=${encodeURIComponent(dirName)}`),
+  ]);
+
+  const reports = reportsResp.ok ? await reportsResp.json() : [];
+  const session = sessionResp.ok ? await sessionResp.json() : null;
+
+  let html = `
+    <div style="margin-bottom:16px;font-size:12px;color:var(--text-dim)">
+      ${esc(p.path)} &mdash; ${esc(p.tech)} &mdash; ${p.platform}
+    </div>
+  `;
+
+  // Session events
+  if (session && session.events && session.events.length > 0) {
+    html += `<h3 style="font-size:14px;margin-bottom:10px">Claude Code Session (${session.events.length} builds)</h3>`;
+    html += '<div class="timeline">';
+    for (let i = 0; i < session.events.length; i++) {
+      const evt = session.events[i];
+      const isFail = evt.status === 'build_failed';
+      html += `
+        <div class="tl-item">
+          <div class="tl-marker">
+            <div class="tl-dot ${isFail ? 'fail' : 'ok'}"></div>
+            ${i < session.events.length - 1 ? '<div class="tl-line"></div>' : ''}
+          </div>
+          <div class="tl-content">
+            <h4>
+              Build #${i+1}
+              ${evt.category ? `<span class="pc-cat ${evt.category}">${evt.category}</span>` : ''}
+              <span class="pc-status ${isFail ? 'build_failed' : 'resolved'}" style="font-size:9px">${isFail ? 'Failed' : 'OK'}</span>
+            </h4>
+            <div class="cmd">${esc((evt.command||'').substring(0,200))}</div>
+            ${evt.errorSummary ? `<div class="errors">${esc(evt.errorSummary)}</div>` : ''}
+            <div class="meta">${evt.timestamp || ''} &mdash; exit ${evt.exitCode || '?'}</div>
+          </div>
+        </div>
+      `;
+    }
+    html += '</div><hr style="border:none;border-top:1px solid var(--border);margin:20px 0">';
+  }
+
+  // Build Doctor reports
+  if (reports.length > 0) {
+    html += `<h3 style="font-size:14px;margin-bottom:10px">Build Doctor Reports (${reports.length})</h3>`;
+    for (const report of reports) {
+      const loops = report.loops || [];
+      html += `<div style="margin-bottom:16px;padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border)">`;
+      html += `<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span class="pc-status ${report.status||''}" style="font-size:10px">${statusLabel(report.status)}</span>
+        <span style="font-size:11px;color:var(--text-dim)">${report.generatedAt ? new Date(report.generatedAt).toLocaleString('ja-JP') : ''}</span>
+      </div>`;
+      html += '<div class="timeline">';
+      for (let i = 0; i < loops.length; i++) {
+        const loop = loops[i];
+        const dotCls = loop.status === 'resolved' ? 'ok' : loop.status === 'fixed' ? 'fix' : 'fail';
+        html += `
+          <div class="tl-item">
+            <div class="tl-marker">
+              <div class="tl-dot ${dotCls}"></div>
+              ${i < loops.length - 1 ? '<div class="tl-line"></div>' : ''}
+            </div>
+            <div class="tl-content">
+              <h4>Loop ${loop.loop || i+1}
+                ${loop.category && loop.category !== '-' ? `<span class="pc-cat ${loop.category}">${loop.category}</span>` : ''}
+              </h4>
+              <div style="font-size:12px;color:var(--text-secondary)">${esc(loop.fix || '-')}</div>
+              ${loop.errorSummary ? `<div class="errors">${esc(loop.errorSummary)}</div>` : ''}
+              <div class="meta">${loop.timestamp || ''}</div>
+            </div>
+          </div>
+        `;
+      }
+      html += '</div></div>';
+    }
+  }
+
+  if (!session?.events?.length && reports.length === 0) {
+    html += '<p style="color:var(--text-dim);text-align:center;padding:20px">No build data for this project.</p>';
+  }
+
+  document.getElementById('modalBody').innerHTML = html;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// Keyboard: Escape to close modal
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// =========================================================================
+// Helpers
+// =========================================================================
+function statusLabel(s) {
+  return { resolved:'Resolved', needs_info:'Needs Info', escalate:'Escalated',
+           build_failed:'Failed', fixed:'Fixed', in_progress:'In Progress',
+           unknown:'Unknown' }[s] || s || '-';
+}
+
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// =========================================================================
+// Init
+// =========================================================================
+loadProjects();
+setInterval(loadProjects, 5000);
+</script>
+</body>
+</html>
