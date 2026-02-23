@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Cool Blue & Slate テーマ */
+:root {
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-primary-light: #DBEAFE;
+  --color-bg: #F8FAFC;
+  --color-bg-card: #FFFFFF;
+  --color-sidebar: #1E293B;
+  --color-sidebar-hover: #334155;
+  --color-sidebar-active: #0F172A;
+  --color-text: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-sidebar: #94A3B8;
+  --color-text-sidebar-active: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-border-light: #F1F5F9;
+  --color-success: #16A34A;
+  --color-success-light: #DCFCE7;
+  --color-warning: #D97706;
+  --color-warning-light: #FEF3C7;
+  --color-error: #DC2626;
+  --color-error-light: #FEE2E2;
+  --color-info: #0EA5E9;
+  --color-info-light: #E0F2FE;
+}
+
+@theme inline {
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
