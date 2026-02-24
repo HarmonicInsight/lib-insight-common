@@ -9,9 +9,9 @@ namespace InsightCommon.License;
 /// <summary>
 /// Insight Series 共通ライセンスマネージャー
 ///
-/// キー形弁E PPPP-PLAN-YYMM-HASH-SIG1-SIG2
-/// ハッシュ: SHA256 ↁEBase32 先頭4斁E��E
-/// 署吁E HMAC-SHA256 ↁEBase32 先頭8斁E��E(SIG1=4 + SIG2=4)
+/// キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
+/// ハッシュ: SHA256 → Base32 先頭4文字
+/// 署名: HMAC-SHA256 → Base32 先頭8文字 (SIG1=4 + SIG2=4)
 /// </summary>
 public class InsightLicenseManager
 {
@@ -26,19 +26,19 @@ public class InsightLicenseManager
     private readonly string _configDir;
     private readonly string _licenseFile;
 
-    /// <summary>現在のライセンス惁E��</summary>
+    /// <summary>現在のライセンス情報</summary>
     public LicenseInfo CurrentLicense { get; private set; } = new();
 
-    /// <summary>アクチE��ベ�Eト済みかどぁE��</summary>
+    /// <summary>アクティベート済みかどうか</summary>
     public bool IsActivated => CurrentLicense.Plan != PlanCode.Free && CurrentLicense.IsValid;
 
-    /// <summary>期限刁E��30日以冁E�E警告表示が忁E��か</summary>
+    /// <summary>期限切れ30日以内で警告表示が必要か</summary>
     public bool ShouldShowExpiryWarning => CurrentLicense.DaysRemaining is > 0 and <= 30;
 
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="productCode">製品コーチE(INSS, IOSH, IOSD, INPY, INMV, INBT, INCA, INIG, IVIN)</param>
+    /// <param name="productCode">製品コード (INSS, IOSH, IOSD, INPY, INMV, INBT, INCA, INIG, IVIN)</param>
     /// <param name="productName">製品名 (InsightOfficeSlide, InsightOfficeSheet, InsightOfficeDoc, etc.)</param>
     public InsightLicenseManager(string productCode, string productName)
     {
@@ -113,14 +113,14 @@ public class InsightLicenseManager
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーが�E力されてぁE��せん、E };
+            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーが入力されていません。" };
         }
 
         key = key.Trim().ToUpperInvariant();
         var match = LICENSE_KEY_REGEX.Match(key);
         if (!match.Success)
         {
-            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーの形式が正しくありません、E };
+            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーの形式が正しくありません。" };
         }
 
         var productStr = match.Groups[1].Value;
@@ -130,14 +130,14 @@ public class InsightLicenseManager
         var sig1 = match.Groups[5].Value;
         var sig2 = match.Groups[6].Value;
 
-        // 製品コードチェチE��
+        // 製品コードチェック
         if (productStr != _productCode)
         {
             return new LicenseInfo
             {
                 IsValid = false,
                 ProductCode = productStr,
-                ErrorMessage = $"こ�Eキーは {productStr} 用です、E_productCode} 用のキーを�E力してください、E
+                ErrorMessage = $"このキーは {productStr} 用です。{_productCode} 用のキーを入力してください。"
             };
         }
 
@@ -146,22 +146,22 @@ public class InsightLicenseManager
         var signData = $"{productStr}-{planStr}-{yymm}-{emailHash}";
         if (!VerifySignature(signData, signature))
         {
-            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーが無効です、E };
+            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーが無効です。" };
         }
 
-        // メールハッシュ照吁E
+        // メールハッシュ照合
         if (!string.IsNullOrEmpty(email))
         {
             var computedHash = ComputeEmailHash(email);
             if (!string.Equals(emailHash, computedHash, StringComparison.OrdinalIgnoreCase))
             {
-                return new LicenseInfo { IsValid = false, ErrorMessage = "メールアドレスが一致しません、E };
+                return new LicenseInfo { IsValid = false, ErrorMessage = "メールアドレスが一致しません。" };
             }
         }
 
         var plan = PlanDisplay.Parse(planStr);
 
-        // 有効期限チェチE��
+        // 有効期限チェック
         DateTime? expiresAt = null;
         try
         {
@@ -174,7 +174,7 @@ public class InsightLicenseManager
         }
         catch
         {
-            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーの日付が不正です、E };
+            return new LicenseInfo { IsValid = false, ErrorMessage = "ライセンスキーの日付が不正です。" };
         }
 
         if (DateTime.Now > expiresAt)
@@ -185,7 +185,7 @@ public class InsightLicenseManager
                 Plan = plan,
                 ProductCode = productStr,
                 ExpiresAt = expiresAt,
-                ErrorMessage = $"ライセンスの有効期限が�EれてぁE��す！EexpiresAt.Value:yyyy年MM朁Ed日}�E�、E
+                ErrorMessage = $"ライセンスの有効期限が切れています（{expiresAt.Value:yyyy年MM月dd日}）。"
             };
         }
 
@@ -200,26 +200,26 @@ public class InsightLicenseManager
         };
     }
 
-    // ── アクチE��ベ�Eション ──
+    // ── アクティベーション ──
 
     public (bool Success, string Message) Activate(string email, string key)
     {
         if (string.IsNullOrWhiteSpace(email))
-            return (false, "メールアドレスを�E力してください、E);
+            return (false, "メールアドレスを入力してください。");
 
         if (string.IsNullOrWhiteSpace(key))
-            return (false, "ライセンスキーを�E力してください、E);
+            return (false, "ライセンスキーを入力してください。");
 
         var info = ValidateKey(key, email);
         if (!info.IsValid)
-            return (false, info.ErrorMessage ?? "ライセンスキーが無効です、E);
+            return (false, info.ErrorMessage ?? "ライセンスキーが無効です。");
 
         info.Email = email;
         info.Key = key;
         CurrentLicense = info;
         SaveLicense();
 
-        return (true, $"ライセンスが正常にアクチE��ベ�Eトされました�E�Einfo.PlanDisplayName}�E�、E);
+        return (true, $"ライセンスが正常にアクティベートされました（{info.PlanDisplayName}）。");
     }
 
     public void Deactivate()
@@ -229,13 +229,13 @@ public class InsightLicenseManager
             File.Delete(_licenseFile);
     }
 
-    // ── 機�EチェチE�� ──
+    // ── 機能チェック ──
 
     /// <summary>
-    /// 持E���E機�Eが利用可能かを判宁E
+    /// 指定された機能が利用可能かを判定
     /// </summary>
-    /// <param name="featureMatrix">機�E名�E許可プラン配�EのマッチE/param>
-    /// <param name="feature">チェチE��する機�E吁E/param>
+    /// <param name="featureMatrix">機能名と許可プラン配列のマップ</param>
+    /// <param name="feature">チェックする機能名</param>
     public bool CanUseFeature(Dictionary<string, PlanCode[]> featureMatrix, string feature)
     {
         if (!featureMatrix.TryGetValue(feature, out var allowedPlans))
@@ -288,7 +288,7 @@ public class InsightLicenseManager
         }
     }
 
-    /// <summary>有効期限の表示斁E���E</summary>
+    /// <summary>有効期限の表示文字列</summary>
     public string ExpiryDateString
     {
         get
