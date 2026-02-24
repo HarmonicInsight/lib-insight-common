@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "HARMONIC insight Launcher icon manifest — maps product codes to Android mipmap icons",
+  "description": "HARMONIC insight Launcher icon manifest  Emaps product codes to Android mipmap icons",
   "basePath": "brand/icons/generated/launcher",
   "densities": {
     "mdpi": 48,
@@ -88,8 +88,8 @@
     },
     {
       "code": "INMV",
-      "name": "InsightMovie",
-      "masterIcon": "brand/icons/png/icon-insight-movie.png",
+      "name": "InsightCast",
+      "masterIcon": "brand/icons/png/icon-insight-cast.png",
       "category": "ai_tools",
       "displayOrder": 210,
       "isProduct": true,

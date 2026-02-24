@@ -1,70 +1,70 @@
 /**
- * freee API 統合設定
+ * freee API 統合設宁E
  *
  * ============================================================================
- * 【設計方針】
+ * 【設計方針、E
  * ============================================================================
  *
- * HARMONIC insight の経理・請求業務を freee 会計 + freee 請求書と連携させる。
- * OAuth 2.0 によるセキュアな接続を基盤とし、AI Accounting Agent が
- * freee API を Tool として呼び出して自律的に業務を遂行する。
+ * HARMONIC insight の経理・請求業務を freee 会訁E+ freee 請求書と連携させる、E
+ * OAuth 2.0 によるセキュアな接続を基盤とし、AI Accounting Agent ぁE
+ * freee API めETool として呼び出して自律的に業務を遂行する、E
  *
  * ## 対象 freee API
  *
  * ```
- * ┌─────────────────────────────────────────────────────────────────┐
- * │  freee API エコシステム                                         │
- * │                                                                 │
- * │  ① 会計 API (Accounting)        ② 請求書 API (Invoicing)       │
- * │  ┌──────────────────────┐      ┌──────────────────────┐       │
- * │  │ /api/1               │      │ /iv                  │       │
- * │  │ • 取引 (deals)       │      │ • 請求書 (invoices)  │       │
- * │  │ • 取引先 (partners)  │      │ • 見積書 (quotations)│       │
- * │  │ • 勘定科目           │      │ • 納品書             │       │
- * │  │ • 経費精算           │      │                      │       │
- * │  │ • 支払依頼           │      │                      │       │
- * │  │ • 仕訳帳             │      │                      │       │
- * │  │ • 試算表             │      │                      │       │
- * │  │ • 口座               │      │                      │       │
- * │  └──────────────────────┘      └──────────────────────┘       │
- * │                                                                 │
- * │  認証: OAuth 2.0 Authorization Code Flow                        │
- * │  ベースURL: https://api.freee.co.jp                             │
- * └─────────────────────────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────────────────────────━E
+ * ━E freee API エコシスチE��                                         ━E
+ * ━E                                                                ━E
+ * ━E ① 会訁EAPI (Accounting)        ② 請求書 API (Invoicing)       ━E
+ * ━E ┌──────────────────────━E     ┌──────────────────────━E      ━E
+ * ━E ━E/api/1               ━E     ━E/iv                  ━E      ━E
+ * ━E ━E• 取弁E(deals)       ━E     ━E• 請求書 (invoices)  ━E      ━E
+ * ━E ━E• 取引�E (partners)  ━E     ━E• 見積書 (quotations)━E      ━E
+ * ━E ━E• 勘定科目           ━E     ━E• 納品書             ━E      ━E
+ * ━E ━E• 経費精箁E          ━E     ━E                     ━E      ━E
+ * ━E ━E• 支払依頼           ━E     ━E                     ━E      ━E
+ * ━E ━E• 仕訳帳             ━E     ━E                     ━E      ━E
+ * ━E ━E• 試算表             ━E     ━E                     ━E      ━E
+ * ━E ━E• 口座               ━E     ━E                     ━E      ━E
+ * ━E └──────────────────────━E     └──────────────────────━E      ━E
+ * ━E                                                                ━E
+ * ━E 認証: OAuth 2.0 Authorization Code Flow                        ━E
+ * ━E ベ�EスURL: https://api.freee.co.jp                             ━E
+ * └─────────────────────────────────────────────────────────────────━E
  * ```
  *
- * ## Stripe → freee 連携フロー
+ * ## Stripe ↁEfreee 連携フロー
  *
  * ```
  * Stripe Webhook                    AI Accounting Agent              freee
  * ─────────────                     ─────────────────────           ──────
- * checkout.session.completed ──→ Agent が取引内容を解析
- *                                   ├ 取引先を特定/作成  ─────────→ POST /partners
- *                                   ├ 請求書を発行       ─────────→ POST /iv/invoices
- *                                   ├ 入金取引を記録     ─────────→ POST /deals
- *                                   └ 仕訳を確認         ─────────→ GET /journals
+ * checkout.session.completed ──ↁEAgent が取引�E容を解极E
+ *                                   ━E取引�Eを特宁E作�E  ─────────ↁEPOST /partners
+ *                                   ━E請求書を発衁E      ─────────ↁEPOST /iv/invoices
+ *                                   ━E入金取引を記録     ─────────ↁEPOST /deals
+ *                                   ━E仕訳を確誁E        ─────────ↁEGET /journals
  *
- * invoice.paid ────────────────→ Agent が更新処理
- *                                   ├ 入金消込を実行     ─────────→ PUT /deals/{id}
- *                                   └ 売上計上を確認
+ * invoice.paid ────────────────ↁEAgent が更新処琁E
+ *                                   ━E入金消込を実衁E    ─────────ↁEPUT /deals/{id}
+ *                                   ━E売上計上を確誁E
  * ```
  */
 
 // =============================================================================
-// OAuth 2.0 設定
+// OAuth 2.0 設宁E
 // =============================================================================
 
-/** freee OAuth 2.0 エンドポイント */
+/** freee OAuth 2.0 エンド�EインチE*/
 export const FREEE_OAUTH_CONFIG = {
-  /** 認可エンドポイント */
+  /** 認可エンド�EインチE*/
   authorizationUrl: 'https://accounts.secure.freee.co.jp/public_api/authorize',
-  /** トークンエンドポイント */
+  /** ト�Eクンエンド�EインチE*/
   tokenUrl: 'https://accounts.secure.freee.co.jp/public_api/token',
-  /** アクセストークン有効期間（秒） */
+  /** アクセスト�Eクン有効期間�E�秒！E*/
   accessTokenLifetimeSeconds: 21_600, // 6 hours
-  /** リフレッシュトークンはローテーション方式（使用するたびに新しいものが発行される） */
+  /** リフレチE��ュト�EクンはローチE�Eション方式（使用するた�Eに新しいも�Eが発行される�E�E*/
   refreshTokenRotation: true,
-  /** 環境変数キー */
+  /** 環墁E��数キー */
   envVars: {
     clientId: 'FREEE_CLIENT_ID',
     clientSecret: 'FREEE_CLIENT_SECRET',
@@ -73,51 +73,51 @@ export const FREEE_OAUTH_CONFIG = {
   },
 } as const;
 
-/** freee OAuth トークン */
+/** freee OAuth ト�Eクン */
 export interface FreeeOAuthToken {
-  /** アクセストークン */
+  /** アクセスト�Eクン */
   access_token: string;
-  /** トークン種別 */
+  /** ト�Eクン種別 */
   token_type: 'bearer';
-  /** 有効期間（秒） */
+  /** 有効期間�E�秒！E*/
   expires_in: number;
-  /** リフレッシュトークン（ローテーション方式） */
+  /** リフレチE��ュト�Eクン�E�ローチE�Eション方式！E*/
   refresh_token: string;
-  /** スコープ */
+  /** スコーチE*/
   scope: string;
-  /** 発行日時 (ISO 8601) */
+  /** 発行日晁E(ISO 8601) */
   created_at: number;
 }
 
 // =============================================================================
-// API ベース設定
+// API ベ�Eス設宁E
 // =============================================================================
 
-/** freee API ベース URL */
+/** freee API ベ�Eス URL */
 export const FREEE_API_BASE_URL = 'https://api.freee.co.jp';
 
-/** freee API バージョン・パスプレフィックス */
+/** freee API バ�Eジョン・パスプレフィチE��ス */
 export const FREEE_API_PATHS = {
-  /** 会計 API */
+  /** 会訁EAPI */
   accounting: '/api/1',
   /** 請求書 API */
   invoicing: '/iv',
-  /** 人事労務 API */
+  /** 人事労勁EAPI */
   hr: '/hr',
   /** 販売 API */
   sales: '/sm',
-  /** 工数管理 API */
+  /** 工数管琁EAPI */
   projectManagement: '/pm',
 } as const;
 
 // =============================================================================
-// 会計 API (Accounting) エンドポイント
+// 会訁EAPI (Accounting) エンド�EインチE
 // =============================================================================
 
 /**
- * freee 会計 API エンドポイント定義
+ * freee 会訁EAPI エンド�Eイント定義
  *
- * AI Accounting Agent が Tool として使用する主要エンドポイント。
+ * AI Accounting Agent ぁETool として使用する主要エンド�Eイント、E
  */
 export const FREEE_ACCOUNTING_ENDPOINTS = {
   // --- 事業所 ---
@@ -126,7 +126,7 @@ export const FREEE_ACCOUNTING_ENDPOINTS = {
     get: { method: 'GET' as const, path: '/api/1/companies/{company_id}' },
   },
 
-  // --- 取引（収入・支出） ---
+  // --- 取引（収入・支出�E�E---
   deals: {
     list: { method: 'GET' as const, path: '/api/1/deals' },
     create: { method: 'POST' as const, path: '/api/1/deals' },
@@ -141,7 +141,7 @@ export const FREEE_ACCOUNTING_ENDPOINTS = {
     create: { method: 'POST' as const, path: '/api/1/transfers' },
   },
 
-  // --- 取引先 ---
+  // --- 取引�E ---
   partners: {
     list: { method: 'GET' as const, path: '/api/1/partners' },
     create: { method: 'POST' as const, path: '/api/1/partners' },
@@ -158,7 +158,7 @@ export const FREEE_ACCOUNTING_ENDPOINTS = {
     update: { method: 'PUT' as const, path: '/api/1/account_items/{id}' },
   },
 
-  // --- 経費精算 ---
+  // --- 経費精箁E---
   expenseApplications: {
     list: { method: 'GET' as const, path: '/api/1/expense_applications' },
     create: { method: 'POST' as const, path: '/api/1/expense_applications' },
@@ -174,7 +174,7 @@ export const FREEE_ACCOUNTING_ENDPOINTS = {
     update: { method: 'PUT' as const, path: '/api/1/payment_requests/{id}' },
   },
 
-  // --- 各種申請 ---
+  // --- 吁E��申諁E---
   approvalRequests: {
     list: { method: 'GET' as const, path: '/api/1/approval_requests' },
     create: { method: 'POST' as const, path: '/api/1/approval_requests' },
@@ -223,7 +223,7 @@ export const FREEE_ACCOUNTING_ENDPOINTS = {
     create: { method: 'POST' as const, path: '/api/1/tags' },
   },
 
-  // --- ファイルボックス（領収書等） ---
+  // --- ファイルボックス�E�領収書等！E---
   receipts: {
     list: { method: 'GET' as const, path: '/api/1/receipts' },
     create: { method: 'POST' as const, path: '/api/1/receipts' },
@@ -236,14 +236,14 @@ export const FREEE_ACCOUNTING_ENDPOINTS = {
 } as const;
 
 // =============================================================================
-// 請求書 API (Invoicing) エンドポイント
+// 請求書 API (Invoicing) エンド�EインチE
 // =============================================================================
 
 /**
- * freee 請求書 API エンドポイント定義
+ * freee 請求書 API エンド�Eイント定義
  *
- * 旧会計 API の /invoices は非推奨。こちらが正式な請求書 API。
- * インボイス制度（適格請求書）に対応。
+ * 旧会訁EAPI の /invoices は非推奨。こちらが正式な請求書 API、E
+ * インボイス制度�E�適格請求書�E�に対応、E
  */
 export const FREEE_INVOICING_ENDPOINTS = {
   // --- 請求書 ---
@@ -275,7 +275,7 @@ export const FREEE_INVOICING_ENDPOINTS = {
 } as const;
 
 // =============================================================================
-// Webhook 設定
+// Webhook 設宁E
 // =============================================================================
 
 /** freee Webhook イベント種別 */
@@ -287,7 +287,7 @@ export type FreeeWebhookEvent =
   | 'accounting:payment_request:created'
   | 'accounting:payment_request:updated';
 
-/** freee Webhook ペイロード */
+/** freee Webhook ペイローチE*/
 export interface FreeeWebhookPayload {
   /** 通知 ID */
   id: string;
@@ -297,13 +297,13 @@ export interface FreeeWebhookPayload {
   resource: string;
   /** アクション */
   action: 'created' | 'updated';
-  /** 作成日時 */
+  /** 作�E日晁E*/
   created_at: string;
   /** 事業所 ID */
   company_id: number;
-  /** オブジェクト ID */
+  /** オブジェクチEID */
   object_id: number;
-  /** ステータス */
+  /** スチE�Eタス */
   status: string;
   /** ユーザー ID */
   user_id: number;
@@ -311,27 +311,27 @@ export interface FreeeWebhookPayload {
   approval_action?: 'approve' | 'reject';
 }
 
-/** freee Webhook 設定 */
+/** freee Webhook 設宁E*/
 export const FREEE_WEBHOOK_CONFIG = {
   /** Webhook 検証ヘッダー */
   verificationHeader: 'x-freee-token',
-  /** Webhook 送信元ドメイン */
+  /** Webhook 送信允E��メイン */
   sourceHost: 'egw.freee.co.jp',
-  /** 環境変数: Webhook 検証トークン */
+  /** 環墁E��数: Webhook 検証ト�Eクン */
   verificationTokenEnvVar: 'FREEE_WEBHOOK_VERIFICATION_TOKEN',
 } as const;
 
 // =============================================================================
-// freee データモデル（API レスポンス型）
+// freee チE�EタモチE���E�EPI レスポンス型！E
 // =============================================================================
 
 /** 取引種別 */
 export type FreeeDealType = 'income' | 'expense';
 
-/** 取引ステータス */
+/** 取引スチE�Eタス */
 export type FreeeDealStatus = 'settled' | 'unsettled';
 
-/** 取引（収入・支出）— freee deals */
+/** 取引（収入・支出�E� Efreee deals */
 export interface FreeeDeal {
   id: number;
   company_id: number;
@@ -347,7 +347,7 @@ export interface FreeeDeal {
   payments: FreeeDealPayment[];
 }
 
-/** 取引明細行 */
+/** 取引�E細衁E*/
 export interface FreeeDealDetail {
   id?: number;
   account_item_id: number;
@@ -360,7 +360,7 @@ export interface FreeeDealDetail {
   vat?: number;
 }
 
-/** 取引の支払い情報 */
+/** 取引�E支払い惁E�� */
 export interface FreeeDealPayment {
   id?: number;
   date: string;
@@ -369,7 +369,7 @@ export interface FreeeDealPayment {
   amount: number;
 }
 
-/** 取引先 — freee partners */
+/** 取引�E  Efreee partners */
 export interface FreeePartner {
   id: number;
   company_id: number;
@@ -401,7 +401,7 @@ export interface FreeePartner {
   invoice_registration_number?: string;
 }
 
-/** 請求書 — freee invoicing API */
+/** 請求書  Efreee invoicing API */
 export interface FreeeInvoice {
   id: number;
   company_id: number;
@@ -424,7 +424,7 @@ export interface FreeeInvoice {
   notes?: string;
 }
 
-/** 請求書明細行 */
+/** 請求書明細衁E*/
 export interface FreeeInvoiceLine {
   id?: number;
   type?: 'normal' | 'discount' | 'text';
@@ -439,7 +439,7 @@ export interface FreeeInvoiceLine {
   tax_code?: number;
 }
 
-/** 経費精算 — freee expense_applications */
+/** 経費精箁E Efreee expense_applications */
 export interface FreeeExpenseApplication {
   id: number;
   company_id: number;
@@ -454,7 +454,7 @@ export interface FreeeExpenseApplication {
   applicant_id?: number;
 }
 
-/** 経費精算明細行 */
+/** 経費精算�E細衁E*/
 export interface FreeeExpenseApplicationLine {
   id?: number;
   transaction_date: string;
@@ -464,7 +464,7 @@ export interface FreeeExpenseApplicationLine {
   receipt_id?: number;
 }
 
-/** 支払依頼 — freee payment_requests */
+/** 支払依頼  Efreee payment_requests */
 export interface FreeePaymentRequest {
   id: number;
   company_id: number;
@@ -480,7 +480,7 @@ export interface FreeePaymentRequest {
   document_code?: string;
 }
 
-/** 支払依頼明細行 */
+/** 支払依頼明細衁E*/
 export interface FreeePaymentRequestLine {
   id?: number;
   line_type: 'payment' | 'withholding_tax' | 'adjustment';
@@ -492,7 +492,7 @@ export interface FreeePaymentRequestLine {
   tag_ids?: number[];
 }
 
-/** 勘定科目 — freee account_items */
+/** 勘定科目  Efreee account_items */
 export interface FreeeAccountItem {
   id: number;
   company_id: number;
@@ -507,7 +507,7 @@ export interface FreeeAccountItem {
   group_name?: string;
 }
 
-/** 口座 — freee walletables */
+/** 口座  Efreee walletables */
 export interface FreeeWalletable {
   id: number;
   company_id: number;
@@ -517,7 +517,7 @@ export interface FreeeWalletable {
   last_balance?: number;
 }
 
-/** 試算表行 — freee reports */
+/** 試算表衁E Efreee reports */
 export interface FreeeTrialBalanceRow {
   account_item_id: number;
   account_item_name: string;
@@ -526,7 +526,7 @@ export interface FreeeTrialBalanceRow {
   debit_amount: number;
   credit_amount: number;
   closing_balance: number;
-  /** 取引先内訳（partners パラメータ指定時） */
+  /** 取引�E冁E���E�Eartners パラメータ持E��時�E�E*/
   partners?: Array<{
     id: number;
     name: string;
@@ -537,122 +537,122 @@ export interface FreeeTrialBalanceRow {
 }
 
 // =============================================================================
-// freee ↔ HARMONIC insight マッピング
+// freee ↁEHARMONIC insight マッピング
 // =============================================================================
 
 /**
- * HARMONIC insight 製品 → freee 品目マッピング
+ * HARMONIC insight 製品EↁEfreee 品目マッピング
  *
- * freee 上で各製品をどの品目として計上するかの対応表。
- * 初回起動時に freee の items API で品目を自動作成する。
+ * freee 上で吁E��品をどの品目として計上するかの対応表、E
+ * 初回起動時に freee の items API で品目を�E動作�Eする、E
  */
 export interface FreeeProductItemMapping {
-  /** HARMONIC insight 製品コード */
+  /** HARMONIC insight 製品コーチE*/
   productCode: string;
-  /** freee 品目名 */
+  /** freee 品目吁E*/
   freeeItemName: string;
-  /** freee 品目名（英語） */
+  /** freee 品目名（英語！E*/
   freeeItemNameEn: string;
-  /** 売上計上時の勘定科目名 */
+  /** 売上計上時の勘定科目吁E*/
   revenueAccountName: string;
-  /** 売上計上時の税区分コード（課税売上10%） */
+  /** 売上計上時の税区刁E��ード（課税売丁E0%�E�E*/
   revenueTaxCode: number;
 }
 
-/** 製品 → freee 品目マッピング定義 */
+/** 製品EↁEfreee 品目マッピング定義 */
 export const FREEE_PRODUCT_ITEM_MAPPINGS: FreeeProductItemMapping[] = [
   // --- Tier 3: InsightOffice Suite ---
-  { productCode: 'INSS', freeeItemName: 'InsightOfficeSlide ライセンス', freeeItemNameEn: 'InsightOfficeSlide License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'IOSH', freeeItemName: 'InsightOfficeSheet ライセンス', freeeItemNameEn: 'InsightOfficeSheet License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'IOSD', freeeItemName: 'InsightOfficeDoc ライセンス', freeeItemNameEn: 'InsightOfficeDoc License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'INPY', freeeItemName: 'InsightPy ライセンス', freeeItemNameEn: 'InsightPy License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  { productCode: 'INSS', freeeItemName: 'InsightOfficeSlide ライセンス', freeeItemNameEn: 'InsightOfficeSlide License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
+  { productCode: 'IOSH', freeeItemName: 'InsightOfficeSheet ライセンス', freeeItemNameEn: 'InsightOfficeSheet License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
+  { productCode: 'IOSD', freeeItemName: 'InsightOfficeDoc ライセンス', freeeItemNameEn: 'InsightOfficeDoc License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
+  { productCode: 'INPY', freeeItemName: 'InsightPy ライセンス', freeeItemNameEn: 'InsightPy License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
 
   // --- Tier 4: InsightSeniorOffice ---
-  { productCode: 'ISOF', freeeItemName: 'InsightSeniorOffice ライセンス', freeeItemNameEn: 'InsightSeniorOffice License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  { productCode: 'ISOF', freeeItemName: 'InsightSeniorOffice ライセンス', freeeItemNameEn: 'InsightSeniorOffice License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
 
-  // --- Tier 2: AI ツール ---
-  { productCode: 'INMV', freeeItemName: 'InsightMovie ライセンス', freeeItemNameEn: 'InsightMovie License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'INIG', freeeItemName: 'InsightImageGen ライセンス', freeeItemNameEn: 'InsightImageGen License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  // --- Tier 2: AI チE�Eル ---
+  { productCode: 'INMV', freeeItemName: 'InsightCast ライセンス', freeeItemNameEn: 'InsightCast License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
+  { productCode: 'INIG', freeeItemName: 'InsightImageGen ライセンス', freeeItemNameEn: 'InsightImageGen License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
 
-  // --- Tier 1: 業務変革ツール ---
-  { productCode: 'INCA', freeeItemName: 'InsightNoCodeAnalyzer ライセンス', freeeItemNameEn: 'InsightNoCodeAnalyzer License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'INBT', freeeItemName: 'InsightBot ライセンス', freeeItemNameEn: 'InsightBot License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'IVIN', freeeItemName: 'InterviewInsight ライセンス', freeeItemNameEn: 'InterviewInsight License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  // --- Tier 1: 業務変革チE�Eル ---
+  { productCode: 'INCA', freeeItemName: 'InsightNoCodeAnalyzer ライセンス', freeeItemNameEn: 'InsightNoCodeAnalyzer License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
+  { productCode: 'INBT', freeeItemName: 'InsightBot ライセンス', freeeItemNameEn: 'InsightBot License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
+  { productCode: 'IVIN', freeeItemName: 'InterviewInsight ライセンス', freeeItemNameEn: 'InterviewInsight License', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
 
   // --- AI アドオン ---
-  { productCode: 'AI_ADDON_STANDARD', freeeItemName: 'AI クレジット Standard 200', freeeItemNameEn: 'AI Credits Standard 200', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'AI_ADDON_PREMIUM', freeeItemName: 'AI クレジット Premium 200', freeeItemNameEn: 'AI Credits Premium 200', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  { productCode: 'AI_ADDON_STANDARD', freeeItemName: 'AI クレジチE�� Standard 200', freeeItemNameEn: 'AI Credits Standard 200', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
+  { productCode: 'AI_ADDON_PREMIUM', freeeItemName: 'AI クレジチE�� Premium 200', freeeItemNameEn: 'AI Credits Premium 200', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
 
-  // --- コンサルティング ---
-  { productCode: 'CONSULTING', freeeItemName: 'コンサルティングサービス', freeeItemNameEn: 'Consulting Service', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  // --- コンサルチE��ング ---
+  { productCode: 'CONSULTING', freeeItemName: 'コンサルチE��ングサービス', freeeItemNameEn: 'Consulting Service', revenueAccountName: '売上髁E, revenueTaxCode: 1 },
 ];
 
 /**
- * HARMONIC insight で使用する freee 勘定科目カテゴリ
+ * HARMONIC insight で使用する freee 勘定科目カチE��リ
  *
- * Agent が仕訳を切る際に参照する勘定科目の論理マッピング。
- * 実際の account_item_id は freee 側で事業所ごとに異なるため、
- * Agent が初回接続時に name ベースで ID を解決しキャッシュする。
+ * Agent が仕訳を�Eる際に参�Eする勘定科目の論理マッピング、E
+ * 実際の account_item_id は freee 側で事業所ごとに異なるため、E
+ * Agent が�E回接続時に name ベ�Eスで ID を解決しキャチE��ュする、E
  */
 export const FREEE_ACCOUNT_CATEGORY_MAP = {
-  // --- 売上・収入 ---
+  // --- 売上�E収�E ---
   revenue: {
-    sales: { name: '売上高', nameEn: 'Sales Revenue', category: 'income' },
-    consulting: { name: 'コンサルティング収入', nameEn: 'Consulting Revenue', category: 'income' },
+    sales: { name: '売上髁E, nameEn: 'Sales Revenue', category: 'income' },
+    consulting: { name: 'コンサルチE��ング収�E', nameEn: 'Consulting Revenue', category: 'income' },
   },
   // --- 売上原価 ---
   cogs: {
     apiCost: { name: '外注費', nameEn: 'API/Infrastructure Cost', category: 'expense' },
-    serverCost: { name: 'サーバー費用', nameEn: 'Server Cost', category: 'expense' },
+    serverCost: { name: 'サーバ�E費用', nameEn: 'Server Cost', category: 'expense' },
   },
   // --- 販管費 ---
   sga: {
-    advertising: { name: '広告宣伝費', nameEn: 'Advertising', category: 'expense' },
-    travel: { name: '旅費交通費', nameEn: 'Travel', category: 'expense' },
+    advertising: { name: '庁E��宣伝費', nameEn: 'Advertising', category: 'expense' },
+    travel: { name: '旁E��交通費', nameEn: 'Travel', category: 'expense' },
     supplies: { name: '消耗品費', nameEn: 'Supplies', category: 'expense' },
     communication: { name: '通信費', nameEn: 'Communication', category: 'expense' },
-    subscription: { name: '支払手数料', nameEn: 'Subscription/Commission', category: 'expense' },
-    stripe_fee: { name: '支払手数料', nameEn: 'Stripe Fee', category: 'expense' },
+    subscription: { name: '支払手数斁E, nameEn: 'Subscription/Commission', category: 'expense' },
+    stripe_fee: { name: '支払手数斁E, nameEn: 'Stripe Fee', category: 'expense' },
   },
-  // --- 資産・負債 ---
+  // --- 賁E��・負債 ---
   balance: {
-    accountsReceivable: { name: '売掛金', nameEn: 'Accounts Receivable', category: 'asset' },
-    accountsPayable: { name: '買掛金', nameEn: 'Accounts Payable', category: 'liability' },
-    bankAccount: { name: '普通預金', nameEn: 'Bank Account', category: 'asset' },
+    accountsReceivable: { name: '売掛��', nameEn: 'Accounts Receivable', category: 'asset' },
+    accountsPayable: { name: '買掛��', nameEn: 'Accounts Payable', category: 'liability' },
+    bankAccount: { name: '普通預��', nameEn: 'Bank Account', category: 'asset' },
   },
 } as const;
 
 // =============================================================================
-// レート制限設定
+// レート制限設宁E
 // =============================================================================
 
-/** freee API レート制限ハンドリング設定 */
+/** freee API レート制限ハンドリング設宁E*/
 export const FREEE_RATE_LIMIT_CONFIG = {
-  /** 403 発生時のクールダウン期間（ミリ秒） */
+  /** 403 発生時のクールダウン期間�E�ミリ秒！E*/
   globalCooldownMs: 10 * 60 * 1000, // 10 minutes
   /** 429 発生時の最大リトライ回数 */
   maxRetries: 3,
-  /** リトライ間隔の指数バックオフ基数（ミリ秒） */
+  /** リトライ間隔の持E��バックオフ基数�E�ミリ秒！E*/
   retryBackoffBaseMs: 2_000,
-  /** ファイルボックス API のレート制限（リクエスト/分） */
+  /** ファイルボックス API のレート制限（リクエスチE刁E��E*/
   fileBoxRatePerMinute: 300,
-  /** 通常 API の安全なリクエスト間隔（ミリ秒） */
+  /** 通常 API の安�Eなリクエスト間隔（ミリ秒！E*/
   safeIntervalMs: 500,
 } as const;
 
 // =============================================================================
-// ヘルパー関数
+// ヘルパ�E関数
 // =============================================================================
 
 /**
- * 製品コードに対応する freee 品目マッピングを取得
+ * 製品コードに対応すめEfreee 品目マッピングを取征E
  */
 export function getFreeeItemMapping(productCode: string): FreeeProductItemMapping | null {
   return FREEE_PRODUCT_ITEM_MAPPINGS.find(m => m.productCode === productCode) ?? null;
 }
 
 /**
- * freee OAuth が設定済みかチェック
+ * freee OAuth が設定済みかチェチE��
  */
 export function isFreeeConfigured(): boolean {
   return !!(
@@ -663,7 +663,7 @@ export function isFreeeConfigured(): boolean {
 }
 
 /**
- * freee API の完全 URL を構築
+ * freee API の完�E URL を構篁E
  */
 export function buildFreeeApiUrl(path: string): string {
   return `${FREEE_API_BASE_URL}${path}`;
@@ -674,10 +674,10 @@ export function buildFreeeApiUrl(path: string): string {
 // =============================================================================
 
 /**
- * freee 統合に必要な DB テーブル
+ * freee 統合に忁E��な DB チE�Eブル
  */
 export const FREEE_DB_SCHEMA_REFERENCE = {
-  /** freee OAuth トークン管理 */
+  /** freee OAuth ト�Eクン管琁E*/
   freee_tokens: `
     CREATE TABLE IF NOT EXISTS freee_tokens (
       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -692,7 +692,7 @@ export const FREEE_DB_SCHEMA_REFERENCE = {
     CREATE UNIQUE INDEX idx_freee_tokens_company ON freee_tokens(company_id);
   `,
 
-  /** freee 品目 ID キャッシュ（name → id マッピング） */
+  /** freee 品目 ID キャチE��ュ�E�Eame ↁEid マッピング�E�E*/
   freee_item_cache: `
     CREATE TABLE IF NOT EXISTS freee_item_cache (
       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -706,7 +706,7 @@ export const FREEE_DB_SCHEMA_REFERENCE = {
     );
   `,
 
-  /** freee 勘定科目 ID キャッシュ */
+  /** freee 勘定科目 ID キャチE��ュ */
   freee_account_cache: `
     CREATE TABLE IF NOT EXISTS freee_account_cache (
       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -720,7 +720,7 @@ export const FREEE_DB_SCHEMA_REFERENCE = {
     );
   `,
 
-  /** Stripe ↔ freee 同期記録 */
+  /** Stripe ↁEfreee 同期記録 */
   stripe_freee_sync: `
     CREATE TABLE IF NOT EXISTS stripe_freee_sync (
       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -741,7 +741,7 @@ export const FREEE_DB_SCHEMA_REFERENCE = {
 } as const;
 
 // =============================================================================
-// エクスポート
+// エクスポ�EチE
 // =============================================================================
 
 export default {
@@ -761,13 +761,13 @@ export default {
   FREEE_PRODUCT_ITEM_MAPPINGS,
   FREEE_ACCOUNT_CATEGORY_MAP,
 
-  // レート制限
+  // レート制陁E
   FREEE_RATE_LIMIT_CONFIG,
 
   // DB
   FREEE_DB_SCHEMA_REFERENCE,
 
-  // ヘルパー
+  // ヘルパ�E
   getFreeeItemMapping,
   isFreeeConfigured,
   buildFreeeApiUrl,

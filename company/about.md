@@ -1,57 +1,57 @@
-# HARMONIC insight について
+# HARMONIC insight につぁE��
 
-## 会社概要
+## 会社概要E
 
-ハーモニックインサイト合同会社は、28年の現場経験を持つITコンサルタントが設立した、AI技術を活用したビジネスソフトウェアの開発・コンサルティング企業です。コンサルティングとテクノロジーの融合により、業務プロセスの変革を支援しています。
+ハ�Eモニックインサイト合同会社は、E8年の現場経験を持つITコンサルタントが設立した、AI技術を活用したビジネスソフトウェアの開発・コンサルチE��ング企業です。コンサルチE��ングとチE��ノロジーの融合により、業務�Eロセスの変革を支援してぁE��す、E
 
 ## ミッション
 
-> AIの力で、すべてのビジネスパーソンの可能性を解き放つ
+> AIの力で、すべてのビジネスパ�Eソンの可能性を解き放つ
 
-## 公式サイト
+## 公式サイチE
 
-| サイト | URL | 説明 |
+| サイチE| URL | 説昁E|
 |--------|-----|------|
-| コーポレート | https://h-insight.jp | ハーモニックインサイト合同会社 |
-| Insight Office | https://www.insight-office.com | AI搭載 業務効率化ツール 10製品 |
-| Insight Novels | https://www.insight-novels.com | AI活用 小説プラットフォーム |
-| 瀬田博之 | https://erikhiroyuki.com | 代表コンサルタント 個人事業主 |
+| コーポレーチE| https://h-insight.jp | ハ�Eモニックインサイト合同会社 |
+| Insight Office | https://www.insight-office.com | AI搭輁E業務効玁E��チE�Eル 10製品E|
+| Insight Novels | https://www.insight-novels.com | AI活用 小説プラチE��フォーム |
+| 瀬田博乁E| https://erikhiroyuki.com | 代表コンサルタンチE個人事業主 |
 
 ## 製品群
 
-### Tier 1: 業務変革ツール
+### Tier 1: 業務変革チE�Eル
 
-1. **InsightNoCodeAnalyzer (INCA)** - RPA・ローコード解析・移行アセスメント
-2. **InsightBot (INBT)** - AIエディタ搭載 業務最適化RPA + Orchestrator
+1. **InsightNoCodeAnalyzer (INCA)** - RPA・ローコード解析�E移行アセスメンチE
+2. **InsightBot (INBT)** - AIエチE��タ搭輁E業務最適化RPA + Orchestrator
 3. **InterviewInsight (IVIN)** - 自動ヒアリング・業務調査支援
 
-### Tier 2: AI活用ツール
+### Tier 2: AI活用チE�Eル
 
-4. **InsightMovie (INMV)** - 画像・テキストから動画作成
-5. **InsightImageGen (INIG)** - 業務資料向けAI画像の大量自動生成
+4. **InsightCast (INMV)** - 画像�EチE��ストから動画作�E
+5. **InsightImageGen (INIG)** - 業務賁E��向けAI画像�E大量�E動生戁E
 
 ### Tier 3: InsightOffice Suite
 
-6. **InsightOfficeSlide (INSS)** - AIアシスタント搭載 プレゼンテーション作成・編集（MS Office 不要）
-7. **InsightOfficeSheet (IOSH)** - AIアシスタント搭載 スプレッドシート作成・編集（MS Office 不要）
-8. **InsightOfficeDoc (IOSD)** - AIアシスタント搭載 ドキュメント作成・編集（MS Office 不要）
-9. **InsightPy (INPY)** - AIエディタ搭載 業務調査・データ収集Python実行基盤
+6. **InsightOfficeSlide (INSS)** - AIアシスタント搭輁EプレゼンチE�Eション作�E・編雁E��ES Office 不要E��E
+7. **InsightOfficeSheet (IOSH)** - AIアシスタント搭輁EスプレチE��シート作�E・編雁E��ES Office 不要E��E
+8. **InsightOfficeDoc (IOSD)** - AIアシスタント搭輁Eドキュメント作�E・編雁E��ES Office 不要E��E
+9. **InsightPy (INPY)** - AIエチE��タ搭輁E業務調査・チE�Eタ収集Python実行基盤
 
 ## 価値観
 
-- **Innovation** - 常に最先端の技術を追求
-- **Trust** - データプライバシーとセキュリティの厳守
-- **Simplicity** - 複雑な技術をシンプルに提供
+- **Innovation** - 常に最先端の技術を追汁E
+- **Trust** - チE�EタプライバシーとセキュリチE��の厳宁E
+- **Simplicity** - 褁E��な技術をシンプルに提侁E
 - **Impact** - 実際のビジネス成果にこだわる
 
 ## 沿革
 
-- 2024年 - 会社設立
-- 2024年 - InsightOffice Suite 開発開始
-- 2025年 - Insight Office 製品サイト公開 (insight-office.com)
+- 2024年 - 会社設竁E
+- 2024年 - InsightOffice Suite 開発開姁E
+- 2025年 - Insight Office 製品サイト�E閁E(insight-office.com)
 
-## 連絡先
+## 連絡允E
 
-- 一般問い合わせ: info@h-insight.jp
-- サポート: support@h-insight.jp
-- コーポレートサイト: https://h-insight.jp
+- 一般問い合わぁE info@h-insight.jp
+- サポ�EチE support@h-insight.jp
+- コーポレートサイチE https://h-insight.jp

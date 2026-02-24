@@ -1,13 +1,13 @@
 """
-HARMONIC insight — リモートコンフィグ クライアント (Python / CustomTkinter)
+HARMONIC insight  Eリモートコンフィグ クライアンチE(Python / CustomTkinter)
 
 ============================================================================
-【使い方】
+【使ぁE��、E
 ============================================================================
 
     from remote_config import RemoteConfigClient
 
-    # 1. 初期化
+    # 1. 初期匁E
     client = RemoteConfigClient(
         product_code="INMV",
         app_version="1.0.0",
@@ -18,11 +18,11 @@ HARMONIC insight — リモートコンフィグ クライアント (Python / Cu
     )
     client.initialize()
 
-    # 2. API キー取得
+    # 2. API キー取征E
     claude_key = client.get_api_key("claude")
     syncfusion_key = client.get_api_key("syncfusion")
 
-    # 3. 更新チェック
+    # 3. 更新チェチE��
     update = client.get_update_check()
     if update and update.get("forceUpdate"):
         show_force_update_dialog(update)
@@ -31,19 +31,19 @@ HARMONIC insight — リモートコンフィグ クライアント (Python / Cu
     if client.is_feature_enabled("new_editor"):
         enable_new_editor()
 
-    # 5. モデルレジストリ
+    # 5. モチE��レジストリ
     models = client.get_model_registry()
 
-    # 6. クリーンアップ（アプリ終了時）
+    # 6. クリーンアチE�E�E�アプリ終亁E���E�E
     client.dispose()
 
-【依存】
+【依存、E
 - requests (HTTP)
-- keyring (セキュアストレージ — 任意)
+- keyring (セキュアストレージ  E任愁E
 
-【対象製品】
-- INMV (InsightMovie) — Python + CustomTkinter + PyInstaller
-- INIG (InsightImageGen) — Python + CustomTkinter + PyInstaller
+【対象製品、E
+- INMV (InsightCast)  EPython + CustomTkinter + PyInstaller
+- INIG (InsightImageGen)  EPython + CustomTkinter + PyInstaller
 ============================================================================
 """
 
@@ -73,23 +73,23 @@ BASE_URL = "https://license.harmonicinsight.com"
 CONFIG_ENDPOINT = "/api/v1/remote-config/config"
 
 DEFAULT_POLLING_INTERVAL_S = 4 * 60 * 60  # 4時間
-INITIAL_DELAY_S = 5  # 5秒
-ERROR_RETRY_INTERVAL_S = 15 * 60  # 15分
+INITIAL_DELAY_S = 5  # 5私E
+ERROR_RETRY_INTERVAL_S = 15 * 60  # 15刁E
 MAX_CONSECUTIVE_ERRORS = 5
 CACHE_VERSION = 1
 
-TTL_UPDATE_CHECK = 4 * 60 * 60  # 秒
+TTL_UPDATE_CHECK = 4 * 60 * 60  # 私E
 TTL_API_KEYS = 24 * 60 * 60
 TTL_MODEL_REGISTRY = 4 * 60 * 60
 TTL_FEATURE_FLAGS = 1 * 60 * 60
 
 
 # =============================================================================
-# デバイスID ヘルパー
+# チE��イスID ヘルパ�E
 # =============================================================================
 
 def get_or_create_device_id(product_code: str = "shared") -> str:
-    """デバイスIDを取得（なければ生成して保存）"""
+    """チE��イスIDを取得（なければ生�Eして保存！E""
     cache_dir = _get_cache_dir(product_code)
     device_id_path = cache_dir / "device-id"
 
@@ -105,7 +105,7 @@ def get_or_create_device_id(product_code: str = "shared") -> str:
 
 
 def _generate_device_id() -> str:
-    """マシン固有のデバイスIDを生成"""
+    """マシン固有�EチE��イスIDを生戁E""
     parts = [
         platform.node(),  # hostname
         platform.machine(),
@@ -117,7 +117,7 @@ def _generate_device_id() -> str:
 
 
 def _get_cache_dir(product_code: str) -> Path:
-    """プラットフォームに応じたキャッシュディレクトリ"""
+    """プラチE��フォームに応じたキャチE��ュチE��レクトリ"""
     if platform.system() == "Windows":
         base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local"))
     elif platform.system() == "Darwin":
@@ -128,15 +128,15 @@ def _get_cache_dir(product_code: str) -> Path:
 
 
 # =============================================================================
-# メインクライアント
+# メインクライアンチE
 # =============================================================================
 
 class RemoteConfigClient:
     """
-    リモートコンフィグクライアント
+    リモートコンフィグクライアンチE
 
-    アプリ起動時に initialize() を呼び出すと、
-    バックグラウンドスレッドで定期ポーリングを開始する。
+    アプリ起動時に initialize() を呼び出すと、E
+    バックグラウンドスレチE��で定期ポ�Eリングを開始する、E
     """
 
     def __init__(
@@ -189,14 +189,14 @@ class RemoteConfigClient:
         self.on_error: Callable[[Exception], None] | None = None
 
     # =========================================================================
-    # 初期化
+    # 初期匁E
     # =========================================================================
 
     def initialize(self) -> None:
-        """サービスを初期化（起動時に1回呼ぶ）"""
+        """サービスを�E期化�E�起動時に1回呼ぶ�E�E""
         self._load_cache()
 
-        # バックグラウンドポーリング開始
+        # バックグラウンド�Eーリング開姁E
         self._poll_thread = threading.Thread(
             target=self._polling_loop,
             daemon=True,
@@ -205,11 +205,11 @@ class RemoteConfigClient:
         self._poll_thread.start()
 
     # =========================================================================
-    # パブリック API
+    # パブリチE�� API
     # =========================================================================
 
     def get_update_check(self) -> dict[str, Any] | None:
-        """更新チェック結果を取得"""
+        """更新チェチE��結果を取征E""
         with self._lock:
             if self._last_response:
                 return self._last_response.get("updateCheck")
@@ -219,7 +219,7 @@ class RemoteConfigClient:
             return None
 
     def get_api_key(self, provider: str) -> str | None:
-        """API キーを取得（復号済み）"""
+        """API キーを取得（復号済み�E�E""
         with self._lock:
             # メモリから
             if self._last_response:
@@ -227,7 +227,7 @@ class RemoteConfigClient:
                     if key.get("provider") == provider:
                         return self._decrypt_api_key(key)
 
-            # キャッシュから
+            # キャチE��ュから
             cached_keys = self._cache.get("apiKeys", {})
             cached = cached_keys.get(provider)
             if cached and self._is_cache_valid(cached) and cached.get("data"):
@@ -236,7 +236,7 @@ class RemoteConfigClient:
             return None
 
     def get_model_registry(self) -> list[dict[str, Any]] | None:
-        """モデルレジストリを取得"""
+        """モチE��レジストリを取征E""
         with self._lock:
             if self._last_response and self._last_response.get("modelRegistry"):
                 return self._last_response["modelRegistry"].get("models")
@@ -246,7 +246,7 @@ class RemoteConfigClient:
             return None
 
     def is_feature_enabled(self, flag_key: str) -> bool:
-        """フィーチャーフラグの判定"""
+        """フィーチャーフラグの判宁E""
         with self._lock:
             flags = None
             if self._last_response:
@@ -266,7 +266,7 @@ class RemoteConfigClient:
             return False
 
     def get_feature_flags(self) -> list[dict[str, Any]] | None:
-        """全フィーチャーフラグを取得"""
+        """全フィーチャーフラグを取征E""
         with self._lock:
             if self._last_response:
                 ff = self._last_response.get("featureFlags")
@@ -278,16 +278,16 @@ class RemoteConfigClient:
             return None
 
     def get_last_response(self) -> dict[str, Any] | None:
-        """最新レスポンス全体"""
+        """最新レスポンス全佁E""
         with self._lock:
             return self._last_response
 
     # =========================================================================
-    # サーバー通信
+    # サーバ�E通信
     # =========================================================================
 
     def fetch_config(self) -> dict[str, Any] | None:
-        """サーバーからコンフィグを取得"""
+        """サーバ�Eからコンフィグを取征E""
         try:
             body = {
                 "productCode": self._product_code,
@@ -347,19 +347,19 @@ class RemoteConfigClient:
             return self._last_response
 
     # =========================================================================
-    # ポーリング
+    # ポ�Eリング
     # =========================================================================
 
     def _polling_loop(self) -> None:
-        """バックグラウンドポーリングループ"""
-        # 初回遅延
+        """バックグラウンド�EーリングルーチE""
+        # 初回遁E��
         if self._stop_event.wait(INITIAL_DELAY_S):
             return
 
         while not self._stop_event.is_set():
             self.fetch_config()
 
-            # ポーリング間隔決定
+            # ポ�Eリング間隔決宁E
             if self._consecutive_errors >= MAX_CONSECUTIVE_ERRORS:
                 interval = ERROR_RETRY_INTERVAL_S * 2
             elif self._consecutive_errors > 1:
@@ -371,11 +371,11 @@ class RemoteConfigClient:
                 return
 
     # =========================================================================
-    # キャッシュ
+    # キャチE��ュ
     # =========================================================================
 
     def _load_cache(self) -> None:
-        """ローカルキャッシュ読み込み"""
+        """ローカルキャチE��ュ読み込み"""
         try:
             if self._cache_path.exists():
                 data = json.loads(self._cache_path.read_text(encoding="utf-8"))
@@ -385,7 +385,7 @@ class RemoteConfigClient:
             self._cache = {"cacheVersion": CACHE_VERSION, "lastUpdated": ""}
 
     def _save_cache(self) -> None:
-        """ローカルキャッシュ保存（アトミック書き込み）"""
+        """ローカルキャチE��ュ保存（アトミチE��書き込み�E�E""
         try:
             self._cache["lastUpdated"] = _iso_now()
             self._cache_dir.mkdir(parents=True, exist_ok=True)
@@ -396,7 +396,7 @@ class RemoteConfigClient:
             pass
 
     def _update_cache(self, config: dict[str, Any]) -> None:
-        """キャッシュを更新"""
+        """キャチE��ュを更新"""
         now = _iso_now()
 
         self._cache["updateCheck"] = {
@@ -435,7 +435,7 @@ class RemoteConfigClient:
 
     @staticmethod
     def _is_cache_valid(entry: dict[str, Any] | None) -> bool:
-        """キャッシュエントリの有効性チェック"""
+        """キャチE��ュエントリの有効性チェチE��"""
         if not entry or not entry.get("data") or not entry.get("fetchedAt"):
             return False
         try:
@@ -456,7 +456,7 @@ class RemoteConfigClient:
             return key_response.get("key", "")
 
         # AES-256-GCM 復号
-        # 復号キーは licenseKey + deviceId から HKDF で派生
+        # 復号キーは licenseKey + deviceId から HKDF で派甁E
         try:
             import hmac
             from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -487,10 +487,10 @@ class RemoteConfigClient:
             return plain.decode()
 
         except ImportError:
-            logger.warning("cryptography パッケージが必要です: pip install cryptography")
+            logger.warning("cryptography パッケージが忁E��でぁE pip install cryptography")
             return key_response.get("key", "")
         except Exception as e:
-            logger.warning("API キー復号失敗: %s", e)
+            logger.warning("API キー復号失敁E %s", e)
             return ""
 
     # =========================================================================
@@ -501,7 +501,7 @@ class RemoteConfigClient:
         """フィーチャーフラグを評価"""
         from datetime import datetime, timezone
 
-        # 期限切れ
+        # 期限刁E��
         expires_at = flag.get("expiresAt")
         if expires_at:
             try:
@@ -511,7 +511,7 @@ class RemoteConfigClient:
             except Exception:
                 pass
 
-        # 製品チェック
+        # 製品チェチE��
         products = flag.get("products", [])
         if products and self._product_code not in products:
             return False
@@ -543,7 +543,7 @@ class RemoteConfigClient:
     # =========================================================================
 
     def dispose(self) -> None:
-        """クリーンアップ（アプリ終了時に呼ぶ）"""
+        """クリーンアチE�E�E�アプリ終亁E��に呼ぶ�E�E""
         self._stop_event.set()
         if self._poll_thread and self._poll_thread.is_alive():
             self._poll_thread.join(timeout=2)
@@ -551,11 +551,11 @@ class RemoteConfigClient:
 
 
 # =============================================================================
-# ユーティリティ
+# ユーチE��リチE��
 # =============================================================================
 
 def _compare_versions(a: str, b: str) -> int:
-    """セマンティックバージョン比較"""
+    """セマンチE��チE��バ�Eジョン比輁E""
     parts_a = [int(x) for x in a.split(".")]
     parts_b = [int(x) for x in b.split(".")]
     max_len = max(len(parts_a), len(parts_b))
@@ -569,7 +569,7 @@ def _compare_versions(a: str, b: str) -> int:
 
 
 def _hash_to_percentage(user_id: str) -> int:
-    """FNV-1a ハッシュ → 0-99"""
+    """FNV-1a ハッシュ ↁE0-99"""
     h = 2166136261
     for c in user_id:
         h ^= ord(c)
@@ -578,6 +578,6 @@ def _hash_to_percentage(user_id: str) -> int:
 
 
 def _iso_now() -> str:
-    """現在時刻を ISO 8601 で返す"""
+    """現在時刻めEISO 8601 で返す"""
     from datetime import datetime, timezone
     return datetime.now(timezone.utc).isoformat()

@@ -1,18 +1,18 @@
 name: Sync skills to dependent repos
 
-# 手動実行のみ。
-# .claude/commands/ のスキルファイルを全依存リポジトリに同期し、
-# SessionStart フックも設定して以降の自動同期を有効化する。
+# 手動実行�Eみ、E
+# .claude/commands/ のスキルファイルを�E依存リポジトリに同期し、E
+# SessionStart フックも設定して以降�E自動同期を有効化する、E
 
 on:
   workflow_dispatch:
     inputs:
       repos:
-        description: '同期対象リポジトリ（カンマ区切り、空=全て）'
+        description: '同期対象リポジトリ�E�カンマ区刁E��、空=全て�E�E
         required: false
         type: string
       dry_run:
-        description: 'Dry run（PR を作成しない）'
+        description: 'Dry run�E�ER を作�EしなぁE��E
         required: false
         type: boolean
         default: false
@@ -28,7 +28,7 @@ jobs:
       max-parallel: 5
       matrix:
         include:
-          # ── Tier 1: 業務変革ツール ──
+          # ── Tier 1: 業務変革チE�Eル ──
           - repo: win-app-nocode-analyzer
             product: INCA
             name: InsightNoCodeAnalyzer
@@ -39,10 +39,10 @@ jobs:
             product: IVIN
             name: InterviewInsight
 
-          # ── Tier 2: AI活用ツール ──
-          - repo: win-app-insight-movie-gen
+          # ── Tier 2: AI活用チE�Eル ──
+          - repo: win-app-insight-cast
             product: INMV
-            name: InsightMovie
+            name: InsightCast
           - repo: win-app-insight-image-gen
             product: INIG
             name: InsightImageGen
@@ -69,7 +69,7 @@ jobs:
             product: ISOF
             name: InsightSeniorOffice
 
-          # ── ユーティリティ ──
+          # ── ユーチE��リチE�� ──
           - repo: win-app-insight-launcher
             product: LAUNCHER
             name: InsightLauncher
@@ -103,7 +103,7 @@ jobs:
             product: QR
             name: InsightQR (Android)
 
-          # ── コンサルティングツール ──
+          # ── コンサルチE��ングチE�Eル ──
           - repo: android-app-consul-evaluate
             product: CONSUL_EVAL
             name: ConsulEvaluate
@@ -158,7 +158,7 @@ jobs:
 
           mkdir -p "$DEST"
 
-          # 全スキルファイルをコピー
+          # 全スキルファイルをコピ�E
           SYNCED=0
           for src_file in "$SRC"/*.md; do
             [ -f "$src_file" ] || continue
@@ -184,42 +184,42 @@ jobs:
           SETTINGS="target-repo/.claude/settings.json"
           SYNC_CMD='bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh'
 
-          # sync-skills.sh もコピー
+          # sync-skills.sh もコピ�E
           if [ -d "target-repo/insight-common/scripts" ]; then
-            echo "insight-common submodule detected — sync-skills.sh available via submodule"
+            echo "insight-common submodule detected  Esync-skills.sh available via submodule"
           else
-            echo "No insight-common submodule — sync-skills hook will work after submodule init"
+            echo "No insight-common submodule  Esync-skills hook will work after submodule init"
           fi
 
           if [ -f "$SETTINGS" ]; then
-            # settings.json が既に存在する場合、sync-skills フックがあるか確認
+            # settings.json が既に存在する場合、sync-skills フックがあるか確誁E
             if grep -q "sync-skills.sh" "$SETTINGS" 2>/dev/null; then
               echo "SessionStart hook already configured"
               echo "hook_updated=false" >> "$GITHUB_ENV"
             else
               echo "Adding sync-skills hook to existing settings.json"
-              # jq で SessionStart フックを追加（既存のフックを壊さない）
+              # jq で SessionStart フックを追加�E�既存�Eフックを壊さなぁE��E
               if command -v jq &> /dev/null; then
                 HOOK='{"type":"command","command":"bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh"}'
                 ENTRY="{\"matcher\":\"\",\"hooks\":[$HOOK]}"
 
-                # SessionStart キーが存在するか確認
+                # SessionStart キーが存在するか確誁E
                 if jq -e '.hooks.SessionStart' "$SETTINGS" > /dev/null 2>&1; then
-                  # 既存の SessionStart 配列に追加
+                  # 既存�E SessionStart 配�Eに追加
                   jq --argjson entry "$ENTRY" '.hooks.SessionStart += [$entry]' "$SETTINGS" > "${SETTINGS}.tmp"
                 else
-                  # hooks.SessionStart を新規作成
+                  # hooks.SessionStart を新規作�E
                   jq --argjson entry "$ENTRY" '.hooks.SessionStart = [$entry]' "$SETTINGS" > "${SETTINGS}.tmp"
                 fi
                 mv "${SETTINGS}.tmp" "$SETTINGS"
                 echo "hook_updated=true" >> "$GITHUB_ENV"
               else
-                echo "::warning::jq not available — cannot merge settings.json safely"
+                echo "::warning::jq not available  Ecannot merge settings.json safely"
                 echo "hook_updated=false" >> "$GITHUB_ENV"
               fi
             fi
           else
-            # settings.json が存在しない場合は新規作成
+            # settings.json が存在しなぁE��合�E新規作�E
             echo "Creating new .claude/settings.json"
             mkdir -p "$(dirname "$SETTINGS")"
             cat > "$SETTINGS" << 'SETTINGSEOF'

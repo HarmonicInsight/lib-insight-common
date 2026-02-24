@@ -17,7 +17,7 @@ public class AppConfig
     public int ConfigVersion { get; set; }
 
     /// <summary>現在の設定バージョン（アプリ一覧を更新したらインクリメント）</summary>
-    private const int CurrentConfigVersion = 13;
+    private const int CurrentConfigVersion = 16;
 
     public List<AppDefinition> Apps { get; set; } = new();
     public string? LastSelectedApp { get; set; }
@@ -51,7 +51,10 @@ public class AppConfig
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AppConfig] Failed to load config: {ex.Message}");
+        }
         return CreateDefault();
     }
 
@@ -193,7 +196,8 @@ public class AppConfig
                 ("INCA", "app-nocode-analyzer-C", "win-app-nocode-analyzer"),
                 ("INBT", "app-Insight-bot-C", "win-app-insight-bot"),
                 // Tier 2
-                ("INMV", "app-insight-movie-gen-win-C", "win-app-insight-movie-gen"),
+                ("INMV", "app-insight-movie-gen-win-C", "win-app-insight-cast"),
+                ("INMV", "win-app-insight-movie-gen", "win-app-insight-cast"),
                 ("INIG", "app-insight-image-gen-C", "win-app-insight-image-gen"),
                 // Tier 3 — INSS: v9 デフォルトは app-insight-slide-win-C（別リポ）、
                 //          実際の INSS リポは app-Insight-slide → win-app-insight-slide
@@ -241,6 +245,54 @@ public class AppConfig
             }
         }
 
+        // v15: IOSH / IOSD / INSS のパスを publish フォルダに統一
+        if (old.ConfigVersion < 15)
+        {
+            foreach (var app in migratedApps)
+            {
+                if (app.ProductCode == "IOSH")
+                {
+                    app.SolutionPath = "HarmonicSheet.sln";
+                    app.ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj";
+                    app.TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj";
+                    app.ExeRelativePath = @"publish\InsightOfficeSheet.exe";
+                }
+                else if (app.ProductCode == "IOSD")
+                {
+                    app.SolutionPath = "HarmonicDoc.sln";
+                    app.ProjectPath = @"src\HarmonicDoc.App\HarmonicDoc.App.csproj";
+                    app.TestProjectPath = @"tests\HarmonicDoc.Core.Tests\HarmonicDoc.Core.Tests.csproj";
+                    app.ExeRelativePath = @"publish\InsightOfficeDoc.exe";
+                }
+                else if (app.ProductCode == "INSS")
+                {
+                    app.TestProjectPath = @"tests\InsightOfficeSlide.Tests\InsightOfficeSlide.Tests.csproj";
+                    app.ExeRelativePath = @"publish\InsightOfficeSlide.exe";
+                }
+            }
+        }
+
+        // v16: INMV (InsightMovie → InsightCast) のリポジトリリネーム
+        if (old.ConfigVersion < 16)
+        {
+            foreach (var app in migratedApps)
+            {
+                if (app.ProductCode == "INMV")
+                {
+                    // リポジトリパスの更新
+                    var oldMovieBase = Path.Combine(DefaultDevRoot, "win-app-insight-movie-gen");
+                    if (app.BasePath.Equals(oldMovieBase, StringComparison.OrdinalIgnoreCase))
+                    {
+                        app.BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-cast");
+                    }
+                    // ソリューション・プロジェクトパスの更新
+                    app.SolutionPath = "InsightCast.sln";
+                    app.ProjectPath = @"InsightCast\InsightCast.csproj";
+                    app.ExeRelativePath = @"InsightCast\bin\{config}\net8.0-windows\InsightCast.exe";
+                }
+            }
+        }
+
         return new AppConfig
         {
             ConfigVersion = CurrentConfigVersion,
@@ -257,7 +309,10 @@ public class AppConfig
             var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(ConfigFile, json);
         }
-        catch { }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AppConfig] Failed to save config: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -314,13 +369,13 @@ public class AppConfig
                 // ══════════════════════════════════════════════════════
                 new()
                 {
-                    Name = "InsightMovie",
+                    Name = "InsightCast",
                     ProductCode = "INMV",
-                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-movie-gen"),
-                    SolutionPath = "InsightMovie.sln",
-                    ProjectPath = @"InsightMovie\InsightMovie.csproj",
+                    BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-cast"),
+                    SolutionPath = "InsightCast.sln",
+                    ProjectPath = @"InsightCast\InsightCast.csproj",
                     TestProjectPath = "",
-                    ExeRelativePath = @"InsightMovie\bin\{config}\net8.0-windows\InsightMovie.exe",
+                    ExeRelativePath = @"InsightCast\bin\{config}\net8.0-windows\InsightCast.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
                     Description = "[Tier2] 画像とテキストから動画を自動作成"
@@ -349,8 +404,8 @@ public class AppConfig
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-slide"),
                     SolutionPath = "InsightOfficeSlide.sln",
                     ProjectPath = @"src\InsightOfficeSlide\InsightOfficeSlide.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"src\InsightOfficeSlide\bin\{config}\net8.0-windows\InsightOfficeSlide.exe",
+                    TestProjectPath = @"tests\InsightOfficeSlide.Tests\InsightOfficeSlide.Tests.csproj",
+                    ExeRelativePath = @"publish\InsightOfficeSlide.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
                     Description = "[Tier3] AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要）"
@@ -360,10 +415,10 @@ public class AppConfig
                     Name = "InsightOfficeSheet",
                     ProductCode = "IOSH",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-sheet"),
-                    SolutionPath = "InsightOfficeSheet.sln",
-                    ProjectPath = @"src\InsightOfficeSheet.App\InsightOfficeSheet.App.csproj",
-                    TestProjectPath = @"tests\InsightOfficeSheet.Core.Tests\InsightOfficeSheet.Core.Tests.csproj",
-                    ExeRelativePath = @"src\InsightOfficeSheet.App\bin\{config}\net8.0-windows\InsightOfficeSheet.exe",
+                    SolutionPath = "HarmonicSheet.sln",
+                    ProjectPath = @"src\HarmonicSheet.App\HarmonicSheet.App.csproj",
+                    TestProjectPath = @"tests\HarmonicSheet.Core.Tests\HarmonicSheet.Core.Tests.csproj",
+                    ExeRelativePath = @"publish\InsightOfficeSheet.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
                     Description = "[Tier3] AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要）"
@@ -373,10 +428,10 @@ public class AppConfig
                     Name = "InsightOfficeDoc",
                     ProductCode = "IOSD",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-doc"),
-                    SolutionPath = "InsightOfficeDoc.sln",
-                    ProjectPath = @"src\InsightOfficeDoc.App\InsightOfficeDoc.App.csproj",
-                    TestProjectPath = "",
-                    ExeRelativePath = @"src\InsightOfficeDoc.App\bin\{config}\net8.0-windows\InsightOfficeDoc.exe",
+                    SolutionPath = "HarmonicDoc.sln",
+                    ProjectPath = @"src\HarmonicDoc.App\HarmonicDoc.App.csproj",
+                    TestProjectPath = @"tests\HarmonicDoc.Core.Tests\HarmonicDoc.Core.Tests.csproj",
+                    ExeRelativePath = @"publish\InsightOfficeDoc.exe",
                     BuildCommand = "build.ps1",
                     InstallerDir = "Output",
                     Description = "[Tier3] AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要）"

@@ -360,14 +360,14 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 
 ### Tier 2: AI活用ツール
 
-#### INMV — InsightMovie
+#### INMV — InsightCast
 
 | 項目 | 内容 |
 |------|------|
 | **説明** | 画像とテキストから動画を自動作成 |
 | **技術** | Python (CustomTkinter + PyInstaller) |
 | **バージョン** | 1.0.0 — 開発中 |
-| **リポジトリ** | `win-app-insight-movie-gen` |
+| **リポジトリ** | `win-app-insight-cast` |
 | **カラーテーマ** | Ivory & Gold |
 
 **主要機能:**

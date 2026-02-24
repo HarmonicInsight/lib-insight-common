@@ -311,9 +311,9 @@ public class IconService
             // Tier 2
             new()
             {
-                ProductCode = "INMV", ProductName = "InsightMovie",
-                MasterSvg = @"brand\icons\svg\icon-insight-movie.svg",
-                MasterPng = @"brand\icons\png\icon-insight-movie.png",
+                ProductCode = "INMV", ProductName = "InsightCast",
+                MasterSvg = @"brand\icons\svg\icon-insight-cast.svg",
+                MasterPng = @"brand\icons\png\icon-insight-cast.png",
                 Motif = "映写機 + フィルム + ギア",
                 Platforms = [new() { Platform = "wpf", Targets = WpfTargets() }],
             },

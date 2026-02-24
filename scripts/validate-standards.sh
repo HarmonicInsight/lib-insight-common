@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 # Insight Series 標準検証スクリプト
-# 新規プロジェクト作成時・PR作成時に実行必須
+# 新規�Eロジェクト作�E時�EPR作�E時に実行忁E��E
 #
-# 使い方:
+# 使ぁE��:
 #   ./validate-standards.sh <project-directory>
 #
 
@@ -34,11 +34,11 @@ print_section() {
 }
 
 print_ok() {
-    echo -e "  ${GREEN}✓${NC} $1"
+    echo -e "  ${GREEN}✁E{NC} $1"
 }
 
 print_error() {
-    echo -e "  ${RED}✗${NC} $1"
+    echo -e "  ${RED}✁E{NC} $1"
     ((ERRORS++)) || true
 }
 
@@ -47,31 +47,31 @@ print_warning() {
     ((WARNINGS++)) || true
 }
 
-# 引数チェック
+# 引数チェチE��
 if [ -z "$1" ]; then
-    echo "使用方法: $0 <project-directory>"
+    echo "使用方況E $0 <project-directory>"
     echo ""
-    echo "例: $0 /path/to/your-app"
+    echo "侁E $0 /path/to/your-app"
     exit 1
 fi
 
 PROJECT_DIR="$1"
 
 if [ ! -d "$PROJECT_DIR" ]; then
-    echo -e "${RED}エラー: ディレクトリが見つかりません: $PROJECT_DIR${NC}"
+    echo -e "${RED}エラー: チE��レクトリが見つかりません: $PROJECT_DIR${NC}"
     exit 1
 fi
 
 # ============================================================
-# insight-common サブモジュール自動セットアップ
+# insight-common サブモジュール自動セチE��アチE�E
 # ============================================================
 if [ -f "$PROJECT_DIR/.gitmodules" ] && grep -q "insight-common" "$PROJECT_DIR/.gitmodules" 2>/dev/null; then
     if [ ! -f "$PROJECT_DIR/insight-common/CLAUDE.md" ]; then
-        echo -e "${YELLOW}insight-common サブモジュールを初期化しています...${NC}"
+        echo -e "${YELLOW}insight-common サブモジュールを�E期化してぁE��ぁE..${NC}"
         git -C "$PROJECT_DIR" submodule init 2>/dev/null || true
         git -C "$PROJECT_DIR" submodule update --recursive 2>/dev/null || true
     fi
-    # スクリプトの実行権限を付与
+    # スクリプトの実行権限を付丁E
     chmod +x "$PROJECT_DIR/insight-common/scripts/"*.sh 2>/dev/null || true
 fi
 
@@ -79,7 +79,7 @@ print_header
 echo "検証対象: $PROJECT_DIR"
 echo ""
 
-# プラットフォーム検出
+# プラチE��フォーム検�E
 detect_platform() {
     if compgen -G "$PROJECT_DIR"/*.csproj > /dev/null 2>&1; then
         echo "csharp"
@@ -101,28 +101,28 @@ detect_platform() {
 }
 
 PLATFORM=$(detect_platform)
-echo "検出されたプラットフォーム: $PLATFORM"
+echo "検�Eされた�EラチE��フォーム: $PLATFORM"
 echo ""
 
 # ========================================
-# 1. デザインシステム検証（全プラットフォーム共通）
+# 1. チE��インシスチE��検証�E��EプラチE��フォーム共通！E
 # ========================================
-print_section "1" "デザインシステム（Ivory & Gold Theme）検証"
+print_section "1" "チE��インシスチE���E�Evory & Gold Theme�E�検証"
 
-# 禁止: Blue (#2563EB) がプライマリとして使用されている
+# 禁止: Blue (#2563EB) が�Eライマリとして使用されてぁE��
 check_blue_primary() {
     local blue_as_primary=$(grep -r "primary.*#2563EB\|#2563EB.*primary\|Primary.*2563EB\|primaryColor.*2563EB" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -5)
 
     if [ -n "$blue_as_primary" ]; then
-        print_error "Blue (#2563EB) がプライマリとして使用されています"
+        print_error "Blue (#2563EB) が�Eライマリとして使用されてぁE��ぁE
         echo "      $blue_as_primary" | head -3
         return 1
     fi
-    print_ok "Blue がプライマリとして使用されていない"
+    print_ok "Blue が�Eライマリとして使用されてぁE��ぁE
     return 0
 }
 
-# 必須: Gold (#B8942F) がプライマリとして使用されている
+# 忁E��E Gold (#B8942F) が�Eライマリとして使用されてぁE��
 check_gold_primary() {
     local gold_primary=$(grep -r "#B8942F\|B8942F\|0xFFB8942F" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
@@ -130,11 +130,11 @@ check_gold_primary() {
         print_error "Gold (#B8942F) が見つかりません"
         return 1
     fi
-    print_ok "Gold (#B8942F) が使用されている"
+    print_ok "Gold (#B8942F) が使用されてぁE��"
     return 0
 }
 
-# 必須: Ivory背景 (#FAF8F5) が使用されている
+# 忁E��E Ivory背景 (#FAF8F5) が使用されてぁE��
 check_ivory_background() {
     local ivory=$(grep -r "#FAF8F5\|FAF8F5\|0xFFFAF8F5" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
@@ -142,7 +142,7 @@ check_ivory_background() {
         print_warning "Ivory背景 (#FAF8F5) が見つかりません"
         return 1
     fi
-    print_ok "Ivory背景 (#FAF8F5) が使用されている"
+    print_ok "Ivory背景 (#FAF8F5) が使用されてぁE��"
     return 0
 }
 
@@ -151,15 +151,15 @@ check_gold_primary
 check_ivory_background
 
 # ========================================
-# 2. ライセンスシステム検証
+# 2. ライセンスシスチE��検証
 # ========================================
-print_section "2" "ライセンスシステム検証"
+print_section "2" "ライセンスシスチE��検証"
 
 check_license_manager() {
     local license_file=$(find "$PROJECT_DIR" \( -name "*LicenseManager*" -o -name "*license_manager*" \) -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
 
     if [ -z "$license_file" ]; then
-        print_warning "LicenseManager が見つかりません（ユーティリティアプリの場合は不要）"
+        print_warning "LicenseManager が見つかりません�E�ユーチE��リチE��アプリの場合�E不要E��E
         return 1
     fi
     print_ok "LicenseManager: $license_file"
@@ -178,10 +178,10 @@ check_product_code() {
     local found_code=$(grep -rE "($product_codes)" "$PROJECT_DIR" --include="*.cs" --include="*.ts" --include="*.py" --include="*.swift" --include="*.kt" --include="*.json" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
     if [ -z "$found_code" ]; then
-        print_warning "登録済み製品コードが見つかりません（新規製品の場合は config/products.ts に登録してください）"
+        print_warning "登録済み製品コードが見つかりません�E�新規製品�E場合�E config/products.ts に登録してください�E�E
         return 1
     fi
-    print_ok "製品コードが使用されている"
+    print_ok "製品コードが使用されてぁE��"
     return 0
 }
 
@@ -192,7 +192,7 @@ check_product_code || true
 # ========================================
 if [ "$PLATFORM" = "android" ]; then
     echo ""
-    print_section "4" "Android 固有チェック"
+    print_section "4" "Android 固有チェチE��"
 
     # 4.1 Version Catalog
     if [ -f "$PROJECT_DIR/gradle/libs.versions.toml" ]; then
@@ -200,22 +200,22 @@ if [ "$PLATFORM" = "android" ]; then
 
         agp_ver=$(grep '^agp\s*=' "$PROJECT_DIR/gradle/libs.versions.toml" 2>/dev/null | head -1)
         if [ -n "$agp_ver" ]; then
-            print_ok "AGP バージョン定義: $agp_ver"
+            print_ok "AGP バ�Eジョン定義: $agp_ver"
         else
-            print_warning "AGP バージョンが libs.versions.toml に定義されていません"
+            print_warning "AGP バ�EジョンぁElibs.versions.toml に定義されてぁE��せん"
         fi
 
         kotlin_ver=$(grep '^kotlin\s*=' "$PROJECT_DIR/gradle/libs.versions.toml" 2>/dev/null | head -1)
         if [ -n "$kotlin_ver" ]; then
-            print_ok "Kotlin バージョン定義: $kotlin_ver"
+            print_ok "Kotlin バ�Eジョン定義: $kotlin_ver"
         else
-            print_warning "Kotlin バージョンが libs.versions.toml に定義されていません"
+            print_warning "Kotlin バ�EジョンぁElibs.versions.toml に定義されてぁE��せん"
         fi
     else
         print_error "gradle/libs.versions.toml が見つかりません"
     fi
 
-    # 4.2 SDK バージョン
+    # 4.2 SDK バ�Eジョン
     build_file=$(find "$PROJECT_DIR" -name "build.gradle.kts" -path "*/app/*" 2>/dev/null | head -1)
     if [ -z "$build_file" ]; then
         build_file=$(find "$PROJECT_DIR" -name "build.gradle.kts" 2>/dev/null | grep -v '/build/' | head -1)
@@ -226,7 +226,7 @@ if [ "$PLATFORM" = "android" ]; then
         if echo "$compile_sdk" | grep -q "35"; then
             print_ok "compileSdk = 35"
         elif [ -n "$compile_sdk" ]; then
-            print_error "compileSdk が 35 ではありません: $compile_sdk"
+            print_error "compileSdk ぁE35 ではありません: $compile_sdk"
         else
             print_warning "compileSdk が見つかりません"
         fi
@@ -235,21 +235,21 @@ if [ "$PLATFORM" = "android" ]; then
         if echo "$target_sdk" | grep -q "35"; then
             print_ok "targetSdk = 35"
         elif [ -n "$target_sdk" ]; then
-            print_error "targetSdk が 35 ではありません: $target_sdk"
+            print_error "targetSdk ぁE35 ではありません: $target_sdk"
         fi
 
         min_sdk=$(grep "minSdk\s*=" "$build_file" 2>/dev/null | head -1)
         if echo "$min_sdk" | grep -q "26"; then
             print_ok "minSdk = 26"
         elif [ -n "$min_sdk" ]; then
-            print_warning "minSdk が 26 ではありません: $min_sdk"
+            print_warning "minSdk ぁE26 ではありません: $min_sdk"
         fi
 
         jvm_target=$(grep 'jvmTarget\s*=' "$build_file" 2>/dev/null | head -1)
         if echo "$jvm_target" | grep -q "17"; then
             print_ok "JVM Target = 17"
         elif [ -n "$jvm_target" ]; then
-            print_error "JVM Target が 17 ではありません: $jvm_target"
+            print_error "JVM Target ぁE17 ではありません: $jvm_target"
         fi
     else
         print_warning "app/build.gradle.kts が見つかりません"
@@ -260,13 +260,13 @@ if [ "$PLATFORM" = "android" ]; then
         if grep -q "isMinifyEnabled\s*=\s*true" "$build_file" 2>/dev/null; then
             print_ok "ProGuard/R8 が有効 (isMinifyEnabled = true)"
         else
-            print_error "リリースビルドで isMinifyEnabled = true が設定されていません"
+            print_error "リリースビルドで isMinifyEnabled = true が設定されてぁE��せん"
         fi
 
         if grep -q "isShrinkResources\s*=\s*true" "$build_file" 2>/dev/null; then
             print_ok "リソース縮小が有効 (isShrinkResources = true)"
         else
-            print_warning "isShrinkResources = true が設定されていません"
+            print_warning "isShrinkResources = true が設定されてぁE��せん"
         fi
     fi
 
@@ -276,11 +276,11 @@ if [ "$PLATFORM" = "android" ]; then
         print_warning "proguard-rules.pro が見つかりません"
     fi
 
-    # 4.4 テーマファイル
+    # 4.4 チE�Eマファイル
     color_kt=$(find "$PROJECT_DIR" -name "Color.kt" -path "*/theme/*" 2>/dev/null | head -1)
     if [ -n "$color_kt" ]; then
         if grep -q "InsightPrimaryLight" "$color_kt" 2>/dev/null; then
-            print_ok "Color.kt: Insight 標準命名 (InsightPrimaryLight)"
+            print_ok "Color.kt: Insight 標準命吁E(InsightPrimaryLight)"
         else
             print_warning "Color.kt: InsightPrimaryLight 命名が見つかりません"
         fi
@@ -293,7 +293,7 @@ if [ "$PLATFORM" = "android" ]; then
         if grep -q "InsightTypography" "$theme_kt" 2>/dev/null; then
             print_ok "Theme.kt: InsightTypography を使用"
         else
-            print_warning "Theme.kt: InsightTypography が参照されていません"
+            print_warning "Theme.kt: InsightTypography が参照されてぁE��せん"
         fi
     else
         print_error "ui/theme/Theme.kt が見つかりません"
@@ -302,7 +302,7 @@ if [ "$PLATFORM" = "android" ]; then
     type_kt=$(find "$PROJECT_DIR" -name "Type.kt" -path "*/theme/*" 2>/dev/null | head -1)
     if [ -n "$type_kt" ]; then
         if grep -q "InsightTypography" "$type_kt" 2>/dev/null; then
-            print_ok "Type.kt: InsightTypography 変数名"
+            print_ok "Type.kt: InsightTypography 変数吁E
         else
             print_error "Type.kt: InsightTypography 変数名が見つかりません"
         fi
@@ -330,23 +330,23 @@ if [ "$PLATFORM" = "android" ]; then
     # 4.6 i18n
     strings_ja=$(find "$PROJECT_DIR" -name "strings.xml" -path "*/values/*" ! -path "*/values-*/*" 2>/dev/null | head -1)
     if [ -n "$strings_ja" ]; then
-        print_ok "values/strings.xml (日本語) が存在"
+        print_ok "values/strings.xml (日本誁E が存在"
     else
-        print_warning "values/strings.xml (日本語) が見つかりません"
+        print_warning "values/strings.xml (日本誁E が見つかりません"
     fi
 
     strings_en=$(find "$PROJECT_DIR" -name "strings.xml" -path "*/values-en/*" 2>/dev/null | head -1)
     if [ -n "$strings_en" ]; then
-        print_ok "values-en/strings.xml (英語) が存在"
+        print_ok "values-en/strings.xml (英誁E が存在"
     else
-        print_warning "values-en/strings.xml (英語) が見つかりません"
+        print_warning "values-en/strings.xml (英誁E が見つかりません"
     fi
 
-    # 4.7 パッケージ名
+    # 4.7 パッケージ吁E
     if [ -n "$build_file" ]; then
         namespace=$(grep 'namespace\s*=' "$build_file" 2>/dev/null | head -1)
         if echo "$namespace" | grep -q "com\.harmonic"; then
-            print_ok "パッケージ名: com.harmonic.* 準拠"
+            print_ok "パッケージ吁E com.harmonic.* 準拠"
         elif [ -n "$namespace" ]; then
             print_warning "パッケージ名が com.harmonic.* 形式ではありません: $namespace"
         fi
@@ -378,14 +378,14 @@ if [ "$PLATFORM" = "android" ]; then
     # 4.9 AAB bundle config
     if [ -n "$build_file" ]; then
         if grep -q "bundle\s*{" "$build_file" 2>/dev/null; then
-            print_ok "bundle {} ブロックが存在（AAB 最適化）"
+            print_ok "bundle {} ブロチE��が存在�E�EAB 最適化！E
             if grep -q "enableSplit\s*=\s*true" "$build_file" 2>/dev/null; then
                 print_ok "AAB split 配信が有効"
             else
                 print_warning "AAB split 配信 (enableSplit = true) が見つかりません"
             fi
         else
-            print_error "bundle {} ブロックが見つかりません（Play Store の AAB ビルドに必要）"
+            print_error "bundle {} ブロチE��が見つかりません�E�Elay Store の AAB ビルドに忁E��E��E
         fi
     fi
 
@@ -394,33 +394,33 @@ if [ "$PLATFORM" = "android" ]; then
     if [ -n "$ci_workflow" ]; then
         print_ok ".github/workflows/build.yml が存在"
         if grep -q "assembleRelease" "$ci_workflow" 2>/dev/null; then
-            print_ok "CI: APK ビルド (assembleRelease) が設定されている"
+            print_ok "CI: APK ビルチE(assembleRelease) が設定されてぁE��"
         else
             print_warning "CI: assembleRelease が見つかりません"
         fi
         if grep -q "bundleRelease" "$ci_workflow" 2>/dev/null; then
-            print_ok "CI: AAB ビルド (bundleRelease) が設定されている"
+            print_ok "CI: AAB ビルチE(bundleRelease) が設定されてぁE��"
         else
-            print_error "CI: bundleRelease が見つかりません（Play Store 必須）"
+            print_error "CI: bundleRelease が見つかりません�E�Elay Store 忁E��！E
         fi
         if grep -q "submodules" "$ci_workflow" 2>/dev/null; then
-            print_ok "CI: submodules が設定されている"
+            print_ok "CI: submodules が設定されてぁE��"
         else
             if [ -f "$PROJECT_DIR/.gitmodules" ]; then
-                print_warning "CI: サブモジュールが存在するが submodules: true が設定されていません"
+                print_warning "CI: サブモジュールが存在するぁEsubmodules: true が設定されてぁE��せん"
             fi
         fi
     else
         print_warning ".github/workflows/build.yml が見つかりません"
     fi
 
-    # 4.11 Play Store メタデータ
+    # 4.11 Play Store メタチE�Eタ
     if [ -d "$PROJECT_DIR/fastlane/metadata/android" ]; then
         print_ok "fastlane/metadata/android/ が存在"
         for locale in "ja-JP" "en-US"; do
             locale_dir="$PROJECT_DIR/fastlane/metadata/android/$locale"
             if [ -d "$locale_dir" ]; then
-                print_ok "ストアメタデータ ($locale) が存在"
+                print_ok "ストアメタチE�Eタ ($locale) が存在"
                 for file in "title.txt" "short_description.txt" "full_description.txt"; do
                     if [ -f "$locale_dir/$file" ]; then
                         print_ok "  $locale/$file が存在"
@@ -429,45 +429,45 @@ if [ "$PLATFORM" = "android" ]; then
                     fi
                 done
             else
-                print_warning "ストアメタデータ ($locale) が見つかりません"
+                print_warning "ストアメタチE�Eタ ($locale) が見つかりません"
             fi
         done
     else
-        print_warning "fastlane/metadata/android/ が見つかりません（Play Store リリース時に必要）"
+        print_warning "fastlane/metadata/android/ が見つかりません�E�Elay Store リリース時に忁E��E��E
     fi
 
-    # 4.12 Keystore 設定
+    # 4.12 Keystore 設宁E
     if [ -f "$PROJECT_DIR/keystore.properties" ] || [ -f "$PROJECT_DIR/keystore.properties.example" ]; then
         print_ok "keystore.properties(.example) が存在"
     else
-        print_warning "keystore.properties が見つかりません（リリースビルドの署名に必要）"
+        print_warning "keystore.properties が見つかりません�E�リリースビルド�E署名に忁E��E��E
     fi
 
-    # 4.13 開発用 keystore（上書きインストール対策）
+    # 4.13 開発用 keystore�E�上書きインスト�Eル対策！E
     if [ -f "$PROJECT_DIR/app/dev.keystore" ]; then
-        print_ok "app/dev.keystore が存在（チーム共有の debug 署名）"
+        print_ok "app/dev.keystore が存在�E�チーム共有�E debug 署名！E
     else
-        print_warning "app/dev.keystore が見つかりません（上書きインストールに必要 — §8.5 参照）"
+        print_warning "app/dev.keystore が見つかりません�E�上書きインスト�Eルに忁E��E E§8.5 参�E�E�E
     fi
 
-    # 4.14 debug signingConfig の確認
+    # 4.14 debug signingConfig の確誁E
     local app_gradle="$PROJECT_DIR/app/build.gradle.kts"
     if [ -f "$app_gradle" ]; then
         if grep -q 'getByName("debug")' "$app_gradle" 2>/dev/null && grep -q "dev.keystore" "$app_gradle" 2>/dev/null; then
-            print_ok "debug signingConfig が dev.keystore を参照"
+            print_ok "debug signingConfig ぁEdev.keystore を参照"
         else
-            print_warning "debug signingConfig が dev.keystore を参照していません（§8.5 参照）"
+            print_warning "debug signingConfig ぁEdev.keystore を参照してぁE��せん�E�§8.5 参�E�E�E
         fi
     fi
 
-    # keystore がリポジトリに含まれていないことを確認（dev.keystore は除外）
+    # keystore がリポジトリに含まれてぁE��ぁE��とを確認！Eev.keystore は除外！E
     if find "$PROJECT_DIR" \( -name "*.jks" -o -name "*.keystore" \) ! -name "dev.keystore" 2>/dev/null | head -1 | grep -q .; then
         gitignore_file="$PROJECT_DIR/.gitignore"
         if [ -f "$gitignore_file" ]; then
             if grep -q "\.jks" "$gitignore_file" 2>/dev/null && grep -q "\.keystore" "$gitignore_file" 2>/dev/null; then
-                print_ok ".gitignore: release keystore ファイルが除外されている"
+                print_ok ".gitignore: release keystore ファイルが除外されてぁE��"
             else
-                print_error ".gitignore: *.jks / *.keystore が除外されていません"
+                print_error ".gitignore: *.jks / *.keystore が除外されてぁE��せん"
             fi
         fi
     fi
@@ -478,26 +478,26 @@ fi
 # ========================================
 if [ "$PLATFORM" = "expo" ]; then
     echo ""
-    print_section "5" "Expo/React Native 固有チェック"
+    print_section "5" "Expo/React Native 固有チェチE��"
 
     # 5.1 app.json
     if [ -f "$PROJECT_DIR/app.json" ]; then
         print_ok "app.json が存在"
 
         if grep -q "2563EB" "$PROJECT_DIR/app.json" 2>/dev/null; then
-            print_error "app.json: Blue (#2563EB) が使用されています"
+            print_error "app.json: Blue (#2563EB) が使用されてぁE��ぁE
         else
-            print_ok "app.json: Blue が使用されていない"
+            print_ok "app.json: Blue が使用されてぁE��ぁE
         fi
 
         if grep -q "B8942F" "$PROJECT_DIR/app.json" 2>/dev/null; then
-            print_ok "app.json: Gold (#B8942F) が使用されている"
+            print_ok "app.json: Gold (#B8942F) が使用されてぁE��"
         else
             print_warning "app.json: Gold (#B8942F) が見つかりません"
         fi
 
         if grep -q "expo-router" "$PROJECT_DIR/app.json" 2>/dev/null; then
-            print_ok "app.json: expo-router プラグインが設定されている"
+            print_ok "app.json: expo-router プラグインが設定されてぁE��"
         else
             print_warning "app.json: expo-router プラグインが見つかりません"
         fi
@@ -510,15 +510,15 @@ if [ "$PLATFORM" = "expo" ]; then
         print_ok "eas.json が存在"
 
         if grep -q '"production"' "$PROJECT_DIR/eas.json" 2>/dev/null; then
-            print_ok "eas.json: production プロファイルが定義されている"
+            print_ok "eas.json: production プロファイルが定義されてぁE��"
         else
             print_warning "eas.json: production プロファイルが見つかりません"
         fi
     else
-        print_warning "eas.json が見つかりません（EAS Build 未設定）"
+        print_warning "eas.json が見つかりません�E�EAS Build 未設定！E
     fi
 
-    # 5.3 package.json 依存関係
+    # 5.3 package.json 依存関俁E
     if [ -f "$PROJECT_DIR/package.json" ]; then
         if grep -q '"expo-router"' "$PROJECT_DIR/package.json" 2>/dev/null; then
             print_ok "package.json: expo-router が依存関係にある"
@@ -535,28 +535,28 @@ if [ "$PLATFORM" = "expo" ]; then
     colors_ts=$(find "$PROJECT_DIR" -name "colors.ts" -path "*/lib/*" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
     if [ -n "$colors_ts" ]; then
         if grep -q "B8942F" "$colors_ts" 2>/dev/null; then
-            print_ok "lib/colors.ts: Gold (#B8942F) が定義されている"
+            print_ok "lib/colors.ts: Gold (#B8942F) が定義されてぁE��"
         else
             print_error "lib/colors.ts: Gold (#B8942F) が見つかりません"
         fi
 
         if grep -q "FAF8F5" "$colors_ts" 2>/dev/null; then
-            print_ok "lib/colors.ts: Ivory (#FAF8F5) が定義されている"
+            print_ok "lib/colors.ts: Ivory (#FAF8F5) が定義されてぁE��"
         else
             print_warning "lib/colors.ts: Ivory (#FAF8F5) が見つかりません"
         fi
     else
-        # colors.ts が src/ 配下にある可能性も
+        # colors.ts ぁEsrc/ 配下にある可能性めE
         colors_ts_alt=$(find "$PROJECT_DIR" -name "colors.ts" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
         if [ -n "$colors_ts_alt" ]; then
-            print_warning "colors.ts が lib/ 以外に配置されています: $colors_ts_alt"
+            print_warning "colors.ts ぁElib/ 以外に配置されてぁE��ぁE $colors_ts_alt"
             if grep -q "B8942F" "$colors_ts_alt" 2>/dev/null; then
-                print_ok "colors.ts: Gold (#B8942F) が定義されている"
+                print_ok "colors.ts: Gold (#B8942F) が定義されてぁE��"
             else
                 print_error "colors.ts: Gold (#B8942F) が見つかりません"
             fi
         else
-            print_error "lib/colors.ts が見つかりません（カラー定義ファイルが必要）"
+            print_error "lib/colors.ts が見つかりません�E�カラー定義ファイルが忁E��E��E
         fi
     fi
 
@@ -565,7 +565,7 @@ if [ "$PLATFORM" = "expo" ]; then
     if [ -n "$theme_ts" ]; then
         print_ok "lib/theme.ts が存在"
     else
-        print_warning "lib/theme.ts が見つかりません（テーマ定義ファイル推奨）"
+        print_warning "lib/theme.ts が見つかりません�E�テーマ定義ファイル推奨�E�E
     fi
 
     # 5.6 lib/license-manager.ts
@@ -573,7 +573,7 @@ if [ "$PLATFORM" = "expo" ]; then
     if [ -n "$license_ts" ]; then
         print_ok "license-manager.ts が存在"
     else
-        print_warning "license-manager.ts が見つかりません（InsightOffice 製品では必須）"
+        print_warning "license-manager.ts が見つかりません�E�EnsightOffice 製品では忁E��！E
     fi
 
     # 5.7 TypeScript strict mode
@@ -581,7 +581,7 @@ if [ "$PLATFORM" = "expo" ]; then
         if grep -q '"strict"\s*:\s*true' "$PROJECT_DIR/tsconfig.json" 2>/dev/null; then
             print_ok "tsconfig.json: strict mode が有効"
         else
-            print_warning "tsconfig.json: strict mode が無効です"
+            print_warning "tsconfig.json: strict mode が無効でぁE
         fi
     else
         print_warning "tsconfig.json が見つかりません"
@@ -590,19 +590,19 @@ if [ "$PLATFORM" = "expo" ]; then
     # 5.8 expo-router ファイル構造
     if [ -d "$PROJECT_DIR/app" ]; then
         if [ -f "$PROJECT_DIR/app/_layout.tsx" ]; then
-            print_ok "app/_layout.tsx が存在（expo-router ルートレイアウト）"
+            print_ok "app/_layout.tsx が存在�E�Expo-router ルートレイアウト！E
         else
             print_warning "app/_layout.tsx が見つかりません"
         fi
     else
-        print_warning "app/ ディレクトリが見つかりません（expo-router 構造ではない可能性）"
+        print_warning "app/ チE��レクトリが見つかりません�E�Expo-router 構造ではなぁE��能性�E�E
     fi
 
-    # 5.9 パッケージ名
+    # 5.9 パッケージ吁E
     if [ -f "$PROJECT_DIR/app.json" ]; then
         expo_package=$(grep -o '"package"\s*:\s*"[^"]*"' "$PROJECT_DIR/app.json" 2>/dev/null | head -1)
         if echo "$expo_package" | grep -q "com\.harmonicinsight"; then
-            print_ok "パッケージ名: com.harmonicinsight.* 準拠"
+            print_ok "パッケージ吁E com.harmonicinsight.* 準拠"
         elif [ -n "$expo_package" ]; then
             print_warning "パッケージ名が com.harmonicinsight.* 形式ではありません: $expo_package"
         fi
@@ -623,29 +623,29 @@ if [ $ERRORS -gt 0 ]; then
 fi
 
 if [ $WARNINGS -gt 0 ]; then
-    echo -e "${YELLOW}警告: $WARNINGS 件${NC}"
+    echo -e "${YELLOW}警呁E $WARNINGS 件${NC}"
 fi
 
 if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
-    echo -e "${GREEN}すべてのチェックに合格しました！${NC}"
+    echo -e "${GREEN}すべてのチェチE��に合格しました�E�E{NC}"
 fi
 
 echo ""
 
 if [ "$PLATFORM" = "android" ]; then
-    echo -e "参照: ${BLUE}insight-common/standards/ANDROID.md${NC}"
-    echo -e "テンプレート: ${BLUE}insight-common/templates/android/${NC}"
+    echo -e "参�E: ${BLUE}insight-common/standards/ANDROID.md${NC}"
+    echo -e "チE��プレーチE ${BLUE}insight-common/templates/android/${NC}"
 elif [ "$PLATFORM" = "expo" ]; then
-    echo -e "参照: ${BLUE}insight-common/standards/ANDROID.md §13${NC}"
-    echo -e "テンプレート: ${BLUE}insight-common/templates/expo/${NC}"
+    echo -e "参�E: ${BLUE}insight-common/standards/ANDROID.md §13${NC}"
+    echo -e "チE��プレーチE ${BLUE}insight-common/templates/expo/${NC}"
 else
-    echo -e "参照: ${BLUE}insight-common/standards/README.md${NC}"
+    echo -e "参�E: ${BLUE}insight-common/standards/README.md${NC}"
 fi
 echo ""
 
-# 終了コード
+# 終亁E��ーチE
 if [ $ERRORS -gt 0 ]; then
-    echo -e "${RED}標準に準拠していません。修正してください。${NC}"
+    echo -e "${RED}標準に準拠してぁE��せん。修正してください、E{NC}"
     exit 1
 fi
 

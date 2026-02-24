@@ -23,7 +23,10 @@ public class InsightTheme
     // ── カラー ──
     public Color Background { get; }
     public Color Surface { get; }
+    public Color SurfaceSecondary { get; }
     public Color SurfaceHover { get; }
+    public Color Primary { get; }
+    public Color PrimaryContrast { get; }
     public Color TextPrimary { get; }
     public Color TextSecondary { get; }
     public Color TextMuted { get; }
@@ -40,7 +43,10 @@ public class InsightTheme
     // ── Brush（便利アクセス） ──
     public SolidColorBrush BackgroundBrush => new(Background);
     public SolidColorBrush SurfaceBrush => new(Surface);
+    public SolidColorBrush SurfaceSecondaryBrush => new(SurfaceSecondary);
     public SolidColorBrush SurfaceHoverBrush => new(SurfaceHover);
+    public SolidColorBrush PrimaryBrush => new(Primary);
+    public SolidColorBrush PrimaryContrastBrush => new(PrimaryContrast);
     public SolidColorBrush TextPrimaryBrush => new(TextPrimary);
     public SolidColorBrush TextSecondaryBrush => new(TextSecondary);
     public SolidColorBrush TextMutedBrush => new(TextMuted);
@@ -56,10 +62,15 @@ public class InsightTheme
     private InsightTheme(InsightThemeMode mode)
     {
         Mode = mode;
+        // ブランドカラー（モード共通）
+        Primary = InsightColors.BrandPrimary;
+        PrimaryContrast = Colors.White;
+
         if (mode == InsightThemeMode.Dark)
         {
             Background = InsightColors.Dark.Background;
             Surface = InsightColors.Dark.Surface;
+            SurfaceSecondary = InsightColors.Dark.Surface;
             SurfaceHover = InsightColors.Dark.SurfaceHover;
             TextPrimary = InsightColors.Dark.TextPrimary;
             TextSecondary = InsightColors.Dark.TextSecondary;
@@ -78,6 +89,7 @@ public class InsightTheme
         {
             Background = InsightColors.Light.Background;
             Surface = InsightColors.Light.Surface;
+            SurfaceSecondary = InsightColors.Light.SurfaceSecondary;
             SurfaceHover = InsightColors.Light.SurfaceHover;
             TextPrimary = InsightColors.Light.TextPrimary;
             TextSecondary = InsightColors.Light.TextSecondary;

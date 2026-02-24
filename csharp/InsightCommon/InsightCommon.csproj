@@ -16,4 +16,12 @@
     <PackageReference Include="Syncfusion.Licensing" Version="*" />
   </ItemGroup>
 
+  <!-- XAML Resources for cross-project reference -->
+  <ItemGroup>
+    <Page Include="UI\Resources\InsightColors.xaml" />
+    <Page Include="UI\Resources\InsightIcons.xaml" />
+    <Page Include="UI\Resources\InsightStyles.xaml" />
+    <Page Include="UI\Resources\InsightTheme.xaml" />
+  </ItemGroup>
+
 </Project>
