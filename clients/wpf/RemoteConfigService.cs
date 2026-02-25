@@ -8,8 +8,8 @@
 //
 //    var remoteConfig = new RemoteConfigService(
 //        productCode: "INSS",
-//        appVersion: "2.1.0",
-//        buildNumber: 45,
+//        appVersion: "2.2.0",
+//        buildNumber: 50,
 //        licenseKey: storedLicenseKey,
 //        deviceId: DeviceIdHelper.GetOrCreate()
 //    );
@@ -264,8 +264,8 @@ public sealed class RemoteConfigService : IDisposable
     /// コンストラクタ
     /// </summary>
     /// <param name="productCode">製品コード（INSS, IOSH 等）</param>
-    /// <param name="appVersion">現在のバージョン（例: "2.1.0"）</param>
-    /// <param name="buildNumber">ビルド番号（例: 45）</param>
+    /// <param name="appVersion">現在のバージョン（例: "2.2.0"）</param>
+    /// <param name="buildNumber">ビルド番号（例: 50）</param>
     /// <param name="licenseKey">ライセンスキー</param>
     /// <param name="deviceId">デバイスID（マシン固有）</param>
     /// <param name="plan">現在のプラン（STD, PRO, ENT）</param>

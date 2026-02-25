@@ -191,31 +191,14 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 **構成の原則**:
 - PC にインストール + NuGet で参照管理（DLL は GitHub にコミットしない）
 - `dotnet restore` で自動復元
-- **全製品「Claim License Key」の Enterprise Edition キーを使用**
-
-> **⚠️ 「Claim License Key」と「Get License Key」を間違えないこと！**
->
-> | ページ | 生成されるキー | 結果 |
-> |--------|---------------|------|
-> | ❌ Downloads & Keys →「Get License Key」 | Binary License キー（Edition 別） | **invalid エラー** |
-> | ✅ 左メニュー →「**Claim License Key**」 | Enterprise Edition キー | **正常動作** |
-
-**使用 Edition:**
-
-現在の全製品（IOSH / IOSD / INSS / IVIN）は **Enterprise Edition（Community License の Claim License Key）** のキー1つでカバーされます。
 
 ```json
 // config/third-party-licenses.json
 {
   "syncfusion": {
-    "editions": {
-      "uiEdition": {
-        "name": "Essential Studio® Enterprise Edition (Community License)",
-        "licenseKey": "Claim License Key から取得したキーをここに設定",
-        "envVar": "SYNCFUSION_LICENSE_KEY_UI"
-      }
-    },
-    "usedBy": ["INSS", "IOSH", "IOSD", "IVIN"]
+    "licenseKey": "取得したキーをここに設定",
+    "type": "community",
+    "usedBy": ["INSS", "IOSH", "IOSD"]
   }
 }
 ```
@@ -224,13 +207,14 @@ Syncfusion 等のサードパーティライセンスキーは `config/third-par
 
 ```csharp
 // App.xaml.cs の OnStartup 冒頭で呼び出す
-// 優先順位: Edition 別環境変数 > 汎用環境変数 > JSON(editions) > JSON(レガシー)
-using InsightCommon.License;
-
-ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
+// 優先順位: 環境変数 > third-party-licenses.json > ハードコードフォールバック
+var licenseKey = Environment.GetEnvironmentVariable("SYNCFUSION_LICENSE_KEY");
+if (string.IsNullOrEmpty(licenseKey))
+    licenseKey = ThirdPartyLicenses.GetSyncfusionKey();  // JSONから読み込み
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 ```
 
-**キー更新時:** `config/third-party-licenses.json` の `editions.uiEdition.licenseKey` を書き換えるだけで全製品に反映されます。ダッシュボード左メニューの「**Claim License Key**」から取得してください。
+**キー更新時:** `config/third-party-licenses.json` の `licenseKey` を書き換えるだけで全製品に反映されます。
 
 ---
 
@@ -243,7 +227,6 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 | 独自のライセンス実装 | `InsightLicenseManager` を使用 |
 | 価格情報をWebサイト・公開資料に掲載 | 個別見積もり。パートナーとの協議により決定 |
 | サードパーティキーを各アプリに直書き | `config/third-party-licenses.json` で共通管理 |
-| Syncfusion「Get License Key」(Binary License) を使用 | 「**Claim License Key**」(Enterprise Edition) を使用 |
 | クライアントで権限判定 | `withGateway({ requiredPlan: [...] })` |
 | 独自の認証実装 | `infrastructure/auth/` を使用 |
 | OpenAI/Azure を AI アシスタントに使用 | **Claude (Anthropic) API** を使用 |
@@ -368,14 +351,14 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 
 ### Tier 2: AI活用ツール
 
-#### INMV — InsightCast
+#### INMV — InsightMovie
 
 | 項目 | 内容 |
 |------|------|
 | **説明** | 画像とテキストから動画を自動作成 |
 | **技術** | Python (CustomTkinter + PyInstaller) |
 | **バージョン** | 1.0.0 — 開発中 |
-| **リポジトリ** | `win-app-insight-cast` |
+| **リポジトリ** | `win-app-insight-movie-gen` |
 | **カラーテーマ** | Ivory & Gold |
 
 **主要機能:**
@@ -425,7 +408,7 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 |------|------|
 | **説明** | AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
-| **バージョン** | **2.1.0** (build 45) — **安定版** |
+| **バージョン** | **2.2.0** (build 50) — **安定版** |
 | **リポジトリ** | `win-app-insight-slide` |
 | **プロジェクトファイル** | `.inss`（内包: .pptx）、右クリック対象: .pptx, .ppt |
 | **カラーテーマ** | Ivory & Gold |
@@ -536,7 +519,6 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 | ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
-| データ収集 | — | — | ○ | エンタープライズ データ収集基盤（テンプレート配信・回収・集約） |
 
 #### IOSD — InsightOfficeDoc
 
@@ -544,7 +526,7 @@ ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 |------|------|
 | **説明** | AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
-| **バージョン** | 1.0.0 — 開発中 |
+| **バージョン** | 1.1.0 (build 5) — 開発中 |
 | **リポジトリ** | `win-app-insight-doc` |
 | **プロジェクトファイル** | `.iosd`（内包: .docx）、右クリック対象: .docx, .doc |
 | **カラーテーマ** | Ivory & Gold |
@@ -817,7 +799,6 @@ getResellerProducts('gold');        // 全製品
 | AIコードエディター | ✅ | ❌ | ✅(200回) | ✅ |
 | Pythonスクリプト | ✅ | ❌ | ✅ | ✅ |
 | メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
-| データ収集 | ✅ | ❌ | ❌ | ✅ |
 
 ### InsightOffice AI アシスタント共通仕様
 
@@ -1082,11 +1063,11 @@ import {
 } from '@/insight-common/config/app-versions';
 
 // バージョンチェック（ローカル比較）
-isUpdateAvailable('INSS', '2.2.0', 50);  // true（現在 2.1.0 build 45）
+isUpdateAvailable('INSS', '2.3.0', 55);  // true（現在 2.2.0 build 50）
 meetsMinimumVersion('INSS', '2.0.0', 30); // true（強制更新不要）
 
 // サーバーレスポンスから更新判定
-const result = checkForUpdates(releaseInfo, '2.1.0', 45);
+const result = checkForUpdates(releaseInfo, '2.2.0', 50);
 const notifyType = getUpdateNotificationType(result);
 // → 'dialog' | 'banner' | 'badge' | 'none' | 'force_dialog'
 
@@ -1215,133 +1196,53 @@ checkProjectFileLimits('STD', { historyVersions: 25 });
 // → { withinLimits: false, exceeded: ['history_versions (25/20)'] }
 ```
 
-## 12. データ収集基盤（IOSH ENT モジュール）
-
-> **仕様定義**: `config/data-collection.ts` — 論理テーブル・マッピング・配信・提出・集約
+## 12. InsightBot Orchestrator / Agent アーキテクチャ
 
 ### 概要
 
-InsightOfficeSheet (IOSH) の ENT 専用モジュール。
-CCH Tagetik / STRAVIS-LINK / Forguncy と同じ **「Excel がフォーム UI、テーブル単位で DB マッピング」** パターンを実装。
-
-**RDB ではなく JSON ベースの論理テーブル** — スキーマは管理者が自由に定義でき、固定的な DB テーブル設計は不要。
-
-### アーキテクチャ
+InsightBot を UiPath Orchestrator 相当の中央管理サーバーとして位置付け、
+InsightOffice 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）として
+リモート JOB 配信・実行監視を実現する。
 
 ```
-管理者（IOSH ENT）                クライアント（IOSH ENT）
-┌───────────────────┐            ┌───────────────────┐
-│ ① Excel テンプレート│            │ ④ テンプレートを開く│
-│    デザイン         │            │    入力可能セルに  │
-│                    │            │    データ入力      │
-│ ② 論理テーブル定義  │   配信     │                    │
-│    Excel Table ↔   │──────────→│ ⑤ 保存・提出       │
-│    JSON マッピング  │            │    テーブル→JSON   │
-│                    │            │    バリデーション   │
-│ ③ テンプレート配信  │   回収     │    サーバー送信    │
-│                    │←──────────│                    │
-│ ⑥ 集約・承認       │            └───────────────────┘
-│    ダッシュボード   │
-│    エクスポート     │
-└───────────────────┘
-         ↕
-   Supabase (JSONB)
-   dc_templates / dc_submissions / dc_master_tables
+┌─────────────────────────────────────────────────────────┐
+│  InsightBot (Orchestrator) — PRO/ENT                     │
+│  ├ JOB 作成・編集（AI エディター）                         │
+│  ├ Agent ダッシュボード（登録・状態監視）                   │
+│  ├ スケジューラー（cron 相当の定期実行）                    │
+│  └ 実行ログ集約                                          │
+│                     WebSocket / REST                      │
+├──────────────────────┼───────────────────────────────────┤
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
+│  │ Agent A  │  │ Agent B  │  │ Agent C  │  ← InsightOffice│
+│  │ IOSH     │  │ INSS     │  │ IOSD     │    + bot_agent │
+│  │ 経理PC   │  │ 営業PC   │  │ 法務PC   │    モジュール   │
+│  └──────────┘  └──────────┘  └──────────┘               │
+└─────────────────────────────────────────────────────────┘
 ```
 
-### 論理テーブル（JSON ベース）
+### UiPath との差別化
 
-| 種類 | 説明 | 例 |
-|------|------|-----|
-| `input` | クライアントが入力するメインデータ | 売上実績、作業報告 |
-| `header` | テンプレートヘッダー（1行） | 案件名、報告期間、担当者 |
-| `master` | マスタデータ（ドロップダウンソース） | 部門マスタ、勘定科目 |
-| `summary` | 集計テーブル（数式で自動計算） | 合計行、KPI |
-
-### API
-
-```typescript
-import {
-  validateTableData,
-  generateExcelValidationRules,
-  convertExcelRowsToLogicalData,
-  aggregateSubmissions,
-  createEmptySubmission,
-  DATA_COLLECTION_PATHS,
-  DATA_COLLECTION_API,
-  DATA_COLLECTION_LIMITS,
-} from '@/insight-common/config/data-collection';
-
-// テンプレートのバリデーションルール → Excel データ入力規則
-const rules = generateExcelValidationRules(logicalTable);
-// → [{ columnId, excelValidationType: 'List', dropdownValues: [...] }, ...]
-
-// Excel Table のデータを論理テーブル行データに変換
-const rows = convertExcelRowsToLogicalData(mapping, table, excelRows);
-
-// 提出前バリデーション
-const result = validateTableData(table, rows);
-// → { valid: false, errors: [{ type: 'required', messageJa: '売上高は必須です' }] }
-
-// 全提出データの集約（管理者用）
-const aggregated = aggregateSubmissions(submissions, 'sales_report');
-// → { columns: [...], rows: [{ _submitted_by, _organization, ...data }] }
-
-// プラン制限
-DATA_COLLECTION_LIMITS.ENT.maxTemplates;  // -1（無制限）
-DATA_COLLECTION_LIMITS.TRIAL.maxTemplates; // 3
-```
-
-### .iosh ファイル内の配置
-
-```
-report.iosh (ZIP archive)
-├── ... (既存エントリ)
-├── data_collection/
-│   ├── template.json        # テンプレート定義（論理テーブル + マッピング）
-│   ├── master_tables/       # マスタ論理テーブル
-│   │   ├── departments.json
-│   │   └── accounts.json
-│   ├── submission.json      # 入力中のドラフト
-│   └── submission_history/  # 過去の提出履歴
-```
-
-### DB テーブル（Supabase 追加）
-
-| テーブル | 役割 |
-|---------|------|
-| `dc_templates` | テンプレート定義（JSONB で論理テーブルスキーマ含む） |
-| `dc_master_tables` | マスタ論理テーブル（組織レベルで共有） |
-| `dc_distributions` | 配信レコード（誰に・いつ配信したか） |
-| `dc_submissions` | 提出データ（JSONB — 論理テーブル単位） |
-| `dc_audit_log` | 監査ログ |
-
----
-
-## 13. InsightBot Orchestrator アーキテクチャ
-
-### 概要
-
-InsightBot（INBT）は PRO/ENT プランで Orchestrator 機能を提供する RPA 製品。
-JOB の作成・スケジュール実行・ログ管理を INBT 単体で完結する。
-
-> **注意**: InsightOffice（INSS/IOSH/IOSD）は Orchestrator の Agent としては動作しない。
-> InsightOffice はドキュメント作成・編集ツールであり、RPA クライアントやデータ収集エージェントとしての利用は想定外。
+UiPath はファイルを「外から」UI オートメーションで操作する。
+InsightBot + InsightOffice はドキュメントを「中から」直接操作する。
+ファイルロック・UI 遅延の問題がなく、セル・スライド・段落を高速に処理。
 
 ### プラン別制限（INBT）
 
 | 機能 | STD | PRO | ENT |
 |------|:---:|:---:|:---:|
-| スクリプト実行 | ○ | ○ | ○ |
-| AI コードエディター | 月50回 | 月200回 | 無制限 |
-| JOB 保存数 | 50 | 無制限 | 無制限 |
+| Orchestrator | ❌ | ✅ | ✅ |
+| Agent 管理数 | - | 50台 | 無制限 |
 | スケジューラー | ❌ | ✅ | ✅ |
+| 同時 JOB 配信 | - | 10 | 無制限 |
+| ログ保持期間 | - | 90日 | 365日 |
 
 ### API
 
 ```typescript
 import {
   canUseOrchestrator,
+  canAddAgent,
   ORCHESTRATOR_API,
 } from '@/insight-common/config/orchestrator';
 
@@ -1349,10 +1250,54 @@ import {
 canUseOrchestrator('PRO');  // true
 canUseOrchestrator('STD');  // false
 
+// Agent 追加可否
+canAddAgent('PRO', 45);     // true（50台まで）
+canAddAgent('PRO', 50);     // false（上限到達）
+
 // API エンドポイント
 ORCHESTRATOR_API.defaultPort;           // 9400
 ORCHESTRATOR_API.endpoints.jobs.dispatch;  // { method: 'POST', path: '/api/jobs/:jobId/dispatch' }
 ```
+
+### InsightOffice 側（Agent モジュール）
+
+```typescript
+// addon-modules.ts の bot_agent モジュールを有効化
+// → InsightBot Orchestrator からの JOB 受信が可能に
+canEnableModule('IOSH', 'bot_agent', 'PRO', ['python_runtime']);  // { allowed: true }
+```
+
+### ワークフロー（バッチ処理 / BPO パターン）
+
+Orchestrator は単一 JOB 配信だけでなく、**複数ファイルの順次処理（ワークフロー）**をサポートする。
+BPO（業務プロセス外注）での大量書類作成に対応。
+
+```
+ワークフロー実行フロー:
+┌─────────────────────────────────────────────────────────┐
+│  Orchestrator                                            │
+│  ワークフロー定義:                                        │
+│    Step 1: 売上.xlsx → 集計スクリプト                      │
+│    Step 2: 経費.xlsx → 経費チェックスクリプト               │
+│    Step 3: 報告書.docx → レポート生成スクリプト             │
+│                                                          │
+│  → Agent に一括配信                                      │
+├──────────────────────────────────────────────────────────┤
+│  Agent (InsightOffice)                                    │
+│  Step 1: 売上.xlsx を開く → スクリプト実行 → 保存して閉じる │
+│  Step 2: 経費.xlsx を開く → スクリプト実行 → 保存して閉じる │
+│  Step 3: 報告書.docx を開く → スクリプト実行 → 保存して閉じる│
+│  → 全ステップ完了を Orchestrator に報告                    │
+└──────────────────────────────────────────────────────────┘
+```
+
+### 利用パターン別機能マトリクス
+
+| パターン | 対象ユーザー | プラン | 機能 |
+|---------|------------|--------|------|
+| **個人 AI 利用** | 一般ユーザー | STD | AI チャット + 基本機能 |
+| **市民開発** | パワーユーザー | PRO | Python + AI エディター + ローカルワークフロー |
+| **リモート RPA** | BPO / IT 部門 | PRO/ENT (INBT) | Orchestrator + Agent + スケジューラー |
 
 ### ローカルワークフロー（PRO InsightOffice）
 
@@ -1370,7 +1315,22 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 // { allowed: false, reasonJa: 'ローカルワークフローには TRIAL/PRO/ENT プランが必要です' }
 ```
 
-## 14. 開発完了チェックリスト
+### Orchestrator ワークフロー API
+
+```typescript
+import {
+  canUseOrchestrator,
+  canDispatchJob,
+  ORCHESTRATOR_API,
+} from '@/insight-common/config/orchestrator';
+
+// ワークフロー作成・配信
+ORCHESTRATOR_API.endpoints.workflows.create;    // POST /api/workflows
+ORCHESTRATOR_API.endpoints.workflows.dispatch;   // POST /api/workflows/:workflowId/dispatch
+ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflowId/executions
+```
+
+## 13. 開発完了チェックリスト
 
 - [ ] **デザイン**: Gold (#B8942F) がプライマリに使用されている
 - [ ] **デザイン**: Ivory (#FAF8F5) が背景に使用されている
@@ -1384,6 +1344,8 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 - [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
 - [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
 - [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている
+- [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
+- [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT PRO+ のみ）
 - [ ] **ローカルワークフロー**: PRO InsightOffice でローカル連続処理が動作する（PRO+ のみ）
 - [ ] **メニューアイコン**: `brand/menu-icons.json` の定義に従っている（Lucide Icons 統一）
 - [ ] **メニューアイコン**: 非標準アイコンライブラリ（Material Design / Font Awesome 等）を使用して**いない**
@@ -1397,11 +1359,8 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 - [ ] **リモートコンフィグ**: 起動時のバージョンチェックが実装されている（`remote-config.ts`）
 - [ ] **リモートコンフィグ**: API キー（Claude/Syncfusion）がリモート取得に対応している
 - [ ] **リモートコンフィグ**: モデルレジストリがリモート更新に対応している（AI 搭載アプリのみ）
-- [ ] **データ収集**: `config/data-collection.ts` に準拠（IOSH ENT のみ）
-- [ ] **データ収集**: テンプレートデザイナー UI が実装されている（IOSH ENT のみ）
-- [ ] **データ収集**: 提出・回収・集約フローが動作する（IOSH ENT のみ）
 
-## 15. リリースチェック
+## 14. リリースチェック
 
 > **リリース前に必ず実行。** 詳細は `standards/RELEASE_CHECKLIST.md` を参照。
 
@@ -1463,7 +1422,7 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 - [ ] **バージョン**: pyproject.toml のバージョンが更新されている
 - [ ] **依存**: 全パッケージがピン留め（`==`）されている
 
-## 16. アプリバージョン管理
+## 15. アプリバージョン管理
 
 ### バージョンレジストリ
 
@@ -1473,12 +1432,12 @@ canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scri
 import { getAppVersion, getBuildNumber, toAndroidVersionCode, toIosBundleVersion } from '@/insight-common/config/app-versions';
 
 // バージョン取得
-getAppVersion('INSS');        // '2.1.0'
-getBuildNumber('INSS');       // 45
+getAppVersion('INSS');        // '2.2.0'
+getBuildNumber('INSS');       // 50
 
 // プラットフォーム固有の形式
-toAndroidVersionCode('INSS'); // 2001045
-toIosBundleVersion('INSS');   // '2.1.0.45'
+toAndroidVersionCode('INSS'); // 2002050
+toIosBundleVersion('INSS');   // '2.2.0.50'
 ```
 
 ### バージョン更新手順
@@ -1488,7 +1447,7 @@ toIosBundleVersion('INSS');   // '2.1.0.45'
 3. `toolchain` がアプリの実際のツールチェーンと一致することを確認
 4. `validate-standards.sh` で検証
 
-## 17. ライブラリ互換性マトリクス
+## 16. ライブラリ互換性マトリクス
 
 ### 概要
 
@@ -1552,7 +1511,7 @@ const iosProfile = getRecommendedIosProfile('cutting_edge');
 - `ANDROID_LIBRARIES` / `IOS_LIBRARIES` の `lastVerified` 日付を確認
 - 新たな NG 組み合わせを発見したら `*_CONFLICT_RULES` に追加
 
-## 18. 困ったときは
+## 17. 困ったときは
 
 ```bash
 # 標準検証

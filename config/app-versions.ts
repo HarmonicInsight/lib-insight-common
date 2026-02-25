@@ -1,31 +1,31 @@
 /**
- * HARMONIC insight  Eアプリバ�Eジョンレジストリ
+ * HARMONIC insight — アプリバージョンレジストリ
  *
  * ============================================================================
- * 【重要】�E製品�Eバ�Eジョン・ビルド番号を一允E��琁E
+ * 【重要】全製品のバージョン・ビルド番号を一元管理
  * ============================================================================
  *
- * ## 目皁E
- * - 全製品�E現在のバ�Eジョンを一箁E��で確認�E管琁E
+ * ## 目的
+ * - 全製品の現在のバージョンを一箇所で確認・管理
  * - リリース履歴の追跡
- * - チE�Eルチェーン�E�EDK, Compiler, Framework�E�バージョンとの紐付け
- * - CI/CD めE��リーススクリプトからの参�E
+ * - ツールチェーン（SDK, Compiler, Framework）バージョンとの紐付け
+ * - CI/CD やリリーススクリプトからの参照
  *
- * ## バ�Eジョニング規紁E
- * - セマンチE��チE��バ�Eジョニング: MAJOR.MINOR.PATCH
- * - MAJOR: 破壊的変更・大型機�E追加
- * - MINOR: 後方互換のある機�E追加
- * - PATCH: バグ修正・軽微な改喁E
+ * ## バージョニング規約
+ * - セマンティックバージョニング: MAJOR.MINOR.PATCH
+ * - MAJOR: 破壊的変更・大型機能追加
+ * - MINOR: 後方互換のある機能追加
+ * - PATCH: バグ修正・軽微な改善
  *
- * ## 更新手頁E
- * 1. リリース前に該当製品�E version / buildNumber を更新
- * 2. toolchain セクションが最新の互換性マトリクスと一致することを確誁E
+ * ## 更新手順
+ * 1. リリース前に該当製品の version / buildNumber を更新
+ * 2. toolchain セクションが最新の互換性マトリクスと一致することを確認
  * 3. releaseHistory に新エントリを追加
  * 4. `validate-standards.sh` で検証
  *
- * ## 参�E
+ * ## 参照
  * - 互換性マトリクス: compatibility/android-matrix.ts, compatibility/ios-matrix.ts
- * - リリースチェチE��: standards/RELEASE_CHECKLIST.md
+ * - リリースチェック: standards/RELEASE_CHECKLIST.md
  */
 
 import type { ProductCode, AppPlatform } from './products';
@@ -34,9 +34,9 @@ import type { ProductCode, AppPlatform } from './products';
 // 型定義
 // =============================================================================
 
-/** チE�Eルチェーン惁E���E��EラチE��フォーム共通！E*/
+/** ツールチェーン情報（プラットフォーム共通） */
 export interface ToolchainInfo {
-  /** 使用言語�Eコンパイラバ�Eジョン */
+  /** 使用言語・コンパイラバージョン */
   language: string;
   languageVersion: string;
   /** フレームワーク */
@@ -45,11 +45,11 @@ export interface ToolchainInfo {
   /** ビルドツール */
   buildTool: string;
   buildToolVersion: string;
-  /** プラチE��フォーム固有�E追加惁E�� */
+  /** プラットフォーム固有の追加情報 */
   platformSpecific?: Record<string, string>;
 }
 
-/** Android 固有�EチE�Eルチェーン */
+/** Android 固有のツールチェーン */
 export interface AndroidToolchain extends ToolchainInfo {
   platformSpecific: {
     agpVersion: string;
@@ -63,7 +63,7 @@ export interface AndroidToolchain extends ToolchainInfo {
   };
 }
 
-/** iOS 固有�EチE�Eルチェーン */
+/** iOS 固有のツールチェーン */
 export interface IosToolchain extends ToolchainInfo {
   platformSpecific: {
     xcodeVersion: string;
@@ -74,7 +74,7 @@ export interface IosToolchain extends ToolchainInfo {
   };
 }
 
-/** WPF 固有�EチE�Eルチェーン */
+/** WPF 固有のツールチェーン */
 export interface WpfToolchain extends ToolchainInfo {
   platformSpecific: {
     dotnetVersion: string;
@@ -95,37 +95,37 @@ export interface ReleaseEntry {
   };
 }
 
-/** アプリバ�Eジョン惁E�� */
+/** アプリバージョン情報 */
 export interface AppVersionInfo {
   productCode: ProductCode;
   platform: AppPlatform;
-  /** 現在のバ�Eジョン�E�セマンチE��チE��バ�Eジョニング�E�E*/
+  /** 現在のバージョン（セマンティックバージョニング） */
   version: string;
   /**
-   * ビルド番号�E�整数、リリースごとにインクリメント！E
+   * ビルド番号（整数、リリースごとにインクリメント）
    * - Android: versionCode
    * - iOS: CFBundleVersion
    * - WPF: AssemblyVersion の 4 桁目
    */
   buildNumber: number;
-  /** 開発スチE�Eタス */
+  /** 開発ステータス */
   status: 'development' | 'alpha' | 'beta' | 'rc' | 'stable';
-  /** チE�Eルチェーン惁E�� */
+  /** ツールチェーン情報 */
   toolchain: ToolchainInfo;
-  /** リリース履歴�E�新しい頁E��E*/
+  /** リリース履歴（新しい順） */
   releaseHistory: ReleaseEntry[];
-  /** 最終更新日�E�ESO 8601�E�E*/
+  /** 最終更新日（ISO 8601） */
   lastUpdated: string;
 }
 
 // =============================================================================
-// アプリバ�Eジョンレジストリ
+// アプリバージョンレジストリ
 // =============================================================================
 
 export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
 
   // ===========================================================================
-  // Tier 1: 業務変革チE�Eル
+  // Tier 1: 業務変革ツール
   // ===========================================================================
 
   INCA: {
@@ -187,7 +187,7 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
   },
 
   // ===========================================================================
-  // Tier 2: AI 活用チE�Eル
+  // Tier 2: AI 活用ツール
   // ===========================================================================
 
   INMV: {
@@ -233,8 +233,8 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
   INSS: {
     productCode: 'INSS',
     platform: 'wpf',
-    version: '2.1.0',
-    buildNumber: 45,
+    version: '2.2.0',
+    buildNumber: 50,
     status: 'stable',
     toolchain: {
       language: 'C#',
@@ -249,8 +249,29 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
         syncfusionVersion: '27.2',
       },
     } as WpfToolchain,
-    releaseHistory: [],
-    lastUpdated: '2026-02-16',
+    releaseHistory: [
+      {
+        version: '2.2.0',
+        buildNumber: 50,
+        date: '2026-02-23',
+        channel: 'production',
+        changelog: {
+          ja: 'リモートコンフィグ対応: API キーローテーション、モデルレジストリのホットアップデート、Velopack 自動更新、フィーチャーフラグを追加',
+          en: 'Remote config support: API key rotation, model registry hot-update, Velopack auto-update, and feature flags',
+        },
+      },
+      {
+        version: '2.1.0',
+        buildNumber: 45,
+        date: '2026-02-16',
+        channel: 'production',
+        changelog: {
+          ja: '安定版リリース',
+          en: 'Stable release',
+        },
+      },
+    ],
+    lastUpdated: '2026-02-23',
   },
 
   IOSH: {
@@ -279,8 +300,8 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
   IOSD: {
     productCode: 'IOSD',
     platform: 'wpf',
-    version: '1.0.0',
-    buildNumber: 1,
+    version: '1.1.0',
+    buildNumber: 5,
     status: 'development',
     toolchain: {
       language: 'C#',
@@ -295,8 +316,19 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
         syncfusionVersion: '27.2',
       },
     } as WpfToolchain,
-    releaseHistory: [],
-    lastUpdated: '2026-02-16',
+    releaseHistory: [
+      {
+        version: '1.1.0',
+        buildNumber: 5,
+        date: '2026-02-23',
+        channel: 'development',
+        changelog: {
+          ja: 'リモートコンフィグ対応: API キーローテーション、モデルレジストリのホットアップデート、Velopack 自動更新、フィーチャーフラグを追加',
+          en: 'Remote config support: API key rotation, model registry hot-update, Velopack auto-update, and feature flags',
+        },
+      },
+    ],
+    lastUpdated: '2026-02-23',
   },
 
   INPY: {
@@ -350,26 +382,26 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
 };
 
 // =============================================================================
-// ヘルパ�E関数
+// ヘルパー関数
 // =============================================================================
 
 /**
- * 製品�E現在のバ�Eジョン斁E���Eを取征E
+ * 製品の現在のバージョン文字列を取得
  */
 export function getAppVersion(productCode: ProductCode): string {
   return APP_VERSIONS[productCode].version;
 }
 
 /**
- * 製品�Eビルド番号を取征E
+ * 製品のビルド番号を取得
  */
 export function getBuildNumber(productCode: ProductCode): number {
   return APP_VERSIONS[productCode].buildNumber;
 }
 
 /**
- * Android versionCode 形式�Eバ�Eジョン斁E���Eを生戁E
- * 侁E "2.1.0" buildNumber=45 ↁE"2001045"
+ * Android versionCode 形式のバージョン文字列を生成
+ * 例: "2.2.0" buildNumber=50 → "2002050"
  */
 export function toAndroidVersionCode(productCode: ProductCode): number {
   const info = APP_VERSIONS[productCode];
@@ -378,8 +410,8 @@ export function toAndroidVersionCode(productCode: ProductCode): number {
 }
 
 /**
- * iOS Bundle Version 斁E���Eを生戁E
- * 侁E "2.1.0" buildNumber=45 ↁE"2.1.0.45"
+ * iOS Bundle Version 文字列を生成
+ * 例: "2.2.0" buildNumber=50 → "2.2.0.50"
  */
 export function toIosBundleVersion(productCode: ProductCode): string {
   const info = APP_VERSIONS[productCode];
@@ -387,8 +419,8 @@ export function toIosBundleVersion(productCode: ProductCode): string {
 }
 
 /**
- * WPF AssemblyVersion 斁E���Eを生戁E
- * 侁E "2.1.0" buildNumber=45 ↁE"2.1.0.45"
+ * WPF AssemblyVersion 文字列を生成
+ * 例: "2.2.0" buildNumber=50 → "2.2.0.50"
  */
 export function toAssemblyVersion(productCode: ProductCode): string {
   const info = APP_VERSIONS[productCode];
@@ -396,7 +428,7 @@ export function toAssemblyVersion(productCode: ProductCode): string {
 }
 
 /**
- * 全製品�Eバ�Eジョンサマリーを取征E
+ * 全製品のバージョンサマリーを取得
  */
 export function getAllVersionsSummary(): Array<{
   productCode: ProductCode;
@@ -415,18 +447,18 @@ export function getAllVersionsSummary(): Array<{
 }
 
 /**
- * 製品�EチE�Eルチェーン惁E��を取征E
+ * 製品のツールチェーン情報を取得
  */
 export function getToolchain(productCode: ProductCode): ToolchainInfo {
   return APP_VERSIONS[productCode].toolchain;
 }
 
 // =============================================================================
-// リモートバージョンチェチE��用ヘルパ�E
+// リモートバージョンチェック用ヘルパー
 // =============================================================================
 
 /**
- * セマンチE��チE��バ�Eジョンを比輁E
+ * セマンティックバージョンを比較
  *
  * @returns 負数: a < b, 0: a == b, 正数: a > b
  */
@@ -444,14 +476,14 @@ export function compareVersions(a: string, b: string): number {
 }
 
 /**
- * 製品�Eバ�Eジョンがリモート�E最新版より古ぁE��チェチE��
+ * 製品のバージョンがリモートの最新版より古いかチェック
  *
- * リモートコンフィグから取得した最新バ�Eジョンと比輁E��る際に使用、E
+ * リモートコンフィグから取得した最新バージョンと比較する際に使用。
  *
  * @example
  * ```typescript
- * const needsUpdate = isUpdateAvailable('INSS', '2.2.0', 50);
- * // ↁEINSS は現在 2.1.0 build 45 なので true
+ * const needsUpdate = isUpdateAvailable('INSS', '2.3.0', 55);
+ * // → INSS は現在 2.2.0 build 50 なので true
  * ```
  */
 export function isUpdateAvailable(
@@ -467,14 +499,14 @@ export function isUpdateAvailable(
 }
 
 /**
- * 製品�Eバ�Eジョンが最低忁E��バージョンを満たしてぁE��ぁE
+ * 製品のバージョンが最低必須バージョンを満たしているか
  *
- * 強制更新が忁E��かの判定に使用、E
+ * 強制更新が必要かの判定に使用。
  *
  * @example
  * ```typescript
  * const mustUpdate = !meetsMinimumVersion('INSS', '2.0.0', 30);
- * // ↁEINSS は 2.1.0 build 45 なので false�E�更新不要E��E
+ * // → INSS は 2.2.0 build 50 なので false（更新不要）
  * ```
  */
 export function meetsMinimumVersion(

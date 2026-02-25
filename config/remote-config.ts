@@ -99,13 +99,13 @@
  * // === 起動時チェック ===
  *
  * // 1. バージョンチェック
- * const update = checkForUpdates('INSS', '2.1.0', 45);
+ * const update = checkForUpdates('INSS', '2.2.0', 50);
  * if (update.updateAvailable) {
  *   showUpdateDialog(update);
  * }
  *
  * // 2. リモートコンフィグ取得（API キー + モデル + フラグ一括）
- * const config = getRemoteConfig('INSS', '2.1.0');
+ * const config = getRemoteConfig('INSS', '2.2.0');
  * // → { apiKeys, modelRegistry, featureFlags, syncfusionKey, ... }
  *
  * // === API キーローテーション ===
@@ -1057,6 +1057,176 @@ export const CRON_JOBS = {
 // エクスポート
 // =============================================================================
 
+// =============================================================================
+// InsightOffice 系デフォルトフィーチャーフラグ
+// =============================================================================
+
+/**
+ * InsightOffice 系アプリ（INSS / IOSH / IOSD / ISOF）向けの
+ * デフォルトフィーチャーフラグ定義。
+ *
+ * サーバーにフラグが未登録の場合のフォールバック値として使用。
+ * サーバー側でフラグを作成すれば、これらの値は上書きされる。
+ */
+export const INSIGHT_OFFICE_DEFAULT_FEATURE_FLAGS: FeatureFlag[] = [
+  {
+    key: 'remote_api_key_rotation',
+    products: ['INSS', 'IOSH', 'IOSD', 'ISOF', 'INBT', 'INPY'] as ProductCode[],
+    strategy: 'all',
+    value: true,
+    description: {
+      ja: 'リモート API キーローテーション（Claude / Syncfusion）を有効化',
+      en: 'Enable remote API key rotation (Claude / Syncfusion)',
+    },
+    updatedAt: '2026-02-23T00:00:00Z',
+  },
+  {
+    key: 'remote_model_registry',
+    products: ['INSS', 'IOSH', 'IOSD', 'ISOF', 'INBT', 'INPY'] as ProductCode[],
+    strategy: 'all',
+    value: true,
+    description: {
+      ja: 'リモートモデルレジストリのホットアップデートを有効化',
+      en: 'Enable remote model registry hot-update',
+    },
+    updatedAt: '2026-02-23T00:00:00Z',
+  },
+  {
+    key: 'auto_update_check',
+    products: ['INSS', 'IOSH', 'IOSD', 'ISOF', 'INBT', 'INPY'] as ProductCode[],
+    strategy: 'all',
+    value: true,
+    description: {
+      ja: '起動時の自動バージョンチェックを有効化',
+      en: 'Enable automatic version check on startup',
+    },
+    updatedAt: '2026-02-23T00:00:00Z',
+  },
+  {
+    key: 'velopack_auto_update',
+    products: ['INSS', 'IOSH', 'IOSD', 'ISOF', 'INBT', 'INPY'] as ProductCode[],
+    strategy: 'all',
+    value: true,
+    description: {
+      ja: 'Velopack 差分自動更新を有効化（WPF アプリ）',
+      en: 'Enable Velopack delta auto-update (WPF apps)',
+    },
+    updatedAt: '2026-02-23T00:00:00Z',
+  },
+  {
+    key: 'velopack_silent_update',
+    products: ['INSS', 'IOSH', 'IOSD', 'ISOF', 'INBT', 'INPY'] as ProductCode[],
+    strategy: 'plan_based',
+    allowedPlans: ['PRO', 'ENT'] as PlanCode[],
+    value: true,
+    description: {
+      ja: 'サイレント自動更新（バックグラウンドDL → 次回起動時適用）を有効化（PRO/ENT のみ）',
+      en: 'Enable silent auto-update (background download, apply on next launch) for PRO/ENT',
+    },
+    updatedAt: '2026-02-23T00:00:00Z',
+  },
+  {
+    key: 'ai_model_user_selection',
+    products: ['INSS', 'IOSH', 'IOSD', 'ISOF'] as ProductCode[],
+    strategy: 'all',
+    value: true,
+    description: {
+      ja: 'AI モデルのユーザー選択 UI を有効化',
+      en: 'Enable AI model user selection UI',
+    },
+    updatedAt: '2026-02-23T00:00:00Z',
+  },
+];
+
+/**
+ * 製品別のリモートコンフィグ初期化パラメータ
+ *
+ * 各製品でリモートコンフィグクライアントを初期化する際のデフォルト設定。
+ */
+export const PRODUCT_REMOTE_CONFIG_DEFAULTS: Record<string, {
+  /** ポーリング間隔（ミリ秒） */
+  pollingIntervalMs: number;
+  /** 起動時の初回チェック遅延（ミリ秒） */
+  initialDelayMs: number;
+  /** 自動更新フレームワーク */
+  autoUpdateFramework: string;
+  /** API キープロバイダー一覧 */
+  requiredApiKeys: ApiKeyProvider[];
+}> = {
+  // InsightOffice Suite（Syncfusion + Claude）
+  INSS: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'velopack',
+    requiredApiKeys: ['claude', 'syncfusion'],
+  },
+  IOSH: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'velopack',
+    requiredApiKeys: ['claude', 'syncfusion'],
+  },
+  IOSD: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'velopack',
+    requiredApiKeys: ['claude', 'syncfusion'],
+  },
+  ISOF: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'velopack',
+    requiredApiKeys: ['claude', 'syncfusion'],
+  },
+  // InsightBot（Claude のみ）
+  INBT: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'velopack',
+    requiredApiKeys: ['claude'],
+  },
+  // InsightPy（Claude のみ）
+  INPY: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'velopack',
+    requiredApiKeys: ['claude'],
+  },
+  // Tauri アプリ（Claude のみ）
+  INCA: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'tauri-plugin-updater',
+    requiredApiKeys: ['claude'],
+  },
+  IVIN: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'tauri-plugin-updater',
+    requiredApiKeys: ['claude'],
+  },
+  // Python アプリ（Claude のみ）
+  INMV: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'custom',
+    requiredApiKeys: ['claude'],
+  },
+  INIG: {
+    pollingIntervalMs: 4 * 60 * 60 * 1000,
+    initialDelayMs: 5_000,
+    autoUpdateFramework: 'custom',
+    requiredApiKeys: ['claude'],
+  },
+};
+
+/**
+ * 製品のリモートコンフィグデフォルト設定を取得
+ */
+export function getProductRemoteConfigDefaults(productCode: ProductCode): typeof PRODUCT_REMOTE_CONFIG_DEFAULTS[string] | undefined {
+  return PRODUCT_REMOTE_CONFIG_DEFAULTS[productCode];
+}
+
 export default {
   // 設定
   REMOTE_CONFIG_SETTINGS,
@@ -1066,6 +1236,8 @@ export default {
   API_KEY_POLICIES,
   API_KEY_GRACE_PERIOD_DAYS,
   CRON_JOBS,
+  INSIGHT_OFFICE_DEFAULT_FEATURE_FLAGS,
+  PRODUCT_REMOTE_CONFIG_DEFAULTS,
 
   // 関数
   compareVersions,
@@ -1076,4 +1248,5 @@ export default {
   getDownloadUrl,
   getUpdateNotificationType,
   validateApiKeyRequest,
+  getProductRemoteConfigDefaults,
 };
