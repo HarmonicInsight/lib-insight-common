@@ -397,7 +397,7 @@ export interface StripeWebhookProcessingSpec {
       '1. stripe_subscriptions の status を "canceled" に更新',
       '2. licenses テーブルの auto_renew を false に更新',
       '3. 解約確認メールを送信',
-      '4. 有効期限到来時に FREE プランへ自動降格（バッチ処理）',
+      '4. 有効期限到来時に TRIAL プランへ自動降格（バッチ処理）',
     ];
   };
 }

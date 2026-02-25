@@ -1,227 +1,227 @@
-# Harmonic Factory - プラチE��フォーム標溁E
+# Harmonic Factory - プラットフォーム標準
 
-> insight-commonを使用するすべてのアプリに適用される技術標溁E
+> insight-commonを使用するすべてのアプリに適用される技術標準
 
-**凡侁E*: 🟢 = 標準採用 / ⚪ = 忁E��時採用 / ❁E= 不採用
+**凡例**: 🟢 = 標準採用 / ⚪ = 必要時採用 / ❌ = 不採用
 
 ---
 
-## 標準技術スタチE��
+## 標準技術スタック
 
 ```
-🟢 標準構�E�E��E案件共通！E
-├── Vercel�E�フロントエンド！E
-├── Render�E�バチE��エンチE/ Python�E�E
-├── Firebase Auth�E�認証�E�E         ↁEinsight-common/infrastructure/auth/
-├── Firebase Firestore�E�EB�E�E
-├── Firebase Storage�E�ストレージ�E�E
-├── GitHub Actions�E�EI/CD�E�E
-├── Cloudflare�E�EDN・セキュリチE���E�E
-├── Claude API�E�EI / LLM�E�E
-└── JBCA�E�日本語NLP�E�E             ↁEinsight-common/nlp/
+🟢 標準構成（全案件共通）
+├── Vercel（フロントエンド）
+├── Render（バックエンド / Python）
+├── Firebase Auth（認証）         → insight-common/infrastructure/auth/
+├── Firebase Firestore（DB）
+├── Firebase Storage（ストレージ）
+├── GitHub Actions（CI/CD）
+├── Cloudflare（CDN・セキュリティ）
+├── Claude API（AI / LLM）
+└── JBCA（日本語NLP）             → insight-common/nlp/
 
-⚪ オプション�E�忁E��時追加�E�E
-├── Supabase�E�EQL / 業務系のみ�E�E  ↁEinsight-common/infrastructure/db/
-├── Pinecone�E��EクトルDB / AI検索時！E
-├── Resend�E�メール送信時！E
-└── Sentry�E�本番監視時�E�E
+⚪ オプション（必要時追加）
+├── Supabase（SQL / 業務系のみ）  → insight-common/infrastructure/db/
+├── Pinecone（ベクトルDB / AI検索時）
+├── Resend（メール送信時）
+└── Sentry（本番監視時）
 ```
 
 ---
 
 ## 技術選定表
 
-| カチE��リ | 標準ツール | 採用 | insight-common対忁E|
+| カテゴリ | 標準ツール | 採用 | insight-common対応 |
 |---------|-----------|------|-------------------|
-| **フロントエンチE* | Vercel + React/Next.js | 🟢 | - |
-| **バックエンチE* | Render (Python) | 🟢 | - |
+| **フロントエンド** | Vercel + React/Next.js | 🟢 | - |
+| **バックエンド** | Render (Python) | 🟢 | - |
 | **認証** | Firebase Auth | 🟢 | `infrastructure/auth/` |
-| **DB�E�EoSQL�E�E* | Firebase Firestore | 🟢 | `infrastructure/db/firebase.ts` |
-| **DB�E�EQL�E�E* | Supabase | ⚪ 業務系のみ | `infrastructure/db/supabase.ts` |
-| **ベクトルDB** | Pinecone | ⚪ AI連携晁E| 要追加 |
+| **DB（NoSQL）** | Firebase Firestore | 🟢 | `infrastructure/db/firebase.ts` |
+| **DB（SQL）** | Supabase | ⚪ 業務系のみ | `infrastructure/db/supabase.ts` |
+| **ベクトルDB** | Pinecone | ⚪ AI連携時 | 要追加 |
 | **ストレージ** | Firebase Storage | 🟢 | - |
 | **CI/CD** | GitHub Actions | 🟢 | - |
-| **CDN / セキュリチE��** | Cloudflare | 🟢 | - |
-| **メール送信** | Resend | ⚪ 忁E��時 | 要追加 |
-| **監要E* | Sentry | ⚪ 本番運用晁E| 要追加 |
-| **AI�E�ELM�E�E* | Claude API | 🟢 | - |
+| **CDN / セキュリティ** | Cloudflare | 🟢 | - |
+| **メール送信** | Resend | ⚪ 必要時 | 要追加 |
+| **監視** | Sentry | ⚪ 本番運用時 | 要追加 |
+| **AI（LLM）** | Claude API | 🟢 | - |
 | **日本語NLP** | JBCA (kuromoji) | 🟢 | `nlp/` |
 
 ---
 
-## アプリ種類別 DB選宁E
+## アプリ種類別 DB選定
 
-| アプリ種顁E| DB選抁E| 琁E�� |
+| アプリ種類 | DB選択 | 理由 |
 |-----------|--------|------|
-| **チャチE��アプリ** | Firebase 🟢 | リアルタイム同期 |
-| **SNS・タイムライン** | Firebase 🟢 | スケーラビリチE�� |
-| **スマ�Eアプリ** | Firebase 🟢 | オフライン対忁E|
+| **チャットアプリ** | Firebase 🟢 | リアルタイム同期 |
+| **SNS・タイムライン** | Firebase 🟢 | スケーラビリティ |
+| **スマホアプリ** | Firebase 🟢 | オフライン対応 |
 | **Todoアプリ** | Firebase 🟢 | シンプル |
-| **AI/NLPアプリ** | Firebase 🟢 | 柔軟なスキーチE|
-| **ECサイチE* | Supabase ⚪ | トランザクション |
-| **業務シスチE��** | Supabase ⚪ | 褁E��なクエリ |
-| **CRM・顧客管琁E* | Supabase ⚪ | リレーション |
+| **AI/NLPアプリ** | Firebase 🟢 | 柔軟なスキーマ |
+| **ECサイト** | Supabase ⚪ | トランザクション |
+| **業務システム** | Supabase ⚪ | 複雑なクエリ |
+| **CRM・顧客管理** | Supabase ⚪ | リレーション |
 
 ---
 
-## 規模別インフラ選宁E
+## 規模別インフラ選定
 
-| 月商 | 構�E | 月額目宁E|
+| 月商 | 構成 | 月額目安 |
 |------|------|---------|
-| **、E00丁E�E** | Render + Firebase�E�無料枠�E�E| **0冁E* 🟢 |
-| **100、E,000丁E�E** | Railway + Firebase/Supabase Pro | **3、E丁E�E** ⚪ |
-| **1,000丁E�E、E* | Cloud Run + Cloud SQL | **10、E0丁E�E** ⚪ |
+| **〜100万円** | Render + Firebase（無料枠） | **0円** 🟢 |
+| **100〜1,000万円** | Railway + Firebase/Supabase Pro | **3〜5万円** ⚪ |
+| **1,000万円〜** | Cloud Run + Cloud SQL | **10〜30万円** ⚪ |
 
 ---
 
-## 不採用チE�Eル
+## 不採用ツール
 
-| チE�Eル | 用送E| 代替 |
+| ツール | 用途 | 代替 |
 |--------|------|------|
-| Dify | RAG構篁E| Claude Code + JBCA |
+| Dify | RAG構築 | Claude Code + JBCA |
 | n8n | ワークフロー | Claude Code |
 | Zapier | 連携 | Claude Code |
 | Make | 自動化 | Claude Code |
 | Flowise | AIフロー | Claude Code |
-| Bubble | アプリ構篁E| Claude Code |
-| Retool | 管琁E��面 | Claude Code |
+| Bubble | アプリ構築 | Claude Code |
+| Retool | 管理画面 | Claude Code |
 
-**琁E��**: ノ�Eコードツールは月額コストがかかり、カスタマイズに限界がある、E
-Claude Codeで直接構築することで、柔軟性とコスト削減を両立、E
+**理由**: ノーコードツールは月額コストがかかり、カスタマイズに限界がある。
+Claude Codeで直接構築することで、柔軟性とコスト削減を両立。
 
 ---
 
-## AI連携案件のDB選宁E
+## AI連携案件のDB選定
 
 | 案件 | ベクトルDB | 補助 |
 |------|-----------|------|
-| 社冁E��レチE��検索 | Pinecone ⚪ | JBCA�E�品詞フィルタ�E�E|
-| カスタマ�Eサポ�EチEot | Pinecone ⚪ | JBCA�E�感惁E�E析！E|
-| 議事録検索 | Pinecone ⚪ | JBCA�E�話老E�E析！E|
-| 翻訳・要紁E| 不要E| Claude API直接 |
-| 感情刁E�� | 不要E| JBCA�E�ルールベ�Eス�E�E|
-| タスク抽出 | 不要E| JBCA�E�品詞解析！E|
+| 社内ナレッジ検索 | Pinecone ⚪ | JBCA（品詞フィルタ） |
+| カスタマーサポートBot | Pinecone ⚪ | JBCA（感情分析） |
+| 議事録検索 | Pinecone ⚪ | JBCA（話者分析） |
+| 翻訳・要約 | 不要 | Claude API直接 |
+| 感情分析 | 不要 | JBCA（ルールベース） |
+| タスク抽出 | 不要 | JBCA（品詞解析） |
 
 ---
 
 ## insight-common モジュール対応表
 
-| 標準機�E | モジュール | 状慁E|
+| 標準機能 | モジュール | 状態 |
 |---------|-----------|------|
-| Firebase認証 | `infrastructure/auth/firebase-*.ts` | ✁E実裁E��み |
-| Supabase接綁E| `infrastructure/db/supabase.ts` | ✁E実裁E��み |
-| APIゲートウェイ | `infrastructure/api/gateway.ts` | ✁E実裁E��み |
-| 日本語NLP (JBCA) | `nlp/` | ✁E実裁E��み |
-| ブランドカラー | `brand/colors.json` | ✁E実裁E��み |
+| Firebase認証 | `infrastructure/auth/firebase-*.ts` | ✅ 実装済み |
+| Supabase接続 | `infrastructure/db/supabase.ts` | ✅ 実装済み |
+| APIゲートウェイ | `infrastructure/api/gateway.ts` | ✅ 実装済み |
+| 日本語NLP (JBCA) | `nlp/` | ✅ 実装済み |
+| ブランドカラー | `brand/colors.json` | ✅ 実装済み |
 | Pinecone連携 | - | 📋 要追加 |
 | Resendメール | - | 📋 要追加 |
-| Sentry監要E| - | 📋 要追加 |
+| Sentry監視 | - | 📋 要追加 |
 
 ---
 
-## チE��クトップアプリ標溁E
+## デスクトップアプリ標準
 
-> Web/APIとは別に、WindowsチE��クトップアプリ開発の標準を定義
+> Web/APIとは別に、Windowsデスクトップアプリ開発の標準を定義
 
-### 開発フェーズ別技術選宁E
+### 開発フェーズ別技術選定
 
-| フェーズ | 技衁E| 用送E| 採用 |
+| フェーズ | 技術 | 用途 | 採用 |
 |---------|------|------|------|
-| **プロトタイチE* | Python + Tkinter | 高速開発、仕様検証 | 🟢 |
-| **製品化�E�軽量！E* | Tauri + React | 5MB配币E��モダンUI | ⚪ |
-| **製品化�E�Effice連携�E�E* | C# + WPF + Open XML SDK | MS公式SDK、堁E�� | ⚪ |
-| **ローカルAPI** | Flask | ラズパイ、画像�E琁E��ーバ�E | 🟢 |
+| **プロトタイプ** | Python + Tkinter | 高速開発、仕様検証 | 🟢 |
+| **製品化（軽量）** | Tauri + React | 5MB配布、モダンUI | ⚪ |
+| **製品化（Office連携）** | C# + WPF + Open XML SDK | MS公式SDK、堅牢 | ⚪ |
+| **ローカルAPI** | Flask | ラズパイ、画像処理サーバー | 🟢 |
 
-### 配币E��式比輁E
+### 配布形式比較
 
-| 技衁E| 配币E��イズ | 起動速度 | 難読匁E| Office連携 |
+| 技術 | 配布サイズ | 起動速度 | 難読化 | Office連携 |
 |------|-----------|---------|--------|-----------|
-| Python + PyInstaller | 50-80MB | 2-5私E| 弱 | python-pptx�E�非公式！E|
-| Tauri + React | 5-15MB | 0.5私E| 中 | 要追加実裁E|
-| C# + WPF | 15-25MB | 0.3私E| 強�E�Eotfuscator�E�E| Open XML SDK�E��E式！E|
+| Python + PyInstaller | 50-80MB | 2-5秒 | 弱 | python-pptx（非公式） |
+| Tauri + React | 5-15MB | 0.5秒 | 中 | 要追加実装 |
+| C# + WPF | 15-25MB | 0.3秒 | 強（Dotfuscator） | Open XML SDK（公式） |
 
 ### 推奨開発フロー
 
 ```
-1. プロトタイプ！Eython + Tkinter�E�E
-   ├── 機�E検証
-   ├── UI/UX確誁E
-   └── ライセンス体系確宁E
+1. プロトタイプ（Python + Tkinter）
+   ├── 機能検証
+   ├── UI/UX確認
+   └── ライセンス体系確定
 
 2. 製品化判断
-   ├── Office連携が重要EↁEC# + WPF
-   ├── 軽量�E币E��重要EↁETauri + React
-   └── 現状維持EↁEPython + PyInstaller
+   ├── Office連携が重要 → C# + WPF
+   ├── 軽量配布が重要 → Tauri + React
+   └── 現状維持 → Python + PyInstaller
 ```
 
-### 製品別技術選宁E
+### 製品別技術選定
 
-| 製品E| 現在 | 移行�E�E�検討中�E�E| 琁E�� |
+| 製品 | 現在 | 移行先（検討中） | 理由 |
 |------|------|-----------------|------|
-| InsightOfficeSlide (INSS) | Python + Tkinter | C# + WPF | PPT完�E互換が忁E��E|
-| InsightOfficeSheet (IOSH) | C# + WPF | C# + WPF 維持E| Excel完�E互換が忁E��E|
-| InsightOfficeDoc (IOSD) | C# + WPF | C# + WPF 維持E| Word完�E互換が忁E��E|
-| InsightPy (INPY) | Python + Tkinter | Python維持E| Python実行環墁E��本質 |
-| InsightCast (INMV) | Python + Tkinter | Tauri or 維持E| 軽量�E币Eor 現状維持E|
+| InsightOfficeSlide (INSS) | Python + Tkinter | C# + WPF | PPT完全互換が必要 |
+| InsightOfficeSheet (IOSH) | C# + WPF | C# + WPF 維持 | Excel完全互換が必要 |
+| InsightOfficeDoc (IOSD) | C# + WPF | C# + WPF 維持 | Word完全互換が必要 |
+| InsightPy (INPY) | Python + Tkinter | Python維持 | Python実行環境が本質 |
+| InsightCast (INMV) | Python + Tkinter | Tauri or 維持 | 軽量配布 or 現状維持 |
 | InterviewInsight (IVIN) | Python + Tkinter | C# + WPF | 音声・動画解析連携 |
 
-### Flask の位置づぁE
+### Flask の位置づけ
 
 ```
-Flask = 軽量Webサーバ�E�E�デスクトップアプリの補助�E�E
+Flask = 軽量Webサーバー（デスクトップアプリの補助）
 
-用途侁E
-├── ラズパイでの画像�E琁EPI
-├── ローカルでのAI推論サーバ�E
-├── チE��クトップアプリのバックエンチE
+用途例：
+├── ラズパイでの画像処理API
+├── ローカルでのAI推論サーバー
+├── デスクトップアプリのバックエンド
 └── Stable Diffusion WebUI連携
 
-※ 本格皁E��Webアプリは Next.js + Vercel を使用
+※ 本格的なWebアプリは Next.js + Vercel を使用
 ```
 
-### Tauri の位置づぁE
+### Tauri の位置づけ
 
 ```
 Tauri = 軽量デスクトップアプリフレームワーク
 
-メリチE��:
-├── Electron比で1/10のサイズ�E�EMB vs 50MB�E�E
-├── Rust製でメモリ効玁E��良ぁE
+メリット:
+├── Electron比で1/10のサイズ（5MB vs 50MB）
+├── Rust製でメモリ効率が良い
 ├── React/Vue/Svelteでフロント開発
-└── クロスプラチE��フォーム対忁E
+└── クロスプラットフォーム対応
 
-チE��リチE��:
-├── Rust学習コスチE
+デメリット:
+├── Rust学習コスト
 ├── Office連携ライブラリが貧弱
-└── ネイチE��ブ機�Eアクセスに制陁E
+└── ネイティブ機能アクセスに制限
 
 採用判断:
-├── Office連携不要E+ 軽量�E币E��要EↁETauri検訁E
-└── Office連携忁E��EↁEC# + WPF
+├── Office連携不要 + 軽量配布重要 → Tauri検討
+└── Office連携必要 → C# + WPF
 ```
 
-### C# + WPF の位置づぁE
+### C# + WPF の位置づけ
 
 ```
-C# + WPF = Windows向け本格製品E��発
+C# + WPF = Windows向け本格製品開発
 
-メリチE��:
-├── Open XML SDK�E�ES公式）で完�EなOffice互換
-├── 10年以上�E後方互換保証
-├── Visual Studioの強力なチE��チE��環墁E
-├── Dotfuscatorで堁E��な難読匁E
+メリット:
+├── Open XML SDK（MS公式）で完全なOffice互換
+├── 10年以上の後方互換保証
+├── Visual Studioの強力なデバッグ環境
+├── Dotfuscatorで堅牢な難読化
 └── 企業向け提案で「MS技術」と言える信頼性
 
-チE��リチE��:
+デメリット:
 ├── Windows専用
-├── 学習コスト！E-4週間！E
-└── 既存Python賁E��の書き直ぁE
+├── 学習コスト（3-4週間）
+└── 既存Python資産の書き直し
 
 採用判断:
-├── PowerPoint/Excel完�E互換が忁E��EↁEC#
-├── 企業向け製品として販売 ↁEC#
-├── ライセンス保護が重要EↁEC#
-└── クロスプラチE��フォーム忁E��EↁE他を検訁E
+├── PowerPoint/Excel完全互換が必要 → C#
+├── 企業向け製品として販売 → C#
+├── ライセンス保護が重要 → C#
+└── クロスプラットフォーム必要 → 他を検討
 ```
 
 ---
@@ -229,11 +229,11 @@ C# + WPF = Windows向け本格製品E��発
 ## Harmonic Factoryの強み
 
 ```
-✁Eノ�Eコードツール不要E��Elaude Codeで構築！E
-✁E顧客規模に合った正直な提桁E
-✁E成長に合わせた移行サポ�EチE
-✁E日本語特化NLP�E�EBCA�E�による差別匁E
-✁E大手が言わなぁE��報を�E閁E
+✅ ノーコードツール不要（Claude Codeで構築）
+✅ 顧客規模に合った正直な提案
+✅ 成長に合わせた移行サポート
+✅ 日本語特化NLP（JBCA）による差別化
+✅ 大手が言わない情報を公開
 ```
 
 ---

@@ -1,55 +1,55 @@
 /**
- * HARMONIC insight アプリアイコン一允E��琁E
+ * HARMONIC insight アプリアイコン一元管理
  *
  * ============================================================================
- * 【設計方針、E
+ * 【設計方針】
  * ============================================================================
  *
- * 全製品�Eアイコンを「�Eスターソース ↁEプラチE��フォーム別出力」�E
- * パイプラインとして一允E��琁E��る、E
+ * 全製品のアイコンを「マスターソース → プラットフォーム別出力」の
+ * パイプラインとして一元管理する。
  *
  * ## マスターソース (brand/icons/png/)
  *
  * ```
  * brand/icons/png/
- * ├── icon-insight-sheet.png      # マスター PNG�E�E024x1024�E� E唯一の正
+ * ├── icon-insight-sheet.png      # マスター PNG（1024x1024）— 唯一の正
  * └── ...
  * ```
  *
- * ## プラチE��フォーム別出力�E
+ * ## プラットフォーム別出力先
  *
  * ```
- * ┌─────────────────────────────────────────────────────────────────━E
- * ━E WPF (C#)                                                      ━E
- * ━E Assets/app.ico               E16/24/32/48/64/128/256px       ━E
- * ━E Assets/icon_256.png          Eタイトルバ�E・スプラチE��ュ用     ━E
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │ WPF (C#)                                                      │
+ * │ Assets/app.ico               — 16/24/32/48/64/128/256px       │
+ * │ Assets/icon_256.png          — タイトルバー・スプラッシュ用     │
  * ├─────────────────────────────────────────────────────────────────┤
- * ━E Web (Next.js / React)                                         ━E
- * ━E public/favicon.ico           E32px ICO                       ━E
- * ━E public/icon-192.png          EPWA マニフェスチE              ━E
- * ━E public/icon-512.png          EPWA マニフェスチE              ━E
- * ━E public/apple-touch-icon.png  EiOS Safari                     ━E
- * ━E public/og-image.png          EOGP                            ━E
+ * │ Web (Next.js / React)                                         │
+ * │ public/favicon.ico           — 32px ICO                       │
+ * │ public/icon-192.png          — PWA マニフェスト              │
+ * │ public/icon-512.png          — PWA マニフェスト              │
+ * │ public/apple-touch-icon.png  — iOS Safari                     │
+ * │ public/og-image.png          — OGP                            │
  * ├─────────────────────────────────────────────────────────────────┤
- * ━E Android (Native Kotlin)                                       ━E
- * ━E app/src/main/res/mipmap-*/ic_launcher.png   E48、E92dp       ━E
- * ━E app/src/main/res/drawable/ic_launcher_foreground.xml          ━E
+ * │ Android (Native Kotlin)                                       │
+ * │ app/src/main/res/mipmap-*/ic_launcher.png   — 48〜192dp       │
+ * │ app/src/main/res/drawable/ic_launcher_foreground.xml          │
  * ├─────────────────────────────────────────────────────────────────┤
- * ━E iOS                                                           ━E
- * ━E Assets.xcassets/AppIcon.appiconset/  E1024x1024 PNG          ━E
+ * │ iOS                                                           │
+ * │ Assets.xcassets/AppIcon.appiconset/  — 1024x1024 PNG          │
  * ├─────────────────────────────────────────────────────────────────┤
- * ━E Expo / React Native                                           ━E
- * ━E assets/icon.png              E1024x1024 PNG                  ━E
- * ━E assets/adaptive-icon.png     E1024x1024 PNG                  ━E
+ * │ Expo / React Native                                           │
+ * │ assets/icon.png              — 1024x1024 PNG                  │
+ * │ assets/adaptive-icon.png     — 1024x1024 PNG                  │
  * ├─────────────────────────────────────────────────────────────────┤
- * ━E Electron                                                      ━E
- * ━E build/icon.ico               EWindows                        ━E
- * ━E build/icon.icns              EmacOS                          ━E
- * ━E build/icon.png               ELinux (256x256 or 512x512)     ━E
- * └─────────────────────────────────────────────────────────────────━E
+ * │ Electron                                                      │
+ * │ build/icon.ico               — Windows                        │
+ * │ build/icon.icns              — macOS                          │
+ * │ build/icon.png               — Linux (256x256 or 512x512)     │
+ * └─────────────────────────────────────────────────────────────────┘
  * ```
  *
- * ## 使ぁE��
+ * ## 使い方
  *
  * ```typescript
  * import {
@@ -59,19 +59,19 @@
  *   getIconStatus,
  * } from '@/insight-common/config/app-icons';
  *
- * // 製品�Eアイコン構�Eを取征E
+ * // 製品のアイコン構成を取得
  * const config = getIconConfig('IOSH');
  * config.masterPng;  // 'brand/icons/png/icon-insight-sheet.png'
- * config.motifJa;    // 'スプレチE��シートグリチE�� + ヘッダー衁E
+ * config.motifJa;    // 'スプレッドシートグリッド + ヘッダー行'
  *
- * // プラチE��フォーム別の出力�Eを取征E
+ * // プラットフォーム別の出力先を取得
  * const targets = getIconTargets('IOSH', 'wpf');
  * // [
  * //   { path: 'Assets/app.ico', format: 'ico', sizes: [16,24,32,48,64,128,256] },
  * //   { path: 'Assets/icon_256.png', format: 'png', sizes: [256] },
  * // ]
  *
- * // 全製品�Eアイコン状態を取得！Epp Manager 用�E�E
+ * // 全製品のアイコン状態を取得（App Manager 用）
  * const allConfigs = getAllIconConfigs();
  * ```
  */
@@ -82,76 +82,76 @@ import type { ProductCode } from './products';
 // 型定義
 // =============================================================================
 
-/** アプリケーションプラチE��フォーム */
+/** アプリケーションプラットフォーム */
 export type IconPlatform =
-  | 'wpf'              // WPF (C#) チE��クトップアプリ
+  | 'wpf'              // WPF (C#) デスクトップアプリ
   | 'web'              // Web (Next.js / React / Hono)
-  | 'android'          // Android (Native Kotlin)  Emipmap PNG
-  | 'android_native'   // Android (Native Kotlin)  Evector drawable XML
+  | 'android'          // Android (Native Kotlin) — mipmap PNG
+  | 'android_native'   // Android (Native Kotlin) — vector drawable XML
   | 'ios'              // iOS (Swift)
   | 'expo'             // Expo / React Native
-  | 'electron';        // Electron チE��クトップアプリ
+  | 'electron';        // Electron デスクトップアプリ
 
-/** アイコンフォーマッチE*/
+/** アイコンフォーマット */
 export type IconFormat = 'ico' | 'png' | 'icns';
 
-/** プラチE��フォーム別アイコン出力ターゲチE�� */
+/** プラットフォーム別アイコン出力ターゲット */
 export interface IconTarget {
-  /** 出力�Eパス�E�アプリの BasePath からの相対パス�E�E*/
+  /** 出力先パス（アプリの BasePath からの相対パス） */
   path: string;
-  /** アイコンフォーマッチE*/
+  /** アイコンフォーマット */
   format: IconFormat;
-  /** サイズ�E�Ex�E�。�Eルチサイズの場合�E褁E��、E*/
+  /** サイズ（px）。マルチサイズの場合は複数 */
   sizes: number[];
-  /** 説昁E*/
+  /** 説明 */
   description: string;
-  /** 日本語説昁E*/
+  /** 日本語説明 */
   descriptionJa: string;
 }
 
-/** プラチE��フォーム別出力定義 */
+/** プラットフォーム別出力定義 */
 export interface IconPlatformConfig {
-  /** プラチE��フォーム */
+  /** プラットフォーム */
   platform: IconPlatform;
-  /** 出力ターゲチE��一覧 */
+  /** 出力ターゲット一覧 */
   targets: IconTarget[];
 }
 
-/** 製品�Eアイコン構�E */
+/** 製品のアイコン構成 */
 export interface AppIconConfig {
-  /** 製品コーチE*/
+  /** 製品コード */
   productCode: ProductCode | string;
   /** 製品名 */
   productName: string;
-  /** マスター PNG ソース�E�E024x1024、リポジトリルートから�E相対パス�E�E E唯一の正 */
+  /** マスター PNG ソース（1024x1024）— 唯一の正 */
   masterPng: string;
-  /** アイコンモチ�Eフ説明（英語！E*/
+  /** アイコンモチーフ説明（英語） */
   motif: string;
-  /** アイコンモチ�Eフ説明（日本語！E*/
+  /** アイコンモチーフ説明（日本語） */
   motifJa: string;
-  /** こ�Eアプリが使用するプラチE��フォーム一覧 */
+  /** このアプリが使用するプラットフォーム一覧 */
   platforms: IconPlatformConfig[];
 }
 
 // =============================================================================
-// プラチE��フォーム別チE��プレーチE
+// プラットフォーム別テンプレート
 // =============================================================================
 
-/** WPF (C#) チE��クトップアプリ向けターゲチE�� */
+/** WPF (C#) デスクトップアプリ向けターゲット */
 const WPF_TARGETS: IconTarget[] = [
   {
     path: 'Assets/app.ico',
     format: 'ico',
     sizes: [16, 24, 32, 48, 64, 128, 256],
     description: 'Windows application icon (multi-size ICO)',
-    descriptionJa: 'Windows アプリケーションアイコン�E��Eルチサイズ ICO�E�E,
+    descriptionJa: 'Windows アプリケーションアイコン（マルチサイズ ICO）',
   },
   {
     path: 'Assets/icon_256.png',
     format: 'png',
     sizes: [256],
     description: 'Title bar / splash screen icon',
-    descriptionJa: 'タイトルバ�E・スプラチE��ュ画面用アイコン',
+    descriptionJa: 'タイトルバー・スプラッシュ画面用アイコン',
   },
 ];
 
@@ -169,7 +169,7 @@ function wpfWithFileIcon(fileIconName: string): IconTarget[] {
   ];
 }
 
-/** Web (Next.js / React) 向けターゲチE�� */
+/** Web (Next.js / React) 向けターゲット */
 const WEB_TARGETS: IconTarget[] = [
   {
     path: 'public/favicon.ico',
@@ -197,11 +197,11 @@ const WEB_TARGETS: IconTarget[] = [
     format: 'png',
     sizes: [180],
     description: 'iOS Safari touch icon',
-    descriptionJa: 'iOS Safari タチE��アイコン',
+    descriptionJa: 'iOS Safari タッチアイコン',
   },
 ];
 
-/** Electron 向けターゲチE�� */
+/** Electron 向けターゲット */
 const ELECTRON_TARGETS: IconTarget[] = [
   {
     path: 'build/icon.ico',
@@ -226,7 +226,7 @@ const ELECTRON_TARGETS: IconTarget[] = [
   },
 ];
 
-/** Android 向けターゲチE�� */
+/** Android 向けターゲット */
 const ANDROID_TARGETS: IconTarget[] = [
   {
     path: 'app/src/main/res/mipmap-mdpi/ic_launcher.png',
@@ -265,7 +265,7 @@ const ANDROID_TARGETS: IconTarget[] = [
   },
 ];
 
-/** Android Native (mipmap PNGs only  Emaster PNG is the single source of truth) */
+/** Android Native (mipmap PNGs only — master PNG is the single source of truth) */
 const ANDROID_NATIVE_TARGETS: IconTarget[] = [
   {
     path: 'app/src/main/res/mipmap-mdpi/ic_launcher.png',
@@ -339,7 +339,7 @@ const ANDROID_NATIVE_TARGETS: IconTarget[] = [
   },
 ];
 
-/** iOS 向けターゲチE�� */
+/** iOS 向けターゲット */
 const IOS_TARGETS: IconTarget[] = [
   {
     path: 'Assets.xcassets/AppIcon.appiconset/icon-1024.png',
@@ -350,7 +350,7 @@ const IOS_TARGETS: IconTarget[] = [
   },
 ];
 
-/** Expo / React Native 向けターゲチE�� */
+/** Expo / React Native 向けターゲット */
 const EXPO_TARGETS: IconTarget[] = [
   {
     path: 'assets/icon.png',
@@ -381,14 +381,14 @@ const EXPO_TARGETS: IconTarget[] = [
 
 export const APP_ICON_CONFIGS: AppIconConfig[] = [
   // ══════════════════════════════════════════════════════
-  // Tier 1: 業務変革チE�Eル
+  // Tier 1: 業務変革ツール
   // ══════════════════════════════════════════════════════
   {
     productCode: 'INCA',
     productName: 'InsightNoCodeAnalyzer',
     masterPng: 'brand/icons/png/icon-insight-nca.png',
     motif: 'Flowchart + gear',
-    motifJa: 'フローチャーチE+ ギア',
+    motifJa: 'フローチャート + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -398,7 +398,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightBot',
     masterPng: 'brand/icons/png/icon-insight-bot.png',
     motif: 'Cute robot + chat bubble',
-    motifJa: 'かわぁE��ロボッチE+ チャチE��吹き�EぁE,
+    motifJa: 'かわいいロボット + チャット吹き出し',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -408,21 +408,21 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InterviewInsight',
     masterPng: 'brand/icons/png/icon-interview-insight.png',
     motif: 'Robot + microphone + clipboard',
-    motifJa: 'ロボッチE+ マイク + クリチE�Eボ�EチE,
+    motifJa: 'ロボット + マイク + クリップボード',
     platforms: [
       { platform: 'web', targets: WEB_TARGETS },
     ],
   },
 
   // ══════════════════════════════════════════════════════
-  // Tier 2: AI活用チE�Eル
+  // Tier 2: AI活用ツール
   // ══════════════════════════════════════════════════════
   {
     productCode: 'INMV',
     productName: 'InsightCast',
     masterPng: 'brand/icons/png/icon-insight-cast.png',
     motif: 'Projector + film strip + gear',
-    motifJa: '映写橁E+ フィルムストリチE�E + ギア',
+    motifJa: '映写機 + フィルムストリップ + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -432,7 +432,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightImageGen',
     masterPng: 'brand/icons/png/icon-insight-imagegen.png',
     motif: 'Monitor + aperture + image + gear',
-    motifJa: 'モニター + アパ�Eチャ + 画僁E+ ギア',
+    motifJa: 'モニター + アパーチャ + 画像 + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
@@ -446,7 +446,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightOfficeSlide',
     masterPng: 'brand/icons/png/icon-insight-slide.png',
     motif: 'Presentation board + gear + arrows',
-    motifJa: 'プレゼンボ�EチE+ ギア + 矢印',
+    motifJa: 'プレゼンボード + ギア + 矢印',
     platforms: [
       { platform: 'wpf', targets: wpfWithFileIcon('inss-file.ico') },
     ],
@@ -456,7 +456,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightOfficeSheet',
     masterPng: 'brand/icons/png/icon-insight-sheet.png',
     motif: 'Spreadsheet grid + gear',
-    motifJa: 'スプレチE��シートグリチE�� + ギア',
+    motifJa: 'スプレッドシートグリッド + ギア',
     platforms: [
       { platform: 'wpf', targets: wpfWithFileIcon('iosh-file.ico') },
     ],
@@ -466,7 +466,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightOfficeDoc',
     masterPng: 'brand/icons/png/icon-insight-doc.png',
     motif: 'Document + gear + DB',
-    motifJa: 'ドキュメンチE+ ギア + DB',
+    motifJa: 'ドキュメント + ギア + DB',
     platforms: [
       { platform: 'wpf', targets: wpfWithFileIcon('iosd-file.ico') },
     ],
@@ -490,14 +490,14 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightSeniorOffice',
     masterPng: 'brand/icons/png/icon-senior-office.png',
     motif: 'Calendar + document + mail + gear',
-    motifJa: 'カレンダー + 斁E�� + メール + ギア',
+    motifJa: 'カレンダー + 文書 + メール + ギア',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
   },
 
   // ══════════════════════════════════════════════════════
-  // ユーチE��リチE���E�EnsightQR: Expo iOS + Android Native Kotlin�E�E
+  // ユーティリティ（InsightQR: Expo iOS + Android Native Kotlin）
   // ══════════════════════════════════════════════════════
   {
     productCode: 'QR',
@@ -512,14 +512,14 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // Web アプリ�E�追加刁E��E
+  // Web アプリ（追加分）
   // ══════════════════════════════════════════════════════
   {
     productCode: 'INBA',
     productName: 'InsightBrowser AI',
     masterPng: '',
     motif: 'Browser + AI sparkle',
-    motifJa: 'ブラウザ + AI スパ�Eクル',
+    motifJa: 'ブラウザ + AI スパークル',
     platforms: [
       { platform: 'electron', targets: ELECTRON_TARGETS },
       { platform: 'web', targets: WEB_TARGETS },
@@ -527,28 +527,28 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // ユーチE��リチE��アイコン�E�Eauncher 等！E
+  // ユーティリティアイコン（Launcher 等）
   // ══════════════════════════════════════════════════════
   {
     productCode: 'LAUNCHER',
     productName: 'Insight Launcher',
     masterPng: 'brand/icons/png/icon-launcher.png',
     motif: '2x2 grid + rocket + circuit board',
-    motifJa: '2x2 グリチE�� + ロケチE�� + 回路基板',
+    motifJa: '2x2 グリッド + ロケット + 回路基板',
     platforms: [
       { platform: 'wpf', targets: WPF_TARGETS },
     ],
   },
 
   // ══════════════════════════════════════════════════════
-  // ユーチE��リチE���E�Endroid Native�E�E
+  // ユーティリティ（Android Native）
   // ══════════════════════════════════════════════════════
   {
     productCode: 'CAMERA',
     productName: 'InsightCamera',
     masterPng: 'brand/icons/png/icon-camera.png',
     motif: 'Camera lens with gold accent + sparkle',
-    motifJa: 'カメラレンズ + ゴールドアクセンチE+ スパ�Eクル',
+    motifJa: 'カメラレンズ + ゴールドアクセント + スパークル',
     platforms: [
       { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
     ],
@@ -558,7 +558,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightVoiceClock',
     masterPng: 'brand/icons/png/icon-voice-clock.png',
     motif: 'Clock face with voice wave + sparkle',
-    motifJa: '時訁E+ 音声波形 + スパ�Eクル',
+    motifJa: '時計 + 音声波形 + スパークル',
     platforms: [
       { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
     ],
@@ -568,7 +568,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InclineInsight',
     masterPng: 'brand/icons/png/icon-incline.png',
     motif: 'Inclinometer + measurement',
-    motifJa: '傾斜訁E+ 計測',
+    motifJa: '傾斜計 + 計測',
     platforms: [
       { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
     ],
@@ -578,7 +578,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightConsulType',
     masterPng: 'brand/icons/png/icon-consul-type.png',
     motif: 'Typing evaluation + assessment',
-    motifJa: 'タイピング評価 + アセスメンチE,
+    motifJa: 'タイピング評価 + アセスメント',
     platforms: [
       { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
     ],
@@ -588,7 +588,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'HarmonicHoroscope',
     masterPng: 'brand/icons/png/icon-horoscope.png',
     motif: 'Zodiac + stars + fortune',
-    motifJa: '星座 + 昁E+ 占ぁE,
+    motifJa: '星座 + 星 + 占い',
     platforms: [
       { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
     ],
@@ -608,7 +608,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
     productName: 'InsightConsulEvaluate',
     masterPng: 'brand/icons/png/icon-consul-evaluate.png',
     motif: 'Evaluation chart + assessment',
-    motifJa: '評価チャーチE+ アセスメンチE,
+    motifJa: '評価チャート + アセスメント',
     platforms: [
       { platform: 'android_native', targets: ANDROID_NATIVE_TARGETS },
     ],
@@ -616,7 +616,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
 ];
 
 // =============================================================================
-// インチE��クスマッチE
+// インデックスマップ
 // =============================================================================
 
 const _configByCode = new Map<string, AppIconConfig>();
@@ -625,11 +625,11 @@ for (const config of APP_ICON_CONFIGS) {
 }
 
 // =============================================================================
-// ヘルパ�E関数
+// ヘルパー関数
 // =============================================================================
 
 /**
- * 製品コードからアイコン構�Eを取征E
+ * 製品コードからアイコン構成を取得
  *
  * @example
  * ```typescript
@@ -642,7 +642,7 @@ export function getIconConfig(productCode: string): AppIconConfig | undefined {
 }
 
 /**
- * 製品EÁEプラチE��フォームのアイコン出力ターゲチE��を取征E
+ * 製品のプラットフォームのアイコン出力ターゲットを取得
  *
  * @example
  * ```typescript
@@ -658,14 +658,14 @@ export function getIconTargets(productCode: string, platform: IconPlatform): Ico
 }
 
 /**
- * 全製品�Eアイコン構�Eを取征E
+ * 全製品のアイコン構成を取得
  */
 export function getAllIconConfigs(): AppIconConfig[] {
   return APP_ICON_CONFIGS;
 }
 
 /**
- * 製品が使用するプラチE��フォーム一覧を取征E
+ * 製品が使用するプラットフォーム一覧を取得
  */
 export function getIconPlatforms(productCode: string): IconPlatform[] {
   const config = _configByCode.get(productCode);
@@ -674,7 +674,7 @@ export function getIconPlatforms(productCode: string): IconPlatform[] {
 }
 
 /**
- * マスターアイコンファイル名から製品コードを送E��き
+ * マスターアイコンファイル名から製品コードを逆引き
  *
  * @example
  * ```typescript
@@ -691,8 +691,8 @@ export function resolveProductByIconFile(filename: string): string | undefined {
 }
 
 /**
- * 全プラチE��フォームのターゲチE��チE��プレートを取征E
- * �E�新製品追加時にプラチE��フォームを選択するため�E参�E用�E�E
+ * 全プラットフォームのターゲットテンプレートを取得
+ * （新製品追加時にプラットフォームを選択するための参考用）
  */
 export function getPlatformTemplate(platform: IconPlatform): IconTarget[] {
   switch (platform) {
@@ -708,7 +708,7 @@ export function getPlatformTemplate(platform: IconPlatform): IconTarget[] {
 }
 
 /**
- * プラチE��フォーム名�E日本語ラベルを取征E
+ * プラットフォーム名の日本語ラベルを取得
  */
 export function getPlatformLabel(platform: IconPlatform, locale: 'en' | 'ja' = 'ja'): string {
   const labels: Record<IconPlatform, { en: string; ja: string }> = {
@@ -724,7 +724,7 @@ export function getPlatformLabel(platform: IconPlatform, locale: 'en' | 'ja' = '
 }
 
 // =============================================================================
-// チE��ォルトエクスポ�EチE
+// デフォルトエクスポート
 // =============================================================================
 
 export default {

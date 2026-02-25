@@ -192,13 +192,13 @@ export class ServerLicenseChecker {
   async checkLicense(userId: string): Promise<LicenseCheckResult> {
     const license = await this.getLicense(userId);
 
-    // ライセンスなし → FREEプラン
+    // ライセンスなし → TRIALプラン
     if (!license) {
       return {
         isValid: true,
         license: null,
-        limits: getPlanLimits(this.productCode, 'FREE'),
-        reason: 'No license found, using FREE plan',
+        limits: getPlanLimits(this.productCode, 'TRIAL'),
+        reason: 'No license found, using TRIAL plan',
       };
     }
 
@@ -207,7 +207,7 @@ export class ServerLicenseChecker {
       return {
         isValid: false,
         license,
-        limits: getPlanLimits(this.productCode, 'FREE'),
+        limits: getPlanLimits(this.productCode, 'TRIAL'),
         reason: 'License has been deactivated',
       };
     }
@@ -217,7 +217,7 @@ export class ServerLicenseChecker {
       return {
         isValid: false,
         license,
-        limits: getPlanLimits(this.productCode, 'FREE'),
+        limits: getPlanLimits(this.productCode, 'TRIAL'),
         reason: 'License has expired',
       };
     }
@@ -244,7 +244,7 @@ export class ServerLicenseChecker {
    */
   async checkFeatureAccess(userId: string, featureKey: string): Promise<FeatureCheckResult> {
     const result = await this.checkLicense(userId);
-    const plan = result.license?.plan || 'FREE';
+    const plan = result.license?.plan || 'TRIAL';
 
     // 統合API: 製品固有 + 共通機能を自動判定
     const allowed = checkFeature(this.productCode, featureKey, plan);
@@ -274,7 +274,7 @@ export class ServerLicenseChecker {
    */
   async getFeatureLimit(userId: string, featureKey: string): Promise<number | null> {
     const result = await this.checkLicense(userId);
-    const plan = result.license?.plan || 'FREE';
+    const plan = result.license?.plan || 'TRIAL';
     return getFeatureLimit(this.productCode, featureKey, plan);
   }
 
@@ -289,7 +289,7 @@ export class ServerLicenseChecker {
     limit: number | null;
   }>> {
     const result = await this.checkLicense(userId);
-    const plan = result.license?.plan || 'FREE';
+    const plan = result.license?.plan || 'TRIAL';
     return getProductFeatureMatrix(this.productCode, plan);
   }
 
@@ -475,7 +475,7 @@ export class ServerAiUsageManager {
     // ライセンス確認
     const licenseChecker = new ServerLicenseChecker(this.supabase, this.productCode);
     const licenseResult = await licenseChecker.checkLicense(userId);
-    const plan = licenseResult.license?.plan || 'FREE';
+    const plan = licenseResult.license?.plan || 'TRIAL';
     const licenseActive = licenseResult.isValid;
 
     // 残量チェック
@@ -705,14 +705,14 @@ export class ClientLicenseManager {
     });
 
     if (!response.ok) {
-      // エラー時はFREEプランとして扱う
+      // エラー時はTRIALプランとして扱う
       return this.getDefaultState();
     }
 
     const data = await response.json();
     this.state = {
-      plan: data.plan || 'FREE',
-      limits: data.limits || getPlanLimits(this.productCode, 'FREE'),
+      plan: data.plan || 'TRIAL',
+      limits: data.limits || getPlanLimits(this.productCode, 'TRIAL'),
       expiresAt: data.expires_at ? new Date(data.expires_at) : null,
       usage: data.usage || null,
       aiCredits: data.ai_credits || null,
@@ -756,7 +756,7 @@ export class ClientLicenseManager {
     enabled: boolean;
     limit: number | null;
   }> {
-    const plan = this.state?.plan || 'FREE';
+    const plan = this.state?.plan || 'TRIAL';
     return getProductFeatureMatrix(this.productCode, plan);
   }
 
@@ -838,8 +838,8 @@ export class ClientLicenseManager {
 
   private getDefaultState(): ClientLicenseState {
     return {
-      plan: 'FREE',
-      limits: getPlanLimits(this.productCode, 'FREE'),
+      plan: 'TRIAL',
+      limits: getPlanLimits(this.productCode, 'TRIAL'),
       expiresAt: null,
       usage: null,
       aiCredits: null,

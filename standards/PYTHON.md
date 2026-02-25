@@ -58,7 +58,6 @@ class Colors:
     CAT_DOC = "#2563EB"
 
     # Plan
-    PLAN_FREE = "#A8A29E"
     PLAN_TRIAL = "#2563EB"
     PLAN_STD = "#16A34A"
     PLAN_PRO = "#B8942F"
@@ -79,7 +78,6 @@ from datetime import datetime
 from dataclasses import dataclass
 
 class PlanCode(Enum):
-    FREE = "FREE"
     TRIAL = "TRIAL"
     STD = "STD"
     PRO = "PRO"
@@ -93,8 +91,8 @@ class LicenseInfo:
     is_valid: bool
 
     @classmethod
-    def free(cls) -> "LicenseInfo":
-        return cls(PlanCode.FREE, "", None, True)
+    def trial(cls) -> "LicenseInfo":
+        return cls(PlanCode.TRIAL, "", None, True)
 
 class InsightLicenseManager:
     KEY_PATTERN = re.compile(
@@ -104,13 +102,13 @@ class InsightLicenseManager:
     def __init__(self, product_code: str, app_name: str):
         self.product_code = product_code
         self.storage_path = Path.home() / ".harmonic_insight" / app_name / "license.json"
-        self.current_license = LicenseInfo.free()
+        self.current_license = LicenseInfo.trial()
         self._load_license()
 
     @property
     def is_activated(self) -> bool:
         return (
-            self.current_license.plan != PlanCode.FREE
+            self.current_license.plan != PlanCode.TRIAL
             and self.current_license.is_valid
         )
 
@@ -131,7 +129,7 @@ class InsightLicenseManager:
 
     def deactivate(self) -> None:
         """ライセンスを解除"""
-        self.current_license = LicenseInfo.free()
+        self.current_license = LicenseInfo.trial()
         if self.storage_path.exists():
             self.storage_path.unlink()
 

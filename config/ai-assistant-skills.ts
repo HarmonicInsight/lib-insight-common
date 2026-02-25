@@ -37,8 +37,9 @@ export type SkillCategory =
   | 'support'           // サポート（Customer Support プラグイン参考）
   | 'search';           // 検索（Enterprise Search プラグイン参考）
 
-/** AI コンテキストタイプ（既存 ai-assistant.ts と整合） */
-export type AiContextType = 'slide' | 'spreadsheet' | 'document' | 'code';
+/** AI コンテキストタイプ — ai-assistant.ts から再エクスポート */
+import type { AiContextType } from './ai-assistant';
+export type { AiContextType };
 
 /** スキル定義 */
 export interface SkillDefinition {

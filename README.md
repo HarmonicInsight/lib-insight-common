@@ -1,124 +1,124 @@
 # insight-common
 
-Insight Series製品群の共通リソースを一允E��琁E��るリポジトリです、E
+Insight Series製品群の共通リソースを一元管理するリポジトリです。
 
-## 概要E
+## 概要
 
-こ�Eリポジトリは、Eつのアプリケーションで構�EされるInsight Series全体で共有するリソースを管琁E��ます、E
+このリポジトリは、9つのアプリケーションで構成されるInsight Series全体で共有するリソースを管理します。
 
-## チE��レクトリ構�E
+## ディレクトリ構成
 
 ```
 insight-common/
-├── license/           # ライセンス管琁E��ジュール
-━E  ├── typescript/    # TypeScript牁E(Tauri/React製品用)
-━E  ├── python/        # Python牁E(InsightPy等用)
-━E  └── README.md      # ライセンス仕様ドキュメンチE
+├── license/           # ライセンス管理モジュール
+│   ├── typescript/    # TypeScript版(Tauri/React製品用)
+│   ├── python/        # Python版(InsightPy等用)
+│   └── README.md      # ライセンス仕様ドキュメント
 ├── i18n/              # 多言語リソース
-━E  ├── ja.json        # 日本誁E
-━E  ├── en.json        # 英誁E
-━E  ├── index.ts       # TypeScript用ヘルパ�E
-━E  ├── __init__.py    # Python用ヘルパ�E
-━E  └── README.md
-├── utils/             # 共通ユーチE��リチE��
-━E  ├── typescript/    # TypeScript牁E
-━E  ├── python/        # Python牁E
-━E  └── README.md
+│   ├── ja.json        # 日本語
+│   ├── en.json        # 英語
+│   ├── index.ts       # TypeScript用ヘルパー
+│   ├── __init__.py    # Python用ヘルパー
+│   └── README.md
+├── utils/             # 共通ユーティリティ
+│   ├── typescript/    # TypeScript版
+│   ├── python/        # Python版
+│   └── README.md
 ├── errors/            # 共通エラー定義
-━E  ├── index.ts       # TypeScript牁E
-━E  ├── __init__.py    # Python牁E
-━E  └── README.md
-├── brand/             # ブランド�EチE��インシスチE��
-━E  ├── colors.json         # カラーパレチE��
-━E  ├── design-system.json  # タイポグラフィ・スペ�Eシング筁E
-━E  └── voice-guidelines.md # ト�Eン�E�E�Eナ�E
+│   ├── index.ts       # TypeScript版
+│   ├── __init__.py    # Python版
+│   └── README.md
+├── brand/             # ブランド・デザインシステム
+│   ├── colors.json         # カラーパレット
+│   ├── design-system.json  # タイポグラフィ・スペーシング等
+│   └── voice-guidelines.md # トーン＆マナー
 ├── ui/                # UI共通定義
-━E  ├── menu-structure.json # メニュー・ナビゲーション
-━E  ├── components.md       # コンポ�Eネント設訁E
-━E  └── README.md
-├── legal/             # 法務斁E��
-━E  ├── terms-of-service.md
-━E  └── privacy-policy.md
-├── company/           # 会社惁E��
-━E  ├── about.md
-━E  └── contact.json
-├── config/            # 共通設宁E
-━E  └── products.json  # 製品定義・機�Eフラグ
-├── docs/              # ドキュメンチE
-━E  ├── prompts/       # 吁E��品向け統合�Eロンプト
-━E  ├── QUICKSTART.md
-━E  └── INTEGRATION_GUIDE.md
+│   ├── menu-structure.json # メニュー・ナビゲーション
+│   ├── components.md       # コンポーネント設計
+│   └── README.md
+├── legal/             # 法務書類
+│   ├── terms-of-service.md
+│   └── privacy-policy.md
+├── company/           # 会社情報
+│   ├── about.md
+│   └── contact.json
+├── config/            # 共通設定
+│   └── products.json  # 製品定義・機能フラグ
+├── docs/              # ドキュメント
+│   ├── prompts/       # 各製品向け統合プロンプト
+│   ├── QUICKSTART.md
+│   └── INTEGRATION_GUIDE.md
 └── README.md
 ```
 
-## 対象製品E
+## 対象製品
 
-### 個人向け製品E
+### 個人向け製品
 
-| 製品コーチE| 製品名 | 説昁E|
+| 製品コード | 製品名 | 説明 |
 |-----------|--------|------|
-| INSS | InsightOfficeSlide | PowerPointコンチE��チE��出・更新 |
-| IOSH | InsightOfficeSheet | Excelバ�Eジョン管琁E�Eチ�EムコラチE|
-| IOSD | InsightOfficeDoc | Wordドキュメント操作�E自動化 |
-| INPY | InsightPy | Windows自動化Python実行環墁E|
-| INMV | InsightCast | 画像�EPPTから動画作�E |
-| INIG | InsightImageGen | AI画像�E音声生�E |
+| INSS | InsightOfficeSlide | PowerPointコンテンツ抽出・更新 |
+| IOSH | InsightOfficeSheet | Excelバージョン管理・チームコラボ |
+| IOSD | InsightOfficeDoc | Wordドキュメント操作・自動化 |
+| INPY | InsightPy | Windows自動化Python実行環境 |
+| INMV | InsightCast | 画像・PPTから動画作成 |
+| INIG | InsightImageGen | AI画像・音声生成 |
 
-### 法人向け製品E
+### 法人向け製品
 
-| 製品コーチE| 製品名 | 説昁E|
+| 製品コード | 製品名 | 説明 |
 |-----------|--------|------|
-| INBT | InsightBot | Python RPA自動化ボッチE|
-| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析�E移行アセスメンチE|
+| INBT | InsightBot | Python RPA自動化ボット |
+| INCA | InsightNoCodeAnalyzer | RPA・ローコード解析・移行アセスメント |
 | IVIN | InterviewInsight | AI採用面接支援 |
 
-## ライセンスキー形弁E
+## ライセンスキー形式
 
 ```
 INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 ```
 
-### チE��ア
+### ティア
 
-| コーチE| 名称 | 期間 |
+| コード | 名称 | 期間 |
 |--------|------|------|
-| TRIAL | Trial | 任意指定（デフォルチE4日�E�E|
-| STD | Standard | 年閁E|
-| PRO | Professional | 年閁E|
-| ENT | Enterprise | 永乁E|
+| TRIAL | Trial | 任意指定（デフォルト14日） |
+| STD | Standard | 年間 |
+| PRO | Professional | 年間 |
+| ENT | Enterprise | 永久 |
 
-詳細は [license/README.md](./license/README.md) を参照してください、E
+詳細は [license/README.md](./license/README.md) を参照してください。
 
-## ドキュメンチE
+## ドキュメント
 
-### 技術ドキュメンチE
+### 技術ドキュメント
 
-| ドキュメンチE| 説昁E|
+| ドキュメント | 説明 |
 |-------------|------|
-| [クイチE��スターチE(./docs/QUICKSTART.md) | 5刁E��導�E |
-| [統合ガイド](./docs/INTEGRATION_GUIDE.md) | 詳細な統合手頁E|
-| [ライセンス仕様](./license/README.md) | ライセンスキー形式�E機�E制陁E|
-| [多言語対応](./i18n/README.md) | i18n リソースとヘルパ�E関数 |
-| [ユーチE��リチE��](./utils/README.md) | 共通ユーチE��リチE��関数 |
-| [エラー定義](./errors/README.md) | 共通エラー型とコーチE|
-| [統合�Eロンプト](./docs/prompts/README.md) | 吁E��品向けセチE��アチE�E手頁E|
+| [クイックスタート](./docs/QUICKSTART.md) | 5分で導入 |
+| [統合ガイド](./docs/INTEGRATION_GUIDE.md) | 詳細な統合手順 |
+| [ライセンス仕様](./license/README.md) | ライセンスキー形式・機能制限 |
+| [多言語対応](./i18n/README.md) | i18n リソースとヘルパー関数 |
+| [ユーティリティ](./utils/README.md) | 共通ユーティリティ関数 |
+| [エラー定義](./errors/README.md) | 共通エラー型とコード |
+| [統合プロンプト](./docs/prompts/README.md) | 各製品向けセットアップ手順 |
 
-### チE��イン・UXドキュメンチE
+### デザイン・UXドキュメント
 
-| ドキュメンチE| 説昁E|
+| ドキュメント | 説明 |
 |-------------|------|
-| [チE��インシスチE��](./brand/design-system.json) | タイポグラフィ・スペ�Eシング・アニメーション |
-| [カラーパレチE��](./brand/colors.json) | ブランドカラー・製品カラー |
-| [ト�Eン�E�E�Eナ�E](./brand/voice-guidelines.md) | UIチE��スト�EメチE��ージの書き方 |
-| [UIコンポ�EネンチE(./ui/components.md) | 共通UI設計ガイドライン |
+| [デザインシステム](./brand/design-system.json) | タイポグラフィ・スペーシング・アニメーション |
+| [カラーパレット](./brand/colors.json) | ブランドカラー・製品カラー |
+| [トーン＆マナー](./brand/voice-guidelines.md) | UIテキスト・メッセージの書き方 |
+| [UIコンポーネント](./ui/components.md) | 共通UI設計ガイドライン |
 | [メニュー構造](./ui/menu-structure.json) | ナビゲーション・設定画面の構造 |
 
-## 使用方況E
+## 使用方法
 
 ### TypeScript製品での利用
 
 ```typescript
-// ライセンス管琁E
+// ライセンス管理
 import { LicenseValidator, getFeatureLimits } from '@insight/license';
 
 const validator = new LicenseValidator();
@@ -129,29 +129,29 @@ if (result.isValid) {
   console.log(`Tier: ${result.tier}, Max Files: ${limits.maxFiles}`);
 }
 
-// 多言語対忁E
+// 多言語対応
 import { t, setLocale } from '@insight/i18n';
 
 setLocale('ja');
-console.log(t('common.save'));  // "保孁E
+console.log(t('common.save'));  // "保存"
 
-// ユーチE��リチE��
+// ユーティリティ
 import { formatDate, formatCurrency, isValidEmail } from '@insight/utils';
 
-formatDate(new Date(), 'long', 'ja');  // "2025年1朁E5日"
+formatDate(new Date(), 'long', 'ja');  // "2025年1月15日"
 formatCurrency(1500);                   // "¥1,500"
 isValidEmail('test@example.com');       // true
 
 // エラーハンドリング
 import { InsightError, LicenseError, isRetryable } from '@insight/errors';
 
-throw new LicenseError('LICENSE_EXPIRED', 'ライセンスの有効期限が�EれてぁE��ぁE);
+throw new LicenseError('LICENSE_EXPIRED', 'ライセンスの有効期限が切れています');
 ```
 
 ### Python製品での利用
 
 ```python
-# ライセンス管琁E
+# ライセンス管理
 from insight_common.license import LicenseValidator, get_feature_limits
 
 validator = LicenseValidator()
@@ -161,28 +161,28 @@ if result.is_valid:
     limits = get_feature_limits(result.tier)
     print(f"Tier: {result.tier}, Max Files: {limits['max_files']}")
 
-# 多言語対忁E
+# 多言語対応
 from insight_common.i18n import t, set_locale
 
 set_locale('ja')
-print(t('common.save'))  # "保孁E
+print(t('common.save'))  # "保存"
 
-# ユーチE��リチE��
+# ユーティリティ
 from insight_common.utils import format_date, format_currency, is_valid_email
 
-format_date(datetime.now(), 'long', 'ja')  # "2025年1朁E5日"
+format_date(datetime.now(), 'long', 'ja')  # "2025年1月15日"
 format_currency(1500)                       # "¥1,500"
 is_valid_email('test@example.com')          # True
 
 # エラーハンドリング
 from insight_common.errors import LicenseError, ErrorCode, is_retryable
 
-raise LicenseError(ErrorCode.LICENSE_EXPIRED, 'ライセンスの有効期限が�EれてぁE��ぁE)
+raise LicenseError(ErrorCode.LICENSE_EXPIRED, 'ライセンスの有効期限が切れています')
 ```
 
 ## サブモジュールとしての利用
 
-吁E��品リポジトリでは、このリポジトリをGit Submoduleとして取り込むことを推奨します！E
+各製品リポジトリでは、このリポジトリをGit Submoduleとして取り込むことを推奨します。
 
 ```bash
 git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
@@ -193,10 +193,10 @@ git submodule update --init --recursive
 
 ### 前提条件
 
-- Node.js 18+�E�EypeScript版！E
-- Python 3.10+�E�Eython版！E
+- Node.js 18+（TypeScript版）
+- Python 3.10+（Python版）
 
-### TypeScriptモジュールのビルチE
+### TypeScriptモジュールのビルド
 
 ```bash
 cd license/typescript
@@ -204,7 +204,7 @@ npm install
 npm run build
 ```
 
-### PythonモジュールのチE��チE
+### Pythonモジュールのテスト
 
 ```bash
 cd license/python
@@ -213,10 +213,10 @@ python -m pytest
 
 ## ライセンス
 
-こ�EリポジトリはHARMONIC insightの冁E��利用専用です、E
+このリポジトリはHARMONIC insightの内部利用専用です。
 
-## 連絡允E
+## 連絡先
 
 - 一般: info@h-insight.jp
-- サポ�EチE support@h-insight.jp
-- 開発チ�Eム: developer@h-insight.jp
+- サポート: support@h-insight.jp
+- 開発チーム: developer@h-insight.jp

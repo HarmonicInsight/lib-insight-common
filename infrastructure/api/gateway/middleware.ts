@@ -181,7 +181,7 @@ async function runAuthMiddleware(
 
   // プランチェック
   if (requiredPlan && requiredPlan.length > 0) {
-    const userPlan = req.user?.plan || 'FREE';
+    const userPlan = req.user?.plan || 'TRIAL';
     if (!requiredPlan.includes(userPlan)) {
       await logSecurityEvent(req, 'unauthorized_access', {
         requiredPlan,
@@ -250,7 +250,7 @@ async function runRateLimitMiddleware(
   }
 
   // ユーザーのプランに応じた制限を取得
-  const plan = req.user?.plan || 'FREE';
+  const plan = req.user?.plan || 'TRIAL';
   const planLimits = getRateLimitForPlan(plan);
 
   // カスタム制限 or プラン制限
@@ -437,7 +437,7 @@ async function getUserFromFirebaseUid(uid: string): Promise<AuthenticatedUser | 
     userId: user.id,
     email: user.email,
     displayName: user.display_name,
-    plan: activeLicense?.plan || 'FREE',
+    plan: activeLicense?.plan || 'TRIAL',
     tenantId: membership?.tenant_id ?? null,
   };
 }

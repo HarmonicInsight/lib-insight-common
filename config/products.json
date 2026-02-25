@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "HARMONIC insight 製品定義�E��E式サイト準拠�E�E,
+  "description": "HARMONIC insight 製品定義（公式サイト準拠）",
   "version": "2.0.0",
   "products": {
     "individual": [
@@ -9,7 +9,7 @@
         "code": "INSS",
         "name": "InsightOfficeSlide",
         "displayName": "InsightOfficeSlide",
-        "description": "AIアシスタント搭輁E EプレゼンチE�Eション作�E・編雁E��ール�E�ES Office 不要E��E,
+        "description": "AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要）",
         "category": "office",
         "salesChannel": "standalone",
         "platform": ["windows"],
@@ -36,7 +36,7 @@
         "code": "IOSH",
         "name": "InsightOfficeSheet",
         "displayName": "InsightOfficeSheet",
-        "description": "AIアシスタント搭輁E EスプレチE��シート作�E・編雁E��ール�E�ES Office 不要E��E,
+        "description": "AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要）",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",
@@ -63,7 +63,7 @@
         "code": "IOSD",
         "name": "InsightOfficeDoc",
         "displayName": "InsightOfficeDoc",
-        "description": "AIアシスタント搭輁E Eドキュメント作�E・編雁E��ール�E�ES Office 不要E��E,
+        "description": "AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要）",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",
@@ -88,7 +88,7 @@
         "code": "ISOF",
         "name": "InsightSeniorOffice",
         "displayName": "Insight Senior Office",
-        "description": "AIアシスタント搭輁E Eシニア向け統合オフィスチE�Eル�E�表計算�E斁E��・iCloudメール�E�E,
+        "description": "AIアシスタント搭載 — シニア向け統合オフィスツール（表計算・文書・iCloudメール）",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",
@@ -115,7 +115,7 @@
         "code": "INPY",
         "name": "InsightPy",
         "displayName": "InsightPy",
-        "description": "AIエチE��タ搭輁E E業務調査・チE�Eタ収集のためのPython実行基盤",
+        "description": "AIエディタ搭載 — 業務調査・データ収集のためのPython実行基盤",
         "category": "automation",
         "platform": ["windows"],
         "framework": "wpf",
@@ -135,10 +135,10 @@
         "code": "INMV",
         "name": "InsightCast",
         "displayName": "InsightCast",
-        "description": "画像とチE��ストから動画を�E動作�E",
+        "description": "画像とテキストから動画を自動作成",
         "category": "content",
         "platform": ["windows"],
-        "framework": "wpf",
+        "framework": "python",
         "status": "active",
         "repository": "HarmonicInsight/win-app-insight-cast",
         "hasAi": false,
@@ -154,10 +154,10 @@
         "code": "INIG",
         "name": "InsightImageGen",
         "displayName": "InsightImageGen",
-        "description": "業務賁E��向けAI画像�E大量�E動生成ツール",
+        "description": "業務資料向けAI画像の大量自動生成ツール",
         "category": "content",
         "platform": ["windows"],
-        "framework": "wpf",
+        "framework": "python",
         "status": "active",
         "repository": "HarmonicInsight/win-app-insight-image-gen",
         "hasAi": false,
@@ -177,7 +177,7 @@
         "code": "INBT",
         "name": "InsightBot",
         "displayName": "InsightBot",
-        "description": "AIエチE��タ搭輁E E業務最適化RPA + Orchestrator",
+        "description": "AIエディタ搭載 — 業務最適化RPA + Orchestrator",
         "category": "automation",
         "platform": ["windows"],
         "framework": "wpf",
@@ -197,10 +197,10 @@
         "code": "INCA",
         "name": "InsightNoCodeAnalyzer",
         "displayName": "InsightNoCodeAnalyzer",
-        "description": "RPA・ローコード�Eマイグレーション自動化チE�Eル",
+        "description": "RPA・ローコードのマイグレーション自動化ツール",
         "category": "automation",
         "platform": ["windows"],
-        "framework": "wpf",
+        "framework": "tauri",
         "status": "active",
         "repository": "HarmonicInsight/win-app-nocode-analyzer",
         "hasAi": false,
@@ -221,7 +221,7 @@
         "description": "自動ヒアリング・業務調査支援",
         "category": "research",
         "platform": ["windows"],
-        "framework": "wpf",
+        "framework": "tauri",
         "status": "development",
         "repository": "HarmonicInsight/web-app-auto-interview",
         "hasAi": true,
@@ -231,75 +231,75 @@
   },
   "tiers": {
     "individual": {
-      "FREE": {
-        "name": "Free",
-        "nameJa": "フリー",
+      "TRIAL": {
+        "name": "Trial",
+        "nameJa": "トライアル",
         "price": 0,
         "currency": "JPY",
-        "aiCredits": 20,
+        "aiCredits": -1,
         "aiModel": "opus",
-        "description": "AI 20回付き無料版"
+        "description": "全機能無制限（14日間）"
       },
       "STD": {
         "name": "Standard",
-        "nameJa": "スタンダーチE,
-        "price": 39800,
+        "nameJa": "スタンダード",
+        "price": null,
         "currency": "JPY",
-        "aiCredits": 0,
-        "aiModel": null,
-        "description": "AIなし版"
+        "aiCredits": 50,
+        "aiModel": "sonnet",
+        "description": "AI月50回付き（個別見積もり）"
       },
       "PRO": {
         "name": "Professional",
-        "nameJa": "プロフェチE��ョナル",
-        "price": 49800,
+        "nameJa": "プロフェッショナル",
+        "price": null,
         "currency": "JPY",
-        "aiCredits": 100,
-        "aiModel": "opus",
-        "description": "AI 100回付き�E�Epus対応！E
+        "aiCredits": 200,
+        "aiModel": "sonnet",
+        "description": "AI月200回付き（個別見積もり）"
       },
       "ENT": {
         "name": "Enterprise",
         "nameJa": "エンタープライズ",
         "price": null,
         "currency": "JPY",
-        "aiCredits": null,
+        "aiCredits": -1,
         "aiModel": "opus",
-        "description": "個別見穁E
+        "description": "個別見積もり"
       }
     },
     "corporate": {
       "STD": {
         "name": "Standard",
-        "nameJa": "スタンダーチE,
+        "nameJa": "スタンダード",
         "price": null,
         "currency": "JPY",
-        "description": "コンサル連動型  E個別見穁E
+        "description": "コンサル連動型（個別見積もり）"
       },
       "PRO": {
         "name": "Professional",
-        "nameJa": "プロフェチE��ョナル",
+        "nameJa": "プロフェッショナル",
         "price": null,
         "currency": "JPY",
-        "description": "コンサル連動型  E個別見穁E
+        "description": "コンサル連動型（個別見積もり）"
       },
       "ENT": {
         "name": "Enterprise",
         "nameJa": "エンタープライズ",
         "price": null,
         "currency": "JPY",
-        "description": "コンサル連動型  E個別見穁E
+        "description": "コンサル連動型（個別見積もり）"
       }
     },
     "aiAddon": {
       "credits200": {
         "name": "AI Credits 200",
-        "nameJa": "AI追加200回パチE��",
-        "price": 10000,
+        "nameJa": "AI追加200回パック",
+        "price": null,
         "currency": "JPY",
         "aiCredits": 200,
         "aiModel": "opus",
-        "description": "AI使用回数追加 200囁E
+        "description": "AI使用回数追加 200回"
       }
     }
   }

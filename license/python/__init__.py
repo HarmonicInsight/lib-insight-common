@@ -2,7 +2,7 @@
 Insight Series License Management - Python
 オフラインライセンス認証モジュール
 
-キー形弁E PPPP-PLAN-YYMM-HASH-SIG1-SIG2
+キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 """
 
 import hmac
@@ -19,11 +19,11 @@ from typing import Optional, Dict, Any
 
 
 # =============================================================================
-# 定数・設宁E
+# 定数・設定
 # =============================================================================
 
 class ProductCode(Enum):
-    """製品コード！E斁E��！E""
+    """製品コード（文書用）"""
     INSS = "INSS"  # InsightOfficeSlide
     IOSH = "IOSH"  # InsightOfficeSheet
     IOSD = "IOSD"  # InsightOfficeDoc
@@ -33,13 +33,15 @@ class ProductCode(Enum):
     INCA = "INCA"  # InsightNoCodeAnalyzer
     INIG = "INIG"  # InsightImageGen
     IVIN = "IVIN"  # InterviewInsight
+    ISOF = "ISOF"  # InsightSeniorOffice
 
 
 class Plan(Enum):
     """プラン"""
-    TRIAL = "TRIAL"    # トライアル�E�E4日間！E
+    TRIAL = "TRIAL"    # トライアル（14日間）
     STD = "STD"        # Standard
     PRO = "PRO"        # Professional
+    ENT = "ENT"        # Enterprise
 
 
 PRODUCT_NAMES: Dict[ProductCode, str] = {
@@ -52,15 +54,17 @@ PRODUCT_NAMES: Dict[ProductCode, str] = {
     ProductCode.INCA: "InsightNoCodeAnalyzer",
     ProductCode.INIG: "InsightImageGen",
     ProductCode.IVIN: "InterviewInsight",
+    ProductCode.ISOF: "InsightSeniorOffice",
 }
 
 PLAN_NAMES: Dict[Plan, str] = {
     Plan.TRIAL: "トライアル",
     Plan.STD: "Standard",
-    Plan.PRO: "Pro",
+    Plan.PRO: "Professional",
+    Plan.ENT: "Enterprise",
 }
 
-# 製品と対応�Eラン
+# 製品と対応プラン
 PRODUCT_PLANS: Dict[str, list] = {
     "InsightOfficeSlide": [ProductCode.INSS],
     "InsightOfficeSheet": [ProductCode.IOSH],
@@ -71,43 +75,44 @@ PRODUCT_PLANS: Dict[str, list] = {
     "InsightNoCodeAnalyzer": [ProductCode.INCA],
     "InsightImageGen": [ProductCode.INIG],
     "InterviewInsight": [ProductCode.IVIN],
+    "InsightSeniorOffice": [ProductCode.ISOF],
 }
 
-# トライアル期間�E�日�E�E
+# トライアル期間（日数）
 TRIAL_DAYS = 14
 
 # ライセンスキー正規表現
-# 形弁E PPPP-PLAN-YYMM-HASH-SIG1-SIG2
+# 形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 LICENSE_KEY_REGEX = re.compile(
-    r"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+    r"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
 )
 
 
 # =============================================================================
-# エラーコーチE
+# エラーコード
 # =============================================================================
 
 class ErrorCode(Enum):
     E001 = "E001"  # キー形式不正
-    E002 = "E002"  # 署名検証失敁E
+    E002 = "E002"  # 署名検証失敗
     E003 = "E003"  # メール不一致
-    E004 = "E004"  # 期限刁E��
+    E004 = "E004"  # 期限切れ
     E005 = "E005"  # 製品不一致
-    E006 = "E006"  # トライアル渁E
+    E006 = "E006"  # トライアル終了
 
 
 ERROR_MESSAGES: Dict[ErrorCode, str] = {
     ErrorCode.E001: "ライセンスキーの形式が正しくありません",
-    ErrorCode.E002: "ライセンスキーが無効でぁE,
+    ErrorCode.E002: "ライセンスキーが無効です",
     ErrorCode.E003: "メールアドレスが一致しません",
-    ErrorCode.E004: "ライセンスの有効期限が�EれてぁE��ぁE,
-    ErrorCode.E005: "こ�Eライセンスは {product} 用でぁE,
-    ErrorCode.E006: "トライアル期間は終亁E��てぁE��ぁE,
+    ErrorCode.E004: "ライセンスの有効期限が切れています",
+    ErrorCode.E005: "このライセンスは {product} 用です",
+    ErrorCode.E006: "トライアル期間は終了しています",
 }
 
 
 # =============================================================================
-# チE�Eタクラス
+# データクラス
 # =============================================================================
 
 @dataclass
@@ -122,16 +127,16 @@ class AuthResult:
 
 
 class LicenseStatus(Enum):
-    """ライセンス状慁E""
+    """ライセンス状態"""
     VALID = "valid"                    # 有効
-    EXPIRING_SOON = "expiring_soon"    # 30日以冁E��期限刁E��
-    EXPIRED = "expired"                # 期限刁E��
+    EXPIRING_SOON = "expiring_soon"    # 30日以内に期限切れ
+    EXPIRED = "expired"                # 期限切れ
     NOT_FOUND = "not_found"            # 未認証
 
 
 @dataclass
 class StatusResult:
-    """スチE�Eタス確認結果"""
+    """ステータス確認結果"""
     status: LicenseStatus
     is_valid: bool
     product: Optional[ProductCode] = None
@@ -142,21 +147,21 @@ class StatusResult:
 
 
 # =============================================================================
-# 署名�Eハッシュ
+# 署名・ハッシュ
 # =============================================================================
 
-# 署名用シークレチE��キー
+# 署名用シークレットキー
 _SECRET_KEY = b"insight-series-license-secret-2026"
 
 
 def _generate_email_hash(email: str) -> str:
-    """メールアドレスから4斁E���Eハッシュを生戁E""
+    """メールアドレスから4文字のハッシュを生成"""
     h = hashlib.sha256(email.lower().strip().encode()).digest()
     return base64.b32encode(h)[:4].decode().upper()
 
 
 def _generate_signature(data: str) -> str:
-    """署名を生�E�E�E斁E��！E""
+    """署名を生成（8文字）"""
     sig = hmac.new(_SECRET_KEY, data.encode(), hashlib.sha256).digest()
     return base64.b32encode(sig)[:8].decode().upper()
 
@@ -175,13 +180,13 @@ def _verify_signature(data: str, signature: str) -> bool:
 # =============================================================================
 
 class LicenseManager:
-    """ライセンス管琁E��ラス"""
+    """ライセンス管理クラス"""
 
     def __init__(self, product: str, config_dir: Optional[Path] = None):
         """
         Args:
-            product: 製品名�E�EnsightOfficeSlide, InsightPy, InterviewInsight, etc.�E�E
-            config_dir: 設定保存ディレクトリ�E�省略時�EチE��ォルト！E
+            product: 製品名（InsightOfficeSlide, InsightPy, InterviewInsight, etc.）
+            config_dir: 設定保存ディレクトリ（省略時はデフォルト）
         """
         self.product = product
         self.config_dir = config_dir or self._get_default_config_dir()
@@ -189,7 +194,7 @@ class LicenseManager:
         self._cached_data: Optional[Dict] = None
 
     def _get_default_config_dir(self) -> Path:
-        """チE��ォルト�E設定ディレクトリ"""
+        """デフォルトの設定ディレクトリ"""
         if os.name == 'nt':  # Windows
             base = Path(os.environ.get('APPDATA', ''))
         else:  # macOS/Linux
@@ -201,7 +206,7 @@ class LicenseManager:
         return base / "HarmonicInsight" / self.product
 
     def _get_valid_product_codes(self) -> list:
-        """こ�E製品で有効な製品コード一覧"""
+        """この製品で有効な製品コード一覧"""
         return PRODUCT_PLANS.get(self.product, [])
 
     def authenticate(self, email: str, key: str) -> AuthResult:
@@ -218,7 +223,7 @@ class LicenseManager:
         email = email.strip().lower()
         key = key.strip().upper()
 
-        # 1. キー形式チェチE��
+        # 1. キー形式チェック
         match = LICENSE_KEY_REGEX.match(key)
         if not match:
             return AuthResult(
@@ -241,7 +246,7 @@ class LicenseManager:
                 message=ERROR_MESSAGES[ErrorCode.E002]
             )
 
-        # 3. メールハッシュ照吁E
+        # 3. メールハッシュ照合
         expected_hash = _generate_email_hash(email)
         if email_hash != expected_hash:
             return AuthResult(
@@ -250,7 +255,7 @@ class LicenseManager:
                 message=ERROR_MESSAGES[ErrorCode.E003]
             )
 
-        # 4. 有効期限チェチE��
+        # 4. 有効期限チェック
         try:
             year = 2000 + int(yymm[:2])
             month = int(yymm[2:])
@@ -277,7 +282,7 @@ class LicenseManager:
                 message=ERROR_MESSAGES[ErrorCode.E004]
             )
 
-        # 5. 製品コードチェチE��
+        # 5. 製品コードチェック
         valid_codes = self._get_valid_product_codes()
         if product_code not in valid_codes:
             return AuthResult(
@@ -291,7 +296,7 @@ class LicenseManager:
                 )
             )
 
-        # 認証成功 ↁEローカル保孁E
+        # 認証成功 → ローカル保存
         self._save_license(email, key, product_code, plan, expires)
 
         return AuthResult(
@@ -309,7 +314,7 @@ class LicenseManager:
         plan: Plan,
         expires: datetime
     ) -> None:
-        """ライセンス惁E��を保孁E""
+        """ライセンス情報を保存"""
         self.config_dir.mkdir(parents=True, exist_ok=True)
 
         data = {
@@ -322,7 +327,7 @@ class LicenseManager:
             "verifiedAt": datetime.now().isoformat()
         }
 
-        # 簡易暗号化（本番ではより強固な暗号化を使用�E�E
+        # 簡易暗号化（本番ではより強固な暗号化を使用）
         content = json.dumps(data, ensure_ascii=False)
         encoded = base64.b64encode(content.encode()).decode()
 
@@ -332,7 +337,7 @@ class LicenseManager:
         self._cached_data = data
 
     def _load_license(self) -> Optional[Dict]:
-        """保存されたライセンス惁E��を読み込む"""
+        """保存されたライセンス情報を読み込む"""
         if self._cached_data:
             return self._cached_data
 
@@ -350,7 +355,7 @@ class LicenseManager:
             return None
 
     def check_status(self) -> StatusResult:
-        """ライセンス状態を確誁E""
+        """ライセンス状態を確認"""
         data = self._load_license()
 
         if not data:
@@ -401,7 +406,7 @@ class LicenseManager:
             )
 
     def clear_license(self) -> None:
-        """ライセンス惁E��をクリア"""
+        """ライセンス情報をクリア"""
         self._cached_data = None
         if self.config_path.exists():
             self.config_path.unlink()
@@ -414,7 +419,7 @@ class LicenseManager:
 
 
 # =============================================================================
-# ライセンスキー生�E�E�開発老E���E�E
+# ライセンスキー生成（開発者用）
 # =============================================================================
 
 def generate_license_key(
@@ -424,18 +429,18 @@ def generate_license_key(
     expires: datetime
 ) -> str:
     """
-    ライセンスキーを生戁E
+    ライセンスキーを生成
 
     Args:
-        product_code: 製品コーチE
+        product_code: 製品コード
         plan: プラン
         email: メールアドレス
         expires: 有効期限
 
     Returns:
-        ライセンスキー�E�EPPP-PLAN-YYMM-HASH-SIG1-SIG2形式！E
+        ライセンスキー（PPPP-PLAN-YYMM-HASH-SIG1-SIG2形式）
     """
-    # YYMM形弁E
+    # YYMM形式
     yymm = expires.strftime("%y%m")
 
     # メールハッシュ
@@ -444,7 +449,7 @@ def generate_license_key(
     # 署名データ
     sign_data = f"{product_code.value}-{plan.value}-{yymm}-{email_hash}"
 
-    # 署名生戁E
+    # 署名生成
     signature = _generate_signature(sign_data)
     sig1, sig2 = signature[:4], signature[4:]
 
@@ -453,10 +458,10 @@ def generate_license_key(
 
 def generate_trial_key(product_code: ProductCode, email: str) -> str:
     """
-    トライアルキーを生戁E
+    トライアルキーを生成
 
     Args:
-        product_code: 製品コーチE
+        product_code: 製品コード
         email: メールアドレス
 
     Returns:
@@ -467,7 +472,7 @@ def generate_trial_key(product_code: ProductCode, email: str) -> str:
 
 
 # =============================================================================
-# エクスポ�EチE
+# エクスポート
 # =============================================================================
 
 __all__ = [

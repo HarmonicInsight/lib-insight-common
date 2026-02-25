@@ -112,14 +112,14 @@ async function main() {
     ];
 
     const FEATURE_MATRIX: Record<string, string[]> = {
-      'basic': ['FREE', 'STD', 'PRO', 'ENT'],
+      'basic': ['TRIAL', 'STD', 'PRO', 'ENT'],
       'export_pdf': ['STD', 'PRO', 'ENT'],
       'batch_process': ['PRO', 'ENT'],
       'api_access': ['ENT'],
     };
 
     for (const tc of testCases) {
-      const allowed = FEATURE_MATRIX[tc.feature]?.includes(license?.plan || 'FREE') ?? false;
+      const allowed = FEATURE_MATRIX[tc.feature]?.includes(license?.plan || 'TRIAL') ?? false;
       const status = allowed === tc.expected ? '✅' : '❌';
       console.log(`   ${status} ${tc.feature}: ${allowed} (期待値: ${tc.expected})`);
     }

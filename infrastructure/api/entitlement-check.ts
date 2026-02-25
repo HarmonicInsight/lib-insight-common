@@ -71,7 +71,7 @@ export default async function handler(
     if (!user) {
       return res.status(200).json({
         allowed: false,
-        plan: 'FREE',
+        plan: 'TRIAL',
         expires_at: null,
         reason: 'ユーザーが見つかりません',
       });
@@ -85,12 +85,12 @@ export default async function handler(
       .eq('product_code', product_code)
       .single();
 
-    // ライセンスなし → FREE扱い
+    // ライセンスなし → TRIAL扱い
     if (!license) {
-      const allowed = canAccessFeature(feature, 'FREE');
+      const allowed = canAccessFeature(feature, 'TRIAL');
       return res.status(200).json({
         allowed,
-        plan: 'FREE',
+        plan: 'TRIAL',
         expires_at: null,
         reason: allowed ? undefined : 'アップグレードが必要です',
       });

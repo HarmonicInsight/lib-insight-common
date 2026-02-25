@@ -395,7 +395,6 @@ brand/colors.json に基づくカラー定義
     <color name="dark_border">#3D3835</color>
 
     <!-- === Plan === -->
-    <color name="plan_free">#A8A29E</color>
     <color name="plan_trial">#2563EB</color>
     <color name="plan_std">#16A34A</color>
     <color name="plan_pro">#B8942F</color>
@@ -1360,7 +1359,6 @@ InsightOffice 製品（INSS/IOSH/IOSD 等）の Android 版では、ライセン
 package com.harmonic.insight.<appname>.license
 
 enum class PlanCode(val displayName: String) {
-    FREE("FREE"),
     TRIAL("TRIAL"),
     STD("STD"),
     PRO("PRO"),
@@ -1387,11 +1385,11 @@ class LicenseManager(context: Context, private val productCode: String) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("insight_license", Context.MODE_PRIVATE)
 
-    var currentPlan: PlanCode = PlanCode.FREE
+    var currentPlan: PlanCode = PlanCode.TRIAL
         private set
 
     val isActivated: Boolean
-        get() = currentPlan != PlanCode.FREE
+        get() = currentPlan != PlanCode.TRIAL
 
     init {
         loadLicense()
@@ -1419,7 +1417,7 @@ class LicenseManager(context: Context, private val productCode: String) {
 
     fun deactivate() {
         prefs.edit().clear().apply()
-        currentPlan = PlanCode.FREE
+        currentPlan = PlanCode.TRIAL
     }
 
     private fun loadLicense() {

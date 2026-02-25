@@ -1,37 +1,37 @@
 /**
- * HARMONIC insight リセラー・販売代琁E��パートナープログラム
+ * HARMONIC insight リセラー・販売代理店パートナープログラム
  *
  * ============================================================================
- * 【パートナープログラムの設計方針】�E製品E法人向け�E�E2B Only�E�E
+ * 【パートナープログラムの設計方針】全製品＝法人向け（B2B Only）
  * ============================================================================
  *
- * ## 概要E
- * 全製品を販売代琁E��（リセラー/VAR�E�経由で法人向けに展開するためのパ�Eトナープログラム、E
- * コンサルチE��ング案件と連動した法人向け販売を補完するチャネル、E
+ * ## 概要
+ * 全製品を販売代理店（リセラー/VAR）経由で法人向けに展開するためのパートナープログラム。
+ * コンサルティング案件と連動した法人向け販売を補完するチャネル。
  *
- * ## なぜリセラーが忁E��か
- * - 自社だけでは到達できなぁE��域�E業界へのリーチ拡大
- * - 現地語でのサポ�Eト�E導�E支援の提侁E
- * - 営業コストを変動費化（売れた刁E��けコミッション�E�E
- * - パ�Eトナー企業との連携で営業力を補宁E
+ * ## なぜリセラーが必要か
+ * - 自社だけでは到達できない地域・業界へのリーチ拡大
+ * - 現地語でのサポート・導入支援の提供
+ * - 営業コストを変動費化（売れた分だけコミッション）
+ * - パートナー企業との連携で営業力を補完
  *
- * ## パ�Eトナー種別
+ * ## パートナー種別
  *
- * ┌───────────────────────────────────────────────────────────────━E
- * ━E Registered        Silver            Gold                     ━E
- * ━E ──────────        ──────            ────                     ━E
- * ━E 誰でも参加可      年間所定件数以丁E  上位実績                  ━E
- * ━E 非独占            非独占            地域独占可               ━E
- * ━E セルフサーチE     専任拁E��E         専任拁E��E共同�Eーケ      ━E
- * └───────────────────────────────────────────────────────────────━E
+ * ┌───────────────────────────────────────────────────────────────┐
+ * │ Registered        Silver            Gold                     │
+ * │ ──────────        ──────            ────                     │
+ * │ 誰でも参加可      年間所定件数以上   上位実績                  │
+ * │ 非独占            非独占            地域独占可               │
+ * │ セルフサーブ      専任担当          専任担当+共同マーケ      │
+ * └───────────────────────────────────────────────────────────────┘
  *
- * ## リセラー対象製品E
- * 全製品がパ�Eトナー経由で販売可能、E
- * ただぁETier 1�E�ENCA/INBT/IVIN�E��E Gold パ�Eトナーのみ、E
+ * ## リセラー対象製品
+ * 全製品がパートナー経由で販売可能。
+ * ただし Tier 1（INCA/INBT/IVIN）は Gold パートナーのみ。
  *
  * ## 価格・コミッション
- * 仕�Eれ値引率・コミッション玁E�Eパ�Eトナーとの個別協議により決定、E
- * 本ファイルにはチE��ア構造と販売条件の枠絁E��のみ定義、E
+ * 仕入れ値引率・コミッション率はパートナーとの個別協議により決定。
+ * 本ファイルにはティア構造と販売条件の枠組みのみ定義。
  */
 
 import type { ProductCode } from './products';
@@ -40,120 +40,120 @@ import type { ProductCode } from './products';
 // 型定義
 // =============================================================================
 
-/** パ�EトナーチE��ア */
+/** パートナーティア */
 export type PartnerTier = 'registered' | 'silver' | 'gold';
 
-/** パ�Eトナー種別 */
+/** パートナー種別 */
 export type PartnerType =
-  | 'reseller'        // リセラー�E�仕�Eれ�E再販�E�E
-  | 'referral'        // 紹介パートナー�E�リード紹介�Eみ�E�E
-  | 'var';            // VAR: Value Added Reseller�E��E販+導�E支援�E�E
+  | 'reseller'        // リセラー（仕入れ・再販）
+  | 'referral'        // 紹介パートナー（リード紹介のみ）
+  | 'var';            // VAR: Value Added Reseller（再販+導入支援）
 
-/** コミッションモチE�� */
+/** コミッションモデル */
 export type CommissionModel =
-  | 'wholesale_discount'   // 仕�Eれ値引きモチE���E�リセラー�E�E
-  | 'revenue_share'        // レベニューシェアモチE���E�紹介！E
-  | 'margin_based';        // マ�EジンモチE���E�EAR�E�E
+  | 'wholesale_discount'   // 仕入れ値引きモデル（リセラー）
+  | 'revenue_share'        // レベニューシェアモデル（紹介）
+  | 'margin_based';        // マージンモデル（VAR）
 
-/** パ�EトナーチE��ア定義 */
+/** パートナーティア定義 */
 export interface PartnerTierDefinition {
   tier: PartnerTier;
   name: string;
   nameJa: string;
   /** 地域独占権の付与可否 */
   exclusivityAvailable: boolean;
-  /** 専任パ�Eトナーマネージャー */
+  /** 専任パートナーマネージャー */
   dedicatedManager: boolean;
-  /** リード提侁E*/
+  /** リード提供 */
   leadSharing: boolean;
-  /** パ�Eトナーポ�Eタルアクセス */
+  /** パートナーポータルアクセス */
   portalAccess: boolean;
   /** 販売・技術トレーニング */
   trainingIncluded: boolean;
-  /** チE��環墁E�E提侁E*/
+  /** デモ環境の提供 */
   demoEnvironment: boolean;
-  /** 説昁E*/
+  /** 説明 */
   description: string;
 }
 
-/** パ�Eトナー契紁E��件 */
+/** パートナー契約条件 */
 export interface PartnerAgreementTerms {
-  /** 契紁E��間（月�E�E*/
+  /** 契約期間（月） */
   contractDurationMonths: number;
   /** 自動更新 */
   autoRenewal: boolean;
-  /** 解紁E��告期間�E�月�E�E*/
+  /** 解約予告期間（月） */
   terminationNoticePeriod: number;
-  /** 支払サイト（日�E�E*/
+  /** 支払サイト（日） */
   paymentTermsDays: number;
   /** 顧客の所有権 */
   customerOwnership: string;
-  /** サポ�Eト責任刁E�� */
+  /** サポート責任分担 */
   supportResponsibility: string;
 }
 
-/** リセラー対象製品�E条件 */
+/** リセラー対象製品の条件 */
 export interface ResellerProductTerms {
   productCode: ProductCode;
-  /** リセラー販売可能ぁE*/
+  /** リセラー販売可能か */
   resellerEnabled: boolean;
-  /** 販売に忁E��な最低パートナーチE��ア */
+  /** 販売に必要な最低パートナーティア */
   minimumTier: PartnerTier;
-  /** チE��ライセンス提供数�E�パートナーあたり！E*/
+  /** デモライセンス提供数（パートナーあたり） */
   demoLicenses: number;
-  /** NFR�E�Eot For Resale�E�ライセンス提供数 */
+  /** NFR（Not For Resale）ライセンス提供数 */
   nfrLicenses: number;
-  /** 備老E*/
+  /** 備考 */
   notes: string;
 }
 
 // =============================================================================
-// パ�EトナーチE��ア定義
+// パートナーティア定義
 // =============================================================================
 
 export const PARTNER_TIERS: Record<PartnerTier, PartnerTierDefinition> = {
 
   /**
-   * Registered パ�Eトナー
-   * - 参加障壁E なし（申請�E審査→承認！E
-   * - 想宁E 中小IT企業、フリーランスコンサルタンチE
-   * - InsightOffice Suite�E�Eier 3�E�E ISOF のみ販売可能
+   * Registered パートナー
+   * - 参加障壁＝なし（申請→審査→承認）
+   * - 想定: 中小IT企業、フリーランスコンサルタント
+   * - InsightOffice Suite（Tier 3）+ ISOF のみ販売可能
    */
   registered: {
     tier: 'registered',
     name: 'Registered Partner',
-    nameJa: '登録パ�Eトナー',
+    nameJa: '登録パートナー',
     exclusivityAvailable: false,
     dedicatedManager: false,
     leadSharing: false,
     portalAccess: true,
     trainingIncluded: true,
     demoEnvironment: true,
-    description: '誰でも参加可能。Tier 3+4 製品E��EnsightOffice Suite / ISOF�E��Eみ販売可能、E,
+    description: '誰でも参加可能。Tier 3+4 製品（InsightOffice Suite / ISOF）のみ販売可能。',
   },
 
   /**
-   * Silver パ�Eトナー
-   * - 想宁E 中堁ET企業、コンサルファーム
-   * - InsightOffice Suite + Tier 2�E�ENMV/INIG�E�が販売可能
+   * Silver パートナー
+   * - 想定: 中堅IT企業、コンサルファーム
+   * - InsightOffice Suite + Tier 2（INMV/INIG）が販売可能
    */
   silver: {
     tier: 'silver',
     name: 'Silver Partner',
-    nameJa: 'シルバ�Eパ�Eトナー',
+    nameJa: 'シルバーパートナー',
     exclusivityAvailable: false,
     dedicatedManager: true,
     leadSharing: true,
     portalAccess: true,
     trainingIncluded: true,
     demoEnvironment: true,
-    description: '実績に基づき�E格。Tier 2+3+4 製品が販売可能。専任拁E���Eリード�E有あり、E,
+    description: '実績に基づき昇格。Tier 2+3+4 製品が販売可能。専任担当・リード共有あり。',
   },
 
   /**
-   * Gold パ�Eトナー
-   * - 想宁E 大手SIer、コンサルファーム
-   * - 全製品E��Eier 1含む�E�が販売可能、地域独占権あり
+   * Gold パートナー
+   * - 想定: 大手SIer、コンサルファーム
+   * - 全製品（Tier 1含む）が販売可能、地域独占権あり
    */
   gold: {
     tier: 'gold',
@@ -165,12 +165,12 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierDefinition> = {
     portalAccess: true,
     trainingIncluded: true,
     demoEnvironment: true,
-    description: '上位実績で昁E��。�E製品販売可能。地域独占権の協議可、E,
+    description: '上位実績で昇格。全製品販売可能。地域独占権の協議可。',
   },
 };
 
 // =============================================================================
-// 契紁E��件
+// 契約条件
 // =============================================================================
 
 export const STANDARD_AGREEMENT_TERMS: PartnerAgreementTerms = {
@@ -179,13 +179,13 @@ export const STANDARD_AGREEMENT_TERMS: PartnerAgreementTerms = {
   terminationNoticePeriod: 3,
   paymentTermsDays: 30,
   customerOwnership:
-    'エンドユーザーとのライセンス契紁E�EHARMONIC insightが直接締結、E +
-    'パ�Eトナーは販売代琁E��して紹介�E導�E支援を行う、E +
-    '顧客リスト�Eパ�Eトナーと共有し、更新時�Eコミッションを保証、E,
+    'エンドユーザーとのライセンス契約はHARMONIC insightが直接締結。' +
+    'パートナーは販売代理店として紹介・導入支援を行う。' +
+    '顧客リストはパートナーと共有し、更新時のコミッションを保証。',
   supportResponsibility:
-    '1次サポ�Eト（操作方法�EFAQ�E�E パ�Eトナーが対応（トレーニング提供）、E +
-    '2次サポ�Eト（バグ・技術的問題！E HARMONIC insightが対応、E +
-    'パ�Eトナーポ�Eタル経由でエスカレーション、E,
+    '1次サポート（操作方法・FAQ）: パートナーが対応（トレーニング提供）。' +
+    '2次サポート（バグ・技術的問題）: HARMONIC insightが対応。' +
+    'パートナーポータル経由でエスカレーション。',
 };
 
 // =============================================================================
@@ -193,18 +193,18 @@ export const STANDARD_AGREEMENT_TERMS: PartnerAgreementTerms = {
 // =============================================================================
 
 /**
- * 全製品�Eリセラー販売条件
+ * 全製品のリセラー販売条件
  *
- * 【方針、E
- * - Tier 1�E�ENCA/INBT/IVIN�E�E Gold パ�Eトナーのみ販売可能
- * - Tier 2�E�ENMV/INIG�E�E Silver 以上で販売可能
- * - Tier 3�E�ENSS/IOSH/IOSD/INPY�E�E 全パ�Eトナーが販売可能
- * - Tier 4�E�ESOF�E�E 全パ�Eトナーが販売可能
+ * 【方針】
+ * - Tier 1（INCA/INBT/IVIN）: Gold パートナーのみ販売可能
+ * - Tier 2（INMV/INIG）: Silver 以上で販売可能
+ * - Tier 3（INSS/IOSH/IOSD/INPY）: 全パートナーが販売可能
+ * - Tier 4（ISOF）: 全パートナーが販売可能
  */
 export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> = {
 
   // =========================================================================
-  // Tier 1: 業務変革チE�Eル  EGold パ�Eトナーのみ
+  // Tier 1: 業務変革ツール ＝Gold パートナーのみ
   // =========================================================================
 
   INCA: {
@@ -213,7 +213,7 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'gold',
     demoLicenses: 2,
     nfrLicenses: 1,
-    notes: 'RPA移行アセスメントツール、Eoldパ�Eトナーのみ。コンサル案件と連動した提案が前提、E,
+    notes: 'RPA移行アセスメントツール。Goldパートナーのみ。コンサル案件と連動した提案が前提。',
   },
   INBT: {
     productCode: 'INBT',
@@ -221,7 +221,7 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'gold',
     demoLicenses: 2,
     nfrLicenses: 1,
-    notes: '業務�E動化RPAチE�Eル、Eoldパ�Eトナーのみ。�E動化コンサルとセチE��での提案が前提、E,
+    notes: '業務自動化RPAツール。Goldパートナーのみ。自動化コンサルとセットでの提案が前提。',
   },
   IVIN: {
     productCode: 'IVIN',
@@ -229,11 +229,11 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'gold',
     demoLicenses: 1,
     nfrLicenses: 1,
-    notes: '面接刁E��・採用支援チE�Eル、Eoldパ�Eトナーのみ、E,
+    notes: '面接分析・採用支援ツール。Goldパートナーのみ。',
   },
 
   // =========================================================================
-  // Tier 2: AI活用チE�Eル  ESilver 以丁E
+  // Tier 2: AI活用ツール ＝Silver 以上
   // =========================================================================
 
   INMV: {
@@ -242,7 +242,7 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'silver',
     demoLicenses: 3,
     nfrLicenses: 1,
-    notes: 'AI動画作�EチE�Eル。Silver以上�Eパ�Eトナーが販売可能。研修・マニュアル動画案件に有効、E,
+    notes: 'AI動画作成ツール。Silver以上のパートナーが販売可能。研修・マニュアル動画案件に有効。',
   },
   INIG: {
     productCode: 'INIG',
@@ -250,11 +250,11 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'silver',
     demoLicenses: 3,
     nfrLicenses: 1,
-    notes: 'AI画像�E音声生�EチE�Eル。Silver以上�Eパ�Eトナーが販売可能、E,
+    notes: 'AI画像・音声生成ツール。Silver以上のパートナーが販売可能。',
   },
 
   // =========================================================================
-  // Tier 3: InsightOffice Suite  E全パ�Eトナーが販売可能
+  // Tier 3: InsightOffice Suite ＝全パートナーが販売可能
   // =========================================================================
 
   INSS: {
@@ -263,7 +263,7 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'registered',
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'PowerPointチE�Eル。�Eパ�Eトナーが販売可能。法人導�Eの主力製品、E,
+    notes: 'PowerPointツール。全パートナーが販売可能。法人導入の主力製品。',
   },
   IOSH: {
     productCode: 'IOSH',
@@ -271,7 +271,7 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'registered',
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'Excel管琁E��ール。�Eパ�Eトナーが販売可能。チーム導�E案件はPROを推奨、E,
+    notes: 'Excel管理ツール。全パートナーが販売可能。チーム導入案件はPROを推奨。',
   },
   IOSD: {
     productCode: 'IOSD',
@@ -279,7 +279,7 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'registered',
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'Word斁E��管琁E��ール。�Eパ�Eトナーが販売可能。ドキュメント管琁E��件に有効、E,
+    notes: 'Word文書管理ツール。全パートナーが販売可能。ドキュメント管理案件に有効。',
   },
   INPY: {
     productCode: 'INPY',
@@ -287,11 +287,11 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'registered',
     demoLicenses: 5,
     nfrLicenses: 2,
-    notes: 'Python実行基盤。�Eパ�Eトナーが販売可能。業務�E動化案件に有効、E,
+    notes: 'Python実行基盤。全パートナーが販売可能。業務自動化案件に有効。',
   },
 
   // =========================================================================
-  // Tier 4: Insight Senior Office  E全パ�Eトナーが販売可能
+  // Tier 4: Insight Senior Office ＝全パートナーが販売可能
   // =========================================================================
 
   ISOF: {
@@ -300,23 +300,23 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
     minimumTier: 'registered',
     demoLicenses: 10,
     nfrLicenses: 3,
-    notes: 'シニア向け統合オフィスチE�Eル。�Eパ�Eトナーが販売可能。�E治体�E福祉法人案件に有効。デモライセンス多め�E�導�E説明会用�E�、E,
+    notes: 'シニア向け統合オフィスツール。全パートナーが販売可能。自治体・福祉法人案件に有効。デモライセンス多め（導入説明会用）。',
   },
 };
 
 // =============================================================================
-// ヘルパ�E関数
+// ヘルパー関数
 // =============================================================================
 
 /**
- * パ�EトナーチE��アの条件を取征E
+ * パートナーティアの条件を取得
  */
 export function getPartnerTier(tier: PartnerTier): PartnerTierDefinition {
   return PARTNER_TIERS[tier];
 }
 
 /**
- * 持E��ティアで販売可能な製品一覧を取征E
+ * 指定ティアで販売可能な製品一覧を取得
  */
 export function getResellerProducts(tier?: PartnerTier): ProductCode[] {
   const tierPriority: Record<PartnerTier, number> = {
@@ -334,7 +334,7 @@ export function getResellerProducts(tier?: PartnerTier): ProductCode[] {
 }
 
 /**
- * チE��ア昁E��に忁E��な次のチE��アを取征E
+ * ティア昇格に必要な次のティアを取得
  */
 export function getNextTier(currentTier: PartnerTier): PartnerTier | null {
   if (currentTier === 'gold') return null;
@@ -342,7 +342,7 @@ export function getNextTier(currentTier: PartnerTier): PartnerTier | null {
 }
 
 // =============================================================================
-// エクスポ�EチE
+// エクスポート
 // =============================================================================
 
 export default {

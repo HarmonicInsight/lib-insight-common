@@ -1,9 +1,9 @@
 /**
- * /api/entitlement/status - ライセンススチE�Eタス取征E
+ * /api/entitlement/status - ライセンスステータス取得
  *
- * クライアント�Eでのライセンス状態管琁E��API
+ * クライアント側でのライセンス状態管理用API
  *
- * リクエスチE
+ * リクエスト:
  *   POST { product_code: "INMV" }
  *
  * レスポンス:
@@ -66,11 +66,11 @@ export default async function handler(
   const { product_code } = req.body as StatusRequest;
 
   if (!product_code) {
-    return res.status(400).json({ error: 'product_code が忁E��でぁE });
+    return res.status(400).json({ error: 'product_code が必要です' });
   }
 
   try {
-    // ユーザー取征E
+    // ユーザー取得
     const { data: user } = await supabase
       .from('users')
       .select('id')
@@ -78,10 +78,10 @@ export default async function handler(
       .single();
 
     if (!user) {
-      // ユーザーがいなぁE��合�EFREEプラン
-      const limits = getPlanLimits(product_code, 'FREE');
+      // ユーザーがいない場合はTRIALプラン
+      const limits = getPlanLimits(product_code, 'TRIAL');
       return res.status(200).json({
-        plan: 'FREE',
+        plan: 'TRIAL',
         limits,
         expires_at: null,
         is_active: true,
@@ -90,7 +90,7 @@ export default async function handler(
       });
     }
 
-    // ライセンス取征E
+    // ライセンス取得
     const { data: license } = await supabase
       .from('licenses')
       .select('*')
@@ -98,11 +98,11 @@ export default async function handler(
       .eq('product_code', product_code)
       .single();
 
-    // ライセンスなぁEↁEFREEプラン
+    // ライセンスなし → TRIALプラン
     if (!license) {
-      const limits = getPlanLimits(product_code, 'FREE');
+      const limits = getPlanLimits(product_code, 'TRIAL');
       return res.status(200).json({
-        plan: 'FREE',
+        plan: 'TRIAL',
         limits,
         expires_at: null,
         is_active: true,
@@ -111,15 +111,15 @@ export default async function handler(
       });
     }
 
-    // プラン判宁E
+    // プラン判定
     let effectivePlan: PlanCode = license.plan;
 
-    // 無効また�E期限刁E��の場合�EFREE
+    // 無効または期限切れの場合はTRIAL
     if (!license.is_active) {
-      effectivePlan = 'FREE';
+      effectivePlan = 'TRIAL';
     }
     if (license.expires_at && new Date(license.expires_at) < new Date()) {
-      effectivePlan = 'FREE';
+      effectivePlan = 'TRIAL';
     }
 
     const limits = getPlanLimits(product_code, effectivePlan);
@@ -142,12 +142,12 @@ export default async function handler(
     });
   } catch (error) {
     console.error('Status check error:', error);
-    return res.status(500).json({ error: 'サーバ�Eエラー' });
+    return res.status(500).json({ error: 'サーバーエラー' });
   }
 }
 
 /**
- * 月間利用状況を取征E
+ * 月間利用状況を取得
  */
 async function getUsage(
   userId: string,

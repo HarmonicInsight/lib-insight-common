@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-ライセンスキー発衁ECLI チE�Eル
+ライセンスキー発行 CLI ツール
 
-キー形弁E PPPP-PLAN-YYMM-HASH-SIG1-SIG2
+キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
-使用方況E
+使用方法:
   python generate-license.py --product INSS --plan PRO --email user@example.com --expires 2027-01-31
   python generate-license.py --product INSS --trial --email user@example.com
 """
@@ -34,26 +34,26 @@ def parse_args():
         description='Insight Series ライセンスキー発行ツール',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-侁E
-  # InsightOfficeSlide Pro�E�E027年1月まで�E�E
+例:
+  # InsightOfficeSlide Pro（2027年1月まで）
   python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-01-31
 
-  # InsightOfficeSlide Standard�E�E2ヶ月！E
+  # InsightOfficeSlide Standard（12ヶ月）
   python generate-license.py -p INSS --plan STD -e user@example.com -m 12
 
-  # InsightPy トライアル�E�E4日間！E
+  # InsightPy トライアル（14日間）
   python generate-license.py -p INPY --trial -e user@example.com
 
-  # InsightCast Pro�E�E2ヶ月！E
+  # InsightCast Pro（12ヶ月）
   python generate-license.py -p INMV --plan PRO -e user@example.com -m 12
 
-  # InsightBot Pro�E�E2ヶ月！E
+  # InsightBot Pro（12ヶ月）
   python generate-license.py -p INBT --plan PRO -e user@example.com -m 12
 
-  # InterviewInsight Standard�E�E2ヶ月！E
+  # InterviewInsight Standard（12ヶ月）
   python generate-license.py -p IVIN --plan STD -e user@example.com -m 12
 
-製品コーチE
+製品コード:
   INSS  - InsightOfficeSlide
   IOSH  - InsightOfficeSheet
   IOSD  - InsightOfficeDoc
@@ -65,7 +65,7 @@ def parse_args():
   IVIN  - InterviewInsight
 
 プラン:
-  TRIAL  - トライアル�E�E4日間！E
+  TRIAL  - トライアル（14日間）
   STD    - Standard
   PRO    - Professional
 '''
@@ -76,51 +76,51 @@ def parse_args():
         type=str,
         required=True,
         choices=['INSS', 'IOSH', 'IOSD', 'INPY', 'INMV', 'INIG', 'INBT', 'INCA', 'IVIN'],
-        help='製品コーチE
+        help='製品コード'
     )
 
     parser.add_argument(
         '--plan',
         type=str,
         choices=['STD', 'PRO'],
-        help='プラン�E�E-trial と排他！E
+        help='プラン（--trial と排他）'
     )
 
     parser.add_argument(
         '--trial',
         action='store_true',
-        help='トライアル発行！E4日間！E
+        help='トライアル発行（14日間）'
     )
 
     parser.add_argument(
         '-e', '--email',
         type=str,
         required=True,
-        help='メールアドレス�E�忁E��！E
+        help='メールアドレス（必須）'
     )
 
     parser.add_argument(
         '--expires',
         type=str,
-        help='有効期限 (YYYY-MM-DD形弁E'
+        help='有効期限 (YYYY-MM-DD形式)'
     )
 
     parser.add_argument(
         '-m', '--months',
         type=int,
-        help='有効期間�E�月数�E�E
+        help='有効期間（月数）'
     )
 
     parser.add_argument(
         '--json',
         action='store_true',
-        help='JSON形式�Eみ出劁E
+        help='JSON形式のみ出力'
     )
 
     parser.add_argument(
         '--csv',
         action='store_true',
-        help='CSV形式�Eみ出劁E
+        help='CSV形式のみ出力'
     )
 
     return parser.parse_args()
@@ -128,26 +128,26 @@ def parse_args():
 
 def format_date(dt):
     if dt is None:
-        return '永乁E
+        return '永久'
     return dt.strftime('%Y-%m-%d')
 
 
 def main():
     args = parse_args()
 
-    # バリチE�Eション
+    # バリデーション
     if not args.trial and not args.plan:
-        print("エラー: --plan また�E --trial を指定してください", file=sys.stderr)
+        print("エラー: --plan または --trial を指定してください", file=sys.stderr)
         sys.exit(1)
 
     if args.trial and args.plan:
-        print("エラー: --plan と --trial は同時に持E��できません", file=sys.stderr)
+        print("エラー: --plan と --trial は同時に指定できません", file=sys.stderr)
         sys.exit(1)
 
-    # 製品コーチE
+    # 製品コード
     product_code = ProductCode(args.product)
 
-    # トライアルの場吁E
+    # トライアルの場合
     if args.trial:
         license_key = generate_trial_key(product_code, args.email)
         expires_at = datetime.now() + timedelta(days=TRIAL_DAYS)
@@ -155,7 +155,7 @@ def main():
     else:
         plan = Plan(args.plan)
 
-        # 有効期限の決宁E
+        # 有効期限の決定
         if args.expires:
             expires_at = datetime.strptime(args.expires, '%Y-%m-%d')
         elif args.months:
@@ -165,7 +165,7 @@ def main():
             new_month = (new_month - 1) % 12 + 1
             expires_at = datetime(new_year, new_month, min(expires_at.day, 28))
         else:
-            # チE��ォルチE 12ヶ朁E
+            # デフォルト: 12ヶ月
             expires_at = datetime.now()
             new_month = expires_at.month + 12
             new_year = expires_at.year + (new_month - 1) // 12
@@ -184,7 +184,7 @@ def main():
         'planName': PLAN_NAMES[plan],
     }
 
-    # 出劁E
+    # 出力
     if args.json:
         print(json.dumps(result, indent=2, ensure_ascii=False))
         return
@@ -194,13 +194,13 @@ def main():
         print(f"{result['licenseKey']},{result['expiresAt']},{result['product']},{result['plan']},{result['email']}")
         return
 
-    # 通常出劁E
+    # 通常出力
     print('')
     print('========================================')
-    print('  Insight Series ライセンス発衁E)
+    print('  Insight Series ライセンス発行')
     print('========================================')
     print('')
-    print(f"製品E       {result['productName']} ({result['product']})")
+    print(f"製品:       {result['productName']} ({result['product']})")
     print(f"プラン:     {result['planName']} ({result['plan']})")
     print(f"メール:     {result['email']}")
     print(f"有効期限:   {result['expiresAt']}")
@@ -209,7 +209,7 @@ def main():
     print(f"ライセンスキー: {result['licenseKey']}")
     print('----------------------------------------')
     print('')
-    print('JSON形弁E')
+    print('JSON形式:')
     print(json.dumps(result, indent=2, ensure_ascii=False))
 
 

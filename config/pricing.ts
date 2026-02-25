@@ -2,38 +2,38 @@
  * HARMONIC insight 価格戦略定義
  *
  * ============================================================================
- * 【価格設計方針】�E製品E法人向け�E�E2B Only�E�E E価格は個別見積もめE
+ * 【価格設計方針】全製品＝法人向け（B2B Only）＝ 価格は個別見積もり
  * ============================================================================
  *
- * 全製品をコンサルチE��ング案件の一環として法人向けに提供、E
- * コンサルタントがクライアント企業に導�EするチE�Eル群、E
- * 直販また�Eパ�Eトナー�E�代琁E��）経由で販売、E
- * 個人向け�E�E2C�E�販売は行わなぁE��E
+ * 全製品をコンサルティング案件の一環として法人向けに提供。
+ * コンサルタントがクライアント企業に導入するツール群。
+ * 直販またはパートナー（代理店）経由で販売。
+ * 個人向け（B2C）販売は行わない。
  *
- * ## 価格方釁E
+ * ## 価格方針
  *
- * 全製品�E価格はパ�Eトナー�E�販売代琁E��）との協議により決定、E
- * Webサイト等での価格公開�E行わなぁE��E
- * 見積もり�Eパ�Eトナー経由また�E直接のお問ぁE��わせで対応、E
+ * 全製品の価格はパートナー（販売代理店）との協議により決定。
+ * Webサイト等での価格公開は行わない。
+ * 見積もりはパートナー経由または直接のお問い合わせで対応。
  *
  * ## 製品ティア
  *
- * ┌──────────────────────────────────────────────────────────────────━E
- * ━E Tier 1: 業務変革チE�Eル                                         ━E
- * ━E INCA / INBT / IVIN                                            ━E
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │ Tier 1: 業務変革ツール                                         │
+ * │ INCA / INBT / IVIN                                            │
  * ├──────────────────────────────────────────────────────────────────┤
- * ━E Tier 2: AI活用チE�Eル                                           ━E
- * ━E INMV / INIG                                                    ━E
+ * │ Tier 2: AI活用ツール                                           │
+ * │ INMV / INIG                                                    │
  * ├──────────────────────────────────────────────────────────────────┤
- * ━E Tier 3: InsightOffice Suite�E�導�EチE�Eル�E�E                      ━E
- * ━E INSS / IOSH / IOSD / INPY                                     ━E
+ * │ Tier 3: InsightOffice Suite（導入ツール）                       │
+ * │ INSS / IOSH / IOSD / INPY                                     │
  * ├──────────────────────────────────────────────────────────────────┤
- * ━E Tier 4: Insight Senior Office�E�社会貢献チE�Eル�E�E                ━E
- * ━E ISOF                                                           ━E
- * └──────────────────────────────────────────────────────────────────━E
+ * │ Tier 4: Insight Senior Office（社会貢献ツール）                 │
+ * │ ISOF                                                           │
+ * └──────────────────────────────────────────────────────────────────┘
  *
- * ## 決渁E
- * - Stripe�E��E社サイト！E 請求書払い
+ * ## 決済
+ * - Stripe（自社サイト）／請求書払い
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -42,174 +42,174 @@ import type { ProductCode, PlanCode } from './products';
 // 型定義
 // =============================================================================
 
-/** 販売チャネル  E全製品Econsulting */
+/** 販売チャネル ＝全製品＝consulting */
 export type SalesChannel = 'consulting';
 
 /** 通貨 */
 export type Currency = 'JPY' | 'USD';
 
-/** 価格単佁E*/
+/** 価格単位 */
 export type PricingUnit = 'per_company' | 'per_user';
 
 /** 製品ティア */
 export type ProductTier = 1 | 2 | 3 | 4;
 
-/** 製品別販売惁E���E�価格は個別見積もり！E*/
+/** 製品別販売情報（価格は個別見積もり） */
 export interface ProductSalesInfo {
-  /** 製品コーチE*/
+  /** 製品コード */
   productCode: ProductCode;
   /** 販売チャネル */
   channel: SalesChannel;
-  /** チャネル説昁E*/
+  /** チャネル説明 */
   channelDescription: string;
   /** 製品ティア */
   tier: ProductTier;
-  /** 価格単位！Eer_company or per_user�E�E*/
+  /** 価格単位（per_company or per_user） */
   pricingUnit: PricingUnit;
-  /** 備老E*/
+  /** 備考 */
   notes?: string;
 }
 
 // =============================================================================
-// 製品販売惁E���E�価格は個別見積もめE Eパ�Eトナーと協議の上決定！E
+// 製品販売情報（価格は個別見積もり＝パートナーと協議の上決定）
 // =============================================================================
 
 export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
 
   // =========================================================================
-  // Tier 1: 業務変革チE�Eル
+  // Tier 1: 業務変革ツール
   // =========================================================================
 
   INCA: {
     productCode: 'INCA',
     channel: 'consulting',
-    channelDescription: 'RPA・ローコード移行コンサルチE��ング案件と連勁E,
+    channelDescription: 'RPA・ローコード移行コンサルティング案件と連動',
     tier: 1,
     pricingUnit: 'per_company',
-    notes: 'akaBot変換機�EはPRO以上。移行アセスメント案件の刁E��チE�Eルとして提供。価格は個別見積もり、E,
+    notes: 'akaBot変換機能はPRO以上。移行アセスメント案件の中核ツールとして提供。価格は個別見積もり。',
   },
 
   INBT: {
     productCode: 'INBT',
     channel: 'consulting',
-    channelDescription: '業務�E動化コンサルチE��ング案件と連勁E,
+    channelDescription: '業務自動化コンサルティング案件と連動',
     tier: 1,
     pricingUnit: 'per_company',
-    notes: 'クラウド同期�EJOB無制限�EPRO以上。�E動化コンサルとセチE��で提供。価格は個別見積もり、E,
+    notes: 'クラウド同期はJOB無制限はPRO以上。自動化コンサルとセットで提供。価格は個別見積もり。',
   },
 
   IVIN: {
     productCode: 'IVIN',
     channel: 'consulting',
-    channelDescription: '採用・面接コンサルチE��ング案件と連勁E,
+    channelDescription: '採用・面接コンサルティング案件と連動',
     tier: 1,
     pricingUnit: 'per_company',
-    notes: '採用コンサルとセチE��で提供。価格は個別見積もり、E,
+    notes: '採用コンサルとセットで提供。価格は個別見積もり。',
   },
 
   // =========================================================================
-  // Tier 2: AI活用チE�Eル
+  // Tier 2: AI活用ツール
   // =========================================================================
 
   INMV: {
     productCode: 'INMV',
     channel: 'consulting',
-    channelDescription: 'コンチE��チE��作�E研修動画コンサルチE��ングと連勁E,
+    channelDescription: 'コンテンツ制作・研修動画コンサルティングと連動',
     tier: 2,
     pricingUnit: 'per_company',
-    notes: '4K出力�E字幕カスタマイズ・トランジションはPRO以上。価格は個別見積もり、E,
+    notes: '4K出力・字幕カスタマイズ・トランジションはPRO以上。価格は個別見積もり。',
   },
 
   INIG: {
     productCode: 'INIG',
     channel: 'consulting',
-    channelDescription: 'AI活用・コンチE��チE��作コンサルチE��ングと連勁E,
+    channelDescription: 'AI活用・コンテンツ制作コンサルティングと連動',
     tier: 2,
     pricingUnit: 'per_company',
-    notes: '高解像度出力�Eクラウド同期�EPRO以上。価格は個別見積もり、E,
+    notes: '高解像度出力・クラウド同期はPRO以上。価格は個別見積もり。',
   },
 
   // =========================================================================
-  // Tier 3: InsightOffice Suite�E�コンサル導�EチE�Eル�E�E
+  // Tier 3: InsightOffice Suite（コンサル導入ツール）
   // =========================================================================
 
   INSS: {
     productCode: 'INSS',
     channel: 'consulting',
-    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導�E',
+    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機�E+AI朁E0回、PRO=全機�E+AI朁E00囁Eコラボレーション。パートナー販売可。価格は個別見積もり、E,
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
   },
 
   IOSH: {
     productCode: 'IOSH',
     channel: 'consulting',
-    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導�E',
+    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機�E+AI朁E0回、PRO=全機�E+AI朁E00囁Eコラボレーション。パートナー販売可。価格は個別見積もり、E,
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
   },
 
   IOSD: {
     productCode: 'IOSD',
     channel: 'consulting',
-    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導�E',
+    channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機�E+AI朁E0回、PRO=全機�E+AI朁E00囁Eコラボレーション。パートナー販売可。価格は個別見積もり、E,
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
   },
 
   INPY: {
     productCode: 'INPY',
     channel: 'consulting',
-    channelDescription: 'コンサル案件のクライアントに業務�E動化チE�Eルとして導�E',
+    channelDescription: 'コンサル案件のクライアントに業務自動化ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機�E+AI朁E0回、PRO=全機�E+AI朁E00回。パートナー販売可。価格は個別見積もり、E,
+    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回。パートナー販売可。価格は個別見積もり。',
   },
 
   // =========================================================================
-  // Tier 4: Insight Senior Office�E�シニア向け社会貢献チE�Eル�E�E
+  // Tier 4: Insight Senior Office（シニア向け社会貢献ツール）
   // =========================================================================
 
   ISOF: {
     productCode: 'ISOF',
     channel: 'consulting',
-    channelDescription: '地方創生�EチE��タルチE��イド解消コンサル案件、企業のシニア社員向けチE�Eルとして導�E',
+    channelDescription: '地方創生・デジタルディバイド解消コンサル案件、企業のシニア社員向けツールとして導入',
     tier: 4,
     pricingUnit: 'per_user',
-    notes: 'STD=全機�E+AI朁E0回！Eaikuのみ�E�。PROプランなし（シンプルさ重視）。価格は個別見積もり、E,
+    notes: 'STD=全機能+AI月50回（Haikuのみ）。PROプランなし（シンプルさ重視）。価格は個別見積もり。',
   },
 };
 
 // =============================================================================
-// ヘルパ�E関数
+// ヘルパー関数
 // =============================================================================
 
 /**
- * 製品�E販売チャネルを取得（�E製品Econsulting�E�E
+ * 製品の販売チャネルを取得（全製品＝consulting）
  */
 export function getSalesChannel(productCode: ProductCode): SalesChannel {
   return PRODUCT_SALES_INFO[productCode].channel;
 }
 
 /**
- * 製品�E販売惁E��を取征E
+ * 製品の販売情報を取得
  */
 export function getProductSalesInfo(productCode: ProductCode): ProductSalesInfo {
   return PRODUCT_SALES_INFO[productCode];
 }
 
 /**
- * 製品�EチE��アを取征E
+ * 製品のティアを取得
  */
 export function getProductTier(productCode: ProductCode): ProductTier {
   return PRODUCT_SALES_INFO[productCode].tier;
 }
 
 /**
- * 持E��ティアの製品一覧を取征E
+ * 指定ティアの製品一覧を取得
  */
 export function getProductsByTier(tier: ProductTier): ProductCode[] {
   return (Object.keys(PRODUCT_SALES_INFO) as ProductCode[]).filter(
@@ -218,14 +218,14 @@ export function getProductsByTier(tier: ProductTier): ProductCode[] {
 }
 
 /**
- * 全製品一覧を取得（�E製品コンサルチE��ング連動型�E�E
+ * 全製品一覧を取得（全製品コンサルティング連動型）
  */
 export function getConsultingProducts(): ProductCode[] {
   return Object.keys(PRODUCT_SALES_INFO) as ProductCode[];
 }
 
 // =============================================================================
-// エクスポ�EチE
+// エクスポート
 // =============================================================================
 
 export default {

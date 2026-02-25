@@ -351,14 +351,14 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ### Tier 2: AI活用ツール
 
-#### INMV — InsightMovie
+#### INMV — InsightCast
 
 | 項目 | 内容 |
 |------|------|
 | **説明** | 画像とテキストから動画を自動作成 |
 | **技術** | Python (CustomTkinter + PyInstaller) |
 | **バージョン** | 1.0.0 — 開発中 |
-| **リポジトリ** | `win-app-insight-movie-gen` |
+| **リポジトリ** | `win-app-insight-cast` |
 | **カラーテーマ** | Ivory & Gold |
 
 **主要機能:**
@@ -813,7 +813,7 @@ getResellerProducts('gold');        // 全製品
 | モデル選択 | ティアでデフォルト決定 + **ユーザーがティア内で変更可能** |
 | Standard ティア | Sonnet 系（デフォルト: 最新 Sonnet） |
 | Premium ティア | 全モデル利用可能（デフォルト: 最新 Opus） |
-| ライセンス制御 | FREE: 20回 / PRO: 100回 / ENT: 無制限（STD は AI なし） |
+| ライセンス制御 | TRIAL: 無制限 / STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
 | 追加パック | Standard / Premium（価格はパートナーと協議の上決定） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
 
@@ -821,7 +821,7 @@ getResellerProducts('gold');        // 全製品
 
 | ティア | デフォルトモデル | 利用可能モデル | 利用条件 |
 |--------|----------------|---------------|---------|
-| Standard | 最新 Sonnet | Haiku + Sonnet 系 | 基本プラン（FREE/PRO）、Standard アドオン |
+| Standard | 最新 Sonnet | Haiku + Sonnet 系 | 基本プラン（STD/PRO）、Standard アドオン |
 | Premium | 最新 Opus | 全モデル | Premium アドオン購入、TRIAL、ENT |
 
 ```typescript
@@ -838,8 +838,7 @@ import { calculateCreditBalance } from '@/insight-common/config/usage-based-lice
 
 // ライセンスチェック
 canUseAiAssistant('PRO');   // true
-canUseAiAssistant('FREE');  // true（20回制限）
-canUseAiAssistant('STD');   // false
+canUseAiAssistant('STD');   // true（月50回）
 
 // モデル選択 UI: ティアで利用可能なモデル一覧
 const models = getAvailableModelsForTier('standard');

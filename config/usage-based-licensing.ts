@@ -15,11 +15,11 @@
  * │                    AI クレジットプール                          │
  * │                                                                │
  * │   基本クレジット（プラン付属）                                   │
- * │   ┌──────────┬──────────┬──────────┬──────────┬──────────┐     │
- * │   │  FREE    │  TRIAL   │   STD    │   PRO    │   ENT    │     │
- * │   │  20回    │  無制限   │   0回    │  100回   │  無制限   │     │
- * │   │ (永続)   │ (14日)   │ (AIなし)  │  (/年)   │  (/年)   │     │
- * │   └──────────┴──────────┴──────────┴──────────┴──────────┘     │
+ * │   ┌──────────┬──────────┬──────────┬──────────┐               │
+ * │   │  TRIAL   │   STD    │   PRO    │   ENT    │               │
+ * │   │  無制限   │  50回    │  200回   │  無制限   │               │
+ * │   │ (14日)   │  (/月)   │  (/月)   │  (/年)   │               │
+ * │   └──────────┴──────────┴──────────┴──────────┘               │
  * │                                                                │
  * │   アドオンパック（追加購入・2ティア制）                           │
  * │   ┌──────────────────────────────────────────────┐             │
@@ -65,7 +65,7 @@ import type { ProductCode, PlanCode } from './products';
 export type AiFeatureType = 'ai_assistant' | 'ai_editor';
 
 /** クレジット付与の基準期間 */
-export type QuotaPeriod = 'lifetime' | 'annual' | 'unlimited';
+export type QuotaPeriod = 'monthly' | 'annual' | 'unlimited';
 
 /**
  * AI モデルティア
@@ -227,10 +227,10 @@ export interface PurchasedAddonPack {
  * プラン別 AI クレジット定義
  *
  * 【重要】
- * - FREE: 20回は「永続」（使い切るまで有効、月間リセットなし）
- * - STD: AI 機能なし（aiEnabled: false）
- * - PRO: 100回は年間（ライセンス更新時にリセット）
- * - TRIAL/ENT: 無制限
+ * - TRIAL: 無制限（14日間・全機能・Premium モデル）
+ * - STD: 月50回（Standard モデル）
+ * - PRO: 月200回（Standard モデル、Premium アドオンで Opus 利用可）
+ * - ENT: 無制限
  */
 export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
   TRIAL: {
@@ -244,21 +244,21 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
   },
   STD: {
     plan: 'STD',
-    baseCredits: 0,
-    period: 'annual',
-    aiEnabled: false,
+    baseCredits: 50,
+    period: 'monthly',
+    aiEnabled: true,
     modelTier: 'standard',
-    descriptionJa: 'AI機能なし（アドオン購入でAI利用可能）',
-    descriptionEn: 'No AI features (purchase add-on to enable)',
+    descriptionJa: 'AI月50回付き（Sonnetまで・Premiumアドオンで Opus利用可）',
+    descriptionEn: '50 AI credits/month (up to Sonnet, Opus via Premium add-on)',
   },
   PRO: {
     plan: 'PRO',
-    baseCredits: 100,
-    period: 'annual',
+    baseCredits: 200,
+    period: 'monthly',
     aiEnabled: true,
     modelTier: 'standard',
-    descriptionJa: 'AI 100回付き（Sonnetまで・Premiumアドオンで Opus利用可）',
-    descriptionEn: '100 AI credits included (up to Sonnet, Opus via Premium add-on)',
+    descriptionJa: 'AI月200回付き（Sonnetまで・Premiumアドオンで Opus利用可）',
+    descriptionEn: '200 AI credits/month (up to Sonnet, Opus via Premium add-on)',
   },
   ENT: {
     plan: 'ENT',
@@ -354,17 +354,23 @@ export function getModelTier(plan: PlanCode): AiModelTier {
  * レジストリにモデルを追加すれば自動的にここにも反映される。
  */
 export function getAllowedModels(tier: AiModelTier): string[] {
-  // 動的インポートを避けるため、model ID パターンベースで判定
-  // ai-assistant.ts の MODEL_REGISTRY と同期が保たれる前提
-  // （実行時はアプリ側で getAvailableModelsForTier() を推奨）
-  const standardModels = [
-    'claude-3-5-haiku-20241022',
-    'claude-sonnet-4-20250514',
-  ];
+  // パターンベースで判定（opus を含むモデルは premium のみ）
+  // 実行時はアプリ側で getAvailableModelsForTier()（ai-assistant.ts）を推奨
   if (tier === 'premium') {
-    return [...standardModels, 'claude-opus-4-20250514'];
+    // premium: 全モデル利用可能
+    return [
+      'claude-haiku-4-5-20251001',
+      'claude-sonnet-4-20250514',
+      'claude-sonnet-4-6-20260210',
+      'claude-opus-4-6-20260210',
+    ];
   }
-  return standardModels;
+  // standard: Haiku + Sonnet 系
+  return [
+    'claude-haiku-4-5-20251001',
+    'claude-sonnet-4-20250514',
+    'claude-sonnet-4-6-20260210',
+  ];
 }
 
 /**

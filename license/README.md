@@ -1,52 +1,51 @@
-# HARMONIC insight ライセンス管琁E
+# HARMONIC insight ライセンス管理
 
-HARMONIC insight 製品群の共通ライセンス管琁E��ジュールです、E
+HARMONIC insight 製品群の共通ライセンス管理モジュールです。
 
-## ライセンスキー形弁E
+## ライセンスキー形式
 
 ```
 PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
-侁E
+例:
 INSS-TRIAL-2701-A1B2-C3D4-X9Z1   # InsightOfficeSlide トライアル
 IOSH-PRO-2701-E5F6-G7H8-Y0W2     # InsightOfficeSheet Professional
 IVIN-STD-2701-I9J0-K1L2-Z1A3     # InterviewInsight Standard
 ```
 
-## 製品コーチE
+## 製品コード
 
-### 【A】個人向け�E�Endividual�E�E
+### 【A】個人向け（Individual）
 
-| コーチE| 製品名 | 説昁E|
+| コード | 製品名 | 説明 |
 |--------|--------|------|
-| `INSS` | InsightOfficeSlide | AIアシスタント搭輁E Eプレゼン支援 |
-| `IOSH` | InsightOfficeSheet | AIアシスタント搭輁E EスプレチE��シート支援 |
-| `IOSD` | InsightOfficeDoc | AIアシスタント搭輁E Eドキュメント支援 |
-| `INPY` | InsightPy | AIエチE��タ搭輁E EPython開発支援 |
-| `INMV` | InsightCast | 動画作�E |
-| `INIG` | InsightImageGen | AI画像�E音声生�E |
+| `INSS` | InsightOfficeSlide | AIアシスタント搭載 プレゼン支援 |
+| `IOSH` | InsightOfficeSheet | AIアシスタント搭載 スプレッドシート支援 |
+| `IOSD` | InsightOfficeDoc | AIアシスタント搭載 ドキュメント支援 |
+| `INPY` | InsightPy | AIエディタ搭載 Python開発支援 |
+| `INMV` | InsightCast | 動画作成 |
+| `INIG` | InsightImageGen | AI画像・音声生成 |
 
-### 【B】コンサルチE��ング連動型�E�Eorporate�E�E
+### 【B】コンサルティング連動型（Corporate）
 
-| コーチE| 製品名 | 説昁E|
+| コード | 製品名 | 説明 |
 |--------|--------|------|
-| `INBT` | InsightBot | AIエチE��タ搭輁E ERPA自動化 |
-| `INCA` | InsightNoCodeAnalyzer | ローコード解极E|
+| `INBT` | InsightBot | AIエディタ搭載 RPA自動化 |
+| `INCA` | InsightNoCodeAnalyzer | ローコード解析 |
 | `IVIN` | InterviewInsight | 面接支援 |
 
-## チE��ア
+## ティア
 
-| コーチE| 名称 | 期間 | 説昁E|
+| コード | 名称 | 期間 | 説明 |
 |--------|------|------|------|
-| `FREE` | Free | 無期限 | 機�E制限あめE|
-| `TRIAL` | Trial | 14日閁E| 全機�E利用可能�E�評価用�E�E|
-| `STD` | Standard | 年間！E65日�E�E| 個人向け標準機�E |
-| `PRO` | Professional | 年間！E65日�E�E| 法人・チ�Eム向け全機�E |
-| `ENT` | Enterprise | 要相諁E| カスタマイズ |
+| `TRIAL` | Trial | 14日間 | 全機能利用可能（評価用） |
+| `STD` | Standard | 年間（365日） | 法人向け標準機能 |
+| `PRO` | Professional | 年間（365日） | 法人・チーム向け全機能 |
+| `ENT` | Enterprise | 要相談 | カスタマイズ |
 
-## 使用方況E
+## 使用方法
 
-### TypeScript牁E
+### TypeScript版
 
 ```typescript
 import {
@@ -55,7 +54,7 @@ import {
   getFeatureLimits
 } from '@insight/license';
 
-// ライセンス生�E
+// ライセンス生成
 const { licenseKey, expiresAt } = generateLicenseKey({
   productCode: 'INSS',
   plan: 'STD',
@@ -72,7 +71,7 @@ if (result.isValid) {
 }
 ```
 
-### Python牁E
+### Python版
 
 ```python
 from datetime import datetime
@@ -83,7 +82,7 @@ from insight_license import (
     Plan,
 )
 
-# ライセンス生�E
+# ライセンス生成
 result = generate_license_key(
     product_code=ProductCode.INSS,
     plan=Plan.STD,
@@ -103,32 +102,32 @@ if info.is_valid:
 
 ```
 Phase 1: リリース初期
-  ↁEINSS-TRIAL-2701-XXXX-XXXX-XXXX  (期限持E��でトライアル配币E
+  → INSS-TRIAL-2701-XXXX-XXXX-XXXX  (期限付きでトライアル配布)
 
 Phase 2: 正式販売
-  ↁEINSS-STD-2701-XXXX-XXXX-XXXX   (Standard牁E
-  ↁEINSS-PRO-2701-XXXX-XXXX-XXXX   (Professional牁E
+  → INSS-STD-2701-XXXX-XXXX-XXXX   (Standard版)
+  → INSS-PRO-2701-XXXX-XXXX-XXXX   (Professional版)
 
 Phase 3: 全製品展開
-  ↁEIOSH-PRO-2701-XXXX-XXXX-XXXX  (InsightOfficeSheet)
-  ↁEIVIN-STD-2701-XXXX-XXXX-XXXX  (InterviewInsight)
+  → IOSH-PRO-2701-XXXX-XXXX-XXXX  (InsightOfficeSheet)
+  → IVIN-STD-2701-XXXX-XXXX-XXXX  (InterviewInsight)
 ```
 
-## キー構�E
+## キー構造
 
-| 部刁E| 説昁E|
+| 部分 | 説明 |
 |------|------|
-| `PPPP` | 製品コード！E斁E��！E|
-| `PLAN` | プラン�E�ERIAL/STD/PRO�E�E|
-| `YYMM` | 有効期限�E�年月！E|
-| `HASH` | メールハッシュ�E�EHA256 Base32 先頭4斁E��！E|
-| `SIG1-SIG2` | HMAC-SHA256署名！Ease32 先頭8斁E��！E|
+| `PPPP` | 製品コード（4文字） |
+| `PLAN` | プラン（TRIAL/STD/PRO） |
+| `YYMM` | 有効期限（年月） |
+| `HASH` | メールハッシュ（SHA256 Base32 先頭4文字） |
+| `SIG1-SIG2` | HMAC-SHA256署名（Base32 先頭8文字） |
 
-## 機�E
+## 機能
 
-- ライセンスキーの生�E・検証
-- チェチE��サムによる改ざん検�E
-- 有効期限の管琁E��任意指定可能�E�E
-- チE��ア別機�E制陁E
-- 製品カバレチE��判定！ELLは全製品対応！E
-- オフライン検証対忁E
+- ライセンスキーの生成・検証
+- チェックサムによる改ざん検知
+- 有効期限の管理（任意指定可能）
+- ティア別機能制限
+- 製品カバレッジ判定（ALLは全製品対応）
+- オフライン検証対応

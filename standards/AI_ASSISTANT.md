@@ -22,7 +22,7 @@ InsightOffice 系アプリには、Claude API を利用した AI アシスタン
 1. **BYOK（Bring Your Own Key）モデル** — ユーザーが自身の Claude API キーを入力
 2. **モデルレジストリ + ユーザー選択** — MODEL_REGISTRY で一元管理、ユーザーがティア内でモデルを選択可能
 3. **プロダクトコンテキスト** — 開いているファイルの内容を AI に自動提供
-4. **ライセンス制御** — FREE（20クレジット）/ TRIAL / PRO / ENT で利用可能（STD は不可）
+4. **ライセンス制御** — TRIAL（無制限）/ STD（月50回）/ PRO（月200回）/ ENT（無制限）
 5. **Tool Use 対応** — スプレッドシート等で AI がデータを直接操作可能
 
 ---
@@ -93,7 +93,7 @@ var modelId = ClaudeModels.ResolveModel(tier, userPreferredModelId);
 {
   "claudeApiKey": "sk-ant-...",
   "language": "ja",
-  "chatPanelWidth": 300,
+  "chatPanelWidth": 400,
   "userModelPreference": {
     "standardTierModel": "claude-sonnet-4-6-20260210",
     "premiumTierModel": null
@@ -481,7 +481,7 @@ IOSD（Word 操作）向けに、以下のツールを将来追加予定:
   name: 'AI Assistant',
   nameJa: 'AIアシスタント',
   type: 'boolean',
-  allowedPlans: ['FREE', 'TRIAL', 'PRO', 'ENT'],
+  allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
   descriptionJa: 'AIチャットによるファイル操作支援',
 }
 ```
@@ -490,11 +490,10 @@ IOSD（Word 操作）向けに、以下のツールを将来追加予定:
 
 | プラン | AI アシスタント | 理由 |
 |--------|:----------:|------|
-| FREE | ✅（20クレジット） | 無料枠で体験提供 |
-| TRIAL | ✅ | 全機能評価のため |
-| STD | ❌ | 個人利用プラン（AI は PRO の訴求ポイント） |
-| PRO | ✅ | 法人・チーム向け全機能 |
-| ENT | ✅ | エンタープライズ全機能 |
+| TRIAL | ✅（無制限） | 全機能評価のため |
+| STD | ✅（月50回） | 法人向け標準機能 |
+| PRO | ✅（月200回） | 法人・チーム向け全機能 |
+| ENT | ✅（無制限） | エンタープライズ全機能 |
 
 ### 8.3 ゲート実装
 
@@ -675,7 +674,7 @@ public class ToolResultBlock
   "selectedPersonaId": "megumi",
   "selectedModel": "claude-sonnet-4-6-20260210",
   "language": "ja",
-  "chatPanelWidth": 300,
+  "chatPanelWidth": 400,
   "userModelPreference": {
     "standardTierModel": "claude-sonnet-4-6-20260210",
     "premiumTierModel": null
@@ -721,7 +720,7 @@ public class ToolResultBlock
 - [ ] 入力エリア（可変高さ TextBox、アドバイス/チェックボタン）
 - [ ] 処理中インジケーター（ペルソナアイコン + 「が考え中...」）
 - [ ] キャンセル機能（CancellationToken）
-- [ ] ライセンスゲート（FREE（20クレジット）/ TRIAL / PRO / ENT、STD でアップグレード促進）
+- [ ] ライセンスゲート（TRIAL / STD（月50回）/ PRO（月200回）/ ENT）
 - [ ] チャット履歴永続化（JSON ファイル）
 - [ ] 設定永続化（API キー、ペルソナ、モデル）
 - [ ] エラーハンドリング（401 / 429 / 500 / タイムアウト）

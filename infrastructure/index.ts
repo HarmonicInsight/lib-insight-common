@@ -1,7 +1,7 @@
 /**
  * Insight Apps Infrastructure
  *
- * Firebase + Supabase ハイブリチE��アーキチE��チャの共通基盤
+ * Firebase + Supabase ハイブリッドアーキテクチャの共通基盤
  */
 
 // Auth
@@ -40,7 +40,7 @@ export interface License {
   id: string;
   user_id: string;
   product_code: string;
-  plan: 'FREE' | 'STD' | 'PRO' | 'ENT';
+  plan: 'TRIAL' | 'STD' | 'PRO' | 'ENT';
   license_key: string | null;
   activated_at: string | null;
   expires_at: string | null;
@@ -51,7 +51,7 @@ export interface License {
 export interface Tenant {
   id: string;
   name: string;
-  plan: 'FREE' | 'STD' | 'PRO' | 'ENT';
+  plan: 'TRIAL' | 'STD' | 'PRO' | 'ENT';
   owner_id: string;
   max_members: number;
   created_at: string;
@@ -116,9 +116,9 @@ export const PRODUCT_CODES = {
 } as const;
 
 export const PLANS = {
-  FREE: { name: 'Free', priority: 0 },
+  TRIAL: { name: 'Trial', priority: 0 },
   STD: { name: 'Standard', priority: 1 },
-  PRO: { name: 'Pro', priority: 2 },
+  PRO: { name: 'Professional', priority: 2 },
   ENT: { name: 'Enterprise', priority: 3 },
 } as const;
 

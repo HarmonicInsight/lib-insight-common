@@ -1,12 +1,12 @@
-# アイコン同期コマンチE
+# アイコン同期コマンド
 
-insight-common の `brand/icons/generated/` をソースオブトゥルースとして、アプリリポジトリのアイコンを同期します、E
+insight-common の `brand/icons/generated/` をソースオブトゥルースとして、アプリリポジトリのアイコンを同期します。
 
-`$ARGUMENTS` に製品コード（侁E `VOICE_CLOCK`、`CAMERA`、`IOSH`�E�を持E��してください、E
+`$ARGUMENTS` に製品コード（例: `VOICE_CLOCK`、`CAMERA`、`IOSH`）を指定してください。
 
-## 製品コードとリポジトリの対忁E
+## 製品コードとリポジトリの対応
 
-| 製品コーチE| 生�EチE��レクトリ吁E| リポジトリ | プラチE��フォーム |
+| 製品コード | 生成ディレクトリ名 | リポジトリ | プラットフォーム |
 |-----------|-------------------|-----------|----------------|
 | VOICE_CLOCK | InsightVoiceClock | android-app-insight-voice-clock | Android Native |
 | CAMERA | InsightCamera | android-app-insight-camera | Android Native |
@@ -25,70 +25,70 @@ insight-common の `brand/icons/generated/` をソースオブトゥルースと
 | INIG | InsightImageGen | app-insight-image-gen | Python |
 | LAUNCHER | InsightLauncher | android-app-insight-launcher | Android Native |
 
-## 実行手頁E
+## 実行手順
 
-### Step 1: ソースの確誁E
+### Step 1: ソースの確認
 
-insight-common の `brand/icons/generated/<生�EチE��レクトリ吁E/` にマスターアイコンが存在するか確認する、E
+insight-common の `brand/icons/generated/<生成ディレクトリ名>/` にマスターアイコンが存在するか確認する。
 
 ```bash
-ls -R brand/icons/generated/<生�EチE��レクトリ吁E/
+ls -R brand/icons/generated/<生成ディレクトリ名>/
 ```
 
-ファイルが存在しなぁE��合�E、`scripts/generate-app-icon.py` で生�Eが忁E��E
+ファイルが存在しない場合、`scripts/generate-app-icon.py` で生成が必要。
 ```bash
-python scripts/generate-app-icon.py --product <製品コーチE
+python scripts/generate-app-icon.py --product <製品コード>
 ```
 
-### Step 2: アプリリポジトリの取征E
+### Step 2: アプリリポジトリの取得
 
-対象のアプリリポジトリがローカルにあるか確認する、E
-なければ GitHub からクローンする�E�Erganization: `HarmonicInsight`�E�、E
+対象のアプリリポジトリがローカルにあるか確認する。
+なければ GitHub からクローンする（Organization: `HarmonicInsight`）。
 
-### Step 3: 差刁E��誁E
+### Step 3: 差分の認識
 
-ソース�E�Ensight-common�E�とターゲチE���E�アプリリポジトリ�E��E吁E��ァイルを比輁E��る、E
+ソース（insight-common）とターゲット（アプリリポジトリ）の各ファイルを比較する。
 
-**Android Native の場吁E**
-- ソース: `brand/icons/generated/<Dir>/mipmap-*/` ↁEターゲチE��: `app/src/main/res/mipmap-*/`
-- **注愁E*: ターゲチE��に `drawable/ic_launcher_foreground.xml` めE`mipmap-anydpi-v26/` が残ってぁE��場合�E削除すること�E�Eipmap PNG を上書きしてしまぁE��めE��E
+**Android Native の場合**
+- ソース: `brand/icons/generated/<Dir>/mipmap-*/` → ターゲット: `app/src/main/res/mipmap-*/`
+- **注意**: ターゲットに `drawable/ic_launcher_foreground.xml` や `mipmap-anydpi-v26/` が残っている場合は削除すること（mipmap PNG を上書きしてしまうため）
 
-**WPF の場吁E**
-- ソース: `brand/icons/generated/<Dir>/` ↁEターゲチE��: `Resources/`
+**WPF の場合**
+- ソース: `brand/icons/generated/<Dir>/` → ターゲット: `Resources/`
 
-**Expo の場吁E**
-- ソース: `brand/icons/generated/<Dir>/` ↁEターゲチE��: `assets/`
+**Expo の場合**
+- ソース: `brand/icons/generated/<Dir>/` → ターゲット: `assets/`
 
-**Tauri の場吁E**
-- ソース: `brand/icons/generated/<Dir>/` ↁEターゲチE��: `src-tauri/icons/`
+**Tauri の場合**
+- ソース: `brand/icons/generated/<Dir>/` → ターゲット: `src-tauri/icons/`
 
-差刁E��なぁE��合�E「同期済み、差刁E��し」と報告して終亁E��E
+差分がない場合は「同期済み、差分なし」と報告して終了。
 
-### Step 4: ファイルコピ�E
+### Step 4: ファイルコピー
 
-差刁E�Eあるファイルのみ、insight-common のソースをアプリリポジトリに上書きコピ�Eする、E
-**insight-common 側が常にソースオブトゥルース**、E
+差分のあるファイルのみ、insight-common のソースをアプリリポジトリに上書きコピーする。
+**insight-common 側が常にソースオブトゥルース**。
 
-### Step 5: コミッチE& プッシュ
+### Step 5: コミット & プッシュ
 
 アプリリポジトリ側で:
-1. `claude/` プレフィチE��ス付きブランチを作�E�E�現在のセチE��ョンブランチと同名が望ましい�E�E
-2. 変更をコミッチE `fix: sync <アイコン種別> icon from insight-common`
+1. `claude/` プレフィックス付きブランチを作成（現在のセッションブランチと同名が望ましい）
+2. 変更をコミット: `fix: sync <アイコン種別> icon from insight-common`
 3. プッシュ
 
-### Step 6: 報呁E
+### Step 6: 報告
 
-以下を報告すめE
+以下を報告する:
 - 同期したファイル一覧
-- 差刁E�E概要E
-- プッシュ先�EブランチとPR作�EURL
+- 差分の概要
+- プッシュ先のブランチとPR作成URL
 
 ## 既存スクリプトの活用
 
-ファイル数が多い場合�E `sync-app-icons.sh` を活用できる:
+ファイル数が多い場合は `sync-app-icons.sh` を活用できる:
 
 ```bash
-# Android�E�Eipmap PNGs�E�E
+# Android（mipmap PNGs）
 ./scripts/sync-app-icons.sh --product VOICE_CLOCK /path/to/app/src/main/res/
 
 # WPF
@@ -98,9 +98,9 @@ python scripts/generate-app-icon.py --product <製品コーチE
 ./scripts/sync-app-icons.sh --product CAMERA /path/to/app/assets/
 ```
 
-## 注意事頁E
+## 注意事項
 
-- **ソースオブトゥルース**: 常に `brand/icons/generated/` が正。アプリ側で独自にアイコンを編雁E��てはぁE��なぁE
-- **アイコン変更晁E*: まぁEinsight-common 側で `brand/icons/generated/` を更新してからこ�Eコマンドを実行すめE
-- **ブランドカラー**: Gold (#B8942F) が�Eライマリ、Ivory (#FAF8F5) が背景であること
-- **プッシュ認証**: アプリリポジトリへのプッシュには GitHub PAT が忁E��な場合がある
+- **ソースオブトゥルース**: 常に `brand/icons/generated/` が正。アプリ側で独自にアイコンを編集してはいけない
+- **アイコン変更時**: まず insight-common 側で `brand/icons/generated/` を更新してからこのコマンドを実行する
+- **ブランドカラー**: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景であること
+- **プッシュ認証**: アプリリポジトリへのプッシュには GitHub PAT が必要な場合がある

@@ -1,12 +1,12 @@
-# insight-common 絁E��込みガイチE
+# insight-common 組み込みガイド
 
-Insight Series の吁E��ポジトリに insight-common を絁E��込む手頁E��す、E
+Insight Series の各リポジトリに insight-common を組み込む手順です。
 
 ---
 
 ## 対象リポジトリ
 
-| リポジトリ | 技術スタチE�� | 製品コーチE|
+| リポジトリ | 技術スタック | 製品コード |
 |-----------|-------------|-----------|
 | InsightOfficeSlide | Python + Tkinter | `INSS` |
 | InsightOfficeSheet | C# + WPF | `IOSH` |
@@ -20,19 +20,19 @@ Insight Series の吁E��ポジトリに insight-common を絁E��込む手頁E���
 
 ---
 
-## TypeScript 製品E(InsightNoCodeAnalyzer, InterviewInsight)
+## TypeScript 製品（InsightNoCodeAnalyzer, InterviewInsight）
 
 ### Step 1: Submodule 追加
 
 ```bash
-# リポジトリのルートで実衁E
+# リポジトリのルートで実行
 git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 git submodule update --init --recursive
 ```
 
-### Step 2: tsconfig.json 設宁E
+### Step 2: tsconfig.json 設定
 
-`tsconfig.json` また�E `tsconfig.base.json` に追加:
+`tsconfig.json` または `tsconfig.base.json` に追加:
 
 ```json
 {
@@ -60,7 +60,7 @@ git submodule update --init --recursive
 }
 ```
 
-### Step 3: Vite 設宁E(Tauri)
+### Step 3: Vite 設定（Tauri）
 
 `vite.config.ts` に追加:
 
@@ -86,7 +86,7 @@ export default defineConfig({
 });
 ```
 
-### Step 4: ライセンスマネージャー作�E
+### Step 4: ライセンスマネージャー作成
 
 `src/lib/license-manager.ts`:
 
@@ -116,7 +116,7 @@ class LicenseManager {
     const result = this.validator.validate(licenseKey, PRODUCT_CODE);
 
     if (!result.isValid) {
-      return { success: false, message: result.errorMessage || '無効なライセンスキーでぁE };
+      return { success: false, message: result.errorMessage || '無効なライセンスキーです' };
     }
 
     this.currentTier = result.tier!;
@@ -161,7 +161,7 @@ class LicenseManager {
 export const licenseManager = new LicenseManager();
 ```
 
-### Step 5: i18n プロバイダー作�E
+### Step 5: i18n プロバイダー作成
 
 `src/providers/I18nProvider.tsx`:
 
@@ -204,7 +204,7 @@ export function useI18n() {
 }
 ```
 
-### Step 6: 機�E制限ゲート作�E
+### Step 6: 機能制限ゲート作成
 
 `src/components/FeatureGate.tsx`:
 
@@ -227,7 +227,7 @@ export function FeatureGate({ feature, children, fallback }: FeatureGateProps) {
 }
 ```
 
-### Step 7: アプリケーションに絁E��込み
+### Step 7: アプリケーションに組み込み
 
 `src/App.tsx`:
 
@@ -257,7 +257,7 @@ export default App;
 
 ---
 
-## Python 製品E(InsightOfficeSlide, InsightPy)
+## Python 製品（InsightOfficeSlide, InsightPy）
 
 ### Step 1: Submodule 追加
 
@@ -266,9 +266,9 @@ git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.gi
 git submodule update --init --recursive
 ```
 
-### Step 2: パス設宁E
+### Step 2: パス設定
 
-`src/__init__.py` また�Eエントリーポイントに追加:
+`src/__init__.py` またはエントリーポイントに追加:
 
 ```python
 import sys
@@ -279,7 +279,7 @@ insight_common_path = Path(__file__).parent.parent / 'insight-common'
 sys.path.insert(0, str(insight_common_path))
 ```
 
-### Step 3: ライセンスマネージャー作�E
+### Step 3: ライセンスマネージャー作成
 
 `src/license_manager.py`:
 
@@ -315,7 +315,7 @@ class LicenseManager:
         result = self.validator.validate(license_key, PRODUCT_CODE)
 
         if not result.is_valid:
-            return {'success': False, 'message': result.error_message or '無効なライセンスキーでぁE}
+            return {'success': False, 'message': result.error_message or '無効なライセンスキーです'}
 
         self.current_tier = result.tier
         self.expires_at = result.expires_at
@@ -353,14 +353,14 @@ class LicenseManager:
 license_manager = LicenseManager()
 ```
 
-### Step 4: i18n ヘルパ�E
+### Step 4: i18n ヘルパー
 
 `src/i18n_helper.py`:
 
 ```python
 from i18n import t, set_locale, detect_locale
 
-# 初期匁E
+# 初期化
 set_locale(detect_locale())
 
 def translate(key: str, **params) -> str:
@@ -370,7 +370,7 @@ def translate(key: str, **params) -> str:
 _ = translate
 ```
 
-### Step 5: 機�E制限デコレータ
+### Step 5: 機能制限デコレータ
 
 `src/decorators.py`:
 
@@ -382,7 +382,7 @@ def require_license(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if not license_manager.is_licensed:
-            raise PermissionError('ライセンスが忁E��でぁE)
+            raise PermissionError('ライセンスが必要です')
         return func(*args, **kwargs)
     return wrapper
 
@@ -391,7 +391,7 @@ def require_feature(feature: str):
         @wraps(func)
         def wrapper(*args, **kwargs):
             if not license_manager.has_feature(feature):
-                raise PermissionError(f'{feature}機�Eはこ�Eプランでは利用できません')
+                raise PermissionError(f'{feature}機能はこのプランでは利用できません')
             return func(*args, **kwargs)
         return wrapper
     return decorator
@@ -403,29 +403,29 @@ def require_tier(min_tier: str):
         def wrapper(*args, **kwargs):
             current = license_manager.tier
             if not current:
-                raise PermissionError('ライセンスが忁E��でぁE)
+                raise PermissionError('ライセンスが必要です')
             if tier_order.index(current) < tier_order.index(min_tier):
-                raise PermissionError(f'{min_tier}プラン以上が忁E��でぁE)
+                raise PermissionError(f'{min_tier}プラン以上が必要です')
             return func(*args, **kwargs)
         return wrapper
     return decorator
 ```
 
-### Step 6: 使用侁E
+### Step 6: 使用例
 
 ```python
 from src.license_manager import license_manager
 from src.i18n_helper import _
 from src.decorators import require_license, require_feature
 
-# ライセンス有効匁E
+# ライセンス有効化
 result = license_manager.activate('INS-INSS-PRO-2501-1534-A7')
 print(result['message'])
 
 # 翻訳
-print(_('common.save'))  # 保孁E
+print(_('common.save'))  # 保存
 
-# 機�E制陁E
+# 機能制限
 @require_license
 def process_file(file_path):
     pass
@@ -437,42 +437,42 @@ def sync_to_cloud():
 
 ---
 
-## チE��レクトリ構�E�E�完�E形�E�E
+## ディレクトリ構成（完全形）
 
-### TypeScript 製品E
+### TypeScript 製品
 
 ```
 InsightNoCodeAnalyzer/
 ├── apps/
-━E  └── desktop/
-━E      ├── src/
-━E      ━E  ├── components/
-━E      ━E  ━E  └── FeatureGate.tsx
-━E      ━E  ├── lib/
-━E      ━E  ━E  └── license-manager.ts
-━E      ━E  ├── providers/
-━E      ━E  ━E  └── I18nProvider.tsx
-━E      ━E  └── App.tsx
-━E      ├── vite.config.ts      ↁEエイリアス設宁E
-━E      └── tsconfig.json       ↁEパス設宁E
+│   └── desktop/
+│       ├── src/
+│       │   ├── components/
+│       │   │   └── FeatureGate.tsx
+│       │   ├── lib/
+│       │   │   └── license-manager.ts
+│       │   ├── providers/
+│       │   │   └── I18nProvider.tsx
+│       │   └── App.tsx
+│       ├── vite.config.ts      ← エイリアス設定
+│       └── tsconfig.json       ← パス設定
 ├── packages/
-━E  └── ...
-├── insight-common/             ↁEsubmodule
-├── tsconfig.base.json          ↁE共通パス設宁E
+│   └── ...
+├── insight-common/             ← submodule
+├── tsconfig.base.json          ← 共通パス設定
 └── package.json
 ```
 
-### Python 製品E
+### Python 製品
 
 ```
 InsightOfficeSlide/
 ├── src/
-━E  ├── __init__.py             ↁEパス設宁E
-━E  ├── license_manager.py
-━E  ├── i18n_helper.py
-━E  ├── decorators.py
-━E  └── main.py
-├── insight-common/             ↁEsubmodule
+│   ├── __init__.py             ← パス設定
+│   ├── license_manager.py
+│   ├── i18n_helper.py
+│   ├── decorators.py
+│   └── main.py
+├── insight-common/             ← submodule
 └── requirements.txt
 ```
 
@@ -484,7 +484,7 @@ InsightOfficeSlide/
 # 最新に更新
 git submodule update --remote
 
-# 特定�Eコミットに固宁E
+# 特定のコミットに固定
 cd insight-common
 git checkout <commit-hash>
 cd ..
@@ -494,18 +494,18 @@ git commit -m "Update insight-common"
 
 ---
 
-## トラブルシューチE��ング
+## トラブルシューティング
 
-### エイリアスが認識されなぁE
+### エイリアスが認識されない
 
-1. `tsconfig.json` の `baseUrl` が正しく設定されてぁE��か確誁E
-2. `vite.config.ts` のパスが絶対パスになってぁE��か確誁E
-3. IDE を�E起勁E
+1. `tsconfig.json` の `baseUrl` が正しく設定されているか確認
+2. `vite.config.ts` のパスが絶対パスになっているか確認
+3. IDE を再起動
 
-### Python でインポ�Eトエラー
+### Python でインポートエラー
 
-1. `sys.path` に insight-common が追加されてぁE��か確誁E
-2. `__init__.py` が存在するか確誁E
+1. `sys.path` に insight-common が追加されているか確認
+2. `__init__.py` が存在するか確認
 
 ### Submodule が空
 

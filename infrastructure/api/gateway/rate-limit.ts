@@ -27,7 +27,7 @@ export interface RateLimitConfig {
 
 // デフォルト設定
 export const DEFAULT_RATE_LIMITS: Record<string, RateLimitConfig> = {
-  FREE: {
+  TRIAL: {
     requestsPerMinute: 20,
     requestsPerHour: 200,
     requestsPerDay: 1000,
@@ -189,7 +189,7 @@ async function checkRateLimitRedis(
 // ========================================
 
 export function getRateLimitForPlan(plan: string): RateLimitConfig {
-  return DEFAULT_RATE_LIMITS[plan] || DEFAULT_RATE_LIMITS.FREE;
+  return DEFAULT_RATE_LIMITS[plan] || DEFAULT_RATE_LIMITS.TRIAL;
 }
 
 export function getRateLimitKey(

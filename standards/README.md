@@ -1,30 +1,30 @@
-# Insight Series 開発標溁E
+# Insight Series 開発標準
 
-> 新規アプリ開発時に忁E��確認するドキュメンチE
+> 新規アプリ開発時に必ず確認するドキュメント
 
-## 概要E
+## 概要
 
-こ�EチE��レクトリには、Insight Seriesの吁E�EラチE��フォーム向け開発標準が含まれてぁE��す、E
-新規アプリ開発時�E、該当する�EラチE��フォームのチェチE��リストを**忁E��**確認してください、E
+このディレクトリには、Insight Seriesの全プラットフォーム向け開発標準が含まれています。
+新規アプリ開発時は、該当するプラットフォームのチェックリストを**必ず**確認してください。
 
-## プラチE��フォーム別ガイチE
+## プラットフォーム別ガイド
 
-| プラチE��フォーム | ファイル | 主な用送E|
+| プラットフォーム | ファイル | 主な用途 |
 |----------------|---------|---------|
-| **公開WebサイチE* | [WEBSITE.md](./WEBSITE.md) | **製品HP・会社HP・LP�E�色・チE��イン統一�E�E* |
-| **アプリアイコン** | [APP_ICONS.md](./APP_ICONS.md) | **全製品�E通アイコン仕槁E* |
-| **寒色系カラー標溁E* | [COOL_COLOR.md](./COOL_COLOR.md) | **業務系アプリ向け Cool Blue & Slate チE�EチE* |
-| **ローカライゼーション** | [LOCALIZATION.md](./LOCALIZATION.md) | **多言語対応標準（�EプラチE��フォーム共通！E* |
-| C# (WPF) | [CSHARP_WPF.md](./CSHARP_WPF.md) | Windows チE��クトップアプリ |
-| Python | [PYTHON.md](./PYTHON.md) | CLI チE�Eル、バチE��エンチE|
-| React/Next.js | [REACT.md](./REACT.md) | Web アプリケーション�E�アプリUI�E�E|
+| **公開Webサイト** | [WEBSITE.md](./WEBSITE.md) | **製品HP・会社HP・LPの色・デザイン統一** |
+| **アプリアイコン** | [APP_ICONS.md](./APP_ICONS.md) | **全製品共通アイコン仕様** |
+| **寒色系カラー標準** | [COOL_COLOR.md](./COOL_COLOR.md) | **業務系アプリ向け Cool Blue & Slate テーマ** |
+| **ローカライゼーション** | [LOCALIZATION.md](./LOCALIZATION.md) | **多言語対応標準（全プラットフォーム共通）** |
+| C# (WPF) | [CSHARP_WPF.md](./CSHARP_WPF.md) | Windows デスクトップアプリ |
+| Python | [PYTHON.md](./PYTHON.md) | CLI ツール、バックエンド |
+| React/Next.js | [REACT.md](./REACT.md) | Web アプリケーション（アプリUI） |
 | Android | [ANDROID.md](./ANDROID.md) | Android アプリ |
 | iOS | [IOS.md](./IOS.md) | iOS アプリ |
 | **Build Doctor** | [BUILD_DOCTOR.md](./BUILD_DOCTOR.md) | **ビルドエラー自律解消エージェント（全プラットフォーム）** |
 
-## 共通ルール�E��EプラチE��フォーム忁E��！E
+## 共通ルール（全プラットフォーム必須）
 
-### 1. チE��インシスチE���E�Evory & Gold Theme�E�E
+### 1. デザインシステム（Ivory & Gold Theme）
 
 ```
 Brand Primary:    #B8942F (Gold)
@@ -35,33 +35,32 @@ Border:           #E7E2DA (Warm Gray)
 ```
 
 **絶対禁止:**
-- ❁EBlue (#2563EB) を�Eライマリカラーとして使用
-- ❁E独自の色定義�E�忁E�� `brand/colors.json` を参照�E�E
-- ❁Eハ�Eドコードされた色値�E�EtaticResource/変数を使用�E�E
+- Blue (#2563EB) をプライマリカラーとして使用
+- 独自の色定義（必ず `brand/colors.json` を参照）
+- ハードコードされた色値（StaticResource/変数を使用）
 
-### 2. ライセンスシスチE��
+### 2. ライセンスシステム
 
-全製品で標準ライセンスシスチE��を使用:
+全製品で標準ライセンスシステムを使用:
 
 ```
-キー形弁E {製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}
-侁E INCA-STD-2601-XXXX-XXXX-XXXX
+キー形式: {製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}
+例: INCA-STD-2601-XXXX-XXXX-XXXX
 ```
 
 **プラン体系:**
-| プラン | 説昁E| 対象 |
+| プラン | 説明 | 対象 |
 |-------|------|------|
-| FREE | 基本機�Eのみ�E�※IOSHでは廁E��、デフォルチETRIAL�E�E|  E|
-| TRIAL | 全機�E利用可能�E�評価用、E4日間！E| 評価ユーザー |
-| STD | 標準機�E�E�コラボレーション機�Eを除く、E65日�E�E| 個人利用 |
-| PRO | 全機�E�E�コラボレーション含む、E65日�E�E| 法人・チ�Eム |
-| ENT | カスタマイズ�E�要相諁E��E| 企業 |
+| TRIAL | 全機能利用可能（評価用、14日間）| 評価ユーザー |
+| STD | 標準機能（コラボレーション機能を除く、365日） | 個人利用 |
+| PRO | 全機能（コラボレーション含む、365日） | 法人・チーム |
+| ENT | カスタマイズ（要相談） | 企業 |
 
-### 3. 製品コーチE
+### 3. 製品コード
 
-新規製品を追加する場合�E `config/products.ts` に登録:
+新規製品を追加する場合は `config/products.ts` に登録:
 
-| コーチE| 製品名 | 備老E|
+| コード | 製品名 | 備考 |
 |-------|-------|------|
 | INSS | InsightOfficeSlide | |
 | IOSH | InsightOfficeSheet | STD: 個人, PRO: 法人 |
@@ -75,59 +74,59 @@ Border:           #E7E2DA (Warm Gray)
 
 ### 4. UI パターン
 
-**忁E��コンポ�EネンチE**
-- ライセンス管琁E��面�E�Ensight Slides形式に準拠�E�E
-- 製品タイトル�E�Eold色、中央配置�E�E
-- カードスタイル�E�白背景、border-radius: 12px�E�E
+**必須コンポーネント:**
+- ライセンス管理画面（Insight Slides形式に準拠）
+- 製品タイトル（Gold色、中央配置）
+- カードスタイル（白背景、border-radius: 12px）
 
-## 自動チェチE���E�EI/CD�E�E
+## 自動チェック（CI/CD）
 
-### 新規リポジトリへの導�E
+### 新規リポジトリへの導入
 
-**忁E��E** 以下�Eワークフローファイルを追加してください�E�E
+**必須:** 以下のワークフローファイルを追加してください。
 
 ```bash
-# 1. .github/workflows チE��レクトリ作�E
+# 1. .github/workflows ディレクトリ作成
 mkdir -p .github/workflows
 
-# 2. ワークフローファイルをコピ�E
+# 2. ワークフローファイルをコピー
 cp insight-common/templates/github-workflow-validate.yml .github/workflows/validate-standards.yml
 
-# 3. コミッチE
+# 3. コミット
 git add .github/workflows/validate-standards.yml
 git commit -m "ci: add design standards validation"
 ```
 
-これにより、E*PRを�Eすたびに自動でチェチE��**されます、E
-チェチE��に失敗したPRはマ�Eジできません、E
+これにより、**PRを出すたびに自動でチェック**されます。
+チェックに失敗したPRはマージできません。
 
-### 手動チェチE��
+### 手動チェック
 
-ローカルで事前確認！E
+ローカルで事前確認:
 
 ```bash
-# 検証スクリプト実衁E
+# 検証スクリプト実行
 ./insight-common/scripts/validate-standards.sh .
 ```
 
-## チェチE��冁E��
+## チェック内容
 
-| チェチE��頁E�� | 説昁E|
+| チェック項目 | 説明 |
 |-------------|------|
-| 🔵 Blue Primary | #2563EB が�Eライマリとして使われてぁE��ぁE|
-| 🟡 Gold Primary | #B8942F が定義されてぁE�� |
-| 📄 Background | #FAF8F5 が背景色として定義されてぁE�� |
-| 🔑 LicenseManager | ライセンス管琁E��ラスが実裁E��れてぁE�� |
-| 📝 Key Format | ライセンスキー形式パターンが存在する |
+| Blue Primary | #2563EB がプライマリとして使われていない |
+| Gold Primary | #B8942F が定義されている |
+| Background | #FAF8F5 が背景色として定義されている |
+| LicenseManager | ライセンス管理クラスが実装されている |
+| Key Format | ライセンスキー形式パターンが存在する |
 
-## 違反時�E対忁E
+## 違反時の対応
 
-標準に従ってぁE��ぁE��ード�E**PRがブロチE��**されます、E
-不�E点がある場合�E、このドキュメントまた�E既存製品�E実裁E��参�Eしてください、E
+標準に従っていないコードは**PRがブロック**されます。
+不明点がある場合は、このドキュメントまたは既存製品の実装を参照してください。
 
-### 参老E��裁E
+### 参考実装
 
-| プラチE��フォーム | リポジトリ |
+| プラットフォーム | リポジトリ |
 |----------------|-----------|
 | C# (WPF) | win-app-nocode-analyzer |
 | React | web-app-insight-process |

@@ -15,7 +15,7 @@ export interface AuthenticatedUser {
   userId: string;       // Supabase users.id (UUID)
   email: string | null;
   displayName: string | null;
-  plan: string;         // FREE | STD | PRO | ENT
+  plan: string;         // TRIAL | STD | PRO | ENT
   tenantId: string | null;
 }
 

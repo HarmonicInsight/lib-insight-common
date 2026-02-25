@@ -28,7 +28,7 @@ HARMONIC insight の **Ivory & Gold デザイン標準** および **ライセ�
 ### 3. AI アシスタント（InsightOffice 系）
 
 - Claude (Anthropic) API のみ使用（OpenAI/Azure 禁止）
-- モデルティア: Standard (Sonnet) / Premium (Opus) — ユーザー選択不可
+- モデルティア: Standard (Sonnet) / Premium (Opus) — ユーザーがティア内で選択可能
 - ライセンスゲート: STD 月50回 / PRO 月200回
 - `standards/AI_ASSISTANT.md` に準拠しているか
 

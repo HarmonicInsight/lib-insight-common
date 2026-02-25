@@ -1,28 +1,28 @@
-# C# (WPF) 開発標溁E
+# C# (WPF) 開発標準
 
-> Windows チE��クトップアプリ開発時�E忁E��チェチE��リスチE
+> Windows デスクトップアプリ開発時の必須チェックリスト
 
-## 開発開始時チェチE��リスチE
+## 開発開始時チェックリスト
 
-### 1. プロジェクト構�E
+### 1. プロジェクト構成
 
 ```
 YourApp/
 ├── Themes/
-━E  ├── Colors.xaml          # 忁E��E Ivory & Gold カラー定義
-━E  └── Styles.xaml           # 忁E��E 共通スタイル
+│   ├── Colors.xaml          # 必須: Ivory & Gold カラー定義
+│   └── Styles.xaml           # 必須: 共通スタイル
 ├── License/
-━E  ├── PlanCode.cs           # 忁E��E プラン列挙垁E
-━E  ├── LicenseInfo.cs        # 忁E��E ライセンス惁E��クラス
-━E  └── InsightLicenseManager.cs  # 忁E��E ライセンス管琁E
+│   ├── PlanCode.cs           # 必須: プラン列挙型
+│   ├── LicenseInfo.cs        # 必須: ライセンス情報クラス
+│   └── InsightLicenseManager.cs  # 必須: ライセンス管理
 ├── Views/
-━E  └── LicenseView.xaml      # 忁E��E ライセンス画面
+│   └── LicenseView.xaml      # 必須: ライセンス画面
 ├── ViewModels/
-━E  └── LicenseViewModel.cs   # 忁E��E ライセンスVM
+│   └── LicenseViewModel.cs   # 必須: ライセンスVM
 └── App.xaml                   # ResourceDictionary登録
 ```
 
-### 2. Colors.xaml チE��プレーチE
+### 2. Colors.xaml テンプレート
 
 ```xml
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -62,7 +62,7 @@ YourApp/
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
     <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
-    <!-- ... 他�EBrush定義 ... -->
+    <!-- ... 他の Brush 定義 ... -->
 
 </ResourceDictionary>
 ```
@@ -82,58 +82,58 @@ YourApp/
 
 ---
 
-## UI レイアウト標溁E
+## UI レイアウト標準
 
-### 標準レイアウチE カスタムトップバー
+### 標準レイアウト: カスタムトップバー
 
-**Windows標準タイトルバ�Eは使用しなぁE*�E�安っぽく見えるためE��E
+**Windows 標準タイトルバーは使用しない**（安っぽく見えるため）
 
 ```
-┌─────────────────────────────────────────────────────────────────━E
-━EInsight {製品名}  v1.0.0  ◁EFREE    [⚙設定] [🔑ライセンス] [─][□][×] ━E
-├─────────────────────────────────────────────────────────────────┤
-━E                                                                 ━E
-━E ┌─────────────────────────────────────────────────────────━E   ━E
-━E ━E機�Eボタン / タチE/ アクションエリア                      ━E   ━E
-━E └─────────────────────────────────────────────────────────━E   ━E
-━E                                                                 ━E
-━E                    メインコンチE��チE��リア                        ━E
-━E                                                                 ━E
-━E                                                                 ━E
-└─────────────────────────────────────────────────────────────────━E
+┌──────────────────────────────────────────────────────────────────┐
+│Insight {製品名}  v1.0.0  ◀ TRIAL   [⚙設定] [🔑ライセンス] [─][□][×] │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│ ┌──────────────────────────────────────────────────────────┐    │
+│ │機能ボタン / タブ / アクションエリア                       │    │
+│ └──────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│                    メインコンテンツエリア                          │
+│                                                                  │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-### レイアウト仕槁E
+### レイアウト仕様
 
-| 頁E�� | 値 |
+| 項目 | 値 |
 |-----|-----|
 | ウィンドウスタイル | `WindowStyle="None"` |
-| タイトルバ�E高さ | **48px** |
-| タイトルバ�E背景 | `BgSecondaryBrush` (#F3F0EB) |
-| メインコンチE��チE��景 | `BgPrimaryBrush` (#FAF8F5) |
-| ウィンドウ枠緁E| `BorderBrush` (#E7E2DA) 1px |
-| 角丸 | CornerRadius: 8 (Windows 11対忁E |
+| タイトルバー高さ | **48px** |
+| タイトルバー背景 | `BgSecondaryBrush` (#F3F0EB) |
+| メインコンテンツ背景 | `BgPrimaryBrush` (#FAF8F5) |
+| ウィンドウ枠線 | `BorderBrush` (#E7E2DA) 1px |
+| 角丸 | CornerRadius: 8 (Windows 11対応) |
 
-### タイトルバ�E配置ルール
+### タイトルバー配置ルール
 
-**左側�E�忁E��！E**
+**左側（必須）:**
 1. 製品ロゴ/名前: `Insight {製品名}` (Gold 色)
-2. バ�Eジョン: `v1.0.0` (薁E��グレー)
-3. プランバッジ: `◁EFREE` / `◁ESTD` など
+2. バージョン: `v1.0.0` (薄いグレー)
+3. プランバッジ: `◀ TRIAL` / `◀ STD` など
 
-**右側�E�忁E��！E**
-1. 設定�Eタン�E�オプション�E�E `⚁E設定`
-2. **言語�Eり替ぁE*: `English` / `日本語`
+**右側（必須）:**
+1. 設定ボタン（オプション）: `⚙ 設定`
+2. **言語切り替え**: `English` / `日本語`
 3. **ライセンスボタン**: `🔑 ライセンス`
-4. ウィンドウコントロール: 最小化 / 最大匁E/ 閉じめE
+4. ウィンドウコントロール: 最小化 / 最大化 / 閉じる
 
-### 言語�Eり替え仕槁E
+### 言語切り替え仕様
 
-| 頁E�� | 値 |
+| 項目 | 値 |
 |-----|-----|
-| 対応言誁E| 日本誁E(ja), English (en) |
-| チE��ォルチE| シスチE��言語に従う |
-| 保存�E | `%APPDATA%/HarmonicInsight/{製品名}/settings.json` |
+| 対応言語 | 日本語 (ja), English (en) |
+| デフォルト | システム言語に従う |
+| 保存先 | `%APPDATA%/HarmonicInsight/{製品名}/settings.json` |
 | ボタン表示 | 現在の言語の**反対側**を表示（日本語時は「English」）|
 
 ### タイトルバーコンポーネント標準
@@ -328,22 +328,22 @@ public static class AppInfo
             CornerRadius="8">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="48"/>  <!-- タイトルバ�E -->
-                <RowDefinition Height="*"/>   <!-- コンチE��チE-->
+                <RowDefinition Height="48"/>  <!-- タイトルバー -->
+                <RowDefinition Height="*"/>   <!-- コンテンツ -->
             </Grid.RowDefinitions>
 
-            <!-- カスタムタイトルバ�E -->
+            <!-- カスタムタイトルバー -->
             <Border Grid.Row="0"
                     Background="{StaticResource BgSecondaryBrush}"
                     CornerRadius="8,8,0,0"
                     MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>    <!-- 左: ロゴ・バ�Eジョン -->
+                        <ColumnDefinition Width="*"/>    <!-- 左: ロゴ・バージョン -->
                         <ColumnDefinition Width="Auto"/> <!-- 右: ボタン群 -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- 左側: ロゴ・バ�Eジョン・プラン -->
+                    <!-- 左側: ロゴ・バージョン・プラン -->
                     <StackPanel Grid.Column="0"
                                 Orientation="Horizontal"
                                 VerticalAlignment="Center"
@@ -352,7 +352,7 @@ public static class AppInfo
                         <TextBlock Text="Insight {製品名}"
                                    FontSize="16" FontWeight="SemiBold"
                                    Foreground="{StaticResource PrimaryBrush}"/>
-                        <!-- バ�Eジョン -->
+                        <!-- バージョン -->
                         <TextBlock Text="v1.0.0"
                                    FontSize="12"
                                    Foreground="{StaticResource TextTertiaryBrush}"
@@ -373,15 +373,15 @@ public static class AppInfo
                     <StackPanel Grid.Column="1"
                                 Orientation="Horizontal"
                                 VerticalAlignment="Center">
-                        <!-- 設定�Eタン�E�オプション�E�E-->
+                        <!-- 設定ボタン（オプション） -->
                         <Button Style="{StaticResource TitleBarButtonStyle}"
                                 Command="{Binding OpenSettingsCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="⚁E Margin="0,0,4,0"/>
-                                <TextBlock Text="設宁E/>
+                                <TextBlock Text="⚙" Margin="0,0,4,0"/>
+                                <TextBlock Text="設定"/>
                             </StackPanel>
                         </Button>
-                        <!-- 言語�Eり替え�Eタン -->
+                        <!-- 言語切り替えボタン -->
                         <Button Style="{StaticResource TitleBarButtonStyle}"
                                 Command="{Binding ToggleLanguageCommand}"
                                 Margin="8,0">
@@ -402,12 +402,12 @@ public static class AppInfo
                         <Button Style="{StaticResource WindowControlButtonStyle}"
                                 Click="MaximizeButton_Click">□</Button>
                         <Button Style="{StaticResource CloseButtonStyle}"
-                                Click="CloseButton_Click">ÁE/Button>
+                                Click="CloseButton_Click">×</Button>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- メインコンチE��チE-->
+            <!-- メインコンテンツ -->
             <ContentControl Grid.Row="1"
                             Content="{Binding CurrentView}"
                             Margin="24"/>
@@ -416,7 +416,7 @@ public static class AppInfo
 </Window>
 ```
 
-### MainWindow.xaml.cs�E�ウィンドウ操作！E
+### MainWindow.xaml.cs（ウィンドウ操作）
 
 ```csharp
 private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -439,10 +439,10 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
     => Close();
 ```
 
-### Styles.xaml タイトルバ�Eスタイル
+### Styles.xaml タイトルバースタイル
 
 ```xml
-<!-- タイトルバ�Eボタン -->
+<!-- タイトルバーボタン -->
 <Style x:Key="TitleBarButtonStyle" TargetType="Button">
     <Setter Property="Background" Value="Transparent"/>
     <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
@@ -500,7 +500,7 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
     </Setter>
 </Style>
 
-<!-- 閉じる�Eタン�E�赤ホバー�E�E-->
+<!-- 閉じるボタン（赤ホバー） -->
 <Style x:Key="CloseButtonStyle" TargetType="Button"
        BasedOn="{StaticResource WindowControlButtonStyle}">
     <Style.Triggers>
@@ -512,71 +512,71 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
 </Style>
 ```
 
-### 例夁E 作業画面特化アプリ
+### 例外: 作業画面特化アプリ
 
-以下�Eアプリは作業画面が中忁E�Eため、例外として独自レイアウトを許可�E�E
-- **InsightCast**: タイムライン・プレビューが主体�Eため、ツールバ�E形式を維持E
-- **InsightSlides**: ファイル操作�E編雁E��主体�Eため、左サイドバー+右コンチE��チE��式を維持E
+以下のアプリは作業画面が中心のため、例外として独自レイアウトを許可:
+- **InsightCast**: タイムライン・プレビューが主体のため、ツールバー形式を維持
+- **InsightSlides**: ファイル操作・編集が主体のため、左サイドバー+右コンテンツ形式を維持
 
-**ただし例外アプリでも以下�E忁E��E**
-- **言語�Eり替え�Eタン**は右上に配置
-- **ライセンスボタン**は右上に配置�E�言語�Eり替え�E右隣�E�E
-- Ivory & Gold カラーチE�Eマを使用
+**ただし例外アプリでも以下は必須:**
+- **言語切り替えボタン**は右上に配置
+- **ライセンスボタン**は右上に配置（言語切り替えの右隣）
+- Ivory & Gold カラーテーマを使用
 - プランバッジを表示
 
 ---
 
-## 忁E��チェチE��リスチE
+## 必須チェックリスト
 
-### レイアウト！EI構造�E�E
+### レイアウト（UI構造）
 
-- [ ] **WindowStyle="None"** でカスタムタイトルバ�Eを使用
-- [ ] タイトルバ�E左側に **Insight {製品名}**�E�Eold 色�E�がある
-- [ ] タイトルバ�E左側に **バ�Eジョン** と **プランバッジ** があめE
-- [ ] タイトルバ�E右側に **言語�Eり替え�Eタン** があめE
-- [ ] タイトルバ�E右側に **ライセンスボタン** があめE
-- [ ] ウィンドウコントロール�E�最小化/最大匁E閉じる）がある
-- [ ] タイトルバ�EでドラチE��移動できる
+- [ ] **WindowStyle="None"** でカスタムタイトルバーを使用
+- [ ] タイトルバー左側に **Insight {製品名}**（Gold 色）がある
+- [ ] タイトルバー左側に **バージョン** と **プランバッジ** がある
+- [ ] タイトルバー右側に **言語切り替えボタン** がある
+- [ ] タイトルバー右側に **ライセンスボタン** がある
+- [ ] ウィンドウコントロール（最小化/最大化/閉じる）がある
+- [ ] タイトルバーでドラッグ移動できる
 - [ ] ウィンドウ枠線が `BorderBrush` (#E7E2DA) 1px
 
-### 多言語対忁E
+### 多言語対応
 
-- [ ] 日本誁E/ English の刁E��替えが可能
+- [ ] 日本語 / English の切り替えが可能
 - [ ] 言語設定が `settings.json` に保存される
-- [ ] 全ての UI チE��ストがリソースファイルから読み込まれる
+- [ ] 全ての UI テキストがリソースファイルから読み込まれる
 
-### チE��イン�E�トンマナ�E�E
+### デザイン（トンマナ）
 
-- [ ] **Colors.xaml** ぁEIvory & Gold チE�Eマに準拠してぁE��
-- [ ] **Primary (#B8942F)** が製品タイトル、アクセントに使用されてぁE��
-- [ ] **Background (#FAF8F5)** がメイン背景に使用されてぁE��
-- [ ] **ハ�Eドコードされた色がなぁE*�E��Eて StaticResource 経由�E�E
-- [ ] **青色 (#2563EB)** が�Eライマリとして使用されて**ぁE��ぁE*
-- [ ] カード�E白背景 + CornerRadius: 12
-- [ ] チE��スト�E Stone 系の暖色�E�E1C1917, #57534E�E�E
+- [ ] **Colors.xaml** が Ivory & Gold テーマに準拠している
+- [ ] **Primary (#B8942F)** が製品タイトル、アクセントに使用されている
+- [ ] **Background (#FAF8F5)** がメイン背景に使用されている
+- [ ] **ハードコードされた色がない**（すべて StaticResource 経由）
+- [ ] **青色 (#2563EB)** がプライマリとして使用されて**いない**
+- [ ] カードは白背景 + CornerRadius: 12
+- [ ] テキストは Stone 系の暖色（#1C1917, #57534E）
 - [ ] サイドバー背景は `BgSecondaryBrush` (#F3F0EB)
 
 ### ライセンス
 
-- [ ] **InsightLicenseManager** クラスが実裁E��れてぁE��
-- [ ] ライセンスキー形弁E `{製品コード}-{プラン}-{YYMM}-XXXX-XXXX-XXXX`
-- [ ] **LicenseView** ぁEInsight Slides 形式に準拠
+- [ ] **InsightLicenseManager** クラスが実装されている
+- [ ] ライセンスキー形式: `{製品コード}-{プラン}-{YYMM}-XXXX-XXXX-XXXX`
+- [ ] **LicenseView** が Insight Slides 形式に準拠
   - [ ] 製品名が中央に Gold 色で表示
   - [ ] 現在のプランが大きく中央に表示
-  - [ ] 機�E一覧セクションがあめE
-  - [ ] ライセンス認証セクション�E�メール + キー入力！E
-  - [ ] アクチE��ベ�EチE/ クリア ボタン
-- [ ] ライセンス保存�E: `%APPDATA%/HarmonicInsight/{製品名}/license.json`
-- [ ] HMAC-SHA256 署名検証が実裁E��れてぁE��
+  - [ ] 機能一覧セクションがある
+  - [ ] ライセンス認証セクション（メール + キー入力）
+  - [ ] アクティベート / クリア ボタン
+- [ ] ライセンス保存先: `%APPDATA%/HarmonicInsight/{製品名}/license.json`
+- [ ] HMAC-SHA256 署名検証が実装されている
 
-### 製品コーチE
+### 製品コード
 
-- [ ] 製品コードが `config/products.ts` に登録されてぁE��
-- [ ] `CLAUDE.md` の製品コード一覧に追加されてぁE��
+- [ ] 製品コードが `config/products.ts` に登録されている
+- [ ] `CLAUDE.md` の製品コード一覧に追加されている
 
-### コンバ�Eター�E�該当する場合！E
+### コンバーター（該当する場合）
 
-- [ ] 色を返すコンバ�EターぁEDesign System に準拠
+- [ ] 色を返すコンバーターが Design System に準拠
   - Success: #16A34A
   - Warning: #CA8A04
   - Error: #DC2626
@@ -586,7 +586,7 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
 
 ## ボタンスタイル
 
-### プライマリボタン�E�Eold�E�E
+### プライマリボタン（Gold）
 
 ```xml
 <Style x:Key="PrimaryButtonStyle" TargetType="Button">
@@ -620,7 +620,7 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
 </Style>
 ```
 
-### セカンダリボタン�E�アウトライン�E�E
+### セカンダリボタン（アウトライン）
 
 ```xml
 <Style x:Key="SecondaryButtonStyle" TargetType="Button">
@@ -656,9 +656,9 @@ private void CloseButton_Click(object sender, RoutedEventArgs e)
 
 ---
 
-## ファイルチE��プレーチE
+## ファイルテンプレート
 
-### MenuItem.cs�E�メニュー頁E��モチE���E�E
+### MenuItem.cs（メニュー項目モデル）
 
 ```csharp
 namespace YourApp.Models;
@@ -674,8 +674,8 @@ public record MenuItem
 public enum ModuleType
 {
     Home,
-    // 製品固有�E機�E...
-    License  // 忁E��最征E
+    // 製品固有の機能...
+    License  // 必ず最後
 }
 ```
 
@@ -686,7 +686,6 @@ namespace YourApp.License;
 
 public enum PlanCode
 {
-    Free,
     Trial,
     Std,
     Pro,
@@ -697,17 +696,16 @@ public static class PlanCodeExtensions
 {
     public static string ToDisplayName(this PlanCode plan) => plan switch
     {
-        PlanCode.Free => "FREE",
         PlanCode.Trial => "TRIAL",
         PlanCode.Std => "STD",
         PlanCode.Pro => "PRO",
         PlanCode.Ent => "ENT",
-        _ => "FREE"
+        _ => "TRIAL"
     };
 }
 ```
 
-### InsightLicenseManager.cs�E�簡略版！E
+### InsightLicenseManager.cs（簡略版）
 
 ```csharp
 namespace YourApp.License;
@@ -730,24 +728,24 @@ public class InsightLicenseManager
         LoadLicense();
     }
 
-    public LicenseInfo CurrentLicense { get; private set; } = LicenseInfo.Free();
-    public bool IsActivated => CurrentLicense.Plan != PlanCode.Free && CurrentLicense.IsValid;
+    public LicenseInfo CurrentLicense { get; private set; } = LicenseInfo.Trial();
+    public bool IsActivated => CurrentLicense.Plan != PlanCode.Trial && CurrentLicense.IsValid;
 
     public (bool Success, string Message) Activate(string email, string key)
     {
-        // キー検証・保存ロジチE��
+        // キー検証・保存ロジック
     }
 
     public void Deactivate()
     {
-        // ライセンス解除ロジチE��
+        // ライセンス解除ロジック
     }
 }
 ```
 
 ---
 
-## ⚠️ StaticResource ルール（重要）
+## StaticResource ルール（重要）
 
 ### 基本原則
 
@@ -759,7 +757,7 @@ public class InsightLicenseManager
 - デバッグしやすい
 - Syncfusion などのサードパーティコンポーネントとの競合を防ぐ
 
-### ❌ 絶対禁止: StaticResource を直接の色コードに置き換える
+### 絶対禁止: StaticResource を直接の色コードに置き換える
 
 ```xml
 <!-- ❌ 間違い: StaticResource を直接の色コードに置き換えた -->
@@ -773,7 +771,7 @@ public class InsightLicenseManager
 <SolidColorBrush Color="{StaticResource PrimaryColor}" />
 ```
 
-### ❌ 絶対禁止: Syncfusion コンポーネントの内部スタイルを手動で上書き
+### 絶対禁止: Syncfusion コンポーネントの内部スタイルを手動で上書き
 
 Syncfusion のコンポーネント（Ribbon, BackStage, SfSpreadsheet 等）は独自の内部スタイルを持っています。
 これらを手動で上書きすると、予期せぬ動作や競合が発生します。
@@ -858,7 +856,7 @@ InsightOffice 系アプリ（Sheet/Doc/Slide）では Syncfusion Ribbon コン�
 | `EnableSimplifiedLayoutMode` | `"False"` | 簡易レイアウトモードを無効化 |
 | `BackStageHeader` | `"ファイル"` | BackStage ボタンのラベル |
 
-### ✅ 正しい Ribbon 実装
+### 正しい Ribbon 実装
 
 ```xml
 <syncfusion:Ribbon x:Name="MainRibbon"
@@ -899,7 +897,7 @@ InsightOffice 系アプリ（Sheet/Doc/Slide）では Syncfusion Ribbon コン�
 </syncfusion:Ribbon>
 ```
 
-### ❌ 禁止: 間違った Ribbon 実装
+### 禁止: 間違った Ribbon 実装
 
 ```xml
 <!-- ❌ 間違い 1: Background 属性を設定 -->
@@ -944,7 +942,7 @@ InsightOffice 系アプリでは以下の BackStage コマンドを統一的に�
 | IOSD (Doc) | `Wordエクスポート` | `PDFエクスポート` |
 | INSS (Slide) | `PowerPointエクスポート` | `PDFエクスポート` |
 
-### ✅ 正しい BackStage 実装
+### 正しい BackStage 実装
 
 ```xml
 <syncfusion:Ribbon.BackStage>
@@ -983,7 +981,7 @@ InsightOffice 系アプリでは以下の BackStage コマンドを統一的に�
 </syncfusion:Ribbon.BackStage>
 ```
 
-### ❌ 禁止: 間違った BackStage 実装
+### 禁止: 間違った BackStage 実装
 
 ```xml
 <!-- ❌ 間違い 1: Backstage に Background 属性を設定 -->
@@ -1455,41 +1453,41 @@ public class PrintViewModel : ViewModelBase
 
 ## サードパーティライセンス管理
 
-Syncfusion 等�EサードパーチE��ライセンスキーは `insight-common/config/third-party-licenses.json` で**全製品�E通管琁E*されてぁE��す。各アプリに直書きしなぁE��ください、E
+Syncfusion 等のサードパーティライセンスキーは `insight-common/config/third-party-licenses.json` で**全製品共通管理**されています。各アプリに直書きしないでください。
 
-### Syncfusion コンポ�Eネント�EチE��ング
+### Syncfusion コンポーネントマッピング
 
-| 製品E| 用送E| Syncfusion コンポ�EネンチE| NuGet パッケージ |
+| 製品 | 用途 | Syncfusion コンポーネント | NuGet パッケージ |
 |------|------|-------------------------|-----------------|
-| IOSH | Excel 操佁E| SfSpreadsheet | `Syncfusion.SfSpreadsheet.WPF` |
-| IOSD | Word 操佁E| SfRichTextBoxAdv (DocIO) | `Syncfusion.SfRichTextBoxAdv.WPF`, `Syncfusion.DocIO.WPF` |
-| INSS | PowerPoint 操佁E| SfPresentation | `Syncfusion.Presentation.WPF` |
+| IOSH | Excel 操作 | SfSpreadsheet | `Syncfusion.SfSpreadsheet.WPF` |
+| IOSD | Word 操作 | SfRichTextBoxAdv (DocIO) | `Syncfusion.SfRichTextBoxAdv.WPF`, `Syncfusion.DocIO.WPF` |
+| INSS | PowerPoint 操作 | SfPresentation | `Syncfusion.Presentation.WPF` |
 
-### IOSD (InsightOfficeDoc) におけめEDocIO 使用パターン
+### IOSD (InsightOfficeDoc) における DocIO 使用パターン
 
-DocIO は Word 斁E�� (.docx/.doc) の読み書き�E操作を行うライブラリです、EOSD では以下�Eパターンで使用します、E
+DocIO は Word 文書 (.docx/.doc) の読み書き・操作を行うライブラリです。IOSD では以下のパターンで使用します。
 
-#### 忁E��ENuGet パッケージ
+#### 必須 NuGet パッケージ
 
 ```xml
 <ItemGroup>
-    <!-- Word 斁E��表示・編雁EUI -->
+    <!-- Word 文書表示・編集 UI -->
     <PackageReference Include="Syncfusion.SfRichTextBoxAdv.WPF" Version="*" />
-    <!-- Word 斁E��バックエンド�E琁E��読み書き�E変換�E�E-->
+    <!-- Word 文書バックエンド処理（読み書き・変換） -->
     <PackageReference Include="Syncfusion.DocIO.WPF" Version="*" />
-    <!-- ライセンス管琁E���E通！E-->
+    <!-- ライセンス管理（共通） -->
     <PackageReference Include="Syncfusion.Licensing" Version="*" />
 </ItemGroup>
 ```
 
-#### 基本皁E��使用パターン
+#### 基本的な使用パターン
 
 ```csharp
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
 using Syncfusion.Windows.Controls.RichTextBoxAdv;
 
-// === 斁E��の読み込み ===
+// === 文書の読み込み ===
 public WordDocument LoadDocument(string filePath)
 {
     using var stream = File.OpenRead(filePath);
@@ -1497,7 +1495,7 @@ public WordDocument LoadDocument(string filePath)
     return document;
 }
 
-// === 斁E��の保孁E===
+// === 文書の保存 ===
 public void SaveDocument(WordDocument document, string filePath, FormatType format = FormatType.Docx)
 {
     using var stream = File.Create(filePath);
@@ -1511,7 +1509,7 @@ public void LoadToRichTextBox(SfRichTextBoxAdv richTextBox, string filePath)
     richTextBox.Load(stream, FormatType.Docx);
 }
 
-// === SfRichTextBoxAdv から保孁E===
+// === SfRichTextBoxAdv から保存 ===
 public void SaveFromRichTextBox(SfRichTextBoxAdv richTextBox, string filePath)
 {
     using var stream = File.Create(filePath);
@@ -1519,16 +1517,16 @@ public void SaveFromRichTextBox(SfRichTextBoxAdv richTextBox, string filePath)
 }
 ```
 
-#### チE��スト抽出・検索
+#### テキスト抽出・検索
 
 ```csharp
-// === 全斁E��キスト抽出 ===
+// === 全文テキスト抽出 ===
 public string ExtractText(WordDocument document)
 {
     return document.GetText();
 }
 
-// === 段落単位でのチE��スト取征E===
+// === 段落単位でのテキスト取得 ===
 public IEnumerable<string> GetParagraphs(WordDocument document)
 {
     foreach (WSection section in document.Sections)
@@ -1540,14 +1538,14 @@ public IEnumerable<string> GetParagraphs(WordDocument document)
     }
 }
 
-// === チE��スト検索・置揁E===
+// === テキスト検索・置換 ===
 public void FindAndReplace(WordDocument document, string find, string replace)
 {
     document.Replace(find, replace, false, false);
 }
 ```
 
-#### スタイル・書式設宁E
+#### スタイル・書式設定
 
 ```csharp
 // === 段落スタイル適用 ===
@@ -1556,14 +1554,14 @@ public void ApplyHeadingStyle(WParagraph paragraph, int level)
     paragraph.ApplyStyle($"Heading {level}");
 }
 
-// === フォント設宁E===
+// === フォント設定 ===
 public void SetFontStyle(WTextRange textRange, string fontName, float fontSize)
 {
     textRange.CharacterFormat.FontName = fontName;
     textRange.CharacterFormat.FontSize = fontSize;
 }
 
-// === Ivory & Gold チE�Eマカラーの適用 ===
+// === Ivory & Gold テーマカラーの適用 ===
 public void ApplyBrandColor(WTextRange textRange)
 {
     // Gold (#B8942F) をアクセントカラーとして使用
@@ -1571,10 +1569,10 @@ public void ApplyBrandColor(WTextRange textRange)
 }
 ```
 
-#### 表・画像�E操佁E
+#### 表・画像の操作
 
 ```csharp
-// === 表の作�E ===
+// === 表の作成 ===
 public WTable CreateTable(WSection section, int rows, int cols)
 {
     var table = section.AddTable();
@@ -1582,7 +1580,7 @@ public WTable CreateTable(WSection section, int rows, int cols)
     return table;
 }
 
-// === 画像�E挿入 ===
+// === 画像の挿入 ===
 public void InsertImage(WParagraph paragraph, string imagePath)
 {
     using var stream = File.OpenRead(imagePath);
@@ -1607,24 +1605,24 @@ public void ConvertToPdf(WordDocument document, string outputPath)
 }
 ```
 
-### IOSH (InsightOfficeSheet) におけめEXlsIO 使用パターン
+### IOSH (InsightOfficeSheet) における XlsIO 使用パターン
 
-XlsIO は Excel ブック (.xlsx/.xls) の読み書き�E操作を行うライブラリです、E
+XlsIO は Excel ブック (.xlsx/.xls) の読み書き・操作を行うライブラリです。
 
-#### 忁E��ENuGet パッケージ
+#### 必須 NuGet パッケージ
 
 ```xml
 <ItemGroup>
-    <!-- Excel 表示・編雁EUI -->
+    <!-- Excel 表示・編集 UI -->
     <PackageReference Include="Syncfusion.SfSpreadsheet.WPF" Version="*" />
-    <!-- Excel バックエンド�E琁E-->
+    <!-- Excel バックエンド処理 -->
     <PackageReference Include="Syncfusion.XlsIO.WPF" Version="*" />
-    <!-- ライセンス管琁E���E通！E-->
+    <!-- ライセンス管理（共通） -->
     <PackageReference Include="Syncfusion.Licensing" Version="*" />
 </ItemGroup>
 ```
 
-#### 基本皁E��使用パターン
+#### 基本的な使用パターン
 
 ```csharp
 using Syncfusion.XlsIO;
@@ -1638,63 +1636,63 @@ public IWorkbook LoadWorkbook(string filePath)
     return application.Workbooks.Open(filePath);
 }
 
-// === セル値の取得�E設宁E===
+// === セル値の取得・設定 ===
 public void CellOperations(IWorksheet sheet)
 {
-    // 値の取征E
+    // 値の取得
     var value = sheet.Range["A1"].Value;
 
-    // 値の設宁E
+    // 値の設定
     sheet.Range["B1"].Value = "Hello";
     sheet.Range["C1"].Number = 123.45;
     sheet.Range["D1"].DateTime = DateTime.Now;
 }
 ```
 
-### INSS (InsightSlide) におけめEPresentation 使用パターン
+### INSS (InsightSlide) における Presentation 使用パターン
 
-Presentation は PowerPoint プレゼンチE�Eション (.pptx/.ppt) の読み書き�E操作を行うライブラリです、E
+Presentation は PowerPoint プレゼンテーション (.pptx/.ppt) の読み書き・操作を行うライブラリです。
 
-#### 忁E��ENuGet パッケージ
+#### 必須 NuGet パッケージ
 
 ```xml
 <ItemGroup>
-    <!-- PowerPoint バックエンド�E琁E-->
+    <!-- PowerPoint バックエンド処理 -->
     <PackageReference Include="Syncfusion.Presentation.WPF" Version="*" />
-    <!-- PDF変換�E�オプション�E�E-->
+    <!-- PDF変換（オプション） -->
     <PackageReference Include="Syncfusion.PresentationToPdfConverter.WPF" Version="*" />
-    <!-- 画像変換�E�オプション�E�E-->
+    <!-- 画像変換（オプション） -->
     <PackageReference Include="Syncfusion.PresentationRenderer.WPF" Version="*" />
-    <!-- ライセンス管琁E���E通！E-->
+    <!-- ライセンス管理（共通） -->
     <PackageReference Include="Syncfusion.Licensing" Version="*" />
 </ItemGroup>
 ```
 
-#### 基本皁E��使用パターン
+#### 基本的な使用パターン
 
 ```csharp
 using Syncfusion.Presentation;
 
-// === プレゼンチE�Eションの読み込み ===
+// === プレゼンテーションの読み込み ===
 public IPresentation LoadPresentation(string filePath)
 {
     return Presentation.Open(filePath);
 }
 
-// === プレゼンチE�Eションの保孁E===
+// === プレゼンテーションの保存 ===
 public void SavePresentation(IPresentation presentation, string filePath)
 {
     presentation.Save(filePath);
 }
 
-// === 新規作�E ===
+// === 新規作成 ===
 public IPresentation CreatePresentation()
 {
     return Presentation.Create();
 }
 ```
 
-#### チE��スト抽出�E�EIレビュー用�E�E
+#### テキスト抽出（AI レビュー用）
 
 ```csharp
 // === 全スライドからテキスト抽出 ===
@@ -1741,10 +1739,10 @@ public IEnumerable<string> ExtractNotes(IPresentation presentation)
 }
 ```
 
-#### チE��スト検索・置揁E
+#### テキスト検索・置換
 
 ```csharp
-// === 一括検索・置換（用語統一など�E�E===
+// === 一括検索・置換（用語統一など） ===
 public void FindAndReplace(IPresentation presentation, string find, string replace)
 {
     foreach (ISlide slide in presentation.Slides)
@@ -1769,7 +1767,7 @@ public void FindAndReplace(IPresentation presentation, string find, string repla
 }
 ```
 
-#### スライドサムネイル生�E
+#### スライドサムネイル生成
 
 ```csharp
 using Syncfusion.PresentationRenderer;
@@ -1798,23 +1796,23 @@ public void ConvertToPdf(IPresentation presentation, string outputPath)
 }
 ```
 
-### 忁E��実裁E ThirdPartyLicenseProvider�E�Ensight-common 共通クラス�E�E
+### 必須実装: ThirdPartyLicenseProvider（insight-common 共通クラス）
 
-吁E��プリは `InsightCommon.License.ThirdPartyLicenseProvider` を使用して、Edition 持E��でキーを取得�E登録します、E
+各アプリは `InsightCommon.License.ThirdPartyLicenseProvider` を使用して、Edition 指定でキーを取得・登録します。
 
-> **重要E*: Syncfusion は Edition ごとに異なるライセンスキーを発行します。詳細は `docs/SYNCFUSION_SETUP.md` を参照、E
+> **重要**: Syncfusion は Edition ごとに異なるライセンスキーを発行します。詳細は `docs/SYNCFUSION_SETUP.md` を参照。
 
 ```csharp
 using InsightCommon.License;
 
-// Edition を指定してキーを取征E
-// 優先頁E��E Edition 別環墁E��数 > 汎用環墁E��数 > JSON(editions) > JSON(レガシー)
+// Edition を指定してキーを取得
+// 優先順位: Edition 別環境変数 > 汎用環境変数 > JSON(editions) > JSON(レガシー)
 var key = ThirdPartyLicenseProvider.GetSyncfusionKey("uiEdition");
 
-// Edition を指定してライセンス登録�E�推奨�E�E
+// Edition を指定してライセンス登録（推奨）
 ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 
-// Edition 省略時�E uiEdition がデフォルチE
+// Edition 省略時は uiEdition がデフォルト
 ThirdPartyLicenseProvider.RegisterSyncfusion();
 ```
 
@@ -1827,23 +1825,23 @@ protected override void OnStartup(StartupEventArgs e)
 {
     base.OnStartup(e);
 
-    // Syncfusion ライセンス登録�E�Edition 持E��！E
+    // Syncfusion ライセンス登録（Edition 指定）
     ThirdPartyLicenseProvider.RegisterSyncfusion("uiEdition");
 
     // ...
 }
 ```
 
-### チェチE��リスチE
+### チェックリスト
 
-- [ ] App.xaml.cs の OnStartup で `ThirdPartyLicenseProvider.RegisterSyncfusion()` を呼んでぁE��
-- [ ] 正しい Edition を指定してぁE���E�現在の全製品�E `uiEdition`�E�E
-- [ ] キーがハードコーチE*のみ**で管琁E��れて**ぁE��ぁE*�E�ESON読み込み優先！E
+- [ ] App.xaml.cs の OnStartup で `ThirdPartyLicenseProvider.RegisterSyncfusion()` を呼んでいる
+- [ ] 正しい Edition を指定している（現在の全製品は `uiEdition`）
+- [ ] キーがハードコード**のみ**で管理されて**いない**（JSON読み込み優先）
 
 ---
 
-## 参老E��裁E
+## 参考実装
 
-- **InsightOfficeSheet**: `win-app-insight-sheet` リポジトリ�E�Eyncfusion SfSpreadsheet + ThirdPartyLicenses 統合！E
+- **InsightOfficeSheet**: `win-app-insight-sheet` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
 - **InsightNoCodeAnalyzer**: `win-app-nocode-analyzer` リポジトリ
-- **InsightSlide**: ライセンス画面のリファレンス実裁E
+- **InsightSlide**: ライセンス画面のリファレンス実装
