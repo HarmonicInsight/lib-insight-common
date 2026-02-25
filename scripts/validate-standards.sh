@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 # Insight Series 標準検証スクリプト
-# 新規�Eロジェクト作�E時�EPR作�E時に実行忁E��E
+# 新規�Eロジェクト作�E時�EPR作�E時に実行忁E��E
 #
-# 使ぁE��:
+# 使ぁE��:
 #   ./validate-standards.sh <project-directory>
 #
 
@@ -47,7 +47,7 @@ print_warning() {
     ((WARNINGS++)) || true
 }
 
-# 引数チェチE��
+# 引数チェチE��
 if [ -z "$1" ]; then
     echo "使用方況E $0 <project-directory>"
     echo ""
@@ -58,16 +58,16 @@ fi
 PROJECT_DIR="$1"
 
 if [ ! -d "$PROJECT_DIR" ]; then
-    echo -e "${RED}エラー: チE��レクトリが見つかりません: $PROJECT_DIR${NC}"
+    echo -e "${RED}エラー: チE��レクトリが見つかりません: $PROJECT_DIR${NC}"
     exit 1
 fi
 
 # ============================================================
-# insight-common サブモジュール自動セチE��アチE�E
+# insight-common サブモジュール自動セチE��アチE�E
 # ============================================================
 if [ -f "$PROJECT_DIR/.gitmodules" ] && grep -q "insight-common" "$PROJECT_DIR/.gitmodules" 2>/dev/null; then
     if [ ! -f "$PROJECT_DIR/insight-common/CLAUDE.md" ]; then
-        echo -e "${YELLOW}insight-common サブモジュールを�E期化してぁE��ぁE..${NC}"
+        echo -e "${YELLOW}insight-common サブモジュールを�E期化してぁE��ぁE..${NC}"
         git -C "$PROJECT_DIR" submodule init 2>/dev/null || true
         git -C "$PROJECT_DIR" submodule update --recursive 2>/dev/null || true
     fi
@@ -79,7 +79,7 @@ print_header
 echo "検証対象: $PROJECT_DIR"
 echo ""
 
-# プラチE��フォーム検�E
+# プラチE��フォーム検�E
 detect_platform() {
     if compgen -G "$PROJECT_DIR"/*.csproj > /dev/null 2>&1; then
         echo "csharp"
@@ -101,28 +101,28 @@ detect_platform() {
 }
 
 PLATFORM=$(detect_platform)
-echo "検�Eされた�EラチE��フォーム: $PLATFORM"
+echo "検�Eされた�EラチE��フォーム: $PLATFORM"
 echo ""
 
 # ========================================
-# 1. チE��インシスチE��検証�E��EプラチE��フォーム共通！E
+# 1. チE��インシスチE��検証�E��EプラチE��フォーム共通！E
 # ========================================
-print_section "1" "チE��インシスチE���E�Evory & Gold Theme�E�検証"
+print_section "1" "チE��インシスチE���E�Evory & Gold Theme�E�検証"
 
-# 禁止: Blue (#2563EB) が�Eライマリとして使用されてぁE��
+# 禁止: Blue (#2563EB) が�Eライマリとして使用されてぁE��
 check_blue_primary() {
     local blue_as_primary=$(grep -r "primary.*#2563EB\|#2563EB.*primary\|Primary.*2563EB\|primaryColor.*2563EB" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -5)
 
     if [ -n "$blue_as_primary" ]; then
-        print_error "Blue (#2563EB) が�Eライマリとして使用されてぁE��ぁE
+        print_error "Blue (#2563EB) が�Eライマリとして使用されてぁE��ぁE
         echo "      $blue_as_primary" | head -3
         return 1
     fi
-    print_ok "Blue が�Eライマリとして使用されてぁE��ぁE
+    print_ok "Blue が�Eライマリとして使用されてぁE��ぁE
     return 0
 }
 
-# 忁E��E Gold (#B8942F) が�Eライマリとして使用されてぁE��
+# 忁E��E Gold (#B8942F) が�Eライマリとして使用されてぁE��
 check_gold_primary() {
     local gold_primary=$(grep -r "#B8942F\|B8942F\|0xFFB8942F" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
@@ -130,11 +130,11 @@ check_gold_primary() {
         print_error "Gold (#B8942F) が見つかりません"
         return 1
     fi
-    print_ok "Gold (#B8942F) が使用されてぁE��"
+    print_ok "Gold (#B8942F) が使用されてぁE��"
     return 0
 }
 
-# 忁E��E Ivory背景 (#FAF8F5) が使用されてぁE��
+# 忁E��E Ivory背景 (#FAF8F5) が使用されてぁE��
 check_ivory_background() {
     local ivory=$(grep -r "#FAF8F5\|FAF8F5\|0xFFFAF8F5" "$PROJECT_DIR" --include="*.xaml" --include="*.xml" --include="*.json" --include="*.ts" --include="*.tsx" --include="*.swift" --include="*.kt" --include="*.css" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
@@ -142,7 +142,7 @@ check_ivory_background() {
         print_warning "Ivory背景 (#FAF8F5) が見つかりません"
         return 1
     fi
-    print_ok "Ivory背景 (#FAF8F5) が使用されてぁE��"
+    print_ok "Ivory背景 (#FAF8F5) が使用されてぁE��"
     return 0
 }
 
@@ -151,15 +151,15 @@ check_gold_primary
 check_ivory_background
 
 # ========================================
-# 2. ライセンスシスチE��検証
+# 2. ライセンスシスチE��検証
 # ========================================
-print_section "2" "ライセンスシスチE��検証"
+print_section "2" "ライセンスシスチE��検証"
 
 check_license_manager() {
     local license_file=$(find "$PROJECT_DIR" \( -name "*LicenseManager*" -o -name "*license_manager*" \) -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
 
     if [ -z "$license_file" ]; then
-        print_warning "LicenseManager が見つかりません�E�ユーチE��リチE��アプリの場合�E不要E��E
+        print_warning "LicenseManager が見つかりません�E�ユーチE��リチE��アプリの場合�E不要E��E
         return 1
     fi
     print_ok "LicenseManager: $license_file"
@@ -178,44 +178,367 @@ check_product_code() {
     local found_code=$(grep -rE "($product_codes)" "$PROJECT_DIR" --include="*.cs" --include="*.ts" --include="*.py" --include="*.swift" --include="*.kt" --include="*.json" --exclude-dir=node_modules --exclude-dir=insight-common 2>/dev/null | head -1)
 
     if [ -z "$found_code" ]; then
-        print_warning "登録済み製品コードが見つかりません�E�新規製品�E場合�E config/products.ts に登録してください�E�E
+        print_warning "登録済み製品コードが見つかりません�E�新規製品�E場合�E config/products.ts に登録してください�E�E
         return 1
     fi
-    print_ok "製品コードが使用されてぁE��"
+    print_ok "製品コードが使用されてぁE��"
     return 0
 }
 
 check_product_code || true
 
 # ========================================
-# 4. Android 固有検証
+# 4. C# (WPF) 固有検証
+# ========================================
+if [ "$PLATFORM" = "csharp" ]; then
+    echo ""
+    print_section "4" "C# (WPF) 固有チェック"
+
+    # 4.1 Colors.xaml の存在確認
+    colors_xaml=$(find "$PROJECT_DIR" -name "Colors.xaml" -not -path "*/bin/*" -not -path "*/obj/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
+    if [ -n "$colors_xaml" ]; then
+        print_ok "Colors.xaml が存在: $colors_xaml"
+    else
+        print_error "Colors.xaml が見つかりません（Themes/Colors.xaml を作成してください）"
+    fi
+
+    # 4.2 Styles.xaml の存在確認
+    styles_xaml=$(find "$PROJECT_DIR" -name "Styles.xaml" -not -path "*/bin/*" -not -path "*/obj/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
+    if [ -n "$styles_xaml" ]; then
+        print_ok "Styles.xaml が存在: $styles_xaml"
+    else
+        print_warning "Styles.xaml が見つかりません（Themes/Styles.xaml を作成してください）"
+    fi
+
+    # 4.3 XAML ファイル内のハードコードされた色をチェック
+    echo ""
+    print_section "4.3" "ハードコードされた色のチェック"
+
+    # Colors.xaml を除外してハードコードされた色を検索
+    hardcoded_colors=$(grep -rE '(Background|Foreground|Fill|Stroke|BorderBrush)="#[0-9A-Fa-f]{6}"' "$PROJECT_DIR" \
+        --include="*.xaml" \
+        --exclude="Colors.xaml" \
+        --exclude-dir=bin \
+        --exclude-dir=obj \
+        --exclude-dir=insight-common \
+        2>/dev/null | grep -v "<!--" | head -10)
+
+    if [ -n "$hardcoded_colors" ]; then
+        print_error "ハードコードされた色が見つかりました（StaticResource を使用してください）:"
+        echo "$hardcoded_colors" | while read -r line; do
+            echo "      $line"
+        done | head -5
+        echo "      ... (最初の5件を表示)"
+    else
+        print_ok "ハードコードされた色なし（StaticResource が使用されています）"
+    fi
+
+    # SolidColorBrush の Color 属性もチェック（x:Key がないもの）
+    hardcoded_brush=$(grep -rE '<SolidColorBrush[^>]*Color="#[0-9A-Fa-f]{6}"' "$PROJECT_DIR" \
+        --include="*.xaml" \
+        --exclude="Colors.xaml" \
+        --exclude-dir=bin \
+        --exclude-dir=obj \
+        --exclude-dir=insight-common \
+        2>/dev/null | grep -v "x:Key" | grep -v "<!--" | head -5)
+
+    if [ -n "$hardcoded_brush" ]; then
+        print_error "インライン SolidColorBrush が見つかりました（Colors.xaml でリソースとして定義してください）:"
+        echo "$hardcoded_brush" | while read -r line; do
+            echo "      $line"
+        done | head -3
+    else
+        print_ok "インライン SolidColorBrush なし"
+    fi
+
+    # 4.4 Syncfusion 内部スタイルの上書きチェック
+    echo ""
+    print_section "4.4" "Syncfusion コンポーネントの不正な上書きチェック"
+
+    syncfusion_override=$(grep -rE '(syncfusion:|sf:)[A-Za-z]+\.(Resources|Style)>' "$PROJECT_DIR" \
+        --include="*.xaml" \
+        --exclude-dir=bin \
+        --exclude-dir=obj \
+        --exclude-dir=insight-common \
+        2>/dev/null | head -5)
+
+    if [ -n "$syncfusion_override" ]; then
+        print_warning "Syncfusion コンポーネントの内部リソース/スタイル上書きが検出されました:"
+        echo "$syncfusion_override" | while read -r line; do
+            echo "      $line"
+        done
+        echo "      → Syncfusion のテーマ設定または SfSkinManager を使用してください"
+    else
+        print_ok "Syncfusion 内部スタイルの不正な上書きなし"
+    fi
+
+    # 4.5 App.xaml での ResourceDictionary 登録確認
+    app_xaml=$(find "$PROJECT_DIR" -name "App.xaml" -not -path "*/bin/*" -not -path "*/obj/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
+    if [ -n "$app_xaml" ]; then
+        if grep -q "Colors.xaml" "$app_xaml" 2>/dev/null; then
+            print_ok "App.xaml: Colors.xaml が登録されています"
+        else
+            print_warning "App.xaml: Colors.xaml が MergedDictionaries に登録されていません"
+        fi
+
+        if grep -q "Styles.xaml" "$app_xaml" 2>/dev/null; then
+            print_ok "App.xaml: Styles.xaml が登録されています"
+        else
+            print_warning "App.xaml: Styles.xaml が MergedDictionaries に登録されていません"
+        fi
+    else
+        print_warning "App.xaml が見つかりません"
+    fi
+
+    # 4.6 Syncfusion ライセンス登録確認
+    app_cs=$(find "$PROJECT_DIR" -name "App.xaml.cs" -not -path "*/bin/*" -not -path "*/obj/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
+    if [ -n "$app_cs" ]; then
+        if grep -q "ThirdPartyLicenseProvider\|RegisterSyncfusion\|SyncfusionLicenseProvider" "$app_cs" 2>/dev/null; then
+            print_ok "App.xaml.cs: Syncfusion ライセンス登録が実装されています"
+        else
+            print_warning "App.xaml.cs: Syncfusion ライセンス登録が見つかりません"
+        fi
+    fi
+
+    # 4.7 .NET バージョン確認
+    csproj_file=$(find "$PROJECT_DIR" -name "*.csproj" -not -path "*/bin/*" -not -path "*/obj/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
+    if [ -n "$csproj_file" ]; then
+        target_framework=$(grep -o '<TargetFramework>[^<]*</TargetFramework>' "$csproj_file" 2>/dev/null | head -1)
+        if echo "$target_framework" | grep -qE "net8\.0|net9\.0"; then
+            print_ok ".csproj: $target_framework"
+        elif [ -n "$target_framework" ]; then
+            print_warning ".csproj: $target_framework（net8.0 以上を推奨）"
+        fi
+    fi
+
+    # 4.8 タイトルバーコンポーネント標準チェック
+    echo ""
+    print_section "4.8" "タイトルバーコンポーネント標準チェック"
+
+    main_window=$(find "$PROJECT_DIR" -name "MainWindow.xaml" -not -path "*/bin/*" -not -path "*/obj/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
+    if [ -n "$main_window" ]; then
+        # ブランド名 "InsightOffice" のチェック
+        if grep -qE 'Text="InsightOffice"' "$main_window" 2>/dev/null; then
+            print_ok "ブランド名: \"InsightOffice\" が存在"
+        else
+            print_warning "ブランド名: \"InsightOffice\" が見つかりません"
+        fi
+
+        # 製品名（Sheet/Doc/Slide）のチェック
+        if grep -qE 'Text="(Sheet|Doc|Slide)"' "$main_window" 2>/dev/null || \
+           grep -qE 'ProductName' "$main_window" 2>/dev/null; then
+            print_ok "製品名: Sheet/Doc/Slide 形式"
+        else
+            print_warning "製品名: Sheet/Doc/Slide 形式が見つかりません"
+        fi
+
+        # バージョン表示の形式チェック（v{数字}.{数字}.{数字}）
+        if grep -qE 'Text="v[0-9]+\.[0-9]+\.[0-9]+"' "$main_window" 2>/dev/null || \
+           grep -qE 'StringFormat.*v\{0\}' "$main_window" 2>/dev/null || \
+           grep -qE 'VersionText' "$main_window" 2>/dev/null; then
+            print_ok "バージョン表示: v{MAJOR}.{MINOR}.{PATCH} 形式"
+        else
+            print_warning "バージョン表示: v{MAJOR}.{MINOR}.{PATCH} 形式が見つかりません"
+        fi
+
+        # プランバッジの存在チェック
+        if grep -qE '◀|CurrentPlan|PlanBadge' "$main_window" 2>/dev/null; then
+            print_ok "プランバッジ: 存在"
+        else
+            print_warning "プランバッジ: 見つかりません（◀ {PLAN} 形式を使用）"
+        fi
+
+        # ライセンスボタンの存在チェック
+        if grep -qE '🔑|LicenseCommand|OpenLicenseCommand|ライセンス|License' "$main_window" 2>/dev/null; then
+            print_ok "ライセンスボタン: 存在（🔑 アイコン）"
+        else
+            print_error "ライセンスボタン: 見つかりません（🔑 ライセンス / 🔑 License を使用）"
+        fi
+
+        # 言語切り替えボタンの存在チェック
+        if grep -qE 'LanguageCommand|ToggleLanguage|English|日本語' "$main_window" 2>/dev/null; then
+            print_ok "言語切り替えボタン: 存在"
+        else
+            print_warning "言語切り替えボタン: 見つかりません"
+        fi
+
+        # ブランド名のフォント設定チェック（FontSize=15, SemiBold, PrimaryBrush）
+        brand_style=$(grep -A5 'Text="InsightOffice"' "$main_window" 2>/dev/null | head -6)
+        if echo "$brand_style" | grep -qE 'FontSize="15"'; then
+            print_ok "ブランド名: FontSize=15"
+        else
+            print_warning "ブランド名: FontSize=15 が見つかりません"
+        fi
+
+        if echo "$brand_style" | grep -qE 'FontWeight="SemiBold"'; then
+            print_ok "ブランド名: FontWeight=SemiBold"
+        else
+            print_warning "ブランド名: FontWeight=SemiBold が見つかりません"
+        fi
+
+        if echo "$brand_style" | grep -qE 'Foreground="\{StaticResource PrimaryBrush\}"'; then
+            print_ok "ブランド名: Foreground=PrimaryBrush (Gold)"
+        else
+            print_warning "ブランド名: Foreground={StaticResource PrimaryBrush} が見つかりません"
+        fi
+
+        # 製品名のフォント設定チェック（FontSize=15, Normal, TextSecondaryBrush）
+        product_style=$(grep -A5 -E 'Text="(Sheet|Doc|Slide)"' "$main_window" 2>/dev/null | head -6)
+        if [ -n "$product_style" ]; then
+            if echo "$product_style" | grep -qE 'Foreground="\{StaticResource TextSecondaryBrush\}"'; then
+                print_ok "製品名: Foreground=TextSecondaryBrush (Gray)"
+            else
+                print_warning "製品名: Foreground={StaticResource TextSecondaryBrush} が見つかりません"
+            fi
+        fi
+
+        # バージョンの Margin=12 チェック
+        version_style=$(grep -B2 -A3 -E 'Text="v[0-9]|VersionText' "$main_window" 2>/dev/null | head -8)
+        if echo "$version_style" | grep -qE 'Margin="12'; then
+            print_ok "バージョン: Margin=12"
+        else
+            print_warning "バージョン: Margin=\"12,0,0,0\" が見つかりません"
+        fi
+    else
+        print_warning "MainWindow.xaml が見つかりません"
+    fi
+
+    # 4.9 Syncfusion Ribbon / BackStage 標準チェック
+    echo ""
+    print_section "4.9" "Syncfusion Ribbon / BackStage 標準チェック"
+
+    # Ribbon を使用している XAML ファイルを検索
+    ribbon_xaml=$(grep -rlE '<syncfusion:Ribbon' "$PROJECT_DIR" \
+        --include="*.xaml" \
+        --exclude-dir=bin \
+        --exclude-dir=obj \
+        --exclude-dir=insight-common \
+        2>/dev/null | head -1)
+
+    if [ -n "$ribbon_xaml" ]; then
+        print_ok "Syncfusion Ribbon を使用: $ribbon_xaml"
+
+        # Ribbon に Background 属性がないことを確認
+        ribbon_bg=$(grep -E '<syncfusion:Ribbon[^>]*Background=' "$ribbon_xaml" 2>/dev/null | head -1)
+        if [ -n "$ribbon_bg" ]; then
+            print_error "Ribbon に Background 属性が設定されています（削除してください）:"
+            echo "      $ribbon_bg"
+        else
+            print_ok "Ribbon: Background 属性なし"
+        fi
+
+        # ShowCustomizeRibbon="False" の確認
+        if grep -qE 'ShowCustomizeRibbon="False"' "$ribbon_xaml" 2>/dev/null; then
+            print_ok "Ribbon: ShowCustomizeRibbon=\"False\""
+        else
+            print_warning "Ribbon: ShowCustomizeRibbon=\"False\" が見つかりません"
+        fi
+
+        # EnableSimplifiedLayoutMode="False" の確認
+        if grep -qE 'EnableSimplifiedLayoutMode="False"' "$ribbon_xaml" 2>/dev/null; then
+            print_ok "Ribbon: EnableSimplifiedLayoutMode=\"False\""
+        else
+            print_warning "Ribbon: EnableSimplifiedLayoutMode=\"False\" が見つかりません"
+        fi
+
+        # BackStageHeader の確認
+        if grep -qE 'BackStageHeader=' "$ribbon_xaml" 2>/dev/null; then
+            print_ok "Ribbon: BackStageHeader が設定されています"
+        else
+            print_warning "Ribbon: BackStageHeader が見つかりません（\"ファイル\" を設定）"
+        fi
+
+        # Ribbon.Items でタブがラップされているか確認
+        if grep -qE '<syncfusion:Ribbon\.Items>' "$ribbon_xaml" 2>/dev/null; then
+            print_ok "Ribbon: RibbonTab が Ribbon.Items 内にラップされています"
+        else
+            print_error "Ribbon: <syncfusion:Ribbon.Items> が見つかりません（RibbonTab をラップしてください）"
+        fi
+
+        # Ribbon.Resources の不正な上書きチェック
+        ribbon_resources=$(grep -E '<syncfusion:Ribbon\.Resources>' "$ribbon_xaml" 2>/dev/null | head -1)
+        if [ -n "$ribbon_resources" ]; then
+            print_error "Ribbon: <syncfusion:Ribbon.Resources> による内部スタイル上書きが検出されました（削除してください）"
+        else
+            print_ok "Ribbon: 内部リソースの不正な上書きなし"
+        fi
+
+        # BackStage の存在確認
+        if grep -qE '<syncfusion:Ribbon\.BackStage>' "$ribbon_xaml" 2>/dev/null; then
+            print_ok "Ribbon: BackStage が定義されています"
+
+            # BackStage に Background 属性がないことを確認
+            backstage_bg=$(grep -E '<syncfusion:Backstage[^>]*Background=' "$ribbon_xaml" 2>/dev/null | head -1)
+            if [ -n "$backstage_bg" ]; then
+                print_error "Backstage に Background 属性が設定されています（削除してください）:"
+                echo "      $backstage_bg"
+            else
+                print_ok "Backstage: Background 属性なし"
+            fi
+
+            # Backstage.Resources の不正な上書きチェック
+            backstage_resources=$(grep -E '<syncfusion:Backstage\.Resources>' "$ribbon_xaml" 2>/dev/null | head -1)
+            if [ -n "$backstage_resources" ]; then
+                print_error "Backstage: <syncfusion:Backstage.Resources> による内部スタイル上書きが検出されました（削除してください）"
+            else
+                print_ok "Backstage: 内部リソースの不正な上書きなし"
+            fi
+
+            # 旧 API (RibbonBackStage) の使用チェック
+            old_backstage=$(grep -E '<syncfusion:RibbonBackStage' "$ribbon_xaml" 2>/dev/null | head -1)
+            if [ -n "$old_backstage" ]; then
+                print_warning "旧 API <syncfusion:RibbonBackStage> が使用されています（<syncfusion:Ribbon.BackStage> + <syncfusion:Backstage> を使用）"
+            fi
+
+            # 必須 BackStage コマンドの確認
+            echo ""
+            print_section "4.9.1" "BackStage 必須コマンドチェック"
+
+            for cmd in "新規作成" "開く" "上書き保存" "名前を付けて保存" "印刷" "閉じる"; do
+                if grep -qE "Header=\"$cmd\"" "$ribbon_xaml" 2>/dev/null; then
+                    print_ok "BackStage コマンド: $cmd"
+                else
+                    print_warning "BackStage コマンド: $cmd が見つかりません"
+                fi
+            done
+        else
+            print_warning "Ribbon: BackStage が定義されていません"
+        fi
+    else
+        # Ribbon を使用していない場合はスキップ
+        print_warning "Syncfusion Ribbon が見つかりません（InsightOffice 系アプリでは必須）"
+    fi
+fi
+
+# ========================================
+# 5. Android 固有検証
 # ========================================
 if [ "$PLATFORM" = "android" ]; then
     echo ""
-    print_section "4" "Android 固有チェチE��"
+    print_section "5" "Android 固有チェック"
 
-    # 4.1 Version Catalog
+    # 5.1 Version Catalog
     if [ -f "$PROJECT_DIR/gradle/libs.versions.toml" ]; then
         print_ok "gradle/libs.versions.toml が存在"
 
         agp_ver=$(grep '^agp\s*=' "$PROJECT_DIR/gradle/libs.versions.toml" 2>/dev/null | head -1)
         if [ -n "$agp_ver" ]; then
-            print_ok "AGP バ�Eジョン定義: $agp_ver"
+            print_ok "AGP バ�Eジョン定義: $agp_ver"
         else
-            print_warning "AGP バ�EジョンぁElibs.versions.toml に定義されてぁE��せん"
+            print_warning "AGP バ�EジョンぁElibs.versions.toml に定義されてぁE��せん"
         fi
 
         kotlin_ver=$(grep '^kotlin\s*=' "$PROJECT_DIR/gradle/libs.versions.toml" 2>/dev/null | head -1)
         if [ -n "$kotlin_ver" ]; then
-            print_ok "Kotlin バ�Eジョン定義: $kotlin_ver"
+            print_ok "Kotlin バ�Eジョン定義: $kotlin_ver"
         else
-            print_warning "Kotlin バ�EジョンぁElibs.versions.toml に定義されてぁE��せん"
+            print_warning "Kotlin バ�EジョンぁElibs.versions.toml に定義されてぁE��せん"
         fi
     else
         print_error "gradle/libs.versions.toml が見つかりません"
     fi
 
-    # 4.2 SDK バ�Eジョン
+    # 5.2 SDK バ�Eジョン
     build_file=$(find "$PROJECT_DIR" -name "build.gradle.kts" -path "*/app/*" 2>/dev/null | head -1)
     if [ -z "$build_file" ]; then
         build_file=$(find "$PROJECT_DIR" -name "build.gradle.kts" 2>/dev/null | grep -v '/build/' | head -1)
@@ -255,18 +578,18 @@ if [ "$PLATFORM" = "android" ]; then
         print_warning "app/build.gradle.kts が見つかりません"
     fi
 
-    # 4.3 ProGuard / R8
+    # 5.3 ProGuard / R8
     if [ -n "$build_file" ]; then
         if grep -q "isMinifyEnabled\s*=\s*true" "$build_file" 2>/dev/null; then
             print_ok "ProGuard/R8 が有効 (isMinifyEnabled = true)"
         else
-            print_error "リリースビルドで isMinifyEnabled = true が設定されてぁE��せん"
+            print_error "リリースビルドで isMinifyEnabled = true が設定されてぁE��せん"
         fi
 
         if grep -q "isShrinkResources\s*=\s*true" "$build_file" 2>/dev/null; then
             print_ok "リソース縮小が有効 (isShrinkResources = true)"
         else
-            print_warning "isShrinkResources = true が設定されてぁE��せん"
+            print_warning "isShrinkResources = true が設定されてぁE��せん"
         fi
     fi
 
@@ -276,7 +599,7 @@ if [ "$PLATFORM" = "android" ]; then
         print_warning "proguard-rules.pro が見つかりません"
     fi
 
-    # 4.4 チE�Eマファイル
+    # 5.4 チE�Eマファイル
     color_kt=$(find "$PROJECT_DIR" -name "Color.kt" -path "*/theme/*" 2>/dev/null | head -1)
     if [ -n "$color_kt" ]; then
         if grep -q "InsightPrimaryLight" "$color_kt" 2>/dev/null; then
@@ -293,7 +616,7 @@ if [ "$PLATFORM" = "android" ]; then
         if grep -q "InsightTypography" "$theme_kt" 2>/dev/null; then
             print_ok "Theme.kt: InsightTypography を使用"
         else
-            print_warning "Theme.kt: InsightTypography が参照されてぁE��せん"
+            print_warning "Theme.kt: InsightTypography が参照されてぁE��せん"
         fi
     else
         print_error "ui/theme/Theme.kt が見つかりません"
@@ -310,7 +633,7 @@ if [ "$PLATFORM" = "android" ]; then
         print_error "ui/theme/Type.kt が見つかりません"
     fi
 
-    # 4.5 colors.xml
+    # 5.5 colors.xml
     colors_xml=$(find "$PROJECT_DIR" -name "colors.xml" -path "*/values/*" 2>/dev/null | head -1)
     if [ -n "$colors_xml" ]; then
         if grep -q "B8942F" "$colors_xml" 2>/dev/null; then
@@ -327,7 +650,7 @@ if [ "$PLATFORM" = "android" ]; then
         print_error "res/values/colors.xml が見つかりません"
     fi
 
-    # 4.6 i18n
+    # 5.6 i18n
     strings_ja=$(find "$PROJECT_DIR" -name "strings.xml" -path "*/values/*" ! -path "*/values-*/*" 2>/dev/null | head -1)
     if [ -n "$strings_ja" ]; then
         print_ok "values/strings.xml (日本誁E が存在"
@@ -342,7 +665,7 @@ if [ "$PLATFORM" = "android" ]; then
         print_warning "values-en/strings.xml (英誁E が見つかりません"
     fi
 
-    # 4.7 パッケージ吁E
+    # 5.7 パッケージ吁E
     if [ -n "$build_file" ]; then
         namespace=$(grep 'namespace\s*=' "$build_file" 2>/dev/null | head -1)
         if echo "$namespace" | grep -q "com\.harmonic"; then
@@ -352,7 +675,7 @@ if [ "$PLATFORM" = "android" ]; then
         fi
     fi
 
-    # 4.8 Adaptive Icon
+    # 5.8 Adaptive Icon
     foreground=$(find "$PROJECT_DIR" -name "ic_launcher_foreground.xml" 2>/dev/null | head -1)
     if [ -n "$foreground" ]; then
         if grep -q "B8942F" "$foreground" 2>/dev/null; then
@@ -375,52 +698,52 @@ if [ "$PLATFORM" = "android" ]; then
         print_warning "ic_launcher_background.xml が見つかりません"
     fi
 
-    # 4.9 AAB bundle config
+    # 5.9 AAB bundle config
     if [ -n "$build_file" ]; then
         if grep -q "bundle\s*{" "$build_file" 2>/dev/null; then
-            print_ok "bundle {} ブロチE��が存在�E�EAB 最適化！E
+            print_ok "bundle {} ブロチE��が存在�E�EAB 最適化！E
             if grep -q "enableSplit\s*=\s*true" "$build_file" 2>/dev/null; then
                 print_ok "AAB split 配信が有効"
             else
                 print_warning "AAB split 配信 (enableSplit = true) が見つかりません"
             fi
         else
-            print_error "bundle {} ブロチE��が見つかりません�E�Elay Store の AAB ビルドに忁E��E��E
+            print_error "bundle {} ブロチE��が見つかりません�E�Elay Store の AAB ビルドに忁E��E��E
         fi
     fi
 
-    # 4.10 CI/CD ワークフロー
+    # 5.10 CI/CD ワークフロー
     ci_workflow=$(find "$PROJECT_DIR" -name "build.yml" -path "*/.github/workflows/*" 2>/dev/null | head -1)
     if [ -n "$ci_workflow" ]; then
         print_ok ".github/workflows/build.yml が存在"
         if grep -q "assembleRelease" "$ci_workflow" 2>/dev/null; then
-            print_ok "CI: APK ビルチE(assembleRelease) が設定されてぁE��"
+            print_ok "CI: APK ビルチE(assembleRelease) が設定されてぁE��"
         else
             print_warning "CI: assembleRelease が見つかりません"
         fi
         if grep -q "bundleRelease" "$ci_workflow" 2>/dev/null; then
-            print_ok "CI: AAB ビルチE(bundleRelease) が設定されてぁE��"
+            print_ok "CI: AAB ビルチE(bundleRelease) が設定されてぁE��"
         else
-            print_error "CI: bundleRelease が見つかりません�E�Elay Store 忁E��！E
+            print_error "CI: bundleRelease が見つかりません�E�Elay Store 忁E��！E
         fi
         if grep -q "submodules" "$ci_workflow" 2>/dev/null; then
-            print_ok "CI: submodules が設定されてぁE��"
+            print_ok "CI: submodules が設定されてぁE��"
         else
             if [ -f "$PROJECT_DIR/.gitmodules" ]; then
-                print_warning "CI: サブモジュールが存在するぁEsubmodules: true が設定されてぁE��せん"
+                print_warning "CI: サブモジュールが存在するぁEsubmodules: true が設定されてぁE��せん"
             fi
         fi
     else
         print_warning ".github/workflows/build.yml が見つかりません"
     fi
 
-    # 4.11 Play Store メタチE�Eタ
+    # 5.11 Play Store メタチE�Eタ
     if [ -d "$PROJECT_DIR/fastlane/metadata/android" ]; then
         print_ok "fastlane/metadata/android/ が存在"
         for locale in "ja-JP" "en-US"; do
             locale_dir="$PROJECT_DIR/fastlane/metadata/android/$locale"
             if [ -d "$locale_dir" ]; then
-                print_ok "ストアメタチE�Eタ ($locale) が存在"
+                print_ok "ストアメタチE�Eタ ($locale) が存在"
                 for file in "title.txt" "short_description.txt" "full_description.txt"; do
                     if [ -f "$locale_dir/$file" ]; then
                         print_ok "  $locale/$file が存在"
@@ -429,75 +752,75 @@ if [ "$PLATFORM" = "android" ]; then
                     fi
                 done
             else
-                print_warning "ストアメタチE�Eタ ($locale) が見つかりません"
+                print_warning "ストアメタチE�Eタ ($locale) が見つかりません"
             fi
         done
     else
-        print_warning "fastlane/metadata/android/ が見つかりません�E�Elay Store リリース時に忁E��E��E
+        print_warning "fastlane/metadata/android/ が見つかりません�E�Elay Store リリース時に忁E��E��E
     fi
 
-    # 4.12 Keystore 設宁E
+    # 5.12 Keystore 設宁E
     if [ -f "$PROJECT_DIR/keystore.properties" ] || [ -f "$PROJECT_DIR/keystore.properties.example" ]; then
         print_ok "keystore.properties(.example) が存在"
     else
-        print_warning "keystore.properties が見つかりません�E�リリースビルド�E署名に忁E��E��E
+        print_warning "keystore.properties が見つかりません�E�リリースビルド�E署名に忁E��E��E
     fi
 
-    # 4.13 開発用 keystore�E�上書きインスト�Eル対策！E
+    # 5.13 開発用 keystore�E�上書きインスト�Eル対策！E
     if [ -f "$PROJECT_DIR/app/dev.keystore" ]; then
-        print_ok "app/dev.keystore が存在�E�チーム共有�E debug 署名！E
+        print_ok "app/dev.keystore が存在�E�チーム共有�E debug 署名！E
     else
-        print_warning "app/dev.keystore が見つかりません�E�上書きインスト�Eルに忁E��E E§8.5 参�E�E�E
+        print_warning "app/dev.keystore が見つかりません�E�上書きインスト�Eルに忁E��E E§8.5 参�E�E�E
     fi
 
-    # 4.14 debug signingConfig の確誁E
+    # 5.14 debug signingConfig の確誁E
     local app_gradle="$PROJECT_DIR/app/build.gradle.kts"
     if [ -f "$app_gradle" ]; then
         if grep -q 'getByName("debug")' "$app_gradle" 2>/dev/null && grep -q "dev.keystore" "$app_gradle" 2>/dev/null; then
             print_ok "debug signingConfig ぁEdev.keystore を参照"
         else
-            print_warning "debug signingConfig ぁEdev.keystore を参照してぁE��せん�E�§8.5 参�E�E�E
+            print_warning "debug signingConfig ぁEdev.keystore を参照してぁE��せん�E�§8.5 参�E�E�E
         fi
     fi
 
-    # keystore がリポジトリに含まれてぁE��ぁE��とを確認！Eev.keystore は除外！E
+    # keystore がリポジトリに含まれてぁE��ぁE��とを確認！Eev.keystore は除外！E
     if find "$PROJECT_DIR" \( -name "*.jks" -o -name "*.keystore" \) ! -name "dev.keystore" 2>/dev/null | head -1 | grep -q .; then
         gitignore_file="$PROJECT_DIR/.gitignore"
         if [ -f "$gitignore_file" ]; then
             if grep -q "\.jks" "$gitignore_file" 2>/dev/null && grep -q "\.keystore" "$gitignore_file" 2>/dev/null; then
-                print_ok ".gitignore: release keystore ファイルが除外されてぁE��"
+                print_ok ".gitignore: release keystore ファイルが除外されてぁE��"
             else
-                print_error ".gitignore: *.jks / *.keystore が除外されてぁE��せん"
+                print_error ".gitignore: *.jks / *.keystore が除外されてぁE��せん"
             fi
         fi
     fi
 fi
 
 # ========================================
-# 5. Expo/React Native 固有検証
+# 6. Expo/React Native 固有検証
 # ========================================
 if [ "$PLATFORM" = "expo" ]; then
     echo ""
-    print_section "5" "Expo/React Native 固有チェチE��"
+    print_section "6" "Expo/React Native 固有チェック"
 
-    # 5.1 app.json
+    # 6.1 app.json
     if [ -f "$PROJECT_DIR/app.json" ]; then
         print_ok "app.json が存在"
 
         if grep -q "2563EB" "$PROJECT_DIR/app.json" 2>/dev/null; then
-            print_error "app.json: Blue (#2563EB) が使用されてぁE��ぁE
+            print_error "app.json: Blue (#2563EB) が使用されてぁE��ぁE
         else
-            print_ok "app.json: Blue が使用されてぁE��ぁE
+            print_ok "app.json: Blue が使用されてぁE��ぁE
         fi
 
         if grep -q "B8942F" "$PROJECT_DIR/app.json" 2>/dev/null; then
-            print_ok "app.json: Gold (#B8942F) が使用されてぁE��"
+            print_ok "app.json: Gold (#B8942F) が使用されてぁE��"
         else
             print_warning "app.json: Gold (#B8942F) が見つかりません"
         fi
 
         if grep -q "expo-router" "$PROJECT_DIR/app.json" 2>/dev/null; then
-            print_ok "app.json: expo-router プラグインが設定されてぁE��"
+            print_ok "app.json: expo-router プラグインが設定されてぁE��"
         else
             print_warning "app.json: expo-router プラグインが見つかりません"
         fi
@@ -505,20 +828,20 @@ if [ "$PLATFORM" = "expo" ]; then
         print_error "app.json が見つかりません"
     fi
 
-    # 5.2 eas.json
+    # 6.2 eas.json
     if [ -f "$PROJECT_DIR/eas.json" ]; then
         print_ok "eas.json が存在"
 
         if grep -q '"production"' "$PROJECT_DIR/eas.json" 2>/dev/null; then
-            print_ok "eas.json: production プロファイルが定義されてぁE��"
+            print_ok "eas.json: production プロファイルが定義されてぁE��"
         else
             print_warning "eas.json: production プロファイルが見つかりません"
         fi
     else
-        print_warning "eas.json が見つかりません�E�EAS Build 未設定！E
+        print_warning "eas.json が見つかりません�E�EAS Build 未設定！E
     fi
 
-    # 5.3 package.json 依存関俁E
+    # 6.3 package.json 依存関俁E
     if [ -f "$PROJECT_DIR/package.json" ]; then
         if grep -q '"expo-router"' "$PROJECT_DIR/package.json" 2>/dev/null; then
             print_ok "package.json: expo-router が依存関係にある"
@@ -531,17 +854,17 @@ if [ "$PLATFORM" = "expo" ]; then
         fi
     fi
 
-    # 5.4 lib/colors.ts
+    # 6.4 lib/colors.ts
     colors_ts=$(find "$PROJECT_DIR" -name "colors.ts" -path "*/lib/*" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
     if [ -n "$colors_ts" ]; then
         if grep -q "B8942F" "$colors_ts" 2>/dev/null; then
-            print_ok "lib/colors.ts: Gold (#B8942F) が定義されてぁE��"
+            print_ok "lib/colors.ts: Gold (#B8942F) が定義されてぁE��"
         else
             print_error "lib/colors.ts: Gold (#B8942F) が見つかりません"
         fi
 
         if grep -q "FAF8F5" "$colors_ts" 2>/dev/null; then
-            print_ok "lib/colors.ts: Ivory (#FAF8F5) が定義されてぁE��"
+            print_ok "lib/colors.ts: Ivory (#FAF8F5) が定義されてぁE��"
         else
             print_warning "lib/colors.ts: Ivory (#FAF8F5) が見つかりません"
         fi
@@ -549,34 +872,34 @@ if [ "$PLATFORM" = "expo" ]; then
         # colors.ts ぁEsrc/ 配下にある可能性めE
         colors_ts_alt=$(find "$PROJECT_DIR" -name "colors.ts" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
         if [ -n "$colors_ts_alt" ]; then
-            print_warning "colors.ts ぁElib/ 以外に配置されてぁE��ぁE $colors_ts_alt"
+            print_warning "colors.ts ぁElib/ 以外に配置されてぁE��ぁE $colors_ts_alt"
             if grep -q "B8942F" "$colors_ts_alt" 2>/dev/null; then
-                print_ok "colors.ts: Gold (#B8942F) が定義されてぁE��"
+                print_ok "colors.ts: Gold (#B8942F) が定義されてぁE��"
             else
                 print_error "colors.ts: Gold (#B8942F) が見つかりません"
             fi
         else
-            print_error "lib/colors.ts が見つかりません�E�カラー定義ファイルが忁E��E��E
+            print_error "lib/colors.ts が見つかりません�E�カラー定義ファイルが忁E��E��E
         fi
     fi
 
-    # 5.5 lib/theme.ts
+    # 6.5 lib/theme.ts
     theme_ts=$(find "$PROJECT_DIR" -name "theme.ts" -path "*/lib/*" -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
     if [ -n "$theme_ts" ]; then
         print_ok "lib/theme.ts が存在"
     else
-        print_warning "lib/theme.ts が見つかりません�E�テーマ定義ファイル推奨�E�E
+        print_warning "lib/theme.ts が見つかりません�E�テーマ定義ファイル推奨�E�E
     fi
 
-    # 5.6 lib/license-manager.ts
+    # 6.6 lib/license-manager.ts
     license_ts=$(find "$PROJECT_DIR" \( -name "license-manager.ts" -o -name "licenseManager.ts" \) -not -path "*/node_modules/*" -not -path "*/insight-common/*" 2>/dev/null | head -1)
     if [ -n "$license_ts" ]; then
         print_ok "license-manager.ts が存在"
     else
-        print_warning "license-manager.ts が見つかりません�E�EnsightOffice 製品では忁E��！E
+        print_warning "license-manager.ts が見つかりません�E�EnsightOffice 製品では忁E��！E
     fi
 
-    # 5.7 TypeScript strict mode
+    # 6.7 TypeScript strict mode
     if [ -f "$PROJECT_DIR/tsconfig.json" ]; then
         if grep -q '"strict"\s*:\s*true' "$PROJECT_DIR/tsconfig.json" 2>/dev/null; then
             print_ok "tsconfig.json: strict mode が有効"
@@ -587,18 +910,18 @@ if [ "$PLATFORM" = "expo" ]; then
         print_warning "tsconfig.json が見つかりません"
     fi
 
-    # 5.8 expo-router ファイル構造
+    # 6.8 expo-router ファイル構造
     if [ -d "$PROJECT_DIR/app" ]; then
         if [ -f "$PROJECT_DIR/app/_layout.tsx" ]; then
-            print_ok "app/_layout.tsx が存在�E�Expo-router ルートレイアウト！E
+            print_ok "app/_layout.tsx が存在�E�Expo-router ルートレイアウト！E
         else
             print_warning "app/_layout.tsx が見つかりません"
         fi
     else
-        print_warning "app/ チE��レクトリが見つかりません�E�Expo-router 構造ではなぁE��能性�E�E
+        print_warning "app/ チE��レクトリが見つかりません�E�Expo-router 構造ではなぁE��能性�E�E
     fi
 
-    # 5.9 パッケージ吁E
+    # 6.9 パッケージ吁E
     if [ -f "$PROJECT_DIR/app.json" ]; then
         expo_package=$(grep -o '"package"\s*:\s*"[^"]*"' "$PROJECT_DIR/app.json" 2>/dev/null | head -1)
         if echo "$expo_package" | grep -q "com\.harmonicinsight"; then
@@ -627,25 +950,25 @@ if [ $WARNINGS -gt 0 ]; then
 fi
 
 if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
-    echo -e "${GREEN}すべてのチェチE��に合格しました�E�E{NC}"
+    echo -e "${GREEN}すべてのチェチE��に合格しました�E�E{NC}"
 fi
 
 echo ""
 
 if [ "$PLATFORM" = "android" ]; then
-    echo -e "参�E: ${BLUE}insight-common/standards/ANDROID.md${NC}"
-    echo -e "チE��プレーチE ${BLUE}insight-common/templates/android/${NC}"
+    echo -e "参�E: ${BLUE}insight-common/standards/ANDROID.md${NC}"
+    echo -e "チE��プレーチE ${BLUE}insight-common/templates/android/${NC}"
 elif [ "$PLATFORM" = "expo" ]; then
-    echo -e "参�E: ${BLUE}insight-common/standards/ANDROID.md §13${NC}"
-    echo -e "チE��プレーチE ${BLUE}insight-common/templates/expo/${NC}"
+    echo -e "参�E: ${BLUE}insight-common/standards/ANDROID.md §13${NC}"
+    echo -e "チE��プレーチE ${BLUE}insight-common/templates/expo/${NC}"
 else
-    echo -e "参�E: ${BLUE}insight-common/standards/README.md${NC}"
+    echo -e "参�E: ${BLUE}insight-common/standards/README.md${NC}"
 fi
 echo ""
 
-# 終亁E��ーチE
+# 終亁E��ーチE
 if [ $ERRORS -gt 0 ]; then
-    echo -e "${RED}標準に準拠してぁE��せん。修正してください、E{NC}"
+    echo -e "${RED}標準に準拠してぁE��せん。修正してください、E{NC}"
     exit 1
 fi
 

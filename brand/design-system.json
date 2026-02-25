@@ -140,5 +140,94 @@
     },
     "strokeWidth": 1.5,
     "style": "outline"
+  },
+  "components": {
+    "titleBar": {
+      "height": "48px",
+      "background": "#F3F0EB",
+      "backgroundBrush": "BgSecondaryBrush",
+      "borderBottom": "none",
+      "elements": {
+        "brandName": {
+          "text": "InsightOffice",
+          "fontSize": "15px",
+          "fontWeight": 600,
+          "color": "#B8942F",
+          "colorBrush": "PrimaryBrush",
+          "marginLeft": "16px"
+        },
+        "productName": {
+          "format": "{ProductName}",
+          "examples": ["Sheet", "Doc", "Slide"],
+          "fontSize": "15px",
+          "fontWeight": 400,
+          "color": "#57534E",
+          "colorBrush": "TextSecondaryBrush",
+          "marginLeft": "4px"
+        },
+        "version": {
+          "format": "v{MAJOR}.{MINOR}.{PATCH}",
+          "examples": ["v2.1.0", "v1.0.0"],
+          "fontSize": "11px",
+          "fontWeight": 400,
+          "color": "#A8A29E",
+          "colorBrush": "TextTertiaryBrush",
+          "marginLeft": "12px"
+        },
+        "planBadge": {
+          "format": "◀ {PLAN}",
+          "values": ["TRIAL", "STD", "PRO", "ENT"],
+          "fontSize": "11px",
+          "fontWeight": 600,
+          "textColor": "#8C711E",
+          "textColorBrush": "TextAccentBrush",
+          "backgroundColor": "#F0E6C8",
+          "backgroundBrush": "PrimaryLightBrush",
+          "borderRadius": "4px",
+          "padding": "2px 8px",
+          "marginLeft": "12px"
+        },
+        "licenseButton": {
+          "icon": "🔑",
+          "iconUnicode": "U+1F511",
+          "text": {
+            "ja": "ライセンス",
+            "en": "License"
+          },
+          "format": "{icon} {text}",
+          "fontSize": "14px"
+        },
+        "settingsButton": {
+          "icon": "⚙",
+          "iconUnicode": "U+2699",
+          "text": {
+            "ja": "設定",
+            "en": "Settings"
+          },
+          "format": "{icon} {text}",
+          "optional": true
+        },
+        "languageToggle": {
+          "displayOpposite": true,
+          "values": {
+            "ja": "English",
+            "en": "日本語"
+          }
+        },
+        "windowControls": {
+          "minimize": "─",
+          "maximize": "□",
+          "close": "×",
+          "width": "46px",
+          "height": "32px",
+          "closeHoverBackground": "#DC2626",
+          "closeHoverForeground": "#FFFFFF"
+        }
+      },
+      "layout": {
+        "leftSection": ["brandName", "productName", "version", "planBadge"],
+        "rightSection": ["settingsButton", "languageToggle", "licenseButton", "windowControls"]
+      }
+    }
   }
 }

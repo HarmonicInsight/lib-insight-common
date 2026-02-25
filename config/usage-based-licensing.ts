@@ -358,12 +358,11 @@ export function getAllowedModels(tier: AiModelTier): string[] {
   // ai-assistant.ts の MODEL_REGISTRY と同期が保たれる前提
   // （実行時はアプリ側で getAvailableModelsForTier() を推奨）
   const standardModels = [
-    'claude-haiku-4-5-20251001',
+    'claude-3-5-haiku-20241022',
     'claude-sonnet-4-20250514',
-    'claude-sonnet-4-6-20260210',
   ];
   if (tier === 'premium') {
-    return [...standardModels, 'claude-opus-4-6-20260131'];
+    return [...standardModels, 'claude-opus-4-20250514'];
   }
   return standardModels;
 }
