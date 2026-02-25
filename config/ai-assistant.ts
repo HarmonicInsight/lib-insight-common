@@ -40,6 +40,10 @@ import {
   isDeepStorageEnabled,
   MEMORY_LIMITS_BY_PLAN,
 } from './ai-memory';
+import {
+  type ResolvedDocumentCache,
+  createEmptyResolvedCache,
+} from './document-cache';
 
 // =============================================================================
 // 型定義
@@ -1981,7 +1985,8 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
  *
  * @example
  * ```typescript
- * const systemPrompt = buildEnhancedSystemPrompt({
+ * // 基本的な使い方（メモリのみ）
+ * const result = buildEnhancedSystemPrompt({
  *   product: 'IOSH',
  *   plan: 'PRO',
  *   userMessage: '今月の仕訳を準備してください',
@@ -1989,6 +1994,17 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
  *   locale: 'ja',
  * });
  * // → ベースプロンプト + Finance: journal-entry-prep スキル + メモリコンテキスト
+ *
+ * // ドキュメントキャッシュ付き（before_ai_chat で解決済み）
+ * const result = buildEnhancedSystemPrompt({
+ *   product: 'IOSH',
+ *   plan: 'PRO',
+ *   userMessage: 'A列の売上データを分析して',
+ *   hotCache: loadedHotCache,
+ *   documentCache: resolvedCache,  // ← document-cache.ts の ResolvedDocumentCache
+ *   locale: 'ja',
+ * });
+ * // → ベースプロンプト + スキル + メモリ + ドキュメント内容 + コマンド一覧
  * ```
  */
 export function buildEnhancedSystemPrompt(params: {
@@ -1996,14 +2012,16 @@ export function buildEnhancedSystemPrompt(params: {
   plan: PlanCode;
   userMessage: string;
   hotCache?: HotCache | null;
+  documentCache?: ResolvedDocumentCache | null;
   locale?: 'ja' | 'en';
 }): {
   systemPrompt: string;
   activeSkills: SkillDefinition[];
   detectedContext: TaskContext;
   memoryEnabled: boolean;
+  documentCacheUsed: boolean;
 } {
-  const { product, plan, userMessage, hotCache, locale = 'ja' } = params;
+  const { product, plan, userMessage, hotCache, documentCache, locale = 'ja' } = params;
 
   // 1. ベースシステムプロンプト
   const basePrompt = getBaseSystemPrompt(product, locale);
@@ -2023,6 +2041,10 @@ export function buildEnhancedSystemPrompt(params: {
   if (memoryEnabled && hotCache && hotCache.entries.length > 0) {
     memoryContext = formatMemoryForPrompt(hotCache, locale);
   }
+
+  // 5.5. ドキュメントキャッシュ（document-cache.ts で事前解決済み）
+  const resolvedCache = documentCache ?? createEmptyResolvedCache();
+  const documentCacheUsed = resolvedCache.available && resolvedCache.promptText.length > 0;
 
   // 6. 利用可能コマンド一覧（PRO+ のみ表示）
   const availableCommands = getAvailableCommands(product, plan);
@@ -2045,6 +2067,7 @@ export function buildEnhancedSystemPrompt(params: {
       : '\n\n[User Context (Memory)]\nThe following is organizational context for this user. Reference it when responding:';
     parts.push(memoryHeader + '\n' + memoryContext);
   }
+  if (documentCacheUsed) parts.push(resolvedCache.promptText);
   if (commandsInfo) parts.push(commandsInfo);
 
   return {
@@ -2052,6 +2075,7 @@ export function buildEnhancedSystemPrompt(params: {
     activeSkills,
     detectedContext,
     memoryEnabled,
+    documentCacheUsed,
   };
 }
 
@@ -2143,7 +2167,7 @@ export default {
   // クレジット表示
   getAiCreditLabel,
 
-  // スキル + メモリ統合（Anthropic Plugins アーキテクチャ）
+  // スキル + メモリ + ドキュメントキャッシュ統合（Anthropic Plugins アーキテクチャ）
   buildEnhancedSystemPrompt,
   getMemoryStatus,
 };

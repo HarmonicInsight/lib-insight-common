@@ -41,10 +41,15 @@
  * │   └── files/                   # 添付ファイル本体
  * │       ├── ref_001.pdf
  * │       └── ref_002.png
- * └── scripts/                     # Python スクリプト
- *     ├── index.json               # スクリプトインデックス
- *     └── files/
- *         └── script_001.py
+ * ├── scripts/                     # Python スクリプト
+ * │   ├── index.json               # スクリプトインデックス
+ * │   └── files/
+ * │       └── script_001.py
+ * └── ai_cache/                    # ドキュメントキャッシュ（AI 用）
+ *     ├── index.json               # キャッシュインデックス
+ *     └── chunks/                  # 解析結果チャンク
+ *         ├── chunk_001.json
+ *         └── chunk_002.json
  * ```
  *
  * ## 対象製品
@@ -85,6 +90,7 @@
  * - csharp/InsightCommon/ProjectFile/FileLockManager.cs — ロック管理
  * - csharp/InsightCommon/ProjectFile/CollaborationFileManager.cs — コラボデータ管理
  * - csharp/InsightCommon/ProjectFile/CollaborationModels.cs — データモデル
+ * - config/document-cache.ts — ドキュメントキャッシュ（ai_cache/ ディレクトリ）
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -164,6 +170,13 @@ export const PROJECT_FILE_PATHS = {
   SCRIPTS_INDEX: 'scripts/index.json',
   /** スクリプトファイルディレクトリ */
   SCRIPTS_FILES_DIR: 'scripts/files/',
+
+  // --- ドキュメントキャッシュ（config/document-cache.ts と同期） ---
+
+  /** キャッシュインデックス */
+  AI_CACHE_INDEX: 'ai_cache/index.json',
+  /** キャッシュチャンクディレクトリ */
+  AI_CACHE_CHUNKS_DIR: 'ai_cache/chunks/',
 
 } as const;
 
@@ -614,6 +627,7 @@ export const OPTIONAL_ENTRIES = [
   PROJECT_FILE_PATHS.HISTORY_INDEX,
   PROJECT_FILE_PATHS.REFERENCES_INDEX,
   PROJECT_FILE_PATHS.SCRIPTS_INDEX,
+  PROJECT_FILE_PATHS.AI_CACHE_INDEX,
 ] as const;
 
 /** バリデーション結果 */
