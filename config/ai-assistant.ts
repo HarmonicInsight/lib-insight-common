@@ -201,14 +201,14 @@ export interface ModelDefinition {
 export const MODEL_REGISTRY: ModelDefinition[] = [
   // --- Haiku ---
   {
-    id: 'claude-haiku-4-5-20251001',
+    id: 'claude-3-5-haiku-20241022',
     family: 'haiku',
-    displayName: 'Haiku 4.5',
-    version: '4.5',
-    releaseDate: '2025-10-01',
+    displayName: 'Haiku 3.5',
+    version: '3.5',
+    releaseDate: '2024-10-22',
     minimumTier: 'standard',
-    inputPer1M: 1,
-    outputPer1M: 5,
+    inputPer1M: 0.25,
+    outputPer1M: 1.25,
     maxContextTokens: 200_000,
     icon: '⚡',
     status: 'active',
@@ -228,32 +228,17 @@ export const MODEL_REGISTRY: ModelDefinition[] = [
     maxContextTokens: 200_000,
     icon: '⭐',
     status: 'active',
+    isDefaultForTier: 'standard',
     descriptionJa: '万能バランス型。編集・要約・翻訳に最適',
     descriptionEn: 'Versatile and balanced. Great for editing, summaries, and translations.',
   },
-  {
-    id: 'claude-sonnet-4-6-20260210',
-    family: 'sonnet',
-    displayName: 'Sonnet 4.6',
-    version: '4.6',
-    releaseDate: '2026-02-10',
-    minimumTier: 'standard',
-    inputPer1M: 3,
-    outputPer1M: 15,
-    maxContextTokens: 200_000,
-    icon: '⭐',
-    status: 'active',
-    isDefaultForTier: 'standard',
-    descriptionJa: '最新の万能型。Sonnet 4 の後継。コンピュータ操作も人間レベル',
-    descriptionEn: 'Latest balanced model. Successor to Sonnet 4. Human-level computer use.',
-  },
   // --- Opus ---
   {
-    id: 'claude-opus-4-6-20260131',
+    id: 'claude-opus-4-20250514',
     family: 'opus',
-    displayName: 'Opus 4.6',
-    version: '4.6',
-    releaseDate: '2026-01-31',
+    displayName: 'Opus 4',
+    version: '4',
+    releaseDate: '2025-05-14',
     minimumTier: 'premium',
     inputPer1M: 15,
     outputPer1M: 75,
@@ -326,7 +311,7 @@ export function getDefaultModelForTier(tier: AiModelTier): string {
   const available = getAvailableModelsForTier(tier);
   if (available.length === 0) {
     // 最終フォールバック
-    return tier === 'premium' ? 'claude-opus-4-6-20260131' : 'claude-sonnet-4-6-20260210';
+    return tier === 'premium' ? 'claude-opus-4-20250514' : 'claude-sonnet-4-20250514';
   }
 
   // リリース日が最新のものを返す
@@ -373,11 +358,11 @@ export function resolveModel(
  *
  * @example
  * ```typescript
- * getModelSelectionLabel('claude-sonnet-4-6-20260210', 'ja');
- * // → "⭐ Sonnet 4.6（デフォルト）"
- *
  * getModelSelectionLabel('claude-sonnet-4-20250514', 'ja');
- * // → "⭐ Sonnet 4"
+ * // → "⭐ Sonnet 4（デフォルト）"
+ *
+ * getModelSelectionLabel('claude-3-5-haiku-20241022', 'ja');
+ * // → "⚡ Haiku 3.5"
  * ```
  */
 export function getModelSelectionLabel(
@@ -469,7 +454,7 @@ const AI_PERSONAS: AiPersona[] = [
     id: 'shunsuke',
     nameJa: 'Claude 俊',
     nameEn: 'Claude Shun',
-    model: MODEL_REGISTRY.find(m => m.family === 'haiku' && m.status === 'active')?.id ?? 'claude-haiku-4-5-20251001',
+    model: MODEL_REGISTRY.find(m => m.family === 'haiku' && m.status === 'active')?.id ?? 'claude-3-5-haiku-20241022',
     themeColor: '#4696DC',
     descriptionJa: '素早く簡潔。軽い確認・ちょっとした修正に最適',
     descriptionEn: 'Quick and concise. Best for quick checks and light edits.',
@@ -1820,7 +1805,7 @@ export function getPersonaGuidance(
  *   locale: 'ja',
  * });
  * // {
- * //   persona: { id: 'manabu', model: 'claude-opus-4-6-20260131', ... },
+ * //   persona: { id: 'manabu', model: 'claude-opus-4-20250514', ... },
  * //   detectedContext: 'full_document_compare',
  * // }
  *
@@ -1830,7 +1815,7 @@ export function getPersonaGuidance(
  *   userMessage: 'SUM関数の使い方は？',
  * });
  * // {
- * //   persona: { id: 'shunsuke', model: 'claude-haiku-4-5-20251001', ... },
+ * //   persona: { id: 'shunsuke', model: 'claude-3-5-haiku-20241022', ... },
  * //   detectedContext: 'simple_chat',
  * // }
  * ```

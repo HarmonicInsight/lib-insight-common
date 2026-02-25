@@ -32,6 +32,18 @@ config/env/.env.*
 *.log
 npm-debug.log*
 
+# Build Doctor reports (regenerate with: ./scripts/build-doctor.sh)
+build_logs/
+
 # Simulation generated data (large files - regenerate with: npx tsx simulation/run-simulation.ts)
 simulation/generated-data/*.jsonl
 simulation/generated-data/simulation-results.json
+
+# Build outputs
+tools/HarmonicTools/publish/
+tools/HarmonicTools/Output/
+tools/HarmonicTools/src/**/bin/
+tools/HarmonicTools/src/**/obj/
+csharp/InsightCommon/bin/
+csharp/InsightCommon/obj/
+

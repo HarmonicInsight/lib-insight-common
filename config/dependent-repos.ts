@@ -1,41 +1,41 @@
 /**
- * insight-common を参照している依存リポジトリの一覧
+ * insight-common を参照してぁE��依存リポジトリの一覧
  *
- * insight-common の main ブランチに変更が push された際、
- * GitHub Actions (.github/workflows/sync-submodule.yml) が
- * 各リポジトリのサブモジュールを自動更新し、PR を作成する。
+ * insight-common の main ブランチに変更ぁEpush された際、E
+ * GitHub Actions (.github/workflows/sync-submodule.yml) ぁE
+ * 吁E��ポジトリのサブモジュールを�E動更新し、PR を作�Eする、E
  *
- * ## 新規リポジトリ追加手順
+ * ## 新規リポジトリ追加手頁E
  * 1. DEPENDENT_REPOS にエントリを追加
- * 2. iconCopy にアイコンのコピー元・先を定義
- * 3. submodulePath が 'insight-common' 以外の場合は明示指定
+ * 2. iconCopy にアイコンのコピ�E允E�E先を定義
+ * 3. submodulePath ぁE'insight-common' 以外�E場合�E明示持E��E
  */
 
 // =============================================================================
 // 型定義
 // =============================================================================
 
-/** アイコンコピー定義 */
+/** アイコンコピ�E定義 */
 export interface IconCopyRule {
-  /** コピー元: insight-common 内の相対パス（brand/icons/generated/ 以下） */
+  /** コピ�E允E insight-common 冁E�E相対パス�E�Erand/icons/generated/ 以下！E*/
   src: string;
-  /** コピー先: アプリリポジトリ内の相対パス */
+  /** コピ�E允E アプリリポジトリ冁E�E相対パス */
   dest: string;
 }
 
 /** 依存リポジトリ定義 */
 export interface DependentRepo {
-  /** GitHub リポジトリ名（HarmonicInsight/ 以下） */
+  /** GitHub リポジトリ名！EarmonicInsight/ 以下！E*/
   repo: string;
-  /** 製品コード（参考情報） */
+  /** 製品コード（参老E��報�E�E*/
   productCode: string;
   /** 製品名 */
   productName: string;
-  /** サブモジュールのパス（デフォルト: 'insight-common'） */
+  /** サブモジュールのパス�E�デフォルチE 'insight-common'�E�E*/
   submodulePath?: string;
-  /** アイコンコピールール */
+  /** アイコンコピ�Eルール */
   iconCopy: IconCopyRule[];
-  /** この同期を有効にするか（false にすると sync 対象外） */
+  /** こ�E同期を有効にするか！Ealse にすると sync 対象外！E*/
   enabled: boolean;
 }
 
@@ -45,7 +45,7 @@ export interface DependentRepo {
 
 export const DEPENDENT_REPOS: DependentRepo[] = [
   // ══════════════════════════════════════════════════════
-  // Tier 1: 業務変革ツール
+  // Tier 1: 業務変革チE�Eル
   // ══════════════════════════════════════════════════════
   {
     repo: 'win-app-nocode-analyzer',
@@ -77,15 +77,15 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // Tier 2: AI活用ツール
+  // Tier 2: AI活用チE�Eル
   // ══════════════════════════════════════════════════════
   {
-    repo: 'win-app-insight-movie-gen',
+    repo: 'win-app-insight-cast',
     productCode: 'INMV',
-    productName: 'InsightMovie',
+    productName: 'InsightCast',
     iconCopy: [
-      { src: 'InsightMovie/InsightMovie.ico', dest: 'resources/InsightMovie.ico' },
-      { src: 'InsightMovie/InsightMovie_256.png', dest: 'resources/InsightMovie_256.png' },
+      { src: 'InsightCast/InsightCast.ico', dest: 'resources/InsightCast.ico' },
+      { src: 'InsightCast/InsightCast_256.png', dest: 'resources/InsightCast_256.png' },
     ],
     enabled: true,
   },
@@ -169,7 +169,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // ユーティリティ
+  // ユーチE��リチE��
   // ══════════════════════════════════════════════════════
   {
     repo: 'win-app-insight-launcher',
@@ -245,7 +245,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // InsightQR（Expo iOS + Android Native Kotlin）
+  // InsightQR�E�Expo iOS + Android Native Kotlin�E�E
   // ══════════════════════════════════════════════════════
   {
     repo: 'web-app-insight-qr',
@@ -273,7 +273,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // コンサルティングツール
+  // コンサルチE��ングチE�Eル
   // ══════════════════════════════════════════════════════
   {
     repo: 'android-app-consul-evaluate',
@@ -292,20 +292,20 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
 ];
 
 // =============================================================================
-// ヘルパー関数
+// ヘルパ�E関数
 // =============================================================================
 
-/** 同期が有効なリポジトリ一覧を取得 */
+/** 同期が有効なリポジトリ一覧を取征E*/
 export function getEnabledRepos(): DependentRepo[] {
   return DEPENDENT_REPOS.filter(r => r.enabled);
 }
 
-/** 製品コードから依存リポジトリを取得 */
+/** 製品コードから依存リポジトリを取征E*/
 export function getReposByProduct(productCode: string): DependentRepo[] {
   return DEPENDENT_REPOS.filter(r => r.productCode === productCode && r.enabled);
 }
 
-/** リポジトリ名から依存リポジトリを取得 */
+/** リポジトリ名から依存リポジトリを取征E*/
 export function getRepoByName(repoName: string): DependentRepo | undefined {
   return DEPENDENT_REPOS.find(r => r.repo === repoName);
 }

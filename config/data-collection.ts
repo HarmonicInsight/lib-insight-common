@@ -1,1310 +1,1312 @@
 /**
- * データ収集プラットフォーム — 型定義・API・テンプレート・マッピング
+ * InsightOfficeSheet データ収集基盤 (Data Collection Platform)
  *
  * ============================================================================
- * 【概要】
+ * 【設計思想】
  * ============================================================================
  *
- * IOSH（InsightOfficeSheet）一体型のエンタープライズデータ収集プラットフォーム。
- * サーバー管理の Excel テンプレートを Named Ranges で DB マッピングし、
- * データ入力・AI 自動転記・AI 検証・送信を IOSH 内で完結させる。
+ * CCH Tagetik / STRAVIS-LINK / Forguncy と同じアーキテクチャパターンを
+ * InsightOfficeSheet (IOSH) の ENT モジュールとして実装する。
  *
- * ## ポジショニング
+ * ## コアコンセプト
  *
- * | 比較軸 | Stravis/Oracle/Tagetik | IOSH データ収集 |
- * |--------|------------------------|-----------------|
- * | クライアント | Excel Add-in / Web | **IOSH ネイティブ（Syncfusion）** |
- * | MS Office | 必要 | **不要** |
- * | データ転記 | 手動コピペ | **AI が既存 Excel から自動転記** |
- * | データ検証 | ルールベースのみ | **AI 文脈検証 + ルールベース** |
- * | オフライン | 不可 | **下書き → 接続回復時に送信** |
- * | 導入コスト | 数千万円〜 | **コンサル案件に組み込み** |
+ * 「Excel のシート自体がフォーム UI。テーブル単位で論理テーブルにマッピング。」
  *
- * ## 技術基盤
+ * - 管理者が Excel 上でテンプレートをデザイン
+ * - Excel Table（ListObject）を JSON ベースの論理テーブルにマッピング
+ * - テンプレートをクライアントに配信
+ * - クライアントが IOSH でデータを入力・提出
+ * - 管理者側で全クライアント分のデータを集約・閲覧
  *
- * - **Syncfusion XlsIO**: セル読み書き・Named Ranges・Data Validation・Sheet Protection
- * - **Syncfusion SfSpreadsheet**: WPF 上の Excel 互換 UI コントロール
- * - **Claude API**: AI 自動転記（セマンティックマッチング）・AI 検証（異常値検出）
- * - **Hono + Supabase**: サーバー側のテンプレート管理・データ格納・回収管理
- * - **顧客別 Supabase プロジェクト**: 顧客ごとにDB環境を物理分離（StravisLINK と同方式）
- * - **DC Admin Console (Next.js)**: 全テナントの一括管理・プロビジョニング・監視
+ * ## RDB ではなく JSON ベースの論理テーブル
  *
- * ## 認証設計（ライトウェイト）
+ * CCH Tagetik は OLAP / RDB にマッピングするが、IOSH では
+ * **JSON ドキュメントベースの論理テーブル** を採用する。
+ * スキーマは管理者が自由に定義でき、固定的な RDB テーブル定義は不要。
+ *
+ * ## アーキテクチャ
  *
  * ```
- * Level 0: 認証なし      → ローカルテンプレートのみ（テスト・小規模利用）
- * Level 1: ライセンスキー → 既存のライセンス基盤を流用（推奨デフォルト）
- * Level 2: ユーザー識別   → メールアドレスで提出者を記録（中堅企業向け）
- * Level 3: SSO           → ENT のみ、企業の認証基盤と連携
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │  管理者（コンサル / SIer / 経営企画）— IOSH ENT                   │
+ * │                                                                  │
+ * │  ① テンプレートデザイナー                                         │
+ * │     ・Excel 上でレイアウト作成（Syncfusion SpreadsheetControl）    │
+ * │     ・Excel Table → 論理テーブルにマッピング                      │
+ * │     ・カラム定義（型・バリデーション・ドロップダウンソース）          │
+ * │     ・セル単位のロック（入力可能セル / 固定セル）                   │
+ * │                                                                  │
+ * │  ② テンプレート公開 → 配信                                       │
+ * │     ・バージョン管理（v1, v2, ...）                               │
+ * │     ・配信先グループ指定（部門・子会社・クライアント企業）           │
+ * │     ・配信ステータスモニタリング                                   │
+ * │                                                                  │
+ * │  ③ データ集約ビュー                                              │
+ * │     ・提出済みデータの一覧・フィルタ・エクスポート                  │
+ * │     ・バリデーションエラーの一覧管理                               │
+ * │     ・承認ワークフロー（draft → submitted → approved / rejected） │
+ * │     ・集約結果を新しい .iosh として出力                            │
+ * └──────────────────┬───────────────────────────────────────────────┘
+ *                     │ 配信（クラウド同期 / ファイル配布）
+ *                     ▼
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │  クライアント端末 — IOSH ENT                                     │
+ * │                                                                  │
+ * │  ④ テンプレートを開く（.iosh プロジェクトファイル内に定義埋込）     │
+ * │     ・入力可能セルのみ編集可能（保護されたテンプレート）             │
+ * │     ・Excel のデータ入力規則 + カスタムバリデーション               │
+ * │     ・ドロップダウンはマスタ論理テーブルからプル                    │
+ * │                                                                  │
+ * │  ⑤ 保存 → 提出                                                  │
+ * │     ・ローカル保存（通常の .iosh 保存）                           │
+ * │     ・提出ボタン → テーブル単位で JSON 抽出 → サーバーに送信       │
+ * │     ・提出前バリデーション（必須チェック・型チェック・ルールチェック） │
+ * └──────────────────┬───────────────────────────────────────────────┘
+ *                     │ 提出（HTTPS → ライセンスサーバー拡張 API）
+ *                     ▼
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │  データストア（Supabase — JSONB カラム）                          │
+ * │                                                                  │
+ * │  dc_templates       テンプレート定義（論理テーブルスキーマ含む）    │
+ * │  dc_distributions   配信レコード（誰に・いつ配信したか）            │
+ * │  dc_submissions     提出データ（JSONB — 論理テーブル単位）         │
+ * │  dc_master_tables   マスタ論理テーブル（ドロップダウンソース等）     │
+ * └──────────────────────────────────────────────────────────────────┘
  * ```
+ *
+ * ## StravisLINK / CCH Tagetik / Forguncy との対比
+ *
+ * | 項目 | Tagetik | STRAVIS-LINK | Forguncy | IOSH Data Collection |
+ * |------|---------|-------------|----------|---------------------|
+ * | フォーム UI | Excel Add-in | Excel ライク Web | Excel ライク Web | IOSH (Syncfusion) |
+ * | マッピング単位 | セル→次元交点 | セル→DB | テーブル→DB | テーブル→論理テーブル |
+ * | データストア | OLAP/RDB | RDB | RDB | JSON (Supabase JSONB) |
+ * | スキーマ | 固定次元 | 固定テーブル | 固定テーブル | 動的 JSON スキーマ |
+ * | Excel 必要 | 要 | 不要(Web) | 不要(Web) | 不要 (Syncfusion) |
+ * | AI 連携 | なし | なし | なし | Claude AI アシスタント |
+ *
+ * ## 新規モジュール追加手順（このファイルで定義済み）
+ * 1. このファイル: 論理テーブル・マッピング・配信・提出の型定義
+ * 2. addon-modules.ts: data_collection モジュール追加
+ * 3. products.ts: IOSH に data_collection フィーチャー追加
+ * 4. ライセンスサーバー: dc_* テーブルの Supabase マイグレーション
+ * 5. IOSH アプリ: テンプレートデザイナー UI + 提出 UI の実装
  */
 
-import type { ProductCode, PlanCode } from './products';
-
 // =============================================================================
-// 認証レベル
+// 型定義 — 論理テーブル（JSON ベース）
 // =============================================================================
-
-/** データ収集の認証レベル */
-export type DataCollectionAuthLevel = 0 | 1 | 2 | 3;
-
-/** 認証レベル定義 */
-export const AUTH_LEVELS: Record<DataCollectionAuthLevel, {
-  name: string;
-  nameJa: string;
-  description: string;
-  descriptionJa: string;
-  recommendedFor: string;
-}> = {
-  0: {
-    name: 'None',
-    nameJa: '認証なし',
-    description: 'Local templates only, no server connection',
-    descriptionJa: 'ローカルテンプレートのみ、サーバー接続なし',
-    recommendedFor: 'テスト・PoC・小規模利用',
-  },
-  1: {
-    name: 'License Key',
-    nameJa: 'ライセンスキー認証',
-    description: 'Reuse existing IOSH license key for server authentication',
-    descriptionJa: '既存の IOSH ライセンスキーでサーバー認証（追加の ID/PW 不要）',
-    recommendedFor: '中小企業（推奨デフォルト）',
-  },
-  2: {
-    name: 'User Identification',
-    nameJa: 'ユーザー識別',
-    description: 'License key + email for tracking who submitted what',
-    descriptionJa: 'ライセンスキー + メールアドレスで提出者を識別（パスワード不要）',
-    recommendedFor: '中堅企業（部門別の回収管理が必要な場合）',
-  },
-  3: {
-    name: 'SSO',
-    nameJa: 'SSO 連携',
-    description: 'Enterprise SSO (SAML/OIDC) integration',
-    descriptionJa: '企業の認証基盤と連携（SAML / OpenID Connect）',
-    recommendedFor: '大企業（ENT プランのみ）',
-  },
-};
-
-// =============================================================================
-// テンプレート定義
-// =============================================================================
-
-/** テンプレートのステータス */
-export type TemplateStatus = 'draft' | 'published' | 'archived';
-
-/** テンプレートの配信スケジュール */
-export type TemplateSchedule = 'once' | 'monthly' | 'quarterly' | 'yearly' | 'custom';
 
 /**
- * データ収集テンプレート
+ * 論理テーブルのカラム型
  *
- * 管理者が Excel で設計した雛形をサーバーに登録する。
- * Named Ranges で入力セルを定義し、DB カラムとマッピングする。
+ * RDB のカラム型ではなく、JSON シリアライズ可能な型のみ。
+ * Excel のセル値から自然に変換可能なもの。
+ */
+export type LogicalColumnType =
+  | 'string'      // テキスト
+  | 'number'      // 数値（整数・小数）
+  | 'integer'     // 整数のみ
+  | 'boolean'     // true/false（チェックボックス）
+  | 'date'        // 日付（ISO 8601: YYYY-MM-DD）
+  | 'datetime'    // 日時（ISO 8601: YYYY-MM-DDTHH:mm:ss）
+  | 'select'      // 選択肢（ドロップダウン — 値はリテラル定義 or マスタ参照）
+  | 'multi_select' // 複数選択（カンマ区切り格納）
+  | 'currency'    // 通貨（数値 + 通貨コード）
+  | 'percentage'  // パーセンテージ（0-1 の小数で格納、表示時に ×100）
+  | 'email'       // メールアドレス
+  | 'url'         // URL
+  | 'file';       // 添付ファイル参照（ファイル名のみ、実体は別管理）
+
+/**
+ * 論理テーブルのカラム定義
+ *
+ * Excel Table の各列に対応。バリデーションルールもここで定義。
+ */
+export interface LogicalColumn {
+  /** カラム ID（テーブル内で一意、英数字 + アンダースコア） */
+  id: string;
+  /** 表示名（日本語） */
+  nameJa: string;
+  /** 表示名（英語） */
+  name: string;
+  /** データ型 */
+  type: LogicalColumnType;
+  /** 必須か */
+  required: boolean;
+  /** デフォルト値（JSON シリアライズ可能な値） */
+  defaultValue?: unknown;
+  /** 説明（日本語） — 入力時のヒントとして表示 */
+  descriptionJa?: string;
+  /**
+   * バリデーションルール
+   *
+   * Excel のデータ入力規則に加えて、提出時にサーバーサイドでも検証される。
+   */
+  validation?: ColumnValidation;
+  /**
+   * ドロップダウンソース（type: 'select' / 'multi_select' のとき）
+   *
+   * - inline: 値を直接定義
+   * - master_table: マスタ論理テーブルの特定カラムから動的に取得
+   */
+  selectSource?: SelectSource;
+  /** カラムが読み取り専用か（自動計算値等） */
+  readOnly?: boolean;
+  /** Excel セルの表示形式（例: "#,##0", "yyyy/mm/dd"） */
+  excelFormat?: string;
+  /** カラムの表示幅（Excel の列幅） */
+  displayWidth?: number;
+}
+
+/** バリデーションルール */
+export interface ColumnValidation {
+  /** 最小値（number / integer / currency / percentage） */
+  min?: number;
+  /** 最大値 */
+  max?: number;
+  /** 最小文字数（string） */
+  minLength?: number;
+  /** 最大文字数 */
+  maxLength?: number;
+  /** 正規表現パターン（string） */
+  pattern?: string;
+  /** パターン不一致時のエラーメッセージ（日本語） */
+  patternErrorJa?: string;
+  /** カスタムバリデーション関数名（ホストアプリで実装） */
+  customValidator?: string;
+  /** ユニーク制約（テーブル内で重複不可） */
+  unique?: boolean;
+}
+
+/** ドロップダウンソース定義 */
+export type SelectSource =
+  | {
+      /** インライン定義: 固定の選択肢リスト */
+      type: 'inline';
+      options: Array<{
+        value: string;
+        labelJa: string;
+        label: string;
+      }>;
+    }
+  | {
+      /** マスタテーブル参照: 別の論理テーブルのカラムから取得 */
+      type: 'master_table';
+      /** マスタ論理テーブル ID */
+      masterTableId: string;
+      /** 値に使うカラム ID */
+      valueColumnId: string;
+      /** 表示に使うカラム ID（省略時は value と同じ） */
+      displayColumnId?: string;
+      /** フィルタ条件（他カラムの値で絞り込む場合） */
+      filterBy?: {
+        masterColumnId: string;
+        sourceColumnId: string;
+      };
+    };
+
+/**
+ * 論理テーブル定義
+ *
+ * 1 つの Excel Table (ListObject) に対応する。
+ * テンプレートには複数の論理テーブルを含めることができる。
+ */
+export interface LogicalTableDefinition {
+  /** テーブル ID（テンプレート内で一意） */
+  id: string;
+  /** テーブル名（日本語） */
+  nameJa: string;
+  /** テーブル名（英語） */
+  name: string;
+  /** テーブルの説明 */
+  descriptionJa?: string;
+  /** カラム定義 */
+  columns: LogicalColumn[];
+  /**
+   * テーブルの種類
+   *
+   * - input: クライアントが入力するメインデータ
+   * - header: テンプレートのヘッダー情報（案件名、担当者等 — 1 行のみ）
+   * - master: マスタデータ（ドロップダウンソース — 読み取り専用）
+   * - summary: 集計テーブル（数式で自動計算 — 読み取り専用）
+   */
+  tableType: 'input' | 'header' | 'master' | 'summary';
+  /** 最大行数の制限（input テーブルのみ。-1 = 無制限） */
+  maxRows?: number;
+  /** 行の追加をクライアントに許可するか（input テーブルのみ） */
+  allowAddRows?: boolean;
+  /** 行の削除をクライアントに許可するか（input テーブルのみ） */
+  allowDeleteRows?: boolean;
+  /** テーブル間リレーション（ヘッダー → 明細 のような親子関係） */
+  parentTableId?: string;
+  /** 親テーブルの外部キーカラム ID */
+  parentKeyColumnId?: string;
+}
+
+// =============================================================================
+// 型定義 — Excel マッピング
+// =============================================================================
+
+/**
+ * Excel Table → 論理テーブル のマッピング定義
+ *
+ * Excel 上の名前付きテーブル（ListObject）と論理テーブルを紐付ける。
+ * テンプレートデザイナーで設定し、.iosh ファイル内に保存される。
+ */
+export interface ExcelTableMapping {
+  /** マッピング ID（テンプレート内で一意） */
+  id: string;
+  /** 対応する論理テーブル ID */
+  logicalTableId: string;
+  /**
+   * Excel 上の名前付きテーブル名（ListObject.Name）
+   *
+   * Syncfusion の IListObject に対応。
+   * 管理者がテンプレート上で Excel Table を作成し、この名前をマッピングに紐付ける。
+   */
+  excelTableName: string;
+  /** Excel テーブルが存在するシート名 */
+  sheetName: string;
+  /** カラムマッピング: 論理カラム ID → Excel 列番号（0-based） */
+  columnMappings: Array<{
+    logicalColumnId: string;
+    excelColumnIndex: number;
+  }>;
+}
+
+/**
+ * ヘッダー領域のセルマッピング（テーブル外の単一セル用）
+ *
+ * テンプレートのヘッダー部分（会社名、報告期間等）のように
+ * テーブル形式ではないセル単位のマッピング。
+ */
+export interface ExcelCellMapping {
+  /** マッピング ID */
+  id: string;
+  /** 対応する論理テーブル ID（通常は header タイプ） */
+  logicalTableId: string;
+  /** 対応する論理カラム ID */
+  logicalColumnId: string;
+  /** シート名 */
+  sheetName: string;
+  /** セルアドレス（例: "B3", "D5"） */
+  cellAddress: string;
+}
+
+// =============================================================================
+// 型定義 — テンプレート
+// =============================================================================
+
+/**
+ * データ収集テンプレート定義
+ *
+ * 管理者が作成するテンプレートの全情報。
+ * .iosh プロジェクトファイル内の `data_collection/template.json` に保存される。
  */
 export interface DataCollectionTemplate {
   /** テンプレート ID（UUID） */
   id: string;
-  /** テンプレート名 */
-  name: string;
   /** テンプレート名（日本語） */
   nameJa: string;
-  /** カテゴリ */
-  category: string;
-  /** 説明 */
-  description?: string;
-  /** 説明（日本語） */
+  /** テンプレート名（英語） */
+  name: string;
+  /** テンプレートの説明 */
   descriptionJa?: string;
-  /** バージョン（テンプレート更新時にインクリメント） */
+  /** バージョン（公開のたびにインクリメント） */
   version: number;
-  /** ステータス */
-  status: TemplateStatus;
-  /** 配信スケジュール */
-  schedule: TemplateSchedule;
-  /** 締切日（ISO 8601、null = 締切なし） */
-  deadline: string | null;
-  /** テンプレート Excel のサーバー上のパス / URL */
-  templateFileUrl: string;
-  /** マッピング定義 */
-  mapping: TemplateMappingDefinition;
-  /** バリデーションルール */
-  validationRules: ValidationRule[];
-  /** シートタブの色（Hex） */
-  tabColor: string;
   /** 作成者 */
   createdBy: string;
-  /** 作成日時 */
+  /** 作成日時（ISO 8601） */
   createdAt: string;
   /** 最終更新日時 */
   updatedAt: string;
-  /** テナント ID（マルチテナント用） */
-  tenantId: string;
-}
-
-// =============================================================================
-// セル ↔ DB マッピング
-// =============================================================================
-
-/** マッピングフィールドの型 */
-export type MappingFieldType = 'string' | 'number' | 'integer' | 'date' | 'boolean' | 'currency' | 'percentage';
-
-/**
- * マッピング定義全体
- *
- * テンプレートの Named Ranges が DB のどのテーブル・カラムに対応するかを定義。
- * Syncfusion XlsIO の IWorkbook.Names でアクセスする。
- */
-export interface TemplateMappingDefinition {
-  /** マッピング定義のバージョン */
-  version: number;
-  /** 格納先テーブル名 */
-  targetTable: string;
-  /** フィールドマッピング一覧 */
-  fields: MappingField[];
-  /** メタデータフィールド（自動付与: 送信者、送信日時等） */
-  autoFields: AutoField[];
-}
-
-/**
- * 個別フィールドのマッピング
- *
- * Excel の Named Range ← → DB カラムの 1:1 対応。
- */
-export interface MappingField {
-  /** Named Range 名（Excel 側の定義名） */
-  namedRange: string;
-  /** DB カラム名 */
-  dbColumn: string;
-  /** 表示名（日本語 — UI 表示用） */
-  labelJa: string;
-  /** 表示名（英語） */
-  label: string;
-  /** データ型 */
-  type: MappingFieldType;
-  /** 必須項目か */
-  required: boolean;
-  /** デフォルト値 */
-  defaultValue?: string | number | boolean;
-  /** 説明（ツールチップ表示） */
-  descriptionJa?: string;
-  /** 小数点以下桁数（number/currency の場合） */
-  decimalPlaces?: number;
-  /** 通貨コード（currency の場合） */
-  currencyCode?: string;
-  /** 日付フォーマット（date の場合） */
-  dateFormat?: string;
+  /** テンプレートのステータス */
+  status: 'draft' | 'published' | 'archived';
+  /** 論理テーブル定義 */
+  logicalTables: LogicalTableDefinition[];
+  /** Excel テーブルマッピング */
+  tableMappings: ExcelTableMapping[];
+  /** セルマッピング（テーブル外のヘッダーセル等） */
+  cellMappings: ExcelCellMapping[];
+  /** 提出時の承認ワークフロー設定 */
+  workflow: WorkflowConfig;
   /**
-   * AI 転記ヒント
+   * 配信設定
    *
-   * AI が転記元 Excel のどの列/セルからデータを探すべきかのヒント。
-   * 例: "売上", "sales", "revenue" → これらのキーワードを含む列を優先的にマッチング。
+   * 回答期限、配信先グループ、リマインダー等。
    */
-  aiTransferHints?: string[];
+  distribution: DistributionConfig;
 }
 
-/**
- * 自動付与フィールド（ユーザー入力不要、システムが自動設定）
- */
-export interface AutoField {
-  /** DB カラム名 */
-  dbColumn: string;
-  /** 自動付与する値のソース */
-  source: 'submitter_email' | 'submitted_at' | 'template_id' | 'template_version' | 'license_key' | 'tenant_id';
+/** 承認ワークフロー設定 */
+export interface WorkflowConfig {
+  /** ワークフロー有効化 */
+  enabled: boolean;
+  /**
+   * ワークフローステップ
+   *
+   * 単純なケース: draft → submitted → approved
+   * 複雑なケース: draft → submitted → reviewed → approved
+   */
+  steps: WorkflowStep[];
 }
 
-// =============================================================================
-// バリデーションルール
-// =============================================================================
-
-/** ルールベースバリデーションの種別 */
-export type ValidationRuleType =
-  | 'required'       // 必須チェック
-  | 'min'            // 最小値
-  | 'max'            // 最大値
-  | 'range'          // 範囲（min〜max）
-  | 'regex'          // 正規表現
-  | 'enum'           // 列挙値
-  | 'cross_field'    // フィールド間整合性（例: 合計 = 内訳の合計）
-  | 'date_range';    // 日付範囲
-
-/**
- * バリデーションルール
- *
- * テンプレートに付属するルールベースの検証。
- * AI 検証はこれに加えて文脈・過去データを考慮した検証を行う。
- */
-export interface ValidationRule {
-  /** ルール ID */
+/** ワークフローステップ定義 */
+export interface WorkflowStep {
+  /** ステップ ID */
   id: string;
-  /** 対象の Named Range（cross_field の場合は最初のフィールド） */
-  targetField: string;
-  /** ルール種別 */
-  type: ValidationRuleType;
-  /** ルールパラメータ（種別により異なる） */
-  params: Record<string, unknown>;
+  /** ステップ名（日本語） */
+  nameJa: string;
+  /** このステップに遷移する前のステータス */
+  fromStatus: SubmissionStatus;
+  /** このステップ完了後のステータス */
+  toStatus: SubmissionStatus;
+  /** 承認者の役割（admin / reviewer） */
+  approverRole: 'admin' | 'reviewer';
+  /** コメント必須か */
+  requireComment: boolean;
+}
+
+/** 配信設定 */
+export interface DistributionConfig {
+  /** 回答期限（ISO 8601 日付） */
+  deadline?: string;
+  /** リマインダー（期限の何日前に通知） */
+  reminderDaysBefore?: number[];
+  /** 期限超過時の通知メッセージ */
+  overdueMessageJa?: string;
+}
+
+// =============================================================================
+// 型定義 — 提出データ
+// =============================================================================
+
+/** 提出ステータス */
+export type SubmissionStatus =
+  | 'draft'       // 下書き（未提出 — ローカルのみ）
+  | 'submitted'   // 提出済み（サーバーに送信済み）
+  | 'reviewing'   // レビュー中
+  | 'approved'    // 承認済み
+  | 'rejected'    // 差し戻し
+  | 'resubmitted'; // 再提出済み
+
+/**
+ * 提出データ
+ *
+ * クライアントが入力したデータをテーブル単位で JSON 化したもの。
+ * サーバーの dc_submissions テーブルに JSONB として保存される。
+ */
+export interface Submission {
+  /** 提出 ID（UUID） */
+  id: string;
+  /** テンプレート ID */
+  templateId: string;
+  /** テンプレートバージョン（どのバージョンに対する提出か） */
+  templateVersion: number;
+  /** 提出者のユーザー ID */
+  submittedBy: string;
+  /** 提出者の組織名（日本語） */
+  organizationJa?: string;
+  /** 提出日時 */
+  submittedAt: string;
+  /** ステータス */
+  status: SubmissionStatus;
+  /**
+   * テーブルデータ
+   *
+   * 論理テーブル ID → 行データ配列 のマップ。
+   * 各行は { [columnId]: value } の JSON オブジェクト。
+   */
+  tableData: Record<string, SubmissionTableData>;
+  /** バリデーション結果 */
+  validationResult?: ValidationResult;
+  /** ワークフロー履歴 */
+  workflowHistory: WorkflowHistoryEntry[];
+  /** 提出者からのコメント */
+  comment?: string;
+}
+
+/** テーブル単位の提出データ */
+export interface SubmissionTableData {
+  /** 論理テーブル ID */
+  logicalTableId: string;
+  /**
+   * 行データの配列
+   *
+   * 各行は { [columnId]: value } の形式。
+   * value は LogicalColumnType に応じた JSON 値:
+   *   string → "テキスト"
+   *   number/integer/currency/percentage → 123.45
+   *   boolean → true/false
+   *   date → "2026-01-15"
+   *   datetime → "2026-01-15T09:30:00"
+   *   select → "option_value"
+   *   multi_select → ["val1", "val2"]
+   */
+  rows: Array<Record<string, unknown>>;
+}
+
+/** バリデーション結果 */
+export interface ValidationResult {
+  /** バリデーション通過したか */
+  valid: boolean;
+  /** エラー一覧 */
+  errors: ValidationError[];
+  /** 警告一覧 */
+  warnings: ValidationWarning[];
+}
+
+/** バリデーションエラー（提出ブロック） */
+export interface ValidationError {
+  /** エラー種別 */
+  type: 'required' | 'type_mismatch' | 'range' | 'pattern' | 'unique' | 'custom';
+  /** 対象テーブル ID */
+  logicalTableId: string;
+  /** 対象カラム ID */
+  columnId: string;
+  /** 対象行番号（0-based） */
+  rowIndex: number;
   /** エラーメッセージ（日本語） */
   messageJa: string;
   /** エラーメッセージ（英語） */
   message: string;
-  /** 重要度（error = 送信ブロック、warning = 警告のみ） */
-  severity: 'error' | 'warning';
+}
+
+/** バリデーション警告（提出はブロックしない） */
+export interface ValidationWarning {
+  /** 警告種別 */
+  type: 'outlier' | 'empty_recommended' | 'format_suggestion';
+  logicalTableId: string;
+  columnId: string;
+  rowIndex: number;
+  messageJa: string;
+  message: string;
+}
+
+/** ワークフロー履歴エントリ */
+export interface WorkflowHistoryEntry {
+  /** アクション */
+  action: 'submit' | 'approve' | 'reject' | 'resubmit' | 'review';
+  /** 実行者 ID */
+  actorId: string;
+  /** 実行者名 */
+  actorName: string;
+  /** 日時 */
+  timestamp: string;
+  /** コメント */
+  comment?: string;
+  /** 遷移前ステータス */
+  fromStatus: SubmissionStatus;
+  /** 遷移後ステータス */
+  toStatus: SubmissionStatus;
 }
 
 // =============================================================================
-// 送信（Submission）
+// 型定義 — マスタ論理テーブル
 // =============================================================================
 
-/** 送信ステータス */
-export type SubmissionStatus = 'draft' | 'submitted' | 'accepted' | 'rejected' | 'pending_review';
-
 /**
- * 送信データ
+ * マスタ論理テーブル
+ *
+ * ドロップダウンの選択肢や参照データを管理する。
+ * テンプレート間で共有可能（組織レベルで定義）。
+ *
+ * 例:
+ * - 部門マスタ: { id: "dept_001", name: "営業部" }
+ * - 勘定科目マスタ: { id: "4100", name: "売上高", category: "収益" }
+ * - ステータスマスタ: { id: "in_progress", name: "進行中" }
  */
-export interface DataCollectionSubmission {
-  /** 送信 ID（UUID） */
+export interface MasterTable {
+  /** マスタテーブル ID */
+  id: string;
+  /** テーブル名（日本語） */
+  nameJa: string;
+  /** テーブル名（英語） */
+  name: string;
+  /** カラム定義 */
+  columns: LogicalColumn[];
+  /** データ行 */
+  rows: Array<Record<string, unknown>>;
+  /** 最終更新日時 */
+  updatedAt: string;
+  /** 作成者 */
+  createdBy: string;
+}
+
+// =============================================================================
+// 型定義 — 配信
+// =============================================================================
+
+/** 配信先 */
+export interface DistributionTarget {
+  /** 配信先 ID（ユーザー ID or グループ ID） */
+  targetId: string;
+  /** 配信先の種類 */
+  targetType: 'user' | 'group' | 'organization';
+  /** 配信先名（日本語） */
+  nameJa: string;
+  /** メールアドレス（通知用） */
+  email?: string;
+}
+
+/** 配信レコード */
+export interface DistributionRecord {
+  /** 配信 ID */
   id: string;
   /** テンプレート ID */
   templateId: string;
-  /** テンプレートバージョン（送信時点） */
+  /** テンプレートバージョン */
   templateVersion: number;
-  /** テナント ID */
-  tenantId: string;
-  /** 送信者メールアドレス */
-  submitterEmail: string;
-  /** 送信者名（Level 2+ の場合） */
-  submitterName?: string;
-  /** ステータス */
-  status: SubmissionStatus;
-  /** 送信データ（フィールド名: 値） */
-  data: Record<string, unknown>;
-  /** 送信日時 */
-  submittedAt: string;
-  /** レビュー日時（accepted/rejected の場合） */
-  reviewedAt?: string;
-  /** レビュアー */
-  reviewedBy?: string;
-  /** 差し戻し理由（rejected の場合） */
-  rejectionReason?: string;
-  /** 送信時コメント */
-  comment?: string;
-  /** AI 検証結果（送信時のスナップショット） */
-  aiValidationSnapshot?: AiValidationResult;
-}
-
-/**
- * AI 検証結果
- */
-export interface AiValidationResult {
-  /** 全項目パスしたか */
-  valid: boolean;
-  /** フィールド別検証結果 */
-  results: AiValidationFieldResult[];
-  /** AI による全体所見 */
-  summary: string;
-  /** エラー数 */
-  errorCount: number;
-  /** 警告数 */
-  warningCount: number;
-  /** 検証実行日時 */
-  validatedAt: string;
-}
-
-/** フィールド別の AI 検証結果 */
-export interface AiValidationFieldResult {
-  /** Named Range 名 */
-  namedRange: string;
-  /** ステータス: pass（緑）/ warning（黄）/ error（赤） */
-  status: 'pass' | 'warning' | 'error';
-  /** 検証メッセージ（日本語） */
-  messageJa: string;
-  /** 検証メッセージ（英語） */
-  message: string;
-  /** 重要度 */
-  severity: 'error' | 'warning' | 'info';
-  /** AI による修正提案値 */
-  suggestedValue?: unknown;
-  /** 比較情報（前月比、前年比等） */
-  comparison?: {
-    label: string;
-    previousValue: unknown;
-    change: string;
-  };
+  /** 配信先 */
+  target: DistributionTarget;
+  /** 配信日時 */
+  distributedAt: string;
+  /** 配信方法 */
+  method: 'cloud_sync' | 'file_export' | 'email_link';
+  /** 回答ステータス */
+  responseStatus: 'not_started' | 'in_progress' | 'submitted' | 'approved';
+  /** 対応する提出 ID（提出後に紐付け） */
+  submissionId?: string;
 }
 
 // =============================================================================
-// AI 自動転記
+// .iosh プロジェクトファイル内の配置
 // =============================================================================
 
 /**
- * AI 転記結果
+ * .iosh プロジェクトファイル内のデータ収集関連パス
  *
- * AI が既存 Excel データを分析し、テンプレートの Named Ranges に
- * セマンティックマッチングで値を転記した結果。
- */
-export interface AiTransferResult {
-  /** 転記成功フィールド */
-  transferred: AiTransferredField[];
-  /** 転記スキップフィールド */
-  skipped: AiSkippedField[];
-  /** 要確認フィールド（confidence < 0.8） */
-  requiresReview: AiReviewField[];
-  /** 転記成功数 */
-  totalTransferred: number;
-  /** スキップ数 */
-  totalSkipped: number;
-  /** 転記実行日時 */
-  transferredAt: string;
-}
-
-/** 転記成功フィールド */
-export interface AiTransferredField {
-  /** テンプレート側の Named Range */
-  namedRange: string;
-  /** 転記元セルのアドレス（例: Sheet1!B5） */
-  sourceCell: string;
-  /** 転記された値 */
-  value: unknown;
-  /** AI のマッチング確信度（0.0〜1.0） */
-  confidence: number;
-  /** マッチング根拠 */
-  reason: string;
-}
-
-/** 転記スキップフィールド */
-export interface AiSkippedField {
-  /** テンプレート側の Named Range */
-  namedRange: string;
-  /** スキップ理由（日本語） */
-  reasonJa: string;
-  /** スキップ理由（英語） */
-  reason: string;
-}
-
-/** 要確認フィールド */
-export interface AiReviewField {
-  /** テンプレート側の Named Range */
-  namedRange: string;
-  /** AI の推定値 */
-  suggestedValue: unknown;
-  /** 確信度 */
-  confidence: number;
-  /** 代替候補 */
-  alternatives: Array<{ value: unknown; sourceCell: string; confidence: number }>;
-  /** 確認理由（日本語） */
-  reviewReasonJa: string;
-}
-
-// =============================================================================
-// シート表示設定（IOSH クライアント側）
-// =============================================================================
-
-/**
- * データ収集シートの表示設定
+ * 既存の PROJECT_FILE_PATHS（project-file.ts）を拡張する形。
  *
- * IOSH のスプレッドシートコントロール（SfSpreadsheet）上で、
- * データ収集テンプレートのシートをどう表示するかを定義。
- */
-export interface DataCollectionSheetStyle {
-  /** シートタブの色（Hex） */
-  tabColor: string;
-  /** 入力セルの背景色（デフォルト: 白） */
-  editableCellBackground: string;
-  /** 非入力セルの背景色（デフォルト: 薄いグレー） */
-  lockedCellBackground: string;
-  /** 入力セルのボーダー色 */
-  editableCellBorder: string;
-  /** 検証結果: OK セルの背景色 */
-  validCellBackground: string;
-  /** 検証結果: 警告セルの背景色 */
-  warningCellBackground: string;
-  /** 検証結果: エラーセルの背景色 */
-  errorCellBackground: string;
-}
-
-/** デフォルトの表示設定 */
-export const DEFAULT_SHEET_STYLE: DataCollectionSheetStyle = {
-  tabColor: '#2563EB',
-  editableCellBackground: '#FFFFFF',
-  lockedCellBackground: '#F8FAFC',
-  editableCellBorder: '#2563EB',
-  validCellBackground: '#F0FDF4',
-  warningCellBackground: '#FFFBEB',
-  errorCellBackground: '#FEF2F2',
-};
-
-// =============================================================================
-// サーバー API エンドポイント
-// =============================================================================
-
-/**
- * データ収集サーバーの API エンドポイント定義
- *
- * ライセンスサーバー（Hono + Supabase）と同じ技術基盤で構築。
- * 同一 Supabase プロジェクト内に dc_ テーブルを追加。サーバーは Railway で独立デプロイ。
- *
- * ```typescript
- * // サーバー側の Supabase 接続例
- * import { createClient } from '@supabase/supabase-js';
- * const supabase = createClient(
- *   process.env.SUPABASE_URL!,
- *   process.env.SUPABASE_SERVICE_ROLE_KEY!  // サーバー側は service_role
- * );
  * ```
+ * report.iosh (ZIP archive)
+ * ├── ... (既存エントリ)
+ * ├── data_collection/
+ * │   ├── template.json        # テンプレート定義（論理テーブル + マッピング）
+ * │   ├── master_tables/       # マスタ論理テーブル（テンプレート同梱分）
+ * │   │   ├── departments.json
+ * │   │   └── accounts.json
+ * │   ├── submission.json      # 入力中の提出データ（ドラフト）
+ * │   └── submission_history/  # 過去の提出履歴
+ * │       ├── index.json
+ * │       └── {submission_id}.json
+ * ```
+ */
+export const DATA_COLLECTION_PATHS = {
+  /** テンプレート定義 */
+  TEMPLATE: 'data_collection/template.json',
+  /** マスタテーブルディレクトリ */
+  MASTER_TABLES_DIR: 'data_collection/master_tables/',
+  /** マスタテーブルファイル（テーブル ID で生成） */
+  masterTableFile: (tableId: string) => `data_collection/master_tables/${tableId}.json`,
+  /** 提出データ（現在のドラフト） */
+  SUBMISSION_DRAFT: 'data_collection/submission.json',
+  /** 提出履歴ディレクトリ */
+  SUBMISSION_HISTORY_DIR: 'data_collection/submission_history/',
+  /** 提出履歴インデックス */
+  SUBMISSION_HISTORY_INDEX: 'data_collection/submission_history/index.json',
+  /** 個別の提出履歴ファイル */
+  submissionFile: (submissionId: string) => `data_collection/submission_history/${submissionId}.json`,
+} as const;
+
+// =============================================================================
+// API エンドポイント（ライセンスサーバー拡張）
+// =============================================================================
+
+/**
+ * データ収集 API エンドポイント
+ *
+ * 既存のライセンスサーバー（license.harmonicinsight.com）に
+ * /api/v1/data-collection/ 以下として追加する。
  */
 export const DATA_COLLECTION_API = {
-  /** デフォルトポート */
-  defaultPort: 9500,
-
-  /** 認証ヘッダー（ライセンスキーを送信） */
-  authHeader: 'X-Insight-License-Key',
-
-  /** ユーザー識別ヘッダー（Level 2+） */
-  userHeader: 'X-Insight-User-Email',
-
-  /** エンドポイント */
+  baseUrl: '/api/v1/data-collection',
   endpoints: {
-    // テンプレート管理
+    // -----------------------------------------------------------------------
+    // テンプレート管理（管理者）
+    // -----------------------------------------------------------------------
     templates: {
-      list: { method: 'GET' as const, path: '/api/templates' },
-      get: { method: 'GET' as const, path: '/api/templates/:templateId' },
-      download: { method: 'GET' as const, path: '/api/templates/:templateId/download' },
-      mapping: { method: 'GET' as const, path: '/api/templates/:templateId/mapping' },
-      create: { method: 'POST' as const, path: '/api/templates' },
-      update: { method: 'PUT' as const, path: '/api/templates/:templateId' },
-      publish: { method: 'POST' as const, path: '/api/templates/:templateId/publish' },
-      archive: { method: 'POST' as const, path: '/api/templates/:templateId/archive' },
+      /** テンプレート一覧取得 */
+      list: { method: 'GET' as const, path: '/templates' },
+      /** テンプレート作成 */
+      create: { method: 'POST' as const, path: '/templates' },
+      /** テンプレート取得 */
+      get: { method: 'GET' as const, path: '/templates/:templateId' },
+      /** テンプレート更新 */
+      update: { method: 'PUT' as const, path: '/templates/:templateId' },
+      /** テンプレート公開（バージョンをインクリメントして publish） */
+      publish: { method: 'POST' as const, path: '/templates/:templateId/publish' },
+      /** テンプレートアーカイブ */
+      archive: { method: 'POST' as const, path: '/templates/:templateId/archive' },
     },
-    // データ送信
+    // -----------------------------------------------------------------------
+    // マスタテーブル管理（管理者）
+    // -----------------------------------------------------------------------
+    masterTables: {
+      /** マスタテーブル一覧 */
+      list: { method: 'GET' as const, path: '/master-tables' },
+      /** マスタテーブル作成 */
+      create: { method: 'POST' as const, path: '/master-tables' },
+      /** マスタテーブル取得 */
+      get: { method: 'GET' as const, path: '/master-tables/:tableId' },
+      /** マスタテーブル更新（行データの更新） */
+      update: { method: 'PUT' as const, path: '/master-tables/:tableId' },
+      /** マスタテーブル削除 */
+      delete: { method: 'DELETE' as const, path: '/master-tables/:tableId' },
+    },
+    // -----------------------------------------------------------------------
+    // 配信管理（管理者）
+    // -----------------------------------------------------------------------
+    distributions: {
+      /** テンプレートを配信 */
+      distribute: { method: 'POST' as const, path: '/templates/:templateId/distribute' },
+      /** 配信状況一覧 */
+      status: { method: 'GET' as const, path: '/templates/:templateId/distribution-status' },
+      /** リマインダー送信 */
+      remind: { method: 'POST' as const, path: '/distributions/:distributionId/remind' },
+    },
+    // -----------------------------------------------------------------------
+    // 提出（クライアント）
+    // -----------------------------------------------------------------------
     submissions: {
-      submit: { method: 'POST' as const, path: '/api/submissions' },
-      list: { method: 'GET' as const, path: '/api/submissions' },
-      get: { method: 'GET' as const, path: '/api/submissions/:submissionId' },
-      review: { method: 'POST' as const, path: '/api/submissions/:submissionId/review' },
-      reject: { method: 'POST' as const, path: '/api/submissions/:submissionId/reject' },
+      /** データ提出 */
+      submit: { method: 'POST' as const, path: '/templates/:templateId/submit' },
+      /** 自分の提出一覧 */
+      mySubmissions: { method: 'GET' as const, path: '/submissions/mine' },
+      /** 提出データ取得 */
+      get: { method: 'GET' as const, path: '/submissions/:submissionId' },
+      /** 再提出 */
+      resubmit: { method: 'PUT' as const, path: '/submissions/:submissionId/resubmit' },
     },
-    // 下書き
-    drafts: {
-      save: { method: 'PUT' as const, path: '/api/drafts/:templateId' },
-      get: { method: 'GET' as const, path: '/api/drafts/:templateId' },
-      list: { method: 'GET' as const, path: '/api/drafts' },
-      delete: { method: 'DELETE' as const, path: '/api/drafts/:templateId' },
+    // -----------------------------------------------------------------------
+    // 集約・承認（管理者）
+    // -----------------------------------------------------------------------
+    review: {
+      /** テンプレートの全提出データ一覧 */
+      listSubmissions: { method: 'GET' as const, path: '/templates/:templateId/submissions' },
+      /** 提出データを承認 */
+      approve: { method: 'POST' as const, path: '/submissions/:submissionId/approve' },
+      /** 提出データを差し戻し */
+      reject: { method: 'POST' as const, path: '/submissions/:submissionId/reject' },
+      /** 集約データのエクスポート（JSON / CSV / Excel） */
+      exportAll: { method: 'GET' as const, path: '/templates/:templateId/export' },
+      /** 集約データを新しい .iosh ファイルとして生成 */
+      exportAsIosh: { method: 'POST' as const, path: '/templates/:templateId/export-iosh' },
     },
-    // 回収管理（管理者用）
-    collection: {
-      status: { method: 'GET' as const, path: '/api/collection/:templateId/status' },
-      remind: { method: 'POST' as const, path: '/api/collection/:templateId/remind' },
-      export: { method: 'GET' as const, path: '/api/collection/:templateId/export' },
-      dashboard: { method: 'GET' as const, path: '/api/collection/dashboard' },
+    // -----------------------------------------------------------------------
+    // バリデーション
+    // -----------------------------------------------------------------------
+    validation: {
+      /** サーバーサイドバリデーション（提出前プレチェック） */
+      validate: { method: 'POST' as const, path: '/templates/:templateId/validate' },
     },
-    // AI 関連
-    ai: {
-      transferHistory: { method: 'GET' as const, path: '/api/ai/transfers' },
-      validationHistory: { method: 'GET' as const, path: '/api/ai/validations' },
-    },
-    // ヘルスチェック
-    health: { method: 'GET' as const, path: '/api/health' },
   },
 } as const;
 
 // =============================================================================
-// インフラストラクチャ — 顧客別 Supabase プロジェクト (PostgreSQL)
+// DB テーブル定義（Supabase）
 // =============================================================================
 
 /**
- * データ収集プラットフォームのインフラ構成
+ * Supabase テーブル定義（マイグレーション参考用）
  *
- * ============================================================================
- * 【テナント分離方式: 顧客ごとに Supabase プロジェクトを作成】
- * ============================================================================
- *
- * StravisLINK と同様に、顧客ごとに独立した DB 環境を提供する。
- * コンサルタントが導入時に顧客用の Supabase プロジェクトをプロビジョニングする。
- *
- * **選定理由**:
- * - コンサル導入が前提 → 顧客追加は手動プロビジョニングで問題ない
- * - 顧客データの完全な物理分離（財務・業務データの混在を回避）
- * - 顧客ごとにバックアップ・リストア・削除が独立
- * - 障害の影響範囲が顧客単位に限定される
- *
- * ```
- * ┌──────────────────────────────────────────────────────────────┐
- * │  管理系（HARMONIC insight 共通）                               │
- * │                                                              │
- * │  ┌────────────────────────────────────────────────────────┐  │
- * │  │  ライセンスサーバー Supabase                             │  │
- * │  │  ├ licenses / partners / registrations                 │  │
- * │  │  └ dc_tenant_registry ← ★ 顧客環境の接続先を管理       │  │
- * │  └────────────────────────────────────────────────────────┘  │
- * │                                                              │
- * │  ┌────────────────────────────────────────────────────────┐  │
- * │  │  データ収集 API サーバー (Hono on Railway)               │  │
- * │  │  ├ テンプレート管理 / データ受信 / AI 転記・検証          │  │
- * │  │  └ ★ リクエストのテナント情報から接続先 DB を切り替え     │  │
- * │  └────────────────────────────────────────────────────────┘  │
- * ├──────────────────────────────────────────────────────────────┤
- * │  顧客環境（顧客ごとに Supabase プロジェクトを作成）            │
- * │                                                              │
- * │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
- * │  │ A社 Supabase │  │ B社 Supabase │  │ C社 Supabase │      │
- * │  │ Project      │  │ Project      │  │ Project      │      │
- * │  │              │  │              │  │              │      │
- * │  │ dc_templates │  │ dc_templates │  │ dc_templates │      │
- * │  │ dc_collected │  │ dc_collected │  │ dc_collected │      │
- * │  │ dc_drafts    │  │ dc_drafts    │  │ dc_drafts    │      │
- * │  │ dc_ai_logs   │  │ dc_ai_logs   │  │ dc_ai_logs   │      │
- * │  │              │  │              │  │              │      │
- * │  │ Storage:     │  │ Storage:     │  │ Storage:     │      │
- * │  │ テンプレート  │  │ テンプレート  │  │ テンプレート  │      │
- * │  │ .xlsx        │  │ .xlsx        │  │ .xlsx        │      │
- * │  └──────────────┘  └──────────────┘  └──────────────┘      │
- * └──────────────────────────────────────────────────────────────┘
- *
- * 導入フロー:
- * 1. コンサルが顧客を受注
- * 2. Supabase プロジェクトを作成（CLI or ダッシュボード）
- * 3. マイグレーション実行（dc_ テーブル作成）
- * 4. dc_tenant_registry に接続情報を登録
- * 5. 顧客の IOSH にライセンスキー + テナント ID を設定
- * ```
- */
-export const DATA_COLLECTION_INFRASTRUCTURE = {
-  /** 物理データベースエンジン */
-  database: {
-    engine: 'PostgreSQL' as const,
-    minVersion: '15',
-    hosting: 'Supabase' as const,
-    /**
-     * テナント分離方式: 顧客ごとに独立した Supabase プロジェクト
-     *
-     * - ライセンスサーバーの Supabase とは別プロジェクト
-     * - コンサル導入時にプロビジョニング
-     * - dc_tenant_registry（管理用 Supabase）で接続先を管理
-     */
-    tenantIsolation: 'project_per_tenant' as const,
-    tablePrefix: 'dc_',
-    requiredExtensions: [] as string[],  // JSONB + GIN は PostgreSQL 標準
-    features: [
-      'JSONB',
-      'GIN Index',
-      'Realtime',
-      'Supabase Storage',
-    ],
-  },
-
-  /** テナントレジストリ（管理用 Supabase に配置） */
-  tenantRegistry: {
-    /** ライセンスサーバーの Supabase に dc_tenant_registry テーブルを追加 */
-    location: 'license_server_supabase' as const,
-    table: 'dc_tenant_registry',
-    columns: [
-      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
-      'tenant_name TEXT NOT NULL',                     // 顧客企業名
-      'tenant_code TEXT UNIQUE NOT NULL',              // 短縮コード（例: 'acme-corp'）
-      'supabase_url TEXT NOT NULL',                    // 顧客用 Supabase プロジェクト URL
-      'supabase_anon_key TEXT NOT NULL',               // anon key（クライアント用）
-      'supabase_service_role_key_encrypted TEXT NOT NULL', // service_role key（サーバー用・暗号化）
-      'status TEXT DEFAULT \'active\'',                // active / suspended / decommissioned
-      'license_key TEXT',                              // 紐づくライセンスキー
-      'provisioned_by TEXT NOT NULL',                  // プロビジョニングしたコンサル
-      'provisioned_at TIMESTAMPTZ DEFAULT NOW()',
-      'notes TEXT',
-    ],
-  },
-
-  /** アプリケーションサーバー */
-  server: {
-    runtime: 'Hono' as const,
-    hosting: 'Railway' as const,
-    language: 'TypeScript' as const,
-    /** サーバーは1つ。リクエストのテナント情報から接続先 Supabase を動的に切り替え */
-    multiTenantRouting: true,
-  },
-
-  /** ファイルストレージ（テンプレート .xlsx） */
-  storage: {
-    provider: 'Supabase Storage' as const,
-    /** 各顧客の Supabase Storage 内にバケットを作成 */
-    bucket: 'dc-templates',
-    maxFileSize: '50MB',
-  },
-
-  /** AI プロバイダー */
-  ai: {
-    provider: 'Anthropic' as const,
-    api: 'Claude API' as const,
-  },
-} as const;
-
-// =============================================================================
-// DB アーキテクチャ — AI 対応 JSON ストレージ (Supabase / PostgreSQL)
-// =============================================================================
-
-/**
- * データベースアーキテクチャ設計方針
- *
- * **物理 DB**: Supabase (PostgreSQL 15+)
- * **選定理由**: JSONB + GIN ネイティブサポート、既存ライセンスサーバーと同一基盤、
- *             Row Level Security によるテナント分離、Realtime で回収状況をリアルタイム配信
- *
- * ============================================================================
- * 【Stravis 型「汎用テーブル」パターンの進化版】
- * ============================================================================
- *
- * Stravis（連結会計システム）には2種類のテーブルがあった:
- *
- * 1. **固定テーブル**: 連結会計の勘定科目等、スキーマが決まっているデータ
- *    → 物理カラムで定義（高速だがスキーマ変更に DDL が必要）
- *
- * 2. **汎用テーブル**: 1つの物理テーブルに複数の論理テーブルを格納
- *    → レコードの中にテーブル識別子を持ち、論理的に分離
- *    → 新しい収集項目が追加されても DDL 変更不要
- *
- * 本システムでは Stravis の汎用テーブルパターンを **JSONB** で進化させる:
- *
- * ```
- * ┌──────────────────────────────────────────────────────────────┐
- * │  dc_collected_data（物理テーブル: 1つだけ）                    │
- * │                                                              │
- * │  ┌──────────┬──────────────────────────────────────────────┐ │
- * │  │ 共通列    │ template_id, tenant_id, submitter, status   │ │
- * │  │ (物理)   │ submitted_at, reviewed_at, ...              │ │
- * │  ├──────────┼──────────────────────────────────────────────┤ │
- * │  │ データ列  │ data JSONB ← ★ ここに収集データ全体が入る    │ │
- * │  │ (論理)   │                                              │ │
- * │  │          │ テンプレート A の場合:                         │ │
- * │  │          │ { "revenue": 1000, "cost": 500, ... }        │ │
- * │  │          │                                              │ │
- * │  │          │ テンプレート B の場合:                         │ │
- * │  │          │ { "employee_count": 50, "dept": "営業", ... } │ │
- * │  │          │                                              │ │
- * │  │          │ → 論理スキーマは template の schema_json が定義 │ │
- * │  └──────────┴──────────────────────────────────────────────┘ │
- * └──────────────────────────────────────────────────────────────┘
- * ```
- *
- * ## 従来アプローチとの比較
- *
- * | 方式 | Stravis 固定テーブル | Stravis 汎用テーブル | IOSH JSONB 方式 |
- * |------|--------------------|--------------------|-----------------|
- * | スキーマ変更 | DDL 必要 | 不要 | **不要** |
- * | データ型定義 | SQL カラム定義 | レコード内メタデータ | **JSON Schema** |
- * | AI 可読性 | SQL 解析が必要 | 解析が必要 | **そのまま読める** |
- * | クエリ性能 | 最速 | 中程度 | 中程度（GIN 索引） |
- * | 柔軟性 | 低い | 高い | **最も高い** |
- * | テンプレート追加 | テーブル作成 | 不要 | **不要** |
- *
- * ## AI にとっての利点
- *
- * - JSON はそのまま Claude API のコンテキストに渡せる
- * - スキーマ定義（JSON Schema）も JSON なので AI が理解しやすい
- * - AI 検証時に過去データも JSON で比較できる
- * - AI 転記結果をそのまま data JSONB カラムに格納できる
- *
- * ## PostgreSQL JSONB の活用
- *
- * ```sql
- * -- GIN インデックスで JSONB 内を高速検索
- * CREATE INDEX idx_dc_data_gin ON dc_collected_data USING GIN (data);
- *
- * -- 特定フィールドの集計（テンプレートの論理カラムに対するクエリ）
- * SELECT
- *   data->>'department' AS department,
- *   SUM((data->>'revenue')::numeric) AS total_revenue
- * FROM dc_collected_data
- * WHERE template_id = 'xxx' AND status = 'accepted'
- * GROUP BY data->>'department';
- *
- * -- AI 検証用: 過去データとの比較
- * SELECT data FROM dc_collected_data
- * WHERE template_id = 'xxx'
- * ORDER BY submitted_at DESC LIMIT 12;  -- 過去12回分
- * ```
- */
-
-// =============================================================================
-// JSON Schema — テンプレートの論理スキーマ定義
-// =============================================================================
-
-/**
- * テンプレートの JSON Schema 定義
- *
- * 各テンプレートが「このテンプレートで収集するデータの構造」を定義する。
- * dc_collected_data.data JSONB カラムに格納されるデータの型を規定。
- *
- * Stravis の汎用テーブルにおける「論理テーブル定義」に相当する。
- */
-export interface TemplateDataSchema {
-  /** スキーマバージョン（テンプレート更新時にインクリメント） */
-  version: number;
-  /** 論理テーブル名（人間が読む識別名、例: "monthly_budget_report"） */
-  logicalTableName: string;
-  /** 論理テーブル名（日本語、例: "月次予算報告"） */
-  logicalTableNameJa: string;
-  /** フィールド定義 */
-  fields: SchemaField[];
-  /** 複合キー（同一テンプレート内でのユニーク制約、例: ["department", "fiscal_month"]） */
-  uniqueKeys?: string[];
-}
-
-/** JSON Schema のフィールド定義 */
-export interface SchemaField {
-  /** フィールド名（JSON のキー名、DB カラム相当） */
-  key: string;
-  /** 表示名（英語） */
-  label: string;
-  /** 表示名（日本語） */
-  labelJa: string;
-  /** データ型 */
-  type: MappingFieldType;
-  /** 必須項目か */
-  required: boolean;
-  /** デフォルト値 */
-  defaultValue?: unknown;
-  /** 説明（日本語、ツールチップ表示） */
-  descriptionJa?: string;
-  /** 小数点以下桁数（number/currency） */
-  decimalPlaces?: number;
-  /** 通貨コード（currency） */
-  currencyCode?: string;
-  /** 日付フォーマット（date） */
-  dateFormat?: string;
-  /** 列挙値（ドロップダウン候補） */
-  enumValues?: Array<{ value: string; label: string; labelJa: string }>;
-  /**
-   * AI 転記ヒント
-   * AI が転記元 Excel から該当データを探す際のキーワード。
-   * 例: ["売上", "revenue", "sales", "売上高"]
-   */
-  aiTransferHints?: string[];
-  /**
-   * Excel Named Range 名
-   * テンプレート Excel のどの Named Range にこのフィールドが対応するか。
-   */
-  namedRange: string;
-}
-
-// =============================================================================
-// DB テーブル定義（Supabase / PostgreSQL）
-// =============================================================================
-
-/**
- * データ収集サーバーの DB テーブル構成
- *
- * **設計原則**: 物理テーブルは最小限。データ本体は JSONB。
- * テンプレートの JSON Schema が論理スキーマを定義する。
- *
- * ```
- * dc_templates          → テンプレート定義 + JSON Schema（論理テーブル定義）
- * dc_collected_data     → ★ 全テンプレートの収集データを格納する汎用テーブル
- * dc_drafts             → 下書き（JSONB）
- * dc_ai_logs            → AI 転記・検証のログ
- * ```
+ * 実際のマイグレーションは SQL で行うが、ここで構造を定義しておく。
  */
 export const DB_TABLES = {
-  // -------------------------------------------------------------------------
-  // テンプレート管理
-  // -------------------------------------------------------------------------
-  /** テンプレート定義（= 論理テーブル定義） */
-  dc_templates: {
-    description: 'テンプレートのメタデータ + JSON Schema（論理テーブル定義）+ マッピング定義',
-    columns: [
-      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
-      // tenant_id 不要 — 顧客ごとに Supabase プロジェクトが分離されている
-      'name TEXT NOT NULL',
-      'name_ja TEXT NOT NULL',
-      'category TEXT',
-      'description TEXT',
-      'description_ja TEXT',
-      'version INTEGER DEFAULT 1',
-      'status TEXT DEFAULT \'draft\'',           // draft / published / archived
-      'schedule TEXT DEFAULT \'once\'',           // once / monthly / quarterly / yearly / custom
-      'deadline TIMESTAMPTZ',
-      'template_file_path TEXT',                  // サーバー上の .xlsx ファイルパス
-      'schema_json JSONB NOT NULL',              // ★ 論理テーブル定義（TemplateDataSchema）
-      'mapping_json JSONB NOT NULL',             // Named Range ↔ schema_json.fields のマッピング
-      'validation_rules JSONB DEFAULT \'[]\'',   // ルールベース検証ルール
-      'tab_color TEXT DEFAULT \'#2563EB\'',
-      'created_by TEXT NOT NULL',
-      'created_at TIMESTAMPTZ DEFAULT NOW()',
-      'updated_at TIMESTAMPTZ DEFAULT NOW()',
-    ],
-    indexes: [
-      'CREATE INDEX idx_dc_templates_status ON dc_templates(status)',
-      'CREATE INDEX idx_dc_templates_category ON dc_templates(category)',
-    ],
-  },
-
-  // -------------------------------------------------------------------------
-  // 収集データ（汎用テーブル — Stravis 型進化版）
-  // -------------------------------------------------------------------------
-  /**
-   * ★ 全テンプレートの収集データを格納する汎用テーブル
-   *
-   * 1つの物理テーブルに全テンプレートのデータが入る。
-   * template_id で論理的にテーブルを分離。
-   * data JSONB カラムの構造は dc_templates.schema_json が定義。
-   *
-   * Stravis の汎用テーブルと同じ考え方:
-   * - 物理テーブル: 1つ（dc_collected_data）
-   * - 論理テーブル: テンプレート数だけ存在（template_id で識別）
-   * - 論理スキーマ: dc_templates.schema_json が定義
-   */
-  dc_collected_data: {
-    description: '全テンプレートの収集データを格納する汎用テーブル（data JSONB に論理レコードを格納）',
-    columns: [
-      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
-      // --- 共通メタデータ（全テンプレート共通の物理カラム） ---
-      'template_id UUID NOT NULL REFERENCES dc_templates(id)',
-      'template_version INTEGER NOT NULL',       // 送信時点のテンプレートバージョン
-      // tenant_id 不要 — DB 自体が顧客専用
-      'submitter_email TEXT NOT NULL',
-      'submitter_name TEXT',
-      'status TEXT DEFAULT \'submitted\'',        // draft / submitted / accepted / rejected / pending_review
-      'comment TEXT',                             // 送信時コメント
-      'submitted_at TIMESTAMPTZ DEFAULT NOW()',
-      'reviewed_at TIMESTAMPTZ',
-      'reviewed_by TEXT',
-      'rejection_reason TEXT',
-      // --- データ本体（テンプレートごとに構造が異なる JSONB） ---
-      'data JSONB NOT NULL',                     // ★ 収集データ本体（論理レコード）
-      // --- AI 関連 ---
-      'ai_validation_snapshot JSONB',            // AI 検証結果のスナップショット
-      'ai_transfer_used BOOLEAN DEFAULT FALSE',  // AI 自動転記を使用したか
-    ],
-    indexes: [
-      '-- テンプレート別検索（最も頻繁なクエリパターン）',
-      'CREATE INDEX idx_dc_data_template ON dc_collected_data(template_id)',
-      '-- 送信者別検索（回収管理用）',
-      'CREATE INDEX idx_dc_data_submitter ON dc_collected_data(submitter_email)',
-      '-- ステータス別検索（回収状況確認用）',
-      'CREATE INDEX idx_dc_data_status ON dc_collected_data(template_id, status)',
-      '-- JSONB 内検索用 GIN インデックス（AI クエリ・集計用）',
-      'CREATE INDEX idx_dc_data_gin ON dc_collected_data USING GIN (data)',
-      '-- 時系列検索（過去データ比較用）',
-      'CREATE INDEX idx_dc_data_timeline ON dc_collected_data(template_id, submitted_at DESC)',
-    ],
-    /** JSONB クエリ例 */
-    queryExamples: [
-      '-- テンプレート別のフィールド集計（売上合計など）',
-      'SELECT SUM((data->>\'revenue\')::numeric) FROM dc_collected_data WHERE template_id = $1 AND status = \'accepted\'',
-      '',
-      '-- 部門別クロス集計',
-      'SELECT data->>\'department\' AS dept, SUM((data->>\'revenue\')::numeric) AS total',
-      'FROM dc_collected_data WHERE template_id = $1 GROUP BY data->>\'department\'',
-      '',
-      '-- AI 検証用: 同一テンプレートの過去12回分データ取得',
-      'SELECT data, submitted_at FROM dc_collected_data',
-      'WHERE template_id = $1 AND status = \'accepted\' ORDER BY submitted_at DESC LIMIT 12',
-      '',
-      '-- 特定フィールドが閾値を超えるレコード検出（異常値アラート）',
-      'SELECT * FROM dc_collected_data',
-      'WHERE template_id = $1 AND (data->>\'expense\')::numeric > 1000000',
-    ],
-  },
-
-  // -------------------------------------------------------------------------
-  // 下書き
-  // -------------------------------------------------------------------------
-  /** 下書きデータ（ユーザー × テンプレートで一意） */
-  dc_drafts: {
-    description: '入力途中の下書きデータ（data JSONB に未完成の論理レコードを格納）',
-    columns: [
-      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
-      'template_id UUID NOT NULL REFERENCES dc_templates(id)',
-      'user_email TEXT NOT NULL',
-      'data JSONB NOT NULL',                     // 下書きデータ（dc_collected_data.data と同じ構造）
-      'saved_at TIMESTAMPTZ DEFAULT NOW()',
-      'UNIQUE(template_id, user_email)',          // 1ユーザー1テンプレートにつき1下書き
-    ],
-    indexes: [
-      'CREATE INDEX idx_dc_drafts_user ON dc_drafts(user_email)',
-    ],
-  },
-
-  // -------------------------------------------------------------------------
-  // AI ログ
-  // -------------------------------------------------------------------------
-  /** AI 転記・検証の実行ログ（品質追跡・利用量カウント用） */
-  dc_ai_logs: {
-    description: 'AI 自動転記・AI 検証の実行ログ',
-    columns: [
-      'id UUID PRIMARY KEY DEFAULT gen_random_uuid()',
-      'template_id UUID NOT NULL REFERENCES dc_templates(id)',
-      'user_email TEXT NOT NULL',
-      'action TEXT NOT NULL',                    // 'transfer' / 'validate'
-      'source_file_name TEXT',                   // 転記元ファイル名（transfer の場合）
-      'result_summary JSONB',                    // 結果サマリー（件数・エラー数等）
-      'executed_at TIMESTAMPTZ DEFAULT NOW()',
-    ],
-    indexes: [
-      '-- 利用量カウント用（月次集計）',
-      'CREATE INDEX idx_dc_ai_logs_usage ON dc_ai_logs(user_email, action, executed_at)',
-    ],
-  },
-
-  // -------------------------------------------------------------------------
-  // ビュー（集計用）
-  // -------------------------------------------------------------------------
-  /** 回収ステータスビュー */
-  dc_collection_status_view: {
-    description: 'テンプレートごとの回収状況集計ビュー',
-    ddl: [
-      'CREATE OR REPLACE VIEW dc_collection_status AS',
-      'SELECT',
-      '  t.id AS template_id,',
-      '  t.name_ja AS template_name,',
-      '  t.deadline,',
-      '  COUNT(*) FILTER (WHERE d.status = \'submitted\') AS submitted_count,',
-      '  COUNT(*) FILTER (WHERE d.status = \'accepted\') AS accepted_count,',
-      '  COUNT(*) FILTER (WHERE d.status = \'rejected\') AS rejected_count,',
-      '  COUNT(*) FILTER (WHERE d.status = \'pending_review\') AS pending_count,',
-      '  (SELECT COUNT(*) FROM dc_drafts dr WHERE dr.template_id = t.id) AS draft_count',
-      'FROM dc_templates t',
-      'LEFT JOIN dc_collected_data d ON d.template_id = t.id',
-      'WHERE t.status = \'published\'',
-      'GROUP BY t.id, t.name_ja, t.deadline;',
-    ],
-  },
-
-  // -------------------------------------------------------------------------
-  // Row Level Security（ユーザーレベルのアクセス制御）
-  // -------------------------------------------------------------------------
-  /**
-   * RLS ポリシー — ユーザーレベルのアクセス制御
-   *
-   * テナント分離は DB 自体が顧客ごとに分離されているため不要。
-   * RLS はオプションで、下書きの本人制限など軽量な用途のみ。
-   * Hono サーバー経由のアクセスは service_role で RLS をバイパスする。
-   */
-  _rls_policies: {
-    description: 'ユーザーレベルのアクセス制御（テナント分離は DB 分離で実現済み）',
-    ddl: [
-      '-- 下書き: 本人の下書きのみ閲覧・編集可（Level 2+ の場合のみ有効化）',
-      'ALTER TABLE dc_drafts ENABLE ROW LEVEL SECURITY;',
-      'CREATE POLICY "own_drafts_only" ON dc_drafts',
-      '  USING (user_email = auth.jwt()->>\'email\');',
-    ],
-    note: 'テナント分離は Supabase プロジェクト分離で実現。RLS は補助的な用途のみ。'
-        + 'サーバー側は service_role キーで接続するため RLS をバイパスする。',
-  },
+  /** テンプレート定義 */
+  DC_TEMPLATES: 'dc_templates',
+  /** 配信レコード */
+  DC_DISTRIBUTIONS: 'dc_distributions',
+  /** 提出データ（JSONB — 論理テーブル単位） */
+  DC_SUBMISSIONS: 'dc_submissions',
+  /** マスタ論理テーブル */
+  DC_MASTER_TABLES: 'dc_master_tables',
+  /** 監査ログ */
+  DC_AUDIT_LOG: 'dc_audit_log',
 } as const;
-
-// =============================================================================
-// テナント管理コンソール（HARMONIC insight 管理者用 Web UI）
-// =============================================================================
 
 /**
- * データ収集テナント管理コンソール
+ * DB スキーマ概要（Supabase JSONB 活用）
  *
- * 導入企業が増えるにつれ、各顧客の Supabase プロジェクトを個別に管理するのは
- * 煩雑になる。全テナントを一覧・監視・操作できるグラフィカルな管理ツールが必要。
+ * ```sql
+ * -- テンプレート
+ * CREATE TABLE dc_templates (
+ *   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ *   name_ja TEXT NOT NULL,
+ *   name TEXT NOT NULL,
+ *   description_ja TEXT,
+ *   version INTEGER NOT NULL DEFAULT 1,
+ *   status TEXT NOT NULL DEFAULT 'draft', -- draft / published / archived
+ *   schema JSONB NOT NULL,  -- LogicalTableDefinition[] + マッピング情報
+ *   workflow JSONB,         -- WorkflowConfig
+ *   distribution JSONB,     -- DistributionConfig
+ *   created_by UUID REFERENCES auth.users(id),
+ *   organization_id UUID,
+ *   created_at TIMESTAMPTZ DEFAULT now(),
+ *   updated_at TIMESTAMPTZ DEFAULT now()
+ * );
  *
- * ```
- * ┌──────────────────────────────────────────────────────────────────┐
- * │  DC Admin Console (React / Next.js)                              │
- * │  https://dc-admin.harmonicinsight.com                            │
- * │                                                                  │
- * │  ┌────────────────────────────────────────────────────────────┐  │
- * │  │  ダッシュボード                                             │  │
- * │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐     │  │
- * │  │  │ 稼働中   │ │ テンプレ │ │ 回収率   │ │ AI利用量 │     │  │
- * │  │  │ 12 社    │ │ 総数 45  │ │ 78%     │ │ 1,234回  │     │  │
- * │  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘     │  │
- * │  └────────────────────────────────────────────────────────────┘  │
- * │                                                                  │
- * │  ┌────────────────────────────────────────────────────────────┐  │
- * │  │  テナント一覧                                               │  │
- * │  │  ┌─────────┬────────┬──────┬───────┬──────┬─────────────┐ │  │
- * │  │  │ 企業名   │ ステータス│ テンプレ│ 回収率 │ AI利用│ 操作          │ │  │
- * │  │  ├─────────┼────────┼──────┼───────┼──────┼─────────────┤ │  │
- * │  │  │ A社     │ ● 稼働  │  5   │ 92%  │ 120  │ [詳細][設定] │ │  │
- * │  │  │ B社     │ ● 稼働  │  8   │ 65%  │ 340  │ [詳細][設定] │ │  │
- * │  │  │ C社     │ ○ 停止  │  3   │ --   │  0   │ [詳細][再開] │ │  │
- * │  │  └─────────┴────────┴──────┴───────┴──────┴─────────────┘ │  │
- * │  └────────────────────────────────────────────────────────────┘  │
- * │                                                                  │
- * │  機能:                                                           │
- * │  ├ テナント新規作成（Supabase プロジェクト自動プロビジョニング）     │
- * │  ├ テナント一覧・検索・ステータス管理（稼働/停止/廃止）             │
- * │  ├ テナント詳細（接続情報・テンプレート・回収状況・AI利用量）        │
- * │  ├ テンプレート配布（全テナントへの一括配布 or 選択配布）            │
- * │  ├ 回収状況の横断集計（全テナントの回収率を一覧）                   │
- * │  ├ AI 利用量モニタリング（月次集計・アラート）                      │
- * │  ├ マイグレーション実行（スキーマ更新を全テナントに適用）            │
- * │  └ ヘルスチェック（全テナントの DB 接続確認・ストレージ使用量）       │
- * └──────────────────────────────────────────────────────────────────┘
+ * -- マスタ論理テーブル（組織レベルで共有）
+ * CREATE TABLE dc_master_tables (
+ *   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ *   table_id TEXT NOT NULL,        -- 論理テーブル ID
+ *   name_ja TEXT NOT NULL,
+ *   name TEXT NOT NULL,
+ *   columns JSONB NOT NULL,        -- LogicalColumn[]
+ *   rows JSONB NOT NULL DEFAULT '[]',  -- 行データ
+ *   organization_id UUID,
+ *   created_by UUID REFERENCES auth.users(id),
+ *   updated_at TIMESTAMPTZ DEFAULT now(),
+ *   UNIQUE(table_id, organization_id)
+ * );
+ *
+ * -- 配信レコード
+ * CREATE TABLE dc_distributions (
+ *   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ *   template_id UUID REFERENCES dc_templates(id),
+ *   template_version INTEGER NOT NULL,
+ *   target_id TEXT NOT NULL,
+ *   target_type TEXT NOT NULL,     -- user / group / organization
+ *   target_name_ja TEXT,
+ *   target_email TEXT,
+ *   method TEXT NOT NULL,          -- cloud_sync / file_export / email_link
+ *   response_status TEXT DEFAULT 'not_started',
+ *   submission_id UUID,
+ *   distributed_at TIMESTAMPTZ DEFAULT now()
+ * );
+ *
+ * -- 提出データ
+ * CREATE TABLE dc_submissions (
+ *   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ *   template_id UUID REFERENCES dc_templates(id),
+ *   template_version INTEGER NOT NULL,
+ *   submitted_by UUID REFERENCES auth.users(id),
+ *   organization_ja TEXT,
+ *   status TEXT NOT NULL DEFAULT 'draft',
+ *   table_data JSONB NOT NULL,         -- Record<tableId, { rows: [...] }>
+ *   validation_result JSONB,
+ *   workflow_history JSONB DEFAULT '[]',
+ *   comment TEXT,
+ *   submitted_at TIMESTAMPTZ,
+ *   created_at TIMESTAMPTZ DEFAULT now(),
+ *   updated_at TIMESTAMPTZ DEFAULT now()
+ * );
+ *
+ * -- 監査ログ
+ * CREATE TABLE dc_audit_log (
+ *   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ *   action TEXT NOT NULL,
+ *   entity_type TEXT NOT NULL,     -- template / submission / master_table
+ *   entity_id UUID NOT NULL,
+ *   actor_id UUID,
+ *   details JSONB,
+ *   created_at TIMESTAMPTZ DEFAULT now()
+ * );
+ *
+ * -- インデックス
+ * CREATE INDEX idx_dc_submissions_template ON dc_submissions(template_id);
+ * CREATE INDEX idx_dc_submissions_status ON dc_submissions(status);
+ * CREATE INDEX idx_dc_distributions_template ON dc_distributions(template_id);
+ * CREATE INDEX idx_dc_audit_log_entity ON dc_audit_log(entity_type, entity_id);
  * ```
  */
-export const TENANT_ADMIN_CONSOLE = {
-  /** 技術スタック */
-  tech: {
-    framework: 'Next.js' as const,
-    ui: 'React' as const,
-    hosting: 'Vercel' as const,
-    /** 管理用 Supabase（ライセンスサーバーと同一プロジェクト）への接続 */
-    registryDb: 'license_server_supabase' as const,
-  },
-
-  /** 認証（管理者のみアクセス可能） */
-  auth: {
-    provider: 'Firebase' as const,
-    /** HARMONIC insight 社員 + 認定パートナーのみ */
-    allowedRoles: ['admin', 'consultant', 'partner_admin'] as const,
-  },
-
-  /** 画面一覧 */
-  pages: {
-    dashboard: {
-      path: '/',
-      description: '全テナントの概況（稼働数・テンプレート総数・回収率・AI利用量）',
-    },
-    tenantList: {
-      path: '/tenants',
-      description: 'テナント一覧（検索・フィルタ・ステータス管理）',
-    },
-    tenantDetail: {
-      path: '/tenants/:tenantId',
-      description: 'テナント詳細（接続情報・テンプレート・回収状況・AI利用ログ）',
-    },
-    tenantCreate: {
-      path: '/tenants/new',
-      description: 'テナント新規作成ウィザード（Supabase プロジェクト自動プロビジョニング）',
-    },
-    templateDistribution: {
-      path: '/templates/distribute',
-      description: 'テンプレートの一括配布・選択配布',
-    },
-    collectionOverview: {
-      path: '/collection',
-      description: '全テナント横断の回収状況ダッシュボード',
-    },
-    aiUsage: {
-      path: '/ai-usage',
-      description: 'AI 利用量モニタリング（テナント別・月次推移・アラート設定）',
-    },
-    migration: {
-      path: '/migration',
-      description: 'スキーママイグレーション（全テナント or 選択テナントに適用）',
-    },
-    health: {
-      path: '/health',
-      description: 'ヘルスチェック（DB 接続・ストレージ使用量・API レスポンスタイム）',
-    },
-  },
-
-  /** テナント管理 API（管理コンソール → Hono サーバー） */
-  adminApi: {
-    /** テナントの CRUD */
-    tenants: {
-      list: { method: 'GET' as const, path: '/admin/tenants' },
-      get: { method: 'GET' as const, path: '/admin/tenants/:tenantId' },
-      create: { method: 'POST' as const, path: '/admin/tenants' },
-      update: { method: 'PUT' as const, path: '/admin/tenants/:tenantId' },
-      suspend: { method: 'POST' as const, path: '/admin/tenants/:tenantId/suspend' },
-      resume: { method: 'POST' as const, path: '/admin/tenants/:tenantId/resume' },
-      decommission: { method: 'POST' as const, path: '/admin/tenants/:tenantId/decommission' },
-    },
-    /** プロビジョニング */
-    provisioning: {
-      /** Supabase プロジェクト作成 + マイグレーション + レジストリ登録を一括実行 */
-      provision: { method: 'POST' as const, path: '/admin/provisioning/provision' },
-      /** マイグレーション実行（全テナント or 選択テナント） */
-      migrate: { method: 'POST' as const, path: '/admin/provisioning/migrate' },
-      /** ヘルスチェック（全テナントの DB 接続確認） */
-      healthCheck: { method: 'GET' as const, path: '/admin/provisioning/health' },
-    },
-    /** テンプレート配布 */
-    distribution: {
-      /** テンプレートを選択テナントに配布 */
-      distribute: { method: 'POST' as const, path: '/admin/templates/distribute' },
-      /** 配布状況確認 */
-      status: { method: 'GET' as const, path: '/admin/templates/distribute/status' },
-    },
-    /** 横断集計 */
-    analytics: {
-      /** 全テナントの回収状況サマリー */
-      collectionSummary: { method: 'GET' as const, path: '/admin/analytics/collection' },
-      /** AI 利用量サマリー */
-      aiUsageSummary: { method: 'GET' as const, path: '/admin/analytics/ai-usage' },
-      /** ストレージ使用量 */
-      storageSummary: { method: 'GET' as const, path: '/admin/analytics/storage' },
-    },
-  },
-
-  /** 自動プロビジョニングスクリプト */
-  provisioning: {
-    /**
-     * テナント作成時に自動実行されるステップ:
-     *
-     * 1. Supabase CLI でプロジェクト作成
-     *    `supabase projects create <tenant-code> --org-id <org-id>`
-     *
-     * 2. マイグレーション実行（dc_ テーブル作成）
-     *    `supabase db push --project-ref <ref>`
-     *
-     * 3. Storage バケット作成
-     *    `dc-templates` バケットを作成
-     *
-     * 4. dc_tenant_registry に接続情報を登録
-     *
-     * 5. 初期テンプレートの配布（任意）
-     */
-    steps: [
-      'create_supabase_project',
-      'run_migration',
-      'create_storage_bucket',
-      'register_tenant',
-      'distribute_initial_templates',
-    ] as const,
-  },
-} as const;
 
 // =============================================================================
 // プラン別制限
 // =============================================================================
 
-/** データ収集のプラン別制限 */
-export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
-  /** データ収集機能が利用可能か */
-  enabled: boolean;
-  /** 利用可能テンプレート数（-1 = 無制限） */
-  maxTemplates: number;
-  /** AI 自動転記回数/月（-1 = 無制限） */
-  aiTransferPerMonth: number;
-  /** AI 検証回数/月（-1 = 無制限） */
-  aiValidatePerMonth: number;
-  /** 送信データ保持期間（日、-1 = 無制限） */
-  dataRetentionDays: number;
-  /** 過去データ参照（AI 検証の比較用） */
-  historicalDataAccess: boolean;
-}> = {
-  TRIAL: {
-    enabled: true,
-    maxTemplates: -1,
-    aiTransferPerMonth: -1,
-    aiValidatePerMonth: -1,
-    dataRetentionDays: 14,
-    historicalDataAccess: true,
-  },
-  STD: {
-    enabled: false,
-    maxTemplates: 0,
-    aiTransferPerMonth: 0,
-    aiValidatePerMonth: 0,
-    dataRetentionDays: 0,
-    historicalDataAccess: false,
-  },
-  PRO: {
-    enabled: true,
-    maxTemplates: 50,
-    aiTransferPerMonth: 200,
-    aiValidatePerMonth: 200,
-    dataRetentionDays: 365,
-    historicalDataAccess: true,
-  },
+/** データ収集モジュールのプラン別制限 */
+export const DATA_COLLECTION_LIMITS = {
+  /** ENT のみ — テンプレート数上限（-1 = 無制限） */
   ENT: {
-    enabled: true,
     maxTemplates: -1,
-    aiTransferPerMonth: -1,
-    aiValidatePerMonth: -1,
-    dataRetentionDays: -1,
-    historicalDataAccess: true,
+    maxMasterTables: -1,
+    maxRowsPerSubmission: -1,
+    maxDistributionsPerTemplate: -1,
+    maxSubmissionsPerTemplate: -1,
+    exportFormats: ['json', 'csv', 'xlsx', 'iosh'] as const,
   },
-};
+  /** TRIAL — 評価用に制限付きで利用可能 */
+  TRIAL: {
+    maxTemplates: 3,
+    maxMasterTables: 5,
+    maxRowsPerSubmission: 100,
+    maxDistributionsPerTemplate: 10,
+    maxSubmissionsPerTemplate: 20,
+    exportFormats: ['json', 'csv', 'xlsx', 'iosh'] as const,
+  },
+} as const;
 
 // =============================================================================
 // ヘルパー関数
 // =============================================================================
 
-/** データ収集機能が利用可能かチェック */
-export function canUseDataCollection(plan: PlanCode): boolean {
-  return DATA_COLLECTION_LIMITS[plan].enabled;
-}
+/**
+ * 論理テーブルのデータ行をバリデーション
+ *
+ * Excel → JSON 抽出後、提出前にクライアント側でチェックする。
+ * サーバー側でも同じロジックで再検証される。
+ */
+export function validateTableData(
+  table: LogicalTableDefinition,
+  rows: Array<Record<string, unknown>>,
+): ValidationResult {
+  const errors: ValidationError[] = [];
+  const warnings: ValidationWarning[] = [];
 
-/** AI 自動転記が利用可能かチェック */
-export function canUseAiTransfer(plan: PlanCode, currentMonthUsage: number): boolean {
-  const limits = DATA_COLLECTION_LIMITS[plan];
-  if (!limits.enabled) return false;
-  if (limits.aiTransferPerMonth === -1) return true;
-  return currentMonthUsage < limits.aiTransferPerMonth;
-}
-
-/** AI 検証が利用可能かチェック */
-export function canUseAiValidation(plan: PlanCode, currentMonthUsage: number): boolean {
-  const limits = DATA_COLLECTION_LIMITS[plan];
-  if (!limits.enabled) return false;
-  if (limits.aiValidatePerMonth === -1) return true;
-  return currentMonthUsage < limits.aiValidatePerMonth;
-}
-
-/** テンプレート追加可能かチェック */
-export function canAddTemplate(plan: PlanCode, currentCount: number): boolean {
-  const limits = DATA_COLLECTION_LIMITS[plan];
-  if (!limits.enabled) return false;
-  if (limits.maxTemplates === -1) return true;
-  return currentCount < limits.maxTemplates;
-}
-
-/** マッピング定義のバリデーション */
-export function validateMapping(mapping: TemplateMappingDefinition): {
-  valid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
-
-  if (!mapping.targetTable) {
-    errors.push('targetTable is required');
-  }
-  if (!mapping.fields || mapping.fields.length === 0) {
-    errors.push('At least one field mapping is required');
+  // 行数チェック
+  if (table.maxRows && table.maxRows > 0 && rows.length > table.maxRows) {
+    errors.push({
+      type: 'custom',
+      logicalTableId: table.id,
+      columnId: '',
+      rowIndex: -1,
+      messageJa: `行数が上限（${table.maxRows}行）を超えています（${rows.length}行）`,
+      message: `Row count (${rows.length}) exceeds limit (${table.maxRows})`,
+    });
   }
 
-  const namedRanges = new Set<string>();
-  const dbColumns = new Set<string>();
+  for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+    const row = rows[rowIndex];
 
-  for (const field of mapping.fields) {
-    if (!field.namedRange) {
-      errors.push(`Field missing namedRange: ${JSON.stringify(field)}`);
+    for (const col of table.columns) {
+      if (col.readOnly) continue;
+      const value = row[col.id];
+
+      // 必須チェック
+      if (col.required && (value === undefined || value === null || value === '')) {
+        errors.push({
+          type: 'required',
+          logicalTableId: table.id,
+          columnId: col.id,
+          rowIndex,
+          messageJa: `${col.nameJa}は必須です`,
+          message: `${col.name} is required`,
+        });
+        continue;
+      }
+
+      if (value === undefined || value === null || value === '') continue;
+
+      // 型チェック
+      const typeError = validateColumnType(col, value, table.id, rowIndex);
+      if (typeError) {
+        errors.push(typeError);
+        continue;
+      }
+
+      // バリデーションルール
+      if (col.validation) {
+        const ruleErrors = validateColumnRules(col, value, table.id, rowIndex);
+        errors.push(...ruleErrors);
+      }
     }
-    if (!field.dbColumn) {
-      errors.push(`Field missing dbColumn: ${field.namedRange}`);
-    }
-    if (namedRanges.has(field.namedRange)) {
-      errors.push(`Duplicate namedRange: ${field.namedRange}`);
-    }
-    if (dbColumns.has(field.dbColumn)) {
-      errors.push(`Duplicate dbColumn: ${field.dbColumn}`);
-    }
-    namedRanges.add(field.namedRange);
-    dbColumns.add(field.dbColumn);
   }
 
-  return { valid: errors.length === 0, errors };
-}
-
-/** クレジット残量ラベルの生成 */
-export function getDataCollectionCreditLabel(
-  plan: PlanCode,
-  feature: 'aiTransferPerMonth' | 'aiValidatePerMonth',
-  currentUsage: number,
-  locale: 'ja' | 'en' = 'ja',
-): string {
-  const limits = DATA_COLLECTION_LIMITS[plan];
-  const limit = limits[feature];
-  const featureNames = {
-    aiTransferPerMonth: { ja: 'AI 自動転記', en: 'AI Auto-Transfer' },
-    aiValidatePerMonth: { ja: 'AI 検証', en: 'AI Validation' },
+  return {
+    valid: errors.length === 0,
+    errors,
+    warnings,
   };
+}
 
-  const name = featureNames[feature][locale];
-
-  if (limit === -1) {
-    return locale === 'ja' ? `${name} — 無制限` : `${name} — Unlimited`;
+/** カラム型チェック */
+function validateColumnType(
+  col: LogicalColumn,
+  value: unknown,
+  tableId: string,
+  rowIndex: number,
+): ValidationError | null {
+  switch (col.type) {
+    case 'number':
+    case 'integer':
+    case 'currency':
+    case 'percentage':
+      if (typeof value !== 'number' || Number.isNaN(value)) {
+        return {
+          type: 'type_mismatch',
+          logicalTableId: tableId,
+          columnId: col.id,
+          rowIndex,
+          messageJa: `${col.nameJa}は数値で入力してください`,
+          message: `${col.name} must be a number`,
+        };
+      }
+      if (col.type === 'integer' && !Number.isInteger(value)) {
+        return {
+          type: 'type_mismatch',
+          logicalTableId: tableId,
+          columnId: col.id,
+          rowIndex,
+          messageJa: `${col.nameJa}は整数で入力してください`,
+          message: `${col.name} must be an integer`,
+        };
+      }
+      break;
+    case 'boolean':
+      if (typeof value !== 'boolean') {
+        return {
+          type: 'type_mismatch',
+          logicalTableId: tableId,
+          columnId: col.id,
+          rowIndex,
+          messageJa: `${col.nameJa}は真偽値で入力してください`,
+          message: `${col.name} must be a boolean`,
+        };
+      }
+      break;
+    case 'date':
+      if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return {
+          type: 'type_mismatch',
+          logicalTableId: tableId,
+          columnId: col.id,
+          rowIndex,
+          messageJa: `${col.nameJa}は日付形式（YYYY-MM-DD）で入力してください`,
+          message: `${col.name} must be a date (YYYY-MM-DD)`,
+        };
+      }
+      break;
+    case 'datetime':
+      if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) {
+        return {
+          type: 'type_mismatch',
+          logicalTableId: tableId,
+          columnId: col.id,
+          rowIndex,
+          messageJa: `${col.nameJa}は日時形式で入力してください`,
+          message: `${col.name} must be a datetime`,
+        };
+      }
+      break;
+    case 'email':
+      if (typeof value !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return {
+          type: 'pattern',
+          logicalTableId: tableId,
+          columnId: col.id,
+          rowIndex,
+          messageJa: `${col.nameJa}は有効なメールアドレスを入力してください`,
+          message: `${col.name} must be a valid email address`,
+        };
+      }
+      break;
   }
-  const remaining = Math.max(0, limit - currentUsage);
-  return locale === 'ja'
-    ? `${name} — 残り ${remaining}回（月${limit}回）`
-    : `${name} — ${remaining} remaining (${limit}/month)`;
+  return null;
+}
+
+/** バリデーションルールチェック */
+function validateColumnRules(
+  col: LogicalColumn,
+  value: unknown,
+  tableId: string,
+  rowIndex: number,
+): ValidationError[] {
+  const errors: ValidationError[] = [];
+  const v = col.validation!;
+
+  if (typeof value === 'number') {
+    if (v.min !== undefined && value < v.min) {
+      errors.push({
+        type: 'range',
+        logicalTableId: tableId,
+        columnId: col.id,
+        rowIndex,
+        messageJa: `${col.nameJa}は${v.min}以上で入力してください`,
+        message: `${col.name} must be >= ${v.min}`,
+      });
+    }
+    if (v.max !== undefined && value > v.max) {
+      errors.push({
+        type: 'range',
+        logicalTableId: tableId,
+        columnId: col.id,
+        rowIndex,
+        messageJa: `${col.nameJa}は${v.max}以下で入力してください`,
+        message: `${col.name} must be <= ${v.max}`,
+      });
+    }
+  }
+
+  if (typeof value === 'string') {
+    if (v.minLength !== undefined && value.length < v.minLength) {
+      errors.push({
+        type: 'range',
+        logicalTableId: tableId,
+        columnId: col.id,
+        rowIndex,
+        messageJa: `${col.nameJa}は${v.minLength}文字以上で入力してください`,
+        message: `${col.name} must be at least ${v.minLength} characters`,
+      });
+    }
+    if (v.maxLength !== undefined && value.length > v.maxLength) {
+      errors.push({
+        type: 'range',
+        logicalTableId: tableId,
+        columnId: col.id,
+        rowIndex,
+        messageJa: `${col.nameJa}は${v.maxLength}文字以下で入力してください`,
+        message: `${col.name} must be at most ${v.maxLength} characters`,
+      });
+    }
+    if (v.pattern) {
+      const re = new RegExp(v.pattern);
+      if (!re.test(value)) {
+        errors.push({
+          type: 'pattern',
+          logicalTableId: tableId,
+          columnId: col.id,
+          rowIndex,
+          messageJa: v.patternErrorJa ?? `${col.nameJa}の形式が正しくありません`,
+          message: `${col.name} does not match the required pattern`,
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * テンプレートから Excel Table の初期データ入力規則を生成
+ *
+ * Syncfusion の IDataValidation に対応する設定オブジェクトを返す。
+ * ホストアプリはこの情報をもとに Excel のデータ入力規則を設定する。
+ */
+export function generateExcelValidationRules(
+  table: LogicalTableDefinition,
+): Array<{
+  columnId: string;
+  excelValidationType: string;
+  formula?: string;
+  allowBlank: boolean;
+  errorTitle: string;
+  errorMessage: string;
+  showDropdown: boolean;
+  dropdownValues?: string[];
+}> {
+  return table.columns
+    .filter(col => !col.readOnly)
+    .map(col => {
+      const base = {
+        columnId: col.id,
+        allowBlank: !col.required,
+        errorTitle: col.nameJa,
+        errorMessage: '',
+        showDropdown: false,
+        dropdownValues: undefined as string[] | undefined,
+      };
+
+      switch (col.type) {
+        case 'integer':
+          return {
+            ...base,
+            excelValidationType: 'WholeNumber',
+            formula: col.validation
+              ? `${col.validation.min ?? ''},${col.validation.max ?? ''}`
+              : undefined,
+            errorMessage: `${col.nameJa}: 整数を入力してください`,
+          };
+        case 'number':
+        case 'currency':
+        case 'percentage':
+          return {
+            ...base,
+            excelValidationType: 'Decimal',
+            formula: col.validation
+              ? `${col.validation.min ?? ''},${col.validation.max ?? ''}`
+              : undefined,
+            errorMessage: `${col.nameJa}: 数値を入力してください`,
+          };
+        case 'date':
+          return {
+            ...base,
+            excelValidationType: 'Date',
+            errorMessage: `${col.nameJa}: 日付を入力してください`,
+          };
+        case 'select':
+          if (col.selectSource?.type === 'inline') {
+            return {
+              ...base,
+              excelValidationType: 'List',
+              showDropdown: true,
+              dropdownValues: col.selectSource.options.map(o => o.labelJa),
+              errorMessage: `${col.nameJa}: リストから選択してください`,
+            };
+          }
+          return {
+            ...base,
+            excelValidationType: 'List',
+            showDropdown: true,
+            errorMessage: `${col.nameJa}: リストから選択してください`,
+          };
+        case 'email':
+          return {
+            ...base,
+            excelValidationType: 'Custom',
+            formula: 'ISNUMBER(FIND("@",INDIRECT("RC",FALSE)))',
+            errorMessage: `${col.nameJa}: メールアドレスを入力してください`,
+          };
+        default:
+          return {
+            ...base,
+            excelValidationType: 'TextLength',
+            formula: col.validation
+              ? `${col.validation.minLength ?? 0},${col.validation.maxLength ?? 32767}`
+              : undefined,
+            errorMessage: col.required
+              ? `${col.nameJa}: 入力必須です`
+              : '',
+          };
+      }
+    });
+}
+
+/**
+ * 提出データから集約テーブルを生成
+ *
+ * 管理者が全提出データを1つのテーブルに集約する際に使用。
+ * 各行に submittedBy, organizationJa, submittedAt を付加。
+ */
+export function aggregateSubmissions(
+  submissions: Submission[],
+  logicalTableId: string,
+): {
+  columns: Array<{ id: string; nameJa: string; name: string }>;
+  rows: Array<Record<string, unknown>>;
+} {
+  const metaColumns = [
+    { id: '_submitted_by', nameJa: '提出者', name: 'Submitted By' },
+    { id: '_organization', nameJa: '組織', name: 'Organization' },
+    { id: '_submitted_at', nameJa: '提出日時', name: 'Submitted At' },
+    { id: '_status', nameJa: 'ステータス', name: 'Status' },
+  ];
+
+  const rows: Array<Record<string, unknown>> = [];
+
+  for (const sub of submissions) {
+    const tableData = sub.tableData[logicalTableId];
+    if (!tableData) continue;
+
+    for (const row of tableData.rows) {
+      rows.push({
+        ...row,
+        _submitted_by: sub.submittedBy,
+        _organization: sub.organizationJa ?? '',
+        _submitted_at: sub.submittedAt,
+        _status: sub.status,
+      });
+    }
+  }
+
+  // 最初の提出からカラム定義を推定
+  const dataColumns = submissions.length > 0 && submissions[0].tableData[logicalTableId]
+    ? Object.keys(submissions[0].tableData[logicalTableId].rows[0] ?? {}).map(key => ({
+        id: key,
+        nameJa: key,
+        name: key,
+      }))
+    : [];
+
+  return {
+    columns: [...metaColumns, ...dataColumns],
+    rows,
+  };
+}
+
+/**
+ * テンプレートの空の提出データを生成
+ *
+ * クライアントがテンプレートを開いたとき、初期の空データを作る。
+ */
+export function createEmptySubmission(
+  template: DataCollectionTemplate,
+  userId: string,
+  organizationJa?: string,
+): Omit<Submission, 'id'> {
+  const tableData: Record<string, SubmissionTableData> = {};
+
+  for (const table of template.logicalTables) {
+    if (table.tableType === 'master' || table.tableType === 'summary') continue;
+
+    const emptyRow: Record<string, unknown> = {};
+    for (const col of table.columns) {
+      emptyRow[col.id] = col.defaultValue ?? null;
+    }
+
+    tableData[table.id] = {
+      logicalTableId: table.id,
+      rows: table.tableType === 'header' ? [emptyRow] : [],
+    };
+  }
+
+  return {
+    templateId: template.id,
+    templateVersion: template.version,
+    submittedBy: userId,
+    organizationJa,
+    submittedAt: '',
+    status: 'draft',
+    tableData,
+    workflowHistory: [],
+  };
+}
+
+/**
+ * Excel Table のデータを論理テーブル行データに変換
+ *
+ * Syncfusion の ListObject から読み取った二次元配列を
+ * 論理テーブルの { columnId: value } 形式に変換する。
+ *
+ * @param mapping - Excel Table → 論理テーブルのマッピング
+ * @param table - 論理テーブル定義
+ * @param excelRows - Excel Table から読み取った二次元配列（ヘッダー行除く）
+ */
+export function convertExcelRowsToLogicalData(
+  mapping: ExcelTableMapping,
+  table: LogicalTableDefinition,
+  excelRows: unknown[][],
+): Array<Record<string, unknown>> {
+  return excelRows.map(excelRow => {
+    const logicalRow: Record<string, unknown> = {};
+
+    for (const colMapping of mapping.columnMappings) {
+      const col = table.columns.find(c => c.id === colMapping.logicalColumnId);
+      if (!col) continue;
+
+      const rawValue = excelRow[colMapping.excelColumnIndex];
+      logicalRow[col.id] = coerceValue(rawValue, col.type);
+    }
+
+    return logicalRow;
+  });
+}
+
+/** Excel セル値を論理カラム型に変換 */
+function coerceValue(raw: unknown, type: LogicalColumnType): unknown {
+  if (raw === undefined || raw === null || raw === '') return null;
+
+  switch (type) {
+    case 'number':
+    case 'currency':
+    case 'percentage':
+      return typeof raw === 'number' ? raw : Number(raw);
+    case 'integer':
+      return typeof raw === 'number' ? Math.round(raw) : Math.round(Number(raw));
+    case 'boolean':
+      if (typeof raw === 'boolean') return raw;
+      if (typeof raw === 'string') return raw.toLowerCase() === 'true' || raw === '1';
+      return Boolean(raw);
+    case 'date':
+      if (raw instanceof Date) return raw.toISOString().split('T')[0];
+      return String(raw);
+    case 'datetime':
+      if (raw instanceof Date) return raw.toISOString();
+      return String(raw);
+    default:
+      return String(raw);
+  }
 }
 
 // =============================================================================
@@ -1312,18 +1314,26 @@ export function getDataCollectionCreditLabel(
 // =============================================================================
 
 export default {
-  // 定義
-  AUTH_LEVELS,
-  DATA_COLLECTION_API,
-  DATA_COLLECTION_LIMITS,
-  DB_TABLES,
-  DEFAULT_SHEET_STYLE,
+  // パス定義
+  DATA_COLLECTION_PATHS,
 
-  // ヘルパー
-  canUseDataCollection,
-  canUseAiTransfer,
-  canUseAiValidation,
-  canAddTemplate,
-  validateMapping,
-  getDataCollectionCreditLabel,
+  // API
+  DATA_COLLECTION_API,
+
+  // DB
+  DB_TABLES,
+
+  // プラン制限
+  DATA_COLLECTION_LIMITS,
+
+  // バリデーション
+  validateTableData,
+
+  // Excel 連携
+  generateExcelValidationRules,
+  convertExcelRowsToLogicalData,
+
+  // データ操作
+  aggregateSubmissions,
+  createEmptySubmission,
 };

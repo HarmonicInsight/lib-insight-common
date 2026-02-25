@@ -1,40 +1,40 @@
 # ライセンス発行ツール
 
-Insight Series のライセンスキーを発行するCLIツール
+Insight Series のライセンスキーを発行するCLIチE�Eル
 
-## キー形式
+## キー形弁E
 
 ```
 PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
-例: INSS-PRO-2701-A3F8-K9X2-M4PQ
-    │    │    │    │    └─ 署名（8文字）
-    │    │    │    └────── メールハッシュ（4文字）
-    │    │    └─────────── 有効期限（2027年1月）
-    │    └──────────────── プラン（Pro）
-    └───────────────────── 製品（InsightOfficeSlide）
+侁E INSS-PRO-2701-A3F8-K9X2-M4PQ
+    ━E   ━E   ━E   ━E   └─ 署名！E斁E��！E
+    ━E   ━E   ━E   └────── メールハッシュ�E�E斁E��！E
+    ━E   ━E   └─────────── 有効期限�E�E027年1月！E
+    ━E   └──────────────── プラン�E�Ero�E�E
+    └───────────────────── 製品E��EnsightOfficeSlide�E�E
 ```
 
-## セットアップ
+## セチE��アチE�E
 
 ```bash
 git clone https://github.com/HarmonicInsight/cross-lib-insight-common.git
 cd insight-common/license/tools
 ```
 
-※ Python 3.7以上が必要（追加パッケージ不要）
+※ Python 3.7以上が忁E��E��追加パッケージ不要E��E
 
 ---
 
-## 使い方
+## 使ぁE��
 
 ```bash
 python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-01-31
 ```
 
-## 使用例
+## 使用侁E
 
-### 1. トライアルライセンス（14日間）
+### 1. トライアルライセンス�E�E4日間！E
 
 ```bash
 python generate-license.py -p INSS --trial -e user@example.com
@@ -42,7 +42,7 @@ python generate-license.py -p INPY --trial -e user@example.com
 python generate-license.py -p IVIN --trial -e user@example.com
 ```
 
-### 2. 年間ライセンス（12ヶ月）
+### 2. 年間ライセンス�E�E2ヶ月！E
 
 ```bash
 # InsightOfficeSlide Standard
@@ -58,7 +58,7 @@ python generate-license.py -p INPY --plan STD -e user@example.com -m 12
 python generate-license.py -p IVIN --plan STD -e user@example.com -m 12
 ```
 
-### 3. 指定日までのライセンス
+### 3. 持E��日までのライセンス
 
 ```bash
 python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-12-31
@@ -68,30 +68,30 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
 
 ## オプション
 
-| オプション | 短縮形 | 説明 | 必須 |
+| オプション | 短縮形 | 説昁E| 忁E��E|
 |-----------|--------|------|:----:|
-| `--product` | `-p` | 製品コード | ✓ |
-| `--email` | `-e` | メールアドレス | ✓ |
+| `--product` | `-p` | 製品コーチE| ✁E|
+| `--email` | `-e` | メールアドレス | ✁E|
 | `--plan` | - | プラン (STD/PRO) | △ |
-| `--trial` | - | トライアル発行 | △ |
+| `--trial` | - | トライアル発衁E| △ |
 | `--expires` | - | 有効期限 (YYYY-MM-DD) | - |
-| `--months` | `-m` | 有効期間（月数） | - |
-| `--json` | - | JSON形式のみ出力 | - |
-| `--csv` | - | CSV形式のみ出力 | - |
+| `--months` | `-m` | 有効期間�E�月数�E�E| - |
+| `--json` | - | JSON形式�Eみ出劁E| - |
+| `--csv` | - | CSV形式�Eみ出劁E| - |
 
-※ `--plan` または `--trial` のどちらかが必須
+※ `--plan` また�E `--trial` のどちらかが忁E��E
 
 ---
 
-## 製品コード
+## 製品コーチE
 
-| コード | 製品名 |
+| コーチE| 製品名 |
 |--------|--------|
 | `INSS` | InsightOfficeSlide |
 | `IOSH` | InsightOfficeSheet |
 | `IOSD` | InsightOfficeDoc |
 | `INPY` | InsightPy |
-| `INMV` | InsightMovie |
+| `INMV` | InsightCast |
 | `INBT` | InsightBot |
 | `INCA` | InsightNoCodeAnalyzer |
 | `INIG` | InsightImageGen |
@@ -99,22 +99,22 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
 
 ## プラン
 
-| コード | 名称 | 期間 |
+| コーチE| 名称 | 期間 |
 |--------|------|------|
 | `TRIAL` | トライアル | 14日 |
-| `STD` | Standard | 年間 |
-| `PRO` | Pro | 年間 |
+| `STD` | Standard | 年閁E|
+| `PRO` | Pro | 年閁E|
 
 ---
 
-## 出力例
+## 出力侁E
 
 ```
 ========================================
-  Insight Series ライセンス発行
+  Insight Series ライセンス発衁E
 ========================================
 
-製品:       InsightOfficeSlide (INSS)
+製品E       InsightOfficeSlide (INSS)
 プラン:     Pro (PRO)
 メール:     user@example.com
 有効期限:   2027-01-31
@@ -126,10 +126,10 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
 
 ---
 
-## 注意事項
+## 注意事頁E
 
-1. **メールアドレス紐付け**: ライセンスキーはメールアドレスと紐付けられます。認証時に同じメールアドレスが必要です。
+1. **メールアドレス紐付け**: ライセンスキーはメールアドレスと紐付けられます。認証時に同じメールアドレスが忁E��です、E
 
-2. **オフライン検証**: ライセンス検証はオフラインで実行可能。サーバー通信は不要です。
+2. **オフライン検証**: ライセンス検証はオフラインで実行可能。サーバ�E通信は不要です、E
 
-3. **署名検証**: HMAC-SHA256による署名検証で改ざんを検出します。
+3. **署名検証**: HMAC-SHA256による署名検証で改ざんを検�Eします、E

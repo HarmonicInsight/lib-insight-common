@@ -1,45 +1,45 @@
-# Insight Series 共通リソース統合ガイド
+# Insight Series 共通リソース統合ガイチE
 
-このドキュメントは、Insight Series の各アプリケーション（InsightOfficeSlide, InsightOfficeSheet, InsightOfficeDoc, InsightPy, InsightMovie, InsightImageGen, InsightBot, InsightNoCodeAnalyzer, InterviewInsight）が `insight-common` リポジトリの共通リソースを使用するための手順を説明します。
+こ�Eドキュメント�E、Insight Series の吁E��プリケーション�E�EnsightOfficeSlide, InsightOfficeSheet, InsightOfficeDoc, InsightPy, InsightCast, InsightImageGen, InsightBot, InsightNoCodeAnalyzer, InterviewInsight�E�が `insight-common` リポジトリの共通リソースを使用するための手頁E��説明します、E
 
-## 概要
+## 概要E
 
 ### insight-common とは
 
-Insight Series 全製品で共有するリソースを一元管理するリポジトリです。
+Insight Series 全製品で共有するリソースを一允E��琁E��るリポジトリです、E
 
 ```
 insight-common/
-├── license/           # ライセンス管理（TypeScript/Python）
-├── brand/             # ブランド資産（カラー定義）
-├── legal/             # 法務文書（利用規約、プライバシーポリシー）
-├── company/           # 会社情報
-└── config/            # 製品定義・設定
+├── license/           # ライセンス管琁E��EypeScript/Python�E�E
+├── brand/             # ブランド賁E���E�カラー定義�E�E
+├── legal/             # 法務斁E���E�利用規紁E���Eライバシーポリシー�E�E
+├── company/           # 会社惁E��
+└── config/            # 製品定義・設宁E
 ```
 
-### メリット
+### メリチE��
 
-- **一貫性**: 全製品で同じライセンス体系、ブランドカラー、法務文書を使用
-- **保守性**: 変更は1箇所で行い、全製品に反映
-- **拡張性**: 新製品追加時も共通基盤を再利用
+- **一貫性**: 全製品で同じライセンス体系、ブランドカラー、法務斁E��を使用
+- **保守性**: 変更は1箁E��で行い、�E製品に反映
+- **拡張性**: 新製品追加時も共通基盤を�E利用
 
 ---
 
-## 導入方法
+## 導�E方況E
 
-### 方法1: Git Submodule（推奨）
+### 方況E: Git Submodule�E�推奨�E�E
 
-各製品リポジトリに submodule として追加します。
+吁E��品リポジトリに submodule として追加します、E
 
 ```bash
-# リポジトリのルートで実行
+# リポジトリのルートで実衁E
 git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 
-# 初期化（クローン後）
+# 初期化（クローン後！E
 git submodule update --init --recursive
 ```
 
-ディレクトリ構成例：
+チE��レクトリ構�E例！E
 ```
 InsightNoCodeAnalyzer/
 ├── insight-common/     # サブモジュール
@@ -48,65 +48,65 @@ InsightNoCodeAnalyzer/
 └── package.json
 ```
 
-### 方法2: ファイルコピー
+### 方況E: ファイルコピ�E
 
-submodule を使わない場合、必要なファイルを手動でコピーします。
+submodule を使わなぁE��合、忁E��なファイルを手動でコピ�Eします、E
 
 ```bash
-# ライセンスモジュールをコピー
+# ライセンスモジュールをコピ�E
 cp -r insight-common/license/typescript ./src/lib/license
 
-# ブランドカラーをコピー
+# ブランドカラーをコピ�E
 cp insight-common/brand/colors.json ./src/assets/
 ```
 
 ---
 
-## ライセンス管理の統合
+## ライセンス管琁E�E統吁E
 
-### 共通ライセンスキー形式
+### 共通ライセンスキー形弁E
 
 ```
 INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
-例:
+侁E
 INS-INSS-TRIAL-A1B2-C3D4-X9    # InsightOfficeSlide トライアル
 INS-INCA-PRO-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Professional
 ```
 
-### 製品コード
+### 製品コーチE
 
-| コード | 製品名 | 対象アプリ |
+| コーチE| 製品名 | 対象アプリ |
 |--------|--------|-----------|
 | `INSS` | InsightOfficeSlide | InsightOfficeSlide |
 | `IOSH` | InsightOfficeSheet | InsightOfficeSheet |
 | `IOSD` | InsightOfficeDoc | InsightOfficeDoc |
 | `INPY` | InsightPy | InsightPy |
-| `INMV` | InsightMovie | InsightMovie |
+| `INMV` | InsightCast | InsightCast |
 | `INIG` | InsightImageGen | InsightImageGen |
 | `INBT` | InsightBot | InsightBot |
 | `INCA` | InsightNoCodeAnalyzer | InsightNoCodeAnalyzer |
 | `IVIN` | InterviewInsight | InterviewInsight |
 
-### ティア
+### チE��ア
 
-| ティア | 期間 | 用途 |
+| チE��ア | 期間 | 用送E|
 |--------|------|------|
-| `TRIAL` | 任意指定 | トライアル版 |
-| `STD` | 年間 | Standard版 |
-| `PRO` | 年間 | Professional版 |
-| `ENT` | 永久 | Enterprise版 |
+| `TRIAL` | 任意指宁E| トライアル牁E|
+| `STD` | 年閁E| Standard牁E|
+| `PRO` | 年閁E| Professional牁E|
+| `ENT` | 永乁E| Enterprise牁E|
 
 ---
 
 ## TypeScript/React アプリでの使用
 
-InsightNoCodeAnalyzer, InterviewInsight（Tauri版）など
+InsightNoCodeAnalyzer, InterviewInsight�E�Eauri版）など
 
-### 1. インポート設定
+### 1. インポ�Eト設宁E
 
 ```typescript
-// tsconfig.json のパス設定
+// tsconfig.json のパス設宁E
 {
   "compilerOptions": {
     "paths": {
@@ -117,7 +117,7 @@ InsightNoCodeAnalyzer, InterviewInsight（Tauri版）など
 }
 ```
 
-### 2. ライセンス検証の実装
+### 2. ライセンス検証の実裁E
 
 ```typescript
 // src/lib/license-manager.ts
@@ -129,8 +129,8 @@ import {
   TIER_LIMITS
 } from '@insight/license';
 
-// このアプリの製品コード
-const CURRENT_PRODUCT: ProductCode = 'INCA';  // または 'IVIN'
+// こ�Eアプリの製品コーチE
+const CURRENT_PRODUCT: ProductCode = 'INCA';  // また�E 'IVIN'
 
 class AppLicenseManager {
   private validator = new LicenseValidator();
@@ -147,7 +147,7 @@ class AppLicenseManager {
     const { key, expiresAt } = JSON.parse(stored);
     const result = this.validator.validate(key, new Date(expiresAt));
 
-    // この製品がカバーされているかチェック
+    // こ�E製品がカバ�EされてぁE��かチェチE��
     if (result.isValid && this.validator.isProductCovered(result, CURRENT_PRODUCT)) {
       this.licenseInfo = result;
       return result;
@@ -168,13 +168,13 @@ class AppLicenseManager {
       throw new Error('This license does not cover this product');
     }
 
-    // 保存
+    // 保孁E
     localStorage.setItem('license', JSON.stringify({ key, expiresAt }));
     this.licenseInfo = result;
     return result;
   }
 
-  // 機能制限を取得
+  // 機�E制限を取征E
   getFeatureLimits() {
     return getFeatureLimits(this.licenseInfo?.tier || null);
   }
@@ -193,7 +193,7 @@ class AppLicenseManager {
 export const licenseManager = new AppLicenseManager();
 ```
 
-### 3. 機能制限の適用
+### 3. 機�E制限�E適用
 
 ```typescript
 // src/components/FeatureGate.tsx
@@ -215,7 +215,7 @@ export function FeatureGate({ feature, children, fallback }: FeatureGateProps) {
   return <>{children}</>;
 }
 
-// 使用例
+// 使用侁E
 <FeatureGate feature="cloudSync">
   <CloudSyncButton />
 </FeatureGate>
@@ -241,21 +241,21 @@ export const theme = {
 
 ## Python アプリでの使用
 
-InsightOfficeSlide, InsightPy（Python版）など
+InsightOfficeSlide, InsightPy�E�Eython版）など
 
-### 1. パッケージ構成
+### 1. パッケージ構�E
 
 ```
 InsightOfficeSlide/
-├── insight_common/          # コピーまたはシンボリックリンク
-│   └── license/
-│       └── __init__.py
+├── insight_common/          # コピ�Eまた�EシンボリチE��リンク
+━E  └── license/
+━E      └── __init__.py
 ├── src/
-│   └── license_manager.py
+━E  └── license_manager.py
 └── main.py
 ```
 
-### 2. ライセンス検証の実装
+### 2. ライセンス検証の実裁E
 
 ```python
 # src/license_manager.py
@@ -272,8 +272,8 @@ from insight_common.license import (
     get_feature_limits,
 )
 
-# このアプリの製品コード
-CURRENT_PRODUCT = ProductCode.INSS  # または INPY, IVIN
+# こ�Eアプリの製品コーチE
+CURRENT_PRODUCT = ProductCode.INSS  # また�E INPY, IVIN
 
 # 設定ファイルのパス
 CONFIG_DIR = Path.home() / ".insight-office-slide"
@@ -301,7 +301,7 @@ class AppLicenseManager:
 
             result = self.validator.validate(key, expires_at)
 
-            # この製品がカバーされているかチェック
+            # こ�E製品がカバ�EされてぁE��かチェチE��
             if result.is_valid and self.validator.is_product_covered(result, CURRENT_PRODUCT):
                 self.license_info = result
                 return result
@@ -321,7 +321,7 @@ class AppLicenseManager:
         if not self.validator.is_product_covered(result, CURRENT_PRODUCT):
             raise ValueError("This license does not cover this product")
 
-        # 保存
+        # 保孁E
         with open(LICENSE_FILE, 'w') as f:
             json.dump({
                 'key': key,
@@ -332,7 +332,7 @@ class AppLicenseManager:
         return result
 
     def get_feature_limits(self):
-        """機能制限を取得"""
+        """機�E制限を取征E""
         tier = self.license_info.tier if self.license_info else None
         return get_feature_limits(tier)
 
@@ -350,7 +350,7 @@ class AppLicenseManager:
 license_manager = AppLicenseManager()
 ```
 
-### 3. 機能制限の適用
+### 3. 機�E制限�E適用
 
 ```python
 # src/feature_check.py
@@ -358,31 +358,31 @@ from license_manager import license_manager
 
 
 def require_feature(feature: str):
-    """機能が利用可能かチェックするデコレータ"""
+    """機�Eが利用可能かチェチE��するチE��レータ"""
     def decorator(func):
         def wrapper(*args, **kwargs):
             limits = license_manager.get_feature_limits()
             if not getattr(limits, feature, False):
                 raise PermissionError(
-                    f"この機能はご利用のプランでは使用できません。"
-                    f"アップグレードをご検討ください。"
+                    f"こ�E機�Eはご利用のプランでは使用できません、E
+                    f"アチE�Eグレードをご検討ください、E
                 )
             return func(*args, **kwargs)
         return wrapper
     return decorator
 
 
-# 使用例
+# 使用侁E
 @require_feature('batch_processing')
 def process_all_files(files: list):
-    """バッチ処理（STD以上）"""
+    """バッチ�E琁E��ETD以上！E""
     for file in files:
         process_file(file)
 
 
 @require_feature('cloud_sync')
 def sync_to_cloud():
-    """クラウド同期（PRO以上）"""
+    """クラウド同期！ERO以上！E""
     pass
 ```
 
@@ -390,7 +390,7 @@ def sync_to_cloud():
 
 ## ブランドカラーの統一
 
-### colors.json の構成
+### colors.json の構�E
 
 ```json
 {
@@ -414,23 +414,23 @@ def sync_to_cloud():
 
 ### 製品別アクセントカラー
 
-全製品は Gold (#B8942F) をプライマリカラーとして使用し、Ivory (#FAF8F5) を背景色として使用します。
+全製品�E Gold (#B8942F) を�Eライマリカラーとして使用し、Ivory (#FAF8F5) を背景色として使用します、E
 
 ---
 
-## 法務文書の表示
+## 法務斁E��の表示
 
-### 利用規約・プライバシーポリシー
+### 利用規紁E�Eプライバシーポリシー
 
 ```typescript
-// React での表示例
+// React での表示侁E
 import termsOfService from '@/insight-common/legal/terms-of-service.md';
 import privacyPolicy from '@/insight-common/legal/privacy-policy.md';
 
 function LegalPage() {
   return (
     <div>
-      <h1>利用規約</h1>
+      <h1>利用規紁E/h1>
       <MarkdownRenderer content={termsOfService} />
 
       <h1>プライバシーポリシー</h1>
@@ -442,22 +442,22 @@ function LegalPage() {
 
 ---
 
-## 製品情報の参照
+## 製品情報の参�E
 
 ### products.json の活用
 
 ```typescript
 import products from '@/insight-common/config/products.json';
 
-// 現在の製品情報を取得
+// 現在の製品情報を取征E
 const currentProduct = products.products.individual.find(
   p => p.code === 'INSS'
 );
 
 console.log(currentProduct.name);        // "InsightOfficeSlide"
-console.log(currentProduct.description); // "PowerPointコンテンツ抽出・更新"
+console.log(currentProduct.description); // "PowerPointコンチE��チE��出・更新"
 
-// ティア情報
+// チE��ア惁E��
 const proTier = products.tiers.PRO;
 console.log(proTier.name);      // "Professional"
 console.log(proTier.limits);    // { apiCalls: 100000, storage: "50GB" }
@@ -467,20 +467,20 @@ console.log(proTier.limits);    // { apiCalls: 100000, storage: "50GB" }
 
 ## 更新の反映
 
-### Submodule を使用している場合
+### Submodule を使用してぁE��場吁E
 
 ```bash
-# 最新の共通リソースを取得
+# 最新の共通リソースを取征E
 cd insight-common
 git pull origin main
 cd ..
 
-# 変更をコミット
+# 変更をコミッチE
 git add insight-common
 git commit -m "chore: Update insight-common to latest"
 ```
 
-### 自動化（GitHub Actions）
+### 自動化�E�EitHub Actions�E�E
 
 ```yaml
 # .github/workflows/update-common.yml
@@ -488,7 +488,7 @@ name: Update insight-common
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # 毎週日曜
+    - cron: '0 0 * * 0'  # 毎週日曁E
 
 jobs:
   update:
@@ -511,23 +511,23 @@ jobs:
 
 ---
 
-## チェックリスト
+## チェチE��リスチE
 
-新規アプリで insight-common を導入する際のチェックリスト：
+新規アプリで insight-common を導�Eする際�EチェチE��リスト！E
 
-- [ ] insight-common を submodule として追加
-- [ ] 製品コード（INSS/IOSH/IOSD/INPY/INMV/INIG/INBT/INCA/IVIN）を決定
-- [ ] ライセンス管理クラスを実装
-- [ ] 機能制限のゲート処理を実装
+- [ ] insight-common めEsubmodule として追加
+- [ ] 製品コード！ENSS/IOSH/IOSD/INPY/INMV/INIG/INBT/INCA/IVIN�E�を決宁E
+- [ ] ライセンス管琁E��ラスを実裁E
+- [ ] 機�E制限�Eゲート�E琁E��実裁E
 - [ ] ブランドカラーをテーマに適用
-- [ ] 利用規約・プライバシーポリシーへのリンクを設置
-- [ ] 製品情報を About 画面に表示
+- [ ] 利用規紁E�Eプライバシーポリシーへのリンクを設置
+- [ ] 製品情報めEAbout 画面に表示
 
 ---
 
-## サポート
+## サポ�EチE
 
-質問や問題がある場合：
+質問や問題がある場合！E
 
 - Issue: https://github.com/HarmonicInsight/cross-lib-insight-common/issues
 - Email: developer@h-insight.jp

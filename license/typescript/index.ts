@@ -2,7 +2,7 @@
  * Insight Series License Management - TypeScript
  * オフラインライセンス認証モジュール
  *
- * キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
+ * キー形弁E PPPP-PLAN-YYMM-HASH-SIG1-SIG2
  */
 
 // =============================================================================
@@ -53,7 +53,7 @@ export const PRODUCT_NAMES: Record<ProductCode, string> = {
   IOSH: 'InsightOfficeSheet',
   IOSD: 'InsightOfficeDoc',
   INPY: 'InsightPy',
-  INMV: 'InsightMovie',
+  INMV: 'InsightCast',
   INBT: 'InsightBot',
   INCA: 'InsightNoCodeAnalyzer',
   INIG: 'InsightImageGen',
@@ -71,7 +71,7 @@ export const PRODUCT_PLANS: Record<string, ProductCode[]> = {
   InsightOfficeSheet: ['IOSH'],
   InsightOfficeDoc: ['IOSD'],
   InsightPy: ['INPY'],
-  InsightMovie: ['INMV'],
+  InsightCast: ['INMV'],
   InsightBot: ['INBT'],
   InsightNoCodeAnalyzer: ['INCA'],
   InsightImageGen: ['INIG'],
@@ -82,21 +82,21 @@ export const TRIAL_DAYS = 14;
 
 export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   E001: 'ライセンスキーの形式が正しくありません',
-  E002: 'ライセンスキーが無効です',
+  E002: 'ライセンスキーが無効でぁE,
   E003: 'メールアドレスが一致しません',
-  E004: 'ライセンスの有効期限が切れています',
-  E005: 'このライセンスは {product} 用です',
-  E006: 'トライアル期間は終了しています',
+  E004: 'ライセンスの有効期限が�EれてぁE��ぁE,
+  E005: 'こ�Eライセンスは {product} 用でぁE,
+  E006: 'トライアル期間は終亁E��てぁE��ぁE,
 };
 
 // ライセンスキー正規表現
 const LICENSE_KEY_REGEX = /^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
-// 署名用シークレットキー
+// 署名用シークレチE��キー
 const SECRET_KEY = 'insight-series-license-secret-2026';
 
 // =============================================================================
-// 署名・ハッシュ (ブラウザ互換)
+// 署名�Eハッシュ (ブラウザ互換)
 // =============================================================================
 
 async function sha256(message: string): Promise<ArrayBuffer> {
@@ -170,7 +170,7 @@ export interface LicenseStorage {
 }
 
 /**
- * ローカルストレージベースのストレージ（ブラウザ/Tauri用）
+ * ローカルストレージベ�Eスのストレージ�E�ブラウザ/Tauri用�E�E
  */
 export class LocalStorageAdapter implements LicenseStorage {
   private key: string;
@@ -233,7 +233,7 @@ export class LicenseManager {
     email = email.trim().toLowerCase();
     key = key.trim().toUpperCase();
 
-    // 1. キー形式チェック
+    // 1. キー形式チェチE��
     const match = key.match(LICENSE_KEY_REGEX);
     if (!match) {
       return {
@@ -266,7 +266,7 @@ export class LicenseManager {
       };
     }
 
-    // 3. メールハッシュ照合
+    // 3. メールハッシュ照吁E
     const expectedHash = await generateEmailHash(email);
     if (emailHash !== expectedHash) {
       return {
@@ -276,7 +276,7 @@ export class LicenseManager {
       };
     }
 
-    // 4. 有効期限チェック
+    // 4. 有効期限チェチE��
     const year = 2000 + parseInt(yymm.substring(0, 2), 10);
     const month = parseInt(yymm.substring(2, 4), 10);
     const expires = new Date(year, month, 0, 23, 59, 59); // 月末
@@ -292,7 +292,7 @@ export class LicenseManager {
       };
     }
 
-    // 5. 製品コードチェック
+    // 5. 製品コードチェチE��
     const validCodes = this.getValidProductCodes();
     if (!validCodes.includes(productCode)) {
       return {
@@ -305,7 +305,7 @@ export class LicenseManager {
       };
     }
 
-    // 認証成功 → ローカル保存
+    // 認証成功 ↁEローカル保孁E
     const data: LicenseData = {
       email,
       key,
@@ -328,7 +328,7 @@ export class LicenseManager {
   }
 
   /**
-   * ライセンス状態を確認
+   * ライセンス状態を確誁E
    */
   async checkStatus(): Promise<StatusResult> {
     const data = this.cachedData || (await this.storage.load());
@@ -379,7 +379,7 @@ export class LicenseManager {
   }
 
   /**
-   * ライセンス情報をクリア
+   * ライセンス惁E��をクリア
    */
   async clearLicense(): Promise<void> {
     this.cachedData = null;
@@ -387,7 +387,7 @@ export class LicenseManager {
   }
 
   /**
-   * 残り日数を取得
+   * 残り日数を取征E
    */
   async getDaysRemaining(): Promise<number> {
     const status = await this.checkStatus();
@@ -396,7 +396,7 @@ export class LicenseManager {
 }
 
 // =============================================================================
-// ライセンスキー生成（開発者用・Node.js環境）
+// ライセンスキー生�E�E�開発老E��・Node.js環墁E��E
 // =============================================================================
 
 export interface GenerateOptions {
@@ -407,8 +407,8 @@ export interface GenerateOptions {
 }
 
 /**
- * Node.js Buffer を Base32 (RFC 4648) にエンコード
- * ※ ブラウザ版 arrayBufferToBase32 と同一のアルゴリズム
+ * Node.js Buffer めEBase32 (RFC 4648) にエンコーチE
+ * ※ ブラウザ牁EarrayBufferToBase32 と同一のアルゴリズム
  */
 function bufferToBase32(buffer: Buffer): string {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -433,24 +433,24 @@ function bufferToBase32(buffer: Buffer): string {
 }
 
 /**
- * ライセンスキーを生成（同期版・CLIツール用）
- * ※ Node.js 環境でのみ使用
+ * ライセンスキーを生成（同期版・CLIチE�Eル用�E�E
+ * ※ Node.js 環墁E��のみ使用
  */
 export function generateLicenseKeySync(options: GenerateOptions): string {
   // Node.js crypto を使用
   const crypto = require('crypto');
   const { productCode, plan, email, expires } = options;
 
-  // YYMM形式
+  // YYMM形弁E
   const yy = String(expires.getFullYear()).substring(2);
   const mm = String(expires.getMonth() + 1).padStart(2, '0');
   const yymm = yy + mm;
 
-  // メールハッシュ（Base32）
+  // メールハッシュ�E�Ease32�E�E
   const emailHashRaw = crypto.createHash('sha256').update(email.toLowerCase().trim()).digest();
   const emailHash = bufferToBase32(emailHashRaw).substring(0, 4).toUpperCase();
 
-  // 署名（Base32）
+  // 署名！Ease32�E�E
   const signData = `${productCode}-${plan}-${yymm}-${emailHash}`;
   const hmac = crypto.createHmac('sha256', SECRET_KEY);
   hmac.update(signData);
@@ -463,7 +463,7 @@ export function generateLicenseKeySync(options: GenerateOptions): string {
 }
 
 /**
- * トライアルキーを生成（同期版）
+ * トライアルキーを生成（同期版�E�E
  */
 export function generateTrialKeySync(productCode: ProductCode, email: string): string {
   const expires = new Date();

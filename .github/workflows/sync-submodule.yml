@@ -1,23 +1,23 @@
 name: Sync icons to dependent repos
 
-# 手動実行のみ。
-# brand/icons を変更した後、必要なリポジトリにアイコンをコピーして PR を作成する。
-# push トリガーは無効化済み（無限 PR 生成を防止）。
+# 手動実行�Eみ、E
+# brand/icons を変更した後、忁E��なリポジトリにアイコンをコピ�Eして PR を作�Eする、E
+# push トリガーは無効化済み�E�無陁EPR 生�Eを防止�E�、E
 
 on:
   workflow_dispatch:
     inputs:
       repos:
-        description: '同期対象リポジトリ（カンマ区切り、空=全て）'
+        description: '同期対象リポジトリ�E�カンマ区刁E��、空=全て�E�E
         required: false
         type: string
       dry_run:
-        description: 'Dry run（PR を作成しない）'
+        description: 'Dry run�E�ER を作�EしなぁE��E
         required: false
         type: boolean
         default: false
       sync_submodule:
-        description: 'サブモジュール参照も更新する'
+        description: 'サブモジュール参�Eも更新する'
         required: false
         type: boolean
         default: false
@@ -37,7 +37,7 @@ jobs:
       max-parallel: 5
       matrix:
         include:
-          # ── Tier 1: 業務変革ツール ──
+          # ── Tier 1: 業務変革チE�Eル ──
           - repo: win-app-nocode-analyzer
             product: INCA
             name: InsightNoCodeAnalyzer
@@ -59,11 +59,11 @@ jobs:
             icon_dest: src-tauri/icons/
             copy_mode: dir
 
-          # ── Tier 2: AI活用ツール ──
-          - repo: win-app-insight-movie-gen
+          # ── Tier 2: AI活用チE�Eル ──
+          - repo: win-app-insight-cast
             product: INMV
-            name: InsightMovie
-            icon_src: InsightMovie
+            name: InsightCast
+            icon_src: InsightCast
             icon_dest: resources
             copy_mode: ico_png
 
@@ -118,7 +118,7 @@ jobs:
             icon_dest: Resources
             copy_mode: ico_png
 
-          # ── ユーティリティ ──
+          # ── ユーチE��リチE�� ──
           - repo: win-app-insight-launcher
             product: LAUNCHER
             name: InsightLauncher
@@ -185,7 +185,7 @@ jobs:
         run: |
           if [ -z "${{ secrets.SYNC_PAT }}" ]; then
             echo "::error::SYNC_PAT secret is not configured. Please add a Personal Access Token with 'repo' scope to the repository secrets."
-            echo "::error::Settings → Secrets and variables → Actions → New repository secret → Name: SYNC_PAT"
+            echo "::error::Settings ↁESecrets and variables ↁEActions ↁENew repository secret ↁEName: SYNC_PAT"
             exit 1
           fi
 
@@ -235,7 +235,7 @@ jobs:
           done
 
           if [ -z "$SUBMODULE" ]; then
-            echo "No submodule found — skipping submodule update for ${{ matrix.repo }}"
+            echo "No submodule found  Eskipping submodule update for ${{ matrix.repo }}"
             exit 0
           fi
 
@@ -307,11 +307,11 @@ jobs:
         id: changes
         working-directory: target-repo
         run: |
-          # アイコンファイルのみステージング（サブモジュール参照は除外）
+          # アイコンファイルのみスチE�Eジング�E�サブモジュール参�Eは除外！E
           ICON_DEST="${{ matrix.icon_dest }}"
           git add "$ICON_DEST"
 
-          # サブモジュール更新がある場合のみステージング
+          # サブモジュール更新がある場合�EみスチE�Eジング
           if [ "${{ inputs.sync_submodule }}" = "true" ]; then
             for path in insight-common lib-insight-common; do
               [ -d "$path" ] && git add "$path"
@@ -337,38 +337,38 @@ jobs:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          # 固定ブランチ名を使用（SHA ごとに新ブランチを作らない）
+          # 固定ブランチ名を使用�E�EHA ごとに新ブランチを作らなぁE��E
           BRANCH="chore/sync-icons"
           COMMIT_MSG="chore: sync icons from insight-common (${SHORT_SHA})"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 既存のリモートブランチがあれば削除してから作成
+          # 既存�Eリモートブランチがあれば削除してから作�E
           git push origin --delete "$BRANCH" 2>/dev/null || true
           git checkout -b "$BRANCH"
           git commit -m "$COMMIT_MSG"
           git push -u origin "$BRANCH"
 
-          # 既存の PR を探す
+          # 既存�E PR を探ぁE
           EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
           if [ -n "$EXISTING" ]; then
-            echo "PR #$EXISTING already exists — branch updated with latest icons"
+            echo "PR #$EXISTING already exists  Ebranch updated with latest icons"
           else
             gh pr create \
               --title "$COMMIT_MSG" \
               --body "$(cat <<EOF
           ## アイコン同期
 
-          **変更元**: HarmonicInsight/cross-lib-insight-common@${SHORT_SHA}
-          **対象製品**: ${{ matrix.name }} (${{ matrix.product }})
+          **変更允E*: HarmonicInsight/cross-lib-insight-common@${SHORT_SHA}
+          **対象製品E*: ${{ matrix.name }} (${{ matrix.product }})
 
-          ### 変更内容
-          - アイコンファイルを insight-common から同期
+          ### 変更冁E��
+          - アイコンファイルめEinsight-common から同期
 
-          ### 確認手順
-          1. ビルドが通ることを確認
-          2. アイコンが正しく表示されることを確認
+          ### 確認手頁E
+          1. ビルドが通ることを確誁E
+          2. アイコンが正しく表示されることを確誁E
 
           ---
           *This PR was created by [sync-icons](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*

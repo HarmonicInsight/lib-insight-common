@@ -5,6 +5,18 @@ using System.Text.Json.Serialization;
 namespace HarmonicTools.AppManager.Models;
 
 /// <summary>
+/// ビルド設定の定数
+/// </summary>
+public static class BuildConstants
+{
+    /// <summary>ターゲットフレームワーク</summary>
+    public const string TargetFramework = "net8.0-windows";
+
+    /// <summary>ランタイム識別子</summary>
+    public const string RuntimeIdentifier = "win-x64";
+}
+
+/// <summary>
 /// アプリの種別
 /// </summary>
 public enum AppType
@@ -131,6 +143,7 @@ public class AppDefinition
     /// <summary>
     /// 解決済みのソリューション絶対パス
     /// </summary>
+    [JsonIgnore]
     public string ResolvedSolutionPath => string.IsNullOrEmpty(BasePath)
         ? SolutionPath
         : Path.Combine(BasePath, SolutionPath);
@@ -138,6 +151,7 @@ public class AppDefinition
     /// <summary>
     /// 解決済みのプロジェクト絶対パス
     /// </summary>
+    [JsonIgnore]
     public string ResolvedProjectPath => string.IsNullOrEmpty(BasePath)
         ? ProjectPath
         : Path.Combine(BasePath, ProjectPath);
@@ -145,6 +159,7 @@ public class AppDefinition
     /// <summary>
     /// 解決済みのテストプロジェクト絶対パス
     /// </summary>
+    [JsonIgnore]
     public string ResolvedTestProjectPath => string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(TestProjectPath)
         ? TestProjectPath
         : Path.Combine(BasePath, TestProjectPath);
@@ -157,6 +172,7 @@ public class AppDefinition
     /// <summary>
     /// Debug exe パス
     /// </summary>
+    [JsonIgnore]
     public string DebugExePath => string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(ExeRelativePath)
         ? string.Empty
         : Path.Combine(BasePath, ExeRelativePath.Replace("{config}", "Debug"));
@@ -164,22 +180,35 @@ public class AppDefinition
     /// <summary>
     /// Release exe パス
     /// </summary>
+    [JsonIgnore]
     public string ReleaseExePath => string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(ExeRelativePath)
         ? string.Empty
         : Path.Combine(BasePath, ExeRelativePath.Replace("{config}", "Release"));
 
     /// <summary>
     /// Self-contained publish exe パス (win-x64)
+    /// build.ps1 がある場合は {BasePath}/publish/{exeName} を使用
     /// </summary>
+    [JsonIgnore]
     public string PublishExePath
     {
         get
         {
-            if (string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(ProjectPath) || string.IsNullOrEmpty(ExeRelativePath))
+            if (string.IsNullOrEmpty(BasePath) || string.IsNullOrEmpty(ExeRelativePath))
+                return string.Empty;
+            var exeName = Path.GetFileName(ExeRelativePath.Replace("{config}", "Release"));
+
+            // build.ps1 がある場合は /publish フォルダを使用
+            if (HasBuildScript)
+            {
+                return Path.Combine(BasePath, "publish", exeName);
+            }
+
+            // dotnet publish のデフォルト出力先
+            if (string.IsNullOrEmpty(ProjectPath))
                 return string.Empty;
             var projectDir = Path.GetDirectoryName(ResolvedProjectPath) ?? "";
-            var exeName = Path.GetFileName(ExeRelativePath.Replace("{config}", "Release"));
-            return Path.Combine(projectDir, "bin", "Release", "net8.0-windows", "win-x64", "publish", exeName);
+            return Path.Combine(projectDir, "bin", "Release", BuildConstants.TargetFramework, BuildConstants.RuntimeIdentifier, "publish", exeName);
         }
     }
 

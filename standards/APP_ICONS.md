@@ -1,38 +1,38 @@
-# アプリアイコン標準ガイド
+# アプリアイコン標準ガイチE
 
-> HARMONIC insight 全製品のアプリアイコンに適用される標準仕様
+> HARMONIC insight 全製品�Eアプリアイコンに適用される標準仕槁E
 
 ---
 
-## 1. デザイン原則
+## 1. チE��イン原則
 
 ### ブランド統一
 
-| 要素 | 仕様 |
+| 要素 | 仕槁E|
 |------|------|
-| **ベースカラー** | Gold `#B8942F` (角丸背景) |
-| **コンテンツカラー** | White `#FFFFFF` (アイコン内要素) |
-| **アクセントカラー** | Gold Dark `#8C711E` (見出し・強調) |
+| **ベ�Eスカラー** | Gold `#B8942F` (角丸背景) |
+| **コンチE��チE��ラー** | White `#FFFFFF` (アイコン冁E��素) |
+| **アクセントカラー** | Gold Dark `#8C711E` (見�Eし�E強調) |
 | **サブカラー** | Gold Light `#F0E6C8` (補助要素) |
 | **背景形状** | 角丸四角形 (Corner Radius: サイズの 1/6) |
 
 ```
-禁止: Blue (#2563EB) をアイコンのベースカラーに使用
-禁止: 透明背景のままOSに任せる
-必須: Gold (#B8942F) の角丸四角形ベース
-必須: 製品の特徴を表すホワイトのシンボル
+禁止: Blue (#2563EB) をアイコンのベ�Eスカラーに使用
+禁止: 透�E背景のままOSに任せる
+忁E��E Gold (#B8942F) の角丸四角形ベ�Eス
+忁E��E 製品�E特徴を表す�Eワイト�Eシンボル
 ```
 
 ### アイコン構造
 
 ```
 +---------------------+
-|  +---------------+  |  <- マージン: サイズの 1/8
+|  +---------------+  |  <- マ�Eジン: サイズの 1/8
 |  |               |  |
 |  |  Gold #B8942F |  |  <- 角丸背景
 |  |               |  |
 |  |   +-------+   |  |
-|  |   | White |   |  |  <- コンテンツ領域: サイズの 1/4 マージン
+|  |   | White |   |  |  <- コンチE��チE��域: サイズの 1/4 マ�Eジン
 |  |   |Symbol |   |  |
 |  |   +-------+   |  |
 |  |               |  |
@@ -42,11 +42,11 @@
 
 ---
 
-## 2. 製品別プラットフォーム・アイコン配置
+## 2. 製品別プラチE��フォーム・アイコン配置
 
-### プラットフォーム一覧
+### プラチE��フォーム一覧
 
-| プラットフォーム | 生成形式 | 配置先 |
+| プラチE��フォーム | 生�E形弁E| 配置允E|
 |----------------|---------|--------|
 | **wpf** (C# WPF) | `.ico` (16-256px) + 個別 PNG | `Resources/{Name}.ico` |
 | **python** (PyInstaller) | `.ico` (16-256px) + 個別 PNG | `resources/{Name}.ico` |
@@ -55,15 +55,15 @@
 | **web** (Next.js/React) | `favicon.ico` + `apple-touch-icon.png` + manifest PNGs | `public/` |
 | **service** (Windows Service) | `.ico` (16-256px) + 個別 PNG | `Resources/{Name}.ico` |
 
-### 全16アプリのプラットフォーム・配置先
+### 全16アプリのプラチE��フォーム・配置允E
 
-| コード | 製品名 | プラットフォーム | アイコン配置先 | ビルド設定 |
+| コーチE| 製品名 | プラチE��フォーム | アイコン配置允E| ビルド設宁E|
 |-------|--------|----------------|-------------|-----------|
 | **INSS** | InsightOfficeSlide | C# WPF | `Resources/InsightOfficeSlide.ico` | `.csproj` の `<ApplicationIcon>` |
 | **IOSH** | InsightOfficeSheet | C# WPF | `Resources/InsightOfficeSheet.ico` | `.csproj` の `<ApplicationIcon>` |
 | **IOSD** | InsightOfficeDoc | C# WPF | `Resources/InsightOfficeDoc.ico` | `.csproj` の `<ApplicationIcon>` |
 | **INPY** | InsightPy | Python/PyInstaller | `resources/InsightPy.ico` | PyInstaller `--icon` |
-| **INMV** | InsightMovie | Python/PyInstaller | `resources/InsightMovie.ico` | PyInstaller `--icon` |
+| **INMV** | InsightCast | Python/PyInstaller | `resources/InsightCast.ico` | PyInstaller `--icon` |
 | **INIG** | InsightImageGen | Python/PyInstaller | `resources/InsightImageGen.ico` | PyInstaller `--icon` |
 | **INBT** | InsightBot | Windows Service | `Resources/InsightBot.ico` | トレイアプリの `Icon` |
 | **INCA** | InsightNoCodeAnalyzer | Tauri + React | `src-tauri/icons/` | `tauri.conf.json` |
@@ -78,12 +78,12 @@
 
 ---
 
-## 3. プラットフォーム別ビルド設定
+## 3. プラチE��フォーム別ビルド設宁E
 
-### WPF (C# / Windows) — INSS, IOSH, IOSD, ISOF, LAUNCHER
+### WPF (C# / Windows)  EINSS, IOSH, IOSD, ISOF, LAUNCHER
 
 ```bash
-# アイコン生成
+# アイコン生�E
 python insight-common/scripts/generate-app-icon.py --product IOSH --output src/InsightOfficeSheet.App/Resources/
 ```
 
@@ -97,14 +97,14 @@ python insight-common/scripts/generate-app-icon.py --product IOSH --output src/I
 <Window Icon="Resources/InsightOfficeSheet.ico" ... >
 ```
 
-**生成ファイル:**
+**生�Eファイル:**
 - `InsightOfficeSheet.ico` (マルチ解像度: 16/24/32/48/64/128/256px)
-- `InsightOfficeSheet_16.png` 〜 `InsightOfficeSheet_256.png` (個別 PNG)
+- `InsightOfficeSheet_16.png` 、E`InsightOfficeSheet_256.png` (個別 PNG)
 
-### Python / PyInstaller — INPY, INMV, INIG
+### Python / PyInstaller  EINPY, INMV, INIG
 
 ```bash
-# アイコン生成
+# アイコン生�E
 python insight-common/scripts/generate-app-icon.py --product INPY --output resources/
 ```
 
@@ -119,25 +119,25 @@ exe = EXE(
 ```
 
 ```python
-# Tkinter ウィンドウアイコン設定
+# Tkinter ウィンドウアイコン設宁E
 import tkinter as tk
 root = tk.Tk()
 root.iconbitmap('resources/InsightPy.ico')
 ```
 
-**生成ファイル:**
+**生�Eファイル:**
 - `InsightPy.ico` (マルチ解像度)
-- `InsightPy_16.png` 〜 `InsightPy_256.png` (個別 PNG)
+- `InsightPy_16.png` 、E`InsightPy_256.png` (個別 PNG)
 
-### Tauri + React — INCA, IVIN
+### Tauri + React  EINCA, IVIN
 
 ```bash
-# アイコン生成（Tauri 形式で出力）
+# アイコン生�E�E�Eauri 形式で出力！E
 python insight-common/scripts/generate-app-icon.py --product INCA --output src-tauri/icons/
 ```
 
 ```json
-// tauri.conf.json（自動的に src-tauri/icons/ を参照）
+// tauri.conf.json�E��E動的に src-tauri/icons/ を参照�E�E
 {
   "bundle": {
     "icon": [
@@ -151,7 +151,7 @@ python insight-common/scripts/generate-app-icon.py --product INCA --output src-t
 }
 ```
 
-**生成ファイル:**
+**生�Eファイル:**
 - `icon.ico` (マルチ解像度)
 - `icon.png` (512x512)
 - `32x32.png`, `128x128.png`, `256x256.png`
@@ -159,10 +159,10 @@ python insight-common/scripts/generate-app-icon.py --product INCA --output src-t
 - `Square150x150Logo.png`, `Square310x310Logo.png` (Windows Store)
 - `StoreLogo.png` (50x50)
 
-### Windows Service + Tray — INBT
+### Windows Service + Tray  EINBT
 
 ```bash
-# アイコン生成
+# アイコン生�E
 python insight-common/scripts/generate-app-icon.py --product INBT --output Resources/
 ```
 
@@ -171,15 +171,15 @@ python insight-common/scripts/generate-app-icon.py --product INBT --output Resou
 notifyIcon.Icon = new System.Drawing.Icon("Resources/InsightBot.ico");
 ```
 
-### Expo / React Native (iOS + Android) — CAMERA, VOICE_CLOCK, PINBOARD, VOICE_MEMO
+### Expo / React Native (iOS + Android)  ECAMERA, VOICE_CLOCK, PINBOARD, VOICE_MEMO
 
 ```bash
-# アイコン生成
+# アイコン生�E
 python insight-common/scripts/generate-app-icon.py --product CAMERA --output assets/
 ```
 
 ```json
-// app.json (Expo) — templates/expo/app.json 参照
+// app.json (Expo)  Etemplates/expo/app.json 参�E
 {
   "expo": {
     "icon": "./assets/icon.png",
@@ -207,18 +207,18 @@ python insight-common/scripts/generate-app-icon.py --product CAMERA --output ass
 }
 ```
 
-**生成ファイル:**
-- `icon.png` (1024x1024, RGB, 透明なし) — iOS App Store / Expo アイコン
-- `adaptive-icon.png` (1024x1024, RGBA) — Android Adaptive Icon foreground
-- `notification-icon.png` (96x96) — Android 通知アイコン
-- `splash-icon.png` (200x200) — スプラッシュ画面ロゴ
-- `favicon.png` (48x48, RGB) — Web/PWA ファビコン
-- `android/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher.png` — Android ランチャー
+**生�Eファイル:**
+- `icon.png` (1024x1024, RGB, 透�EなぁE  EiOS App Store / Expo アイコン
+- `adaptive-icon.png` (1024x1024, RGBA)  EAndroid Adaptive Icon foreground
+- `notification-icon.png` (96x96)  EAndroid 通知アイコン
+- `splash-icon.png` (200x200)  EスプラチE��ュ画面ロゴ
+- `favicon.png` (48x48, RGB)  EWeb/PWA ファビコン
+- `android/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher.png`  EAndroid ランチャー
 
-### Web (Next.js / React) — QR
+### Web (Next.js / React)  EQR
 
 ```bash
-# アイコン生成
+# アイコン生�E
 python insight-common/scripts/generate-app-icon.py --product QR --output public/
 ```
 
@@ -242,7 +242,7 @@ export const metadata = {
 }
 ```
 
-**生成ファイル:**
+**生�Eファイル:**
 - `favicon.ico` (16+32px マルチ解像度)
 - `favicon-16.png`, `favicon-32.png`
 - `apple-touch-icon.png` (180x180)
@@ -253,124 +253,124 @@ export const metadata = {
 
 ## 4. 製品別アイコンシンボル
 
-各製品は Gold ベースに統一しつつ、シンボルで区別する。
+吁E��品�E Gold ベ�Eスに統一しつつ、シンボルで区別する、E
 
-| 製品コード | 製品名 | シンボル | 説明 |
+| 製品コーチE| 製品名 | シンボル | 説昁E|
 |-----------|--------|---------|------|
-| INSS | InsightOfficeSlide | スライド + 矢印 | プレゼン + 抽出を示す矢印 |
-| IOSH | InsightOfficeSheet | スプレッドシートグリッド | ヘッダー行 + 行列グリッド |
-| IOSD | InsightOfficeDoc | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
-| INPY | InsightPy | Python ロゴ風 | ヘビ or Py文字 |
-| INMV | InsightMovie | 再生ボタン | フィルムストリップ + 再生 |
-| INIG | InsightImageGen | 画像生成 | ブラシ + 画像フレーム |
-| INBT | InsightBot | ロボット | ロボットヘッド |
-| INCA | InsightNoCodeAnalyzer | 解析グラフ | フローチャート + 虫眼鏡 |
-| IVIN | InterviewInsight | インタビュー | マイク + 吹き出し |
-| ISOF | InsightSeniorOffice | カレンダー + 文書 | カレンダー + 文書 + メール + ギア |
+| INSS | InsightOfficeSlide | スライチE+ 矢印 | プレゼン + 抽出を示す矢印 |
+| IOSH | InsightOfficeSheet | スプレチE��シートグリチE�� | ヘッダー衁E+ 行�EグリチE�� |
+| IOSD | InsightOfficeDoc | ドキュメンチE+ 折り返し | チE��スト衁E+ 右上�E折り返し |
+| INPY | InsightPy | Python ロゴ風 | ヘビ or Py斁E��E|
+| INMV | InsightCast | 再生ボタン | フィルムストリチE�E + 再生 |
+| INIG | InsightImageGen | 画像生戁E| ブラシ + 画像フレーム |
+| INBT | InsightBot | ロボッチE| ロボット�EチE�� |
+| INCA | InsightNoCodeAnalyzer | 解析グラチE| フローチャーチE+ 虫眼鏡 |
+| IVIN | InterviewInsight | インタビュー | マイク + 吹き�EぁE|
+| ISOF | InsightSeniorOffice | カレンダー + 斁E�� | カレンダー + 斁E�� + メール + ギア |
 
 ---
 
-## 5. マスターアイコンと生成方法
+## 5. マスターアイコンと生�E方況E
 
 ### マスターアイコン
 
-すべてのアプリアイコンのマスター PNG (1024x1024) は以下に格納:
+すべてのアプリアイコンのマスター PNG (1024x1024) は以下に格紁E
 
 ```
 insight-common/brand/icons/png/
 ```
 
-マスターアイコンは手動で作成・管理される。プログラムでの自動生成は行わない。
+マスターアイコンは手動で作�E・管琁E��れる。�Eログラムでの自動生成�E行わなぁE��E
 
-### 各アプリへの配布: generate-app-icon.py
+### 吁E��プリへの配币E generate-app-icon.py
 
-`scripts/generate-app-icon.py` でマスター PNG から各プラットフォーム用アイコンを生成する。
-**製品コードを指定すると、その製品のプラットフォームに合ったアイコンのみ生成される。**
+`scripts/generate-app-icon.py` でマスター PNG から吁E�EラチE��フォーム用アイコンを生成する、E
+**製品コードを持E��すると、その製品�EプラチE��フォームに合ったアイコンのみ生�Eされる、E*
 
 ```bash
-# 依存パッケージ
+# 依存パチE��ージ
 pip install Pillow
 
-# 製品コード指定で生成（プラットフォーム自動判定）
+# 製品コード指定で生�E�E��EラチE��フォーム自動判定！E
 python scripts/generate-app-icon.py --product IOSH --output ./Resources/
 
-# プラットフォームを手動指定
+# プラチE��フォームを手動指宁E
 python scripts/generate-app-icon.py --product IOSH --output ./Resources/ --platform windows
 
-# 全製品を一括生成（各製品のプラットフォームに合わせて出力）
+# 全製品を一括生�E�E�各製品�EプラチE��フォームに合わせて出力！E
 python scripts/generate-app-icon.py --all --output ./generated-icons/
 
-# 利用可能なアイコン一覧（プラットフォーム・配置先を表示）
+# 利用可能なアイコン一覧�E��EラチE��フォーム・配置先を表示�E�E
 python scripts/generate-app-icon.py --list
 ```
 
-**生成フロー:**
+**生�Eフロー:**
 1. マスター PNG (1024x1024) を読み込み
-2. 製品コードからターゲットプラットフォームを判定
-3. LANCZOS リサンプリングで各サイズにダウンスケール
-4. プラットフォーム別にファイルを出力
+2. 製品コードからターゲチE��プラチE��フォームを判宁E
+3. LANCZOS リサンプリングで吁E��イズにダウンスケール
+4. プラチE��フォーム別にファイルを�E劁E
 
-### TypeScript からのアイコンパス・プラットフォーム取得
+### TypeScript からのアイコンパス・プラチE��フォーム取征E
 
 ```typescript
 import { getMasterIconPath, PRODUCTS, UTILITY_ICONS, getAllIcons } from '@/insight-common/config/products';
 import type { AppPlatform } from '@/insight-common/config/products';
 
-// 製品のマスターアイコンパス
+// 製品�Eマスターアイコンパス
 getMasterIconPath('IOSH');  // 'brand/icons/png/icon-insight-sheet.png'
 
-// プラットフォーム・ビルドパス
+// プラチE��フォーム・ビルドパス
 PRODUCTS.IOSH.targetPlatform;  // 'wpf'
 PRODUCTS.IOSH.iconBuildPath;   // 'Resources/'
 PRODUCTS.INCA.targetPlatform;  // 'tauri'
 
-// ユーティリティアイコン
+// ユーチE��リチE��アイコン
 UTILITY_ICONS.CAMERA.targetPlatform;  // 'expo'
 UTILITY_ICONS.CAMERA.iconBuildPath;   // 'assets/'
 
-// 全アイコン一覧（プラットフォーム情報付き）
+// 全アイコン一覧�E��EラチE��フォーム惁E��付き�E�E
 getAllIcons();
 // [{ key: 'INSS', name: '...', masterIcon: '...', targetPlatform: 'wpf', iconBuildPath: 'Resources/', isProduct: true }, ...]
 ```
 
 ---
 
-## 6. Android ランチャー用アイコン（InsightLauncher）
+## 6. Android ランチャー用アイコン�E�EnsightLauncher�E�E
 
-InsightLauncher は **Android ネイティブアプリ** で、全 Insight 製品をタイルグリッドで表示する。
-各製品の `targetPlatform` に関係なく、ランチャー表示用に Android mipmap PNG が必要。
+InsightLauncher は **Android ネイチE��ブアプリ** で、�E Insight 製品をタイルグリチE��で表示する、E
+吁E��品�E `targetPlatform` に関係なく、ランチャー表示用に Android mipmap PNG が忁E��、E
 
-### 生成コマンド
+### 生�EコマンチE
 
 ```bash
-# 全製品のランチャー用アイコンを一括生成
+# 全製品�Eランチャー用アイコンを一括生�E
 python scripts/generate-app-icon.py --launcher
 
-# カスタム出力先を指定
+# カスタム出力�Eを指宁E
 python scripts/generate-app-icon.py --launcher --output /path/to/output/
 ```
 
-### 生成ファイル構造
+### 生�Eファイル構造
 
 ```
 brand/icons/generated/launcher/
-├── launcher-manifest.json          # 全製品のアイコンメタデータ
+├── launcher-manifest.json          # 全製品�EアイコンメタチE�Eタ
 ├── INSS/
-│   ├── mipmap-mdpi/ic_launcher.png     # 48x48
-│   ├── mipmap-hdpi/ic_launcher.png     # 72x72
-│   ├── mipmap-xhdpi/ic_launcher.png    # 96x96
-│   ├── mipmap-xxhdpi/ic_launcher.png   # 144x144
-│   └── mipmap-xxxhdpi/ic_launcher.png  # 192x192
+━E  ├── mipmap-mdpi/ic_launcher.png     # 48x48
+━E  ├── mipmap-hdpi/ic_launcher.png     # 72x72
+━E  ├── mipmap-xhdpi/ic_launcher.png    # 96x96
+━E  ├── mipmap-xxhdpi/ic_launcher.png   # 144x144
+━E  └── mipmap-xxxhdpi/ic_launcher.png  # 192x192
 ├── IOSH/
-│   └── ... (同構造)
+━E  └── ... (同構造)
 ├── IOSD/
-│   └── ...
-└── ... (全15製品)
+━E  └── ...
+└── ... (全15製品E
 ```
 
 ### launcher-manifest.json
 
-Android ランチャーアプリがアイコンを解決するためのマニフェスト。
+Android ランチャーアプリがアイコンを解決するためのマニフェスト、E
 
 ```json
 {
@@ -390,11 +390,11 @@ Android ランチャーアプリがアイコンを解決するためのマニフ
 }
 ```
 
-### Android ネイティブアプリでの利用
+### Android ネイチE��ブアプリでの利用
 
-**方法 1: assets から読み込み（推奨）**
+**方況E1: assets から読み込み�E�推奨�E�E*
 
-ランチャーアプリの `assets/` に `launcher/` ディレクトリごとコピーし、実行時に読み込む。
+ランチャーアプリの `assets/` に `launcher/` チE��レクトリごとコピ�Eし、実行時に読み込む、E
 
 ```kotlin
 // assets/launcher/launcher-manifest.json を読み込み
@@ -409,16 +409,16 @@ fun loadProductIcon(code: String, density: String = "xxhdpi"): Bitmap {
 }
 ```
 
-**方法 2: res/drawable にコピー**
+**方況E2: res/drawable にコピ�E**
 
-ビルド時にリソースとして組み込む場合:
+ビルド時にリソースとして絁E��込む場吁E
 
 ```kotlin
-// ビルドスクリプトで launcher/{CODE}/mipmap-{density}/ → res/mipmap-{density}/ にコピー
-// ic_launcher.png → ic_{code_lowercase}.png にリネーム
+// ビルドスクリプトで launcher/{CODE}/mipmap-{density}/ ↁEres/mipmap-{density}/ にコピ�E
+// ic_launcher.png ↁEic_{code_lowercase}.png にリネ�Eム
 ```
 
-### TypeScript からの利用（config/app-icon-manager.ts）
+### TypeScript からの利用�E�Eonfig/app-icon-manager.ts�E�E
 
 ```typescript
 import {
@@ -428,50 +428,50 @@ import {
   LAUNCHER_ICON_MANIFEST,
 } from '@/insight-common/config/app-icon-manager';
 
-// 特定製品のアイコンパスを取得
+// 特定製品�Eアイコンパスを取征E
 getLauncherIcon('IOSH', 'xxhdpi');
-// → 'brand/icons/generated/launcher/IOSH/mipmap-xxhdpi/ic_launcher.png'
+// ↁE'brand/icons/generated/launcher/IOSH/mipmap-xxhdpi/ic_launcher.png'
 
-// 全製品のアイコンをまとめて取得（グリッド表示用）
+// 全製品�Eアイコンをまとめて取得（グリチE��表示用�E�E
 const icons = getLauncherIconsForDensity('xxhdpi');
-// → [{ code: 'INSS', name: 'InsightOfficeSlide', path: '...', size: 144 }, ...]
+// ↁE[{ code: 'INSS', name: 'InsightOfficeSlide', path: '...', size: 144 }, ...]
 
-// カテゴリ別にグルーピング
+// カチE��リ別にグルーピング
 const grouped = getLauncherIconsByCategory('xxhdpi');
-// grouped.office     → [INSS, IOSH, IOSD]
-// grouped.ai_tools   → [INPY, INMV, INIG]
-// grouped.enterprise → [INCA, INBT, IVIN]
+// grouped.office     ↁE[INSS, IOSH, IOSD]
+// grouped.ai_tools   ↁE[INPY, INMV, INIG]
+// grouped.enterprise ↁE[INCA, INBT, IVIN]
 ```
 
-### アイコン更新手順
+### アイコン更新手頁E
 
 1. `brand/icons/png/` のマスター PNG を更新
-2. `python scripts/generate-app-icon.py --launcher` を実行
-3. 生成された `brand/icons/generated/launcher/` をランチャーアプリにコピー
-4. ランチャーアプリをリビルド
+2. `python scripts/generate-app-icon.py --launcher` を実衁E
+3. 生�EされぁE`brand/icons/generated/launcher/` をランチャーアプリにコピ�E
+4. ランチャーアプリをリビルチE
 
 ---
 
-## 8. チェックリスト
+## 8. チェチE��リスチE
 
-- [ ] Gold `#B8942F` がベースカラーとして使用されている
-- [ ] 白いシンボルが製品の特徴を表現している
-- [ ] Blue がアイコンのメインカラーとして使われて**いない**
-- [ ] `generate-app-icon.py` で正しいプラットフォーム向けアイコンが生成されている
-- [ ] ビルド設定（.csproj / tauri.conf.json / app.json / layout.tsx）で正しく参照されている
-- [ ] タスクバー / ブラウザタブで視認性が確保されている (16px)
-- [ ] 他の HARMONIC insight 製品アイコンとファミリー感がある
+- [ ] Gold `#B8942F` が�Eースカラーとして使用されてぁE��
+- [ ] 白ぁE��ンボルが製品�E特徴を表現してぁE��
+- [ ] Blue がアイコンのメインカラーとして使われて**ぁE��ぁE*
+- [ ] `generate-app-icon.py` で正しいプラチE��フォーム向けアイコンが生成されてぁE��
+- [ ] ビルド設定！Ecsproj / tauri.conf.json / app.json / layout.tsx�E�で正しく参�EされてぁE��
+- [ ] タスクバ�E / ブラウザタブで視認性が確保されてぁE�� (16px)
+- [ ] 他�E HARMONIC insight 製品アイコンとファミリー感がある
 
 ---
 
-## 9. 禁止事項
+## 9. 禁止事頁E
 
-| やってはいけない | 正しいやり方 |
+| めE��てはぁE��なぁE| 正しいめE��方 |
 |-----------------|-------------|
-| Blue をベースカラーに使用 | Gold `#B8942F` を使用 |
-| 製品ごとに異なるベース形状 | 統一された角丸四角形 |
-| グラデーションの多用 | フラットデザイン |
-| 細かすぎるディテール | 16px でも認識できるシンプルさ |
-| テキスト主体のアイコン | シンボル / ピクトグラム主体 |
-| 各アプリで独自にアイコン実装 | `scripts/generate-app-icon.py` で統一生成 |
-| プラットフォームを間違えてアイコン生成 | `--list` で確認してから生成 |
+| Blue を�Eースカラーに使用 | Gold `#B8942F` を使用 |
+| 製品ごとに異なる�Eース形状 | 統一された角丸四角形 |
+| グラチE�Eションの多用 | フラチE��チE��イン |
+| 細かすぎるチE��チE�Eル | 16px でも認識できるシンプルぁE|
+| チE��スト主体�Eアイコン | シンボル / ピクトグラム主佁E|
+| 吁E��プリで独自にアイコン実裁E| `scripts/generate-app-icon.py` で統一生�E |
+| プラチE��フォームを間違えてアイコン生�E | `--list` で確認してから生�E |

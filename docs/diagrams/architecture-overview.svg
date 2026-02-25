@@ -24,7 +24,7 @@
 
   <!-- Title -->
   <text x="400" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#1F2937">
-    HARMONIC insight アーキテクチャ全体像
+    HARMONIC insight アーキチE��チャ全体像
   </text>
 
   <!-- App Layer -->
@@ -40,7 +40,7 @@
     <text x="260" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">InsightPy</text>
 
     <rect x="330" y="120" width="120" height="35" rx="6" fill="white" fill-opacity="0.9"/>
-    <text x="390" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">InsightMovie</text>
+    <text x="390" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">InsightCast</text>
 
     <rect x="460" y="120" width="120" height="35" rx="6" fill="white" fill-opacity="0.9"/>
     <text x="520" y="143" text-anchor="middle" font-size="12" fill="#1D4ED8">SalesInsight</text>
@@ -60,7 +60,7 @@
   <!-- insight-common Layer -->
   <g filter="url(#shadow)">
     <rect x="50" y="200" width="700" height="180" rx="12" fill="url(#purpleGrad)"/>
-    <text x="400" y="230" text-anchor="middle" font-size="18" font-weight="bold" fill="white">insight-common（サブモジュール）</text>
+    <text x="400" y="230" text-anchor="middle" font-size="18" font-weight="bold" fill="white">insight-common�E�サブモジュール�E�E/text>
 
     <!-- Modules -->
     <g>
@@ -68,24 +68,24 @@
       <text x="145" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">infrastructure/</text>
       <text x="145" y="295" text-anchor="middle" font-size="11" fill="#4B5563">認証 (Firebase)</text>
       <text x="145" y="312" text-anchor="middle" font-size="11" fill="#4B5563">API Gateway</text>
-      <text x="145" y="329" text-anchor="middle" font-size="11" fill="#4B5563">ライセンス管理</text>
+      <text x="145" y="329" text-anchor="middle" font-size="11" fill="#4B5563">ライセンス管琁E/text>
       <text x="145" y="346" text-anchor="middle" font-size="11" fill="#4B5563">監査ログ</text>
     </g>
 
     <g>
       <rect x="235" y="250" width="130" height="110" rx="8" fill="white" fill-opacity="0.95"/>
       <text x="300" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">brand/</text>
-      <text x="300" y="300" text-anchor="middle" font-size="11" fill="#4B5563">カラーシステム</text>
-      <text x="300" y="317" text-anchor="middle" font-size="11" fill="#4B5563">フォント</text>
+      <text x="300" y="300" text-anchor="middle" font-size="11" fill="#4B5563">カラーシスチE��</text>
+      <text x="300" y="317" text-anchor="middle" font-size="11" fill="#4B5563">フォンチE/text>
       <text x="300" y="334" text-anchor="middle" font-size="11" fill="#4B5563">ロゴ・アイコン</text>
     </g>
 
     <g>
       <rect x="380" y="250" width="130" height="110" rx="8" fill="white" fill-opacity="0.95"/>
       <text x="445" y="275" text-anchor="middle" font-size="14" font-weight="bold" fill="#6D28D9">i18n/</text>
-      <text x="445" y="300" text-anchor="middle" font-size="11" fill="#4B5563">多言語対応</text>
-      <text x="445" y="317" text-anchor="middle" font-size="11" fill="#4B5563">日本語 / 英語</text>
-      <text x="445" y="334" text-anchor="middle" font-size="11" fill="#4B5563">翻訳テンプレート</text>
+      <text x="445" y="300" text-anchor="middle" font-size="11" fill="#4B5563">多言語対忁E/text>
+      <text x="445" y="317" text-anchor="middle" font-size="11" fill="#4B5563">日本誁E/ 英誁E/text>
+      <text x="445" y="334" text-anchor="middle" font-size="11" fill="#4B5563">翻訳チE��プレーチE/text>
     </g>
 
     <g>

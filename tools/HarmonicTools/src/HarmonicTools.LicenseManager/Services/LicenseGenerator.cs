@@ -21,7 +21,7 @@ public class LicenseGenerator
         ["INBT"] = "InsightBot",
         ["IVIN"] = "InterviewInsight",
         // Tier 2: AI活用ツール
-        ["INMV"] = "InsightMovie",
+        ["INMV"] = "InsightCast",
         ["INIG"] = "InsightImageGen",
         // Tier 3: InsightOffice Suite
         ["INSS"] = "InsightOfficeSlide",
