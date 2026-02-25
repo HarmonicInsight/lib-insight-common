@@ -596,3 +596,184 @@ export function getCacheSummary(
     limitInfo: chunkLimitStr,
   };
 }
+
+// =============================================================================
+// ライフサイクル — いつ・どこで呼ばれるか
+// =============================================================================
+
+/**
+ * キャッシュのライフサイクルイベント
+ *
+ * C# WPF 側で各イベントに対応する処理を実装する。
+ * このモジュールはイベントの種別と、各イベントで実行すべき処理の仕様を定義する。
+ *
+ * ## 呼び出しタイミング一覧
+ *
+ * ```
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │  (1) ファイルを開く                                              │
+ * │      OpenDocument                                               │
+ * │      → ZIP から ai_cache/index.json を読む                       │
+ * │      → ドキュメントハッシュ比較 → valid / stale / expired         │
+ * │      → stale/expired ならキャッシュを破棄（チャンク削除）          │
+ * │                                                                 │
+ * │  (2) AI チャット開始（ユーザーがメッセージ送信）                   │
+ * │      BeforeAiChat                                               │
+ * │      → キャッシュが valid ならそのまま使う（高速パス）             │
+ * │      → キャッシュが無い or stale ならオンデマンド解析              │
+ * │        → Office ファイルをパース → チャンクに分割 → ZIP に保存     │
+ * │      → selectChunksForContext() でトークン予算内のチャンクを選択   │
+ * │      → formatCacheForPrompt() でテキスト化                       │
+ * │      → buildEnhancedSystemPrompt() に注入                       │
+ * │                                                                 │
+ * │  (3) ドキュメント保存                                            │
+ * │      AfterSave                                                  │
+ * │      → ドキュメントハッシュを再計算                               │
+ * │      → 変更されたチャンクだけ差分更新（contentHash 比較）          │
+ * │      → index.json を更新                                        │
+ * │                                                                 │
+ * │  (4) 定期クリーンアップ（バックグラウンド）                       │
+ * │      PeriodicCleanup                                            │
+ * │      → cleanupIntervalMinutes ごとに実行                         │
+ * │      → 期限切れチャンクの削除                                    │
+ * │      → ZIP サイズの最適化（必要に応じて再パック）                 │
+ * │                                                                 │
+ * │  (5) ファイルを閉じる                                            │
+ * │      CloseDocument                                              │
+ * │      → ダーティなキャッシュがあれば ZIP に書き戻し                │
+ * │      → 一時ファイルのクリーンアップ                               │
+ * └─────────────────────────────────────────────────────────────────┘
+ * ```
+ */
+export type CacheLifecycleEvent =
+  | 'open_document'
+  | 'before_ai_chat'
+  | 'after_save'
+  | 'periodic_cleanup'
+  | 'close_document';
+
+/**
+ * 各ライフサイクルイベントの仕様
+ */
+export const CACHE_LIFECYCLE_SPEC: Record<CacheLifecycleEvent, {
+  descriptionJa: string;
+  descriptionEn: string;
+  /** このイベントはユーザー操作を待たせるか（同期的に処理すべきか） */
+  blocking: boolean;
+  /** 推奨実装: バックグラウンドスレッドで実行すべきか */
+  backgroundThread: boolean;
+}> = {
+  open_document: {
+    descriptionJa: 'ファイルオープン時にキャッシュインデックスを読み込み、有効性を検証する',
+    descriptionEn: 'Load cache index on file open and validate against document hash',
+    blocking: false,
+    backgroundThread: true,
+  },
+  before_ai_chat: {
+    descriptionJa: 'AI チャット送信前にキャッシュを確認し、必要ならオンデマンド解析を実行する',
+    descriptionEn: 'Check cache before AI chat, run on-demand parsing if needed',
+    blocking: true,
+    backgroundThread: false,
+  },
+  after_save: {
+    descriptionJa: 'ドキュメント保存後にキャッシュの差分更新を実行する',
+    descriptionEn: 'Run incremental cache update after document save',
+    blocking: false,
+    backgroundThread: true,
+  },
+  periodic_cleanup: {
+    descriptionJa: '定期的に期限切れキャッシュを削除する',
+    descriptionEn: 'Periodically remove expired cache entries',
+    blocking: false,
+    backgroundThread: true,
+  },
+  close_document: {
+    descriptionJa: 'ファイルクローズ時にダーティキャッシュを書き戻す',
+    descriptionEn: 'Flush dirty cache entries on file close',
+    blocking: true,
+    backgroundThread: false,
+  },
+};
+
+// =============================================================================
+// AI プロンプト注入 — buildEnhancedSystemPrompt() から呼ばれる
+// =============================================================================
+
+/**
+ * キャッシュチャンクを AI のシステムプロンプトに注入するテキストに整形する
+ *
+ * buildEnhancedSystemPrompt() のステップ 5.5（メモリの後、コマンド一覧の前）で呼ばれる。
+ *
+ * @param chunks チャンクデータの配列（selectChunksForContext() で選択済み）
+ * @param granularity キャッシュ粒度
+ * @param locale ロケール
+ * @returns システムプロンプトに追加するテキスト（空文字列 = キャッシュなし）
+ *
+ * @example
+ * ```typescript
+ * // C# 側で ZIP からチャンクを読み込んだ後:
+ * const selectedIds = selectChunksForContext(index.chunks);
+ * const chunkDataList = selectedIds.map(id => readChunkFromZip(id));
+ * const prompt = formatCacheForPrompt(chunkDataList, 'sheet', 'ja');
+ * // → "【現在のドキュメント内容】\n--- シート「売上」 ---\n..."
+ * ```
+ */
+export function formatCacheForPrompt(
+  chunks: CacheChunkData[],
+  granularity: CacheGranularity,
+  locale: 'ja' | 'en' = 'ja',
+): string {
+  if (chunks.length === 0) return '';
+
+  const header = locale === 'ja'
+    ? '【現在のドキュメント内容】'
+    : '[Current Document Content]';
+
+  const granularityLabels: Record<CacheGranularity, { ja: string; en: string }> = {
+    slide: { ja: 'スライド', en: 'Slide' },
+    sheet: { ja: 'シート', en: 'Sheet' },
+    section: { ja: 'セクション', en: 'Section' },
+  };
+  const label = granularityLabels[granularity][locale];
+
+  const parts = chunks.map(chunk => {
+    const name = chunk.source.name
+      ? `${label}「${chunk.source.name}」`
+      : `${label} ${chunk.source.index + 1}`;
+    return `--- ${name} ---\n${chunk.textContent}`;
+  });
+
+  return `${header}\n以下はユーザーが現在編集中のドキュメントから抽出したテキストです。質問や指示に対してこの内容を参照してください。\n\n${parts.join('\n\n')}`;
+}
+
+/**
+ * AI チャット前のキャッシュ解決結果
+ *
+ * C# WPF 側の before_ai_chat ハンドラが返す構造。
+ * buildEnhancedSystemPrompt() に渡す。
+ */
+export interface ResolvedDocumentCache {
+  /** キャッシュが利用可能か */
+  available: boolean;
+  /** プロンプトに注入するテキスト（available=false なら空文字列） */
+  promptText: string;
+  /** 使用したチャンク数 */
+  chunkCount: number;
+  /** 使用した推定トークン数 */
+  estimatedTokens: number;
+  /** キャッシュヒットしたか（false = オンデマンド解析が走った） */
+  cacheHit: boolean;
+}
+
+/**
+ * キャッシュなしの空の解決結果を生成
+ */
+export function createEmptyResolvedCache(): ResolvedDocumentCache {
+  return {
+    available: false,
+    promptText: '',
+    chunkCount: 0,
+    estimatedTokens: 0,
+    cacheHit: false,
+  };
+}
