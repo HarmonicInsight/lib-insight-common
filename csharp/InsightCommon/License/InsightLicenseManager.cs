@@ -32,7 +32,7 @@ public class InsightLicenseManager
     /// <summary>アクティベート済みかどうか</summary>
     public bool IsActivated => CurrentLicense.Plan != PlanCode.Free && CurrentLicense.IsValid;
 
-    /// <summary>期限切れ30日以内の警告表示が必要か</summary>
+    /// <summary>期限切れ30日以内で警告表示が必要か</summary>
     public bool ShouldShowExpiryWarning => CurrentLicense.DaysRemaining is > 0 and <= 30;
 
     /// <summary>
@@ -232,9 +232,9 @@ public class InsightLicenseManager
     // ── 機能チェック ──
 
     /// <summary>
-    /// 指定の機能が利用可能かを判定
+    /// 指定された機能が利用可能かを判定
     /// </summary>
-    /// <param name="featureMatrix">機能名→許可プラン配列のマップ</param>
+    /// <param name="featureMatrix">機能名と許可プラン配列のマップ</param>
     /// <param name="feature">チェックする機能名</param>
     public bool CanUseFeature(Dictionary<string, PlanCode[]> featureMatrix, string feature)
     {

@@ -62,6 +62,14 @@
  */
 
 import type { ProductCode, PlanCode } from './products';
+import type {
+  DataCollectionTemplate,
+  Submission,
+  SubmissionTableData,
+  ValidationResult,
+  MasterTable,
+  DistributionRecord,
+} from './data-collection';
 
 // =============================================================================
 // 型定義
@@ -1225,10 +1233,250 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
   },
 
   // =========================================================================
-  // InsightBot Agent（Orchestrator 連携 — 詳細は BOT_AGENT_MODULE を参照）
+  // データ収集基盤（StravisLINK / CCH Tagetik / Forguncy パターン）
   // =========================================================================
-  // ※ 定義は PRODUCT_ADDON_SUPPORT の後に BOT_AGENT_MODULE として配置
-  // ※ ここでは参照のみ（初期化順序の都合で後から代入）
+  data_collection: {
+    id: 'data_collection',
+    name: 'Data Collection',
+    nameJa: 'データ収集',
+    description: 'Enterprise data collection platform. Design Excel templates with logical table mappings, distribute to clients, collect and aggregate submitted data. Inspired by CCH Tagetik / STRAVIS-LINK / Forguncy architecture.',
+    descriptionJa: 'エンタープライズ データ収集基盤。Excel テンプレートに論理テーブルをマッピングし、クライアントに配信・データ入力・回収・集約を実現。CCH Tagetik / STRAVIS-LINK / Forguncy と同等のアーキテクチャ。',
+    version: '1.0.0',
+    distribution: 'bundled',
+    panelPosition: 'right',
+    requiredFeatureKey: 'data_collection',
+    allowedPlans: ['TRIAL', 'ENT'],
+    dependencies: [],
+    ioContracts: [
+      // -----------------------------------------------------------------
+      // テンプレートデザイナー（管理者用）
+      // -----------------------------------------------------------------
+      {
+        id: 'design_template',
+        name: 'Design Template',
+        nameJa: 'テンプレート設計',
+        description: 'Define logical tables and map them to Excel Tables in the current spreadsheet. Admin designs the template layout directly in Excel.',
+        input: [
+          { key: 'logical_tables', type: 'json', description: '論理テーブル定義（LogicalTableDefinition[]）', required: true },
+          { key: 'table_mappings', type: 'json', description: 'Excel Table マッピング（ExcelTableMapping[]）', required: true },
+          { key: 'cell_mappings', type: 'json', description: 'セルマッピング（ExcelCellMapping[]）', required: false },
+          { key: 'workflow', type: 'json', description: '承認ワークフロー設定', required: false },
+        ],
+        process: '論理テーブル定義を検証 → Excel のデータ入力規則を自動設定 → 入力可能セルと固定セルのシート保護を設定 → .iosh 内の data_collection/template.json に保存',
+        output: [
+          { key: 'template_id', type: 'string', description: '保存されたテンプレート ID', required: true },
+          { key: 'validation_rules_applied', type: 'number', description: '設定されたデータ入力規則の数', required: true },
+          { key: 'protected_ranges', type: 'number', description: '保護された範囲の数', required: true },
+        ],
+        transport: 'in_process',
+        async: true,
+        streaming: false,
+      },
+      // -----------------------------------------------------------------
+      // マスタテーブル管理
+      // -----------------------------------------------------------------
+      {
+        id: 'manage_master_tables',
+        name: 'Manage Master Tables',
+        nameJa: 'マスタテーブル管理',
+        description: 'Create and edit master logical tables used as dropdown sources (department master, account codes, etc.)',
+        input: [
+          { key: 'action', type: 'string', description: 'アクション: create / update / delete / list', required: true },
+          { key: 'master_table', type: 'json', description: 'マスタテーブルデータ（MasterTable）', required: false },
+        ],
+        process: '管理者がマスタデータ（部門マスタ、勘定科目マスタ等）を作成・編集。テンプレートのドロップダウンソースとして使用。サーバーに同期。',
+        output: [
+          { key: 'master_table_id', type: 'string', description: 'マスタテーブル ID', required: true },
+          { key: 'row_count', type: 'number', description: '行数', required: true },
+        ],
+        transport: 'http',
+        async: true,
+        streaming: false,
+      },
+      // -----------------------------------------------------------------
+      // テンプレート配信
+      // -----------------------------------------------------------------
+      {
+        id: 'distribute_template',
+        name: 'Distribute Template',
+        nameJa: 'テンプレート配信',
+        description: 'Publish and distribute the template to target clients/groups for data entry.',
+        input: [
+          { key: 'template_id', type: 'string', description: '配信するテンプレート ID', required: true },
+          { key: 'targets', type: 'json', description: '配信先リスト（DistributionTarget[]）', required: true },
+          { key: 'method', type: 'string', description: '配信方法: cloud_sync / file_export / email_link', required: true },
+          { key: 'deadline', type: 'string', description: '回答期限（ISO 8601 日付）', required: false },
+        ],
+        process: 'テンプレートを公開 → 配信先にテンプレート .iosh を送信（クラウド同期 / ファイル出力 / メールリンク）→ 配信レコードをサーバーに登録',
+        output: [
+          { key: 'distribution_ids', type: 'json', description: '配信レコード ID の配列', required: true },
+          { key: 'distributed_count', type: 'number', description: '配信先数', required: true },
+        ],
+        transport: 'http',
+        async: true,
+        streaming: false,
+      },
+      // -----------------------------------------------------------------
+      // データ提出（クライアント用）
+      // -----------------------------------------------------------------
+      {
+        id: 'submit_data',
+        name: 'Submit Data',
+        nameJa: 'データ提出',
+        description: 'Extract data from Excel Tables, validate, and submit to server. Client-side operation.',
+        input: [
+          { key: 'template_id', type: 'string', description: 'テンプレート ID', required: true },
+          { key: 'comment', type: 'string', description: '提出者コメント', required: false },
+        ],
+        process: '① Excel Table からデータ抽出（テーブル単位で JSON 化）→ ② クライアントサイドバリデーション → ③ サーバーに提出 → ④ ワークフロー開始',
+        output: [
+          { key: 'submission_id', type: 'string', description: '提出 ID', required: true },
+          { key: 'validation_result', type: 'json', description: 'バリデーション結果', required: true },
+          { key: 'status', type: 'string', description: '提出ステータス', required: true },
+        ],
+        transport: 'http',
+        async: true,
+        streaming: false,
+      },
+      // -----------------------------------------------------------------
+      // 収集モニタリング・集約（管理者用）
+      // -----------------------------------------------------------------
+      {
+        id: 'monitor_collection',
+        name: 'Monitor Collection',
+        nameJa: '収集モニタリング',
+        description: 'View distribution status, submitted data, validation errors, and aggregate results across all clients.',
+        input: [
+          { key: 'template_id', type: 'string', description: 'テンプレート ID', required: true },
+          { key: 'filter', type: 'json', description: 'フィルタ条件（ステータス・組織等）', required: false },
+        ],
+        process: 'サーバーから配信状況 + 全提出データを取得 → ステータス一覧・バリデーションエラー一覧・集約ビューを生成',
+        output: [
+          { key: 'distribution_summary', type: 'json', description: '配信ステータスのサマリー { total, not_started, in_progress, submitted, approved }', required: true },
+          { key: 'submissions', type: 'json', description: '提出データ一覧（概要）', required: true },
+          { key: 'validation_errors_count', type: 'number', description: 'バリデーションエラーのある提出数', required: true },
+        ],
+        transport: 'http',
+        async: true,
+        streaming: false,
+      },
+      // -----------------------------------------------------------------
+      // 集約エクスポート（管理者用）
+      // -----------------------------------------------------------------
+      {
+        id: 'export_aggregated',
+        name: 'Export Aggregated Data',
+        nameJa: '集約データエクスポート',
+        description: 'Export all approved submissions as aggregated data (JSON / CSV / Excel / .iosh).',
+        input: [
+          { key: 'template_id', type: 'string', description: 'テンプレート ID', required: true },
+          { key: 'format', type: 'string', description: 'エクスポート形式: json / csv / xlsx / iosh', required: true },
+          { key: 'logical_table_id', type: 'string', description: '集約対象の論理テーブル ID（省略時: 全テーブル）', required: false },
+          { key: 'status_filter', type: 'string', description: '対象ステータス（デフォルト: approved）', required: false },
+        ],
+        process: '対象テンプレートの全提出データを論理テーブル単位で集約 → メタカラム（提出者・組織・日時）を付加 → 指定形式でエクスポート',
+        output: [
+          { key: 'file_path', type: 'file_path', description: 'エクスポートされたファイルパス', required: true },
+          { key: 'row_count', type: 'number', description: '集約行数', required: true },
+          { key: 'submission_count', type: 'number', description: '含まれる提出数', required: true },
+        ],
+        transport: 'in_process',
+        async: true,
+        streaming: false,
+      },
+    ],
+    tools: [
+      {
+        name: 'design_data_collection_template',
+        description: 'AI-assisted design of data collection template. Analyzes the current spreadsheet layout and suggests logical table definitions and mappings.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            instruction: { type: 'string', description: 'Natural language instruction for template design (e.g., "この表を売上報告の収集テンプレートにして")' },
+            auto_detect_tables: { type: 'boolean', description: 'Automatically detect Excel Tables and suggest mappings' },
+          },
+          required: ['instruction'],
+        },
+      },
+      {
+        name: 'validate_submission_data',
+        description: 'Validate the current spreadsheet data against the template definition before submission.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            template_id: { type: 'string', description: 'Template ID to validate against' },
+          },
+          required: ['template_id'],
+        },
+      },
+      {
+        name: 'get_collection_status',
+        description: 'Get the current data collection status for a template (how many submitted, pending, etc.)',
+        input_schema: {
+          type: 'object',
+          properties: {
+            template_id: { type: 'string', description: 'Template ID to check status for' },
+          },
+          required: ['template_id'],
+        },
+      },
+      {
+        name: 'export_collected_data',
+        description: 'Export aggregated submission data from all clients as JSON, CSV, Excel, or .iosh file.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            template_id: { type: 'string', description: 'Template ID to export' },
+            format: { type: 'string', description: 'Export format: json / csv / xlsx / iosh' },
+          },
+          required: ['template_id', 'format'],
+        },
+      },
+    ],
+    requiresModules: [],
+    icon: 'TableEdit',
+    themeColor: '#059669',
+    settingsSchema: [
+      {
+        key: 'auto_validate_on_save',
+        name: 'Auto Validate on Save',
+        nameJa: '保存時自動バリデーション',
+        type: 'boolean',
+        defaultValue: true,
+        descriptionJa: 'ファイル保存時にデータ収集テンプレートのバリデーションを自動実行',
+      },
+      {
+        key: 'show_mapping_overlay',
+        name: 'Show Mapping Overlay',
+        nameJa: 'マッピング表示',
+        type: 'boolean',
+        defaultValue: true,
+        descriptionJa: 'テンプレート編集時に論理テーブルマッピングをセル上にオーバーレイ表示',
+      },
+      {
+        key: 'submission_confirmation',
+        name: 'Submission Confirmation',
+        nameJa: '提出前確認',
+        type: 'boolean',
+        defaultValue: true,
+        descriptionJa: 'データ提出前に確認ダイアログを表示する',
+      },
+      {
+        key: 'default_export_format',
+        name: 'Default Export Format',
+        nameJa: 'デフォルトエクスポート形式',
+        type: 'select',
+        defaultValue: 'xlsx',
+        options: [
+          { value: 'json', label: 'JSON', labelJa: 'JSON' },
+          { value: 'csv', label: 'CSV', labelJa: 'CSV' },
+          { value: 'xlsx', label: 'Excel (.xlsx)', labelJa: 'Excel (.xlsx)' },
+          { value: 'iosh', label: 'InsightOfficeSheet (.iosh)', labelJa: 'InsightOfficeSheet (.iosh)' },
+        ],
+      },
+    ],
+  },
+
 };
 
 // =============================================================================
@@ -1253,7 +1501,6 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'voice_input',
       'tts_reader',
       'vrm_avatar',
-      'bot_agent',
       'local_workflow',
     ],
     defaultEnabled: ['ai_assistant'],
@@ -1270,8 +1517,8 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'voice_input',
       'tts_reader',
       'vrm_avatar',
-      'bot_agent',
       'local_workflow',
+      'data_collection',
     ],
     defaultEnabled: ['ai_assistant', 'board', 'messaging'],
   },
@@ -1285,214 +1532,13 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'voice_input',
       'tts_reader',
       'vrm_avatar',
-      'bot_agent',
       'local_workflow',
     ],
     defaultEnabled: ['ai_assistant', 'reference_materials'],
   },
   // INPY / INBT はアドインではなくコア機能として提供
   // InsightOffice 系のみがアドイン対象
-  // ただし InsightOffice に Agent 機能を組み込むことで INBT の Orchestrator と連携可能
 };
-
-// =============================================================================
-// InsightBot Agent モジュール（InsightOffice に組み込む Agent 機能）
-// =============================================================================
-
-/**
- * InsightBot Orchestrator から JOB を受信して実行する Agent モジュール。
- *
- * InsightOffice 各アプリ（INSS/IOSH/IOSD）にこのモジュールを有効化すると、
- * InsightBot（Orchestrator）からリモートで Python スクリプトを配信・実行できる。
- *
- * UiPath の Orchestrator ↔ Agent 関係に相当。
- * 詳細は config/orchestrator.ts を参照。
- */
-export const BOT_AGENT_MODULE: AddonModuleDefinition = {
-  id: 'bot_agent',
-  name: 'InsightBot Agent',
-  nameJa: 'InsightBot Agent',
-  description: 'Receive and execute JOBs from InsightBot Orchestrator. Enables remote Python script execution, scheduling, and centralized monitoring.',
-  descriptionJa: 'InsightBot（Orchestrator）から JOB を受信して実行する Agent 機能。リモートでの Python スクリプト実行・スケジュール実行・集中監視を実現。',
-  version: '1.0.0',
-  distribution: 'bundled',
-  panelPosition: 'none',
-  requiredFeatureKey: 'ai_editor',
-  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-  dependencies: [],
-  ioContracts: [
-    {
-      id: 'agent_connect',
-      name: 'Connect to Orchestrator',
-      nameJa: 'Orchestrator に接続',
-      description: 'Establish WebSocket connection to InsightBot Orchestrator for JOB dispatch and monitoring.',
-      input: [
-        { key: 'orchestrator_url', type: 'string', description: 'Orchestrator の URL（例: ws://192.168.1.100:9400/ws/agent）', required: true },
-        { key: 'display_name', type: 'string', description: 'Agent 表示名', required: true },
-        { key: 'tags', type: 'json', description: 'Agent タグ（グルーピング用）', required: false },
-      ],
-      process: 'WebSocket 接続 → Agent 登録 → ハートビート開始。接続中は Orchestrator からの JOB dispatch を受け付ける。',
-      output: [
-        { key: 'connected', type: 'boolean', description: '接続成功したか', required: true },
-        { key: 'agent_id', type: 'string', description: '割り当てられた Agent ID', required: true },
-      ],
-      transport: 'websocket',
-      async: true,
-      streaming: true,
-    },
-    {
-      id: 'agent_execute_job',
-      name: 'Execute Dispatched JOB',
-      nameJa: '配信された JOB を実行',
-      description: 'Execute a JOB received from Orchestrator using the local Python runtime and open document.',
-      input: [
-        { key: 'execution_id', type: 'string', description: '実行 ID', required: true },
-        { key: 'script', type: 'string', description: 'Python スクリプト', required: true },
-        { key: 'parameters', type: 'json', description: 'JOB パラメータ', required: false },
-        { key: 'timeout_seconds', type: 'number', description: 'タイムアウト（秒）', required: true },
-      ],
-      process: 'python_runtime でスクリプトを実行。実行中のログは WebSocket 経由で Orchestrator にリアルタイム送信。完了後に結果を通知。',
-      output: [
-        { key: 'status', type: 'string', description: '実行結果（completed / failed / timeout）', required: true },
-        { key: 'exit_code', type: 'number', description: '終了コード', required: true },
-        { key: 'stdout', type: 'string', description: '標準出力', required: true },
-        { key: 'stderr', type: 'string', description: '標準エラー', required: true },
-        { key: 'document_modified', type: 'boolean', description: 'ドキュメントが変更されたか', required: true },
-        { key: 'duration_ms', type: 'number', description: '実行時間（ミリ秒）', required: true },
-      ],
-      transport: 'subprocess',
-      async: true,
-      streaming: true,
-    },
-    {
-      id: 'agent_status',
-      name: 'Get Agent Status',
-      nameJa: 'Agent ステータス取得',
-      description: 'Get current agent status including running jobs and open documents.',
-      input: [],
-      process: 'ローカルの Agent 状態を取得（接続状態、実行中 JOB、開いているドキュメント一覧）',
-      output: [
-        { key: 'connected', type: 'boolean', description: 'Orchestrator に接続中か', required: true },
-        { key: 'orchestrator_url', type: 'string', description: '接続先 Orchestrator URL', required: true },
-        { key: 'running_jobs', type: 'number', description: '実行中 JOB 数', required: true },
-        { key: 'open_documents', type: 'json', description: '開いているドキュメント一覧', required: true },
-      ],
-      transport: 'in_process',
-      async: false,
-      streaming: false,
-    },
-    {
-      id: 'open_document',
-      name: 'Open Document',
-      nameJa: 'ドキュメントを開く',
-      description: 'Open a document file in the host application. Used by Orchestrator Workflow to open files before processing.',
-      input: [
-        { key: 'execution_id', type: 'string', description: '実行 ID（ワークフローステップ追跡用）', required: true },
-        { key: 'document_path', type: 'file_path', description: '開くドキュメントのファイルパス（.xlsx, .pptx, .docx, .iosh 等）', required: true },
-        { key: 'read_only', type: 'boolean', description: '読み取り専用で開くか', required: false },
-      ],
-      process: 'ホストアプリのドキュメントオープン API を呼び出し。プロジェクトファイル（.iosh 等）の場合は ZIP 展開 → 内包ドキュメントを読み込み。',
-      output: [
-        { key: 'success', type: 'boolean', description: 'ドキュメントを開けたか', required: true },
-        { key: 'document_path', type: 'file_path', description: '開いたドキュメントのパス', required: true },
-        { key: 'error', type: 'string', description: 'エラーメッセージ（失敗時）', required: false },
-      ],
-      transport: 'in_process',
-      async: true,
-      streaming: false,
-    },
-    {
-      id: 'close_document',
-      name: 'Close Document',
-      nameJa: 'ドキュメントを閉じる',
-      description: 'Close the currently open document, optionally saving changes. Used by Orchestrator Workflow after processing.',
-      input: [
-        { key: 'execution_id', type: 'string', description: '実行 ID', required: true },
-        { key: 'save', type: 'boolean', description: '閉じる前に保存するか（デフォルト: true）', required: false },
-        { key: 'save_as_path', type: 'file_path', description: '別名で保存する場合のパス', required: false },
-      ],
-      process: '保存フラグに応じてドキュメントを保存 → ホストアプリのドキュメントクローズ API を呼び出し。',
-      output: [
-        { key: 'success', type: 'boolean', description: 'ドキュメントを閉じられたか', required: true },
-        { key: 'saved_path', type: 'file_path', description: '保存先パス', required: false },
-        { key: 'error', type: 'string', description: 'エラーメッセージ（失敗時）', required: false },
-      ],
-      transport: 'in_process',
-      async: true,
-      streaming: false,
-    },
-    {
-      id: 'execute_workflow',
-      name: 'Execute Workflow',
-      nameJa: 'ワークフロー実行',
-      description: 'Execute a multi-step workflow: open document → run script → close → next. Orchestrator dispatches the full workflow definition and Agent executes steps sequentially.',
-      input: [
-        { key: 'workflow_execution_id', type: 'string', description: 'ワークフロー実行 ID', required: true },
-        { key: 'steps', type: 'json', description: 'ワークフローステップ配列 [{ stepIndex, name, jobId, script, documentPath, parameters, timeoutSeconds, onError }]', required: true },
-      ],
-      process: 'ステップ配列を順番に実行: ① open_document → ② execute_job（Python スクリプト実行）→ ③ close_document → 次のステップへ。各ステップの結果は WebSocket で Orchestrator にリアルタイム報告。onError に応じて stop/skip/retry。',
-      output: [
-        { key: 'status', type: 'string', description: 'ワークフロー全体の結果（completed / partial / failed）', required: true },
-        { key: 'completed_steps', type: 'number', description: '完了したステップ数', required: true },
-        { key: 'total_steps', type: 'number', description: '全ステップ数', required: true },
-        { key: 'step_results', type: 'json', description: '各ステップの実行結果 [{ stepIndex, status, exitCode, documentModified, durationMs }]', required: true },
-        { key: 'total_duration_ms', type: 'number', description: '全体の実行時間（ミリ秒）', required: true },
-      ],
-      transport: 'websocket',
-      async: true,
-      streaming: true,
-    },
-  ],
-  tools: [],
-  settingsSchema: [
-    {
-      key: 'orchestrator_url',
-      name: 'Orchestrator URL',
-      nameJa: 'Orchestrator URL',
-      type: 'string',
-      defaultValue: '',
-      descriptionJa: 'InsightBot Orchestrator の接続先 URL（例: 192.168.1.100:9400）',
-    },
-    {
-      key: 'auto_connect',
-      name: 'Auto Connect',
-      nameJa: '自動接続',
-      type: 'boolean',
-      defaultValue: false,
-      descriptionJa: 'アプリ起動時に Orchestrator へ自動接続',
-    },
-    {
-      key: 'display_name',
-      name: 'Agent Display Name',
-      nameJa: 'Agent 表示名',
-      type: 'string',
-      defaultValue: '',
-      descriptionJa: 'Orchestrator ダッシュボードに表示される名前',
-    },
-    {
-      key: 'heartbeat_interval',
-      name: 'Heartbeat Interval (seconds)',
-      nameJa: 'ハートビート間隔（秒）',
-      type: 'number',
-      defaultValue: 30,
-      descriptionJa: 'Orchestrator にステータスを送信する間隔',
-    },
-    {
-      key: 'max_concurrent_jobs',
-      name: 'Max Concurrent JOBs',
-      nameJa: '最大同時実行 JOB 数',
-      type: 'number',
-      defaultValue: 1,
-      descriptionJa: '同時に実行できる JOB の上限',
-    },
-  ],
-  requiresModules: ['python_runtime'],
-  icon: 'Robot',
-  themeColor: '#6366F1',
-};
-
-// BOT_AGENT_MODULE を ADDON_MODULES に登録
-ADDON_MODULES.bot_agent = BOT_AGENT_MODULE;
 
 // =============================================================================
 // ローカルワークフロー（PRO InsightOffice のローカル自動化機能）
@@ -2006,7 +2052,6 @@ export function resolveModuleOrder(moduleIds: string[]): string[] {
 export default {
   // 定義
   ADDON_MODULES,
-  BOT_AGENT_MODULE,
   LOCAL_WORKFLOW_MODULE,
   PRODUCT_ADDON_SUPPORT,
   ADMIN_PROFILE_TEMPLATES,

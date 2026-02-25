@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         InsightTheme - 統合テーマ
+         アプリの App.xaml でこのファイルをマージするだけで全リソースが利用可能
+
+         使用方法:
+         <Application.Resources>
+             <ResourceDictionary>
+                 <ResourceDictionary.MergedDictionaries>
+                     <ResourceDictionary Source="pack://application:,,,/InsightCommon;component/UI/Resources/InsightTheme.xaml"/>
+                 </ResourceDictionary.MergedDictionaries>
+             </ResourceDictionary>
+         </Application.Resources>
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="InsightColors.xaml"/>
+        <ResourceDictionary Source="InsightIcons.xaml"/>
+        <ResourceDictionary Source="InsightStyles.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

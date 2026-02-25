@@ -3,7 +3,7 @@ HARMONIC insight App Icon Generator
 Generates platform-specific icons from master PNG icons (1024x1024).
 
 Master PNG files (brand/icons/png/) are the single source of truth for all
-icon generation. All platforms — including Android Native — generate icons
+icon generation. All platforms  Eincluding Android Native  Egenerate icons
 exclusively from master PNGs.
 
 Each product has a defined target platform. The script generates ONLY the
@@ -73,7 +73,7 @@ LAUNCHER_GRID_SIZES = {
 
 
 # =============================================================================
-# Product → Platform mapping
+# Product ↁEPlatform mapping
 # =============================================================================
 # Each product specifies:
 #   - name: display name / output file name
@@ -82,14 +82,14 @@ LAUNCHER_GRID_SIZES = {
 #   - build_path: recommended path to copy generated icons in the app repo
 #
 # Platforms:
-#   wpf            → Windows ICO + PNGs (C# WPF apps, Inno Setup installer)
-#   python         → Windows ICO + PNGs (PyInstaller bundled apps)
-#   tauri          → Windows ICO + PNGs + icon.png (Tauri desktop apps)
-#   expo           → iOS icon.png (1024x1024) + Android mipmap PNGs
-#   android_native → Android mipmap PNGs + round variants (master PNG only)
-#   ios_native     → iOS 1024x1024 PNG + xcassets bundle (AppIcon.appiconset)
-#   web            → favicon.ico + apple-touch-icon + manifest PNGs
-#   service        → Windows ICO (tray icon only)
+#   wpf            ↁEWindows ICO + PNGs (C# WPF apps, Inno Setup installer)
+#   python         ↁEWindows ICO + PNGs (PyInstaller bundled apps)
+#   tauri          ↁEWindows ICO + PNGs + icon.png (Tauri desktop apps)
+#   expo           ↁEiOS icon.png (1024x1024) + Android mipmap PNGs
+#   android_native ↁEAndroid mipmap PNGs + round variants (master PNG only)
+#   ios_native     ↁEiOS 1024x1024 PNG + xcassets bundle (AppIcon.appiconset)
+#   web            ↁEfavicon.ico + apple-touch-icon + manifest PNGs
+#   service        ↁEWindows ICO (tray icon only)
 # =============================================================================
 
 PRODUCT_ICONS = {
@@ -115,8 +115,8 @@ PRODUCT_ICONS = {
 
     # --- Tier 2: AI Content Creation Tools ---
     'INMV': {
-        'name': 'InsightMovie',
-        'icon': 'icon-insight-movie.png',
+        'name': 'InsightCast',
+        'icon': 'icon-insight-cast.png',
         'platform': 'python',
         'build_path': 'resources/',
     },
@@ -404,14 +404,14 @@ def generate_expo(master: Image.Image, name: str, output_dir: str):
     """Generate Expo/React Native icons (iOS + Android + Web).
 
     Generates all files referenced by templates/expo/app.json:
-      - icon.png          (1024x1024, RGB, no transparency) — iOS app icon
-      - adaptive-icon.png (1024x1024, RGBA) — Android adaptive icon foreground
-      - notification-icon.png (96x96, white silhouette recommended) — Android notification
-      - splash-icon.png   (200x200) — Splash screen logo
-      - favicon.png       (48x48) — Web/PWA favicon
-      - android/mipmap-*/ic_launcher.png — Android launcher mipmaps
+      - icon.png          (1024x1024, RGB, no transparency)  EiOS app icon
+      - adaptive-icon.png (1024x1024, RGBA)  EAndroid adaptive icon foreground
+      - notification-icon.png (96x96, white silhouette recommended)  EAndroid notification
+      - splash-icon.png   (200x200)  ESplash screen logo
+      - favicon.png       (48x48)  EWeb/PWA favicon
+      - android/mipmap-*/ic_launcher.png  EAndroid launcher mipmaps
     """
-    # iOS icon (1024x1024, no transparency — required by App Store)
+    # iOS icon (1024x1024, no transparency  Erequired by App Store)
     generate_ios(master, name, output_dir)
 
     # Android adaptive icon foreground (1024x1024, with transparency OK)
@@ -442,7 +442,7 @@ def generate_ios_native(master: Image.Image, name: str, output_dir: str):
     """Generate iOS native icons: 1024x1024 PNG + xcassets bundle.
 
     Creates an AppIcon.appiconset directory with:
-      - AppIcon.png (1024x1024, RGB, no alpha — required by App Store)
+      - AppIcon.png (1024x1024, RGB, no alpha  Erequired by App Store)
       - Contents.json (Xcode asset catalog metadata)
 
     Args:
@@ -487,19 +487,19 @@ def generate_android_native(master: Image.Image, name: str, output_dir: str):
     """Generate Android native icons: mipmap PNGs only (from master PNG).
 
     Master PNG is the single source of truth. No SVG or vector drawables are
-    generated — Android will use the mipmap PNGs directly.
+    generated  EAndroid will use the mipmap PNGs directly.
 
     Output structure:
-      mipmap-mdpi/ic_launcher.png             (master PNG → 48px)
-      mipmap-mdpi/ic_launcher_round.png       (master PNG → 48px circular)
-      mipmap-hdpi/ic_launcher.png             (master PNG → 72px)
-      mipmap-hdpi/ic_launcher_round.png       (master PNG → 72px circular)
-      mipmap-xhdpi/ic_launcher.png            (master PNG → 96px)
-      mipmap-xhdpi/ic_launcher_round.png      (master PNG → 96px circular)
-      mipmap-xxhdpi/ic_launcher.png           (master PNG → 144px)
-      mipmap-xxhdpi/ic_launcher_round.png     (master PNG → 144px circular)
-      mipmap-xxxhdpi/ic_launcher.png          (master PNG → 192px)
-      mipmap-xxxhdpi/ic_launcher_round.png    (master PNG → 192px circular)
+      mipmap-mdpi/ic_launcher.png             (master PNG ↁE48px)
+      mipmap-mdpi/ic_launcher_round.png       (master PNG ↁE48px circular)
+      mipmap-hdpi/ic_launcher.png             (master PNG ↁE72px)
+      mipmap-hdpi/ic_launcher_round.png       (master PNG ↁE72px circular)
+      mipmap-xhdpi/ic_launcher.png            (master PNG ↁE96px)
+      mipmap-xhdpi/ic_launcher_round.png      (master PNG ↁE96px circular)
+      mipmap-xxhdpi/ic_launcher.png           (master PNG ↁE144px)
+      mipmap-xxhdpi/ic_launcher_round.png     (master PNG ↁE144px circular)
+      mipmap-xxxhdpi/ic_launcher.png          (master PNG ↁE192px)
+      mipmap-xxxhdpi/ic_launcher_round.png    (master PNG ↁE192px circular)
 
     Note: Apps using this pipeline must NOT have mipmap-anydpi-v26/ or
     drawable/ic_launcher_foreground.xml in their res/ directory, as those
@@ -619,7 +619,7 @@ def generate_launcher_all(output_dir: str):
     manifest_path = os.path.join(output_dir, 'launcher-manifest.json')
     manifest = {
         'version': 1,
-        'description': 'HARMONIC insight Launcher icon manifest — maps product codes to Android mipmap icons',
+        'description': 'HARMONIC insight Launcher icon manifest  Emaps product codes to Android mipmap icons',
         'basePath': 'brand/icons/generated/launcher',
         'densities': dict(LAUNCHER_GRID_SIZES),
         'iconFileName': 'ic_launcher.png',
@@ -641,7 +641,7 @@ def generate_all_platforms(master: Image.Image, name: str, output_dir: str):
 
 
 # =============================================================================
-# Platform → generator mapping
+# Platform ↁEgenerator mapping
 # =============================================================================
 
 def generate_for_platform(platform: str, master: Image.Image, name: str, output_dir: str):

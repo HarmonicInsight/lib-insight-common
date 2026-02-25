@@ -1,6 +1,6 @@
-# クイックスタートガイド
+# クイチE��スタートガイチE
 
-5分で insight-common を導入するためのガイドです。
+5刁E�� insight-common を導�Eするためのガイドです、E
 
 ## 1. Submodule として追加
 
@@ -8,23 +8,23 @@
 git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.git insight-common
 ```
 
-## 2. 製品コードを確認
+## 2. 製品コードを確誁E
 
-あなたのアプリに対応するコードを確認：
+あなた�Eアプリに対応するコードを確認！E
 
-| アプリ | コード |
+| アプリ | コーチE|
 |--------|--------|
 | InsightOfficeSlide | `INSS` |
 | InsightOfficeSheet | `IOSH` |
 | InsightOfficeDoc | `IOSD` |
 | InsightPy | `INPY` |
-| InsightMovie | `INMV` |
+| InsightCast | `INMV` |
 | InsightImageGen | `INIG` |
 | InsightBot | `INBT` |
 | InsightNoCodeAnalyzer | `INCA` |
 | InterviewInsight | `IVIN` |
 
-## 3. ライセンス検証を実装
+## 3. ライセンス検証を実裁E
 
 ### TypeScript
 
@@ -32,7 +32,7 @@ git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.gi
 import { LicenseValidator, getFeatureLimits } from './insight-common/license/typescript';
 
 const validator = new LicenseValidator();
-const PRODUCT = 'INSS'; // あなたの製品コード
+const PRODUCT = 'INSS'; // あなた�E製品コーチE
 
 // 検証
 const result = validator.validate(licenseKey, expiresAt);
@@ -48,7 +48,7 @@ if (result.isValid && validator.isProductCovered(result, PRODUCT)) {
 from insight_common.license import LicenseValidator, ProductCode, get_feature_limits
 
 validator = LicenseValidator()
-PRODUCT = ProductCode.INSS  # あなたの製品コード
+PRODUCT = ProductCode.INSS  # あなた�E製品コーチE
 
 # 検証
 result = validator.validate(license_key, expires_at)
@@ -70,13 +70,13 @@ const success = colors.semantic.success.main;   // #16A34A
 const productColor = colors.products.insightOfficeSlide.primary;
 ```
 
-## 5. 法務文書をリンク
+## 5. 法務斁E��をリンク
 
-アプリ内から参照：
+アプリ冁E��ら参照�E�E
 
-- 利用規約: `insight-common/legal/terms-of-service.md`
+- 利用規紁E `insight-common/legal/terms-of-service.md`
 - プライバシーポリシー: `insight-common/legal/privacy-policy.md`
 
-## 完了！
+## 完亁E��E
 
-詳細は [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md) を参照してください。
+詳細は [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md) を参照してください、E

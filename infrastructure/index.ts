@@ -1,7 +1,7 @@
 /**
  * Insight Apps Infrastructure
  *
- * Firebase + Supabase ハイブリッドアーキテクチャの共通基盤
+ * Firebase + Supabase ハイブリチE��アーキチE��チャの共通基盤
  */
 
 // Auth
@@ -108,7 +108,7 @@ export const PRODUCT_CODES = {
   IOSH: 'InsightOfficeSheet',
   IOSD: 'InsightOfficeDoc',
   INPY: 'InsightPy',
-  INMV: 'InsightMovie',
+  INMV: 'InsightCast',
   INBT: 'InsightBot',
   INCA: 'InsightNoCodeAnalyzer',
   INIG: 'InsightImageGen',

@@ -1,14 +1,14 @@
 -- =============================================
 -- Insight Apps - Supabase Schema
--- Firebase UID を正とする設計
+-- Firebase UID を正とする設訁E
 --
--- 使い方:
+-- 使ぁE��:
 --   1. Supabase Dashboard > SQL Editor
---   2. このファイルの内容をコピペ
+--   2. こ�Eファイルの冁E��をコピ�E
 --   3. Run
 -- =============================================
 
--- ユーザー（Firebase連携）
+-- ユーザー�E�Eirebase連携�E�E
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     firebase_uid TEXT UNIQUE NOT NULL,
@@ -31,18 +31,18 @@ CREATE TABLE IF NOT EXISTS licenses (
     expires_at TIMESTAMPTZ,
     is_active BOOLEAN DEFAULT true,
 
-    -- 発行追跡（誰が発行したか）
+    -- 発行追跡�E�誰が発行したか�E�E
     issuance_channel TEXT,               -- direct_paddle, partner_reseller, etc.
     issuer_type TEXT,                    -- system, admin, partner
-    issuer_id TEXT,                      -- 発行者のID
-    partner_id UUID,                    -- パートナー経由の場合
+    issuer_id TEXT,                      -- 発行老E�EID
+    partner_id UUID,                    -- パ�Eトナー経由の場吁E
 
     created_at TIMESTAMPTZ DEFAULT now(),
 
     UNIQUE(user_id, product_code)
 );
 
--- テナント（企業/チーム）
+-- チE��ント（企業/チ�Eム�E�E
 CREATE TABLE IF NOT EXISTS tenants (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS tenants (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- メンバーシップ（ユーザー×テナント）
+-- メンバ�EシチE�E�E�ユーザー×テナント！E
 CREATE TABLE IF NOT EXISTS memberships (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS memberships (
     UNIQUE(user_id, tenant_id)
 );
 
--- 利用ログ（Analytics補完用）
+-- 利用ログ�E�Enalytics補完用�E�E
 CREATE TABLE IF NOT EXISTS usage_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS usage_logs (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- インデックス
+-- インチE��クス
 CREATE INDEX IF NOT EXISTS idx_users_firebase_uid ON users(firebase_uid);
 CREATE INDEX IF NOT EXISTS idx_licenses_user_product ON licenses(user_id, product_code);
 CREATE INDEX IF NOT EXISTS idx_licenses_key ON licenses(license_key);
@@ -99,10 +99,10 @@ CREATE TRIGGER users_updated_at
     EXECUTE FUNCTION update_updated_at();
 
 -- =============================================
--- ライセンス発行・パートナー管理テーブル
+-- ライセンス発行�Eパ�Eトナー管琁E��ーブル
 -- =============================================
 
--- パートナー（販売代理店）
+-- パ�Eトナー�E�販売代琁E��！E
 CREATE TABLE IF NOT EXISTS partners (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     company_name TEXT NOT NULL,
@@ -113,18 +113,18 @@ CREATE TABLE IF NOT EXISTS partners (
     is_active BOOLEAN DEFAULT true,
     contract_start_date TIMESTAMPTZ NOT NULL,
     contract_end_date TIMESTAMPTZ NOT NULL,
-    regions TEXT[] DEFAULT '{}',              -- 対象地域: ['JP', 'US', ...]
-    authorized_products TEXT[] DEFAULT '{}',  -- 取扱製品: ['INSS', 'IOSH', ...]
+    regions TEXT[] DEFAULT '{}',              -- 対象地埁E ['JP', 'US', ...]
+    authorized_products TEXT[] DEFAULT '{}',  -- 取扱製品E ['INSS', 'IOSH', ...]
     nfr_remaining JSONB DEFAULT '{}',         -- NFR残数: {"INSS": 2, "IOSH": 2}
-    demo_remaining JSONB DEFAULT '{}',        -- デモ残数: {"INSS": 5, "IOSH": 5}
-    api_key_hash TEXT UNIQUE,                -- パートナーポータル認証用
+    demo_remaining JSONB DEFAULT '{}',        -- チE��残数: {"INSS": 5, "IOSH": 5}
+    api_key_hash TEXT UNIQUE,                -- パ�Eトナーポ�Eタル認証用
     api_key_prefix TEXT,                     -- 表示用 "hpk_abc..."
     notes TEXT,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 登録（メール認証 → 仮キー → 正式キーの追跡）
+-- 登録�E�メール認証 ↁE仮キー ↁE正式キーの追跡�E�E
 CREATE TABLE IF NOT EXISTS registrations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS registrations (
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 発行ログ（全ライセンス発行の監査証跡）
+-- 発行ログ�E��Eライセンス発行�E監査証跡�E�E
 CREATE TABLE IF NOT EXISTS issuance_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     license_id UUID REFERENCES licenses(id) ON DELETE SET NULL,
@@ -161,39 +161,39 @@ CREATE TABLE IF NOT EXISTS issuance_logs (
     -- 発行チャネル
     channel TEXT NOT NULL,                   -- direct_paddle, partner_reseller, etc.
 
-    -- 発行者情報（誰が発行したか）
+    -- 発行老E��報�E�誰が発行したか�E�E
     issuer_type TEXT NOT NULL,               -- system, admin, partner
-    issuer_id TEXT NOT NULL,                 -- 発行者のID
-    partner_id UUID REFERENCES partners(id), -- パートナー経由の場合
-    partner_tier TEXT,                       -- 発行時点のパートナーティア
+    issuer_id TEXT NOT NULL,                 -- 発行老E�EID
+    partner_id UUID REFERENCES partners(id), -- パ�Eトナー経由の場吁E
+    partner_tier TEXT,                       -- 発行時点のパ�EトナーチE��ア
 
-    -- 顧客情報
+    -- 顧客惁E��
     customer_email TEXT NOT NULL,
     customer_name TEXT NOT NULL,
     customer_company TEXT,
 
     -- 決済情報
     payment_id TEXT,
-    payment_amount INTEGER,                  -- 金額（最小通貨単位）
+    payment_amount INTEGER,                  -- 金額（最小通貨単位！E
     payment_currency TEXT,                   -- JPY, USD, EUR
 
-    -- メタデータ
+    -- メタチE�Eタ
     expires_at TIMESTAMPTZ NOT NULL,
     email_sent BOOLEAN DEFAULT false,
     notes TEXT,
     issued_at TIMESTAMPTZ DEFAULT now()
 );
 
--- パートナーコミッション
+-- パ�Eトナーコミッション
 CREATE TABLE IF NOT EXISTS partner_commissions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     partner_id UUID NOT NULL REFERENCES partners(id),
     issuance_log_id UUID REFERENCES issuance_logs(id),
     license_id UUID REFERENCES licenses(id),
     commission_type TEXT NOT NULL,            -- first_year, renewal, referral
-    list_price INTEGER NOT NULL,             -- 定価（JPY）
-    wholesale_price INTEGER NOT NULL,        -- 卸値（JPY）
-    partner_profit INTEGER NOT NULL,         -- パートナー利益（JPY）
+    list_price INTEGER NOT NULL,             -- 定価�E�EPY�E�E
+    wholesale_price INTEGER NOT NULL,        -- 卸値�E�EPY�E�E
+    partner_profit INTEGER NOT NULL,         -- パ�Eトナー利益！EPY�E�E
     discount_rate NUMERIC(4,2) NOT NULL,     -- 値引率 (0.20, 0.30, 0.40)
     status TEXT NOT NULL DEFAULT 'pending',  -- pending, approved, paid, cancelled
     period_start TIMESTAMPTZ NOT NULL,
@@ -202,7 +202,7 @@ CREATE TABLE IF NOT EXISTS partner_commissions (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ライセンス発行・パートナー インデックス
+-- ライセンス発行�Eパ�Eトナー インチE��クス
 CREATE INDEX IF NOT EXISTS idx_partners_email ON partners(contact_email);
 CREATE INDEX IF NOT EXISTS idx_partners_tier ON partners(tier);
 CREATE INDEX IF NOT EXISTS idx_partners_api_key ON partners(api_key_hash);
@@ -219,7 +219,7 @@ CREATE INDEX IF NOT EXISTS idx_commissions_status ON partner_commissions(status)
 CREATE INDEX IF NOT EXISTS idx_licenses_partner ON licenses(partner_id);
 CREATE INDEX IF NOT EXISTS idx_licenses_channel ON licenses(issuance_channel);
 
--- パートナー updated_at トリガー
+-- パ�Eトナー updated_at トリガー
 DROP TRIGGER IF EXISTS partners_updated_at ON partners;
 CREATE TRIGGER partners_updated_at
     BEFORE UPDATE ON partners
@@ -234,10 +234,10 @@ CREATE TRIGGER registrations_updated_at
     EXECUTE FUNCTION update_updated_at();
 
 -- =============================================
--- API Gateway テーブル
+-- API Gateway チE�Eブル
 -- =============================================
 
--- APIキー（Service-to-Service認証用）
+-- APIキー�E�Eervice-to-Service認証用�E�E
 CREATE TABLE IF NOT EXISTS api_keys (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     error TEXT
 );
 
--- セキュリティイベント
+-- セキュリチE��イベンチE
 CREATE TABLE IF NOT EXISTS security_events (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     timestamp TIMESTAMPTZ DEFAULT now(),
@@ -289,7 +289,7 @@ CREATE TABLE IF NOT EXISTS security_events (
     details JSONB DEFAULT '{}'
 );
 
--- API Gateway インデックス
+-- API Gateway インチE��クス
 CREATE INDEX IF NOT EXISTS idx_api_keys_hash ON api_keys(key_hash);
 CREATE INDEX IF NOT EXISTS idx_api_keys_user ON api_keys(user_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_timestamp ON audit_logs(timestamp DESC);
@@ -298,55 +298,55 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_path ON audit_logs(path, timestamp DES
 CREATE INDEX IF NOT EXISTS idx_security_events_type ON security_events(event_type, timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_security_events_ip ON security_events(ip_address, timestamp DESC);
 
--- 古い監査ログの自動削除（90日以上）
+-- 古ぁE��査ログの自動削除�E�E0日以上！E
 -- Supabase Edge Functionで定期実行するか、pg_cronを使用
 -- DELETE FROM audit_logs WHERE timestamp < now() - interval '90 days';
 -- DELETE FROM security_events WHERE timestamp < now() - interval '90 days';
 
 -- =============================================
--- サポートチケット（Anthropic Customer Support Plugin 参考）
+-- サポ�EトチケチE���E�Enthropic Customer Support Plugin 参老E��E
 -- =============================================
--- 参照: config/support-triage.ts
+-- 参�E: config/support-triage.ts
 
 CREATE TABLE IF NOT EXISTS support_tickets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    -- チケット内容
+    -- チケチE��冁E��
     subject TEXT NOT NULL,
     body TEXT NOT NULL,
-    -- AI 自動分類
+    -- AI 自動�E顁E
     category TEXT NOT NULL DEFAULT 'how-to',           -- bug, how-to, license, ai-assistant, integration, feature-request, performance, data, security, partner
     priority TEXT NOT NULL DEFAULT 'P3',                -- P1, P2, P3, P4
     routing_target TEXT NOT NULL DEFAULT 'tier1',       -- tier1, tier2, engineering, product, security, billing, partner-team
-    -- メタデータ
-    product_code TEXT,                                 -- INSS, IOSH, IOSD 等
+    -- メタチE�Eタ
+    product_code TEXT,                                 -- INSS, IOSH, IOSD 筁E
     plan TEXT,                                         -- 問い合わせ時のプラン
-    partner_id UUID,                                   -- パートナー経由の場合
-    -- ステータス管理
+    partner_id UUID,                                   -- パ�Eトナー経由の場吁E
+    -- スチE�Eタス管琁E
     status TEXT NOT NULL DEFAULT 'open',                -- open, in_progress, waiting_customer, waiting_internal, resolved, closed
-    assigned_to TEXT,                                   -- 担当者 ID
+    assigned_to TEXT,                                   -- 拁E��老EID
     resolved_at TIMESTAMPTZ,
     -- SLA 追跡
-    sla_response_deadline TIMESTAMPTZ,                 -- 初回応答期限
+    sla_response_deadline TIMESTAMPTZ,                 -- 初回応答期陁E
     sla_responded_at TIMESTAMPTZ,                      -- 実際の初回応答時刻
-    sla_met BOOLEAN,                                   -- SLA 達成フラグ
-    -- タイムスタンプ
+    sla_met BOOLEAN,                                   -- SLA 達�Eフラグ
+    -- タイムスタンチE
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- チケットコメント（対応履歴）
+-- チケチE��コメント（対応履歴�E�E
 CREATE TABLE IF NOT EXISTS support_ticket_comments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     ticket_id UUID REFERENCES support_tickets(id) ON DELETE CASCADE NOT NULL,
     author_type TEXT NOT NULL DEFAULT 'agent',          -- customer, agent, system, ai
     author_id TEXT,
     body TEXT NOT NULL,
-    is_internal BOOLEAN DEFAULT false,                 -- 内部メモ（顧客には非公開）
+    is_internal BOOLEAN DEFAULT false,                 -- 冁E��メモ�E�顧客には非�E開！E
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- サポートインデックス
+-- サポ�EトインチE��クス
 CREATE INDEX IF NOT EXISTS idx_support_tickets_user ON support_tickets(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_support_tickets_status ON support_tickets(status, priority, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_support_tickets_category ON support_tickets(category, created_at DESC);
@@ -355,7 +355,7 @@ CREATE INDEX IF NOT EXISTS idx_support_tickets_assigned ON support_tickets(assig
 CREATE INDEX IF NOT EXISTS idx_support_ticket_comments_ticket ON support_ticket_comments(ticket_id, created_at);
 
 -- =============================================
--- 初期データ確認用クエリ
+-- 初期チE�Eタ確認用クエリ
 -- =============================================
 -- SELECT * FROM users LIMIT 10;
 -- SELECT * FROM licenses LIMIT 10;

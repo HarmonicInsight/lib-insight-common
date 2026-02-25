@@ -164,6 +164,7 @@ export const PROJECT_FILE_PATHS = {
   SCRIPTS_INDEX: 'scripts/index.json',
   /** スクリプトファイルディレクトリ */
   SCRIPTS_FILES_DIR: 'scripts/files/',
+
 } as const;
 
 /**

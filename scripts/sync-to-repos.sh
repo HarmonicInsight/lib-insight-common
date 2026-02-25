@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # =============================================================================
-# insight-common → 各アプリリポジトリへのサブモジュール + アイコン同期
+# insight-common ↁE吁E��プリリポジトリへのサブモジュール + アイコン同期
 #
-# 使い方:
+# 使ぁE��:
 #   ./scripts/sync-to-repos.sh                     # 全リポジトリ
-#   ./scripts/sync-to-repos.sh win-app-insight-sheet  # 指定リポジトリのみ
-#   ./scripts/sync-to-repos.sh --dry-run           # 変更確認のみ
+#   ./scripts/sync-to-repos.sh win-app-insight-sheet  # 持E��リポジトリのみ
+#   ./scripts/sync-to-repos.sh --dry-run           # 変更確認�Eみ
 #   ./scripts/sync-to-repos.sh --list              # 対象一覧表示
 #
 # 前提:
-#   - 各リポジトリが $BASE_DIR 配下にクローン済み
-#   - insight-common のルートから実行
+#   - 吁E��ポジトリぁE$BASE_DIR 配下にクローン済み
+#   - insight-common のルートから実衁E
 # =============================================================================
 
 set -euo pipefail
@@ -20,19 +20,19 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 INSIGHT_COMMON_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ICON_GENERATED="$INSIGHT_COMMON_ROOT/brand/icons/generated"
 
-# 開発ディレクトリ（環境変数 or デフォルト）
+# 開発チE��レクトリ�E�環墁E��数 or チE��ォルト！E
 BASE_DIR="${INSIGHT_DEV_DIR:-$(cd "$INSIGHT_COMMON_ROOT/.." && pwd)}"
 
 DRY_RUN=false
 FILTER=""
 
 # --- リポジトリ定義 ---
-# 形式: "repo|product|name|icon_src|icon_dest|copy_mode"
+# 形弁E "repo|product|name|icon_src|icon_dest|copy_mode"
 REPOS=(
   "win-app-nocode-analyzer|INCA|InsightNoCodeAnalyzer|InsightNoCodeAnalyzer/|src-tauri/icons/|dir"
   "win-app-insight-bot|INBT|InsightBot|InsightBot|Resources|ico_png"
   "web-app-auto-interview|IVIN|InterviewInsight|InterviewInsight/|src-tauri/icons/|dir"
-  "win-app-insight-movie-gen|INMV|InsightMovie|InsightMovie|resources|ico_png"
+  "win-app-insight-cast|INMV|InsightCast|InsightCast|resources|ico_png"
   "win-app-insight-image-gen|INIG|InsightImageGen|InsightImageGen|resources|ico_png"
   "win-app-insight-slide|INSS|InsightOfficeSlide|InsightOfficeSlide|Resources|ico_png"
   "win-app-insight-sheet|IOSH|InsightOfficeSheet|InsightOfficeSheet|Resources|ico_png"
@@ -67,12 +67,12 @@ for arg in "$@"; do
       echo "Usage: $0 [--dry-run] [--list] [repo-name ...]"
       echo ""
       echo "Options:"
-      echo "  --dry-run  変更を確認するのみ（コミットしない）"
+      echo "  --dry-run  変更を確認する�Eみ�E�コミットしなぁE��E
       echo "  --list     対象リポジトリ一覧を表示"
-      echo "  --help     このヘルプを表示"
+      echo "  --help     こ�Eヘルプを表示"
       echo ""
       echo "Environment:"
-      echo "  INSIGHT_DEV_DIR  開発ディレクトリ (default: ../ from insight-common)"
+      echo "  INSIGHT_DEV_DIR  開発チE��レクトリ (default: ../ from insight-common)"
       exit 0
       ;;
     -*) echo "Unknown option: $arg"; exit 1 ;;
@@ -85,7 +85,7 @@ sync_claude_skills() {
   local repo_dir="$1" copy_mode="$2"
   local skills_dir="$INSIGHT_COMMON_ROOT/.claude/commands"
 
-  # .claude/commands ディレクトリ作成
+  # .claude/commands チE��レクトリ作�E
   mkdir -p "$repo_dir/.claude/commands"
 
   # 共通スキル: release-check
@@ -100,7 +100,7 @@ sync_claude_skills() {
     fi
   fi
 
-  # .claude/settings.json に SessionStart フック追加（sync-skills 自動同期）
+  # .claude/settings.json に SessionStart フック追加�E�Eync-skills 自動同期！E
   local settings_file="$repo_dir/.claude/settings.json"
   local sync_hook_cmd='bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh'
 
@@ -137,69 +137,69 @@ SETTINGSEOF
     echo "        settings.json: created with sync-skills hook"
   fi
 
-  # CLAUDE.md の生成（既存ファイルがない場合のみ）
+  # CLAUDE.md の生�E�E�既存ファイルがなぁE��合�Eみ�E�E
   if [ ! -f "$repo_dir/CLAUDE.md" ]; then
     local release_skill="/release-check"
     local platform_std=""
     case "$copy_mode" in
       android_native)
         release_skill="/release-check-android"
-        platform_std="cat insight-common/standards/ANDROID.md             # Android 開発標準"
+        platform_std="cat insight-common/standards/ANDROID.md             # Android 開発標溁E
         ;;
       expo)
         release_skill="/release-check"
-        platform_std="cat insight-common/standards/ANDROID.md             # Android (Expo) 開発標準"
+        platform_std="cat insight-common/standards/ANDROID.md             # Android (Expo) 開発標溁E
         ;;
       ico_png)
-        platform_std="cat insight-common/standards/CSHARP_WPF.md          # C# WPF 開発標準"
+        platform_std="cat insight-common/standards/CSHARP_WPF.md          # C# WPF 開発標溁E
         ;;
       web)
-        platform_std="cat insight-common/standards/REACT.md               # React 開発標準"
+        platform_std="cat insight-common/standards/REACT.md               # React 開発標溁E
         ;;
     esac
 
     cat > "$repo_dir/CLAUDE.md" << CLEOF
-# 開発ガイド
+# 開発ガイチE
 
-> このプロジェクトは \`insight-common/CLAUDE.md\` の全標準に準拠します。
-> 開発・レビュー・リリース前に必ず参照してください。
+> こ�Eプロジェクト�E \`insight-common/CLAUDE.md\` の全標準に準拠します、E
+> 開発・レビュー・リリース前に忁E��参�Eしてください、E
 
-## 標準ドキュメント
+## 標準ドキュメンチE
 
 \`\`\`bash
-cat insight-common/CLAUDE.md                       # 全体ガイド
+cat insight-common/CLAUDE.md                       # 全体ガイチE
 ${platform_std}
-cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
+cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェチE��
 cat insight-common/standards/LOCALIZATION.md        # ローカライゼーション
 \`\`\`
 
-## 検証コマンド
+## 検証コマンチE
 
 \`\`\`bash
 # 開発中の標準検証
 ./insight-common/scripts/validate-standards.sh .
 
-# リリース前の包括チェック
+# リリース前�E匁E��チェチE��
 ./insight-common/scripts/release-check.sh .
 \`\`\`
 
-## AI アシスタント自動行動ルール
+## AI アシスタント�E動行動ルール
 
-| トリガー（ユーザーの発言・状況） | 自動アクション |
+| トリガー�E�ユーザーの発言・状況E��E| 自動アクション |
 |-------------------------------|--------------|
-| 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | \`${release_skill}\` を提案・実行 |
-| 「PR 作って」「プルリク」「マージ」 | \`${release_skill}\` の実行を推奨 |
-| 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認 |
-| ストアメタデータ・スクリーンショットの話題 | \`insight-common/standards/LOCALIZATION.md\` §6 を参照 |
+| 「リリース」「デプロイ」「�E開」「本番」「ship」「release、E| \`${release_skill}\` を提案�E実衁E|
+| 「PR 作って」「�Eルリク」「�Eージ、E| \`${release_skill}\` の実行を推奨 |
+| 新要EUI 実裁E�EチE��イン変更 | Ivory & Gold チE��イン標準を確誁E|
+| ストアメタチE�Eタ・スクリーンショチE��の話顁E| \`insight-common/standards/LOCALIZATION.md\` §6 を参照 |
 
-## ⚠️ 重要ルール
+## ⚠�E�E重要ルール
 
-- リリース前に \`${release_skill}\` を**必ず**実行すること
-- \`${release_skill}\` は**フェーズ別に対話的に実行**する（一気にやらない）
-- デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
-- Blue (#2563EB) をプライマリとして使用**禁止**
+- リリース前に \`${release_skill}\` めE*忁E��**実行すること
+- \`${release_skill}\` は**フェーズ別に対話皁E��実衁E*する�E�一気にめE��なぁE��E
+- チE��イン: Gold (#B8942F) が�Eライマリ、Ivory (#FAF8F5) が背景
+- Blue (#2563EB) を�Eライマリとして使用**禁止**
 - TODO/FIXME を残したままリリース**禁止**
-- API キー・シークレットのハードコード**禁止**
+- API キー・シークレチE��のハ�EドコーチE*禁止**
 CLEOF
     echo "        CLAUDE.md generated"
   fi
@@ -230,7 +230,7 @@ copy_icons() {
       for f in icon.png adaptive-icon.png notification-icon.png splash-icon.png favicon.png; do
         [ -f "$ICON_GENERATED/$icon_src/$f" ] && cp "$ICON_GENERATED/$icon_src/$f" "$repo_dir/$icon_dest/$f"
       done
-      # Android mipmap ディレクトリ
+      # Android mipmap チE��レクトリ
       if [ -d "$ICON_GENERATED/$icon_src/android" ]; then
         cp -r "$ICON_GENERATED/$icon_src/android/"* "$repo_dir/$icon_dest/" 2>/dev/null || true
       fi
@@ -245,9 +245,9 @@ copy_icons() {
 }
 
 # --- Main ---
-echo "=== insight-common → 各リポジトリ同期 ==="
+echo "=== insight-common ↁE吁E��ポジトリ同期 ==="
 echo "  insight-common: $INSIGHT_COMMON_ROOT"
-echo "  開発ディレクトリ: $BASE_DIR"
+echo "  開発チE��レクトリ: $BASE_DIR"
 echo "  Dry run: $DRY_RUN"
 echo ""
 
@@ -258,7 +258,7 @@ FAILED=0
 for entry in "${REPOS[@]}"; do
   IFS='|' read -r repo product name icon_src icon_dest copy_mode <<< "$entry"
 
-  # フィルタチェック
+  # フィルタチェチE��
   if [ -n "$FILTER" ]; then
     if ! echo "$FILTER" | grep -qw "$repo"; then
       continue
@@ -288,7 +288,7 @@ for entry in "${REPOS[@]}"; do
   sync_claude_skills "$REPO_DIR" "$copy_mode"
   echo "        skills synced"
 
-  # 3. アイコンコピー
+  # 3. アイコンコピ�E
   if copy_icons "$icon_src" "$icon_dest" "$name" "$copy_mode" "$REPO_DIR"; then
     echo "        icons copied ($copy_mode)"
   else
@@ -328,4 +328,4 @@ for entry in "${REPOS[@]}"; do
 done
 
 echo ""
-echo "=== 完了: $SUCCESS synced, $SKIPPED skipped, $FAILED failed ==="
+echo "=== 完亁E $SUCCESS synced, $SKIPPED skipped, $FAILED failed ==="

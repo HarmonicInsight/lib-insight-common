@@ -1,78 +1,78 @@
-# Cool Blue & Slate テーマ — 業務系アプリケーション向けカラー標準
+# Cool Blue & Slate チE�EチE E業務系アプリケーション向けカラー標溁E
 
-> **対象**: RPA、ノーコード解析、データダッシュボード、管理画面など、データ密度が高く長時間利用する業務アプリケーション
+> **対象**: RPA、ノーコード解析、データダチE��ュボ�Eド、管琁E��面など、データ寁E��が高く長時間利用する業務アプリケーション
 
 ---
 
-## 1. 概要
+## 1. 概要E
 
-### なぜ寒色系テーマが必要か
+### なぜ寒色系チE�Eマが忁E��か
 
-Ivory & Gold テーマはブランドの高級感・信頼感を表現するのに適していますが、以下の業務系ユースケースでは寒色系テーマの方が優れています:
+Ivory & Gold チE�Eマ�Eブランド�E高級感・信頼感を表現するのに適してぁE��すが、以下�E業務系ユースケースでは寒色系チE�Eマ�E方が優れてぁE��ぁE
 
-| 観点 | 暖色系（Ivory & Gold） | 寒色系（Cool Blue & Slate） |
+| 観点 | 暖色系�E�Evory & Gold�E�E| 寒色系�E�Eool Blue & Slate�E�E|
 |------|----------------------|--------------------------|
-| **長時間利用** | 暖色は視覚疲労を蓄積しやすい | 寒色は目の負担を軽減 |
-| **データ視認性** | コントラスト比がやや低い | 高コントラストでデータが読みやすい |
-| **ステータス表示** | 暖色背景上で警告色が紛れやすい | 寒色背景上でステータス色が明確に区別できる |
-| **集中作業** | リラックス・創造的作業向き | 分析・監視・データ入力向き |
-| **情報密度** | 余白を活かした配置向き | 高密度テーブル・ダッシュボード向き |
+| **長時間利用** | 暖色は視覚疲労を蓄積しめE��ぁE| 寒色は目の負拁E��軽渁E|
+| **チE�Eタ視認性** | コントラスト比がめE��低い | 高コントラストでチE�Eタが読みめE��ぁE|
+| **スチE�Eタス表示** | 暖色背景上で警告色が紛れめE��ぁE| 寒色背景上でスチE�Eタス色が�E確に区別できる |
+| **雁E��作業** | リラチE��ス・創造皁E��業向き | 刁E��・監視�EチE�Eタ入力向ぁE|
+| **惁E��寁E��** | 余白を活かした�E置向き | 高寁E��チE�Eブル・ダチE��ュボ�Eド向ぁE|
 
-### 対象製品
+### 対象製品E
 
-| 製品コード | 製品名 | テーマ推奨理由 |
+| 製品コーチE| 製品名 | チE�Eマ推奨琁E�� |
 |-----------|-------|--------------|
-| **INBT** | InsightBot | RPA ジョブ監視・Agent 管理ダッシュボード |
+| **INBT** | InsightBot | RPA ジョブ監視�EAgent 管琁E��チE��ュボ�EチE|
 | **INCA** | InsightNoCodeAnalyzer | コード解析結果・移行アセスメント画面 |
-| **IVIN** | InterviewInsight | ヒアリングデータ分析・調査結果ダッシュボード |
+| **IVIN** | InterviewInsight | ヒアリングチE�Eタ刁E��・調査結果ダチE��ュボ�EチE|
 
-> **注**: InsightOffice 系（INSS/IOSH/IOSD）、InsightSeniorOffice（ISOF）、マーケティング系（INMV/INIG）は引き続き **Ivory & Gold テーマ** を使用してください。
+> **注**: InsightOffice 系�E�ENSS/IOSH/IOSD�E�、InsightSeniorOffice�E�ESOF�E�、�EーケチE��ング系�E�ENMV/INIG�E��E引き続き **Ivory & Gold チE�EチE* を使用してください、E
 
 ---
 
-## 2. カラーパレット
+## 2. カラーパレチE��
 
-### 必須カラー
+### 忁E��カラー
 
 ```
-Brand Primary (Blue):  #2563EB    ← アクセント、CTA、選択状態
-Background (Slate):    #F8FAFC    ← メイン背景
-Background Card:       #FFFFFF    ← カード、モーダル
-Text Primary:          #0F172A    ← 本文、見出し（高コントラスト）
-Text Secondary:        #475569    ← サブテキスト
-Border:                #E2E8F0    ← ボーダー
+Brand Primary (Blue):  #2563EB    ↁEアクセント、CTA、E��択状慁E
+Background (Slate):    #F8FAFC    ↁEメイン背景
+Background Card:       #FFFFFF    ↁEカード、モーダル
+Text Primary:          #0F172A    ↁE本斁E��見�Eし（高コントラスト！E
+Text Secondary:        #475569    ↁEサブテキスチE
+Border:                #E2E8F0    ↁEボ�Eダー
 ```
 
-### 全カラーマップ
+### 全カラーマッチE
 
-| 用途 | カラーコード | 備考 |
+| 用送E| カラーコーチE| 備老E|
 |------|------------|------|
-| **Primary (Blue)** | `#2563EB` | アクセント、CTA、アクティブ状態 |
-| **Primary Hover** | `#1D4ED8` | ホバー状態 |
-| **Primary Light** | `#DBEAFE` | 選択行、軽いハイライト |
-| **Primary Dark** | `#1E40AF` | アクティブ・押下状態 |
+| **Primary (Blue)** | `#2563EB` | アクセント、CTA、アクチE��ブ状慁E|
+| **Primary Hover** | `#1D4ED8` | ホバー状慁E|
+| **Primary Light** | `#DBEAFE` | 選択行、軽ぁE��イライチE|
+| **Primary Dark** | `#1E40AF` | アクチE��ブ�E押下状慁E|
 | **Secondary** | `#64748B` | セカンダリボタン、補助要素 |
-| **Accent** | `#3B82F6` | リンク、軽いアクセント |
+| **Accent** | `#3B82F6` | リンク、軽ぁE��クセンチE|
 | **Background Primary** | `#F8FAFC` | メイン背景 |
 | **Background Secondary** | `#F1F5F9` | サイドパネル、セカンダリ領域 |
 | **Background Card** | `#FFFFFF` | カード、モーダル |
 | **Background Hover** | `#E2E8F0` | ホバー背景 |
-| **Sidebar Background** | `#1E293B` | ダークサイドバー（業務系推奨） |
-| **Text Primary** | `#0F172A` | 本文、見出し |
+| **Sidebar Background** | `#1E293B` | ダークサイドバー�E�業務系推奨�E�E|
+| **Text Primary** | `#0F172A` | 本斁E��見�EぁE|
 | **Text Secondary** | `#475569` | サブテキスト、ラベル |
-| **Text Tertiary** | `#94A3B8` | プレースホルダー、無効状態 |
-| **Text on Primary** | `#FFFFFF` | プライマリ色上のテキスト |
-| **Border Default** | `#E2E8F0` | 標準ボーダー |
-| **Border Light** | `#F1F5F9` | 軽いディバイダー |
+| **Text Tertiary** | `#94A3B8` | プレースホルダー、無効状慁E|
+| **Text on Primary** | `#FFFFFF` | プライマリ色上�EチE��スチE|
+| **Border Default** | `#E2E8F0` | 標準�Eーダー |
+| **Border Light** | `#F1F5F9` | 軽ぁE��ィバイダー |
 | **Border Focus** | `#2563EB` | フォーカスリング |
-| **Success** | `#16A34A` | 成功ステータス |
-| **Warning** | `#D97706` | 警告ステータス |
-| **Error** | `#DC2626` | エラーステータス |
-| **Info** | `#0EA5E9` | 情報ステータス（プライマリと区別） |
+| **Success** | `#16A34A` | 成功スチE�Eタス |
+| **Warning** | `#D97706` | 警告スチE�Eタス |
+| **Error** | `#DC2626` | エラースチE�Eタス |
+| **Info** | `#0EA5E9` | 惁E��スチE�Eタス�E��Eライマリと区別�E�E|
 
-### Ivory & Gold テーマとの対応表
+### Ivory & Gold チE�Eマとの対応表
 
-| 用途 | Ivory & Gold | Cool Blue & Slate |
+| 用送E| Ivory & Gold | Cool Blue & Slate |
 |------|-------------|-------------------|
 | Primary | `#B8942F` (Gold) | `#2563EB` (Blue) |
 | Background | `#FAF8F5` (Ivory) | `#F8FAFC` (Slate) |
@@ -84,93 +84,93 @@ Border:                #E2E8F0    ← ボーダー
 
 ---
 
-## 3. 業務系 UI コンポーネント
+## 3. 業務系 UI コンポ�EネンチE
 
-### 3.1 データテーブル
+### 3.1 チE�EタチE�Eブル
 
-データテーブルは業務系アプリの中核コンポーネントです。寒色系は交互行や選択状態のコントラストが明確で、大量データの走査に適しています。
+チE�EタチE�Eブルは業務系アプリの中核コンポ�Eネントです。寒色系は交互行や選択状態�Eコントラストが明確で、大量データの走査に適してぁE��す、E
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  ヘッダー行          Background: #F1F5F9  Text: #0F172A     │
+┌─────────────────────────────────────────────────────────────━E
+━E ヘッダー衁E         Background: #F1F5F9  Text: #0F172A     ━E
 ├─────────────────────────────────────────────────────────────┤
-│  通常行              Background: #FFFFFF                     │
-│  ストライプ行        Background: #F8FAFC                     │
-│  ホバー行            Background: #EFF6FF                     │
-│  選択行              Background: #DBEAFE  Border-left: #2563EB│
-└─────────────────────────────────────────────────────────────┘
+━E 通常衁E             Background: #FFFFFF                     ━E
+━E ストライプ衁E       Background: #F8FAFC                     ━E
+━E ホバー衁E           Background: #EFF6FF                     ━E
+━E 選択衁E             Background: #DBEAFE  Border-left: #2563EB━E
+└─────────────────────────────────────────────────────────────━E
 ```
 
-**カラー仕様:**
+**カラー仕槁E**
 
-| 状態 | 背景色 | テキスト色 | ボーダー |
+| 状慁E| 背景色 | チE��スト色 | ボ�Eダー |
 |------|--------|----------|---------|
 | ヘッダー | `#F1F5F9` | `#0F172A` | `#E2E8F0` |
-| 通常行 | `#FFFFFF` | `#0F172A` | `#E2E8F0` |
-| ストライプ行 | `#F8FAFC` | `#0F172A` | `#E2E8F0` |
+| 通常衁E| `#FFFFFF` | `#0F172A` | `#E2E8F0` |
+| ストライプ衁E| `#F8FAFC` | `#0F172A` | `#E2E8F0` |
 | ホバー | `#EFF6FF` | `#0F172A` | `#E2E8F0` |
-| 選択行 | `#DBEAFE` | `#0F172A` | `#2563EB` (left) |
+| 選択衁E| `#DBEAFE` | `#0F172A` | `#2563EB` (left) |
 
-### 3.2 ダッシュボード・サイドバー
+### 3.2 ダチE��ュボ�Eド�Eサイドバー
 
-業務系アプリではダークサイドバーが推奨です。コンテンツ領域との視覚的分離が明確になり、ナビゲーション要素がコンテンツと干渉しません。
+業務系アプリではダークサイドバーが推奨です。コンチE��チE��域との視覚的刁E��が�E確になり、ナビゲーション要素がコンチE��チE��干渉しません、E
 
 ```
-┌────────────┬──────────────────────────────────────┐
-│            │  ヘッダー   #FFFFFF / border #E2E8F0  │
-│  サイドバー ├──────────────────────────────────────┤
-│  #1E293B   │                                      │
-│            │  コンテンツ   #F8FAFC                  │
-│  テキスト   │                                      │
-│  #CBD5E1   │  ┌──────────┐  ┌──────────┐          │
-│            │  │ KPI Card │  │ KPI Card │          │
-│  アクティブ │  │ #FFFFFF  │  │ #FFFFFF  │          │
-│  #2563EB   │  └──────────┘  └──────────┘          │
-│            │                                      │
-└────────────┴──────────────────────────────────────┘
+┌────────────┬──────────────────────────────────────━E
+━E           ━E ヘッダー   #FFFFFF / border #E2E8F0  ━E
+━E サイドバー ├──────────────────────────────────────┤
+━E #1E293B   ━E                                     ━E
+━E           ━E コンチE��チE  #F8FAFC                  ━E
+━E チE��スチE  ━E                                     ━E
+━E #CBD5E1   ━E ┌──────────━E ┌──────────━E         ━E
+━E           ━E ━EKPI Card ━E ━EKPI Card ━E         ━E
+━E アクチE��チE━E ━E#FFFFFF  ━E ━E#FFFFFF  ━E         ━E
+━E #2563EB   ━E └──────────━E └──────────━E         ━E
+━E           ━E                                     ━E
+└────────────┴──────────────────────────────────────━E
 ```
 
-**サイドバー仕様:**
+**サイドバー仕槁E**
 
 | 要素 | カラー |
 |------|--------|
 | 背景 | `#1E293B` |
-| テキスト（通常） | `#CBD5E1` |
-| テキスト（アクティブ） | `#FFFFFF` |
-| アクティブアイテム背景 | `rgba(37, 99, 235, 0.15)` |
-| アクティブアイテムインジケーター | `#2563EB` |
+| チE��スト（通常�E�E| `#CBD5E1` |
+| チE��スト（アクチE��ブ！E| `#FFFFFF` |
+| アクチE��ブアイチE��背景 | `rgba(37, 99, 235, 0.15)` |
+| アクチE��ブアイチE��インジケーター | `#2563EB` |
 | ホバー背景 | `#334155` |
-| ディバイダー | `#334155` |
+| チE��バイダー | `#334155` |
 
-### 3.3 ステータスバッジ（RPA ジョブ・プロセス状態）
+### 3.3 スチE�Eタスバッジ�E�EPA ジョブ�Eプロセス状態！E
 
-RPA アプリでは実行状態の即時判別が重要です。以下のステータスカラーを使用してください:
+RPA アプリでは実行状態�E即時判別が重要です。以下�EスチE�Eタスカラーを使用してください:
 
-| 状態 | 背景色 | テキスト色 | ドット色 | 用途 |
+| 状慁E| 背景色 | チE��スト色 | ドット色 | 用送E|
 |------|--------|----------|---------|------|
 | **Running** | `#DBEAFE` | `#1D4ED8` | `#2563EB` | 実行中 |
-| **Success** | `#DCFCE7` | `#15803D` | `#16A34A` | 成功完了 |
-| **Warning** | `#FEF3C7` | `#A16207` | `#D97706` | 警告（部分成功） |
-| **Error** | `#FEE2E2` | `#B91C1C` | `#DC2626` | エラー（失敗） |
-| **Idle** | `#F1F5F9` | `#475569` | `#94A3B8` | 待機中 |
-| **Queued** | `#F3E8FF` | `#7C3AED` | `#8B5CF6` | キュー待ち |
+| **Success** | `#DCFCE7` | `#15803D` | `#16A34A` | 成功完亁E|
+| **Warning** | `#FEF3C7` | `#A16207` | `#D97706` | 警告（部刁E�E功！E|
+| **Error** | `#FEE2E2` | `#B91C1C` | `#DC2626` | エラー�E�失敗！E|
+| **Idle** | `#F1F5F9` | `#475569` | `#94A3B8` | 征E��中 |
+| **Queued** | `#F3E8FF` | `#7C3AED` | `#8B5CF6` | キュー征E�� |
 
-### 3.4 KPI カード
+### 3.4 KPI カーチE
 
 ```
-┌───────────────────────┐
-│  月間実行回数           │  ← labelText: #64748B
-│  1,234                 │  ← valueText: #0F172A (大きく)
-│  ↑ 12.5%               │  ← trendUp: #16A34A
-│                        │     trendDown: #DC2626
-│  Background: #FFFFFF   │
-│  Border: #E2E8F0       │
-└───────────────────────┘
+┌───────────────────────━E
+━E 月間実行回数           ━E ↁElabelText: #64748B
+━E 1,234                 ━E ↁEvalueText: #0F172A (大きく)
+━E ↁE12.5%               ━E ↁEtrendUp: #16A34A
+━E                       ━E    trendDown: #DC2626
+━E Background: #FFFFFF   ━E
+━E Border: #E2E8F0       ━E
+└───────────────────────━E
 ```
 
 ---
 
-## 4. プラットフォーム別実装
+## 4. プラチE��フォーム別実裁E
 
 ### 4.1 TypeScript / React
 
@@ -180,7 +180,7 @@ import coolColors from '@/insight-common/brand/colors-cool.json';
 // Primary (Blue): coolColors.brand.primary (#2563EB)
 // Background (Slate): coolColors.background.primary (#F8FAFC)
 
-// データテーブルの例
+// チE�EタチE�Eブルの侁E
 const tableStyles = {
   header: {
     backgroundColor: coolColors.dataTable.headerBackground,
@@ -237,7 +237,7 @@ const tableStyles = {
 
 ```python
 class CoolColors:
-    """Cool Blue & Slate テーマ — 業務系アプリケーション向け"""
+    """Cool Blue & Slate チE�EチE E業務系アプリケーション向け"""
 
     # Brand
     PRIMARY = "#2563EB"
@@ -337,9 +337,9 @@ extension Color {
 
 ---
 
-## 5. ダークモード
+## 5. ダークモーチE
 
-| 用途 | Light Mode | Dark Mode |
+| 用送E| Light Mode | Dark Mode |
 |------|-----------|-----------|
 | Background Primary | `#F8FAFC` | `#0F172A` |
 | Background Secondary | `#F1F5F9` | `#1E293B` |
@@ -350,15 +350,15 @@ extension Color {
 | Text Tertiary | `#94A3B8` | `#94A3B8` |
 | Border Default | `#E2E8F0` | `#334155` |
 | Border Light | `#F1F5F9` | `#1E293B` |
-| Primary | `#2563EB` | `#3B82F6` (明度を上げる) |
+| Primary | `#2563EB` | `#3B82F6` (明度を上げめE |
 
 ---
 
-## 6. アクセシビリティ
+## 6. アクセシビリチE��
 
-### コントラスト比（WCAG 2.1 準拠）
+### コントラスト比！ECAG 2.1 準拠�E�E
 
-| 組み合わせ | コントラスト比 | WCAG AA | WCAG AAA |
+| 絁E��合わぁE| コントラスト毁E| WCAG AA | WCAG AAA |
 |-----------|:------------:|:-------:|:--------:|
 | Text Primary (#0F172A) on BG (#F8FAFC) | 17.2:1 | AA | AAA |
 | Text Secondary (#475569) on BG (#F8FAFC) | 7.1:1 | AA | AAA |
@@ -369,7 +369,7 @@ extension Color {
 
 ### フォーカスインジケーター
 
-キーボードナビゲーション時のフォーカスリングは `#2563EB` を使用し、`2px solid` + `2px offset` で表示:
+キーボ�Eドナビゲーション時�Eフォーカスリングは `#2563EB` を使用し、`2px solid` + `2px offset` で表示:
 
 ```css
 :focus-visible {
@@ -380,42 +380,42 @@ extension Color {
 
 ---
 
-## 7. テーマ選択ガイドライン
+## 7. チE�Eマ選択ガイドライン
 
-### どちらのテーマを使うか
+### どちら�EチE�Eマを使ぁE��
 
 ```
 新規アプリ開発
-  │
-  ├── 製品カテゴリは？
-  │     │
-  │     ├── InsightOffice 系 (INSS/IOSH/IOSD/INPY)
-  │     │     → Ivory & Gold テーマ
-  │     │
-  │     ├── InsightSeniorOffice (ISOF)
-  │     │     → Ivory & Gold テーマ
-  │     │
-  │     ├── マーケティング系 (INMV/INIG)
-  │     │     → Ivory & Gold テーマ
-  │     │
-  │     └── 業務ツール系 (INBT/INCA/IVIN)
-  │           → Cool Blue & Slate テーマ ★
-  │
+  ━E
+  ├── 製品カチE��リは�E�E
+  ━E    ━E
+  ━E    ├── InsightOffice 系 (INSS/IOSH/IOSD/INPY)
+  ━E    ━E    ↁEIvory & Gold チE�EチE
+  ━E    ━E
+  ━E    ├── InsightSeniorOffice (ISOF)
+  ━E    ━E    ↁEIvory & Gold チE�EチE
+  ━E    ━E
+  ━E    ├── マ�EケチE��ング系 (INMV/INIG)
+  ━E    ━E    ↁEIvory & Gold チE�EチE
+  ━E    ━E
+  ━E    └── 業務ツール系 (INBT/INCA/IVIN)
+  ━E          ↁECool Blue & Slate チE�EチE☁E
+  ━E
   └── 特殊なケース
-        │
-        ├── データダッシュボード・管理画面
-        │     → Cool Blue & Slate テーマ ★
-        │
-        └── 公開 Web サイト・LP
-              → Ivory & Gold テーマ
+        ━E
+        ├── チE�EタダチE��ュボ�Eド�E管琁E��面
+        ━E    ↁECool Blue & Slate チE�EチE☁E
+        ━E
+        └── 公閁EWeb サイト�ELP
+              ↁEIvory & Gold チE�EチE
 ```
 
 ### 混在利用のルール
 
-1. **1つのアプリ内ではテーマを混在させない**
-2. **ライセンス画面のレイアウト構造は共通**（カラーのみテーマに従う）
-3. **セマンティックカラー（Success/Warning/Error）はテーマ間で統一**
-4. **アイコン・ロゴは共通**（テーマに依存しない）
+1. **1つのアプリ冁E��はチE�Eマを混在させなぁE*
+2. **ライセンス画面のレイアウト構造は共送E*�E�カラーのみチE�Eマに従う�E�E
+3. **セマンチE��チE��カラー�E�Euccess/Warning/Error�E��EチE�Eマ間で統一**
+4. **アイコン・ロゴは共送E*�E�テーマに依存しなぁE��E
 
 ---
 
@@ -424,7 +424,7 @@ extension Color {
 ### スクリプト検証
 
 ```bash
-# Cool Blue & Slate テーマの標準検証
+# Cool Blue & Slate チE�Eマ�E標準検証
 ./scripts/validate-cool-color.sh <project-directory>
 ```
 
@@ -434,26 +434,26 @@ extension Color {
 /validate-cool-color <project-directory>
 ```
 
-### チェック項目
+### チェチE��頁E��
 
-| チェック | 条件 |
+| チェチE�� | 条件 |
 |---------|------|
-| Blue Primary | `#2563EB` がプライマリとして定義されている |
-| Slate Background | `#F8FAFC` が背景色として定義されている |
-| No Gold Primary | `#B8942F` がプライマリとして使用されて**いない** |
-| No Warm Background | `#FAF8F5` が背景として使用されて**いない** |
-| High Contrast Text | `#0F172A` がテキストカラーとして定義されている |
-| Dark Sidebar | `#1E293B` がサイドバーに使用されている（推奨） |
+| Blue Primary | `#2563EB` が�Eライマリとして定義されてぁE�� |
+| Slate Background | `#F8FAFC` が背景色として定義されてぁE�� |
+| No Gold Primary | `#B8942F` が�Eライマリとして使用されて**ぁE��ぁE* |
+| No Warm Background | `#FAF8F5` が背景として使用されて**ぁE��ぁE* |
+| High Contrast Text | `#0F172A` がテキストカラーとして定義されてぁE�� |
+| Dark Sidebar | `#1E293B` がサイドバーに使用されてぁE���E�推奨�E�E|
 
 ---
 
-## 9. 禁止事項（Cool Blue & Slate テーマ）
+## 9. 禁止事頁E��Eool Blue & Slate チE�Eマ！E
 
-| やってはいけない | 正しいやり方 |
+| めE��てはぁE��なぁE| 正しいめE��方 |
 |-----------------|-------------|
-| Gold (#B8942F) をプライマリに使用 | Blue (#2563EB) を使用 |
+| Gold (#B8942F) を�Eライマリに使用 | Blue (#2563EB) を使用 |
 | Ivory (#FAF8F5) を背景に使用 | Slate (#F8FAFC) を使用 |
-| ハードコードされた色値 | StaticResource / 変数 / colors-cool.json を参照 |
+| ハ�Eドコードされた色値 | StaticResource / 変数 / colors-cool.json を参照 |
 | ライトサイドバーの使用 | ダークサイドバー (#1E293B) を推奨 |
-| 暖色系のステータスバッジ背景 | 寒色系の status セクションを使用 |
-| Ivory & Gold テーマとの混在 | 1アプリ1テーマを厳守 |
+| 暖色系のスチE�Eタスバッジ背景 | 寒色系の status セクションを使用 |
+| Ivory & Gold チE�Eマとの混在 | 1アプリ1チE�Eマを厳宁E|

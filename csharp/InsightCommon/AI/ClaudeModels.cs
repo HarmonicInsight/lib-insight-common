@@ -14,13 +14,12 @@ public static class ClaudeModels
     // モデル ID 定数（後方互換用）
     // =========================================================================
 
-    public const string HaikuId = "claude-haiku-4-5-20251001";
+    public const string HaikuId = "claude-3-5-haiku-20241022";
     public const string SonnetId = "claude-sonnet-4-20250514";
-    public const string Sonnet46Id = "claude-sonnet-4-6-20260210";
-    public const string OpusId = "claude-opus-4-6-20260131";
+    public const string OpusId = "claude-opus-4-20250514";
 
     /// <summary>Standard ティアのデフォルトモデル</summary>
-    public const string DefaultStandardModel = Sonnet46Id;
+    public const string DefaultStandardModel = SonnetId;
 
     /// <summary>Premium ティアのデフォルトモデル</summary>
     public const string DefaultPremiumModel = OpusId;
@@ -40,10 +39,9 @@ public static class ClaudeModels
     /// </summary>
     public static readonly ModelInfo[] Registry =
     {
-        new(0, HaikuId,     "Haiku 4.5",  "haiku",  "\u26A1",  1.0m,   5.0m,  "standard", true),
-        new(1, SonnetId,    "Sonnet 4",   "sonnet", "\u2B50",  3.0m,  15.0m,  "standard", true),
-        new(2, Sonnet46Id,  "Sonnet 4.6", "sonnet", "\u2B50",  3.0m,  15.0m,  "standard", true),
-        new(3, OpusId,      "Opus 4.6",   "opus",   "\U0001F48E", 15.0m, 75.0m, "premium", true),
+        new(0, HaikuId,  "Haiku 3.5", "haiku",  "\u26A1",  0.25m,  1.25m, "standard", true),
+        new(1, SonnetId, "Sonnet 4",  "sonnet", "\u2B50",  3.0m,  15.0m,  "standard", true),
+        new(2, OpusId,   "Opus 4",    "opus",   "\U0001F48E", 15.0m, 75.0m, "premium", true),
     };
 
     /// <summary>後方互換: Available は Registry のエイリアス</summary>
@@ -73,7 +71,7 @@ public static class ClaudeModels
         return GetModelIndex(DefaultStandardModel); // default to Standard tier default
     }
 
-    /// <summary>表示名を取得 (例: "Sonnet 4.6 ⭐")</summary>
+    /// <summary>表示名を取得 (例: "Sonnet 4 ⭐")</summary>
     public static string GetDisplayName(int index)
     {
         if (index >= 0 && index < Registry.Length)
@@ -88,7 +86,7 @@ public static class ClaudeModels
         return model != null ? $"{model.Label} {model.CostIndicator}" : modelId;
     }
 
-    /// <summary>ペルソナ表示名を取得 (例: "Claude恵 (Sonnet 4.6 ⭐)")</summary>
+    /// <summary>ペルソナ表示名を取得 (例: "Claude恵 (Sonnet 4 ⭐)")</summary>
     public static string GetPersonaDisplayName(int index, string lang = "JA")
     {
         var persona = AiPersona.FindByModelIndex(index);
