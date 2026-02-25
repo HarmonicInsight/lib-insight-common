@@ -8,6 +8,15 @@ Claude Code が繰り返し使うワークフローを標準化した「スキ�
 |--------|------|-----------|
 | [build-auto-fix](./build-auto-fix/SKILL.md) | ビルドエラー自動検出・修正 | 「ビルドエラー直して」 |
 
+## 関連する検証スクリプト
+
+| スクリプト | 用途 | 実行例 |
+|-----------|------|--------|
+| `scripts/validate-standards.sh` | デザイン標準検証（Ivory & Gold） | `./scripts/validate-standards.sh <dir>` |
+| `scripts/validate-cool-color.sh` | 寒色系標準検証（Cool Blue & Slate） | `./scripts/validate-cool-color.sh <dir>` |
+| `scripts/validate-menu-icons.sh` | メニューアイコン標準検証（Lucide Icons） | `./scripts/validate-menu-icons.sh <dir>` |
+| `scripts/release-check.sh` | リリース前包括チェック | `./scripts/release-check.sh <dir>` |
+
 ## スキルの使い方
 
 Claude Code で以下のように指示するだけで、スキルに定義されたベストプラクティスに従って作業します：

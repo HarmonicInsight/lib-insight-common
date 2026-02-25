@@ -59,7 +59,7 @@
 5. 検出したプラットフォームをユーザーに通知する。
 
 6. TODO リストに以下のフェーズを登録する:
-   - Phase 1: 標準検証（自動スクリプト）
+   - Phase 1: 標準検証（自動スクリプト — デザイン + メニューアイコン）
    - Phase 2: コード品質・セキュリティ確認
    - Phase 3: プラットフォーム固有チェック
    - Phase 4: ストアメタデータ確認（モバイルアプリの場合）
@@ -88,7 +88,18 @@ bash ./insight-common/scripts/release-check.sh ${ARGUMENTS:-.}
 | D1 | Gold がプライマリカラー | ✅ / ❌ | ... |
 | D2 | Ivory が背景色 | ✅ / ❌ | ... |
 | D3 | Blue 未使用 | ✅ / ❌ | ... |
+| MI1 | Lucide Icons 使用 | ✅ / ❌ | ... |
+| MI2 | 非標準ライブラリ未使用 | ✅ / ❌ | Material Design / Font Awesome 等 |
+| MI3 | 標準アイコン名準拠 | ✅ / ❌ | brand/menu-icons.json |
+| MI4 | アイコンスタイル統一 | ✅ / ❌ | strokeWidth: 1.5, サイズ: 16/20/24/32 |
 | ... | ... | ... | ... |
+```
+
+**メニューアイコン検証**: `release-check.sh` に `validate-menu-icons.sh` が統合されているため自動実行される。
+手動で個別実行する場合:
+```bash
+bash ./scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
+bash ./insight-common/scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
 ```
 
 ❌ がある場合はこのフェーズで修正案を提示し、ユーザーの確認を取る。
@@ -287,6 +298,8 @@ Phase 4: ストアメタデータ  ✅ 完了
 ## 参照ドキュメント
 
 - `standards/RELEASE_CHECKLIST.md` — 全チェック項目の詳細定義（チェック ID 付き）
+- `standards/MENU_ICONS.md` — メニューアイコン標準（Lucide Icons 統一）
+- `brand/menu-icons.json` — メニューアイコン正規定義（ソースオブトゥルース）
 - `standards/LOCALIZATION.md` — ストアメタデータのローカライゼーション
 - `scripts/create-release.sh` — リリース作成ヘルパースクリプト（タグ作成・プッシュ）
 - `CLAUDE.md` §12 — 開発完了チェックリスト

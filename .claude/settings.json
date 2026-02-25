@@ -18,6 +18,10 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/scripts/check-brand-colors.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/scripts/check-menu-icons.sh"
           }
         ]
       }
