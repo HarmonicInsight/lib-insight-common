@@ -51,10 +51,18 @@ if [ -f "${PROJECT_DIR}/scripts/validate-standards.sh" ]; then
   chmod +x "${PROJECT_DIR}/scripts/validate-standards.sh"
   echo "       validate-standards.sh ready"
 fi
+if [ -f "${PROJECT_DIR}/scripts/validate-menu-icons.sh" ]; then
+  chmod +x "${PROJECT_DIR}/scripts/validate-menu-icons.sh"
+  echo "       validate-menu-icons.sh ready"
+fi
 if [ -f "${PROJECT_DIR}/scripts/auto-fix.sh" ]; then
   chmod +x "${PROJECT_DIR}/scripts/auto-fix.sh"
   echo "       auto-fix.sh ready"
 fi
+# PreToolUse フックスクリプトの実行権限
+for hook_script in "${PROJECT_DIR}/.claude/scripts/"*.sh; do
+  [ -f "$hook_script" ] && chmod +x "$hook_script"
+done
 
 # ---------------------------------------------
 # 4. 環境変数の永続化

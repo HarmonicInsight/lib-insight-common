@@ -213,6 +213,27 @@ else
     print_warning "validate-standards.sh が見つかりません（スキップ）"
 fi
 
+# メニューアイコン標準検証
+MENU_ICONS_SCRIPT=""
+if [ -n "$INSIGHT_COMMON" ] && [ -f "$INSIGHT_COMMON/scripts/validate-menu-icons.sh" ]; then
+    MENU_ICONS_SCRIPT="$INSIGHT_COMMON/scripts/validate-menu-icons.sh"
+elif [ -f "$(dirname "$0")/validate-menu-icons.sh" ]; then
+    MENU_ICONS_SCRIPT="$(dirname "$0")/validate-menu-icons.sh"
+fi
+
+if [ -n "$MENU_ICONS_SCRIPT" ]; then
+    echo ""
+    echo "実行: $MENU_ICONS_SCRIPT $PROJECT_DIR"
+    echo ""
+    if bash "$MENU_ICONS_SCRIPT" "$PROJECT_DIR"; then
+        print_ok "メニューアイコン検証: 全チェック通過"
+    else
+        print_warning "メニューアイコン検証: エラーまたは警告あり（上記の出力を確認してください）"
+    fi
+else
+    print_warning "validate-menu-icons.sh が見つかりません（スキップ）"
+fi
+
 # ============================================================
 # Phase 2: リリース固有チェック
 # ============================================================

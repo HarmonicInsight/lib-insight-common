@@ -1119,7 +1119,7 @@ ANDROIDSKILLEOF
     fi
 fi
 
-# .claude/settings.json（SessionStart フックでスキル自動同期）
+# .claude/settings.json（SessionStart + PreToolUse フック）
 cat > .claude/settings.json << 'SETTINGSEOF'
 {
   "hooks": {
@@ -1133,11 +1133,26 @@ cat > .claude/settings.json << 'SETTINGSEOF'
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/insight-common/.claude/scripts/check-brand-colors.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/insight-common/.claude/scripts/check-menu-icons.sh"
+          }
+        ]
+      }
     ]
   }
 }
 SETTINGSEOF
-echo -e "  ${GREEN}✓${NC} .claude/settings.json (SessionStart sync-skills フック)"
+echo -e "  ${GREEN}✓${NC} .claude/settings.json (SessionStart + PreToolUse フック)"
 
 # CLAUDE.md（アプリ側用 — プラットフォーム別に生成）
 if [ "$PLATFORM" = "ios" ]; then
@@ -1173,6 +1188,7 @@ cat insight-common/standards/LOCALIZATION.md        # ローカライゼーシ�
 | 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | `/release-check-ios` を提案・実行 |
 | 「PR 作って」「プルリク」「マージ」 | `/release-check-ios` の実行を推奨 |
 | 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認（`insight-common/CLAUDE.md` §1） |
+| メニュー・ツールバー・サイドバーの UI 実装 | `insight-common/brand/menu-icons.json` のアイコン定義を参照 |
 | ストアメタデータ・スクリーンショットの話題 | `insight-common/standards/LOCALIZATION.md` §6 を参照 |
 
 ## ⚠️ 重要ルール
@@ -1182,6 +1198,7 @@ cat insight-common/standards/LOCALIZATION.md        # ローカライゼーシ�
 - デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
 - **iOS デフォルトの Blue tint を Gold に上書きすること**（`.tint(InsightColors.primary)`）
 - Blue (#2563EB) をプライマリとして使用**禁止**
+- メニューアイコンは **Lucide Icons** に統一（`insight-common/standards/MENU_ICONS.md`）
 - TODO/FIXME を残したままリリース**禁止**
 - API キー・シークレットのハードコード**禁止**
 - CocoaPods / Carthage の使用**禁止**（SPM のみ）
@@ -1219,6 +1236,7 @@ cat insight-common/standards/LOCALIZATION.md        # ローカライゼーシ�
 | 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | `/release-check-android` を提案・実行 |
 | 「PR 作って」「プルリク」「マージ」 | `/release-check-android` の実行を推奨 |
 | 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認（`insight-common/CLAUDE.md` §1） |
+| メニュー・ツールバー・サイドバーの UI 実装 | `insight-common/brand/menu-icons.json` のアイコン定義を参照 |
 | ストアメタデータ・スクリーンショットの話題 | `insight-common/standards/LOCALIZATION.md` §6 を参照 |
 
 ## ⚠️ 重要ルール
@@ -1227,6 +1245,7 @@ cat insight-common/standards/LOCALIZATION.md        # ローカライゼーシ�
 - `/release-check-android` は**フェーズ別に対話的に実行**する（一気にやらない）
 - デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
 - Blue (#2563EB) をプライマリとして使用**禁止**
+- メニューアイコンは **Lucide Icons** に統一（`insight-common/standards/MENU_ICONS.md`）
 - TODO/FIXME を残したままリリース**禁止**
 - API キー・シークレットのハードコード**禁止**
 CLEOF
@@ -1261,6 +1280,7 @@ cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
 | 「リリース」「デプロイ」「公開」「本番」「ship」「release」 | `/release-check` を提案・実行 |
 | 「PR 作って」「プルリク」「マージ」 | `/release-check` の実行を推奨 |
 | 新規 UI 実装・デザイン変更 | Ivory & Gold デザイン標準を確認（`insight-common/CLAUDE.md` §1） |
+| メニュー・ツールバー・サイドバーの UI 実装 | `insight-common/brand/menu-icons.json` のアイコン定義を参照 |
 | ストアメタデータ・スクリーンショットの話題 | `insight-common/standards/LOCALIZATION.md` §6 を参照 |
 
 ## ⚠️ 重要ルール
@@ -1269,6 +1289,7 @@ cat insight-common/standards/RELEASE_CHECKLIST.md   # リリースチェック
 - `/release-check` は**フェーズ別に対話的に実行**する（一気にやらない）
 - デザイン: Gold (#B8942F) がプライマリ、Ivory (#FAF8F5) が背景
 - Blue (#2563EB) をプライマリとして使用**禁止**
+- メニューアイコンは **Lucide Icons** に統一（`insight-common/standards/MENU_ICONS.md`）
 - TODO/FIXME を残したままリリース**禁止**
 - API キー・シークレットのハードコード**禁止**
 CLEOF
