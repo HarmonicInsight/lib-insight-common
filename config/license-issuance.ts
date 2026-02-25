@@ -1,42 +1,42 @@
 /**
- * HARMONIC insight ライセンス発行・配布システム
+ * HARMONIC insight ライセンス発行�E配币E��スチE��
  *
  * ============================================================================
- * 【Syncfusion モデルを参考にしたライセンス発行フロー】
+ * 【Syncfusion モチE��を参老E��したライセンス発行フロー、E
  * ============================================================================
  *
- * ## Syncfusion の流れ（参考元）
+ * ## Syncfusion の流れ�E�参老E�E�E�E
  * 1. ユーザーがメールアドレスで登録
- * 2. 「Confirm and Verify」メールが届く（15日間有効）
- * 3. メール認証完了
- * 4. 即座に 7日間の仮ライセンスキーをメールで発行
- * 5. 審査完了後、長期ライセンスキーを別途送付
+ * 2. 「Confirm and Verify」メールが届く�E�E5日間有効�E�E
+ * 3. メール認証完亁E
+ * 4. 即座に 7日間�E仮ライセンスキーをメールで発衁E
+ * 5. 審査完亁E��、E��期ライセンスキーを別途送仁E
  *
- * ## HARMONIC insight の流れ（本実装）
+ * ## HARMONIC insight の流れ�E�本実裁E��E
  *
- * ┌─────────────────────────────────────────────────────────────────┐
- * │                    ライセンス発行フロー                          │
- * │                                                                 │
- * │  ① 登録            ② メール認証        ③ 仮キー発行            │
- * │  ┌──────────┐    ┌──────────────┐    ┌──────────────┐          │
- * │  │ メール    │ →  │ Confirm &    │ →  │ 7日間TRIAL   │          │
- * │  │ 製品選択  │    │ Verify       │    │ キー自動発行  │          │
- * │  │ プラン選択│    │ (15日間有効) │    │ + DLリンク   │          │
- * │  └──────────┘    └──────────────┘    └──────────────┘          │
- * │                                                                 │
- * │  ④ 決済/承認       ⑤ 正式キー発行      ⑥ 利用開始              │
- * │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐           │
- * │  │ Paddle/Stripe│ │ 12ヶ月キー   │ │ アプリ内で    │           │
- * │  │ 請求書払い   │→│ メール送付   │→│ アクティベート│           │
- * │  │ リセラー経由 │ │              │ │              │           │
- * │  └──────────────┘ └──────────────┘ └──────────────┘           │
- * └─────────────────────────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────────────────────────━E
+ * ━E                   ライセンス発行フロー                          ━E
+ * ━E                                                                ━E
+ * ━E ① 登録            ② メール認証        ③ 仮キー発衁E           ━E
+ * ━E ┌──────────━E   ┌──────────────━E   ┌──────────────━E         ━E
+ * ━E ━Eメール    ━EↁE ━EConfirm &    ━EↁE ━E7日間TRIAL   ━E         ━E
+ * ━E ━E製品E��抁E ━E   ━EVerify       ━E   ━Eキー自動発衁E ━E         ━E
+ * ━E ━Eプラン選択│    ━E(15日間有効) ━E   ━E+ DLリンク   ━E         ━E
+ * ━E └──────────━E   └──────────────━E   └──────────────━E         ━E
+ * ━E                                                                ━E
+ * ━E ④ 決渁E承誁E      ⑤ 正式キー発衁E     ⑥ 利用開姁E             ━E
+ * ━E ┌──────────────━E┌──────────────━E┌──────────────━E          ━E
+ * ━E ━EPaddle/Stripe━E━E12ヶ月キー   ━E━Eアプリ冁E��    ━E          ━E
+ * ━E ━E請求書払い   │�E━Eメール送仁E  │�E━EアクチE��ベ�Eト│           ━E
+ * ━E ━Eリセラー経由 ━E━E             ━E━E             ━E          ━E
+ * ━E └──────────────━E└──────────────━E└──────────────━E          ━E
+ * └─────────────────────────────────────────────────────────────────━E
  *
- * ## キーの種類
- * - 仮キー（Provisional Key）: 7日間有効、TRIAL相当、メール認証後即発行
- * - 正式キー（Production Key）: 12ヶ月有効、決済完了後に発行
- * - NFRキー（Not For Resale）: リセラーパートナー社内評価用
- * - デモキー（Demo Key）: リセラーが顧客デモに使用
+ * ## キーの種顁E
+ * - 仮キー�E�Erovisional Key�E�E 7日間有効、TRIAL相当、メール認証後即発衁E
+ * - 正式キー�E�Eroduction Key�E�E 12ヶ月有効、決済完亁E��に発衁E
+ * - NFRキー�E�Eot For Resale�E�E リセラーパ�Eトナー社冁E��価用
+ * - チE��キー�E�Eemo Key�E�E リセラーが顧客チE��に使用
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -45,33 +45,33 @@ import type { ProductCode, PlanCode } from './products';
 // 型定義
 // =============================================================================
 
-/** ライセンスキーの種類 */
+/** ライセンスキーの種顁E*/
 export type LicenseKeyType =
-  | 'provisional'   // 仮キー（7日間、メール認証後即発行）
-  | 'production'    // 正式キー（12ヶ月、決済完了後）
-  | 'nfr'           // Not For Resale（パートナー社内用）
-  | 'demo';         // デモ用（パートナーが顧客デモに使用）
+  | 'provisional'   // 仮キー�E�E日間、メール認証後即発行！E
+  | 'production'    // 正式キー�E�E2ヶ月、決済完亁E��！E
+  | 'nfr'           // Not For Resale�E�パートナー社冁E���E�E
+  | 'demo';         // チE��用�E�パートナーが顧客チE��に使用�E�E
 
-/** 登録ステータス */
+/** 登録スチE�Eタス */
 export type RegistrationStatus =
-  | 'pending_verification'  // メール認証待ち
-  | 'verified'              // 認証済み（仮キー発行済み）
-  | 'pending_payment'       // 決済待ち
+  | 'pending_verification'  // メール認証征E��
+  | 'verified'              // 認証済み�E�仮キー発行済み�E�E
+  | 'pending_payment'       // 決済征E��
   | 'active'                // 正式キー発行済み・利用中
-  | 'expired'               // 期限切れ
+  | 'expired'               // 期限刁E��
   | 'suspended';            // 停止
 
-/** メールテンプレート種別 */
+/** メールチE��プレート種別 */
 export type EmailTemplate =
   | 'verification'          // Step ②: メール認証
-  | 'provisional_key'       // Step ③: 仮キー発行
-  | 'payment_confirmation'  // Step ④: 決済確認
-  | 'production_key'        // Step ⑤: 正式キー発行
-  | 'expiry_reminder'       // 期限切れ30日前リマインダー
-  | 'expiry_notice'         // 期限切れ通知
-  | 'renewal_confirmation'; // 更新完了
+  | 'provisional_key'       // Step ③: 仮キー発衁E
+  | 'payment_confirmation'  // Step ④: 決済確誁E
+  | 'production_key'        // Step ⑤: 正式キー発衁E
+  | 'expiry_reminder'       // 期限刁E��30日前リマインダー
+  | 'expiry_notice'         // 期限刁E��通知
+  | 'renewal_confirmation'; // 更新完亁E
 
-/** ライセンス登録情報 */
+/** ライセンス登録惁E�� */
 export interface LicenseRegistration {
   /** 登録ID */
   id: string;
@@ -79,19 +79,19 @@ export interface LicenseRegistration {
   email: string;
   /** 氏名 */
   name: string;
-  /** 会社名（任意） */
+  /** 会社名（任意！E*/
   company?: string;
-  /** 製品コード */
+  /** 製品コーチE*/
   productCode: ProductCode;
   /** 希望プラン */
   requestedPlan: PlanCode;
-  /** 登録ステータス */
+  /** 登録スチE�Eタス */
   status: RegistrationStatus;
-  /** 認証トークン */
+  /** 認証ト�Eクン */
   verificationToken: string;
-  /** 認証トークン有効期限 */
+  /** 認証ト�Eクン有効期限 */
   verificationExpiresAt: Date;
-  /** 認証完了日時 */
+  /** 認証完亁E��晁E*/
   verifiedAt: Date | null;
   /** 仮キー */
   provisionalKey: string | null;
@@ -101,45 +101,45 @@ export interface LicenseRegistration {
   productionKey: string | null;
   /** 正式キー有効期限 */
   productionExpiresAt: Date | null;
-  /** 決済方法 */
+  /** 決済方況E*/
   paymentMethod: 'paddle' | 'stripe' | 'invoice' | 'reseller' | null;
-  /** 決済ID */
+  /** 決渁ED */
   paymentId: string | null;
-  /** リセラーパートナーID（リセラー経由の場合） */
+  /** リセラーパ�EトナーID�E�リセラー経由の場合！E*/
   resellerPartnerId: string | null;
-  /** 登録日時 */
+  /** 登録日晁E*/
   createdAt: Date;
-  /** 更新日時 */
+  /** 更新日晁E*/
   updatedAt: Date;
 }
 
 // =============================================================================
-// ライセンスキー生成ルール
+// ライセンスキー生�Eルール
 // =============================================================================
 
 /**
- * ライセンスキー形式
+ * ライセンスキー形弁E
  *
  * 正式キー:  {PRODUCT}-{PLAN}-{YYMM}-{HASH}-{SIG1}-{SIG2}
  * 仮キー:    {PRODUCT}-TRIAL-{YYMM}-{HASH}-{SIG1}-{SIG2}
  * NFRキー:   {PRODUCT}-NFR-{YYMM}-{HASH}-{SIG1}-{SIG2}
- * デモキー:  {PRODUCT}-DEMO-{YYMM}-{HASH}-{SIG1}-{SIG2}
+ * チE��キー:  {PRODUCT}-DEMO-{YYMM}-{HASH}-{SIG1}-{SIG2}
  *
- * 例:
- *   INSS-STD-2602-A3F1-B7C2-D9E4    （正式キー: STDプラン、2026年2月発行）
- *   INSS-TRIAL-2602-X1Y2-Z3W4-V5U6  （仮キー: 7日間）
- *   IOSH-NFR-2602-N1F2-R3P4-Q5S6    （NFRキー: パートナー用）
+ * 侁E
+ *   INSS-STD-2602-A3F1-B7C2-D9E4    �E�正式キー: STDプラン、E026年2月発行！E
+ *   INSS-TRIAL-2602-X1Y2-Z3W4-V5U6  �E�仮キー: 7日間！E
+ *   IOSH-NFR-2602-N1F2-R3P4-Q5S6    �E�EFRキー: パ�Eトナー用�E�E
  */
 export interface LicenseKeyConfig {
   /** キー種別 */
   type: LicenseKeyType;
   /** 有効日数 */
   validityDays: number;
-  /** 対応するプランコード（機能制限に使用） */
+  /** 対応する�Eランコード（機�E制限に使用�E�E*/
   effectivePlan: PlanCode;
-  /** キーに埋め込むプラン表記 */
+  /** キーに埋め込むプラン表訁E*/
   keyPlanCode: string;
-  /** 説明 */
+  /** 説昁E*/
   description: string;
 }
 
@@ -149,57 +149,57 @@ export const LICENSE_KEY_CONFIGS: Record<LicenseKeyType, LicenseKeyConfig> = {
     validityDays: 7,
     effectivePlan: 'TRIAL',
     keyPlanCode: 'TRIAL',
-    description: 'メール認証後に即発行。7日間全機能利用可能。',
+    description: 'メール認証後に即発行、E日間�E機�E利用可能、E,
   },
   production: {
     type: 'production',
     validityDays: 365,
-    effectivePlan: 'STD', // 決済時のプランで上書き
-    keyPlanCode: 'STD',   // 決済時のプランで上書き
-    description: '決済完了後に発行。12ヶ月間有効。',
+    effectivePlan: 'STD', // 決済時のプランで上書ぁE
+    keyPlanCode: 'STD',   // 決済時のプランで上書ぁE
+    description: '決済完亁E��に発行、E2ヶ月間有効、E,
   },
   nfr: {
     type: 'nfr',
     validityDays: 365,
     effectivePlan: 'PRO',
     keyPlanCode: 'NFR',
-    description: 'リセラーパートナー社内評価用。PRO相当の全機能。',
+    description: 'リセラーパ�Eトナー社冁E��価用。PRO相当�E全機�E、E,
   },
   demo: {
     type: 'demo',
     validityDays: 30,
     effectivePlan: 'TRIAL',
     keyPlanCode: 'DEMO',
-    description: 'リセラーが顧客デモに使用。30日間全機能。',
+    description: 'リセラーが顧客チE��に使用、E0日間�E機�E、E,
   },
 };
 
 // =============================================================================
-// メール認証設定
+// メール認証設宁E
 // =============================================================================
 
 export const VERIFICATION_CONFIG = {
-  /** 認証リンク有効期間（日） */
+  /** 認証リンク有効期間�E�日�E�E*/
   tokenExpiryDays: 15,
   /** 認証メール再送可能回数 */
   maxResendCount: 3,
-  /** 認証メール再送間隔（秒） */
+  /** 認証メール再送E��隔（秒！E*/
   resendCooldownSeconds: 60,
-  /** 認証URL形式 */
+  /** 認証URL形弁E*/
   verificationUrlPattern: 'https://account.harmonicinsight.com/verify?token={token}',
 };
 
 // =============================================================================
-// ステップ別処理定義
+// スチE��プ別処琁E��義
 // =============================================================================
 
 /**
  * Step ①: ユーザー登録
  *
  * トリガー: Webフォーム送信
- * 処理:
- *   1. registrations テーブルに登録（status: pending_verification）
- *   2. 認証トークン生成（UUID v4、15日間有効）
+ * 処琁E
+ *   1. registrations チE�Eブルに登録�E�Etatus: pending_verification�E�E
+ *   2. 認証ト�Eクン生�E�E�EUID v4、E5日間有効�E�E
  *   3. 認証メール送信
  */
 export interface Step1_RegistrationInput {
@@ -214,26 +214,26 @@ export interface Step1_RegistrationInput {
 /**
  * Step ②: メール認証
  *
- * トリガー: 認証リンクのクリック
- * 処理:
- *   1. トークン検証（有効期限チェック）
- *   2. status を verified に更新
+ * トリガー: 認証リンクのクリチE��
+ * 処琁E
+ *   1. ト�Eクン検証�E�有効期限チェチE���E�E
+ *   2. status めEverified に更新
  *   3. verifiedAt を記録
- *   4. → Step ③ を即実行
+ *   4. ↁEStep ③ を即実衁E
  */
 export interface Step2_VerificationInput {
   token: string;
 }
 
 /**
- * Step ③: 仮キー発行
+ * Step ③: 仮キー発衁E
  *
- * トリガー: Step ② 完了時に自動実行
- * 処理:
- *   1. 仮ライセンスキー生成（TRIAL、7日間）
- *   2. registrations テーブルに仮キーを記録
- *   3. 仮キー発行メール送信（製品DLリンク付き）
- *   4. licenses テーブルにTRIALとして登録
+ * トリガー: Step ② 完亁E��に自動実衁E
+ * 処琁E
+ *   1. 仮ライセンスキー生�E�E�ERIAL、E日間！E
+ *   2. registrations チE�Eブルに仮キーを記録
+ *   3. 仮キー発行メール送信�E�製品DLリンク付き�E�E
+ *   4. licenses チE�EブルにTRIALとして登録
  */
 export interface Step3_ProvisionalKeyOutput {
   provisionalKey: string;
@@ -242,13 +242,13 @@ export interface Step3_ProvisionalKeyOutput {
 }
 
 /**
- * Step ④: 決済・承認
+ * Step ④: 決済�E承誁E
  *
- * トリガー: Paddle/Stripe webhook or リセラー注文 or 請求書払い確認
- * 処理:
+ * トリガー: Paddle/Stripe webhook or リセラー注斁Eor 請求書払い確誁E
+ * 処琁E
  *   1. 決済情報を記録
- *   2. status を active に更新
- *   3. → Step ⑤ を即実行
+ *   2. status めEactive に更新
+ *   3. ↁEStep ⑤ を即実衁E
  */
 export interface Step4_PaymentInput {
   registrationId: string;
@@ -259,12 +259,12 @@ export interface Step4_PaymentInput {
 }
 
 /**
- * Step ⑤: 正式キー発行
+ * Step ⑤: 正式キー発衁E
  *
- * トリガー: Step ④ 完了時に自動実行
- * 処理:
- *   1. 正式ライセンスキー生成（決済プランで12ヶ月）
- *   2. licenses テーブルを更新（TRIAL → 正式プラン）
+ * トリガー: Step ④ 完亁E��に自動実衁E
+ * 処琁E
+ *   1. 正式ライセンスキー生�E�E�決済�Eランで12ヶ月！E
+ *   2. licenses チE�Eブルを更新�E�ERIAL ↁE正式�Eラン�E�E
  *   3. 正式キー発行メール送信
  */
 export interface Step5_ProductionKeyOutput {
@@ -274,12 +274,12 @@ export interface Step5_ProductionKeyOutput {
 }
 
 /**
- * Step ⑥: 利用開始
+ * Step ⑥: 利用開姁E
  *
- * トリガー: ユーザーがアプリ内でライセンスキーを入力
- * 処理:
+ * トリガー: ユーザーがアプリ冁E��ライセンスキーを�E劁E
+ * 処琁E
  *   - activate-license.ts の既存フローを使用
- *   - アプリ内のライセンス画面でキーを入力 → アクティベート
+ *   - アプリ冁E�Eライセンス画面でキーを�E劁EↁEアクチE��ベ�EチE
  */
 
 // =============================================================================
@@ -289,21 +289,21 @@ export interface Step5_ProductionKeyOutput {
 export interface ProductDownloadLinks {
   productCode: ProductCode;
   productName: string;
-  /** Windowsインストーラー */
+  /** Windowsインスト�Eラー */
   windows?: string;
-  /** macOSインストーラー */
+  /** macOSインスト�Eラー */
   mac?: string;
-  /** Linuxインストーラー */
+  /** Linuxインスト�Eラー */
   linux?: string;
-  /** Web版URL */
+  /** Web牁ERL */
   web?: string;
-  /** ドキュメント */
+  /** ドキュメンチE*/
   documentation: string;
   /** APIリファレンス */
   apiReference?: string;
 }
 
-/** 製品別ダウンロードリンク（テンプレート） */
+/** 製品別ダウンロードリンク�E�テンプレート！E*/
 export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> = {
   INSS: {
     productCode: 'INSS',
@@ -343,9 +343,9 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
   },
   INMV: {
     productCode: 'INMV',
-    productName: 'InsightMovie',
-    windows: 'https://download.harmonicinsight.com/insightmovie/latest/windows',
-    documentation: 'https://docs.harmonicinsight.com/insightmovie',
+    productName: 'InsightCast',
+    windows: 'https://download.harmonicinsight.com/InsightCast/latest/windows',
+    documentation: 'https://docs.harmonicinsight.com/InsightCast',
   },
   INIG: {
     productCode: 'INIG',
@@ -368,7 +368,7 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
 };
 
 // =============================================================================
-// メールテンプレート定義
+// メールチE��プレート定義
 // =============================================================================
 
 export interface EmailTemplateConfig {
@@ -386,77 +386,77 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
   verification: {
     template: 'verification',
     subject: {
-      ja: '【HARMONIC insight】メールアドレスの確認',
+      ja: '【HARMONIC insight】メールアドレスの確誁E,
       en: '[HARMONIC insight] Verify your email address',
     },
-    description: 'メール認証リンク付き。Confirm and Verifyボタン。15日間有効。',
-    trigger: 'Step ① 登録直後',
+    description: 'メール認証リンク付き、Eonfirm and Verifyボタン、E5日間有効、E,
+    trigger: 'Step ① 登録直征E,
   },
   provisional_key: {
     template: 'provisional_key',
     subject: {
-      ja: '【HARMONIC insight】{productName} — 7日間トライアルキー',
-      en: '[HARMONIC insight] {productName} — Your 7-Day Trial Key',
+      ja: '【HARMONIC insight】{productName}  E7日間トライアルキー',
+      en: '[HARMONIC insight] {productName}  EYour 7-Day Trial Key',
     },
-    description: '7日間仮キー + 製品ダウンロードリンク + ドキュメントリンク。',
-    trigger: 'Step ② メール認証完了直後',
+    description: '7日間仮キー + 製品ダウンロードリンク + ドキュメントリンク、E,
+    trigger: 'Step ② メール認証完亁E��征E,
   },
   payment_confirmation: {
     template: 'payment_confirmation',
     subject: {
-      ja: '【HARMONIC insight】お支払い確認 — {productName} {planName}',
-      en: '[HARMONIC insight] Payment Confirmed — {productName} {planName}',
+      ja: '【HARMONIC insight】お支払い確誁E E{productName} {planName}',
+      en: '[HARMONIC insight] Payment Confirmed  E{productName} {planName}',
     },
-    description: '決済完了確認。正式キーは別メールで送付する旨を案内。',
-    trigger: 'Step ④ 決済完了時',
+    description: '決済完亁E��認。正式キーは別メールで送付する旨を案�E、E,
+    trigger: 'Step ④ 決済完亁E��',
   },
   production_key: {
     template: 'production_key',
     subject: {
-      ja: '【HARMONIC insight】{productName} {planName} — 正式ライセンスキー',
-      en: '[HARMONIC insight] {productName} {planName} — Your License Key',
+      ja: '【HARMONIC insight】{productName} {planName}  E正式ライセンスキー',
+      en: '[HARMONIC insight] {productName} {planName}  EYour License Key',
     },
-    description: '正式キー（12ヶ月） + アクティベーション手順 + サポート連絡先。',
-    trigger: 'Step ⑤ 決済完了後即時（または審査完了後）',
+    description: '正式キー�E�E2ヶ月！E+ アクチE��ベ�Eション手頁E+ サポ�Eト連絡先、E,
+    trigger: 'Step ⑤ 決済完亁E��即時（また�E審査完亁E��！E,
   },
   expiry_reminder: {
     template: 'expiry_reminder',
     subject: {
-      ja: '【HARMONIC insight】{productName} — ライセンス更新のお知らせ（残り30日）',
-      en: '[HARMONIC insight] {productName} — License Renewal Reminder (30 days)',
+      ja: '【HARMONIC insight】{productName}  Eライセンス更新のお知らせ�E�残り30日�E�E,
+      en: '[HARMONIC insight] {productName}  ELicense Renewal Reminder (30 days)',
     },
-    description: '期限切れ30日前に自動送信。更新リンク付き。',
-    trigger: '期限切れ30日前（バッチ処理）',
+    description: '期限刁E��30日前に自動送信。更新リンク付き、E,
+    trigger: '期限刁E��30日前（バチE��処琁E��E,
   },
   expiry_notice: {
     template: 'expiry_notice',
     subject: {
-      ja: '【HARMONIC insight】{productName} — ライセンスの有効期限が切れました',
-      en: '[HARMONIC insight] {productName} — Your License Has Expired',
+      ja: '【HARMONIC insight】{productName}  Eライセンスの有効期限が�Eれました',
+      en: '[HARMONIC insight] {productName}  EYour License Has Expired',
     },
-    description: '期限切れ通知。更新リンク + FREE機能の案内。',
-    trigger: '期限切れ当日（バッチ処理）',
+    description: '期限刁E��通知。更新リンク + FREE機�Eの案�E、E,
+    trigger: '期限刁E��当日�E�バチE��処琁E��E,
   },
   renewal_confirmation: {
     template: 'renewal_confirmation',
     subject: {
-      ja: '【HARMONIC insight】{productName} — ライセンス更新完了',
-      en: '[HARMONIC insight] {productName} — License Renewal Confirmed',
+      ja: '【HARMONIC insight】{productName}  Eライセンス更新完亁E,
+      en: '[HARMONIC insight] {productName}  ELicense Renewal Confirmed',
     },
-    description: '更新完了 + 新しいキー + 新しい有効期限。',
-    trigger: '更新決済完了時',
+    description: '更新完亁E+ 新しいキー + 新しい有効期限、E,
+    trigger: '更新決済完亁E��',
   },
 };
 
 // =============================================================================
-// DBスキーマ（Supabase テーブル定義）
+// DBスキーマ！Eupabase チE�Eブル定義�E�E
 // =============================================================================
 
 /**
- * registrations テーブル
+ * registrations チE�Eブル
  *
- * ライセンス登録〜発行までの全ステータスを管理。
- * licenses テーブルとは別に、登録プロセスの状態を追跡する。
+ * ライセンス登録〜発行までの全スチE�Eタスを管琁E��E
+ * licenses チE�Eブルとは別に、登録プロセスの状態を追跡する、E
  *
  * CREATE TABLE registrations (
  *   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -487,11 +487,11 @@ export const EMAIL_TEMPLATES: Record<EmailTemplate, EmailTemplateConfig> = {
  */
 
 // =============================================================================
-// ヘルパー関数
+// ヘルパ�E関数
 // =============================================================================
 
 /**
- * 仮キーの有効期限を計算
+ * 仮キーの有効期限を計箁E
  */
 export function getProvisionalKeyExpiry(): Date {
   const now = new Date();
@@ -499,7 +499,7 @@ export function getProvisionalKeyExpiry(): Date {
 }
 
 /**
- * 正式キーの有効期限を計算
+ * 正式キーの有効期限を計箁E
  */
 export function getProductionKeyExpiry(): Date {
   const now = new Date();
@@ -507,7 +507,7 @@ export function getProductionKeyExpiry(): Date {
 }
 
 /**
- * 認証トークンの有効期限を計算
+ * 認証ト�Eクンの有効期限を計箁E
  */
 export function getVerificationTokenExpiry(): Date {
   const now = new Date();
@@ -515,14 +515,14 @@ export function getVerificationTokenExpiry(): Date {
 }
 
 /**
- * 製品のダウンロードリンクを取得
+ * 製品�Eダウンロードリンクを取征E
  */
 export function getDownloadLinks(productCode: ProductCode): ProductDownloadLinks {
   return PRODUCT_DOWNLOAD_LINKS[productCode];
 }
 
 /**
- * メールテンプレートの件名を取得（プレースホルダー置換）
+ * メールチE��プレート�E件名を取得（�Eレースホルダー置換！E
  */
 export function getEmailSubject(
   template: EmailTemplate,
@@ -537,7 +537,7 @@ export function getEmailSubject(
 }
 
 // =============================================================================
-// エクスポート
+// エクスポ�EチE
 // =============================================================================
 
 export default {

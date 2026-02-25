@@ -24,11 +24,10 @@
  * ├─────────────────────────────────────────────────────────────────────────┤
  * │  InsightOffice 系 (INSS/IOSH/IOSD)                                    │
  * │  ┌───────────────────────────────────────────────────────────────────┐ │
- * │  │  デスクトップアプリ + ファイル関連付け + Agent モジュール           │ │
+ * │  │  デスクトップアプリ + ファイル関連付け                               │ │
  * │  │  - {Product}.exe (メインアプリ)                                   │ │
  * │  │  - .inss/.iosh/.iosd 関連付け登録                                │ │
  * │  │  - コンテキストメニュー「〜で開く」登録                            │ │
- * │  │  - bot_agent モジュール (Orchestrator 連携用 — 任意有効化)         │ │
  * │  └───────────────────────────────────────────────────────────────────┘ │
  * ├─────────────────────────────────────────────────────────────────────────┤
  * │  スタンドアロン (INMV/INIG/INCA/INPY/IVIN)                            │
@@ -833,6 +832,330 @@ export function generateInnoSetupConfig(product: ProductCode): {
 }
 
 // =============================================================================
+// インストーラーコンポーネント選択
+// =============================================================================
+
+/**
+ * インストーラーのコンポーネント選択
+ *
+ * InsightOffice 系のインストーラーでは、ユーザーがインストールする
+ * コンポーネントを選択できる。コンポーネントは3種類に分類される:
+ *
+ * - required: 必須（チェックボックスを外せない）
+ * - recommended: 推奨（デフォルトでチェック ON）
+ * - optional: オプション（デフォルトでチェック OFF）
+ *
+ * ## 使い方
+ *
+ * ```typescript
+ * import { getInstallerComponents, calculateInstallerSize } from './installer';
+ *
+ * // 製品のコンポーネント一覧を取得
+ * const components = getInstallerComponents('IOSH');
+ * // → [
+ * //   { id: 'core', name: 'InsightOfficeSheet 本体', sizeMB: 50, selection: 'required', ... },
+ * //   { id: 'ai_assistant', name: 'AI アシスタント', sizeMB: 5, selection: 'recommended', ... },
+ * //   { id: 'python_runtime', name: 'Python 実行環境', sizeMB: 150, selection: 'optional', ... },
+ * // ]
+ *
+ * // デフォルト選択での合計サイズを計算
+ * const size = calculateInstallerSize('IOSH');
+ * // → { selectedMB: 55, totalMB: 205, components: [...] }
+ *
+ * // カスタム選択でのサイズ計算
+ * const customSize = calculateInstallerSize('IOSH', ['core', 'ai_assistant', 'python_runtime']);
+ * // → { selectedMB: 205, totalMB: 205, components: [...] }
+ * ```
+ *
+ * ## Inno Setup コンポーネントセクション生成
+ *
+ * ```typescript
+ * const section = generateInnoSetupComponents('IOSH');
+ * // → [
+ * //   'Name: "core"; Description: "InsightOfficeSheet 本体（必須）"; Types: full compact custom; Flags: fixed',
+ * //   'Name: "ai_assistant"; Description: "AI アシスタント（推奨）"; Types: full compact custom',
+ * //   'Name: "python_runtime"; Description: "Python 実行環境（オプション）"; Types: full',
+ * // ]
+ * ```
+ */
+
+/** コンポーネントの選択種別 */
+export type ComponentSelection = 'required' | 'recommended' | 'optional';
+
+/** インストーラーコンポーネント定義 */
+export interface InstallerComponent {
+  /** コンポーネント ID（addon-modules の ID と対応） */
+  id: string;
+  /** 表示名 */
+  name: string;
+  /** 日本語表示名 */
+  nameJa: string;
+  /** 説明 */
+  description: string;
+  /** 日本語説明 */
+  descriptionJa: string;
+  /** 推定サイズ（MB） */
+  sizeMB: number;
+  /** 選択種別 */
+  selection: ComponentSelection;
+  /** デフォルトで選択済みか */
+  defaultChecked: boolean;
+  /** 依存するコンポーネント ID（これらが選択されていないと選択不可） */
+  dependsOn: string[];
+  /** 対応する addon-modules のモジュール ID（null の場合はコアアプリ） */
+  addonModuleId: string | null;
+  /** Inno Setup の Types 定義（どのインストール種別に含まれるか） */
+  innoSetupTypes: Array<'full' | 'compact' | 'custom'>;
+}
+
+/** コンポーネント選択結果 */
+export interface ComponentSizeResult {
+  /** 選択されたコンポーネントの合計サイズ（MB） */
+  selectedMB: number;
+  /** 全コンポーネントの合計サイズ（MB） */
+  totalMB: number;
+  /** 各コンポーネントの状態 */
+  components: Array<InstallerComponent & { checked: boolean }>;
+}
+
+// ── 製品別コンポーネント定義 ──
+
+/**
+ * InsightOffice 系（INSS/IOSH/IOSD）共通のコンポーネント構成
+ *
+ * ```
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │  InsightOffice インストーラー                                │
+ * │                                                             │
+ * │  ☑ {製品名} 本体（必須）                          50MB     │
+ * │  ☑ AI アシスタント（推奨）                         5MB     │
+ * │  ☐ Python 実行環境（オプション）                 150MB     │
+ * │                                          ─────────         │
+ * │                              合計:  55MB 〜 205MB          │
+ * └─────────────────────────────────────────────────────────────┘
+ * ```
+ */
+function createInsightOfficeComponents(product: 'INSS' | 'IOSH' | 'IOSD'): InstallerComponent[] {
+  const productInfo = PRODUCTS[product];
+
+  return [
+    {
+      id: 'core',
+      name: `${productInfo.name} Core`,
+      nameJa: `${productInfo.name} 本体`,
+      description: `${productInfo.name} main application and file associations`,
+      descriptionJa: `${productInfo.name} メインアプリケーションとファイル関連付け`,
+      sizeMB: 50,
+      selection: 'required',
+      defaultChecked: true,
+      dependsOn: [],
+      addonModuleId: null,
+      innoSetupTypes: ['full', 'compact', 'custom'],
+    },
+    {
+      id: 'ai_assistant',
+      name: 'AI Assistant',
+      nameJa: 'AI アシスタント',
+      description: 'Claude-powered AI assistant for document editing, proofreading, and suggestions',
+      descriptionJa: 'Claude AIによるドキュメント編集・校正・提案アシスタント',
+      sizeMB: 5,
+      selection: 'recommended',
+      defaultChecked: true,
+      dependsOn: ['core'],
+      addonModuleId: 'ai_assistant',
+      innoSetupTypes: ['full', 'compact', 'custom'],
+    },
+    {
+      id: 'python_runtime',
+      name: 'Python Runtime',
+      nameJa: 'Python 実行環境',
+      description: 'Embedded Python execution environment for scripting and automation (PRO/ENT)',
+      descriptionJa: 'スクリプト・自動化のための Python 実行環境（PRO/ENT）',
+      sizeMB: 150,
+      selection: 'optional',
+      defaultChecked: false,
+      dependsOn: ['core'],
+      addonModuleId: 'python_runtime',
+      innoSetupTypes: ['full'],
+    },
+  ];
+}
+
+/**
+ * InsightBot（INBT）のコンポーネント構成
+ *
+ * ```
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │  InsightBot インストーラー                                   │
+ * │                                                             │
+ * │  ☑ InsightBot Studio（必須）                       60MB    │
+ * │  ☑ AI コードエディター（推奨）                      5MB    │
+ * │  ☐ Orchestrator サービス（オプション — PRO/ENT）    20MB    │
+ * │  ☐ Python 実行環境（オプション）                  150MB    │
+ * │                                          ─────────         │
+ * │                              合計:  65MB 〜 235MB          │
+ * └─────────────────────────────────────────────────────────────┘
+ * ```
+ */
+const INBT_COMPONENTS: InstallerComponent[] = [
+  {
+    id: 'core',
+    name: 'InsightBot Studio',
+    nameJa: 'InsightBot Studio',
+    description: 'InsightBot main application — AI editor and JOB management',
+    descriptionJa: 'InsightBot メインアプリケーション — AI エディターと JOB 管理',
+    sizeMB: 60,
+    selection: 'required',
+    defaultChecked: true,
+    dependsOn: [],
+    addonModuleId: null,
+    innoSetupTypes: ['full', 'compact', 'custom'],
+  },
+  {
+    id: 'ai_code_editor',
+    name: 'AI Code Editor',
+    nameJa: 'AI コードエディター',
+    description: 'AI-powered Python code generation and editing',
+    descriptionJa: 'AI による Python コード生成・編集',
+    sizeMB: 5,
+    selection: 'recommended',
+    defaultChecked: true,
+    dependsOn: ['core'],
+    addonModuleId: 'ai_assistant',
+    innoSetupTypes: ['full', 'compact', 'custom'],
+  },
+  {
+    id: 'orchestrator',
+    name: 'Orchestrator Service',
+    nameJa: 'Orchestrator サービス',
+    description: 'Windows service for centralized Agent management and JOB dispatch (PRO/ENT)',
+    descriptionJa: 'Agent 集中管理・JOB 配信用 Windows サービス（PRO/ENT）',
+    sizeMB: 20,
+    selection: 'optional',
+    defaultChecked: false,
+    dependsOn: ['core'],
+    addonModuleId: null,
+    innoSetupTypes: ['full'],
+  },
+  {
+    id: 'python_runtime',
+    name: 'Python Runtime',
+    nameJa: 'Python 実行環境',
+    description: 'Embedded Python execution environment for script execution',
+    descriptionJa: 'スクリプト実行のための Python 実行環境',
+    sizeMB: 150,
+    selection: 'optional',
+    defaultChecked: false,
+    dependsOn: ['core'],
+    addonModuleId: 'python_runtime',
+    innoSetupTypes: ['full'],
+  },
+];
+
+/**
+ * 全製品のコンポーネント定義マップ
+ *
+ * コンポーネント選択に対応しない製品（INMV/INIG/INCA/INPY/IVIN/ISOF）は
+ * core のみのシングルコンポーネントとして定義される。
+ */
+const INSTALLER_COMPONENT_CONFIGS: Partial<Record<ProductCode, InstallerComponent[]>> = {
+  INBT: INBT_COMPONENTS,
+  INSS: createInsightOfficeComponents('INSS'),
+  IOSH: createInsightOfficeComponents('IOSH'),
+  IOSD: createInsightOfficeComponents('IOSD'),
+};
+
+/** 製品のインストーラーコンポーネント一覧を取得 */
+export function getInstallerComponents(product: ProductCode): InstallerComponent[] {
+  const components = INSTALLER_COMPONENT_CONFIGS[product];
+  if (components) return components;
+
+  // コンポーネント選択非対応の製品はコアのみ
+  const productInfo = PRODUCTS[product];
+  return [
+    {
+      id: 'core',
+      name: `${productInfo.name}`,
+      nameJa: `${productInfo.name}`,
+      description: `${productInfo.name} application`,
+      descriptionJa: `${productInfo.name} アプリケーション`,
+      sizeMB: 50,
+      selection: 'required',
+      defaultChecked: true,
+      dependsOn: [],
+      addonModuleId: null,
+      innoSetupTypes: ['full', 'compact', 'custom'],
+    },
+  ];
+}
+
+/**
+ * インストーラーのサイズ計算
+ *
+ * @param product 製品コード
+ * @param selectedIds 選択されたコンポーネント ID（省略時はデフォルト選択を使用）
+ */
+export function calculateInstallerSize(
+  product: ProductCode,
+  selectedIds?: string[],
+): ComponentSizeResult {
+  const components = getInstallerComponents(product);
+
+  const checkedComponents = components.map(c => {
+    const checked = selectedIds
+      ? selectedIds.includes(c.id) || c.selection === 'required'
+      : c.defaultChecked;
+    return { ...c, checked };
+  });
+
+  return {
+    selectedMB: checkedComponents
+      .filter(c => c.checked)
+      .reduce((sum, c) => sum + c.sizeMB, 0),
+    totalMB: components.reduce((sum, c) => sum + c.sizeMB, 0),
+    components: checkedComponents,
+  };
+}
+
+/**
+ * デフォルト選択のコンポーネント ID 一覧を取得
+ */
+export function getDefaultComponentSelection(product: ProductCode): string[] {
+  return getInstallerComponents(product)
+    .filter(c => c.defaultChecked)
+    .map(c => c.id);
+}
+
+/**
+ * Inno Setup [Components] セクション用のエントリを生成
+ *
+ * @example
+ * ```
+ * generateInnoSetupComponents('IOSH')
+ * // [
+ * //   'Name: "core"; Description: "InsightOfficeSheet 本体（必須）"; Types: full compact custom; Flags: fixed',
+ * //   'Name: "ai_assistant"; Description: "AI アシスタント（推奨）  5 MB"; Types: full compact custom',
+ * //   'Name: "python_runtime"; Description: "Python 実行環境（オプション）  150 MB"; Types: full',
+ * // ]
+ * ```
+ */
+export function generateInnoSetupComponents(product: ProductCode): string[] {
+  const components = getInstallerComponents(product);
+  if (components.length <= 1) return []; // シングルコンポーネントの場合はセクション不要
+
+  return components.map(c => {
+    const label = c.selection === 'required' ? '必須'
+      : c.selection === 'recommended' ? '推奨'
+      : 'オプション';
+    const sizeLabel = c.selection === 'required' ? '' : `  ${c.sizeMB} MB`;
+    const desc = `${c.nameJa}（${label}）${sizeLabel}`;
+    const types = c.innoSetupTypes.join(' ');
+    const flags = c.selection === 'required' ? '; Flags: fixed' : '';
+    return `Name: "${c.id}"; Description: "${desc}"; Types: ${types}${flags}`;
+  });
+}
+
+// =============================================================================
 // デフォルトエクスポート
 // =============================================================================
 
@@ -864,4 +1187,10 @@ export default {
   generateInnoSetupRegistry,
   generateInnoSetupRun,
   generateInnoSetupConfig,
+  generateInnoSetupComponents,
+
+  // コンポーネント選択
+  getInstallerComponents,
+  calculateInstallerSize,
+  getDefaultComponentSelection,
 };

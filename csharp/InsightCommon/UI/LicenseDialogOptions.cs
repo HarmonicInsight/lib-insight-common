@@ -5,34 +5,34 @@ using InsightCommon.Theme;
 namespace InsightCommon.UI;
 
 /// <summary>
-/// ライセンスダイアログの設定
+/// ライセンスダイアログの設宁E
 /// </summary>
 public class LicenseDialogOptions
 {
-    /// <summary>製品コード（例: "INMV"）</summary>
+    /// <summary>製品コード（侁E "INMV"�E�E/summary>
     public required string ProductCode { get; set; }
 
-    /// <summary>製品名（表示用、例: "InsightMovie"）</summary>
+    /// <summary>製品名�E�表示用、侁E "InsightCast"�E�E/summary>
     public required string ProductName { get; set; }
 
-    /// <summary>テーマモード</summary>
+    /// <summary>チE�EマモーチE/summary>
     public InsightThemeMode ThemeMode { get; set; } = InsightThemeMode.Light;
 
-    /// <summary>表示言語（"ja" or "en"、デフォルト: "ja"）</summary>
+    /// <summary>表示言語！Eja" or "en"、デフォルチE "ja"�E�E/summary>
     public string Locale { get; set; } = "ja";
 
-    /// <summary>表示する機能一覧</summary>
+    /// <summary>表示する機�E一覧</summary>
     public FeatureDefinition[] Features { get; set; } = [];
 
-    /// <summary>機能マトリクス（機能キー → 許可プラン配列）</summary>
+    /// <summary>機�Eマトリクス�E�機�Eキー ↁE許可プラン配�E�E�E/summary>
     public Dictionary<string, PlanCode[]> FeatureMatrix { get; set; } = new();
 
     /// <summary>ライセンスマネージャーインスタンス</summary>
     public required InsightLicenseManager LicenseManager { get; set; }
 
-    /// <summary>プライマリボタンのカスタム色（null の場合は InsightColors.BrandPrimary を使用）</summary>
+    /// <summary>プライマリボタンのカスタム色�E�Eull の場合�E InsightColors.BrandPrimary を使用�E�E/summary>
     public Color? BrandColor { get; set; }
 
-    /// <summary>プライマリボタンのホバー色（null の場合は BrandColor を暗くした色を使用）</summary>
+    /// <summary>プライマリボタンのホバー色�E�Eull の場合�E BrandColor を暗くした色を使用�E�E/summary>
     public Color? BrandHoverColor { get; set; }
 }

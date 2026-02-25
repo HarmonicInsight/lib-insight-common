@@ -1,94 +1,94 @@
 # HARMONIC insight アプリアイコン シリーズ
 
-## デザインシステム
+## チE��インシスチE��
 
 すべてのアプリアイコンは統一されたデザイン言語を使用:
 
 - **背景**: Ivory (#FAF8F5)
-- **ベースサークル**: Gold (#B8942F)
-- **アイコンアート**: White (#FFFFFF)
-- **スパークルアクセント**: Light Gold (#D4BC6A)、右上に配置
-- **スタイル**: 丸みのある可愛いデザイン
+- **ベ�Eスサークル**: Gold (#B8942F)
+- **アイコンアーチE*: White (#FFFFFF)
+- **スパ�EクルアクセンチE*: Light Gold (#D4BC6A)、右上に配置
+- **スタイル**: 丸みのある可愛いチE��イン
 
-## ディレクトリ構成
+## チE��レクトリ構�E
 
 ```
 brand/icons/
-├── png/                              # マスター PNG アイコン（1024x1024、正式版）
-│   ├── icon-insight-slide.png        # INSS - InsightOfficeSlide
-│   ├── icon-insight-sheet.png        # IOSH - InsightOfficeSheet
-│   ├── icon-insight-doc.png          # IOSD - InsightOfficeDoc
-│   ├── icon-insight-py.png           # INPY - InsightPy
-│   ├── icon-insight-movie.png        # INMV - InsightMovie
-│   ├── icon-insight-imagegen.png     # INIG - InsightImageGen
-│   ├── icon-insight-bot.png          # INBT - InsightBot
-│   ├── icon-insight-nca.png          # INCA - InsightNoCodeAnalyzer
-│   ├── icon-interview-insight.png    # IVIN - InterviewInsight
-│   ├── icon-senior-office.png        # ISOF - InsightSeniorOffice
-│   ├── icon-launcher.png             # Insight Launcher
-│   ├── icon-camera.png               # スッキリカメラ
-│   ├── icon-voice-clock.png          # Insight Voice Clock
-│   ├── icon-qr.png                   # Insight QR
-│   ├── icon-pinboard.png             # Insight PinBoard
-│   └── icon-voice-memo.png           # Insight Voice Memo
-├── generated/                        # generate-app-icon.py による生成済みアイコン
-│   ├── InsightOfficeSheet/           # WPF: .ico + 個別PNG
-│   ├── InsightNoCodeAnalyzer/        # Tauri: icon.ico + icon.png + sized PNGs
-│   ├── InsightCamera/                # Expo: icon.png + splash + Android mipmap
-│   ├── InsightQR/                    # Web: favicon.ico + manifest PNGs
-│   └── ...
+├── png/                              # マスター PNG アイコン�E�E024x1024、正式版�E�E
+━E  ├── icon-insight-slide.png        # INSS - InsightOfficeSlide
+━E  ├── icon-insight-sheet.png        # IOSH - InsightOfficeSheet
+━E  ├── icon-insight-doc.png          # IOSD - InsightOfficeDoc
+━E  ├── icon-insight-py.png           # INPY - InsightPy
+━E  ├── icon-insight-cast.png        # INMV - InsightCast
+━E  ├── icon-insight-imagegen.png     # INIG - InsightImageGen
+━E  ├── icon-insight-bot.png          # INBT - InsightBot
+━E  ├── icon-insight-nca.png          # INCA - InsightNoCodeAnalyzer
+━E  ├── icon-interview-insight.png    # IVIN - InterviewInsight
+━E  ├── icon-senior-office.png        # ISOF - InsightSeniorOffice
+━E  ├── icon-launcher.png             # Insight Launcher
+━E  ├── icon-camera.png               # スチE��リカメラ
+━E  ├── icon-voice-clock.png          # Insight Voice Clock
+━E  ├── icon-qr.png                   # Insight QR
+━E  ├── icon-pinboard.png             # Insight PinBoard
+━E  └── icon-voice-memo.png           # Insight Voice Memo
+├── generated/                        # generate-app-icon.py による生�E済みアイコン
+━E  ├── InsightOfficeSheet/           # WPF: .ico + 個別PNG
+━E  ├── InsightNoCodeAnalyzer/        # Tauri: icon.ico + icon.png + sized PNGs
+━E  ├── InsightCamera/                # Expo: icon.png + splash + Android mipmap
+━E  ├── InsightQR/                    # Web: favicon.ico + manifest PNGs
+━E  └── ...
 └── README.md
 ```
 
-> **重要**: `png/` のアイコンが正式版マスターです。すべて手動で作成・管理されます。
+> **重要E*: `png/` のアイコンが正式版マスターです。すべて手動で作�E・管琁E��れます、E
 
-## 製品アイコン一覧（10製品）
+## 製品アイコン一覧�E�E0製品E��E
 
-### Tier 1: 業務変革ツール
+### Tier 1: 業務変革チE�Eル
 
-| ファイル | コード | 製品名 | プラットフォーム | モチーフ |
+| ファイル | コーチE| 製品名 | プラチE��フォーム | モチ�EチE|
 |---------|:------:|--------|:---------------:|---------|
-| `icon-insight-nca.png` | INCA | InsightNoCodeAnalyzer | Tauri + React | フローチャート + ギア |
-| `icon-insight-bot.png` | INBT | InsightBot | Windows Service | かわいいロボット + チャット吹き出し |
-| `icon-interview-insight.png` | IVIN | InterviewInsight | Tauri + React | ロボット + マイク + クリップボード |
+| `icon-insight-nca.png` | INCA | InsightNoCodeAnalyzer | Tauri + React | フローチャーチE+ ギア |
+| `icon-insight-bot.png` | INBT | InsightBot | Windows Service | かわぁE��ロボッチE+ チャチE��吹き�EぁE|
+| `icon-interview-insight.png` | IVIN | InterviewInsight | Tauri + React | ロボッチE+ マイク + クリチE�Eボ�EチE|
 
-### Tier 2: AI活用ツール
+### Tier 2: AI活用チE�Eル
 
-| ファイル | コード | 製品名 | プラットフォーム | モチーフ |
+| ファイル | コーチE| 製品名 | プラチE��フォーム | モチ�EチE|
 |---------|:------:|--------|:---------------:|---------|
-| `icon-insight-movie.png` | INMV | InsightMovie | Python/PyInstaller | 映写機 + フィルムストリップ + ギア |
-| `icon-insight-imagegen.png` | INIG | InsightImageGen | Python/PyInstaller | モニター + アパーチャ + 画像 + ギア |
+| `icon-insight-cast.png` | INMV | InsightCast | Python/PyInstaller | 映写橁E+ フィルムストリチE�E + ギア |
+| `icon-insight-imagegen.png` | INIG | InsightImageGen | Python/PyInstaller | モニター + アパ�Eチャ + 画僁E+ ギア |
 
 ### Tier 3: InsightOffice Suite
 
-| ファイル | コード | 製品名 | プラットフォーム | モチーフ |
+| ファイル | コーチE| 製品名 | プラチE��フォーム | モチ�EチE|
 |---------|:------:|--------|:---------------:|---------|
-| `icon-insight-slide.png` | INSS | InsightOfficeSlide | C# WPF | プレゼンボード + ギア + 矢印 |
-| `icon-insight-sheet.png` | IOSH | InsightOfficeSheet | C# WPF | スプレッドシートグリッド + ギア |
-| `icon-insight-doc.png` | IOSD | InsightOfficeDoc | C# WPF | ドキュメント + ギア + DB |
+| `icon-insight-slide.png` | INSS | InsightOfficeSlide | C# WPF | プレゼンボ�EチE+ ギア + 矢印 |
+| `icon-insight-sheet.png` | IOSH | InsightOfficeSheet | C# WPF | スプレチE��シートグリチE�� + ギア |
+| `icon-insight-doc.png` | IOSD | InsightOfficeDoc | C# WPF | ドキュメンチE+ ギア + DB |
 | `icon-insight-py.png` | INPY | InsightPy | Python/PyInstaller | Python ヘビ + 回路基板 |
 
 ### Tier 4: Accessibility
 
-| ファイル | コード | 製品名 | プラットフォーム | モチーフ |
+| ファイル | コーチE| 製品名 | プラチE��フォーム | モチ�EチE|
 |---------|:------:|--------|:---------------:|---------|
-| `icon-senior-office.png` | ISOF | InsightSeniorOffice | C# WPF | カレンダー + 文書 + メール + ギア |
+| `icon-senior-office.png` | ISOF | InsightSeniorOffice | C# WPF | カレンダー + 斁E�� + メール + ギア |
 
-## ユーティリティアプリ一覧（6アプリ）
+## ユーチE��リチE��アプリ一覧�E�Eアプリ�E�E
 
-| ファイル | アプリ | プラットフォーム | モチーフ |
+| ファイル | アプリ | プラチE��フォーム | モチ�EチE|
 |---------|--------|:---------------:|---------|
-| `icon-launcher.png` | Insight Launcher | C# WPF | 2x2 グリッド + ロケット + 回路基板 |
-| `icon-camera.png` | スッキリカメラ | Expo (iOS/Android) | カメラ + アパーチャ |
-| `icon-voice-clock.png` | Insight Voice Clock | Android Native (Kotlin) | 目覚まし時計 + マイク + 音波 |
-| `icon-voice-clock.png` | しゃべってカレンダー | Expo (iOS/Android) | 目覚まし時計 + マイク + 音波（VOICE_CLOCK と共有） |
+| `icon-launcher.png` | Insight Launcher | C# WPF | 2x2 グリチE�� + ロケチE�� + 回路基板 |
+| `icon-camera.png` | スチE��リカメラ | Expo (iOS/Android) | カメラ + アパ�Eチャ |
+| `icon-voice-clock.png` | Insight Voice Clock | Android Native (Kotlin) | 目覚まし時訁E+ マイク + 音波 |
+| `icon-voice-clock.png` | しゃべってカレンダー | Expo (iOS/Android) | 目覚まし時訁E+ マイク + 音波�E�EOICE_CLOCK と共有！E|
 | `icon-qr.png` | Insight QR | Next.js (Web) | QR コードパターン |
-| `icon-pinboard.png` | Insight PinBoard | Expo (iOS/Android) | コルクボード + 付箋メモ |
+| `icon-pinboard.png` | Insight PinBoard | Expo (iOS/Android) | コルクボ�EチE+ 付箋メモ |
 | `icon-voice-memo.png` | Insight Voice Memo | Expo (iOS/Android) | マイク + 回路基板 + 波形 |
 
-## プラットフォーム別サマリー
+## プラチE��フォーム別サマリー
 
-| プラットフォーム | 生成形式 | 対象アプリ |
+| プラチE��フォーム | 生�E形弁E| 対象アプリ |
 |----------------|---------|-----------|
 | **C# WPF** | `.ico` (16-256px) + 個別 PNG | INSS, IOSH, IOSD, ISOF, LAUNCHER |
 | **Python/PyInstaller** | `.ico` (16-256px) + 個別 PNG | INPY, INMV, INIG |
@@ -98,25 +98,25 @@ brand/icons/
 | **Android Native** | mipmap PNG + round PNG | CAMERA, VOICE_CLOCK, INCLINE, etc. |
 | **Next.js (Web)** | `favicon.ico` + manifest PNGs | QR |
 
-## 使用方法
+## 使用方況E
 
-### 各アプリへの配布（generate-app-icon.py）
+### 吁E��プリへの配币E��Eenerate-app-icon.py�E�E
 
 ```bash
-# 製品コード指定（プラットフォーム自動判定）
+# 製品コード指定（�EラチE��フォーム自動判定！E
 python scripts/generate-app-icon.py --product IOSH --output ./Resources/
 
-# プラットフォーム手動指定
+# プラチE��フォーム手動持E��E
 python scripts/generate-app-icon.py --product IOSH --platform windows --output ./Resources/
 
-# 全製品一括生成（各製品のプラットフォームに合わせて出力）
+# 全製品一括生�E�E�各製品�EプラチE��フォームに合わせて出力！E
 python scripts/generate-app-icon.py --all --output ./generated-icons/
 
-# 利用可能なアイコン一覧（プラットフォーム・配置先を表示）
+# 利用可能なアイコン一覧�E��EラチE��フォーム・配置先を表示�E�E
 python scripts/generate-app-icon.py --list
 ```
 
-### TypeScript から参照
+### TypeScript から参�E
 
 ```typescript
 import { getMasterIconPath, PRODUCTS, UTILITY_ICONS } from '@/insight-common/config/products';
@@ -128,9 +128,9 @@ UTILITY_ICONS.CAMERA.targetPlatform;   // 'expo'
 UTILITY_ICONS.CAMERA.iconBuildPath;    // 'assets/'
 ```
 
-### プラットフォーム別配置先
+### プラチE��フォーム別配置允E
 
-| プラットフォーム | 生成コマンド例 | 配置先 |
+| プラチE��フォーム | 生�Eコマンド侁E| 配置允E|
 |----------------|--------------|--------|
 | WPF | `--product IOSH --output Resources/` | `Resources/{Name}.ico` |
 | Python | `--product INPY --output resources/` | `resources/{Name}.ico` |
@@ -139,10 +139,10 @@ UTILITY_ICONS.CAMERA.iconBuildPath;    // 'assets/'
 | Web | `--product QR --output public/` | `public/favicon.ico`, `public/icon-*.png` |
 | Service | `--product INBT --output Resources/` | `Resources/{Name}.ico` |
 
-## 新しいアイコンの追加方法
+## 新しいアイコンの追加方況E
 
-1. Gold (#B8942F) + Ivory (#FAF8F5) スタイルで 1024x1024 PNG を作成
+1. Gold (#B8942F) + Ivory (#FAF8F5) スタイルで 1024x1024 PNG を作�E
 2. `png/icon-{app-name}.png` として配置
 3. `config/products.ts` の `masterIcon`, `targetPlatform`, `iconBuildPath` フィールドを更新
-4. `scripts/generate-app-icon.py` のマッピングに追加（`platform`, `build_path` を含む）
-5. この README の一覧に追記
+4. `scripts/generate-app-icon.py` のマッピングに追加�E�Eplatform`, `build_path` を含む�E�E
+5. こ�E README の一覧に追訁E

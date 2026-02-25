@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Doctor Dashboard</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-hover: #334155;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --border: #334155;
+    --accent: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --orange: #f97316;
+    --cyan: #06b6d4;
+    --purple: #a855f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .header h1 span {
+    color: var(--text-secondary);
+    font-weight: 400;
+    font-size: 14px;
+    margin-left: 8px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn:hover { background: var(--bg-card-hover); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); }
+  .btn-primary:hover { background: #2563eb; }
+
+  .auto-refresh-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ===== Main Layout ===== */
+  .main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+
+  /* ===== Status Cards (Top Row) ===== */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .status-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .status-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .status-card.resolved::before { background: var(--green); }
+  .status-card.needs_info::before { background: var(--yellow); }
+  .status-card.escalate::before { background: var(--red); }
+  .status-card.neutral::before { background: var(--accent); }
+
+  .status-card .label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .status-card .value {
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .status-card .sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* ===== Reports List ===== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .report-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .report-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .report-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .report-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    gap: 16px;
+  }
+
+  .report-card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .platform-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .platform-badge.ios { background: #1e293b; color: #60a5fa; border: 1px solid #3b82f6; }
+  .platform-badge.android { background: #1e293b; color: #4ade80; border: 1px solid #22c55e; }
+  .platform-badge.wpf { background: #1e293b; color: #a78bfa; border: 1px solid #8b5cf6; }
+  .platform-badge.react { background: #1e293b; color: #22d3ee; border: 1px solid #06b6d4; }
+  .platform-badge.python { background: #1e293b; color: #fbbf24; border: 1px solid #eab308; }
+  .platform-badge.tauri { background: #1e293b; color: #f97316; border: 1px solid #f97316; }
+
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .status-badge.resolved { background: rgba(34,197,94,0.15); color: var(--green); }
+  .status-badge.needs_info { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .status-badge.escalate { background: rgba(239,68,68,0.15); color: var(--red); }
+  .status-badge.fixed { background: rgba(59,130,246,0.15); color: var(--accent); }
+
+  .report-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .report-card-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .chevron {
+    color: var(--text-secondary);
+    transition: transform 0.2s;
+    font-size: 18px;
+  }
+
+  .report-card.open .chevron { transform: rotate(90deg); }
+
+  /* ===== Report Detail (Expandable) ===== */
+  .report-detail {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .report-card.open .report-detail { display: block; }
+
+  .loop-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .loop-item {
+    display: flex;
+    gap: 16px;
+  }
+
+  .loop-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32px;
+    flex-shrink: 0;
+  }
+
+  .loop-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+
+  .loop-dot.resolved { border-color: var(--green); background: var(--green); }
+  .loop-dot.fixed { border-color: var(--accent); background: var(--accent); }
+  .loop-dot.needs_info { border-color: var(--yellow); background: var(--yellow); }
+  .loop-dot.escalate { border-color: var(--red); background: var(--red); }
+
+  .loop-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border);
+    min-height: 16px;
+  }
+
+  .loop-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .loop-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .category-tag {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+
+  .category-tag.Compile { color: var(--red); border-color: var(--red); }
+  .category-tag.Link { color: var(--orange); border-color: var(--orange); }
+  .category-tag.Dependency { color: var(--yellow); border-color: var(--yellow); }
+  .category-tag.ScriptPhase { color: var(--purple); border-color: var(--purple); }
+  .category-tag.Environment { color: var(--cyan); border-color: var(--cyan); }
+  .category-tag.CodeSign { color: #f472b6; border-color: #f472b6; }
+
+  .loop-content .fix-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .error-block {
+    background: #0c0c0c;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #e06c75;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .loop-content .meta-line {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+
+  /* ===== Category Distribution ===== */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .category-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .category-card .cat-icon { font-size: 24px; margin-bottom: 8px; }
+  .category-card .cat-name { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+  .category-card .cat-count { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* ===== Empty State ===== */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-secondary);
+  }
+
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; max-width: 400px; margin: 0 auto; }
+
+  .empty-state code {
+    display: inline-block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-family: monospace;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--cyan);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .main { padding: 16px; }
+    .status-grid { grid-template-columns: repeat(2, 1fr); }
+    .category-grid { grid-template-columns: repeat(3, 1fr); }
+    .header { padding: 16px; }
+    .report-card-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <div class="header-icon">&#x1F529;</div>
+      <h1>Build Doctor <span>Dashboard</span></h1>
+    </div>
+    <div class="header-right">
+      <div class="auto-refresh-indicator" id="refreshIndicator" title="Auto-refresh: ON"></div>
+      <button class="btn" onclick="loadReports()" title="Reload reports">&#x21bb; Reload</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Status Cards -->
+    <div class="status-grid" id="statusGrid">
+      <div class="status-card neutral">
+        <div class="label">Total Reports</div>
+        <div class="value" id="totalReports">-</div>
+      </div>
+      <div class="status-card resolved">
+        <div class="label">Resolved</div>
+        <div class="value" id="resolvedCount">-</div>
+      </div>
+      <div class="status-card needs_info">
+        <div class="label">Needs Info</div>
+        <div class="value" id="needsInfoCount">-</div>
+      </div>
+      <div class="status-card escalate">
+        <div class="label">Escalated</div>
+        <div class="value" id="escalateCount">-</div>
+      </div>
+      <div class="status-card neutral">
+        <div class="label">Platform</div>
+        <div class="value" id="platformDisplay" style="font-size:18px">-</div>
+      </div>
+    </div>
+
+    <!-- Category Distribution -->
+    <div class="section-header">
+      <h2>Error Categories</h2>
+    </div>
+    <div class="category-grid" id="categoryGrid">
+      <div class="category-card"><div class="cat-icon">&#x26A0;</div><div class="cat-name">Compile</div><div class="cat-count" id="catCompile">0</div></div>
+      <div class="category-card"><div class="cat-icon">&#x1F517;</div><div class="cat-name">Link</div><div class="cat-count" id="catLink">0</div></div>
+      <div class="category-card"><div class="cat-icon">&#x1F4E6;</div><div class="cat-name">Dependency</div><div class="cat-count" id="catDependency">0</div></div>
+      <div class="category-card"><div class="cat-icon">&#x1F4DC;</div><div class="cat-name">ScriptPhase</div><div class="cat-count" id="catScriptPhase">0</div></div>
+      <div class="category-card"><div class="cat-icon">&#x2699;</div><div class="cat-name">Environment</div><div class="cat-count" id="catEnvironment">0</div></div>
+      <div class="category-card"><div class="cat-icon">&#x1F511;</div><div class="cat-name">CodeSign</div><div class="cat-count" id="catCodeSign">0</div></div>
+    </div>
+
+    <!-- Claude Code Live Session -->
+    <div class="section-header" id="sessionHeader" style="display:none">
+      <h2>Claude Code Session <span class="status-badge in_progress" id="sessionStatus" style="font-size:11px;margin-left:8px">Live</span></h2>
+      <span class="report-meta" id="sessionMeta"></span>
+    </div>
+    <div class="report-list" id="sessionList" style="margin-bottom:32px"></div>
+
+    <!-- Reports List -->
+    <div class="section-header">
+      <h2>Build Reports</h2>
+      <span class="report-meta" id="reportCount"></span>
+    </div>
+    <div class="report-list" id="reportList">
+      <div class="empty-state" id="emptyState">
+        <div class="icon">&#x1F3D7;</div>
+        <h3>No reports yet</h3>
+        <p>Run Build Doctor on your project, or let Claude Code build automatically.</p>
+        <code>./scripts/build-doctor.sh /path/to/project</code>
+      </div>
+    </div>
+  </div>
+
+<script>
+// =========================================================================
+// Data store
+// =========================================================================
+let allReports = [];
+let sessionReport = null;
+let autoRefreshTimer = null;
+
+// =========================================================================
+// Load reports from API
+// =========================================================================
+async function loadReports() {
+  try {
+    const [reportsResp, sessionResp] = await Promise.all([
+      fetch('/api/reports'),
+      fetch('/api/session'),
+    ]);
+
+    if (reportsResp.ok) {
+      allReports = await reportsResp.json();
+      allReports.sort((a, b) => (b.generatedAt || '').localeCompare(a.generatedAt || ''));
+    }
+
+    if (sessionResp.ok) {
+      const data = await sessionResp.json();
+      sessionReport = data && data.events ? data : null;
+    } else {
+      sessionReport = null;
+    }
+
+    render();
+  } catch (e) {
+    console.error('Load error:', e);
+  }
+}
+
+// =========================================================================
+// Render functions
+// =========================================================================
+function render() {
+  renderStatusCards();
+  renderCategoryGrid();
+  renderSessionPanel();
+  renderReportList();
+}
+
+function renderStatusCards() {
+  // Count from both report_*.json and session events
+  const sessionBuilds = sessionReport ? (sessionReport.totalBuilds || 0) : 0;
+  const sessionFails = sessionReport ? (sessionReport.failedBuilds || 0) : 0;
+
+  document.getElementById('totalReports').textContent = allReports.length + (sessionBuilds > 0 ? ` +${sessionBuilds}` : '');
+  document.getElementById('resolvedCount').textContent = allReports.filter(r => r.status === 'resolved').length;
+  document.getElementById('needsInfoCount').textContent = allReports.filter(r => r.status === 'needs_info').length + (sessionFails > 0 ? ` +${sessionFails}` : '');
+  document.getElementById('escalateCount').textContent = allReports.filter(r => r.status === 'escalate').length;
+
+  const platforms = [...new Set([
+    ...allReports.map(r => r.platform),
+    sessionReport ? sessionReport.platform : null,
+  ].filter(Boolean))];
+  document.getElementById('platformDisplay').textContent = platforms.length > 0 ? platforms.join(', ') : '-';
+}
+
+function renderCategoryGrid() {
+  const cats = { Compile: 0, Link: 0, Dependency: 0, ScriptPhase: 0, Environment: 0, CodeSign: 0 };
+
+  // From build-doctor.sh reports
+  for (const report of allReports) {
+    for (const loop of (report.loops || [])) {
+      if (loop.category && loop.category !== '-' && cats[loop.category] !== undefined) {
+        cats[loop.category]++;
+      }
+    }
+  }
+
+  // From Claude Code session events
+  if (sessionReport) {
+    for (const evt of (sessionReport.events || [])) {
+      if (evt.category && cats[evt.category] !== undefined) {
+        cats[evt.category]++;
+      }
+    }
+  }
+
+  for (const [cat, count] of Object.entries(cats)) {
+    const el = document.getElementById('cat' + cat);
+    if (el) el.textContent = count;
+  }
+}
+
+// =========================================================================
+// Claude Code Session Panel
+// =========================================================================
+function renderSessionPanel() {
+  const header = document.getElementById('sessionHeader');
+  const container = document.getElementById('sessionList');
+  const statusBadge = document.getElementById('sessionStatus');
+  const meta = document.getElementById('sessionMeta');
+
+  if (!sessionReport || !sessionReport.events || sessionReport.events.length === 0) {
+    header.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  header.style.display = '';
+  statusBadge.textContent = sessionReport.status === 'in_progress' ? 'Live' : 'Done';
+  statusBadge.className = 'status-badge ' + (sessionReport.status === 'in_progress' ? 'fixed' : 'resolved');
+
+  const events = sessionReport.events;
+  meta.textContent = `${events.length} builds / ${sessionReport.failedBuilds || 0} failed`;
+
+  container.innerHTML = `
+    <div class="report-card open">
+      <div class="report-card-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="report-card-left">
+          <span class="platform-badge ${sessionReport.platform || ''}">${(sessionReport.platform || '?').toUpperCase()}</span>
+          <span class="report-meta">Claude Code Auto-Build Session</span>
+          <span class="report-meta">${sessionReport.startedAt ? new Date(sessionReport.startedAt).toLocaleString('ja-JP', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) : ''}</span>
+        </div>
+        <div class="report-card-right">
+          <span class="status-badge ${sessionReport.failedBuilds > 0 ? 'needs_info' : 'resolved'}">${sessionReport.failedBuilds || 0} failed</span>
+          <span class="report-meta">${events.length} builds</span>
+          <span class="chevron">&#x25B6;</span>
+        </div>
+      </div>
+      <div class="report-detail">
+        <div class="loop-timeline">
+          ${events.map((evt, i) => `
+            <div class="loop-item">
+              <div class="loop-marker">
+                <div class="loop-dot ${evt.status === 'build_failed' ? 'needs_info' : 'resolved'}"></div>
+                ${i < events.length - 1 ? '<div class="loop-line"></div>' : ''}
+              </div>
+              <div class="loop-content">
+                <h4>
+                  Build #${i + 1}
+                  ${evt.category ? `<span class="category-tag ${evt.category}">${evt.category}</span>` : ''}
+                  <span class="status-badge ${evt.status === 'build_failed' ? 'escalate' : 'resolved'}" style="font-size:10px">${evt.status === 'build_failed' ? 'Failed' : 'OK'}</span>
+                </h4>
+                <p class="fix-text"><code style="font-size:12px;color:var(--cyan)">${escapeHtml((evt.command || '').substring(0, 120))}</code></p>
+                ${evt.errorSummary ? `<div class="error-block">${escapeHtml(evt.errorSummary)}</div>` : ''}
+                <p class="meta-line">${evt.timestamp || ''} &mdash; exit ${evt.exitCode || '?'}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="meta-line" style="margin-top:12px">
+          Project: ${escapeHtml(sessionReport.projectDir || '-')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderReportList() {
+  const container = document.getElementById('reportList');
+  const empty = document.getElementById('emptyState');
+
+  if (allReports.length === 0) {
+    container.innerHTML = '';
+    container.appendChild(empty);
+    empty.style.display = '';
+    document.getElementById('reportCount').textContent = '';
+    return;
+  }
+
+  empty.style.display = 'none';
+  document.getElementById('reportCount').textContent = allReports.length + ' reports';
+
+  container.innerHTML = allReports.map((report, idx) => {
+    const dt = report.generatedAt ? new Date(report.generatedAt) : null;
+    const timeStr = dt ? dt.toLocaleString('ja-JP', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'N/A';
+    const loops = report.loops || [];
+    const lastCategory = loops.length > 0 ? loops[loops.length - 1].category : '-';
+
+    return `
+      <div class="report-card" id="report-${idx}" onclick="toggleReport(${idx})">
+        <div class="report-card-header">
+          <div class="report-card-left">
+            <span class="platform-badge ${report.platform || ''}">${(report.platform || 'unknown').toUpperCase()}</span>
+            <span class="report-meta">${timeStr}</span>
+            ${lastCategory && lastCategory !== '-' ? `<span class="category-tag ${lastCategory}">${lastCategory}</span>` : ''}
+          </div>
+          <div class="report-card-right">
+            <span class="status-badge ${report.status || ''}">${statusLabel(report.status)}</span>
+            <span class="report-meta">loops: ${report.totalLoops || 0}/${report.maxLoops || 2}</span>
+            <span class="chevron">&#x25B6;</span>
+          </div>
+        </div>
+        <div class="report-detail">
+          ${renderLoopTimeline(loops)}
+          <div class="meta-line" style="margin-top:12px">
+            Project: ${escapeHtml(report.projectDir || '-')}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderLoopTimeline(loops) {
+  if (!loops || loops.length === 0) return '<p class="fix-text">No loop data available.</p>';
+
+  return `<div class="loop-timeline">
+    ${loops.map((loop, i) => `
+      <div class="loop-item">
+        <div class="loop-marker">
+          <div class="loop-dot ${loop.status || ''}"></div>
+          ${i < loops.length - 1 ? '<div class="loop-line"></div>' : ''}
+        </div>
+        <div class="loop-content">
+          <h4>
+            Loop ${loop.loop || (i + 1)}
+            ${loop.category && loop.category !== '-' ? `<span class="category-tag ${loop.category}">${loop.category}</span>` : ''}
+            <span class="status-badge ${loop.status || ''}" style="font-size:10px">${statusLabel(loop.status)}</span>
+          </h4>
+          <p class="fix-text">${escapeHtml(loop.fix || '-')}</p>
+          ${loop.errorSummary ? `<div class="error-block">${escapeHtml(loop.errorSummary)}</div>` : ''}
+          <p class="meta-line">${loop.timestamp || ''} &mdash; ${escapeHtml(loop.logFile || '')}</p>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function toggleReport(idx) {
+  const el = document.getElementById('report-' + idx);
+  if (el) el.classList.toggle('open');
+}
+
+function statusLabel(s) {
+  const labels = {
+    resolved: 'Resolved',
+    needs_info: 'Needs Info',
+    escalate: 'Escalated',
+    fixed: 'Fixed',
+    building: 'Building',
+  };
+  return labels[s] || s || 'Unknown';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// =========================================================================
+// Auto-refresh
+// =========================================================================
+function startAutoRefresh() {
+  autoRefreshTimer = setInterval(loadReports, 5000);
+}
+
+// =========================================================================
+// Init
+// =========================================================================
+loadReports();
+startAutoRefresh();
+</script>
+</body>
+</html>

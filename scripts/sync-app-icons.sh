@@ -2,27 +2,27 @@
 #
 # sync-app-icons.sh
 # =================
-# insight-common のアイコンをアプリプロジェクトに同期する汎用スクリプト。
-# 全プラットフォーム（WPF, Android, Expo, Tauri, Web）対応。
-# 変更がなければスキップ（ハッシュ比較）。
+# insight-common のアイコンをアプリプロジェクトに同期する汎用スクリプト、E
+# 全プラチE��フォーム�E�EPF, Android, Expo, Tauri, Web�E�対応、E
+# 変更がなければスキチE�E�E�ハチE��ュ比輁E��、E
 #
 # =============================================================================
-# 使い方
+# 使ぁE��
 # =============================================================================
 #
-# ■ 個別アプリ（自分の製品アイコンだけ同期）
+# ■ 個別アプリ�E��E刁E�E製品アイコンだけ同期！E
 #   ./insight-common/scripts/sync-app-icons.sh --product IOSH Resources/
 #   ./insight-common/scripts/sync-app-icons.sh --product CAMERA assets/
 #   ./insight-common/scripts/sync-app-icons.sh --product INCA src-tauri/icons/
 #   ./insight-common/scripts/sync-app-icons.sh --product QR public/
 #
-# ■ ランチャーアプリ（全製品の Android mipmap アイコン）
+# ■ ランチャーアプリ�E��E製品�E Android mipmap アイコン�E�E
 #   ./insight-common/scripts/sync-app-icons.sh --launcher app/src/main/assets/launcher
 #
-# ■ サブモジュール自動更新付き（ビルド時推奨）
+# ■ サブモジュール自動更新付き�E�ビルド時推奨�E�E
 #   ./insight-common/scripts/sync-app-icons.sh --product IOSH --pull Resources/
 #
-# ■ 強制再同期
+# ■ 強制再同朁E
 #   ./insight-common/scripts/sync-app-icons.sh --product IOSH --force Resources/
 #
 set -euo pipefail
@@ -37,14 +37,14 @@ LAUNCHER_SUBDIR="$GENERATED_DIR/launcher"
 MANIFEST_FILE="launcher-manifest.json"
 SYNC_HASH_FILE=".icon-sync-hash"
 
-# 製品コード → 生成ディレクトリ名
+# 製品コーチEↁE生�EチE��レクトリ吁E
 declare -A PRODUCT_DIR_MAP=(
   [INSS]="InsightOfficeSlide"
   [IOSH]="InsightOfficeSheet"
   [IOSD]="InsightOfficeDoc"
   [ISOF]="InsightSeniorOffice"
   [INPY]="InsightPy"
-  [INMV]="InsightMovie"
+  [INMV]="InsightCast"
   [INIG]="InsightImageGen"
   [INCA]="InsightNoCodeAnalyzer"
   [INBT]="InsightBot"
@@ -58,29 +58,29 @@ declare -A PRODUCT_DIR_MAP=(
 )
 
 # =============================================================================
-# ヘルプ
+# ヘルチE
 # =============================================================================
 usage() {
   cat <<'EOF'
 Usage: sync-app-icons.sh [OPTIONS] <target-dir>
 
-insight-common のアイコンをアプリプロジェクトに同期します。
-変更がなければスキップ（高速）。
+insight-common のアイコンをアプリプロジェクトに同期します、E
+変更がなければスキチE�E�E�高速）、E
 
-Modes (いずれか必須):
-  --product CODE    指定製品のアイコンを同期（例: IOSH, INSS, CAMERA）
-  --launcher        全製品のランチャーグリッドアイコンを同期
+Modes (ぁE��れか忁E��E:
+  --product CODE    持E��製品�Eアイコンを同期（侁E IOSH, INSS, CAMERA�E�E
+  --launcher        全製品�EランチャーグリチE��アイコンを同朁E
 
 Options:
   --source DIR      insight-common のルートディレクトリ
-  --platform NAME   プラットフォーム指定（android, expo, tauri, wpf, web）
-                    指定時、生成ディレクトリ内の該当サブディレクトリをソースとして使用
-  --pull            同期前に insight-common を git pull で最新化
-  --force           変更チェックをスキップして強制同期
-  --clean           コピー前にターゲットをクリーンアップ
-  --dry-run         コピーせず差分のみ表示
-  --verify          コピー後にファイル数を検証
-  -h, --help        このヘルプを表示
+  --platform NAME   プラチE��フォーム持E��！Endroid, expo, tauri, wpf, web�E�E
+                    持E��時、生成ディレクトリ冁E�E該当サブディレクトリをソースとして使用
+  --pull            同期前に insight-common めEgit pull で最新匁E
+  --force           変更チェチE��をスキチE�Eして強制同期
+  --clean           コピ�E前にターゲチE��をクリーンアチE�E
+  --dry-run         コピ�Eせず差刁E�Eみ表示
+  --verify          コピ�E後にファイル数を検証
+  -h, --help        こ�Eヘルプを表示
 
 Product Codes:
   WPF:   INSS, IOSH, IOSD, ISOF, INPY, INBT, LAUNCHER
@@ -90,28 +90,28 @@ Product Codes:
   Python: INMV, INIG
 
 Examples:
-  # WPF アプリ（InsightOfficeSheet）
+  # WPF アプリ�E�EnsightOfficeSheet�E�E
   ./insight-common/scripts/sync-app-icons.sh --product IOSH --pull Resources/
 
-  # Expo アプリ（InsightCamera）
+  # Expo アプリ�E�EnsightCamera�E�E
   ./insight-common/scripts/sync-app-icons.sh --product CAMERA --pull assets/
 
-  # Android ネイティブアプリ（mipmap のみ res/ に同期）
+  # Android ネイチE��ブアプリ�E�Eipmap のみ res/ に同期�E�E
   ./insight-common/scripts/sync-app-icons.sh --product VOICE_CLOCK --platform android \
     app/src/main/res/
 
-  # ランチャーアプリ（全製品）
+  # ランチャーアプリ�E��E製品E��E
   ./insight-common/scripts/sync-app-icons.sh --launcher --pull --verify \
     app/src/main/assets/launcher
 
-  # CI/CD（変更時のみ同期、検証付き）
+  # CI/CD�E�変更時�Eみ同期、検証付き�E�E
   ./insight-common/scripts/sync-app-icons.sh --product IOSH --pull --verify Resources/
 EOF
   exit 0
 }
 
 # =============================================================================
-# パラメータ解析
+# パラメータ解极E
 # =============================================================================
 SOURCE_DIR="$DEFAULT_SOURCE"
 TARGET_DIR=""
@@ -165,7 +165,7 @@ if [[ "$PULL" == true ]]; then
 fi
 
 # =============================================================================
-# ハッシュ比較関数（共通）
+# ハッシュ比輁E��数�E��E通！E
 # =============================================================================
 compute_hash() {
   local dir="$1"
@@ -228,7 +228,7 @@ sync_product() {
     exit 1
   fi
 
-  # --platform 指定時、該当サブディレクトリをソースとして使用
+  # --platform 持E��時、該当サブディレクトリをソースとして使用
   if [[ -n "$PLATFORM" ]]; then
     local platform_dir="$source_dir/$PLATFORM"
     if [[ ! -d "$platform_dir" ]]; then
@@ -239,7 +239,7 @@ sync_product() {
     source_dir="$platform_dir"
   fi
 
-  # 変更チェック
+  # 変更チェチE��
   check_skip "$source_dir"
 
   echo "=== Sync: $code ($dir_name) ==="
@@ -247,7 +247,7 @@ sync_product() {
   echo "Target:  $TARGET_DIR"
   echo ""
 
-  # クリーンアップ
+  # クリーンアチE�E
   if [[ "$CLEAN" == true ]] && [[ -d "$TARGET_DIR" ]]; then
     if [[ "$DRY_RUN" == true ]]; then
       echo "[DRY-RUN] Would clean: $TARGET_DIR"
@@ -258,7 +258,7 @@ sync_product() {
 
   [[ "$DRY_RUN" == false ]] && mkdir -p "$TARGET_DIR"
 
-  # 全ファイルをコピー
+  # 全ファイルをコピ�E
   local copied=0
   while IFS= read -r -d '' file; do
     local relative="${file#$source_dir/}"
@@ -297,7 +297,7 @@ sync_product() {
 
   if [[ "$DRY_RUN" == true ]]; then
     echo ""
-    echo "(Dry run — no files were copied)"
+    echo "(Dry run  Eno files were copied)"
   fi
 
   echo ""
@@ -305,7 +305,7 @@ sync_product() {
 }
 
 # =============================================================================
-# ランチャー全製品同期
+# ランチャー全製品同朁E
 # =============================================================================
 sync_launcher() {
   local launcher_source="$SOURCE_DIR/$LAUNCHER_SUBDIR"
@@ -321,7 +321,7 @@ sync_launcher() {
     exit 1
   fi
 
-  # 変更チェック
+  # 変更チェチE��
   check_skip "$launcher_source"
 
   echo "=== Sync: Launcher (all products) ==="
@@ -329,7 +329,7 @@ sync_launcher() {
   echo "Target:  $TARGET_DIR"
   echo ""
 
-  # クリーンアップ
+  # クリーンアチE�E
   if [[ "$CLEAN" == true ]] && [[ -d "$TARGET_DIR" ]]; then
     if [[ "$DRY_RUN" == true ]]; then
       echo "[DRY-RUN] Would clean: $TARGET_DIR"
@@ -343,7 +343,7 @@ sync_launcher() {
   local copied_files=0
   local copied_dirs=0
 
-  # マニフェスト
+  # マニフェスチE
   if [[ "$DRY_RUN" == true ]]; then
     echo "[DRY-RUN] Copy: $MANIFEST_FILE"
   else
@@ -358,7 +358,7 @@ sync_launcher() {
     local product_code
     product_code="$(basename "$product_dir")"
 
-    # mipmap があるか確認
+    # mipmap があるか確誁E
     local has_mipmap=false
     for d in "$product_dir"mipmap-*/; do
       [[ -d "$d" ]] && has_mipmap=true && break
@@ -388,7 +388,7 @@ sync_launcher() {
     [[ "$DRY_RUN" == false ]] && echo "[OK] $product_code (5 densities)"
   done
 
-  # ハッシュ保存
+  # ハッシュ保孁E
   if [[ "$DRY_RUN" == false ]]; then
     save_hash "$(compute_hash "$launcher_source")"
   fi
@@ -445,7 +445,7 @@ print(len(m['entries']))
 
   if [[ "$DRY_RUN" == true ]]; then
     echo ""
-    echo "(Dry run — no files were copied)"
+    echo "(Dry run  Eno files were copied)"
   fi
 
   echo ""
@@ -453,7 +453,7 @@ print(len(m['entries']))
 }
 
 # =============================================================================
-# メインディスパッチ
+# メインチE��スパッチE
 # =============================================================================
 case "$MODE" in
   product)  sync_product ;;

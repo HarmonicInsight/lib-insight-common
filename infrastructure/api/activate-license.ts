@@ -1,13 +1,13 @@
 /**
- * /api/entitlement/activate - ライセンスキー有効化
+ * /api/entitlement/activate - ライセンスキー有効匁E
  *
- * Vercel Functions テンプレート
+ * Vercel Functions チE��プレーチE
  *
- * 機能:
+ * 機�E:
  *   - ライセンスキー検証
- *   - licenses テーブルに登録
+ *   - licenses チE�Eブルに登録
  *
- * リクエスト:
+ * リクエスチE
  *   POST { license_key: "INSS-PRO-2512-XXXX-XXXX-XXXX" }
  */
 
@@ -15,13 +15,13 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { verifyRequest } from '../auth/firebase-admin';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase クライアント（Service Role）
+// Supabase クライアント！Eervice Role�E�E
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// ライセンスキー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
+// ライセンスキー形弁E PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 const LICENSE_KEY_REGEX = /^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN)-(STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
 interface ActivateRequest {
@@ -44,7 +44,7 @@ export default async function handler(
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  // トークン検証
+  // ト�Eクン検証
   const authResult = await verifyRequest(req.headers.authorization);
   if (!authResult.success || !authResult.uid) {
     return res.status(401).json({ success: false, error: '認証エラー' });
@@ -53,24 +53,24 @@ export default async function handler(
   const { license_key } = req.body as ActivateRequest;
 
   if (!license_key) {
-    return res.status(400).json({ success: false, error: 'ライセンスキーが必要です' });
+    return res.status(400).json({ success: false, error: 'ライセンスキーが忁E��でぁE });
   }
 
-  // 形式チェック
+  // 形式チェチE��
   const match = LICENSE_KEY_REGEX.exec(license_key.toUpperCase().trim());
   if (!match) {
-    return res.status(400).json({ success: false, error: 'ライセンスキーの形式が無効です' });
+    return res.status(400).json({ success: false, error: 'ライセンスキーの形式が無効でぁE });
   }
 
   const [, productCode, plan, yymm] = match;
 
-  // 有効期限計算（YYMMから12ヶ月後）
+  // 有効期限計算！EYMMから12ヶ月後！E
   const year = 2000 + parseInt(yymm.substring(0, 2), 10);
   const month = parseInt(yymm.substring(2, 4), 10) - 1;
   const expiresAt = new Date(year, month + 12, 1);
 
   try {
-    // ユーザー取得
+    // ユーザー取征E
     const { data: user } = await supabase
       .from('users')
       .select('id')
@@ -81,7 +81,7 @@ export default async function handler(
       return res.status(400).json({ success: false, error: 'ユーザーが見つかりません' });
     }
 
-    // キーが既に使われていないか確認
+    // キーが既に使われてぁE��ぁE��確誁E
     const { data: existingLicense } = await supabase
       .from('licenses')
       .select('id, user_id')
@@ -90,13 +90,13 @@ export default async function handler(
 
     if (existingLicense) {
       if (existingLicense.user_id === user.id) {
-        return res.status(400).json({ success: false, error: 'このライセンスは既に有効化されています' });
+        return res.status(400).json({ success: false, error: 'こ�Eライセンスは既に有効化されてぁE��ぁE });
       } else {
-        return res.status(400).json({ success: false, error: 'このライセンスキーは既に使用されています' });
+        return res.status(400).json({ success: false, error: 'こ�Eライセンスキーは既に使用されてぁE��ぁE });
       }
     }
 
-    // ライセンス登録（upsert）
+    // ライセンス登録�E�Epsert�E�E
     const { data: license, error } = await supabase
       .from('licenses')
       .upsert(
@@ -129,6 +129,6 @@ export default async function handler(
     });
   } catch (error) {
     console.error('Activation error:', error);
-    return res.status(500).json({ success: false, error: 'サーバーエラー' });
+    return res.status(500).json({ success: false, error: 'サーバ�Eエラー' });
   }
 }

@@ -546,6 +546,88 @@ export const LICENSE_SERVER_ENDPOINTS = {
     auth: 'admin',
     description: 'サポートチケットの統計（カテゴリ別件数・平均応答時間・SLA 達成率）。',
   },
+
+  // --- リモートコンフィグ & 自動更新（remote-config.ts 参照） ---
+
+  /** 統合リモートコンフィグ取得（起動時に1回呼ぶ） */
+  remoteConfigGet: {
+    method: 'POST' as const,
+    path: '/api/v1/remote-config/config',
+    auth: 'license_key',
+    description: 'バージョンチェック + API キー + モデルレジストリ + フィーチャーフラグを一括取得。ETag 対応。',
+  },
+
+  /** バージョンチェック */
+  remoteConfigVersionCheck: {
+    method: 'GET' as const,
+    path: '/api/v1/remote-config/versions/:productCode',
+    auth: 'api_key',
+    description: '製品の最新バージョン・更新情報を取得。',
+  },
+
+  /** API キー取得（暗号化配信） */
+  remoteConfigApiKeys: {
+    method: 'POST' as const,
+    path: '/api/v1/remote-config/api-keys',
+    auth: 'license_key',
+    description: 'Claude / Syncfusion 等の API キーを暗号化して配信。ライセンスキー + デバイスID で認証。',
+  },
+
+  /** モデルレジストリ取得 */
+  remoteConfigModels: {
+    method: 'GET' as const,
+    path: '/api/v1/remote-config/models',
+    auth: 'api_key',
+    description: '最新の AI モデルレジストリを取得。新モデル追加をアプリ再ビルドなしで反映。ETag 対応。',
+  },
+
+  /** フィーチャーフラグ取得 */
+  remoteConfigFeatures: {
+    method: 'GET' as const,
+    path: '/api/v1/remote-config/features/:productCode',
+    auth: 'api_key',
+    description: '製品のフィーチャーフラグを取得。段階的ロールアウト対応。ETag 対応。',
+  },
+
+  /** リモートコンフィグ値の更新（管理画面用） */
+  adminRemoteConfigUpdate: {
+    method: 'PUT' as const,
+    path: '/api/v1/admin/remote-config',
+    auth: 'admin',
+    description: 'リモートコンフィグ値を更新。変更ログ自動記録。',
+  },
+
+  /** API キーローテーション（管理画面用） */
+  adminRotateApiKey: {
+    method: 'POST' as const,
+    path: '/api/v1/admin/remote-config/rotate-key',
+    auth: 'admin',
+    description: 'API キーをローテーション。旧キーは猶予期間（7日）後に無効化。',
+  },
+
+  /** リリース情報の登録（管理画面用） */
+  adminPublishRelease: {
+    method: 'POST' as const,
+    path: '/api/v1/admin/remote-config/releases',
+    auth: 'admin',
+    description: '新しいリリースを登録。自動更新マニフェストも更新。',
+  },
+
+  /** フィーチャーフラグの更新（管理画面用） */
+  adminUpdateFeatureFlag: {
+    method: 'PUT' as const,
+    path: '/api/v1/admin/remote-config/features/:flagKey',
+    auth: 'admin',
+    description: 'フィーチャーフラグを更新。ロールアウト率の変更等。',
+  },
+
+  /** リモートコンフィグの変更ログ（監査用） */
+  adminRemoteConfigLog: {
+    method: 'GET' as const,
+    path: '/api/v1/admin/remote-config/log',
+    auth: 'admin',
+    description: 'リモートコンフィグの全変更履歴（API キーローテーション含む）。監査用。',
+  },
 } as const;
 
 // =============================================================================
@@ -727,9 +809,11 @@ export const RAILWAY_CONFIG = {
       startCommand: 'npm run cron',
       schedule: '0 9 * * *', // 毎日 09:00 JST
       jobs: [
-        'check-expiry',       // 期限切れリマインダー
-        'process-renewals',   // 自動更新処理
-        'partner-reports',    // パートナー月次レポート
+        'check-expiry',           // 期限切れリマインダー
+        'process-renewals',       // 自動更新処理
+        'partner-reports',        // パートナー月次レポート
+        'check-api-key-expiry',   // API キー有効期限チェック
+        'cleanup-expired-flags',  // 期限切れフィーチャーフラグ無効化
       ],
     },
   },

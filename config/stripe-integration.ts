@@ -1,50 +1,50 @@
 /**
- * HARMONIC insight Stripe 決済統合設定
+ * HARMONIC insight Stripe 決済統合設宁E
  *
  * ============================================================================
- * 【設計方針】
+ * 【設計方針、E
  * ============================================================================
  *
- * ## Stripe を Phase 1（日本国内・3月リリース MVP）の主力決済に使用
+ * ## Stripe めEPhase 1�E�日本国冁E�E3月リリース MVP�E��E主力決済に使用
  *
- * ┌─────────────────────────────────────────────────────────────────────┐
- * │                    Stripe 決済フロー                                 │
- * │                                                                     │
- * │  ① 購入ページ        ② Stripe Checkout      ③ Webhook 受信         │
- * │  ┌──────────────┐   ┌──────────────┐   ┌──────────────────────┐   │
- * │  │ 製品選択      │ → │ Payment Link │ → │ checkout.session.    │   │
- * │  │ プラン選択    │   │ or Checkout  │   │ completed            │   │
- * │  │ メール入力    │   │ Session      │   │                      │   │
- * │  └──────────────┘   └──────────────┘   └──────────────────────┘   │
- * │                                                                     │
- * │  ④ ライセンス発行    ⑤ メール送信          ⑥ 利用開始              │
- * │  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐          │
- * │  │ キー生成      │ → │ Resend で    │ → │ アプリ内で    │          │
- * │  │ DB登録        │   │ キー送付     │   │ アクティベート│          │
- * │  │ 監査ログ      │   │              │   │              │          │
- * │  └──────────────┘   └──────────────┘   └──────────────┘          │
- * │                                                                     │
- * │  ── サブスクリプション更新 ──                                        │
- * │  ┌──────────────────────────────────────────────────────────────┐  │
- * │  │ invoice.paid → 新キー発行 → メール送信 → 自動切り替え       │  │
- * │  └──────────────────────────────────────────────────────────────┘  │
- * │                                                                     │
- * │  ── AI アドオン購入 ──                                              │
- * │  ┌──────────────────────────────────────────────────────────────┐  │
- * │  │ checkout.session.completed (mode: payment)                   │  │
- * │  │ → ai_addon_packs に登録 → クレジット即時反映                 │  │
- * │  └──────────────────────────────────────────────────────────────┘  │
- * └─────────────────────────────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────────────────────────────━E
+ * ━E                   Stripe 決済フロー                                 ━E
+ * ━E                                                                    ━E
+ * ━E ① 購入ペ�Eジ        ② Stripe Checkout      ③ Webhook 受信         ━E
+ * ━E ┌──────────────━E  ┌──────────────━E  ┌──────────────────────━E  ━E
+ * ━E ━E製品E��抁E     ━EↁE━EPayment Link ━EↁE━Echeckout.session.    ━E  ━E
+ * ━E ━Eプラン選抁E   ━E  ━Eor Checkout  ━E  ━Ecompleted            ━E  ━E
+ * ━E ━Eメール入劁E   ━E  ━ESession      ━E  ━E                     ━E  ━E
+ * ━E └──────────────━E  └──────────────━E  └──────────────────────━E  ━E
+ * ━E                                                                    ━E
+ * ━E ④ ライセンス発衁E   ⑤ メール送信          ⑥ 利用開姁E             ━E
+ * ━E ┌──────────────━E  ┌──────────────━E  ┌──────────────━E         ━E
+ * ━E ━Eキー生�E      ━EↁE━EResend で    ━EↁE━Eアプリ冁E��    ━E         ━E
+ * ━E ━EDB登録        ━E  ━Eキー送仁E    ━E  ━EアクチE��ベ�Eト│          ━E
+ * ━E ━E監査ログ      ━E  ━E             ━E  ━E             ━E         ━E
+ * ━E └──────────────━E  └──────────────━E  └──────────────━E         ━E
+ * ━E                                                                    ━E
+ * ━E ── サブスクリプション更新 ──                                        ━E
+ * ━E ┌──────────────────────────────────────────────────────────────━E ━E
+ * ━E ━Einvoice.paid ↁE新キー発衁EↁEメール送信 ↁE自動�Eり替ぁE      ━E ━E
+ * ━E └──────────────────────────────────────────────────────────────━E ━E
+ * ━E                                                                    ━E
+ * ━E ── AI アドオン購入 ──                                              ━E
+ * ━E ┌──────────────────────────────────────────────────────────────━E ━E
+ * ━E ━Echeckout.session.completed (mode: payment)                   ━E ━E
+ * ━E ━EↁEai_addon_packs に登録 ↁEクレジチE��即時反映                 ━E ━E
+ * ━E └──────────────────────────────────────────────────────────────━E ━E
+ * └─────────────────────────────────────────────────────────────────────━E
  *
- * ## 対象製品
- * - 個人・法人向け型: INSS, IOSH, IOSD, INPY（Stripe + 自社サイト）
- * - コンサル連動型: INCA, INBT, INMV, INIG, IVIN（Stripe 請求書 or 手動）
- * - AI アドオンパック: 全製品共通
+ * ## 対象製品E
+ * - 個人・法人向け垁E INSS, IOSH, IOSD, INPY�E�Etripe + 自社サイト！E
+ * - コンサル連動型: INCA, INBT, INMV, INIG, IVIN�E�Etripe 請求書 or 手動�E�E
+ * - AI アドオンパック: 全製品�E送E
  *
- * ## Stripe 製品構成
- * - 各製品 × 各プラン = 1 Stripe Product + 1 Stripe Price
- * - サブスクリプション（年間） = recurring（価格は Stripe ダッシュボードで設定）
- * - AI アドオン = one-time（価格は Stripe ダッシュボードで設定）
+ * ## Stripe 製品構�E
+ * - 吁E��品EÁE吁E�Eラン = 1 Stripe Product + 1 Stripe Price
+ * - サブスクリプション�E�年間！E= recurring�E�価格は Stripe ダチE��ュボ�Eドで設定！E
+ * - AI アドオン = one-time�E�価格は Stripe ダチE��ュボ�Eドで設定！E
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -54,97 +54,97 @@ import type { IssuanceChannel } from './license-server';
 // 型定義
 // =============================================================================
 
-/** Stripe 製品マッピング */
+/** Stripe 製品�EチE��ング */
 export interface StripeProductMapping {
-  /** 製品コード */
+  /** 製品コーチE*/
   productCode: ProductCode;
-  /** プランコード */
+  /** プランコーチE*/
   plan: PlanCode;
-  /** Stripe Product ID（環境変数から注入） */
+  /** Stripe Product ID�E�環墁E��数から注入�E�E*/
   stripeProductIdEnvKey: string;
-  /** Stripe Price ID（環境変数から注入） */
+  /** Stripe Price ID�E�環墁E��数から注入�E�E*/
   stripePriceIdEnvKey: string;
-  /** 課金タイプ */
+  /** 課金タイチE*/
   billingType: 'recurring' | 'one_time';
-  /** 課金間隔（recurring の場合） */
+  /** 課金間隔！Eecurring の場合！E*/
   billingInterval?: 'year';
-  /** 説明 */
+  /** 説昁E*/
   description: string;
 }
 
-/** Stripe Webhook イベント種別（処理対象） */
+/** Stripe Webhook イベント種別�E��E琁E��象�E�E*/
 export type StripeWebhookEvent =
-  | 'checkout.session.completed'     // 新規購入完了
-  | 'invoice.paid'                   // サブスク更新決済成功
-  | 'invoice.payment_failed'         // 決済失敗
-  | 'customer.subscription.updated'  // サブスク変更（アップグレード/ダウングレード）
-  | 'customer.subscription.deleted'; // サブスク解約
+  | 'checkout.session.completed'     // 新規購入完亁E
+  | 'invoice.paid'                   // サブスク更新決済�E劁E
+  | 'invoice.payment_failed'         // 決済失敁E
+  | 'customer.subscription.updated'  // サブスク変更�E�アチE�EグレーチEダウングレード！E
+  | 'customer.subscription.deleted'; // サブスク解紁E
 
-/** Stripe Checkout メタデータ（ライセンス発行に必要な情報） */
+/** Stripe Checkout メタチE�Eタ�E�ライセンス発行に忁E��な惁E���E�E*/
 export interface StripeCheckoutMetadata {
-  /** 製品コード */
+  /** 製品コーチE*/
   product_code: ProductCode;
-  /** プランコード */
+  /** プランコーチE*/
   plan: PlanCode;
   /** 購入種別 */
   purchase_type: 'license' | 'addon';
-  /** アドオンパック ID（addon の場合） */
+  /** アドオンパック ID�E�Eddon の場合！E*/
   addon_pack_id?: string;
-  /** アドオンモデルティア（addon の場合） */
+  /** アドオンモチE��チE��ア�E�Eddon の場合！E*/
   addon_model_tier?: 'standard' | 'premium';
-  /** 顧客名 */
+  /** 顧客吁E*/
   customer_name: string;
-  /** 会社名（任意） */
+  /** 会社名（任意！E*/
   customer_company?: string;
   /** ロケール */
   locale: 'ja' | 'en';
 }
 
-/** Stripe Webhook 処理結果 */
+/** Stripe Webhook 処琁E��果 */
 export interface StripeWebhookHandlerResult {
-  /** 処理成功か */
+  /** 処琁E�E功か */
   success: boolean;
   /** 発行チャネル */
   channel: IssuanceChannel;
-  /** 発行されたライセンスキー（ライセンス購入の場合） */
+  /** 発行されたライセンスキー�E�ライセンス購入の場合！E*/
   licenseKey?: string;
-  /** 発行されたアドオンパック ID（アドオン購入の場合） */
+  /** 発行されたアドオンパック ID�E�アドオン購入の場合！E*/
   addonPackId?: string;
-  /** エラーメッセージ */
+  /** エラーメチE��ージ */
   error?: string;
-  /** 処理の詳細 */
+  /** 処琁E�E詳細 */
   details?: string;
 }
 
-/** Stripe 顧客情報（Checkout Session から抽出） */
+/** Stripe 顧客惁E���E�Eheckout Session から抽出�E�E*/
 export interface StripeCustomerInfo {
   /** Stripe Customer ID */
   stripeCustomerId: string;
   /** メールアドレス */
   email: string;
-  /** 顧客名 */
+  /** 顧客吁E*/
   name: string;
-  /** 会社名 */
+  /** 会社吁E*/
   company?: string;
 }
 
 // =============================================================================
-// Stripe 製品・価格マッピング
+// Stripe 製品�E価格マッピング
 // =============================================================================
 
 /**
- * Stripe 製品マッピング
+ * Stripe 製品�EチE��ング
  *
- * 【重要】Stripe Product ID / Price ID は環境変数から注入する。
- * ここでは環境変数キー名のみ定義し、ID のハードコードは行わない。
- * 価格は Stripe ダッシュボード上で設定する（パートナーとの協議により決定）。
+ * 【重要】Stripe Product ID / Price ID は環墁E��数から注入する、E
+ * ここでは環墁E��数キー名�Eみ定義し、ID のハ�Eドコード�E行わなぁE��E
+ * 価格は Stripe ダチE��ュボ�Eド上で設定する（パートナーとの協議により決定）、E
  *
  * 命名規則:
- * - 環境変数: STRIPE_{PRODUCT_CODE}_{PLAN}_PRODUCT_ID / STRIPE_{PRODUCT_CODE}_{PLAN}_PRICE_ID
- * - 例: STRIPE_INSS_STD_PRODUCT_ID, STRIPE_INSS_STD_PRICE_ID
+ * - 環墁E��数: STRIPE_{PRODUCT_CODE}_{PLAN}_PRODUCT_ID / STRIPE_{PRODUCT_CODE}_{PLAN}_PRICE_ID
+ * - 侁E STRIPE_INSS_STD_PRODUCT_ID, STRIPE_INSS_STD_PRICE_ID
  */
 export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
-  // --- InsightOffice Suite（Tier 3）---
+  // --- InsightOffice Suite�E�Eier 3�E�E--
   // INSS (InsightOfficeSlide)
   {
     productCode: 'INSS',
@@ -233,10 +233,10 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     description: 'InsightPy Professional (Annual)',
   },
 
-  // --- AI アドオンパック（全製品共通、one-time、2ティア） ---
+  // --- AI アドオンパック�E��E製品�E通、one-time、EチE��ア�E�E---
   {
     productCode: 'INSS',
-    plan: 'STD', // プランに関係なく購入可能（metadata で制御）
+    plan: 'STD', // プランに関係なく購入可能�E�Eetadata で制御�E�E
     stripeProductIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRICE_ID',
 
@@ -245,7 +245,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
   },
   {
     productCode: 'INSS',
-    plan: 'STD', // プランに関係なく購入可能（metadata で制御）
+    plan: 'STD', // プランに関係なく購入可能�E�Eetadata で制御�E�E
     stripeProductIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRODUCT_ID',
     stripePriceIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRICE_ID',
 
@@ -255,36 +255,36 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
 ];
 
 // =============================================================================
-// Stripe Checkout 設定
+// Stripe Checkout 設宁E
 // =============================================================================
 
 /**
- * Stripe Checkout Session 作成パラメーター
+ * Stripe Checkout Session 作�Eパラメーター
  *
- * Payment Links を MVP で使用し、将来的に Custom Checkout に移行可能。
+ * Payment Links めEMVP で使用し、封E��皁E�� Custom Checkout に移行可能、E
  */
 export const STRIPE_CHECKOUT_CONFIG = {
-  /** 成功時のリダイレクト URL */
+  /** 成功時�EリダイレクチEURL */
   successUrl: 'https://account.harmonicinsight.com/purchase/success?session_id={CHECKOUT_SESSION_ID}',
-  /** キャンセル時のリダイレクト URL */
+  /** キャンセル時�EリダイレクチEURL */
   cancelUrl: 'https://account.harmonicinsight.com/purchase/cancel',
   /** 対応通貨 */
   currency: 'jpy' as const,
-  /** 自動税額計算 */
+  /** 自動税額計箁E*/
   automaticTax: true,
-  /** 請求先住所の収集 */
+  /** 請求�E住所の収集 */
   collectBillingAddress: true,
-  /** プロモーションコードの許可 */
+  /** プロモーションコード�E許可 */
   allowPromotionCodes: true,
-  /** 同意条項 URL */
+  /** 同意条頁EURL */
   termsOfServiceUrl: 'https://harmonicinsight.com/terms',
-  /** サブスクリプション設定 */
+  /** サブスクリプション設宁E*/
   subscription: {
-    /** トライアル期間（日）— 0 = トライアルなし（別途 TRIAL キーで対応） */
+    /** トライアル期間�E�日�E� E0 = トライアルなし（別送ETRIAL キーで対応！E*/
     trialPeriodDays: 0,
-    /** 決済失敗時の猶予期間（日） */
+    /** 決済失敗時の猶予期間（日�E�E*/
     paymentGracePeriodDays: 7,
-    /** 自動更新のデフォルト */
+    /** 自動更新のチE��ォルチE*/
     defaultAutoRenew: true,
   },
 } as const;
@@ -294,96 +294,96 @@ export const STRIPE_CHECKOUT_CONFIG = {
 // =============================================================================
 
 /**
- * Stripe Webhook イベント → 処理内容のマッピング
+ * Stripe Webhook イベンチEↁE処琁E�E容のマッピング
  *
- * ライセンスサーバーで使用する参照定義。
+ * ライセンスサーバ�Eで使用する参�E定義、E
  */
 export const STRIPE_WEBHOOK_HANDLERS: Record<StripeWebhookEvent, {
-  /** 処理の説明 */
+  /** 処琁E�E説昁E*/
   description: string;
   /** 対応する発行チャネル */
   issuanceChannel: IssuanceChannel | null;
-  /** 処理内容 */
+  /** 処琁E�E容 */
   actions: string[];
 }> = {
   'checkout.session.completed': {
-    description: '新規購入完了 — ライセンスキー発行 or アドオンクレジット付与',
+    description: '新規購入完亁E Eライセンスキー発衁Eor アドオンクレジチE��付丁E,
     issuanceChannel: 'direct_stripe',
     actions: [
-      'metadata から product_code, plan, purchase_type を取得',
-      'purchase_type === "license" の場合:',
-      '  → 統合発行エンジンでキー生成 + DB登録 + 監査ログ',
-      '  → Resend でライセンスキーメール送信',
-      'purchase_type === "addon" の場合:',
-      '  → ai_addon_packs テーブルにクレジット登録',
-      '  → メールで購入確認を送信',
+      'metadata から product_code, plan, purchase_type を取征E,
+      'purchase_type === "license" の場吁E',
+      '  ↁE統合発行エンジンでキー生�E + DB登録 + 監査ログ',
+      '  ↁEResend でライセンスキーメール送信',
+      'purchase_type === "addon" の場吁E',
+      '  ↁEai_addon_packs チE�EブルにクレジチE��登録',
+      '  ↁEメールで購入確認を送信',
     ],
   },
   'invoice.paid': {
-    description: 'サブスクリプション更新決済成功 — 新キー発行',
+    description: 'サブスクリプション更新決済�E劁E E新キー発衁E,
     issuanceChannel: 'system_renewal',
     actions: [
-      'subscription metadata から製品・プラン情報を取得',
-      '新しいライセンスキーを生成（有効期限を +365日）',
-      'licenses テーブルの expires_at を更新',
-      '更新完了メールを送信（新キー + 新有効期限）',
+      'subscription metadata から製品�Eプラン惁E��を取征E,
+      '新しいライセンスキーを生成（有効期限めE+365日�E�E,
+      'licenses チE�Eブルの expires_at を更新',
+      '更新完亁E��ールを送信�E�新キー + 新有効期限�E�E,
     ],
   },
   'invoice.payment_failed': {
-    description: '決済失敗 — 猶予期間の案内',
+    description: '決済失敁E E猶予期間�E案�E',
     issuanceChannel: null,
     actions: [
-      '決済失敗メールを送信（更新リンク付き）',
-      'licenses テーブルの payment_status を "past_due" に更新',
-      '猶予期間（7日）後にライセンスを停止',
+      '決済失敗メールを送信�E�更新リンク付き�E�E,
+      'licenses チE�Eブルの payment_status めE"past_due" に更新',
+      '猶予期間！E日�E�後にライセンスを停止',
     ],
   },
   'customer.subscription.updated': {
-    description: 'サブスクリプション変更 — プラン変更を反映',
+    description: 'サブスクリプション変更  Eプラン変更を反映',
     issuanceChannel: null,
     actions: [
-      '変更後のプランを特定',
-      'licenses テーブルの plan を更新',
-      'アップグレード: 即時反映、差額は日割り',
-      'ダウングレード: 次回更新日に反映',
+      '変更後�Eプランを特宁E,
+      'licenses チE�Eブルの plan を更新',
+      'アチE�EグレーチE 即時反映、差額�E日割めE,
+      'ダウングレーチE 次回更新日に反映',
     ],
   },
   'customer.subscription.deleted': {
-    description: 'サブスクリプション解約 — ライセンス期限切れ予約',
+    description: 'サブスクリプション解紁E Eライセンス期限刁E��予紁E,
     issuanceChannel: null,
     actions: [
-      '解約確認メールを送信',
-      'licenses テーブルの auto_renew を false に更新',
-      '現在の有効期限まではそのまま利用可能',
-      '有効期限後に FREE プランに自動移行',
+      '解紁E��認メールを送信',
+      'licenses チE�Eブルの auto_renew めEfalse に更新',
+      '現在の有効期限まではそ�Eまま利用可能',
+      '有効期限後に FREE プランに自動移衁E,
     ],
   },
 };
 
 // =============================================================================
-// Stripe 環境変数一覧
+// Stripe 環墁E��数一覧
 // =============================================================================
 
 /**
- * ライセンスサーバーで必要な Stripe 関連の環境変数
+ * ライセンスサーバ�Eで忁E��な Stripe 関連の環墁E��数
  */
 export const STRIPE_ENV_VARS = {
   /** Stripe Secret Key */
   secretKey: 'STRIPE_SECRET_KEY',
-  /** Stripe Publishable Key（クライアント用） */
+  /** Stripe Publishable Key�E�クライアント用�E�E*/
   publishableKey: 'STRIPE_PUBLISHABLE_KEY',
   /** Stripe Webhook Signing Secret */
   webhookSecret: 'STRIPE_WEBHOOK_SECRET',
-  /** Stripe Customer Portal URL（自己管理用） */
+  /** Stripe Customer Portal URL�E��E己管琁E���E�E*/
   customerPortalUrl: 'STRIPE_CUSTOMER_PORTAL_URL',
 } as const;
 
 // =============================================================================
-// ヘルパー関数
+// ヘルパ�E関数
 // =============================================================================
 
 /**
- * 製品・プランに対応する Stripe マッピングを取得
+ * 製品�Eプランに対応すめEStripe マッピングを取征E
  */
 export function getStripeMapping(
   productCode: ProductCode,
@@ -395,7 +395,7 @@ export function getStripeMapping(
 }
 
 /**
- * AI アドオンの Stripe マッピングを取得
+ * AI アドオンの Stripe マッピングを取征E
  */
 export function getAddonStripeMapping(): StripeProductMapping | null {
   return STRIPE_PRODUCT_MAPPINGS.find(
@@ -404,7 +404,7 @@ export function getAddonStripeMapping(): StripeProductMapping | null {
 }
 
 /**
- * Stripe Checkout メタデータを生成
+ * Stripe Checkout メタチE�Eタを生戁E
  */
 export function buildCheckoutMetadata(params: {
   productCode: ProductCode;
@@ -427,10 +427,10 @@ export function buildCheckoutMetadata(params: {
 }
 
 /**
- * Stripe Checkout Session からメタデータを安全に抽出
+ * Stripe Checkout Session からメタチE�Eタを安�Eに抽出
  *
- * @param metadata - Stripe Session の metadata オブジェクト
- * @returns パース済みメタデータ、無効な場合は null
+ * @param metadata - Stripe Session の metadata オブジェクチE
+ * @returns パ�Eス済みメタチE�Eタ、無効な場合�E null
  */
 export function parseCheckoutMetadata(
   metadata: Record<string, string> | null,
@@ -458,7 +458,7 @@ export function parseCheckoutMetadata(
 }
 
 /**
- * Stripe 製品が設定済みかチェック（環境変数の存在確認）
+ * Stripe 製品が設定済みかチェチE���E�環墁E��数の存在確認！E
  */
 export function isStripeConfigured(): boolean {
   return !!(
@@ -468,7 +468,7 @@ export function isStripeConfigured(): boolean {
 }
 
 /**
- * Stripe Price ID を環境変数から取得
+ * Stripe Price ID を環墁E��数から取征E
  */
 export function getStripePriceId(productCode: ProductCode, plan: PlanCode): string | null {
   const mapping = getStripeMapping(productCode, plan);
@@ -477,7 +477,7 @@ export function getStripePriceId(productCode: ProductCode, plan: PlanCode): stri
 }
 
 /**
- * Stripe で購入可能な製品・プランの一覧を取得
+ * Stripe で購入可能な製品�Eプランの一覧を取征E
  */
 export function getStripePurchasableProducts(): Array<{
   productCode: ProductCode;
@@ -494,11 +494,11 @@ export function getStripePurchasableProducts(): Array<{
 }
 
 // =============================================================================
-// DB スキーマ参照（Supabase テーブル追加）
+// DB スキーマ参照�E�Eupabase チE�Eブル追加�E�E
 // =============================================================================
 
 /**
- * Stripe 統合に必要な追加テーブル・カラム
+ * Stripe 統合に忁E��な追加チE�Eブル・カラム
  */
 export const STRIPE_DB_SCHEMA_REFERENCE = {
   /** Stripe 顧客マッピング */
@@ -561,7 +561,7 @@ export const STRIPE_DB_SCHEMA_REFERENCE = {
     CREATE INDEX idx_stripe_payments_session ON stripe_payments(stripe_checkout_session_id);
   `,
 
-  /** licenses テーブルへの追加カラム */
+  /** licenses チE�Eブルへの追加カラム */
   licenses_stripe_columns: `
     ALTER TABLE licenses ADD COLUMN IF NOT EXISTS stripe_subscription_id TEXT;
     ALTER TABLE licenses ADD COLUMN IF NOT EXISTS auto_renew BOOLEAN DEFAULT TRUE;
@@ -571,7 +571,7 @@ export const STRIPE_DB_SCHEMA_REFERENCE = {
 } as const;
 
 // =============================================================================
-// エクスポート
+// エクスポ�EチE
 // =============================================================================
 
 export default {
@@ -582,7 +582,7 @@ export default {
   STRIPE_ENV_VARS,
   STRIPE_DB_SCHEMA_REFERENCE,
 
-  // ヘルパー
+  // ヘルパ�E
   getStripeMapping,
   getAddonStripeMapping,
   buildCheckoutMetadata,

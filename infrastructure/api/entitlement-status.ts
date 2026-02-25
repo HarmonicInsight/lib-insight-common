@@ -1,9 +1,9 @@
 /**
- * /api/entitlement/status - ライセンスステータス取得
+ * /api/entitlement/status - ライセンススチE�Eタス取征E
  *
- * クライアント側でのライセンス状態管理用API
+ * クライアント�Eでのライセンス状態管琁E��API
  *
- * リクエスト:
+ * リクエスチE
  *   POST { product_code: "INMV" }
  *
  * レスポンス:
@@ -66,11 +66,11 @@ export default async function handler(
   const { product_code } = req.body as StatusRequest;
 
   if (!product_code) {
-    return res.status(400).json({ error: 'product_code が必要です' });
+    return res.status(400).json({ error: 'product_code が忁E��でぁE });
   }
 
   try {
-    // ユーザー取得
+    // ユーザー取征E
     const { data: user } = await supabase
       .from('users')
       .select('id')
@@ -78,7 +78,7 @@ export default async function handler(
       .single();
 
     if (!user) {
-      // ユーザーがいない場合はFREEプラン
+      // ユーザーがいなぁE��合�EFREEプラン
       const limits = getPlanLimits(product_code, 'FREE');
       return res.status(200).json({
         plan: 'FREE',
@@ -90,7 +90,7 @@ export default async function handler(
       });
     }
 
-    // ライセンス取得
+    // ライセンス取征E
     const { data: license } = await supabase
       .from('licenses')
       .select('*')
@@ -98,7 +98,7 @@ export default async function handler(
       .eq('product_code', product_code)
       .single();
 
-    // ライセンスなし → FREEプラン
+    // ライセンスなぁEↁEFREEプラン
     if (!license) {
       const limits = getPlanLimits(product_code, 'FREE');
       return res.status(200).json({
@@ -111,10 +111,10 @@ export default async function handler(
       });
     }
 
-    // プラン判定
+    // プラン判宁E
     let effectivePlan: PlanCode = license.plan;
 
-    // 無効または期限切れの場合はFREE
+    // 無効また�E期限刁E��の場合�EFREE
     if (!license.is_active) {
       effectivePlan = 'FREE';
     }
@@ -142,12 +142,12 @@ export default async function handler(
     });
   } catch (error) {
     console.error('Status check error:', error);
-    return res.status(500).json({ error: 'サーバーエラー' });
+    return res.status(500).json({ error: 'サーバ�Eエラー' });
   }
 }
 
 /**
- * 月間利用状況を取得
+ * 月間利用状況を取征E
  */
 async function getUsage(
   userId: string,

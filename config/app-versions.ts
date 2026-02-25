@@ -1,31 +1,31 @@
 /**
- * HARMONIC insight — アプリバージョンレジストリ
+ * HARMONIC insight  Eアプリバ�Eジョンレジストリ
  *
  * ============================================================================
- * 【重要】全製品のバージョン・ビルド番号を一元管理
+ * 【重要】�E製品�Eバ�Eジョン・ビルド番号を一允E��琁E
  * ============================================================================
  *
- * ## 目的
- * - 全製品の現在のバージョンを一箇所で確認・管理
+ * ## 目皁E
+ * - 全製品�E現在のバ�Eジョンを一箁E��で確認�E管琁E
  * - リリース履歴の追跡
- * - ツールチェーン（SDK, Compiler, Framework）バージョンとの紐付け
- * - CI/CD やリリーススクリプトからの参照
+ * - チE�Eルチェーン�E�EDK, Compiler, Framework�E�バージョンとの紐付け
+ * - CI/CD めE��リーススクリプトからの参�E
  *
- * ## バージョニング規約
- * - セマンティックバージョニング: MAJOR.MINOR.PATCH
- * - MAJOR: 破壊的変更・大型機能追加
- * - MINOR: 後方互換のある機能追加
- * - PATCH: バグ修正・軽微な改善
+ * ## バ�Eジョニング規紁E
+ * - セマンチE��チE��バ�Eジョニング: MAJOR.MINOR.PATCH
+ * - MAJOR: 破壊的変更・大型機�E追加
+ * - MINOR: 後方互換のある機�E追加
+ * - PATCH: バグ修正・軽微な改喁E
  *
- * ## 更新手順
- * 1. リリース前に該当製品の version / buildNumber を更新
- * 2. toolchain セクションが最新の互換性マトリクスと一致することを確認
+ * ## 更新手頁E
+ * 1. リリース前に該当製品�E version / buildNumber を更新
+ * 2. toolchain セクションが最新の互換性マトリクスと一致することを確誁E
  * 3. releaseHistory に新エントリを追加
  * 4. `validate-standards.sh` で検証
  *
- * ## 参照
+ * ## 参�E
  * - 互換性マトリクス: compatibility/android-matrix.ts, compatibility/ios-matrix.ts
- * - リリースチェック: standards/RELEASE_CHECKLIST.md
+ * - リリースチェチE��: standards/RELEASE_CHECKLIST.md
  */
 
 import type { ProductCode, AppPlatform } from './products';
@@ -34,9 +34,9 @@ import type { ProductCode, AppPlatform } from './products';
 // 型定義
 // =============================================================================
 
-/** ツールチェーン情報（プラットフォーム共通） */
+/** チE�Eルチェーン惁E���E��EラチE��フォーム共通！E*/
 export interface ToolchainInfo {
-  /** 使用言語・コンパイラバージョン */
+  /** 使用言語�Eコンパイラバ�Eジョン */
   language: string;
   languageVersion: string;
   /** フレームワーク */
@@ -45,11 +45,11 @@ export interface ToolchainInfo {
   /** ビルドツール */
   buildTool: string;
   buildToolVersion: string;
-  /** プラットフォーム固有の追加情報 */
+  /** プラチE��フォーム固有�E追加惁E�� */
   platformSpecific?: Record<string, string>;
 }
 
-/** Android 固有のツールチェーン */
+/** Android 固有�EチE�Eルチェーン */
 export interface AndroidToolchain extends ToolchainInfo {
   platformSpecific: {
     agpVersion: string;
@@ -63,7 +63,7 @@ export interface AndroidToolchain extends ToolchainInfo {
   };
 }
 
-/** iOS 固有のツールチェーン */
+/** iOS 固有�EチE�Eルチェーン */
 export interface IosToolchain extends ToolchainInfo {
   platformSpecific: {
     xcodeVersion: string;
@@ -74,7 +74,7 @@ export interface IosToolchain extends ToolchainInfo {
   };
 }
 
-/** WPF 固有のツールチェーン */
+/** WPF 固有�EチE�Eルチェーン */
 export interface WpfToolchain extends ToolchainInfo {
   platformSpecific: {
     dotnetVersion: string;
@@ -95,37 +95,37 @@ export interface ReleaseEntry {
   };
 }
 
-/** アプリバージョン情報 */
+/** アプリバ�Eジョン惁E�� */
 export interface AppVersionInfo {
   productCode: ProductCode;
   platform: AppPlatform;
-  /** 現在のバージョン（セマンティックバージョニング） */
+  /** 現在のバ�Eジョン�E�セマンチE��チE��バ�Eジョニング�E�E*/
   version: string;
   /**
-   * ビルド番号（整数、リリースごとにインクリメント）
+   * ビルド番号�E�整数、リリースごとにインクリメント！E
    * - Android: versionCode
    * - iOS: CFBundleVersion
    * - WPF: AssemblyVersion の 4 桁目
    */
   buildNumber: number;
-  /** 開発ステータス */
+  /** 開発スチE�Eタス */
   status: 'development' | 'alpha' | 'beta' | 'rc' | 'stable';
-  /** ツールチェーン情報 */
+  /** チE�Eルチェーン惁E�� */
   toolchain: ToolchainInfo;
-  /** リリース履歴（新しい順） */
+  /** リリース履歴�E�新しい頁E��E*/
   releaseHistory: ReleaseEntry[];
-  /** 最終更新日（ISO 8601） */
+  /** 最終更新日�E�ESO 8601�E�E*/
   lastUpdated: string;
 }
 
 // =============================================================================
-// アプリバージョンレジストリ
+// アプリバ�Eジョンレジストリ
 // =============================================================================
 
 export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
 
   // ===========================================================================
-  // Tier 1: 業務変革ツール
+  // Tier 1: 業務変革チE�Eル
   // ===========================================================================
 
   INCA: {
@@ -187,7 +187,7 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
   },
 
   // ===========================================================================
-  // Tier 2: AI 活用ツール
+  // Tier 2: AI 活用チE�Eル
   // ===========================================================================
 
   INMV: {
@@ -350,26 +350,26 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
 };
 
 // =============================================================================
-// ヘルパー関数
+// ヘルパ�E関数
 // =============================================================================
 
 /**
- * 製品の現在のバージョン文字列を取得
+ * 製品�E現在のバ�Eジョン斁E���Eを取征E
  */
 export function getAppVersion(productCode: ProductCode): string {
   return APP_VERSIONS[productCode].version;
 }
 
 /**
- * 製品のビルド番号を取得
+ * 製品�Eビルド番号を取征E
  */
 export function getBuildNumber(productCode: ProductCode): number {
   return APP_VERSIONS[productCode].buildNumber;
 }
 
 /**
- * Android versionCode 形式のバージョン文字列を生成
- * 例: "2.1.0" buildNumber=45 → "2001045"
+ * Android versionCode 形式�Eバ�Eジョン斁E���Eを生戁E
+ * 侁E "2.1.0" buildNumber=45 ↁE"2001045"
  */
 export function toAndroidVersionCode(productCode: ProductCode): number {
   const info = APP_VERSIONS[productCode];
@@ -378,8 +378,8 @@ export function toAndroidVersionCode(productCode: ProductCode): number {
 }
 
 /**
- * iOS Bundle Version 文字列を生成
- * 例: "2.1.0" buildNumber=45 → "2.1.0.45"
+ * iOS Bundle Version 斁E���Eを生戁E
+ * 侁E "2.1.0" buildNumber=45 ↁE"2.1.0.45"
  */
 export function toIosBundleVersion(productCode: ProductCode): string {
   const info = APP_VERSIONS[productCode];
@@ -387,8 +387,8 @@ export function toIosBundleVersion(productCode: ProductCode): string {
 }
 
 /**
- * WPF AssemblyVersion 文字列を生成
- * 例: "2.1.0" buildNumber=45 → "2.1.0.45"
+ * WPF AssemblyVersion 斁E���Eを生戁E
+ * 侁E "2.1.0" buildNumber=45 ↁE"2.1.0.45"
  */
 export function toAssemblyVersion(productCode: ProductCode): string {
   const info = APP_VERSIONS[productCode];
@@ -396,7 +396,7 @@ export function toAssemblyVersion(productCode: ProductCode): string {
 }
 
 /**
- * 全製品のバージョンサマリーを取得
+ * 全製品�Eバ�Eジョンサマリーを取征E
  */
 export function getAllVersionsSummary(): Array<{
   productCode: ProductCode;
@@ -415,8 +415,77 @@ export function getAllVersionsSummary(): Array<{
 }
 
 /**
- * 製品のツールチェーン情報を取得
+ * 製品�EチE�Eルチェーン惁E��を取征E
  */
 export function getToolchain(productCode: ProductCode): ToolchainInfo {
   return APP_VERSIONS[productCode].toolchain;
+}
+
+// =============================================================================
+// リモートバージョンチェチE��用ヘルパ�E
+// =============================================================================
+
+/**
+ * セマンチE��チE��バ�Eジョンを比輁E
+ *
+ * @returns 負数: a < b, 0: a == b, 正数: a > b
+ */
+export function compareVersions(a: string, b: string): number {
+  const partsA = a.split('.').map(Number);
+  const partsB = b.split('.').map(Number);
+  const maxLen = Math.max(partsA.length, partsB.length);
+
+  for (let i = 0; i < maxLen; i++) {
+    const numA = partsA[i] ?? 0;
+    const numB = partsB[i] ?? 0;
+    if (numA !== numB) return numA - numB;
+  }
+  return 0;
+}
+
+/**
+ * 製品�Eバ�Eジョンがリモート�E最新版より古ぁE��チェチE��
+ *
+ * リモートコンフィグから取得した最新バ�Eジョンと比輁E��る際に使用、E
+ *
+ * @example
+ * ```typescript
+ * const needsUpdate = isUpdateAvailable('INSS', '2.2.0', 50);
+ * // ↁEINSS は現在 2.1.0 build 45 なので true
+ * ```
+ */
+export function isUpdateAvailable(
+  productCode: ProductCode,
+  remoteVersion: string,
+  remoteBuildNumber: number,
+): boolean {
+  const current = APP_VERSIONS[productCode];
+  const versionDiff = compareVersions(remoteVersion, current.version);
+  if (versionDiff > 0) return true;
+  if (versionDiff === 0 && remoteBuildNumber > current.buildNumber) return true;
+  return false;
+}
+
+/**
+ * 製品�Eバ�Eジョンが最低忁E��バージョンを満たしてぁE��ぁE
+ *
+ * 強制更新が忁E��かの判定に使用、E
+ *
+ * @example
+ * ```typescript
+ * const mustUpdate = !meetsMinimumVersion('INSS', '2.0.0', 30);
+ * // ↁEINSS は 2.1.0 build 45 なので false�E�更新不要E��E
+ * ```
+ */
+export function meetsMinimumVersion(
+  productCode: ProductCode,
+  minimumVersion: string,
+  minimumBuildNumber: number,
+): boolean {
+  const current = APP_VERSIONS[productCode];
+  const versionDiff = compareVersions(current.version, minimumVersion);
+  if (versionDiff > 0) return true;
+  if (versionDiff === 0 && current.buildNumber >= minimumBuildNumber) return true;
+  if (versionDiff < 0) return false;
+  return false;
 }

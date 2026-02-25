@@ -923,7 +923,7 @@ export const PRESET_WORKFLOWS: WorkflowDefinition[] = [
 /** Agent が使用する Claude API モデル */
 export const AGENT_MODEL_CONFIG = {
   /** メインモデル（ワークフロー実行） */
-  primary: 'claude-sonnet-4-6-20260210',
+  primary: 'claude-sonnet-4-20250514',
   /** フォールバックモデル */
   fallback: 'claude-sonnet-4-20250514',
   /** 最大トークン数 */
