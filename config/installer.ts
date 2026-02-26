@@ -742,7 +742,8 @@ export function generateInnoSetupRegistry(product: ProductCode): string[] {
     const valueType = entry.valueType === 'dword' ? 'dword'
       : entry.valueType === 'expandsz' ? 'expandsz'
       : 'string';
-    return `Root: ${entry.root}; Subkey: "${entry.subkey}"; ValueName: "${entry.valueName}"; ValueType: ${valueType}; ValueData: "${entry.value}"; Flags: ${flags}`;
+    const escapedValue = entry.value.replace(/"/g, '""');
+    return `Root: ${entry.root}; Subkey: "${entry.subkey}"; ValueName: "${entry.valueName}"; ValueType: ${valueType}; ValueData: "${escapedValue}"; Flags: ${flags}`;
   });
 }
 

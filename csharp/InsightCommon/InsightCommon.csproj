@@ -16,6 +16,10 @@
     <PackageReference Include="Syncfusion.Licensing" Version="*" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+  </PropertyGroup>
+
   <!-- XAML Resources for cross-project reference -->
   <ItemGroup>
     <Page Include="UI\Resources\InsightColors.xaml" />

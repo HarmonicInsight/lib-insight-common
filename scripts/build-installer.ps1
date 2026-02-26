@@ -85,7 +85,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-$config = Get-Content $configJson | ConvertFrom-Json
+$config = Get-Content $configJson -Encoding UTF8 | ConvertFrom-Json
 Write-Host "  Installer type: $($config.installerType)" -ForegroundColor Gray
 
 # =============================================================================
@@ -185,9 +185,7 @@ Name: "{group}\{cm:UninstallProgram,$appName}"; Filename: "{uninstallexe}"
 "@
 
 if ($config.app.createDesktopShortcut) {
-    $issContent += @"
-Name: "{commondesktop}\$appName"; Filename: "{app}\$($config.app.executable)"; Tasks: desktopicon
-"@
+    $issContent += "`r`nName: `"{commondesktop}\$appName`"; Filename: `"{app}\$($config.app.executable)`"; Tasks: desktopicon"
 }
 
 # トレイアプリのスタートアップ登録
@@ -199,7 +197,7 @@ Name: "{commonstartup}\$($config.trayApp.windowTitle)"; Filename: "{app}\$($conf
 
 # [Registry] セクション
 if ($config.innoSetup.registry.Count -gt 0) {
-    $issContent += "`n[Registry]`n"
+    $issContent += "`r`n`r`n[Registry]`r`n"
     foreach ($entry in $config.innoSetup.registry) {
         $issContent += "$entry`n"
     }
@@ -243,9 +241,7 @@ Filename: "sc"; Parameters: "start $($config.service.serviceName)"; Flags: runhi
 }
 
 # アプリ起動
-$issContent += @"
-Filename: "{app}\$($config.app.executable)"; Description: "$appName を起動"; Flags: nowait postinstall skipifsilent
-"@
+$issContent += "`r`nFilename: `"{app}\$($config.app.executable)`"; Description: `"Launch $appName`"; Flags: nowait postinstall skipifsilent"
 
 # [UninstallRun] セクション
 $issContent += @"
@@ -276,8 +272,12 @@ Type: filesandordirs; Name: "{localappdata}\HarmonicInsight\$appName"
 Type: filesandordirs; Name: "{userappdata}\HarmonicInsight\$appName"
 "@
 
-# .iss ファイルに書き出し
-$issContent | Out-File -FilePath $issFile -Encoding UTF8
+# セクション間に空行を保証
+$issContent = $issContent -replace '(?<!\r?\n\r?\n)(\r?\n)(\[(Files|Icons|Registry|Run|UninstallRun|UninstallDelete)\])', "`r`n`r`n`$2"
+
+# .iss ファイルに書き出し（BOM なし UTF-8）
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText($issFile, $issContent, $utf8NoBom)
 Write-Host "  Generated: $issFile" -ForegroundColor Gray
 
 # =============================================================================
