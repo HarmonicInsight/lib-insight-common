@@ -121,6 +121,7 @@
         "framework": "wpf",
         "status": "active",
         "repository": "HarmonicInsight/win-app-insight-py",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "hasAi": true,
         "features": [
           "code-execution",
@@ -141,6 +142,7 @@
         "framework": "python",
         "status": "active",
         "repository": "HarmonicInsight/win-app-insight-cast",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "hasAi": false,
         "features": [
           "video-generation",
@@ -160,6 +162,7 @@
         "framework": "python",
         "status": "active",
         "repository": "HarmonicInsight/win-app-insight-image-gen",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "hasAi": false,
         "features": [
           "generate-image",
@@ -183,6 +186,7 @@
         "framework": "wpf",
         "status": "active",
         "repository": "HarmonicInsight/win-app-insight-bot",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "hasAi": true,
         "features": [
           "script-execution",
@@ -203,6 +207,7 @@
         "framework": "tauri",
         "status": "active",
         "repository": "HarmonicInsight/win-app-nocode-analyzer",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "hasAi": false,
         "features": [
           "rpa-analysis",
@@ -224,6 +229,7 @@
         "framework": "tauri",
         "status": "development",
         "repository": "HarmonicInsight/web-app-auto-interview",
+        "releasesRepository": "HarmonicInsight/cross-releases",
         "hasAi": true,
         "features": []
       }
