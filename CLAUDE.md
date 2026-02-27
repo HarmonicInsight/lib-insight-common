@@ -235,10 +235,19 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | Material Design Icons / Font Awesome 等をメニューに使用 | **Lucide Icons** に統一（`brand/menu-icons.json`） |
 | `brand/menu-icons.json` に未定義のアイコンをメニューに使用 | 先に `brand/menu-icons.json` に登録してから使用 |
 | UI テキストのハードコード | リソースファイル / 翻訳定義から参照（`standards/LOCALIZATION.md`） |
+| XAML 内に日本語テキスト直書き | `DynamicResource` / `LanguageManager` / `x:Static` 経由で参照 |
 | 英語翻訳の省略 | 日本語 + 英語の両方を必ず用意 |
 | リリースチェックなしでリリース | `/release-check` または `release-check.sh` を必ず実行 |
 | TODO/FIXME を残したままリリース | リリース前に全て解決する |
 | API キー・シークレットのハードコード | 環境変数 / .env / secrets 経由で参照 |
+| ライセンス秘密鍵をソースに直書き | 非対称鍵署名（公開鍵のみ埋め込み）or サーバー検証 |
+| API キー（Claude 等）を平文保存 | DPAPI / Windows Credential Manager で暗号化保存 |
+| ライセンスデータ（license.json）を平文保存 | DPAPI で暗号化してから %APPDATA% に保存 |
+| 空の catch ブロック（例外の握りつぶし） | 最低限ログ出力、または意図的な場合はコメントで理由明記 |
+| バージョン番号を複数箇所にハードコード | `.csproj` を唯一のソースオブトゥルースとし、`Assembly` 属性から取得 |
+| AutomationProperties なしでリリース | 主要 UI コントロールに `AutomationProperties.Name` を設定 |
+| ハイパーリンク URL を未検証で使用 | 許可スキーム（http/https/mailto）のホワイトリスト検証 |
+| `UnobservedTaskException` をログなしで握りつぶし | App.xaml.cs でログ出力付きハンドラを登録 |
 
 ## 5. 製品コード一覧
 
@@ -1350,8 +1359,19 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **メニューアイコン**: 非標準アイコンライブラリ（Material Design / Font Awesome 等）を使用して**いない**
 - [ ] **メニューアイコン**: `validate-menu-icons.sh` が成功する
 - [ ] **ローカライゼーション**: UI テキストがハードコードされて**いない**（リソースファイル経由）
+- [ ] **ローカライゼーション**: XAML 内に日本語ハードコードテキストがない（WPF — DynamicResource / LanguageManager 経由）
+- [ ] **ローカライゼーション**: C# コード内のユーザー向けメッセージがローカライズ済み（WPF）
 - [ ] **ローカライゼーション**: 日本語（デフォルト）+ 英語の翻訳が完全に用意されている
 - [ ] **ローカライゼーション**: ストアメタデータ（タイトル・説明）が日英で用意されている（モバイルアプリのみ）
+- [ ] **セキュリティ**: ライセンス秘密鍵がソースにハードコードされて**いない**（WPF — 非対称鍵署名推奨）
+- [ ] **セキュリティ**: API キー（Claude 等）が暗号化保存されている（WPF — DPAPI / Credential Manager）
+- [ ] **セキュリティ**: ライセンスデータ（license.json）が暗号化保存されている（WPF — DPAPI 推奨）
+- [ ] **アクセシビリティ**: 主要 UI コントロールに `AutomationProperties.Name` が設定されている（WPF）
+- [ ] **コード品質**: 空の catch ブロックがない（例外の握りつぶし禁止）
+- [ ] **コード品質**: IDisposable の Dispose でイベント購読が解除されている（WPF）
+- [ ] **コード品質**: バージョン番号が複数箇所にハードコードされて**いない**（一元管理）
+- [ ] **セキュリティ**: ハイパーリンク URL の `javascript:` スキームが検証されている（WPF）
+- [ ] **セキュリティ**: `UnobservedTaskException` ハンドラがログ出力付きで登録されている（WPF）
 - [ ] **検証**: `validate-standards.sh` が成功する
 - [ ] **バージョン**: `config/app-versions.ts` のバージョン・ビルド番号が更新されている
 - [ ] **互換性**: `compatibility/` の NG 組み合わせに該当していない
@@ -1379,8 +1399,11 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **バージョン**: バージョン番号が更新されている
 - [ ] **コード品質**: TODO/FIXME/HACK が残っていない
 - [ ] **コード品質**: デバッグ出力（console.log / print / Log.d）が残っていない
+- [ ] **コード品質**: 空の catch ブロックがない（例外の握りつぶし禁止）
+- [ ] **コード品質**: バージョン番号が全箇所で一致している
 - [ ] **セキュリティ**: ハードコードされた API キー・シークレットがない
-- [ ] **セキュリティ**: .env / credentials が .gitignore に含まれている
+- [ ] **セキュリティ**: ライセンス秘密鍵がソースにハードコードされていない
+- [ ] **セキュリティ**: .env / credentials / secrets が .gitignore に含まれている
 - [ ] **ローカライゼーション**: 日本語 + 英語リソースのキーが完全一致
 - [ ] **Git**: 未コミットの変更がない
 - [ ] **検証**: `release-check.sh` が成功する
@@ -1407,7 +1430,19 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 
 #### C# (WPF) 固有
 - [ ] **バージョン**: AssemblyVersion / FileVersion が更新されている
+- [ ] **バージョン**: バージョン番号が .csproj / XAML / C# コードで一致
+- [ ] **バージョン**: Copyright 年が最新
 - [ ] **サードパーティ**: Syncfusion キーがハードコードされて**いない**
+- [ ] **セキュリティ**: ライセンス秘密鍵がハードコードされていない（`standards/CSHARP_WPF.md` 参照）
+- [ ] **セキュリティ**: API キーが DPAPI / Credential Manager で暗号化保存
+- [ ] **セキュリティ**: license.json が暗号化保存（DPAPI 推奨）
+- [ ] **アクセシビリティ**: 主要 UI コントロールに `AutomationProperties.Name` 設定
+- [ ] **コード品質**: 空の catch ブロックがない
+- [ ] **コード品質**: Dispose でイベント購読が解除されている
+- [ ] **ローカライゼーション**: XAML 内に日本語ハードコードテキストがない
+- [ ] **ローカライゼーション**: C# コード内のメッセージがローカライズ済み
+- [ ] **セキュリティ**: ハイパーリンク URL スキーム検証済み（javascript: XSS 防止）
+- [ ] **セキュリティ**: `UnobservedTaskException` ハンドラが登録済み（ログ出力付き）
 - [ ] **配布**: インストーラーの動作確認（クリーン環境）
 - [ ] **ファイル関連付け**: 独自拡張子の登録・動作確認
 

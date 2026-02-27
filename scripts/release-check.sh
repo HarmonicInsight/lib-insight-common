@@ -315,6 +315,55 @@ if [ -n "$debug_patterns" ]; then
 fi
 
 # ----------------------------------------------------------
+# 2.1.5 空の catch ブロックチェック（全プラットフォーム共通）
+# ----------------------------------------------------------
+empty_catch_patterns=""
+empty_catch_files=""
+case "$PLATFORM" in
+    csharp)
+        empty_catch_patterns='catch\s*(\([^)]*\))?\s*\{\s*\}'
+        empty_catch_files="--include=*.cs"
+        ;;
+    android)
+        empty_catch_patterns='catch\s*\([^)]*\)\s*\{\s*\}'
+        empty_catch_files="--include=*.kt --include=*.java"
+        ;;
+    react|expo)
+        empty_catch_patterns='catch\s*(\([^)]*\))?\s*\{\s*\}'
+        empty_catch_files="--include=*.ts --include=*.tsx --include=*.js"
+        ;;
+    python)
+        empty_catch_patterns='except.*:\s*$|except.*:\s*pass\s*$'
+        empty_catch_files="--include=*.py"
+        ;;
+esac
+
+if [ -n "$empty_catch_patterns" ]; then
+    empty_catch_count=$(eval grep -rPn "'$empty_catch_patterns'" "$PROJECT_DIR" \
+        $empty_catch_files \
+        --exclude-dir=node_modules --exclude-dir=build \
+        --exclude-dir=.gradle --exclude-dir=insight-common \
+        --exclude-dir=.next --exclude-dir=__pycache__ \
+        --exclude-dir=bin --exclude-dir=obj \
+        2>/dev/null | wc -l || true)
+
+    if [ "$empty_catch_count" -gt 0 ]; then
+        print_warning "空の catch ブロックが ${empty_catch_count} 件あります（例外が握りつぶされています）"
+        eval grep -rPn "'$empty_catch_patterns'" "$PROJECT_DIR" \
+            $empty_catch_files \
+            --exclude-dir=node_modules --exclude-dir=build \
+            --exclude-dir=.gradle --exclude-dir=insight-common \
+            --exclude-dir=.next --exclude-dir=__pycache__ \
+            --exclude-dir=bin --exclude-dir=obj \
+            2>/dev/null | head -5 | while read -r line; do
+            echo "      $line"
+        done
+    else
+        print_ok "空の catch ブロックなし"
+    fi
+fi
+
+# ----------------------------------------------------------
 # 2.2 セキュリティチェック（全プラットフォーム共通）
 # ----------------------------------------------------------
 print_section "2.2" "セキュリティ"
@@ -328,6 +377,19 @@ if [ -f "$PROJECT_DIR/.gitignore" ]; then
         print_ok ".env が .gitignore に含まれている"
     else
         print_warning ".env が .gitignore に含まれていません"
+    fi
+
+    # 追加の機密ファイルパターン
+    sensitive_missing=""
+    for pattern in "credentials" "*.secrets" "appsettings.*.json"; do
+        if ! grep -q "$pattern" "$PROJECT_DIR/.gitignore" 2>/dev/null; then
+            sensitive_missing="$sensitive_missing $pattern"
+        fi
+    done
+    if [ -n "$sensitive_missing" ]; then
+        print_warning ".gitignore に以下のパターンが不足:${sensitive_missing}"
+    else
+        print_ok "機密ファイルパターンが .gitignore に含まれている"
     fi
 else
     print_error ".gitignore が存在しません"
@@ -350,6 +412,31 @@ if [ "$secret_count" -gt 0 ]; then
     print_error "ハードコードされた API キー/シークレットが ${secret_count} 件検出されました"
 else
     print_ok "ハードコードされたシークレットなし"
+fi
+
+# ライセンス秘密鍵のハードコード検出（全プラットフォーム）
+license_secret_patterns="SECRET_KEY\s*=\s*\"[^\"]{10,}\"|HMAC.*secret.*=\s*\"[^\"]{10,}\"|license.*secret.*=\s*\"[^\"]{10,}\""
+license_secret_count=$(grep -rniE "$license_secret_patterns" "$PROJECT_DIR" \
+    --include="*.cs" --include="*.kt" --include="*.java" \
+    --include="*.ts" --include="*.tsx" --include="*.py" \
+    --exclude-dir=node_modules --exclude-dir=build \
+    --exclude-dir=.gradle --exclude-dir=insight-common \
+    --exclude-dir=bin --exclude-dir=obj \
+    2>/dev/null | wc -l || true)
+
+if [ "$license_secret_count" -gt 0 ]; then
+    print_error "ライセンス秘密鍵がハードコードされています（${license_secret_count} 件）— 逆コンパイルで偽造可能"
+    grep -rniE "$license_secret_patterns" "$PROJECT_DIR" \
+        --include="*.cs" --include="*.kt" --include="*.java" \
+        --include="*.ts" --include="*.tsx" --include="*.py" \
+        --exclude-dir=node_modules --exclude-dir=build \
+        --exclude-dir=.gradle --exclude-dir=insight-common \
+        --exclude-dir=bin --exclude-dir=obj \
+        2>/dev/null | head -3 | while read -r line; do
+        echo "      $line"
+    done
+else
+    print_ok "ライセンス秘密鍵のハードコードなし"
 fi
 
 # google-services.json チェック（Android）
@@ -684,6 +771,137 @@ if [ "$PLATFORM" = "csharp" ]; then
 
         if [ -n "$version" ]; then
             print_ok "Version: $version"
+        fi
+    fi
+
+    # バージョン番号の整合性チェック
+    if [ -n "$csproj_file" ]; then
+        csproj_ver=$(grep -oP '<Version>\K[^<]+' "$csproj_file" 2>/dev/null | head -1)
+        if [ -n "$csproj_ver" ]; then
+            # XAML / C# コード内にバージョン番号がハードコードされていないか
+            ver_hardcode_count=$(grep -rn "\"$csproj_ver\"\|\"v$csproj_ver\"" "$PROJECT_DIR" \
+                --include="*.xaml" --include="*.cs" \
+                --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+                2>/dev/null | grep -iv "csproj\|assemblyinfo\|AssemblyVersion\|FileVersion" | wc -l || true)
+            if [ "$ver_hardcode_count" -gt 0 ]; then
+                print_warning "バージョン番号 \"$csproj_ver\" が XAML/C# コード内に ${ver_hardcode_count} 箇所ハードコードされています（一元管理推奨）"
+            else
+                print_ok "バージョン番号の重複ハードコードなし"
+            fi
+        fi
+    fi
+
+    # Copyright 年チェック
+    current_year=$(date '+%Y')
+    if [ -n "$csproj_file" ]; then
+        copyright=$(grep -oP '<Copyright>\K[^<]+' "$csproj_file" 2>/dev/null | head -1)
+        if [ -n "$copyright" ]; then
+            if echo "$copyright" | grep -q "$current_year"; then
+                print_ok "Copyright 年が最新 ($current_year)"
+            else
+                print_warning "Copyright 年が古い可能性: \"$copyright\" — $current_year を含めてください"
+            fi
+        fi
+    fi
+
+    # ライセンス秘密鍵ハードコードチェック（WPF 固有の詳細パターン）
+    print_section "WS" "セキュリティ（WPF 固有）"
+    license_key_hardcode=$(grep -rn "SECRET_KEY\s*=\s*\"[^\"]\+\"\|private.*readonly.*string.*secret\|HMAC.*\"insight\|license-secret" "$PROJECT_DIR" \
+        --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+    if [ "$license_key_hardcode" -gt 0 ]; then
+        print_error "ライセンス秘密鍵がソースにハードコードされています（${license_key_hardcode} 件）"
+        print_error "  → .NET バイナリの逆コンパイルでキー偽造が可能です"
+    else
+        print_ok "ライセンス秘密鍵のハードコードなし"
+    fi
+
+    # XAML 内ハードコード日本語テキストチェック
+    print_section "WL" "ローカライゼーション（WPF 固有）"
+    # Text / Header / Label / Caption / ToolTip / Content 属性の日本語テキスト検出
+    jp_hardcode_count=$(grep -rPn '(Text|Header|Label|Caption|ToolTip|Content)\s*=\s*"[^"]*[\p{Hiragana}\p{Katakana}\x{4E00}-\x{9FFF}][^"]*"' "$PROJECT_DIR" \
+        --include="*.xaml" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | grep -v "Colors\.xaml\|Styles\.xaml\|x:Key=" | wc -l || true)
+    if [ "$jp_hardcode_count" -gt 0 ]; then
+        print_warning "XAML 内に日本語ハードコードが ${jp_hardcode_count} 件あります（DynamicResource / LanguageManager 経由に変更推奨）"
+    else
+        print_ok "XAML 内に日本語ハードコードなし"
+    fi
+
+    # C# コード内のハードコード日本語文字列チェック（MessageBox / ダイアログ系）
+    cs_jp_count=$(grep -rPn 'MessageBox\.Show\s*\(\s*"[^"]*[\p{Hiragana}\p{Katakana}\x{4E00}-\x{9FFF}]|throw new.*Exception\s*\(\s*"[^"]*[\p{Hiragana}\p{Katakana}\x{4E00}-\x{9FFF}]' "$PROJECT_DIR" \
+        --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+    if [ "$cs_jp_count" -gt 0 ]; then
+        print_warning "C# コード内にハードコード日本語メッセージが ${cs_jp_count} 件あります"
+    else
+        print_ok "C# コード内のハードコード日本語メッセージなし"
+    fi
+
+    # アクセシビリティチェック
+    print_section "WA" "アクセシビリティ"
+    # AutomationProperties の存在チェック
+    automation_count=$(grep -rn "AutomationProperties\." "$PROJECT_DIR" \
+        --include="*.xaml" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+    xaml_button_count=$(grep -rn "<Button\b\|<syncfusion:RibbonButton\|<ToggleButton\|<TextBox\b" "$PROJECT_DIR" \
+        --include="*.xaml" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+
+    if [ "$xaml_button_count" -gt 0 ] && [ "$automation_count" -eq 0 ]; then
+        print_warning "AutomationProperties が全く設定されていません（スクリーンリーダー非対応）— UI コントロール ${xaml_button_count} 件"
+    elif [ "$automation_count" -gt 0 ]; then
+        print_ok "AutomationProperties が ${automation_count} 箇所に設定済み"
+    fi
+
+    # 空 catch ブロック（WPF 詳細チェック）
+    print_section "WQ" "コード品質（WPF 固有）"
+    cs_empty_catch=$(grep -rPn 'catch\s*(\([^)]*\))?\s*\{\s*\}' "$PROJECT_DIR" \
+        --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+    if [ "$cs_empty_catch" -gt 0 ]; then
+        print_warning "空の catch ブロックが ${cs_empty_catch} 件あります"
+        grep -rPn 'catch\s*(\([^)]*\))?\s*\{\s*\}' "$PROJECT_DIR" \
+            --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+            2>/dev/null | head -5 | while read -r line; do
+            echo "      $line"
+        done
+    else
+        print_ok "空の catch ブロックなし"
+    fi
+
+    # javascript: スキーム未検証チェック
+    js_scheme_count=$(grep -rn "NavigateUri\|Process\.Start\|new Uri(" "$PROJECT_DIR" \
+        --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | grep -v "AllowedSchemes\|IsValidHyperlinkUrl\|IsValidUrl\|http\|https\|mailto\|//" | wc -l || true)
+    hyperlink_input=$(grep -rn "NavigateUri\|Hyperlink" "$PROJECT_DIR" \
+        --include="*.xaml" --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+    url_validation=$(grep -rn "AllowedSchemes\|IsValidHyperlinkUrl\|IsValidUrl\|uri\.Scheme" "$PROJECT_DIR" \
+        --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+
+    if [ "$hyperlink_input" -gt 0 ] && [ "$url_validation" -eq 0 ]; then
+        print_warning "ハイパーリンク機能がありますが URL スキーム検証が見つかりません（javascript: XSS リスク）"
+    elif [ "$hyperlink_input" -gt 0 ]; then
+        print_ok "URL スキーム検証が実装されている"
+    fi
+
+    # UnobservedTaskException ハンドリングチェック
+    has_unobserved_handler=$(grep -rn "UnobservedTaskException" "$PROJECT_DIR" \
+        --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+        2>/dev/null | wc -l || true)
+    if [ "$has_unobserved_handler" -eq 0 ]; then
+        print_warning "UnobservedTaskException ハンドラが未登録（Task 例外が無言で握りつぶされます）"
+    else
+        # SetObserved のみで logging なしのパターンを検出
+        swallow_only=$(grep -rPn 'UnobservedTaskException.*SetObserved' "$PROJECT_DIR" \
+            --include="*.cs" --exclude-dir=bin --exclude-dir=obj --exclude-dir=insight-common \
+            2>/dev/null | grep -v "Log\|log\|Logger\|_logger\|Debug\|Trace\|Console" | wc -l || true)
+        if [ "$swallow_only" -gt 0 ]; then
+            print_warning "UnobservedTaskException が SetObserved のみでログ出力なし（障害が見えなくなります）"
+        else
+            print_ok "UnobservedTaskException ハンドラが適切に実装されている"
         fi
     fi
 

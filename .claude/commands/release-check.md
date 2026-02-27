@@ -113,10 +113,29 @@ bash ./insight-common/scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
 | Q1 | TODO/FIXME/HACK の残存 | `grep -rn "TODO\|FIXME\|HACK"` |
 | Q2 | デバッグ出力の残存 | プラットフォームに応じた検索 |
 | Q3 | ハードコードされた API キー | `grep -rn "sk-\|AIza\|AKIA"` |
+| Q6 | 空の catch ブロック | `grep -rPn 'catch\s*(\([^)]*\))?\s*\{\s*\}'` |
+| Q7 | バージョン番号の重複ハードコード | .csproj / XAML / C# コード間の整合性 |
 | S1 | .env が .gitignore に含まれる | `.gitignore` を確認 |
 | S2 | credentials ファイルが除外されている | `.gitignore` を確認 |
+| S5 | ライセンス秘密鍵のハードコード | `SECRET_KEY` / HMAC キーの直書き検出 |
+| S6 | API キーの暗号化保存（WPF） | DPAPI / Credential Manager 使用確認 |
+| S7 | ライセンスデータの保護 | %APPDATA% の license.json が平文でないこと |
+| S8 | .gitignore に機密ファイルパターン | `credentials*`, `*.secrets`, `appsettings.*.json` |
 | G1 | 未コミットの変更がない | `git status` |
 | G2 | リモートと同期済み | `git status -sb` |
+
+**WPF 固有の追加チェック（C# プロジェクトの場合）:**
+
+| # | チェック項目 | 確認方法 |
+|---|------------|---------|
+| WA1 | AutomationProperties の設定 | XAML 内の主要コントロールに `AutomationProperties.Name` |
+| WL1 | XAML 内の日本語ハードコード | `Text="日本語"` / `Header="日本語"` 等の検出 |
+| WL2 | C# コード内の日本語ハードコード | `MessageBox.Show("日本語")` 等の検出 |
+| WQ1 | 空の catch ブロック（C#） | 例外を握りつぶしている箇所 |
+| WQ2 | イベント購読解除漏れ | `Dispose()` でのイベントハンドラ解除確認 |
+| W4 | バージョン番号の整合性 | .csproj / XAML / ViewModel 間の一致 |
+| W5 | Copyright 年が最新 | .csproj の `<Copyright>` に現在年を含む |
+| WS4 | ライセンス秘密鍵のハードコード | InsightLicenseManager 内の SECRET_KEY |
 
 結果をチェックリスト形式で報告し、問題があればその場で対応する。
 
@@ -130,10 +149,24 @@ bash ./insight-common/scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
 | Q1 | TODO/FIXME/HACK | ✅ / ❌ | 0件 / N件検出 |
 | Q2 | デバッグ出力 | ✅ / ❌ | ... |
 | Q3 | ハードコード API キー | ✅ / ❌ | ... |
+| Q6 | 空の catch ブロック | ✅ / ❌ | ... |
 | S1 | .env 除外 | ✅ / ❌ | ... |
 | S2 | credentials 除外 | ✅ / ❌ | ... |
+| S5 | ライセンス秘密鍵 | ✅ / ❌ | ... |
+| S8 | 機密ファイルパターン | ✅ / ❌ | ... |
 | G1 | 未コミット変更なし | ✅ / ❌ | ... |
 | G2 | リモート同期 | ✅ / ❌ | ... |
+```
+
+**WPF 固有（C# プロジェクトの場合は以下も報告）:**
+
+```
+| WA1 | AutomationProperties | ✅ / ❌ | N 箇所設定済み / 未設定 |
+| WL1 | XAML 日本語ハードコード | ✅ / ❌ | N 件検出 |
+| WL2 | C# 日本語ハードコード | ✅ / ❌ | N 件検出 |
+| WS4 | ライセンス秘密鍵 | ✅ / ❌ | ... |
+| W4 | バージョン整合性 | ✅ / ❌ | ... |
+| W5 | Copyright 年 | ✅ / ❌ | ... |
 ```
 
 ### Phase 3: プラットフォーム固有チェック
@@ -172,7 +205,12 @@ bash ./insight-common/scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
 |---|------------|---------|--------|
 | W1 | AssemblyVersion | `.csproj` 確認 | 更新済み |
 | W2 | FileVersion | `.csproj` 確認 | 更新済み |
+| W4 | バージョン番号の整合性 | .csproj / XAML / C# コード | 一致 |
+| W5 | Copyright 年 | `.csproj` 確認 | 現在年を含む |
 | LI4 | Syncfusion キー | ソースコード検索 | `third-party-licenses.json` 経由 |
+| WS4 | ライセンス秘密鍵 | `SECRET_KEY` 検索 | ハードコードなし |
+| WS5 | API キー暗号化保存 | DPAPI / Credential Manager | 手動確認 |
+| WA1 | AutomationProperties | XAML 検索 | 主要コントロールに設定済み |
 | WF1 | 独自拡張子登録 | インストーラー確認 | 手動確認 |
 
 **React / Next.js の場合:**

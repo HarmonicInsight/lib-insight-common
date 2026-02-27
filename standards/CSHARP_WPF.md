@@ -745,6 +745,279 @@ public class InsightLicenseManager
 
 ---
 
+## セキュリティ標準（全 WPF アプリ共通）
+
+### ライセンス秘密鍵の保護
+
+**絶対禁止**: ライセンス検証に使う秘密鍵をソースコードにハードコードしない。
+
+.NET バイナリは `dnSpy` や `ILSpy` で簡単に逆コンパイルできるため、
+ハードコードされた秘密鍵から誰でも有効なライセンスキーを偽造できる。
+
+```csharp
+// ❌ 間違い: 秘密鍵をソースに直書き
+private static readonly string SECRET_KEY = "insight-series-license-secret-2026";
+
+// ✅ 正しい: 非対称鍵署名を使用（秘密鍵はサーバー側のみ）
+// クライアントには公開鍵のみを埋め込み、サーバーで署名されたキーを検証する
+private static readonly RSA _publicKey = RSA.Create();
+// 公開鍵は埋め込んでも安全（検証のみ、偽造不可能）
+```
+
+**推奨アプローチ:**
+1. **非対称鍵署名（RSA / ECDSA）**: サーバーで秘密鍵による署名、クライアントは公開鍵で検証のみ
+2. **サーバー側バリデーション**: ライセンスサーバー（`license.harmonicinsight.com`）に問い合わせ
+3. **難読化**: ConfuserEx / .NET Reactor でバイナリを保護（補助的対策）
+
+### API キーの暗号化保存
+
+Claude API キーなどの機密情報は **平文で保存・保持しない**。
+
+```csharp
+// ❌ 間違い: API キーを平文で保存
+File.WriteAllText(configPath, apiKey);
+// ❌ 間違い: string として保持（メモリダンプで露出）
+private string _apiKey = "sk-ant-...";
+
+// ✅ 正しい: Windows DPAPI で暗号化保存
+using System.Security.Cryptography;
+
+public static string ProtectApiKey(string apiKey)
+{
+    var data = Encoding.UTF8.GetBytes(apiKey);
+    var encrypted = ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
+    return Convert.ToBase64String(encrypted);
+}
+
+public static string UnprotectApiKey(string encrypted)
+{
+    var data = Convert.FromBase64String(encrypted);
+    var decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
+    return Encoding.UTF8.GetString(decrypted);
+}
+
+// ✅ 推奨: Windows Credential Manager 経由
+// CredentialManager NuGet パッケージ使用
+```
+
+### ライセンスデータの暗号化
+
+`%APPDATA%` に保存する `license.json`（メールアドレス・ライセンスキー）は DPAPI で保護する。
+
+```csharp
+// ❌ 間違い: 平文 JSON で保存
+File.WriteAllText(_storagePath, JsonSerializer.Serialize(licenseInfo));
+
+// ✅ 正しい: DPAPI で暗号化してから保存
+var json = JsonSerializer.Serialize(licenseInfo);
+var encrypted = ProtectedData.Protect(
+    Encoding.UTF8.GetBytes(json), null, DataProtectionScope.CurrentUser);
+File.WriteAllBytes(_storagePath, encrypted);
+```
+
+### ハイパーリンク URL の検証（XSS 防止）
+
+ユーザーが入力する URL に `javascript:` スキームを許可すると、任意のスクリプト実行につながる。
+ハイパーリンクの挿入・編集時に必ずスキームを検証すること。
+
+```csharp
+// ❌ 間違い: URL を検証せずにそのまま使用
+var hyperlink = new Hyperlink { NavigateUri = new Uri(userInput) };
+
+// ✅ 正しい: 許可スキームのホワイトリストで検証
+private static readonly HashSet<string> AllowedSchemes = new(StringComparer.OrdinalIgnoreCase)
+{
+    "http", "https", "mailto"
+};
+
+public static bool IsValidHyperlinkUrl(string url)
+{
+    if (string.IsNullOrWhiteSpace(url)) return false;
+    if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return false;
+    return AllowedSchemes.Contains(uri.Scheme);
+}
+
+// 使用例
+if (!IsValidHyperlinkUrl(userInput))
+{
+    // エラー: 無効な URL スキーム
+    return;
+}
+```
+
+**検出パターン（release-check.sh）:** `NavigateUri` や `Process.Start` に未検証の URL が渡されていないか。
+
+### UnobservedTaskException のハンドリング
+
+`Task` の例外が捕捉されないと、アプリが無言でエラーを飲み込む。
+`App.xaml.cs` で必ずグローバルハンドラを登録し、最低限ログ出力すること。
+
+```csharp
+// ❌ 間違い: UnobservedTaskException を無視
+TaskScheduler.UnobservedTaskException += (s, e) =>
+{
+    e.SetObserved(); // 例外を握りつぶし — 障害が見えなくなる
+};
+
+// ✅ 正しい: ログ出力してから SetObserved
+TaskScheduler.UnobservedTaskException += (s, e) =>
+{
+    Logger.Error($"未捕捉の Task 例外: {e.Exception}");
+    // 必要に応じてクラッシュレポート送信
+    e.SetObserved();
+};
+```
+
+**App.xaml.cs での推奨グローバルハンドラ構成:**
+
+```csharp
+protected override void OnStartup(StartupEventArgs e)
+{
+    base.OnStartup(e);
+
+    // UI スレッドの未処理例外
+    DispatcherUnhandledException += (s, args) =>
+    {
+        Logger.Fatal($"UI 例外: {args.Exception}");
+        args.Handled = true; // クラッシュ防止（必要に応じて）
+    };
+
+    // 非 UI スレッドの未処理例外
+    AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+    {
+        Logger.Fatal($"AppDomain 例外: {args.ExceptionObject}");
+    };
+
+    // Task の未捕捉例外
+    TaskScheduler.UnobservedTaskException += (s, args) =>
+    {
+        Logger.Error($"Task 例外: {args.Exception}");
+        args.SetObserved();
+    };
+}
+```
+
+---
+
+## アクセシビリティ標準（全 WPF アプリ共通）
+
+### AutomationProperties（必須）
+
+すべての操作可能な UI コントロールに `AutomationProperties.Name` を設定し、スクリーンリーダー対応を行う。
+
+```xml
+<!-- ❌ 間違い: AutomationProperties なし -->
+<Button Command="{Binding SaveCommand}">
+    <Image Source="/Icons/save.png"/>
+</Button>
+
+<!-- ✅ 正しい: AutomationProperties.Name を設定 -->
+<Button Command="{Binding SaveCommand}"
+        AutomationProperties.Name="{x:Static props:Resources.Save}"
+        ToolTip="{x:Static props:Resources.Save}">
+    <Image Source="/Icons/save.png"/>
+</Button>
+```
+
+**必須対象:**
+- `Button` / `ToggleButton` / `RepeatButton`
+- `TextBox` / `PasswordBox` / `ComboBox` / `CheckBox` / `RadioButton`
+- `MenuItem` / `RibbonButton`
+- ウィンドウ制御ボタン（最小化 / 最大化 / 閉じる）— ToolTip も必須
+- アイコンのみのボタン（テキストラベルがないもの）
+
+### キーボードナビゲーション
+
+- Tab キーで全操作可能なコントロールに移動できること
+- Enter / Space でボタンアクション実行
+- Escape でダイアログ / ポップアップ閉じ
+- `TabIndex` を論理的な順序で設定
+
+---
+
+## コード品質標準（全 WPF アプリ共通）
+
+### 空の catch ブロック禁止
+
+例外を握りつぶすと障害の原因究明が困難になる。最低限ログ出力を行うこと。
+
+```csharp
+// ❌ 間違い: 例外を握りつぶし
+try { ParseResponse(json); }
+catch { }
+
+// ❌ 間違い: 変数を使わない catch
+try { ParseResponse(json); }
+catch (Exception) { }
+
+// ✅ 正しい: 最低限ログ出力
+try { ParseResponse(json); }
+catch (Exception ex)
+{
+    Logger.Warn($"レスポンス解析に失敗: {ex.Message}");
+}
+
+// ✅ 正しい: 意図的に無視する場合はコメントで理由を明記
+try { File.Delete(tempPath); }
+catch (IOException)
+{
+    // 一時ファイルの削除失敗は無視可能 — OS が後で回収する
+}
+```
+
+### イベント購読のライフサイクル管理
+
+ViewModel の `Dispose()` で必ずイベント購読を解除する。解除漏れはメモリリークの原因になる。
+
+```csharp
+// ❌ 間違い: 購読のみで解除なし
+public class MainViewModel : IDisposable
+{
+    public MainViewModel()
+    {
+        _historyVM.PropertyChanged += OnHistoryChanged;
+        _chatVM.MessageReceived += OnChatMessage;
+    }
+
+    public void Dispose() { /* イベント解除なし → メモリリーク */ }
+}
+
+// ✅ 正しい: Dispose で全イベント解除
+public class MainViewModel : IDisposable
+{
+    public MainViewModel()
+    {
+        _historyVM.PropertyChanged += OnHistoryChanged;
+        _chatVM.MessageReceived += OnChatMessage;
+    }
+
+    public void Dispose()
+    {
+        _historyVM.PropertyChanged -= OnHistoryChanged;
+        _chatVM.MessageReceived -= OnChatMessage;
+    }
+}
+```
+
+### バージョン番号の一元管理
+
+バージョン番号は `.csproj` の `<Version>` を唯一のソースオブトゥルースとし、他の場所からは参照する。
+
+```csharp
+// ❌ 間違い: 複数箇所にハードコード
+// .csproj:  <Version>1.0.0</Version>
+// MainWindow.xaml:  Title="InsightDoc v1.0.0"
+// MainViewModel.cs:  public string Version => "1.0.0";
+
+// ✅ 正しい: .csproj から取得
+public string Version =>
+    Assembly.GetExecutingAssembly()
+        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+        ?.InformationalVersion ?? "0.0.0";
+```
+
+---
+
 ## StaticResource ルール（重要）
 
 ### 基本原則
