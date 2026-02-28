@@ -59,8 +59,8 @@ class Colors:
 
     # Plan
     PLAN_TRIAL = "#2563EB"
-    PLAN_STD = "#16A34A"
-    PLAN_PRO = "#B8942F"
+    PLAN_FREE = "#A8A29E"
+    PLAN_BIZ = "#16A34A"
     PLAN_ENT = "#7C3AED"
 ```
 
@@ -78,9 +78,9 @@ from datetime import datetime
 from dataclasses import dataclass
 
 class PlanCode(Enum):
+    FREE = "FREE"
     TRIAL = "TRIAL"
-    STD = "STD"
-    PRO = "PRO"
+    BIZ = "BIZ"
     ENT = "ENT"
 
 @dataclass
@@ -96,7 +96,7 @@ class LicenseInfo:
 
 class InsightLicenseManager:
     KEY_PATTERN = re.compile(
-        r"^([A-Z]{4})-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+        r"^([A-Z]{4})-(TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
     )
 
     def __init__(self, product_code: str, app_name: str):

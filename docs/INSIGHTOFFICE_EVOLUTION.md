@@ -1238,7 +1238,7 @@ IOSH は「通常の AI スプレッドシート」と「データ収集クラ�
 - [ ] `WorkflowExecutionService.cs` — 複数ファイル順次処理
 - [ ] Agent 設定 UI（Orchestrator URL、表示名、自動接続）
 - [ ] ローカルワークフロー UI + 実行エンジン
-- [ ] ライセンスゲート（PRO/ENT チェック）
+- [ ] ライセンスゲート（BIZ/ENT チェック）
 
 ### Pillar 3: リモート管理
 

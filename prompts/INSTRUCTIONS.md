@@ -42,10 +42,10 @@ Firebase UID が全システムの主キー。
 
 ```typescript
 // ✅ サーバーで判定
-withGateway(handler, { requiredPlan: ['PRO', 'ENT'] });
+withGateway(handler, { requiredPlan: ['BIZ', 'ENT'] });
 
 // ❌ クライアントで判定しない
-if (user.plan === 'PRO') { showProFeature(); }
+if (user.plan === 'BIZ') { showBizFeature(); }
 ```
 
 ### 5. ブランドカラーは colors.json から

@@ -100,12 +100,12 @@ withGateway(handler, {
 });
 ```
 
-### Pro以上のみ使用可能
+### Biz以上のみ使用可能
 
 ```typescript
 withGateway(handler, {
   requireAuth: true,
-  requiredPlan: ['PRO', 'ENT'],
+  requiredPlan: ['BIZ', 'ENT'],
 });
 ```
 
