@@ -462,27 +462,27 @@ if (!DataCollectionLimits.CanUseDataCollection(currentPlan))
     return;
 }
 
-// AI 転記の月次回数チェック
-if (!DataCollectionLimits.CanUseAiTransfer(currentPlan, monthlyTransferUsage))
+// AI 転記の利用可否チェック（BYOK — 回数制限なし）
+if (!DataCollectionLimits.CanUseAiTransfer(currentPlan))
 {
-    ShowLimitDialog("AI 自動転記の月間利用回数に達しました");
+    ShowUpgradeDialog("AI 自動転記は PRO / ENT プランで利用できます");
     return;
 }
 
-// AI 検証の月次回数チェック
-if (!DataCollectionLimits.CanUseAiValidation(currentPlan, monthlyValidationUsage))
+// AI 検証の利用可否チェック（BYOK — 回数制限なし）
+if (!DataCollectionLimits.CanUseAiValidation(currentPlan))
 {
-    ShowLimitDialog("AI 検証の月間利用回数に達しました");
+    ShowUpgradeDialog("AI 検証は PRO / ENT プランで利用できます");
     return;
 }
 ```
 
-| プラン | データ収集 | テンプレート数 | AI 転記/月 | AI 検証/月 | データ保持 |
+| プラン | データ収集 | テンプレート数 | AI 転記 | AI 検証 | データ保持 |
 |--------|:---------:|:------------:|:---------:|:---------:|:---------:|
-| TRIAL  | ✅ | 無制限 | 無制限 | 無制限 | 30日 |
+| TRIAL  | ✅ | 無制限 | 無制限（BYOK） | 無制限（BYOK） | 30日 |
 | STD    | ❌ | — | — | — | — |
-| PRO    | ✅ | 50 | 200 | 200 | 365日 |
-| ENT    | ✅ | 無制限 | 無制限 | 無制限 | 無制限 |
+| PRO    | ✅ | 50 | 無制限（BYOK） | 無制限（BYOK） | 365日 |
+| ENT    | ✅ | 無制限 | 無制限（BYOK） | 無制限（BYOK） | 無制限 |
 
 ### 2.4 既存リソースとの対応表
 
@@ -1032,7 +1032,7 @@ Phase 1-B: AI 機能（2-3 週間）
 ├── AiValidationService.cs（AI 検証）
 ├── AI 転記結果プレビュー UI
 ├── AI 検証結果の色分け表示
-└── ライセンスゲート（月次回数制限）
+└── ライセンスゲート（プランチェック — BYOK 回数制限なし）
 
 Phase 1-C: 品質向上（1-2 週間）
 ├── オフライン対応（下書きのローカル保存 + 接続回復時同期）
@@ -1225,7 +1225,7 @@ IOSH は「通常の AI スプレッドシート」と「データ収集クラ�
 - [ ] 送信フロー（確認ダイアログ + API POST）
 - [ ] 下書き自動保存（ローカル + サーバー同期）
 - [ ] オフライン対応（ローカル下書き → 接続回復時同期）
-- [ ] ライセンスゲート（PRO/ENT チェック + 月次回数制限）
+- [ ] ライセンスゲート（PRO/ENT チェック — BYOK 回数制限なし）
 - [ ] データ収集モードと通常モードの切り替え UI
 - [ ] ローカライゼーション（日本語 + 英語）
 

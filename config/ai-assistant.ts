@@ -342,11 +342,9 @@ export function resolveModel(
 
     if (preferredId) {
       const model = getModelFromRegistry(preferredId);
-      // モデルが存在し、ティアで利用可能で、deprecated でないこと
+      // モデルが存在し、deprecated でないこと（BYOK — ティア制限なし）
       if (model && model.status !== 'deprecated') {
-        if (tier === 'premium' || model.minimumTier === 'standard') {
-          return model.id;
-        }
+        return model.id;
       }
     }
   }
@@ -407,21 +405,11 @@ export function validateModelSelection(
     };
   }
 
-  if (model.status === 'preview' && tier !== 'premium') {
-    return {
-      valid: false,
-      reason: `Preview model "${model.displayName}" requires Premium tier`,
-      reasonJa: `プレビューモデル "${model.displayName}" は Premium ティアが必要です`,
-    };
+  if (model.status === 'preview') {
+    // BYOK — preview モデルも全ティアで利用可能
   }
 
-  if (tier === 'standard' && model.minimumTier === 'premium') {
-    return {
-      valid: false,
-      reason: `Model "${model.displayName}" requires Premium tier`,
-      reasonJa: `モデル "${model.displayName}" は Premium ティアが必要です`,
-    };
-  }
+  // BYOK — モデルティア制限なし。全プランで全モデル利用可能。
 
   return { valid: true };
 }

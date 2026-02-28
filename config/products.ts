@@ -36,7 +36,7 @@ export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'ISOF' | 'INPY' | 'INMV' | 
 /**
  * プランコード（全製品 — 4ティア制）
  *
- * - FREE:  無料（無期限・Group A: 保存/エクスポート不可・Group B: 閲覧モードのみ・Standard モデルティア）
+ * - FREE:  無料（無期限・Group A: 保存/エクスポート不可・Group B: 閲覧モードのみ・BYOK 全モデル利用可能）
  * - TRIAL: 評価用（30日間・全機能）
  * - BIZ:   ビジネス（365日・全機能）
  * - ENT:   エンタープライズ（カスタマイズ都度見積もり・API/SSO/監査ログ）

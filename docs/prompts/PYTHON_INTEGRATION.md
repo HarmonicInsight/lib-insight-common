@@ -181,7 +181,7 @@ def require_feature(feature: str):
     return decorator
 
 def require_tier(min_tier: str):
-    tier_order = ['TRIAL', 'STD', 'PRO', 'ENT']
+    tier_order = ['FREE', 'TRIAL', 'BIZ', 'ENT']
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):

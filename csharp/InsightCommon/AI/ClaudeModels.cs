@@ -6,7 +6,8 @@ namespace InsightCommon.AI;
 /// 【モデルレジストリ方式】
 /// 新モデルのリリース時は Registry に1エントリ追加し、
 /// DefaultStandardModel / DefaultPremiumModel を更新するだけで全製品に反映。
-/// ユーザーは設定画面からティア内の利用可能モデルを選択可能。
+/// BYOK — 全プランで全モデル利用可能（モデルティア制限なし）。
+/// ユーザーは設定画面から全モデルを自由に選択可能。
 /// </summary>
 public static class ClaudeModels
 {
@@ -18,10 +19,10 @@ public static class ClaudeModels
     public const string SonnetId = "claude-sonnet-4-20250514";
     public const string OpusId = "claude-opus-4-20250514";
 
-    /// <summary>Standard ティアのデフォルトモデル</summary>
+    /// <summary>Standard ティアのデフォルトモデル（BYOK — 全モデル利用可能）</summary>
     public const string DefaultStandardModel = SonnetId;
 
-    /// <summary>Premium ティアのデフォルトモデル</summary>
+    /// <summary>Premium ティアのデフォルトモデル（BYOK — 全モデル利用可能）</summary>
     public const string DefaultPremiumModel = OpusId;
 
     /// <summary>後方互換: デフォルトモデル（= Standard ティアデフォルト）</summary>
@@ -41,7 +42,7 @@ public static class ClaudeModels
     {
         new(0, HaikuId,  "Haiku 3.5", "haiku",  "\u26A1",  0.25m,  1.25m, "standard", true),
         new(1, SonnetId, "Sonnet 4",  "sonnet", "\u2B50",  3.0m,  15.0m,  "standard", true),
-        new(2, OpusId,   "Opus 4",    "opus",   "\U0001F48E", 15.0m, 75.0m, "premium", true),
+        new(2, OpusId,   "Opus 4",    "opus",   "\U0001F48E", 15.0m, 75.0m, "standard", true),
     };
 
     /// <summary>後方互換: Available は Registry のエイリアス</summary>
@@ -100,6 +101,7 @@ public static class ClaudeModels
 
     /// <summary>
     /// ティアに応じたモデルを取得（ユーザー選択優先）
+    /// BYOK — 全プランで全モデル利用可能（モデルティア制限なし）
     /// </summary>
     /// <param name="tier">"standard" or "premium"</param>
     /// <param name="userPreferredModelId">ユーザーが選択したモデルID（null=デフォルト）</param>
@@ -111,10 +113,8 @@ public static class ClaudeModels
             var model = GetModel(userPreferredModelId);
             if (model != null && model.IsActive)
             {
-                // Premium ティアは全モデル利用可能
-                if (tier == "premium") return model.Id;
-                // Standard ティアは standard モデルのみ
-                if (model.MinimumTier == "standard") return model.Id;
+                // BYOK — 全ティアで全モデル利用可能
+                return model.Id;
             }
         }
 
@@ -124,11 +124,12 @@ public static class ClaudeModels
 
     /// <summary>
     /// ティアで利用可能なモデル一覧を取得（モデル選択 UI 用）
+    /// BYOK — 全ティアで全モデル利用可能
     /// </summary>
     public static ModelInfo[] GetAvailableModelsForTier(string tier)
     {
         return Registry
-            .Where(m => m.IsActive && (tier == "premium" || m.MinimumTier == "standard"))
+            .Where(m => m.IsActive)
             .ToArray();
     }
 

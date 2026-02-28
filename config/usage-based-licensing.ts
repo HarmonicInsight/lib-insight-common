@@ -9,7 +9,7 @@
  *
  * ユーザーは自身の Claude API キーを持ち込んで AI 機能を利用する。
  * そのため、月間クレジット制限は存在しない（全プラン無制限）。
- * プラン差は利用可能なモデルティア（Standard / Premium）のみ。
+ * モデルティア制限もなし — 全プランで全モデル利用可能。
  *
  * ```
  * ┌────────────────────────────────────────────────────────────────┐
@@ -26,7 +26,7 @@
  * │                                                                │
  * │   ユーザーは自身の Claude API キーを設定                         │
  * │   → クレジット管理は不要（API 利用料はユーザー負担）             │
- * │   → プラン差 = モデルティアのみ                                 │
+ * │   → モデル制限なし（全プランで全モデル利用可能）                 │
  * │                                                                │
  * │   アドオンパック（将来のマネージドキーモード用に予約）            │
  * │   ┌──────────────────────────────────────────────┐             │
@@ -72,9 +72,10 @@ export type QuotaPeriod = 'monthly' | 'annual' | 'unlimited';
 /**
  * AI モデルティア
  *
- * アドオンパックごとに利用可能なモデルの上限を制御する。
- * - standard: Haiku / Sonnet まで
- * - premium: Haiku / Sonnet / Opus（全モデル）
+ * BYOK のため全ティアで全モデル利用可能（モデル制限なし）。
+ * 型定義は後方互換のために維持するが、実質的な制限は行わない。
+ * - standard: 全モデル利用可能（BYOK）
+ * - premium: 全モデル利用可能（BYOK）
  */
 export type AiModelTier = 'standard' | 'premium';
 
@@ -229,10 +230,10 @@ export interface PurchasedAddonPack {
  * プラン別 AI クレジット定義（BYOK モード — 4ティア制）
  *
  * 【重要】
- * - FREE:  無制限（BYOK — クライアント選択、モデル制限なし）
- * - TRIAL: 無制限（30日間・BYOK — クライアント選択、モデル制限なし）
- * - BIZ:   無制限（BYOK — クライアント選択、モデル制限なし）
- * - ENT:   無制限（BYOK — クライアント選択、モデル制限なし）
+ * - FREE:  無制限（BYOK — クライアント選択、全モデル利用可能）
+ * - TRIAL: 無制限（30日間・BYOK — クライアント選択、全モデル利用可能）
+ * - BIZ:   無制限（BYOK — クライアント選択、全モデル利用可能）
+ * - ENT:   無制限（BYOK — クライアント選択、全モデル利用可能）
  *
  * BYOK のため全プラン baseCredits = -1（無制限）。
  * クレジット管理は不要。モデルティア制限もなし（クライアントが自由に選択）。
@@ -360,46 +361,37 @@ export function getModelTier(plan: PlanCode): AiModelTier {
 /**
  * モデルティアに基づいて使用可能なモデル ID 一覧を取得
  *
+ * BYOK — モデルティア制限なし。全プランで全モデル利用可能。
  * MODEL_REGISTRY（ai-assistant.ts）から動的に生成。
  * レジストリにモデルを追加すれば自動的にここにも反映される。
  */
 export function getAllowedModels(tier: AiModelTier): string[] {
-  // パターンベースで判定（opus を含むモデルは premium のみ）
-  // 実行時はアプリ側で getAvailableModelsForTier()（ai-assistant.ts）を推奨
-  if (tier === 'premium') {
-    // premium: 全モデル利用可能
-    return [
-      'claude-haiku-4-5-20251001',
-      'claude-sonnet-4-20250514',
-      'claude-sonnet-4-6-20260210',
-      'claude-opus-4-6-20260210',
-    ];
-  }
-  // standard: Haiku + Sonnet 系
+  // BYOK — 全ティアで全モデル利用可能
   return [
     'claude-haiku-4-5-20251001',
     'claude-sonnet-4-20250514',
     'claude-sonnet-4-6-20260210',
+    'claude-opus-4-6-20260210',
   ];
 }
 
 /**
  * 指定モデルがティアで利用可能かチェック
+ *
+ * BYOK — モデルティア制限なし。全プランで全モデル利用可能。
  */
 export function isModelAllowedForTier(model: string, tier: AiModelTier): boolean {
-  // premium ティアは全モデル利用可能
-  if (tier === 'premium') return true;
-  // standard ティアは opus 系以外
-  return !model.includes('opus');
+  // BYOK — 全ティアで全モデル利用可能
+  return true;
 }
 
 /**
  * モデルに必要な最低ティアを取得
  *
- * Opus 系モデル（opus-4, opus-4-6 等）は premium ティアが必要。
+ * BYOK — モデルティア制限なし。全モデルが standard ティアで利用可能。
  */
 export function getRequiredTierForModel(model: string): AiModelTier {
-  if (model.includes('opus')) return 'premium';
+  // BYOK — 全モデルが standard（最低ティア）で利用可能
   return 'standard';
 }
 

@@ -1169,9 +1169,9 @@ export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
   enabled: boolean;
   /** 利用可能テンプレート数（-1 = 無制限） */
   maxTemplates: number;
-  /** AI 自動転記回数/月（-1 = 無制限） */
+  /** AI 自動転記回数（-1 = 無制限・BYOK） */
   aiTransferPerMonth: number;
-  /** AI 検証回数/月（-1 = 無制限） */
+  /** AI 検証回数（-1 = 無制限・BYOK） */
   aiValidatePerMonth: number;
   /** 送信データ保持期間（日、-1 = 無制限） */
   dataRetentionDays: number;
@@ -1183,7 +1183,7 @@ export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
     maxTemplates: -1,
     aiTransferPerMonth: -1,
     aiValidatePerMonth: -1,
-    dataRetentionDays: 14,
+    dataRetentionDays: 30,
     historicalDataAccess: true,
   },
   STD: {
@@ -1197,8 +1197,8 @@ export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
   PRO: {
     enabled: true,
     maxTemplates: 50,
-    aiTransferPerMonth: 200,
-    aiValidatePerMonth: 200,
+    aiTransferPerMonth: -1,
+    aiValidatePerMonth: -1,
     dataRetentionDays: 365,
     historicalDataAccess: true,
   },
@@ -1299,12 +1299,12 @@ export function getDataCollectionCreditLabel(
   const name = featureNames[feature][locale];
 
   if (limit === -1) {
-    return locale === 'ja' ? `${name} — 無制限` : `${name} — Unlimited`;
+    return locale === 'ja' ? `${name} — 無制限（BYOK）` : `${name} — Unlimited (BYOK)`;
   }
   const remaining = Math.max(0, limit - currentUsage);
   return locale === 'ja'
-    ? `${name} — 残り ${remaining}回（月${limit}回）`
-    : `${name} — ${remaining} remaining (${limit}/month)`;
+    ? `${name} — 残り ${remaining}回（${limit}回）`
+    : `${name} — ${remaining} remaining (${limit} total)`;
 }
 
 // =============================================================================
