@@ -44,9 +44,9 @@ import java.security.MessageDigest
  * Insight Series ライセンスティア
  */
 enum class LicenseTier(val code: String, val displayName: String) {
+    FREE("FREE", "Free"),
     TRIAL("TRIAL", "Trial"),
-    STD("STD", "Standard"),
-    PRO("PRO", "Professional"),
+    BIZ("BIZ", "Business"),
     ENT("ENT", "Enterprise")
 }
 
@@ -97,15 +97,7 @@ object TierLimits {
             cloudSync = false,
             priority = false
         ),
-        LicenseTier.STD to FeatureLimits(
-            maxFiles = 50,
-            maxRecords = 5000,
-            batchProcessing = true,
-            export = true,
-            cloudSync = false,
-            priority = false
-        ),
-        LicenseTier.PRO to FeatureLimits(
+        LicenseTier.BIZ to FeatureLimits(
             maxFiles = Int.MAX_VALUE,
             maxRecords = 50000,
             batchProcessing = true,
