@@ -10,7 +10,7 @@
  *   - BYOK（Bring Your Own Key）— クライアントが自由にモデルを選択。
  *   - モデルティア制限なし。全プランで全モデル利用可能。
  *   - 新モデル追加時はレジストリに1エントリ追加するだけ。
- * - レジストリ内のデフォルト: Standard = Sonnet 系、Premium = Opus 系（UI のデフォルト選択用）
+ * - レジストリ内のデフォルト: Sonnet 系（UI のデフォルト選択用）
  * - 設定画面でモデル選択 UI を表示し、ユーザーが変更可能。
  *
  * 詳細仕様: standards/AI_ASSISTANT.md
@@ -242,13 +242,12 @@ export const MODEL_REGISTRY: ModelDefinition[] = [
     displayName: 'Opus 4',
     version: '4',
     releaseDate: '2025-05-14',
-    minimumTier: 'premium',
+    minimumTier: 'standard',
     inputPer1M: 15,
     outputPer1M: 75,
     maxContextTokens: 200_000,
     icon: '💎',
     status: 'active',
-    isDefaultForTier: 'premium',
     descriptionJa: '最高性能。レポート・精密文書・深い分析に最適',
     descriptionEn: 'Most capable. Best for reports, precision documents, and deep analysis.',
   },
@@ -257,13 +256,13 @@ export const MODEL_REGISTRY: ModelDefinition[] = [
 /**
  * ユーザーのモデル選択設定
  *
- * ユーザーが自分のティア内で利用可能なモデルを選択できる。
- * 未設定の場合はティアのデフォルトモデルが使用される。
+ * BYOK のため全プランで全モデル利用可能。ユーザーが自由にモデルを選択できる。
+ * 未設定の場合はデフォルトモデル（Sonnet）が使用される。
  */
 export interface UserModelPreference {
-  /** Standard ティアで使用するモデル ID */
+  /** Standard ティアで使用するモデル ID（BYOK — モデル制限なし） */
   standardTierModel?: string;
-  /** Premium ティアで使用するモデル ID */
+  /** Premium ティアで使用するモデル ID（BYOK — モデル制限なし） */
   premiumTierModel?: string;
 }
 
@@ -277,7 +276,7 @@ export function getModelFromRegistry(modelId: string): ModelDefinition | undefin
 /**
  * ティアで利用可能なモデル一覧を取得
  *
- * ユーザーのモデル選択 UI で表示するリスト。
+ * BYOK のため全プランで全モデル利用可能。ティアによるフィルタリングは行わない。
  * active なモデルのみ返す（deprecated / preview は含まない）。
  * preview は includePreview: true で含められる（ENT 向け）。
  */
@@ -286,8 +285,7 @@ export function getAvailableModelsForTier(
   options?: { includePreview?: boolean; includeDeprecated?: boolean },
 ): ModelDefinition[] {
   return MODEL_REGISTRY.filter(m => {
-    // ティアチェック
-    if (tier === 'standard' && m.minimumTier === 'premium') return false;
+    // BYOK — ティアによるモデル制限なし（全モデル利用可能）
 
     // ステータスチェック
     if (m.status === 'deprecated' && !options?.includeDeprecated) return false;
