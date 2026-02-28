@@ -263,9 +263,11 @@ public struct LicenseGenerator {
             expiry = expiresAt
         } else {
             switch tier {
+            case .free:
+                expiry = calendar.date(byAdding: .year, value: 100, to: Date())!
             case .trial:
-                expiry = calendar.date(byAdding: .day, value: 14, to: Date())!
-            case .standard, .professional:
+                expiry = calendar.date(byAdding: .day, value: 30, to: Date())!
+            case .business:
                 expiry = calendar.date(byAdding: .year, value: 1, to: Date())!
             case .enterprise:
                 expiry = calendar.date(byAdding: .year, value: 100, to: Date())!
@@ -1048,7 +1050,7 @@ struct ContentView: View {
 
     private func validateLicense() {
         let result = licenseValidator.validate(
-            "INS-SALES-PRO-2601-1534-A7",
+            "INS-SALES-BIZ-2601-1534-A7",
             currentProduct: .sales
         )
 
