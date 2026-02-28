@@ -9,9 +9,9 @@
 // インストーラー作成・差分更新・サイレント更新をサポート。
 //
 // 【対象製品】
-// - INSS (InsightOfficeSlide)  — WPF
-// - IOSH (InsightOfficeSheet)  — WPF
-// - IOSD (InsightOfficeDoc)    — WPF
+// - INSS (Insight Deck Quality Gate)       — WPF
+// - IOSH (Insight Performance Management)  — WPF
+// - IOSD (Insight AI Briefcase)            — WPF
 // - ISOF (InsightSeniorOffice) — WPF
 // - INBT (InsightBot)          — WPF
 // - INPY (InsightPy)           — WPF

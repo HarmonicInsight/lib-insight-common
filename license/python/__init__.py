@@ -24,9 +24,9 @@ from typing import Optional, Dict, Any
 
 class ProductCode(Enum):
     """製品コード（文書用）"""
-    INSS = "INSS"  # InsightOfficeSlide
-    IOSH = "IOSH"  # InsightOfficeSheet
-    IOSD = "IOSD"  # InsightOfficeDoc
+    INSS = "INSS"  # Insight Deck Quality Gate
+    IOSH = "IOSH"  # Insight Performance Management
+    IOSD = "IOSD"  # Insight AI Briefcase
     INPY = "INPY"  # InsightPy
     INMV = "INMV"  # InsightCast
     INBT = "INBT"  # InsightBot (RPA)
@@ -38,16 +38,16 @@ class ProductCode(Enum):
 
 class Plan(Enum):
     """プラン"""
+    FREE = "FREE"      # フリー
     TRIAL = "TRIAL"    # トライアル（14日間）
-    STD = "STD"        # Standard
-    PRO = "PRO"        # Professional
+    BIZ = "BIZ"        # Business
     ENT = "ENT"        # Enterprise
 
 
 PRODUCT_NAMES: Dict[ProductCode, str] = {
-    ProductCode.INSS: "InsightOfficeSlide",
-    ProductCode.IOSH: "InsightOfficeSheet",
-    ProductCode.IOSD: "InsightOfficeDoc",
+    ProductCode.INSS: "Insight Deck Quality Gate",
+    ProductCode.IOSH: "Insight Performance Management",
+    ProductCode.IOSD: "Insight AI Briefcase",
     ProductCode.INPY: "InsightPy",
     ProductCode.INMV: "InsightCast",
     ProductCode.INBT: "InsightBot",
@@ -58,17 +58,17 @@ PRODUCT_NAMES: Dict[ProductCode, str] = {
 }
 
 PLAN_NAMES: Dict[Plan, str] = {
+    Plan.FREE: "フリー",
     Plan.TRIAL: "トライアル",
-    Plan.STD: "Standard",
-    Plan.PRO: "Professional",
+    Plan.BIZ: "Business",
     Plan.ENT: "Enterprise",
 }
 
 # 製品と対応プラン
 PRODUCT_PLANS: Dict[str, list] = {
-    "InsightOfficeSlide": [ProductCode.INSS],
-    "InsightOfficeSheet": [ProductCode.IOSH],
-    "InsightOfficeDoc": [ProductCode.IOSD],
+    "Insight Deck Quality Gate": [ProductCode.INSS],
+    "Insight Performance Management": [ProductCode.IOSH],
+    "Insight AI Briefcase": [ProductCode.IOSD],
     "InsightPy": [ProductCode.INPY],
     "InsightCast": [ProductCode.INMV],
     "InsightBot": [ProductCode.INBT],
@@ -84,7 +84,7 @@ TRIAL_DAYS = 14
 # ライセンスキー正規表現
 # 形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 LICENSE_KEY_REGEX = re.compile(
-    r"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+    r"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(FREE|TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
 )
 
 

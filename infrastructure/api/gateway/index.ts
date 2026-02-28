@@ -25,7 +25,7 @@
  *   },
  *   {
  *     requireAuth: true,
- *     requiredPlan: ['PRO', 'ENT'],
+ *     requiredPlan: ['BIZ', 'ENT'],
  *     rateLimit: 60,
  *     audit: true,
  *     validateBody: {

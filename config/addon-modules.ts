@@ -1471,7 +1471,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
           { value: 'json', label: 'JSON', labelJa: 'JSON' },
           { value: 'csv', label: 'CSV', labelJa: 'CSV' },
           { value: 'xlsx', label: 'Excel (.xlsx)', labelJa: 'Excel (.xlsx)' },
-          { value: 'iosh', label: 'InsightOfficeSheet (.iosh)', labelJa: 'InsightOfficeSheet (.iosh)' },
+          { value: 'iosh', label: 'Insight Performance Management (.iosh)', labelJa: 'Insight Performance Management (.iosh)' },
         ],
       },
     ],
@@ -1541,13 +1541,13 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
 };
 
 // =============================================================================
-// ローカルワークフロー（PRO InsightOffice のローカル自動化機能）
+// ローカルワークフロー（BIZ InsightOffice のローカル自動化機能）
 // =============================================================================
 
 /**
  * ローカルワークフローモジュール
  *
- * Orchestrator なしで PRO InsightOffice ユーザーが使えるローカル自動化機能。
+ * Orchestrator なしで BIZ InsightOffice ユーザーが使えるローカル自動化機能。
  * スクリプトの連続実行や、フォルダ内ファイルの一括処理を実現する。
  *
  * ## Orchestrator との違い
@@ -1557,7 +1557,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
  * | 実行場所 | 自分の PC のみ | リモート Agent に配信 |
  * | スケジュール | なし（手動起動） | cron 相当の定期実行 |
  * | 監視 | ローカル UI のみ | ダッシュボードで集約 |
- * | 対象 | PRO InsightOffice | PRO/ENT INBT |
+ * | 対象 | BIZ InsightOffice | BIZ/ENT INBT |
  *
  * ## ユースケース
  *
@@ -1569,13 +1569,13 @@ export const LOCAL_WORKFLOW_MODULE: AddonModuleDefinition = {
   id: 'local_workflow',
   name: 'Local Workflow',
   nameJa: 'ローカルワークフロー',
-  description: 'Local automation for PRO users: run scripts sequentially on multiple files without Orchestrator. Lightweight RPA for citizen developers.',
+  description: 'Local automation for BIZ users: run scripts sequentially on multiple files without Orchestrator. Lightweight RPA for citizen developers.',
   descriptionJa: 'Orchestrator 不要のローカル自動化。複数ファイルへのスクリプト連続実行。市民開発者向けの簡易 RPA。',
   version: '1.0.0',
   distribution: 'bundled',
   panelPosition: 'dialog',
   requiredFeatureKey: 'ai_editor',
-  allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+  allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
   dependencies: [],
   ioContracts: [
     {

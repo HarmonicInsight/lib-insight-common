@@ -332,7 +332,7 @@ public class ProjectFileManager : IDisposable
     /// <summary>
     /// 「開く」ダイアログ用のフィルタ文字列を生成
     ///
-    /// 例: "InsightOfficeSheet プロジェクト (*.iosh)|*.iosh|Excel ファイル (*.xlsx;*.xls;*.csv)|*.xlsx;*.xls;*.csv|すべてのファイル (*.*)|*.*"
+    /// 例: "Insight Performance Management プロジェクト (*.iosh)|*.iosh|Excel ファイル (*.xlsx;*.xls;*.csv)|*.xlsx;*.xls;*.csv|すべてのファイル (*.*)|*.*"
     /// </summary>
     public static string GetOpenDialogFilter(string productCode, string locale = "ja")
     {

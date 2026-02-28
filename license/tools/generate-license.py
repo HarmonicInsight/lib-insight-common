@@ -5,7 +5,7 @@
 キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
 使用方法:
-  python generate-license.py --product INSS --plan PRO --email user@example.com --expires 2027-01-31
+  python generate-license.py --product INSS --plan BIZ --email user@example.com --expires 2027-01-31
   python generate-license.py --product INSS --trial --email user@example.com
 """
 
@@ -35,28 +35,28 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 例:
-  # InsightOfficeSlide Pro（2027年1月まで）
-  python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-01-31
+  # Insight Deck Quality Gate Business（2027年1月まで）
+  python generate-license.py -p INSS --plan BIZ -e user@example.com --expires 2027-01-31
 
-  # InsightOfficeSlide Standard（12ヶ月）
-  python generate-license.py -p INSS --plan STD -e user@example.com -m 12
+  # Insight Deck Quality Gate Business（12ヶ月）
+  python generate-license.py -p INSS --plan BIZ -e user@example.com -m 12
 
   # InsightPy トライアル（14日間）
   python generate-license.py -p INPY --trial -e user@example.com
 
-  # InsightCast Pro（12ヶ月）
-  python generate-license.py -p INMV --plan PRO -e user@example.com -m 12
+  # InsightCast Business（12ヶ月）
+  python generate-license.py -p INMV --plan BIZ -e user@example.com -m 12
 
-  # InsightBot Pro（12ヶ月）
-  python generate-license.py -p INBT --plan PRO -e user@example.com -m 12
+  # InsightBot Business（12ヶ月）
+  python generate-license.py -p INBT --plan BIZ -e user@example.com -m 12
 
-  # InterviewInsight Standard（12ヶ月）
-  python generate-license.py -p IVIN --plan STD -e user@example.com -m 12
+  # InterviewInsight Business（12ヶ月）
+  python generate-license.py -p IVIN --plan BIZ -e user@example.com -m 12
 
 製品コード:
-  INSS  - InsightOfficeSlide
-  IOSH  - InsightOfficeSheet
-  IOSD  - InsightOfficeDoc
+  INSS  - Insight Deck Quality Gate
+  IOSH  - Insight Performance Management
+  IOSD  - Insight AI Briefcase
   INPY  - InsightPy
   INMV  - InsightCast
   INIG  - InsightImageGen
@@ -66,8 +66,8 @@ def parse_args():
 
 プラン:
   TRIAL  - トライアル（14日間）
-  STD    - Standard
-  PRO    - Professional
+  BIZ    - Business
+  ENT    - Enterprise
 '''
     )
 
@@ -82,7 +82,7 @@ def parse_args():
     parser.add_argument(
         '--plan',
         type=str,
-        choices=['STD', 'PRO'],
+        choices=['BIZ', 'ENT'],
         help='プラン（--trial と排他）'
     )
 

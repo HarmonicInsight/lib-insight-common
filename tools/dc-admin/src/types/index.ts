@@ -127,7 +127,7 @@ export interface Tenant {
   supabaseProjectRef: string;
   supabaseUrl: string;
   region: string;
-  plan: 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+  plan: 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
   templateCount: number;
   submissionCount: number;
   collectionRate: number;
@@ -143,7 +143,7 @@ export interface TenantCreateRequest {
   code: string;
   companyName: string;
   companyNameJa: string;
-  plan: 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+  plan: 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
   region: string;
   contactEmail: string;
   contactName: string;

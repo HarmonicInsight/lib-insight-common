@@ -15,7 +15,7 @@ export interface AuthenticatedUser {
   userId: string;       // Supabase users.id (UUID)
   email: string | null;
   displayName: string | null;
-  plan: string;         // TRIAL | STD | PRO | ENT
+  plan: string;         // FREE | TRIAL | BIZ | ENT
   tenantId: string | null;
 }
 
@@ -84,7 +84,7 @@ export interface MiddlewareOptions {
   allowEither?: boolean;          // どちらかでOK
 
   // 認可
-  requiredPlan?: string[];        // ['PRO', 'ENT']
+  requiredPlan?: string[];        // ['BIZ', 'ENT']
   requiredScopes?: string[];      // ['read', 'write']
 
   // レート制限

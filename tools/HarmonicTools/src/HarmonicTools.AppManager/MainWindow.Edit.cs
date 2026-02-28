@@ -112,7 +112,7 @@ public partial class MainWindow
         var name = EditName.Text.Trim();
         if (string.IsNullOrEmpty(name)) return;
 
-        // Generate product code from name (e.g. "InsightOfficeSheet" -> "IOSH")
+        // Generate product code from name (e.g. "Insight Performance Management" -> "IOSH")
         EditProductCode.Text = GenerateProductCode(name);
 
         // Auto-fill paths using the convention:
@@ -130,7 +130,7 @@ public partial class MainWindow
     private static string GenerateProductCode(string name)
     {
         // Extract uppercase letters or word starts to make a short code
-        // e.g. "InsightOfficeSheet" -> "IOS", then pad to 4 chars -> "IOSH"
+        // e.g. "Insight Performance Management" -> "IPM", then pad to 4 chars -> "IPMX"
         // Strategy: take first 2 chars of each PascalCase word
         var words = new List<string>();
         var current = "";

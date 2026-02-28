@@ -40,7 +40,7 @@ export interface License {
   id: string;
   user_id: string;
   product_code: string;
-  plan: 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+  plan: 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
   license_key: string | null;
   activated_at: string | null;
   expires_at: string | null;
@@ -51,7 +51,7 @@ export interface License {
 export interface Tenant {
   id: string;
   name: string;
-  plan: 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+  plan: 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
   owner_id: string;
   max_members: number;
   created_at: string;
@@ -104,9 +104,9 @@ export {
 
 // Constants (legacy - use config/products.ts instead)
 export const PRODUCT_CODES = {
-  INSS: 'InsightOfficeSlide',
-  IOSH: 'InsightOfficeSheet',
-  IOSD: 'InsightOfficeDoc',
+  INSS: 'Insight Deck Quality Gate',
+  IOSH: 'Insight Performance Management',
+  IOSD: 'Insight AI Briefcase',
   INPY: 'InsightPy',
   INMV: 'InsightCast',
   INBT: 'InsightBot',
@@ -116,9 +116,9 @@ export const PRODUCT_CODES = {
 } as const;
 
 export const PLANS = {
-  TRIAL: { name: 'Trial', priority: 0 },
-  STD: { name: 'Standard', priority: 1 },
-  PRO: { name: 'Professional', priority: 2 },
+  FREE: { name: 'Free', priority: 0 },
+  TRIAL: { name: 'Trial', priority: 1 },
+  BIZ: { name: 'Business', priority: 2 },
   ENT: { name: 'Enterprise', priority: 3 },
 } as const;
 

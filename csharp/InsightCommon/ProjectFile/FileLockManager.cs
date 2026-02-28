@@ -55,7 +55,7 @@ public class FileLockManager
     /// </summary>
     /// <param name="projectFilePath">プロジェクトファイルのパス</param>
     /// <param name="userName">ユーザー名</param>
-    /// <param name="applicationName">アプリケーション名（例: "InsightOfficeSheet"）</param>
+    /// <param name="applicationName">アプリケーション名（例: "Insight Performance Management"）</param>
     /// <returns>成功時は null、失敗時はロック保持者の情報</returns>
     public static FileLockInfo? TryAcquireLock(string projectFilePath, string userName, string applicationName)
     {
