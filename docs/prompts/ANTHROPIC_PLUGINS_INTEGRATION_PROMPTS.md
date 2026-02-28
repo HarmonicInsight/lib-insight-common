@@ -23,13 +23,13 @@ insight-common サブモジュールを最新に更新してください。
    - AI チャットパネルに `/review-contract` コマンドボタンを追加
    - パラメータ入力: 当事者の立場（vendor/customer/partner）、契約タイプ（saas/services/license/nda）
    - `getCommandsForProduct('IOSD')` で利用可能コマンド一覧を取得
-   - PRO プラン以上でのみ表示（STD ではグレーアウト + アップグレード誘導）
+   - BIZ プラン以上でのみ表示（FREE ではグレーアウト + アップグレード誘導）
 
 3. メモリシステムの組み込み
    - .iosd プロジェクトファイル（ZIP）内に ai_memory.json を追加
    - ファイルオープン時に ai_memory.json を読み込み、HotCache オブジェクトとして保持
    - ファイル保存時に ai_memory.json を書き戻し
-   - PRO+ の場合は ai_memory_deep/ ディレクトリも管理
+   - BIZ+ の場合は ai_memory_deep/ ディレクトリも管理
 
 参照ファイル:
 - insight-common/config/ai-assistant.ts — buildEnhancedSystemPrompt()

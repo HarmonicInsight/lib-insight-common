@@ -87,7 +87,7 @@ insight-common/
 | ビジュアルJOB設計 | ドラッグ&ドロップでワークフローを構築 |
 | Web・デスクトップ自動化 | ブラウザ操作からデスクトップ操作まで対応 |
 | スケジュール・トリガー実行 | 定時実行やイベント駆動の自動実行 |
-| Orchestrator | Agent集中管理・JOB配信・実行監視（PRO+） |
+| Orchestrator | Agent集中管理・JOB配信・実行監視（BIZ+） |
 
 **リポジトリ**: `win-app-insight-bot` / **技術**: C# WPF (.NET 8.0) / **カラーテーマ**: Cool Blue & Slate
 
@@ -143,9 +143,9 @@ AIが各ローコードプラットフォームの仕組みを解析、ロジッ
 |------|------|
 | 画像＋テキスト→動画 | テキストから自動音声変換して動画生成 |
 | PowerPoint→動画 | スライドとスピーチノートから自動動画化 |
-| 字幕 | フォント・色・位置のカスタマイズ対応（PRO+） |
-| トランジション | シーン間のトランジション効果（PRO+） |
-| PPTX取込 | PowerPointファイルからの素材取込（PRO+） |
+| 字幕 | フォント・色・位置のカスタマイズ対応（BIZ+） |
+| トランジション | シーン間のトランジション効果（BIZ+） |
+| PPTX取込 | PowerPointファイルからの素材取込（BIZ+） |
 | マルチフォーマット出力 | 複数の動画形式で書き出し |
 
 **リポジトリ**: `win-app-insight-cast` / **技術**: Python (CustomTkinter) / **カラーテーマ**: Ivory & Gold
@@ -165,7 +165,7 @@ AI画像生成は同じプロンプトでも思い通りの結果になること
 | 画像管理ツール | 生成画像の一覧確認・比較・削除 |
 | Stable Diffusion | ローカルSD統合で画像生成 |
 | VOICEVOX音声生成 | テキストからの音声ファイル生成 |
-| 4K高解像度出力 | 高解像度画像の生成（PRO+） |
+| 4K高解像度出力 | 高解像度画像の生成（BIZ+） |
 
 **リポジトリ**: `win-app-insight-image-gen` / **技術**: Python (CustomTkinter) / **カラーテーマ**: Ivory & Gold
 
@@ -173,7 +173,7 @@ AI画像生成は同じプロンプトでも思い通りの結果になること
 
 ### Tier 3: Insight Business Suite（導入ツール群）
 
-> Insight Business Suite は共通で **新規ドキュメント作成（MS Office 不要）**、AIアシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> Insight Business Suite は共通で **新規ドキュメント作成（MS Office 不要）**、AIアシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（BIZ+）を搭載。
 > Syncfusion で Office 互換ファイル（.xlsx / .docx / .pptx）を直接生成するため、MS Office を購入せずにドキュメントの作成・編集・保存がすべて完結します。
 
 #### INSS — Insight Deck Quality Gate
@@ -246,7 +246,7 @@ Excelベースの財務ワークフローを強力なパフォーマンス管理
 | 構文チェック・即時テスト | コード検証とワンクリック実行 |
 | クライアント端末自動化 | 業務PCの作業を自動化 |
 | 民主化開発 | 非エンジニアでも業務ツールを作成可能 |
-| クラウド同期 | スクリプトの同期管理（PRO+） |
+| クラウド同期 | スクリプトの同期管理（BIZ+） |
 
 **リポジトリ**: `win-app-insight-py` / **技術**: C# WPF (.NET 8.0)
 
@@ -296,9 +296,9 @@ INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
 | コード | 名称 | 期間 |
 |--------|------|------|
-| TRIAL | Trial | 任意指定（デフォルト14日） |
-| STD | Standard | 年間 |
-| PRO | Professional | 年間 |
+| FREE | Free | 無期限（基本機能のみ） |
+| TRIAL | Trial | 任意指定（デフォルト30日） |
+| BIZ | Business | 年間 |
 | ENT | Enterprise | 永久 |
 
 詳細は [license/README.md](./license/README.md) を参照してください。
