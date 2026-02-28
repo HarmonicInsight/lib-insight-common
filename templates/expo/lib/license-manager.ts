@@ -19,14 +19,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const PRODUCT_CODE = '__PRODUCT_CODE__';
 const STORAGE_KEY = '@insight_license';
 
-const KEY_PATTERN = /^([A-Z]{4})-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+const KEY_PATTERN = /^([A-Z]{4})-(FREE|TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
-export type PlanCode = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+export type PlanCode = 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
 
 export const PLAN_LABELS: Record<PlanCode, { en: string; ja: string }> = {
+  FREE: { en: 'Free', ja: 'フリー' },
   TRIAL: { en: 'Trial', ja: 'トライアル' },
-  STD: { en: 'Standard', ja: 'スタンダード' },
-  PRO: { en: 'Professional', ja: 'プロフェッショナル' },
+  BIZ: { en: 'Business', ja: 'ビジネス' },
   ENT: { en: 'Enterprise', ja: 'エンタープライズ' },
 };
 

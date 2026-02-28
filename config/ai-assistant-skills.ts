@@ -135,7 +135,7 @@ const SKILL_JOURNAL_ENTRY: SkillDefinition = {
   descriptionEn: 'Assist with monthly journal entry preparation, templates, and approval workflows',
   targetProducts: ['IOSH'],
   targetContexts: ['spreadsheet'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     '仕訳', '計上', 'journal entry', 'accrual', '減価償却', 'depreciation',
     '前払', 'prepaid', '給与', 'payroll', '収益認識', 'revenue recognition',
@@ -187,7 +187,7 @@ const SKILL_VARIANCE_ANALYSIS: SkillDefinition = {
   descriptionEn: 'Assist with budget vs actual variance decomposition and waterfall analysis',
   targetProducts: ['IOSH'],
   targetContexts: ['spreadsheet'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     '差異', '分析', 'variance', '予実', '乖離', '要因分解',
     'waterfall', 'ウォーターフォール', '前年比', 'YoY', 'MoM',
@@ -242,7 +242,7 @@ const SKILL_RECONCILIATION: SkillDefinition = {
   descriptionEn: 'Assist with GL-to-subledger, bank, and intercompany reconciliation',
   targetProducts: ['IOSH'],
   targetContexts: ['spreadsheet'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     '照合', '突合', 'reconciliation', 'reconcile', '残高確認',
     '銀行照合', 'bank rec', '会社間', 'intercompany',
@@ -276,7 +276,7 @@ const SKILL_CLOSE_MANAGEMENT: SkillDefinition = {
   descriptionEn: 'Assist with month-end close task management and checklists',
   targetProducts: ['IOSH'],
   targetContexts: ['spreadsheet'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     '月次', 'クローズ', 'close', '締め', '決算', '月末',
     'month-end', 'checklist', 'チェックリスト',
@@ -308,7 +308,7 @@ const SKILL_QUERY_WRITING: SkillDefinition = {
   descriptionEn: 'Generate Excel formulas and SQL queries from natural language',
   targetProducts: ['IOSH', 'INPY'],
   targetContexts: ['spreadsheet', 'code'],
-  requiredPlan: 'STD',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     'SQL', 'クエリ', 'query', '数式', 'formula', 'VLOOKUP',
     'SUMIFS', 'COUNTIFS', 'INDEX', 'MATCH', 'ピボット', 'pivot',
@@ -348,7 +348,7 @@ const SKILL_CONTRACT_REVIEW: SkillDefinition = {
   descriptionEn: 'Assist with contract clause analysis, risk assessment, and redline generation',
   targetProducts: ['IOSD'],
   targetContexts: ['document'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     '契約', 'contract', 'レビュー', 'review', '条項', 'clause',
     'NDA', '秘密保持', '責任制限', 'liability', '補償', 'indemnif',
@@ -407,7 +407,7 @@ const SKILL_NDA_TRIAGE: SkillDefinition = {
   descriptionEn: 'Assist with rapid NDA review, risk classification, and approval routing',
   targetProducts: ['IOSD'],
   targetContexts: ['document'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     'NDA', '秘密保持', '機密', 'confidential', 'non-disclosure',
     '情報開示', 'mutual NDA',
@@ -439,7 +439,7 @@ const SKILL_CONTENT_CREATION: SkillDefinition = {
   descriptionEn: 'Assist with creating blog posts, press releases, case studies and business documents',
   targetProducts: ['IOSD', 'INSS'],
   targetContexts: ['document', 'slide'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     'ブログ', 'blog', 'プレスリリース', 'press release', 'ケーススタディ',
     'case study', 'ランディングページ', 'landing page', 'メルマガ', 'newsletter',
@@ -482,7 +482,7 @@ const SKILL_STAKEHOLDER_UPDATE: SkillDefinition = {
   descriptionEn: 'Create structured progress report slides for stakeholders',
   targetProducts: ['INSS'],
   targetContexts: ['slide'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     'ステークホルダー', 'stakeholder', '報告', 'report', '進捗',
     'progress', '週次', 'weekly', '月次報告', 'status update',
@@ -530,7 +530,7 @@ const SKILL_DATA_ANALYSIS: SkillDefinition = {
   descriptionEn: 'Assist with generating data analysis scripts using pandas/numpy',
   targetProducts: ['INPY', 'IOSH'],
   targetContexts: ['code', 'spreadsheet'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     'データ分析', 'data analysis', 'pandas', 'numpy', '集計',
     'aggregate', '統計', 'statistics', 'グラフ', 'chart', 'plot',
@@ -577,7 +577,7 @@ const SKILL_TASK_MANAGEMENT: SkillDefinition = {
   descriptionEn: 'Assist with in-project task management and progress tracking',
   targetProducts: ['IOSH', 'INSS', 'IOSD', 'INPY', 'INBT'],
   targetContexts: ['spreadsheet', 'slide', 'document', 'code'],
-  requiredPlan: 'STD',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     'タスク', 'task', 'TODO', 'やること', '進捗', 'progress',
     '期限', 'deadline', '担当', 'assign',
@@ -612,7 +612,7 @@ const SKILL_MEMORY_MANAGEMENT: SkillDefinition = {
   descriptionEn: 'Learn and retain organizational context (people, abbreviations, projects)',
   targetProducts: ['IOSH', 'INSS', 'IOSD', 'INPY', 'INBT'],
   targetContexts: ['spreadsheet', 'slide', 'document', 'code'],
-  requiredPlan: 'PRO',
+  requiredPlan: 'BIZ',
   triggerPatterns: [
     '覚えて', 'remember', '記憶', 'memory', '略語', 'acronym',
     '用語', 'glossary', 'メモ', 'note',
@@ -686,7 +686,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: '仕訳テンプレートを生成し、計上準備を支援します',
     descriptionEn: 'Generate journal entry templates and assist with posting preparation',
     targetProducts: ['IOSH'],
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
     parameters: [
       { name: 'type', nameJa: '仕訳タイプ', type: 'select', required: true, options: ['accrual', 'depreciation', 'prepaid', 'payroll', 'revenue'] },
       { name: 'period', nameJa: '対象期間', type: 'string', required: true },
@@ -702,7 +702,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: '選択範囲のデータから差異分析レポートを生成します',
     descriptionEn: 'Generate variance analysis report from selected data range',
     targetProducts: ['IOSH'],
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
     parameters: [
       { name: 'comparison', nameJa: '比較タイプ', type: 'select', required: true, options: ['budget-vs-actual', 'yoy', 'mom', 'qoq'] },
     ],
@@ -717,7 +717,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: '2つのデータソースの照合を実行します',
     descriptionEn: 'Perform reconciliation between two data sources',
     targetProducts: ['IOSH'],
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
     parameters: [],
     promptTemplate: '現在のスプレッドシートにある2つのデータソースを照合してください。マッチング、未照合項目の分類、調整仕訳の提案を行ってください。',
     sourcePlugin: 'finance',
@@ -731,7 +731,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: '契約書の条項分析・リスク評価・レッドライン生成を行います',
     descriptionEn: 'Analyze contract clauses, assess risks, and generate redlines',
     targetProducts: ['IOSD'],
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
     parameters: [
       { name: 'side', nameJa: '当事者の立場', type: 'select', required: true, options: ['vendor', 'customer', 'licensor', 'licensee', 'partner'] },
       { name: 'type', nameJa: '契約タイプ', type: 'select', required: false, options: ['saas', 'services', 'license', 'partnership', 'procurement', 'nda'] },
@@ -747,7 +747,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: 'NDAの迅速審査を行い、リスク分類と修正提案を出力します',
     descriptionEn: 'Perform rapid NDA review with risk classification and suggested edits',
     targetProducts: ['IOSD'],
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
     parameters: [],
     promptTemplate: '現在のドキュメントをNDAとして審査してください。相互/一方向、秘密情報の定義範囲、存続期間、準拠法をチェックし、リスク分類と修正提案を出力してください。',
     sourcePlugin: 'legal',
@@ -761,7 +761,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: 'ステークホルダー向けの進捗報告スライド構成を提案します',
     descriptionEn: 'Suggest structured progress report slide composition for stakeholders',
     targetProducts: ['INSS'],
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
     parameters: [
       { name: 'audience', nameJa: '対象者', type: 'select', required: false, options: ['executive', 'team', 'client', 'board'] },
     ],
@@ -777,7 +777,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: 'データ分析スクリプトを生成・実行します',
     descriptionEn: 'Generate and execute data analysis scripts',
     targetProducts: ['INPY'],
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
     parameters: [
       { name: 'goal', nameJa: '分析目的', type: 'string', required: true },
     ],
@@ -792,7 +792,7 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     descriptionJa: '自然言語の説明からSQLクエリを生成します',
     descriptionEn: 'Generate SQL queries from natural language descriptions',
     targetProducts: ['INPY', 'IOSH'],
-    requiredPlan: 'STD',
+    requiredPlan: 'BIZ',
     parameters: [
       { name: 'description', nameJa: '取得したいデータの説明', type: 'string', required: true },
       { name: 'dialect', nameJa: 'SQL方言', type: 'select', required: false, options: ['postgresql', 'mysql', 'sqlite', 'snowflake', 'bigquery'] },
@@ -829,10 +829,10 @@ export function getAvailableSkills(
   plan: PlanCode,
 ): SkillDefinition[] {
   const planHierarchy: Record<PlanCode, number> = {
-    TRIAL: 4,
-    ENT: 3,
-    PRO: 2,
-    STD: 1,
+    ENT: 4,
+    BIZ: 3,
+    TRIAL: 2,
+    FREE: 1,
   };
   const userLevel = planHierarchy[plan] ?? 0;
 
@@ -850,10 +850,10 @@ export function getAvailableCommands(
   plan: PlanCode,
 ): CommandDefinition[] {
   const planHierarchy: Record<PlanCode, number> = {
-    TRIAL: 4,
-    ENT: 3,
-    PRO: 2,
-    STD: 1,
+    ENT: 4,
+    BIZ: 3,
+    TRIAL: 2,
+    FREE: 1,
   };
   const userLevel = planHierarchy[plan] ?? 0;
 

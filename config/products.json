@@ -5,11 +5,11 @@
   "products": {
     "individual": [
       {
-        "id": "insight-office-slide",
+        "id": "insight-deck-quality-gate",
         "code": "INSS",
         "name": "Insight Deck Quality Gate",
         "displayName": "Insight Deck Quality Gate",
-        "description": "AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要）",
+        "description": "AIアシスタント搭載 — プレゼンテーション品質評価・改善ツール（MS Office 不要）",
         "category": "office",
         "salesChannel": "standalone",
         "platform": ["windows"],
@@ -36,7 +36,7 @@
         "code": "IOSH",
         "name": "Insight Performance Management",
         "displayName": "Insight Performance Management",
-        "description": "AIアシスタント搭載 — 経営数値管理・財務分析ツール",
+        "description": "AIアシスタント搭載 — 業績管理・データ分析スプレッドシートツール（MS Office 不要）",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",
@@ -63,7 +63,7 @@
         "code": "IOSD",
         "name": "Insight AI Briefcase",
         "displayName": "Insight AI Briefcase",
-        "description": "AIアシスタント搭載 — 業務文書一括管理ブリーフケース（MS Office 不要）",
+        "description": "AIアシスタント搭載 — AI文書作成・管理ブリーフケース（MS Office 不要）",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",
@@ -237,32 +237,32 @@
   },
   "tiers": {
     "individual": {
+      "FREE": {
+        "name": "Free",
+        "nameJa": "フリー",
+        "price": 0,
+        "currency": "JPY",
+        "aiCredits": -1,
+        "aiModel": "sonnet",
+        "description": "全機能利用可能（保存/エクスポート不可）"
+      },
       "TRIAL": {
         "name": "Trial",
         "nameJa": "トライアル",
         "price": 0,
         "currency": "JPY",
         "aiCredits": -1,
-        "aiModel": "opus",
+        "aiModel": "sonnet",
         "description": "全機能無制限（14日間）"
       },
-      "STD": {
-        "name": "Standard",
-        "nameJa": "スタンダード",
+      "BIZ": {
+        "name": "Business",
+        "nameJa": "ビジネス",
         "price": null,
         "currency": "JPY",
-        "aiCredits": 50,
+        "aiCredits": -1,
         "aiModel": "sonnet",
-        "description": "AI月50回付き（個別見積もり）"
-      },
-      "PRO": {
-        "name": "Professional",
-        "nameJa": "プロフェッショナル",
-        "price": null,
-        "currency": "JPY",
-        "aiCredits": 200,
-        "aiModel": "sonnet",
-        "description": "AI月200回付き（個別見積もり）"
+        "description": "法人向け全機能（BYOK・個別見積もり）"
       },
       "ENT": {
         "name": "Enterprise",
@@ -271,23 +271,16 @@
         "currency": "JPY",
         "aiCredits": -1,
         "aiModel": "opus",
-        "description": "個別見積もり"
+        "description": "エンタープライズ（個別見積もり）"
       }
     },
     "corporate": {
-      "STD": {
-        "name": "Standard",
-        "nameJa": "スタンダード",
-        "price": null,
+      "FREE": {
+        "name": "Free",
+        "nameJa": "フリー",
+        "price": 0,
         "currency": "JPY",
-        "description": "コンサル連動型（個別見積もり）"
-      },
-      "PRO": {
-        "name": "Professional",
-        "nameJa": "プロフェッショナル",
-        "price": null,
-        "currency": "JPY",
-        "description": "コンサル連動型（個別見積もり）"
+        "description": "閲覧モードのみ"
       },
       "ENT": {
         "name": "Enterprise",

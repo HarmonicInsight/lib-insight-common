@@ -1,79 +1,79 @@
 {
-  "_comment": "テスト用ライセンスキー（PRO版・全製品） 開発・テスト環境専用",
+  "_comment": "テスト用ライセンスキー（BIZ版・全製品） 開発・テスト環境専用",
   "_generated": "2026-02-21",
   "_email": "test@example.com",
-  "_plan": "PRO",
+  "_plan": "BIZ",
   "_expiresAt": "2027-02-21",
   "licenses": [
     {
       "product": "INSS",
       "productName": "Insight Deck Quality Gate",
-      "plan": "PRO",
-      "licenseKey": "INSS-PRO-2702-S467-NWPG-ABCW",
+      "plan": "BIZ",
+      "licenseKey": "INSS-BIZ-2702-S467-NWPG-ABCW",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "IOSH",
       "productName": "Insight Performance Management",
-      "plan": "PRO",
-      "licenseKey": "IOSH-PRO-2702-S467-AUIS-K6CX",
+      "plan": "BIZ",
+      "licenseKey": "IOSH-BIZ-2702-S467-AUIS-K6CX",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "IOSD",
       "productName": "Insight AI Briefcase",
-      "plan": "PRO",
-      "licenseKey": "IOSD-PRO-2702-S467-XRAS-IYNN",
+      "plan": "BIZ",
+      "licenseKey": "IOSD-BIZ-2702-S467-XRAS-IYNN",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "INPY",
       "productName": "InsightPy",
-      "plan": "PRO",
-      "licenseKey": "INPY-PRO-2702-S467-XWGP-QMLJ",
+      "plan": "BIZ",
+      "licenseKey": "INPY-BIZ-2702-S467-XWGP-QMLJ",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "INMV",
       "productName": "InsightCast",
-      "plan": "PRO",
-      "licenseKey": "INMV-PRO-2702-S467-SKVW-RYSG",
+      "plan": "BIZ",
+      "licenseKey": "INMV-BIZ-2702-S467-SKVW-RYSG",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "INIG",
       "productName": "InsightImageGen",
-      "plan": "PRO",
-      "licenseKey": "INIG-PRO-2702-S467-ZGTG-VEMD",
+      "plan": "BIZ",
+      "licenseKey": "INIG-BIZ-2702-S467-ZGTG-VEMD",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "INBT",
       "productName": "InsightBot",
-      "plan": "PRO",
-      "licenseKey": "INBT-PRO-2702-S467-2YQQ-EZQ2",
+      "plan": "BIZ",
+      "licenseKey": "INBT-BIZ-2702-S467-2YQQ-EZQ2",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "INCA",
       "productName": "InsightNoCodeAnalyzer",
-      "plan": "PRO",
-      "licenseKey": "INCA-PRO-2702-S467-M37C-YJYH",
+      "plan": "BIZ",
+      "licenseKey": "INCA-BIZ-2702-S467-M37C-YJYH",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     },
     {
       "product": "IVIN",
       "productName": "InterviewInsight",
-      "plan": "PRO",
-      "licenseKey": "IVIN-PRO-2702-S467-53DC-LVT2",
+      "plan": "BIZ",
+      "licenseKey": "IVIN-BIZ-2702-S467-53DC-LVT2",
       "email": "test@example.com",
       "expiresAt": "2027-02-21"
     }

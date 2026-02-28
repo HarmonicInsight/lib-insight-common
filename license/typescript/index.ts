@@ -10,7 +10,7 @@
 // =============================================================================
 
 export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'INPY' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'IVIN' | 'ISOF';
-export type Plan = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+export type Plan = 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
 export type ErrorCode = 'E001' | 'E002' | 'E003' | 'E004' | 'E005' | 'E006';
 
 export interface AuthResult {
@@ -62,9 +62,9 @@ export const PRODUCT_NAMES: Record<ProductCode, string> = {
 };
 
 export const PLAN_NAMES: Record<Plan, string> = {
+  FREE: 'フリー',
   TRIAL: 'トライアル',
-  STD: 'Standard',
-  PRO: 'Professional',
+  BIZ: 'Business',
   ENT: 'Enterprise',
 };
 
@@ -93,7 +93,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
 };
 
 // ライセンスキー正規表現
-const LICENSE_KEY_REGEX = /^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+const LICENSE_KEY_REGEX = /^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(FREE|TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
 // 署名用シークレットキー
 const SECRET_KEY = 'insight-series-license-secret-2026';

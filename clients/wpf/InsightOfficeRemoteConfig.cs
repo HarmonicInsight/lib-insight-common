@@ -3,9 +3,9 @@
 // =============================================================================
 //
 // 【対象製品】
-// - INSS (Insight Deck Quality Gate)  — プレゼンテーション
+// - INSS (Insight Deck Quality Gate)       — プレゼンテーション
 // - IOSH (Insight Performance Management)  — スプレッドシート
-// - IOSD (Insight AI Briefcase)    — ドキュメント
+// - IOSD (Insight AI Briefcase)            — ドキュメント
 // - ISOF (InsightSeniorOffice) — シニア向け統合ツール
 //
 // 【概要】
@@ -40,7 +40,7 @@
 //            appVersion: "2.2.0",          // 現在のバージョン
 //            buildNumber: 50,              // 現在のビルド番号
 //            licenseKey: license.Key,
-//            plan: license.Plan            // "STD" / "PRO" / "ENT"
+//            plan: license.Plan            // "BIZ" / "ENT"
 //        );
 //
 //        _remoteConfig.OnSyncfusionKeyRotated += (newKey) =>
@@ -135,7 +135,7 @@ public sealed class InsightOfficeRemoteConfig : IDisposable
         string appVersion,
         int buildNumber,
         string licenseKey,
-        string plan = "STD",
+        string plan = "BIZ",
         string? userId = null,
         string locale = "ja")
     {

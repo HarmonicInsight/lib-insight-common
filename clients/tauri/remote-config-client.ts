@@ -15,7 +15,7 @@
  *   buildNumber: 1,
  *   licenseKey: storedLicenseKey,
  *   deviceId: await getDeviceId(),
- *   plan: 'STD',
+ *   plan: 'BIZ',
  * });
  * await remoteConfig.initialize();
  *
@@ -246,7 +246,7 @@ export class RemoteConfigClient {
 
   constructor(options: RemoteConfigClientOptions) {
     this.opts = {
-      plan: 'STD',
+      plan: 'BIZ',
       locale: 'ja',
       baseUrl: BASE_URL,
       ...options,
