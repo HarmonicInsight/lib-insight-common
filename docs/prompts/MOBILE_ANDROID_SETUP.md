@@ -129,7 +129,7 @@ class LicenseValidator {
 
     companion object {
         private val LICENSE_PATTERN = Regex(
-            """^INS-(SALES|SLIDE|PY|IVIN|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"""
+            """^INS-(SALES|SLIDE|PY|IVIN|ALL)-(FREE|TRIAL|BIZ|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"""
         )
 
         private val PRODUCT_MAP = ProductCode.values().associateBy { it.code }
@@ -175,7 +175,7 @@ class LicenseValidator {
         // 有効期限をセグメントからデコード
         val expiresAt = decodeExpiryDate(segment1, segment2)
 
-        // 有効期限チェック（TRIALとSTD/PROのみ）
+        // 有効期限チェック（TRIALとBIZのみ）
         if (tier != LicenseTier.ENT && expiresAt != null) {
             if (LocalDate.now().isAfter(expiresAt)) {
                 return LicenseValidationResult(
@@ -235,8 +235,9 @@ object LicenseGenerator {
         expiresAt: LocalDate? = null
     ): String {
         val expiry = expiresAt ?: when (tier) {
-            LicenseTier.TRIAL -> LocalDate.now().plusDays(14)
-            LicenseTier.STD, LicenseTier.PRO -> LocalDate.now().plusYears(1)
+            LicenseTier.FREE -> LocalDate.now().plusYears(100)
+            LicenseTier.TRIAL -> LocalDate.now().plusDays(30)
+            LicenseTier.BIZ -> LocalDate.now().plusYears(1)
             LicenseTier.ENT -> LocalDate.now().plusYears(100)
         }
 
