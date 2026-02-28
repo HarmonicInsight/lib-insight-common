@@ -1,7 +1,7 @@
 namespace InsightCommon.AI;
 
 /// <summary>
-/// Claude APIモデル定義 — 全InsightOffice系アプリで共通利用
+/// Claude APIモデル定義 — 全Insight Business Suite系アプリで共通利用
 ///
 /// 【モデルレジストリ方式】
 /// 新モデルのリリース時は Registry に1エントリ追加し、

@@ -30,7 +30,7 @@
  *
  * // 全製品のアイコンをまとめて取得（グリッド表示用）
  * const icons = getLauncherIconsForDensity('xxhdpi');
- * // → [{ code: 'INSS', name: 'InsightOfficeSlide', path: '...', size: 144 }, ...]
+ * // → [{ code: 'INSS', name: 'Insight Deck Quality Gate', path: '...', size: 144 }, ...]
  * ```
  */
 
@@ -65,7 +65,7 @@ export interface LauncherIconEntry {
 
 /** ランチャーでのアイコンカテゴリ */
 export type LauncherIconCategory =
-  | 'office'      // InsightOffice Suite (INSS, IOSH, IOSD)
+  | 'office'      // Insight Business Suite (INSS, IOSH, IOSD)
   | 'ai_tools'    // AI ツール (INMV, INIG, INPY)
   | 'enterprise'  // 業務変革ツール (INCA, INBT, IVIN)
   | 'senior'      // シニアオフィス (ISOF)
@@ -116,7 +116,7 @@ export const LAUNCHER_MANIFEST_PATH = `${LAUNCHER_ICONS_BASE_DIR}/launcher-manif
  * 製品コード → カテゴリのマッピング
  */
 const PRODUCT_CATEGORIES: Record<string, LauncherIconCategory> = {
-  // InsightOffice Suite
+  // Insight Business Suite
   INSS: 'office',
   IOSH: 'office',
   IOSD: 'office',
@@ -144,7 +144,7 @@ const PRODUCT_CATEGORIES: Record<string, LauncherIconCategory> = {
  * 小さい値ほど先に表示される
  */
 const DISPLAY_ORDER: Record<string, number> = {
-  // InsightOffice Suite（メイン製品、先頭に表示）
+  // Insight Business Suite（メイン製品、先頭に表示）
   INSS: 100,
   IOSH: 110,
   IOSD: 120,
@@ -306,7 +306,7 @@ export function getCategoryLabel(
   locale: 'ja' | 'en' = 'ja',
 ): string {
   const labels: Record<LauncherIconCategory, { ja: string; en: string }> = {
-    office: { ja: 'InsightOffice', en: 'InsightOffice' },
+    office: { ja: 'Insight Business', en: 'Insight Business' },
     ai_tools: { ja: 'AI ツール', en: 'AI Tools' },
     enterprise: { ja: '業務変革ツール', en: 'Enterprise Tools' },
     senior: { ja: 'シニアオフィス', en: 'Senior Office' },

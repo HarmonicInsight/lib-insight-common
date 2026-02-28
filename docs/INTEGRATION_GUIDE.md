@@ -1,6 +1,6 @@
 # Insight Series 共通リソース統合ガイド
 
-このドキュメントは、Insight Series の各アプリケーション（InsightOfficeSlide, InsightOfficeSheet, InsightOfficeDoc, InsightPy, InsightCast, InsightImageGen, InsightBot, InsightNoCodeAnalyzer, InterviewInsight）が `insight-common` リポジトリの共通リソースを使用するための手順を説明します。
+このドキュメントは、Insight Series の各アプリケーション（Insight Deck Quality Gate, Insight Performance Management, Insight AI Briefcase, InsightPy, InsightCast, InsightImageGen, InsightBot, InsightNoCodeAnalyzer, InterviewInsight）が `insight-common` リポジトリの共通リソースを使用するための手順を説明します。
 
 ## 概要
 
@@ -70,7 +70,7 @@ cp insight-common/brand/colors.json ./src/assets/
 INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
 例：
-INS-INSS-TRIAL-A1B2-C3D4-X9    # InsightOfficeSlide トライアル
+INS-INSS-TRIAL-A1B2-C3D4-X9    # Insight Deck Quality Gate トライアル
 INS-INCA-PRO-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Professional
 ```
 
@@ -78,9 +78,9 @@ INS-INCA-PRO-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Professional
 
 | コード | 製品名 | 対象アプリ |
 |--------|--------|-----------|
-| `INSS` | InsightOfficeSlide | InsightOfficeSlide |
-| `IOSH` | InsightOfficeSheet | InsightOfficeSheet |
-| `IOSD` | InsightOfficeDoc | InsightOfficeDoc |
+| `INSS` | Insight Deck Quality Gate | Insight Deck Quality Gate |
+| `IOSH` | Insight Performance Management | Insight Performance Management |
+| `IOSD` | Insight AI Briefcase | Insight AI Briefcase |
 | `INPY` | InsightPy | InsightPy |
 | `INMV` | InsightCast | InsightCast |
 | `INIG` | InsightImageGen | InsightImageGen |
@@ -241,7 +241,7 @@ export const theme = {
 
 ## Python アプリでの使用
 
-InsightOfficeSlide, InsightPy（Python版）など
+Insight Deck Quality Gate, InsightPy（Python版）など
 
 ### 1. パッケージ構成
 
@@ -454,7 +454,7 @@ const currentProduct = products.products.individual.find(
   p => p.code === 'INSS'
 );
 
-console.log(currentProduct.name);        // "InsightOfficeSlide"
+console.log(currentProduct.name);        // "Insight Deck Quality Gate"
 console.log(currentProduct.description); // "PowerPointコンテンツ抽出・更新"
 
 // ティア情報

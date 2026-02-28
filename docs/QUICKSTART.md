@@ -14,9 +14,9 @@ git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.gi
 
 | アプリ | コード |
 |--------|--------|
-| InsightOfficeSlide | `INSS` |
-| InsightOfficeSheet | `IOSH` |
-| InsightOfficeDoc | `IOSD` |
+| Insight Deck Quality Gate | `INSS` |
+| Insight Performance Management | `IOSH` |
+| Insight AI Briefcase | `IOSD` |
 | InsightPy | `INPY` |
 | InsightCast | `INMV` |
 | InsightImageGen | `INIG` |

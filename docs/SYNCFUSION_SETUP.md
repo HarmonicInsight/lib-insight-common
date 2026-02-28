@@ -7,7 +7,7 @@
 
 ## 概要
 
-HARMONIC insight の InsightOffice 系製品（INSS / IOSH / IOSD）および IVIN は、Syncfusion Essential Studio のコンポーネントを使用しています。Syncfusion Community License を取得することで、**無償**で全コンポーネントを利用できます。
+HARMONIC insight の Insight Business Suite 系製品（INSS / IOSH / IOSD）および IVIN は、Syncfusion Essential Studio のコンポーネントを使用しています。Syncfusion Community License を取得することで、**無償**で全コンポーネントを利用できます。
 
 ### ライセンス構成
 
@@ -115,7 +115,7 @@ Syncfusion Community License は以下の条件を満たす個人・企業が無
 
 各製品に必要な NuGet パッケージを `.csproj` に追加します。DLL の手動コピーは不要です。
 
-#### INSS（InsightOfficeSlide — PowerPoint）
+#### INSS（Insight Deck Quality Gate — PowerPoint）
 
 ```xml
 <ItemGroup>
@@ -126,7 +126,7 @@ Syncfusion Community License は以下の条件を満たす個人・企業が無
 </ItemGroup>
 ```
 
-#### IOSH（InsightOfficeSheet — Excel）
+#### IOSH（Insight Performance Management — Excel）
 
 ```xml
 <ItemGroup>
@@ -136,7 +136,7 @@ Syncfusion Community License は以下の条件を満たす個人・企業が無
 </ItemGroup>
 ```
 
-#### IOSD（InsightOfficeDoc — Word）
+#### IOSD（Insight AI Briefcase — Word）
 
 ```xml
 <ItemGroup>

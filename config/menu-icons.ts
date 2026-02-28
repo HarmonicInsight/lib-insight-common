@@ -2,7 +2,7 @@
  * メニューアイコン標準化モジュール
  *
  * brand/menu-icons.json のソースオブトゥルースを元に、
- * 全 InsightOffice / Insight Series 製品で統一されたアイコン名を提供する。
+ * 全 Insight Business Suite / Insight Series 製品で統一されたアイコン名を提供する。
  *
  * アイコンライブラリ: Lucide Icons (https://lucide.dev/icons)
  * スタイル: outline, strokeWidth 1.5

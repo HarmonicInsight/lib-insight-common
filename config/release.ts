@@ -327,13 +327,13 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
   },
 
   // =========================================================================
-  // Tier 3: InsightOffice Suite
+  // Tier 3: Insight Business Suite
   // =========================================================================
 
   INSS: {
     code: 'INSS',
-    name: 'InsightOfficeSlide',
-    nameJa: 'InsightOfficeSlide',
+    name: 'Insight Deck Quality Gate',
+    nameJa: 'Insight Deck Quality Gate',
     platform: 'wpf',
     storeDistribution: 'direct',
     versioningScheme: 'semver',
@@ -346,8 +346,8 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
 
   IOSH: {
     code: 'IOSH',
-    name: 'InsightOfficeSheet',
-    nameJa: 'InsightOfficeSheet',
+    name: 'Insight Performance Management',
+    nameJa: 'Insight Performance Management',
     platform: 'wpf',
     storeDistribution: 'direct',
     versioningScheme: 'semver',
@@ -360,8 +360,8 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
 
   IOSD: {
     code: 'IOSD',
-    name: 'InsightOfficeDoc',
-    nameJa: 'InsightOfficeDoc',
+    name: 'Insight AI Briefcase',
+    nameJa: 'Insight AI Briefcase',
     platform: 'wpf',
     storeDistribution: 'direct',
     versioningScheme: 'semver',

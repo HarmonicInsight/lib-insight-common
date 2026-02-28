@@ -6,7 +6,7 @@
 
 ## 概要
 
-本ガイドは、InsightOffice 系（INSS / IOSH / IOSD / ISOF）をはじめとする全 Insight Series 製品のメニュー・ツールバー・サイドバーで使用するアイコンの標準を定義する。
+本ガイドは、Insight Business Suite 系（INSS / IOSH / IOSD / ISOF）をはじめとする全 Insight Series 製品のメニュー・ツールバー・サイドバーで使用するアイコンの標準を定義する。
 
 ### ソースオブトゥルース
 

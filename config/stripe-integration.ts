@@ -144,8 +144,8 @@ export interface StripeCustomerInfo {
  * - 例: STRIPE_INSS_STD_PRODUCT_ID, STRIPE_INSS_STD_PRICE_ID
  */
 export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
-  // --- InsightOffice Suite（Tier 3） ---
-  // INSS (InsightOfficeSlide)
+  // --- Insight Business Suite（Tier 3） ---
+  // INSS (Insight Deck Quality Gate)
   {
     productCode: 'INSS',
     plan: 'STD',
@@ -154,7 +154,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightOfficeSlide Standard (Annual)',
+    description: 'Insight Deck Quality Gate Standard (Annual)',
   },
   {
     productCode: 'INSS',
@@ -164,10 +164,10 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightOfficeSlide Professional (Annual)',
+    description: 'Insight Deck Quality Gate Professional (Annual)',
   },
 
-  // IOSH (InsightOfficeSheet)
+  // IOSH (Insight Performance Management)
   {
     productCode: 'IOSH',
     plan: 'STD',
@@ -176,7 +176,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightOfficeSheet Standard (Annual)',
+    description: 'Insight Performance Management Standard (Annual)',
   },
   {
     productCode: 'IOSH',
@@ -186,10 +186,10 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightOfficeSheet Professional (Annual)',
+    description: 'Insight Performance Management Professional (Annual)',
   },
 
-  // IOSD (InsightOfficeDoc)
+  // IOSD (Insight AI Briefcase)
   {
     productCode: 'IOSD',
     plan: 'STD',
@@ -198,7 +198,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightOfficeDoc Standard (Annual)',
+    description: 'Insight AI Briefcase Standard (Annual)',
   },
   {
     productCode: 'IOSD',
@@ -208,7 +208,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightOfficeDoc Professional (Annual)',
+    description: 'Insight AI Briefcase Professional (Annual)',
   },
 
   // INPY (InsightPy)

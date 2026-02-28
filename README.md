@@ -57,9 +57,9 @@ insight-common/
 
 | 製品コード | 製品名 | 説明 |
 |-----------|--------|------|
-| INSS | InsightOfficeSlide | PowerPointコンテンツ抽出・更新 |
-| IOSH | InsightOfficeSheet | Excelバージョン管理・チームコラボ |
-| IOSD | InsightOfficeDoc | Wordドキュメント操作・自動化 |
+| INSS | Insight Deck Quality Gate | PowerPointコンテンツ抽出・更新 |
+| IOSH | Insight Performance Management | Excelバージョン管理・チームコラボ |
+| IOSD | Insight AI Briefcase | Wordドキュメント操作・自動化 |
 | INPY | InsightPy | Windows自動化Python実行環境 |
 | INMV | InsightCast | 画像・PPTから動画作成 |
 | INIG | InsightImageGen | AI画像・音声生成 |

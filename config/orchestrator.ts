@@ -6,13 +6,13 @@
  * ============================================================================
  *
  * InsightBot を UiPath Orchestrator 相当の中央管理サーバーとして位置付け、
- * InsightOffice 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）として
+ * Insight Business Suite 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）として
  * リモート JOB 配信・実行監視を実現する。
  *
  * ## UiPath モデルとの対比
  *
  * ```
- * UiPath                           InsightBot + InsightOffice
+ * UiPath                           InsightBot + Insight Business Suite
  * ──────────────────────────────    ──────────────────────────────
  * Orchestrator (サーバー)           InsightBot (Orchestrator モード)
  *   ├ JOB のデプロイ                ├ JOB の作成・配布
@@ -21,7 +21,7 @@
  *   ├ キューイング                  ├ JOB キュー（順序・並列制御）
  *   └ 資産管理                      └ ライセンス・Agent 管理
  *
- * Agent / Robot (クライアント)      InsightOffice (Agent モード)
+ * Agent / Robot (クライアント)      Insight Business Suite (Agent モード)
  *   ├ ロボット実行                  ├ Python スクリプト実行
  *   ├ ファイル操作                  ├ ドキュメント内部から操作（強み）
  *   ├ 実行結果報告                  ├ exit_code + stdout + 変更フラグ
@@ -31,7 +31,7 @@
  * ## 差別化ポイント
  *
  * UiPath はファイルを「外から」操作する（Win32 API / UI Automation）。
- * InsightBot + InsightOffice は「中から」操作する。
+ * InsightBot + Insight Business Suite は「中から」操作する。
  * ドキュメントがアプリ内で開いた状態のまま Python がセル・スライド・段落を
  * 直接操作するため、ファイルロックやUI遅延の問題がない。
  *
@@ -101,7 +101,7 @@ export interface AgentInfo {
   agentId: string;
   /** 表示名（ユーザーが設定） */
   displayName: string;
-  /** InsightOffice 製品コード */
+  /** Insight Business Suite 製品コード */
   product: ProductCode;
   /** マシン名 */
   machineName: string;
@@ -314,7 +314,7 @@ export interface JobRecord {
  * ## 実行フロー
  *
  * ```
- * Orchestrator                        Agent (InsightOffice)
+ * Orchestrator                        Agent (Insight Business Suite)
  * ──────────                          ─────────────────────
  * workflow_dispatch ──────────────→
  *   step[0]: open 売上データ.xlsx
@@ -917,10 +917,10 @@ export interface OrchestratorApiResponse<T = unknown> {
 }
 
 // =============================================================================
-// Agent 設定（InsightOffice 側）
+// Agent 設定（Insight Business Suite 側）
 // =============================================================================
 
-/** InsightOffice Agent の設定 */
+/** Insight Business Suite Agent の設定 */
 export interface AgentConfig {
   /** Orchestrator のアドレス（例: '192.168.1.100:9400'） */
   orchestratorUrl: string;

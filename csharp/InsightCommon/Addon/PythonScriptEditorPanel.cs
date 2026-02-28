@@ -7,7 +7,7 @@ using InsightCommon.Theme;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// Python スクリプトエディター画面（InsightOffice 共通）
+/// Python スクリプトエディター画面（Insight Business Suite 共通）
 ///
 /// スクリプトの名前・カテゴリ・説明・コードを編集し、保存する UI。
 /// PythonScriptsPanel のリストからダブルクリックまたは「新規」ボタンで遷移する。

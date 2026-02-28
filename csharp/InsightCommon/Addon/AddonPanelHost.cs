@@ -4,7 +4,7 @@ using System.Windows.Controls;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// アドインパネルホスト（InsightOffice 全アプリ共通）
+/// アドインパネルホスト（Insight Business Suite 全アプリ共通）
 ///
 /// モジュールの UI パネルを動的にホストするコンテナ。
 /// AddonManager のモジュール状態に応じてパネルの表示/非表示を切り替える。

@@ -117,7 +117,7 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierDefinition> = {
    * Registered パートナー
    * - 参加障壁＝なし（申請→審査→承認）
    * - 想定: 中小IT企業、フリーランスコンサルタント
-   * - InsightOffice Suite（Tier 3）+ ISOF のみ販売可能
+   * - Insight Business Suite（Tier 3）+ ISOF のみ販売可能
    */
   registered: {
     tier: 'registered',
@@ -129,13 +129,13 @@ export const PARTNER_TIERS: Record<PartnerTier, PartnerTierDefinition> = {
     portalAccess: true,
     trainingIncluded: true,
     demoEnvironment: true,
-    description: '誰でも参加可能。Tier 3+4 製品（InsightOffice Suite / ISOF）のみ販売可能。',
+    description: '誰でも参加可能。Tier 3+4 製品（Insight Business Suite / ISOF）のみ販売可能。',
   },
 
   /**
    * Silver パートナー
    * - 想定: 中堅IT企業、コンサルファーム
-   * - InsightOffice Suite + Tier 2（INMV/INIG）が販売可能
+   * - Insight Business Suite + Tier 2（INMV/INIG）が販売可能
    */
   silver: {
     tier: 'silver',
@@ -254,7 +254,7 @@ export const RESELLER_PRODUCT_TERMS: Record<ProductCode, ResellerProductTerms> =
   },
 
   // =========================================================================
-  // Tier 3: InsightOffice Suite ＝全パートナーが販売可能
+  // Tier 3: Insight Business Suite ＝全パートナーが販売可能
   // =========================================================================
 
   INSS: {

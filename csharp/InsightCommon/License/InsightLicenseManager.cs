@@ -39,7 +39,7 @@ public class InsightLicenseManager
     /// コンストラクタ
     /// </summary>
     /// <param name="productCode">製品コード (INSS, IOSH, IOSD, INPY, INMV, INBT, INCA, INIG, IVIN)</param>
-    /// <param name="productName">製品名 (InsightOfficeSlide, InsightOfficeSheet, InsightOfficeDoc, etc.)</param>
+    /// <param name="productName">製品名 (Insight Deck Quality Gate, Insight Performance Management, Insight AI Briefcase, etc.)</param>
     public InsightLicenseManager(string productCode, string productName)
     {
         _productCode = productCode;

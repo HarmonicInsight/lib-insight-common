@@ -17,7 +17,7 @@ Usage:
   python scripts/generate-app-icon.py --product IOSH --output ./Resources/ --platform windows
 
   # Generate from a specific master PNG
-  python scripts/generate-app-icon.py --master brand/icons/png/icon-insight-sheet.png --output ./Resources/ --name InsightOfficeSheet
+  python scripts/generate-app-icon.py --master brand/icons/png/icon-insight-sheet.png --output ./Resources/ --name InsightPerformanceManagement
 
   # Generate icons for ALL products (each to its own platform)
   python scripts/generate-app-icon.py --all --output ./generated-icons/
@@ -127,21 +127,21 @@ PRODUCT_ICONS = {
         'build_path': 'resources/',
     },
 
-    # --- Tier 3: InsightOffice Suite (WPF) ---
+    # --- Tier 3: Insight Business Suite (WPF) ---
     'INSS': {
-        'name': 'InsightOfficeSlide',
+        'name': 'Insight Deck Quality Gate',
         'icon': 'icon-insight-slide.png',
         'platform': 'wpf',
         'build_path': 'Resources/',
     },
     'IOSH': {
-        'name': 'InsightOfficeSheet',
+        'name': 'InsightPerformanceManagement',
         'icon': 'icon-insight-sheet.png',
         'platform': 'wpf',
         'build_path': 'Resources/',
     },
     'IOSD': {
-        'name': 'InsightOfficeDoc',
+        'name': 'InsightAIBriefcase',
         'icon': 'icon-insight-doc.png',
         'platform': 'wpf',
         'build_path': 'Resources/',

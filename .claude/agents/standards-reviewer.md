@@ -25,7 +25,7 @@ HARMONIC insight の **Ivory & Gold デザイン標準** および **ライセ�
 - プラン体系: TRIAL / STD / PRO / ENT（FREE は廃止済み）
 - ライセンス画面が Insight Slides 形式に準拠しているか
 
-### 3. AI アシスタント（InsightOffice 系）
+### 3. AI アシスタント（Insight Business Suite 系）
 
 - Claude (Anthropic) API のみ使用（OpenAI/Azure 禁止）
 - モデルティア: Standard (Sonnet) / Premium (Opus) — ユーザーがティア内で選択可能

@@ -11,11 +11,11 @@ HARMONIC insight 製品エコシステムに新規製品を追加するガイド
 1. **製品コード**（4文字、例: INXX）
 2. **製品名**（例: InsightNewProduct）
 3. **製品の説明**
-4. **ティア**（Tier 1: 業務変革ツール / Tier 2: AI活用ツール / Tier 3: InsightOffice Suite）
+4. **ティア**（Tier 1: 業務変革ツール / Tier 2: AI活用ツール / Tier 3: Insight Business Suite）
 5. **価格帯**（STD / PRO / ENT 各プランの年額）
 6. **プラットフォーム**（WPF / React / Python / Android / iOS）
 7. **AI アシスタント搭載の有無**
-8. **独自拡張子の有無**（InsightOffice 系の場合）
+8. **独自拡張子の有無**（Insight Business Suite 系の場合）
 
 ## 確認後の実装手順
 

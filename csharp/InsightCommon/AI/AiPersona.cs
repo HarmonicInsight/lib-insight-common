@@ -5,7 +5,7 @@ namespace InsightCommon.AI;
 
 /// <summary>
 /// AIペルソナ — モデルを日本語の人格キャラクターとして表現
-/// 全InsightOffice系アプリで共通利用
+/// 全Insight Business Suite系アプリで共通利用
 /// </summary>
 public class AiPersona
 {

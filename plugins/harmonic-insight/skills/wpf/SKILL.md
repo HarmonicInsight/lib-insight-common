@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Bash
 
 # C# WPF 開発標準
 
-対象製品: IOSH (InsightOfficeSheet), INSS (InsightOfficeSlide), IOSD (InsightOfficeDoc), INBT (InsightBot)
+対象製品: IOSH (Insight Performance Management), INSS (Insight Deck Quality Gate), IOSD (Insight AI Briefcase), INBT (InsightBot)
 
 ## プロジェクト構成（必須）
 

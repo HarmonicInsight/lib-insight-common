@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// Python スクリプト実行ブリッジ（InsightOffice 共通）
+/// Python スクリプト実行ブリッジ（Insight Business Suite 共通）
 ///
 /// C# WPF アプリから Python subprocess を起動し、スクリプトを実行する。
 /// InsightPy エンジンの核となる実行基盤。

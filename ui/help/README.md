@@ -1,6 +1,6 @@
-# InsightOfficeSheet ヘルプコンテンツ
+# Insight Performance Management ヘルプコンテンツ
 
-> このフォルダには、InsightOfficeSheet のアプリ内ヘルプとして表示するドキュメントが含まれています。
+> このフォルダには、Insight Performance Management のアプリ内ヘルプとして表示するドキュメントが含まれています。
 
 ---
 
@@ -24,7 +24,7 @@
   ├── 履歴ファイルについて   → HISTORY_FILES.md
   ├── よくある質問           → FAQ.md
   ├── ショートカットキー一覧 → QUICK_START.md#ショートカットキー一覧
-  └── InsightOfficeSheetについて  → About ダイアログ（アプリ内実装）
+  └── Insight Performance Managementについて  → About ダイアログ（アプリ内実装）
 ```
 
 ---

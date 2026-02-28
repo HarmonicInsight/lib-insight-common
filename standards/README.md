@@ -62,9 +62,9 @@ Border:           #E7E2DA (Warm Gray)
 
 | コード | 製品名 | 備考 |
 |-------|-------|------|
-| INSS | InsightOfficeSlide | |
-| IOSH | InsightOfficeSheet | STD: 個人, PRO: 法人 |
-| IOSD | InsightOfficeDoc | |
+| INSS | Insight Deck Quality Gate | |
+| IOSH | Insight Performance Management | STD: 個人, PRO: 法人 |
+| IOSD | Insight AI Briefcase | |
 | INPY | InsightPy | |
 | INMV | InsightCast | |
 | INIG | InsightImageGen | |

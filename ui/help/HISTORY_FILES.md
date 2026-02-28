@@ -1,6 +1,6 @@
 # 履歴ファイル（.hsheet）について
 
-> InsightOfficeSheet は、Excel ファイルを編集・保存するたびに **変更履歴** を自動的に記録します。
+> Insight Performance Management は、Excel ファイルを編集・保存するたびに **変更履歴** を自動的に記録します。
 > この履歴は `.hsheet` という拡張子のファイルとして、元の Excel ファイルと同じフォルダに保存されます。
 
 ---
@@ -51,7 +51,7 @@
 
 ### 変更履歴を見る
 
-1. InsightOfficeSheet でExcel ファイルを開く
+1. Insight Performance Management でExcel ファイルを開く
 2. メニューの「**変更履歴**」（Ctrl + H）をクリック
 3. 変更の一覧が時系列で表示されます
 
@@ -150,13 +150,13 @@
 ```
 
 > **注意**: 中のファイルを直接編集すると履歴データが壊れる可能性があります。
-> 確認のみにとどめ、編集は InsightOfficeSheet から行ってください。
+> 確認のみにとどめ、編集は Insight Performance Management から行ってください。
 
 ---
 
 ## 履歴の整理（古い履歴の削除）
 
-1. InsightOfficeSheet でExcel ファイルを開く
+1. Insight Performance Management でExcel ファイルを開く
 2. メニューの「**変更履歴**」→「**履歴の整理**」を選択
 3. 保持する期間を選択
    - 直近1ヶ月
@@ -176,7 +176,7 @@
 | ファイル名 | 元のExcelと同名で拡張子が `.hsheet` |
 | 保存場所 | 元のExcelと同じフォルダ |
 | ファイル形式 | ZIPアーカイブ |
-| 自動作成 | InsightOfficeSheet で保存するたびに自動作成・更新 |
+| 自動作成 | Insight Performance Management で保存するたびに自動作成・更新 |
 | 削除の影響 | Excel 本体には影響なし（履歴のみ失われる） |
 | 移動時の注意 | Excel と .hsheet は必ず一緒に移動する |
 | リネーム時の注意 | Excel と .hsheet の名前を必ず揃える |

@@ -2,7 +2,7 @@
  * AI アシスタント スキルシステム定義
  *
  * Anthropic Knowledge Work Plugins のアーキテクチャを参考に、
- * InsightOffice 系アプリの AI アシスタントにドメイン特化スキルを追加する。
+ * Insight Business Suite 系アプリの AI アシスタントにドメイン特化スキルを追加する。
  *
  * 参照: https://github.com/anthropics/knowledge-work-plugins
  *
@@ -122,7 +122,7 @@ export interface PluginManifest {
 }
 
 // =============================================================================
-// IOSH（InsightOfficeSheet）向けスキル
+// IOSH（Insight Performance Management）向けスキル
 // =============================================================================
 
 /** 仕訳準備スキル（Finance: journal-entry-prep 参考） */
@@ -335,7 +335,7 @@ const SKILL_QUERY_WRITING: SkillDefinition = {
 };
 
 // =============================================================================
-// IOSD（InsightOfficeDoc）向けスキル
+// IOSD（Insight AI Briefcase）向けスキル
 // =============================================================================
 
 /** 契約書レビュースキル（Legal: contract-review 参考） */
@@ -469,7 +469,7 @@ const SKILL_CONTENT_CREATION: SkillDefinition = {
 };
 
 // =============================================================================
-// INSS（InsightOfficeSlide）向けスキル
+// INSS（Insight Deck Quality Gate）向けスキル
 // =============================================================================
 
 /** ステークホルダー報告スキル（PM: stakeholder-comms 参考） */

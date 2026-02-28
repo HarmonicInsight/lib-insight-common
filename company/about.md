@@ -30,11 +30,11 @@
 4. **InsightCast (INMV)** - 画像・テキストから動画作成
 5. **InsightImageGen (INIG)** - 業務資料向けAI画像の大量自動生成
 
-### Tier 3: InsightOffice Suite
+### Tier 3: Insight Business Suite
 
-6. **InsightOfficeSlide (INSS)** - AIアシスタント搭載 プレゼンテーション作成・編集（MS Office 不要）
-7. **InsightOfficeSheet (IOSH)** - AIアシスタント搭載 スプレッドシート作成・編集（MS Office 不要）
-8. **InsightOfficeDoc (IOSD)** - AIアシスタント搭載 ドキュメント作成・編集（MS Office 不要）
+6. **Insight Deck Quality Gate (INSS)** - AIアシスタント搭載 プレゼンテーション作成・編集（MS Office 不要）
+7. **Insight Performance Management (IOSH)** - AIアシスタント搭載 スプレッドシート作成・編集（MS Office 不要）
+8. **Insight AI Briefcase (IOSD)** - AIアシスタント搭載 ドキュメント作成・編集（MS Office 不要）
 9. **InsightPy (INPY)** - AIエディタ搭載 業務調査・データ収集Python実行基盤
 
 ## 価値観
@@ -47,7 +47,7 @@
 ## 沿革
 
 - 2024年 - 会社設立
-- 2024年 - InsightOffice Suite 開発開始
+- 2024年 - Insight Business Suite 開発開始
 - 2025年 - Insight Office 製品サイト公開 (insight-office.com)
 
 ## 連絡先

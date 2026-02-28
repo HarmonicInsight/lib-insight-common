@@ -24,9 +24,9 @@ from typing import Optional, Dict, Any
 
 class ProductCode(Enum):
     """製品コード（文書用）"""
-    INSS = "INSS"  # InsightOfficeSlide
-    IOSH = "IOSH"  # InsightOfficeSheet
-    IOSD = "IOSD"  # InsightOfficeDoc
+    INSS = "INSS"  # Insight Deck Quality Gate
+    IOSH = "IOSH"  # Insight Performance Management
+    IOSD = "IOSD"  # Insight AI Briefcase
     INPY = "INPY"  # InsightPy
     INMV = "INMV"  # InsightCast
     INBT = "INBT"  # InsightBot (RPA)
@@ -45,9 +45,9 @@ class Plan(Enum):
 
 
 PRODUCT_NAMES: Dict[ProductCode, str] = {
-    ProductCode.INSS: "InsightOfficeSlide",
-    ProductCode.IOSH: "InsightOfficeSheet",
-    ProductCode.IOSD: "InsightOfficeDoc",
+    ProductCode.INSS: "Insight Deck Quality Gate",
+    ProductCode.IOSH: "Insight Performance Management",
+    ProductCode.IOSD: "Insight AI Briefcase",
     ProductCode.INPY: "InsightPy",
     ProductCode.INMV: "InsightCast",
     ProductCode.INBT: "InsightBot",
@@ -66,9 +66,9 @@ PLAN_NAMES: Dict[Plan, str] = {
 
 # 製品と対応プラン
 PRODUCT_PLANS: Dict[str, list] = {
-    "InsightOfficeSlide": [ProductCode.INSS],
-    "InsightOfficeSheet": [ProductCode.IOSH],
-    "InsightOfficeDoc": [ProductCode.IOSD],
+    "Insight Deck Quality Gate": [ProductCode.INSS],
+    "Insight Performance Management": [ProductCode.IOSH],
+    "Insight AI Briefcase": [ProductCode.IOSD],
     "InsightPy": [ProductCode.INPY],
     "InsightCast": [ProductCode.INMV],
     "InsightBot": [ProductCode.INBT],
@@ -185,7 +185,7 @@ class LicenseManager:
     def __init__(self, product: str, config_dir: Optional[Path] = None):
         """
         Args:
-            product: 製品名（InsightOfficeSlide, InsightPy, InterviewInsight, etc.）
+            product: 製品名（Insight Deck Quality Gate, InsightPy, InterviewInsight, etc.）
             config_dir: 設定保存ディレクトリ（省略時はデフォルト）
         """
         self.product = product

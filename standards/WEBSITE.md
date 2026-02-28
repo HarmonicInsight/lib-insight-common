@@ -48,7 +48,7 @@
 
 - ❌ `bg-gray-*` / `dark:bg-gray-*` の使用（`slate` に統一）
 - ❌ ページごとにダークモード基底色を変えること
-- ❌ ライトモードでダークテーマ固定のページを作ること（InsightOfficeページ等）
+- ❌ ライトモードでダークテーマ固定のページを作ること（Insight Business Suiteページ等）
 
 ### 1.2 ブランドアクセント
 
@@ -66,7 +66,7 @@
 
 | カテゴリ | アクセントカラー | Tailwind | 用途 |
 |----------|-----------------|----------|------|
-| Windowsアプリ | Blue | `blue-500` (#3B82F6) | InsightOffice 等 |
+| Windowsアプリ | Blue | `blue-500` (#3B82F6) | Insight Business Suite 等 |
 | 業務改善ツール | Violet | `violet-500` (#8B5CF6) | SalesInsight 等 |
 | Insight Series | Amber | `amber-500` (#F59E0B) | InsightSlide, Movie 等 |
 | 1on1 教育 | Emerald | `emerald-500` (#10B981) | 教育プラットフォーム |
@@ -397,7 +397,7 @@ xl:  1280px  → 最大幅コンテンツ
 
 | ページ | 違反内容 | 優先度 |
 |--------|---------|--------|
-| InsightOffice (`/insight-office`) | ダーク固定テーマ、emerald独自色 | **高** |
+| Insight Business Suite (`/insight-office`) | ダーク固定テーマ、emerald独自色 | **高** |
 | Contact (`/contact`) | gradient背景、font-bold使用 | **高** |
 | RPA (`/rpa`) | 完全独自テーマ（Ivory & Gold流用） | **中** |
 | TOP (`/`) | `dark:bg-gray-950` → `dark:bg-slate-950` に変更必要 | **中** |

@@ -1,6 +1,6 @@
-# InsightOfficeDoc (IOSD) セットアップガイド
+# Insight AI Briefcase (IOSD) セットアップガイド
 
-> Word文書操作・自動化ツール「InsightOfficeDoc」の開発セットアップ手順
+> Word文書操作・自動化ツール「Insight AI Briefcase」の開発セットアップ手順
 
 ---
 
@@ -9,7 +9,7 @@
 | 項目 | 内容 |
 |------|------|
 | 製品コード | IOSD |
-| 製品名 | InsightOfficeDoc |
+| 製品名 | Insight AI Briefcase |
 | 説明 | Word文書操作・自動化ツール |
 | プラットフォーム | Windows (WPF / C#) |
 | 対応Word形式 | .docx, .doc, .rtf, .txt |
@@ -49,7 +49,7 @@ git submodule update --init --recursive
 
 ### 3. サードパーティライセンス（Syncfusion DocIO）
 
-InsightOfficeDoc は **Syncfusion DocIO** および **SfRichTextBoxAdv** を使用しています。ライセンスキーは `insight-common/config/third-party-licenses.json` で全製品共通管理されています。
+Insight AI Briefcase は **Syncfusion DocIO** および **SfRichTextBoxAdv** を使用しています。ライセンスキーは `insight-common/config/third-party-licenses.json` で全製品共通管理されています。
 
 #### 必須 NuGet パッケージ
 
@@ -172,7 +172,7 @@ var licenseManager = new InsightLicenseManager("IOSD");
 
 ### 6. メニュー構造
 
-`insight-common/ui/menu-structure.json` の `insightOfficeDoc` セクションに定義されたメニューを実装してください。
+`insight-common/ui/menu-structure.json` の `insightAiBriefcase` セクションに定義されたメニューを実装してください。
 
 #### 必須メニュー項目
 
@@ -193,11 +193,11 @@ var licenseManager = new InsightLicenseManager("IOSD");
 - 履歴ファイルについて
 - よくある質問 (FAQ)
 - ショートカットキー一覧
-- InsightOfficeDocについて
+- Insight AI Briefcaseについて
 
 ### 7. 履歴ファイル（.iosd）
 
-InsightOfficeDoc は変更履歴を `.iosd` ファイル（ZIP アーカイブ）として保存します。
+Insight AI Briefcase は変更履歴を `.iosd` ファイル（ZIP アーカイブ）として保存します。
 
 ```
 元ファイル: C:\Users\data\報告書.docx

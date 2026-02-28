@@ -8,9 +8,9 @@ Insight Series の各リポジトリに insight-common を組み込む手順で�
 
 | リポジトリ | 技術スタック | 製品コード |
 |-----------|-------------|-----------|
-| InsightOfficeSlide | Python + Tkinter | `INSS` |
-| InsightOfficeSheet | C# + WPF | `IOSH` |
-| InsightOfficeDoc | C# + WPF | `IOSD` |
+| Insight Deck Quality Gate | Python + Tkinter | `INSS` |
+| Insight Performance Management | C# + WPF | `IOSH` |
+| Insight AI Briefcase | C# + WPF | `IOSD` |
 | InsightPy | Python | `INPY` |
 | InsightCast | Python | `INMV` |
 | InsightImageGen | Python | `INIG` |
@@ -257,7 +257,7 @@ export default App;
 
 ---
 
-## Python 製品（InsightOfficeSlide, InsightPy）
+## Python 製品（Insight Deck Quality Gate, InsightPy）
 
 ### Step 1: Submodule 追加
 

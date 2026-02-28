@@ -7,7 +7,7 @@
 
 ---
 
-## IOSD（InsightOfficeDoc）— 契約書レビュースキル統合
+## IOSD（Insight AI Briefcase）— 契約書レビュースキル統合
 
 ```
 insight-common サブモジュールを最新に更新してください。
@@ -44,7 +44,7 @@ insight-common サブモジュールを最新に更新してください。
 
 ---
 
-## IOSH（InsightOfficeSheet）— Finance スキル統合
+## IOSH（Insight Performance Management）— Finance スキル統合
 
 ```
 insight-common サブモジュールを最新に更新してください。
@@ -86,7 +86,7 @@ insight-common サブモジュールを最新に更新してください。
 
 ---
 
-## INSS（InsightOfficeSlide）— コンテンツ作成 + メモリ
+## INSS（Insight Deck Quality Gate）— コンテンツ作成 + メモリ
 
 ```
 insight-common サブモジュールを最新に更新してください。

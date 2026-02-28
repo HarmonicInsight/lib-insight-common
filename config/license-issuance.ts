@@ -307,7 +307,7 @@ export interface ProductDownloadLinks {
 export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> = {
   INSS: {
     productCode: 'INSS',
-    productName: 'InsightOfficeSlide',
+    productName: 'Insight Deck Quality Gate',
     windows: 'https://download.harmonicinsight.com/insightofficeslide/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/insightofficeslide',
   },
@@ -319,13 +319,13 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
   },
   IOSH: {
     productCode: 'IOSH',
-    productName: 'InsightOfficeSheet',
+    productName: 'Insight Performance Management',
     windows: 'https://download.harmonicinsight.com/insightofficesheet/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/insightofficesheet',
   },
   IOSD: {
     productCode: 'IOSD',
-    productName: 'InsightOfficeDoc',
+    productName: 'Insight AI Briefcase',
     windows: 'https://download.harmonicinsight.com/insightofficedoc/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/insightofficedoc',
   },

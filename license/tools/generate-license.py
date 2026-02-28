@@ -35,10 +35,10 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 例:
-  # InsightOfficeSlide Pro（2027年1月まで）
+  # Insight Deck Quality Gate Pro（2027年1月まで）
   python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-01-31
 
-  # InsightOfficeSlide Standard（12ヶ月）
+  # Insight Deck Quality Gate Standard（12ヶ月）
   python generate-license.py -p INSS --plan STD -e user@example.com -m 12
 
   # InsightPy トライアル（14日間）
@@ -54,9 +54,9 @@ def parse_args():
   python generate-license.py -p IVIN --plan STD -e user@example.com -m 12
 
 製品コード:
-  INSS  - InsightOfficeSlide
-  IOSH  - InsightOfficeSheet
-  IOSD  - InsightOfficeDoc
+  INSS  - Insight Deck Quality Gate
+  IOSH  - Insight Performance Management
+  IOSD  - Insight AI Briefcase
   INPY  - InsightPy
   INMV  - InsightCast
   INIG  - InsightImageGen

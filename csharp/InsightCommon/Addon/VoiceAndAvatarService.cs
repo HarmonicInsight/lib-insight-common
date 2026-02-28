@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// 音声入力 + VRM アバター統合サービス（InsightOffice 共通）
+/// 音声入力 + VRM アバター統合サービス（Insight Business Suite 共通）
 ///
 /// ## 設計思想
 ///

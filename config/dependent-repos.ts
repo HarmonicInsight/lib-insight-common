@@ -101,12 +101,12 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // Tier 3: InsightOffice Suite
+  // Tier 3: Insight Business Suite
   // ══════════════════════════════════════════════════════
   {
     repo: 'win-app-insight-slide',
     productCode: 'INSS',
-    productName: 'InsightOfficeSlide',
+    productName: 'Insight Deck Quality Gate',
     iconCopy: [
       { src: 'InsightOfficeSlide/InsightOfficeSlide.ico', dest: 'Resources/InsightOfficeSlide.ico' },
       { src: 'InsightOfficeSlide/InsightOfficeSlide_256.png', dest: 'Resources/InsightOfficeSlide_256.png' },
@@ -116,7 +116,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   {
     repo: 'win-app-insight-sheet',
     productCode: 'IOSH',
-    productName: 'InsightOfficeSheet',
+    productName: 'Insight Performance Management',
     iconCopy: [
       { src: 'InsightOfficeSheet/InsightOfficeSheet.ico', dest: 'Resources/InsightOfficeSheet.ico' },
       { src: 'InsightOfficeSheet/InsightOfficeSheet_256.png', dest: 'Resources/InsightOfficeSheet_256.png' },
@@ -126,7 +126,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   {
     repo: 'win-app-insight-doc',
     productCode: 'IOSD',
-    productName: 'InsightOfficeDoc',
+    productName: 'Insight AI Briefcase',
     iconCopy: [
       { src: 'InsightOfficeDoc/InsightOfficeDoc.ico', dest: 'Resources/InsightOfficeDoc.ico' },
       { src: 'InsightOfficeDoc/InsightOfficeDoc_256.png', dest: 'Resources/InsightOfficeDoc_256.png' },

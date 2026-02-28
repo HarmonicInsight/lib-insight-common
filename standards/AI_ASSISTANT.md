@@ -1,21 +1,21 @@
 # AI アシスタント 標準仕様
 
-> InsightOffice 系アプリ（INSS/IOSH/IOSD）共通の AI アシスタント実装ガイド
+> Insight Business Suite 系アプリ（INSS/IOSH/IOSD）共通の AI アシスタント実装ガイド
 
 ---
 
 ## 1. 概要
 
-InsightOffice 系アプリには、Claude API を利用した AI アシスタント機能を搭載する。
+Insight Business Suite 系アプリには、Claude API を利用した AI アシスタント機能を搭載する。
 本ドキュメントは、UI デザイン・API 連携・ペルソナ・ライセンス制御・データモデルの全仕様を標準化する。
 
 ### 対象製品
 
 | コード | 製品名 | AI の役割 |
 |--------|--------|-----------|
-| INSS | InsightOfficeSlide | スライドテキストの校正・改善提案 |
-| IOSH | InsightOfficeSheet | Excel データの操作・分析・書式設定（Tool Use） |
-| IOSD | InsightOfficeDoc | Word ドキュメントの校正・要約・構成提案 |
+| INSS | Insight Deck Quality Gate | スライドテキストの校正・改善提案 |
+| IOSH | Insight Performance Management | Excel データの操作・分析・書式設定（Tool Use） |
+| IOSD | Insight AI Briefcase | Word ドキュメントの校正・要約・構成提案 |
 
 ### 設計原則
 
@@ -327,7 +327,7 @@ anthropic-version: 2023-06-01
 
 ### 5.3 製品別プロンプト
 
-#### InsightOfficeSlide (INSS)
+#### Insight Deck Quality Gate (INSS)
 
 ```
 あなたはPowerPointプレゼンテーションの内容を分析・修正するAIアシスタントです。
@@ -347,20 +347,20 @@ anthropic-version: 2023-06-01
 ユーザーの質問や要望に丁寧に回答してください。
 ```
 
-#### InsightOfficeSheet (IOSH)
+#### Insight Performance Management (IOSH)
 
 ```
-You are an AI assistant for InsightOfficeSheet, an Excel version control application.
+You are an AI assistant for Insight Performance Management, an Excel version control application.
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
 Respond in the same language as the user's message.
 ```
 
-#### InsightOfficeDoc (IOSD)
+#### Insight AI Briefcase (IOSD)
 
 ```
-あなたはInsightOfficeDocのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
+あなたはInsight AI BriefcaseのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
 ユーザーのメッセージと同じ言語で回答してください。
 
 主な機能：
@@ -433,7 +433,7 @@ A	B	C	...
 
 ## 7. Tool Use 定義（IOSH 標準）
 
-InsightOfficeSheet で利用する 6 つの標準ツール:
+Insight Performance Management で利用する 6 つの標準ツール:
 
 ### 7.1 ツール一覧
 

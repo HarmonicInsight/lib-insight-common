@@ -27,11 +27,11 @@
     dotnet publish をスキップするか（既にビルド済みの場合）
 
 .EXAMPLE
-    # InsightOfficeSheet のインストーラーをビルド
+    # Insight Performance Management のインストーラーをビルド
     .\insight-common\scripts\build-installer.ps1 `
         -ProductCode "IOSH" `
         -AppVersion "1.0.0" `
-        -PublishDir "src\InsightOfficeSheet.App\bin\Release\net8.0-windows\win-x64\publish"
+        -PublishDir "src\InsightPerformanceManagement.App\bin\Release\net8.0-windows\win-x64\publish"
 
 .EXAMPLE
     # InsightBot (Orchestrator) のインストーラーをビルド

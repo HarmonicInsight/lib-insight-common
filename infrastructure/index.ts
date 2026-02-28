@@ -104,9 +104,9 @@ export {
 
 // Constants (legacy - use config/products.ts instead)
 export const PRODUCT_CODES = {
-  INSS: 'InsightOfficeSlide',
-  IOSH: 'InsightOfficeSheet',
-  IOSD: 'InsightOfficeDoc',
+  INSS: 'Insight Deck Quality Gate',
+  IOSH: 'Insight Performance Management',
+  IOSD: 'Insight AI Briefcase',
   INPY: 'InsightPy',
   INMV: 'InsightCast',
   INBT: 'InsightBot',

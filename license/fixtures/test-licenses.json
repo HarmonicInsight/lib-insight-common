@@ -7,7 +7,7 @@
   "licenses": [
     {
       "product": "INSS",
-      "productName": "InsightOfficeSlide",
+      "productName": "Insight Deck Quality Gate",
       "plan": "PRO",
       "licenseKey": "INSS-PRO-2702-S467-NWPG-ABCW",
       "email": "test@example.com",
@@ -15,7 +15,7 @@
     },
     {
       "product": "IOSH",
-      "productName": "InsightOfficeSheet",
+      "productName": "Insight Performance Management",
       "plan": "PRO",
       "licenseKey": "IOSH-PRO-2702-S467-AUIS-K6CX",
       "email": "test@example.com",
@@ -23,7 +23,7 @@
     },
     {
       "product": "IOSD",
-      "productName": "InsightOfficeDoc",
+      "productName": "Insight AI Briefcase",
       "plan": "PRO",
       "licenseKey": "IOSD-PRO-2702-S467-XRAS-IYNN",
       "email": "test@example.com",

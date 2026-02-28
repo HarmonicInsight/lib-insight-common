@@ -12,7 +12,7 @@ PPPP-PLAN-YYMM-HASH-SIG1-SIG2
     │    │    │    └────── メールハッシュ（4文字）
     │    │    └─────────── 有効期限（2027年1月）
     │    └──────────────── プラン（Pro）
-    └───────────────────── 製品（InsightOfficeSlide）
+    └───────────────────── 製品（Insight Deck Quality Gate）
 ```
 
 ## セットアップ
@@ -45,10 +45,10 @@ python generate-license.py -p IVIN --trial -e user@example.com
 ### 2. 年間ライセンス（12ヶ月）
 
 ```bash
-# InsightOfficeSlide Standard
+# Insight Deck Quality Gate Standard
 python generate-license.py -p INSS --plan STD -e user@example.com -m 12
 
-# InsightOfficeSheet Standard
+# Insight Performance Management Standard
 python generate-license.py -p IOSH --plan STD -e user@example.com -m 12
 
 # InsightPy
@@ -87,9 +87,9 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
 
 | コード | 製品名 |
 |--------|--------|
-| `INSS` | InsightOfficeSlide |
-| `IOSH` | InsightOfficeSheet |
-| `IOSD` | InsightOfficeDoc |
+| `INSS` | Insight Deck Quality Gate |
+| `IOSH` | Insight Performance Management |
+| `IOSD` | Insight AI Briefcase |
 | `INPY` | InsightPy |
 | `INMV` | InsightCast |
 | `INBT` | InsightBot |
@@ -114,7 +114,7 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
   Insight Series ライセンス発行
 ========================================
 
-製品:       InsightOfficeSlide (INSS)
+製品:       Insight Deck Quality Gate (INSS)
 プラン:     Pro (PRO)
 メール:     user@example.com
 有効期限:   2027-01-31

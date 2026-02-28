@@ -1,23 +1,23 @@
 name: Sync icons to dependent repos
 
-# 手動実行�Eみ、E
-# brand/icons を変更した後、忁E��なリポジトリにアイコンをコピ�Eして PR を作�Eする、E
-# push トリガーは無効化済み�E�無陁EPR 生�Eを防止�E�、E
+# 手動実行�Eみ、E
+# brand/icons を変更した後、忁E��なリポジトリにアイコンをコピ�Eして PR を作�Eする、E
+# push トリガーは無効化済み�E�無陁EPR 生�Eを防止�E�、E
 
 on:
   workflow_dispatch:
     inputs:
       repos:
-        description: '同期対象リポジトリ�E�カンマ区刁E��、空=全て�E�E
+        description: '同期対象リポジトリ�E�カンマ区刁E��、空=全て�E�E
         required: false
         type: string
       dry_run:
-        description: 'Dry run�E�ER を作�EしなぁE��E
+        description: 'Dry run�E�ER を作�EしなぁE��E
         required: false
         type: boolean
         default: false
       sync_submodule:
-        description: 'サブモジュール参�Eも更新する'
+        description: 'サブモジュール参�Eも更新する'
         required: false
         type: boolean
         default: false
@@ -37,7 +37,7 @@ jobs:
       max-parallel: 5
       matrix:
         include:
-          # ── Tier 1: 業務変革チE�Eル ──
+          # ── Tier 1: 業務変革チE�Eル ──
           - repo: win-app-nocode-analyzer
             product: INCA
             name: InsightNoCodeAnalyzer
@@ -59,7 +59,7 @@ jobs:
             icon_dest: src-tauri/icons/
             copy_mode: dir
 
-          # ── Tier 2: AI活用チE�Eル ──
+          # ── Tier 2: AI活用チE�Eル ──
           - repo: win-app-insight-cast
             product: INMV
             name: InsightCast
@@ -74,25 +74,25 @@ jobs:
             icon_dest: resources
             copy_mode: ico_png
 
-          # ── Tier 3: InsightOffice Suite ──
+          # ── Tier 3: Insight Business Suite ──
           - repo: win-app-insight-slide
             product: INSS
-            name: InsightOfficeSlide
+            name: Insight Deck Quality Gate
             icon_src: InsightOfficeSlide
             icon_dest: Resources
             copy_mode: ico_png
 
           - repo: win-app-insight-sheet
             product: IOSH
-            name: InsightOfficeSheet
-            icon_src: InsightOfficeSheet
+            name: Insight Performance Management
+            icon_src: InsightPerformanceManagement
             icon_dest: Resources
             copy_mode: ico_png
 
           - repo: win-app-insight-doc
             product: IOSD
-            name: InsightOfficeDoc
-            icon_src: InsightOfficeDoc
+            name: Insight AI Briefcase
+            icon_src: InsightAIBriefcase
             icon_dest: Resources
             copy_mode: ico_png
 
@@ -118,7 +118,7 @@ jobs:
             icon_dest: Resources
             copy_mode: ico_png
 
-          # ── ユーチE��リチE�� ──
+          # ── ユーチE��リチE�� ──
           - repo: win-app-insight-launcher
             product: LAUNCHER
             name: InsightLauncher
@@ -307,11 +307,11 @@ jobs:
         id: changes
         working-directory: target-repo
         run: |
-          # アイコンファイルのみスチE�Eジング�E�サブモジュール参�Eは除外！E
+          # アイコンファイルのみスチE�Eジング�E�サブモジュール参�Eは除外！E
           ICON_DEST="${{ matrix.icon_dest }}"
           git add "$ICON_DEST"
 
-          # サブモジュール更新がある場合�EみスチE�Eジング
+          # サブモジュール更新がある場合�EみスチE�Eジング
           if [ "${{ inputs.sync_submodule }}" = "true" ]; then
             for path in insight-common lib-insight-common; do
               [ -d "$path" ] && git add "$path"
@@ -337,20 +337,20 @@ jobs:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          # 固定ブランチ名を使用�E�EHA ごとに新ブランチを作らなぁE��E
+          # 固定ブランチ名を使用�E�EHA ごとに新ブランチを作らなぁE��E
           BRANCH="chore/sync-icons"
           COMMIT_MSG="chore: sync icons from insight-common (${SHORT_SHA})"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 既存�Eリモートブランチがあれば削除してから作�E
+          # 既存�Eリモートブランチがあれば削除してから作�E
           git push origin --delete "$BRANCH" 2>/dev/null || true
           git checkout -b "$BRANCH"
           git commit -m "$COMMIT_MSG"
           git push -u origin "$BRANCH"
 
-          # 既存�E PR を探ぁE
+          # 既存�E PR を探ぁE
           EXISTING=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
           if [ -n "$EXISTING" ]; then
             echo "PR #$EXISTING already exists  Ebranch updated with latest icons"
@@ -363,7 +363,7 @@ jobs:
           **変更允E*: HarmonicInsight/cross-lib-insight-common@${SHORT_SHA}
           **対象製品E*: ${{ matrix.name }} (${{ matrix.product }})
 
-          ### 変更冁E��
+          ### 変更冁E��
           - アイコンファイルめEinsight-common から同期
 
           ### 確認手頁E

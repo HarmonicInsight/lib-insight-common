@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Bash
 
 # Python 開発標準
 
-対象製品: INSS (InsightOfficeSlide), INPY (InsightPy)
+対象製品: INSS (Insight Deck Quality Gate), INPY (InsightPy)
 
 ## プロジェクト構成（必須）
 

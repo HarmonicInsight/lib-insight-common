@@ -1,6 +1,6 @@
 # ~~HarmonicSlide（HMSL）~~ — 製品統合のお知らせ
 
-> **重要**: HarmonicSlide（HMSL）は **InsightOfficeSlide（INSS）** に統合されました。
+> **重要**: HarmonicSlide（HMSL）は **Insight Deck Quality Gate（INSS）** に統合されました。
 > 本ファイルのスクリプト内容は `INSS_scripts.md` にマージ済みです。
 > 新しい動画スクリプトは `INSS_scripts.md` を参照してください。
 
@@ -9,10 +9,10 @@
 ## 統合について
 
 - **旧製品**: HarmonicSlide（HMSL）— PowerPoint操作・自動化
-- **新製品**: InsightOfficeSlide（INSS）— PowerPointコンテンツ抽出・更新・自動化
+- **新製品**: Insight Deck Quality Gate（INSS）— PowerPointコンテンツ抽出・更新・自動化
 - **統合日**: 2026年
 
-HarmonicSlide が提供していた以下の機能は、InsightOfficeSlide（INSS）に引き継がれています:
+HarmonicSlide が提供していた以下の機能は、Insight Deck Quality Gate（INSS）に引き継がれています:
 
 | 旧 HMSL 機能 | INSS での対応 |
 |-------------|-------------|
@@ -36,10 +36,10 @@ HarmonicSlide が提供していた以下の機能は、InsightOfficeSlide（INS
 |------|----------------|---------|
 | 0-3秒 | 「営業資料、毎回コピペで作ってる人…正直に手を挙げるのだ」 | 手を挙げるアイコン |
 | 3-8秒 | 「会社名と金額を差し替えるだけなのに、1件20分もかかるのだ」 | コピペ→修正→保存の繰り返しスクショ |
-| 8-15秒 | 「~~HarmonicSlide~~ → **InsightOfficeSlide** なら、テンプレート1つからスライドを一括生成できるのだ！」 | テンプレート + CSVデータ → 複数PPTX生成のフロー |
+| 8-15秒 | 「~~HarmonicSlide~~ → **Insight Deck Quality Gate** なら、テンプレート1つからスライドを一括生成できるのだ！」 | テンプレート + CSVデータ → 複数PPTX生成のフロー |
 | 15-22秒 | 「顧客名・金額・日付、全部自動で差し込まれるのだ」 | 生成されたスライドのビフォーアフター |
 | 22-27秒 | 「10件の提案書が5分で完成するのだ！」 | ビフォー200分 → アフター5分 |
-| 27-30秒 | 「InsightOfficeSlide、リンクから試してみるのだ！」 | ロゴ + URL + CTA |
+| 27-30秒 | 「Insight Deck Quality Gate、リンクから試してみるのだ！」 | ロゴ + URL + CTA |
 
 ### 動画2: PDF化 〜 プレゼン→PDF変換の自動化 〜
 
@@ -49,10 +49,10 @@ HarmonicSlide が提供していた以下の機能は、InsightOfficeSlide（INS
 |------|----------------|---------|
 | 0-3秒 | 「提案書をPDFで送って、って言われるたびにため息が出るのだ」 | ため息エフェクト |
 | 3-8秒 | 「PowerPoint開いて、名前を付けて保存して、PDF選んで…めんどいのだ」 | 手動変換の3ステップスクショ |
-| 8-15秒 | 「~~HarmonicSlide~~ → **InsightOfficeSlide** なら、フォルダごと一括でPDF変換できるのだ！」 | 一括変換の画面スクショ |
+| 8-15秒 | 「~~HarmonicSlide~~ → **Insight Deck Quality Gate** なら、フォルダごと一括でPDF変換できるのだ！」 | 一括変換の画面スクショ |
 | 15-22秒 | 「20ファイルでも50ファイルでも、ボタン一つで全部PDFになるのだ」 | 変換中 → 完了画面 |
 | 22-27秒 | 「小さいことだけど、積み重なると大きな時間節約なのだ！」 | 節約された時間のグラフ |
-| 27-30秒 | 「InsightOfficeSlide、試してみるのだ！」 | ロゴ + URL + CTA |
+| 27-30秒 | 「Insight Deck Quality Gate、試してみるのだ！」 | ロゴ + URL + CTA |
 
 ### 動画3: スライド抽出 〜 必要なスライドだけ抜き出し 〜
 
@@ -62,10 +62,10 @@ HarmonicSlide が提供していた以下の機能は、InsightOfficeSlide（INS
 |------|----------------|---------|
 | 0-3秒 | 「200枚のスライドから必要な10枚だけ欲しい…ってことありませんか？」 | 巨大なPPTX → 「10枚だけ…」のイラスト |
 | 3-8秒 | 「1枚ずつコピーして新しいファイルに貼り付けて…崩れて…直して…」 | レイアウト崩れのスクショ |
-| 8-15秒 | 「~~HarmonicSlide~~ → **InsightOfficeSlide** ならスライド番号を指定するだけで、きれいに抽出できるのだ！」 | スライド抽出の設定画面スクショ |
+| 8-15秒 | 「~~HarmonicSlide~~ → **Insight Deck Quality Gate** ならスライド番号を指定するだけで、きれいに抽出できるのだ！」 | スライド抽出の設定画面スクショ |
 | 15-22秒 | 「レイアウトも崩れず、そのまま新しいファイルになるのだ」 | 抽出結果のきれいなスライド |
 | 22-27秒 | 「スライドの切り出し作業、これでさよならなのだ！」 | 完了 |
-| 27-30秒 | 「InsightOfficeSlide、リンクから無料で試せるのだ！」 | ロゴ + URL + CTA |
+| 27-30秒 | 「Insight Deck Quality Gate、リンクから無料で試せるのだ！」 | ロゴ + URL + CTA |
 
 ### 動画4: バッチ処理 〜 全支店の資料を一括アップデート 〜
 
@@ -75,10 +75,10 @@ HarmonicSlide が提供していた以下の機能は、InsightOfficeSlide（INS
 |------|----------------|---------|
 | 0-3秒 | 「本社の資料が更新された…全支店の資料も直さないと…」 | 全国地図 + 支店アイコン |
 | 3-8秒 | 「30支店分のPPTXを1つずつ開いて修正…気が遠くなるのだ」 | 大量のファイルが並ぶフォルダ |
-| 8-15秒 | 「~~HarmonicSlide~~ → **InsightOfficeSlide** PROのバッチ処理なら、全ファイルを一括更新できるのだ！」 | バッチ処理設定画面のスクショ |
+| 8-15秒 | 「~~HarmonicSlide~~ → **Insight Deck Quality Gate** PROのバッチ処理なら、全ファイルを一括更新できるのだ！」 | バッチ処理設定画面のスクショ |
 | 15-22秒 | 「ロゴ差し替え・テキスト更新・スライド追加、全部自動なのだ」 | 処理中 → 完了のスクショ |
 | 22-27秒 | 「30ファイルの更新が10分で終わるのだ！」 | ビフォー1日 → アフター10分 |
-| 27-30秒 | 「InsightOfficeSlide PRO、無料トライアルはこちらなのだ！」 | ロゴ + URL + CTA |
+| 27-30秒 | 「Insight Deck Quality Gate PRO、無料トライアルはこちらなのだ！」 | ロゴ + URL + CTA |
 
 ### 動画5: 読み込み・解析 〜 PPTXの中身をデータ化 〜
 
@@ -88,7 +88,7 @@ HarmonicSlide が提供していた以下の機能は、InsightOfficeSlide（INS
 |------|----------------|---------|
 | 0-3秒 | 「PowerPointの中身をデータとして活用する方法、知ってますか？」 | PPTX → データのイラスト |
 | 3-8秒 | 「スライドの枚数・テキスト量・画像数…手で数えてたら日が暮れるのだ」 | 手作業でカウントしてるイラスト |
-| 8-15秒 | 「~~HarmonicSlide~~ → **InsightOfficeSlide** なら、PPTXの構造をまるごと解析してデータ化できるのだ！」 | 解析結果の画面スクショ |
+| 8-15秒 | 「~~HarmonicSlide~~ → **Insight Deck Quality Gate** なら、PPTXの構造をまるごと解析してデータ化できるのだ！」 | 解析結果の画面スクショ |
 | 15-22秒 | 「テキスト・画像・レイアウト、全部抽出してレポートにできるのだ」 | 構造化されたデータの表示 |
 | 22-27秒 | 「資料の棚卸し・品質チェックに最適なのだ！」 | 品質レポートのイメージ |
-| 27-30秒 | 「InsightOfficeSlide、試してみるのだ！」 | ロゴ + URL + CTA |
+| 27-30秒 | 「Insight Deck Quality Gate、試してみるのだ！」 | ロゴ + URL + CTA |

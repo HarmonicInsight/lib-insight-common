@@ -1,6 +1,6 @@
 # TTS（テキスト読み上げ）標準ガイド
 
-> **対象**: 全製品（InsightOffice 系 / ユーティリティアプリ / Web アプリ）
+> **対象**: 全製品（Insight Business Suite 系 / ユーティリティアプリ / Web アプリ）
 > **最終更新**: 2026-02-17
 
 ---
@@ -260,7 +260,7 @@ useTts({
 
 ## 6. 製品別組み込みガイド
 
-### InsightOffice 系（INSS / IOSH / IOSD）
+### Insight Business Suite 系（INSS / IOSH / IOSD）
 
 AI アシスタントの応答を読み上げる場合:
 
@@ -285,7 +285,7 @@ function AiResponsePanel({ response }: { response: string }) {
 }
 ```
 
-### InsightOffice C# (WPF)
+### Insight Business Suite C# (WPF)
 
 既存の `VoiceAndAvatarService` を使用:
 
