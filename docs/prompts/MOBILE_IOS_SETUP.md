@@ -40,16 +40,16 @@ import CryptoKit
 // MARK: - License Tier
 
 public enum LicenseTier: String, CaseIterable {
+    case free = "FREE"
     case trial = "TRIAL"
-    case standard = "STD"
-    case professional = "PRO"
+    case business = "BIZ"
     case enterprise = "ENT"
 
     public var displayName: String {
         switch self {
+        case .free: return "Free"
         case .trial: return "Trial"
-        case .standard: return "Standard"
-        case .professional: return "Professional"
+        case .business: return "Business"
         case .enterprise: return "Enterprise"
         }
     }
@@ -96,16 +96,7 @@ public struct FeatureLimits {
                 cloudSync: false,
                 priority: false
             )
-        case .standard:
-            return FeatureLimits(
-                maxFiles: 50,
-                maxRecords: 5000,
-                batchProcessing: true,
-                export: true,
-                cloudSync: false,
-                priority: false
-            )
-        case .professional:
+        case .business:
             return FeatureLimits(
                 maxFiles: .max,
                 maxRecords: 50000,
@@ -169,7 +160,7 @@ public struct LicenseValidationResult {
 public class LicenseValidator {
 
     private static let licensePattern = try! NSRegularExpression(
-        pattern: "^INS-(SALES|SLIDE|PY|IVIN|ALL)-(TRIAL|STD|PRO|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"
+        pattern: "^INS-(SALES|SLIDE|PY|IVIN|ALL)-(FREE|TRIAL|BIZ|ENT)-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{2})$"
     )
 
     public init() {}
