@@ -89,12 +89,20 @@ data class LicenseValidationResult(
  */
 object TierLimits {
     private val limits = mapOf(
-        LicenseTier.TRIAL to FeatureLimits(
+        LicenseTier.FREE to FeatureLimits(
             maxFiles = 10,
             maxRecords = 500,
-            batchProcessing = true,
+            batchProcessing = false,
             export = true,
             cloudSync = false,
+            priority = false
+        ),
+        LicenseTier.TRIAL to FeatureLimits(
+            maxFiles = Int.MAX_VALUE,
+            maxRecords = Int.MAX_VALUE,
+            batchProcessing = true,
+            export = true,
+            cloudSync = true,
             priority = false
         ),
         LicenseTier.BIZ to FeatureLimits(

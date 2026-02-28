@@ -87,13 +87,22 @@ public struct FeatureLimits {
 
     public static func forTier(_ tier: LicenseTier) -> FeatureLimits {
         switch tier {
-        case .trial:
+        case .free:
             return FeatureLimits(
                 maxFiles: 10,
                 maxRecords: 500,
-                batchProcessing: true,
+                batchProcessing: false,
                 export: true,
                 cloudSync: false,
+                priority: false
+            )
+        case .trial:
+            return FeatureLimits(
+                maxFiles: .max,
+                maxRecords: .max,
+                batchProcessing: true,
+                export: true,
+                cloudSync: true,
                 priority: false
             )
         case .business:
