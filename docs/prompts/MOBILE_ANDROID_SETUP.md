@@ -825,7 +825,7 @@ class MainActivity : AppCompatActivity() {
 
         // ライセンス検証
         val result = licenseValidator.validate(
-            licenseKey = "INS-SALES-PRO-2601-1534-A7",
+            licenseKey = "INS-SALES-BIZ-2601-1534-A7",
             currentProduct = ProductCode.SALES
         )
 

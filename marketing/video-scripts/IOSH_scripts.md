@@ -47,7 +47,7 @@
 | 8-15秒 | 「Insight Performance Management PROなら、変更者が名前つきで記録されるのだ！」 | 変更者表示の画面スクショ（Aさん、Bさんのアイコン付き） |
 | 15-22秒 | 「さらに掲示板とメッセージで、Excelの中でやり取りもできるのだ」 | 掲示板機能 + メッセージ送信のスクショ |
 | 22-27秒 | 「チームのExcel管理が劇的に変わるのだ！」 | ビフォー（カオス）→ アフター（整理された画面） |
-| 27-30秒 | 「Insight Performance Management PRO、無料トライアル実施中なのだ！」 | ロゴ + URL + CTA |
+| 27-30秒 | 「Insight Performance Management、無料トライアル実施中なのだ！」 | ロゴ + URL + CTA |
 
 ---
 
