@@ -36,12 +36,12 @@ export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'ISOF' | 'INPY' | 'INMV' | 
 /**
  * プランコード（全製品＝法人向け — 3ティア制）
  *
- * - TRIAL: 評価用（14日間・全機能・Premium モデルティア）
+ * - TRIAL: 評価用（14日間・全機能・Standard モデルティア — Sonnet まで）
  * - BIZ: 法人向け標準（365日・全機能・Standard モデルティア — Sonnet まで）
- * - ENT: エンタープライズ（カスタム・Premium モデルティア・API/SSO/監査ログ）
+ * - ENT: エンタープライズ（カスタマイズ都度見積もり・Premium モデルティア — Opus・API/SSO/監査ログ）
  *
  * AI API キーはクライアント企業が自社で Anthropic から購入（BYOK 方式）。
- * 月間使用回数制限なし。プラン差は利用可能モデルティアのみ。
+ * 月間使用回数制限なし。TRIAL/BIZ は Standard ティア、ENT のみ Premium ティア。
  */
 export type PlanCode = 'TRIAL' | 'BIZ' | 'ENT';
 
@@ -345,9 +345,9 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     code: 'TRIAL',
     name: 'Trial',
     nameJa: 'トライアル',
-    priority: 3,  // 全機能使えるため最上位と同等
-    description: 'Full features for evaluation (14 days). BYOK: client provides own Claude API key.',
-    descriptionJa: '全機能利用可能（14日間）。AI APIキーはクライアント自社購入。',
+    priority: 1,  // 評価用（BIZ と同等機能・Standard ティア）
+    description: 'Full features for evaluation (14 days). Standard model tier (Sonnet). BYOK.',
+    descriptionJa: '全機能利用可能（14日間）。AI: Standard ティア（Sonnet まで）。APIキーはクライアント自社購入。',
     defaultDurationDays: 14,
   },
   BIZ: {
@@ -364,8 +364,8 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Enterprise',
     nameJa: 'エンタープライズ',
     priority: 3,
-    description: 'All features + API/SSO/Audit. Premium model tier (Opus). BYOK.',
-    descriptionJa: '全機能 + API/SSO/監査ログ。AI: Premium ティア（Opus 対応）。APIキーはクライアント自社購入。',
+    description: 'Custom enterprise plan with API/SSO/Audit. Premium model tier (Opus). Quoted per engagement.',
+    descriptionJa: 'カスタマイズ都度見積もり。全機能 + API/SSO/監査ログ。AI: Premium ティア（Opus 対応）。',
     defaultDurationDays: -1,
   },
 };
