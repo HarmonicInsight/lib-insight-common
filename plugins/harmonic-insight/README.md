@@ -29,7 +29,7 @@ claude --plugin-dir ./insight-common/plugins/harmonic-insight
 | `/harmonic-insight:standardize` | **既存アプリを標準に準拠させる（検出→修正）** | `/harmonic-insight:standardize https://github.com/HarmonicInsight/SomeApp` or 引数なし |
 | `/harmonic-insight:validate` | 開発標準検証（チェックのみ） | `/harmonic-insight:validate .` |
 | `/harmonic-insight:build-fix` | ビルドエラー自動修正 | `/harmonic-insight:build-fix vercel` |
-| `/harmonic-insight:pricing` | 価格・販売戦略参照 | `/harmonic-insight:pricing INSS STD` |
+| `/harmonic-insight:pricing` | 価格・販売戦略参照 | `/harmonic-insight:pricing INSS BIZ` |
 | `/harmonic-insight:deploy-railway` | Railway デプロイ | `/harmonic-insight:deploy-railway` |
 | `/harmonic-insight:deploy-cloudflare` | Cloudflare デプロイ | `/harmonic-insight:deploy-cloudflare` |
 | `/harmonic-insight:deploy-vercel` | Vercel デプロイ | `/harmonic-insight:deploy-vercel` |

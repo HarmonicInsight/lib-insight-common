@@ -82,14 +82,14 @@ def parse_args():
     parser.add_argument(
         '--plan',
         type=str,
-        choices=['STD', 'PRO'],
+        choices=['BIZ', 'ENT'],
         help='プラン（--trial と排他）'
     )
 
     parser.add_argument(
         '--trial',
         action='store_true',
-        help='トライアル発行（14日間）'
+        help='トライアル発行（30日間）'
     )
 
     parser.add_argument(

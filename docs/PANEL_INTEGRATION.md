@@ -445,7 +445,7 @@ bool hasFeature = _licenseManager.HasFeature("ai_assistant");
 
 var icon = InsightTitleBar.GetFeatureAvailableIcon(hasFeature);
 // hasFeature=true  → "✅"
-// hasFeature=false → "🔒 PRO"
+// hasFeature=false → "🔒 BIZ"
 
 var color = InsightTitleBar.GetFeatureAvailableBrush(hasFeature, _theme);
 // hasFeature=true  → SuccessBrush (緑)
@@ -457,8 +457,7 @@ var color = InsightTitleBar.GetFeatureAvailableBrush(hasFeature, _theme);
 ```csharp
 var planIcon = InsightTitleBar.GetPlanIcon(PlanCode.Ent);
 // Ent   → "👑"
-// Pro   → "⭐"
-// Std   → "✅"
+// Biz   → "⭐"
 // Trial → "⏱"
 // Free  → "🔒"
 ```
