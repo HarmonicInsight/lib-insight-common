@@ -69,8 +69,7 @@ export const colors = {
   plan: {
     free: '#A8A29E',
     trial: '#2563EB',
-    std: '#16A34A',
-    pro: '#B8942F',
+    biz: '#16A34A',
     ent: '#7C3AED',
   },
 } as const;
@@ -194,7 +193,7 @@ export function LicenseView() {
           className="text-4xl font-bold"
           style={{ color: colors.brand.primary }}
         >
-          STD
+          BIZ
         </p>
         <p style={{ color: colors.text.secondary }}>
           有効期限: 2027年01月31日

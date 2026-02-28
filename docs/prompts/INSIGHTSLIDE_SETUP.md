@@ -93,7 +93,7 @@ git push
 
 - [ ] submodule が正しく追加された
 - [ ] 新形式 (INS-SLIDE-...) が動作する
-- [ ] レガシー形式 (PRO-/STD-/TRIAL-) も動作する
+- [ ] レガシー形式 (BIZ-/TRIAL-) も動作する
 - [ ] 機能制限が適用される
 - [ ] 管理ツールで新形式キーが生成される
 ```
@@ -110,8 +110,8 @@ git push
 
 | レガシー | 新形式 |
 |---------|--------|
-| `PRO-XXXX-XXXX-XXXX` | `INS-SLIDE-PRO-XXXX-XXXX-XX` |
-| `STD-XXXX-XXXX-2025` | `INS-SLIDE-STD-XXXX-XXXX-XX` |
+| `BIZ-XXXX-XXXX-XXXX` | `INS-SLIDE-BIZ-XXXX-XXXX-XX` |
+| `BIZ-XXXX-XXXX-2025` | `INS-SLIDE-BIZ-XXXX-XXXX-XX` |
 | `TRIAL-XXXXXX-YYYYMMDD` | `INS-SLIDE-TRIAL-XXXX-XXXX-XX` |
 
 ### 参照ドキュメント
