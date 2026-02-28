@@ -536,8 +536,8 @@ Productivity プラグインのメモリアーキテクチャを Insight Busines
 
 | プラン | ホットキャッシュ | ディープストレージ |
 |:------:|:--------------:|:----------------:|
-| STD | 20 エントリ | なし |
-| PRO | 100 エントリ | 500 エントリ |
+| FREE | 20 エントリ | なし |
+| BIZ | 100 エントリ | 500 エントリ |
 | ENT | 無制限 | 無制限 |
 
 ---
@@ -549,7 +549,7 @@ Productivity プラグインのメモリアーキテクチャを Insight Busines
 Enterprise Search プラグインの検索戦略を InsightBot Orchestrator に統合:
 
 ```
-InsightBot Orchestrator（PRO+）
+InsightBot Orchestrator（BIZ+）
   └── /search コマンド
       ├── IOSH ファイル群からの検索
       ├── INSS ファイル群からの検索
