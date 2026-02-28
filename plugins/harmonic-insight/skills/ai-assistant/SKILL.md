@@ -13,10 +13,9 @@ allowed-tools: Read, Grep, Glob
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API のみ** — OpenAI / Azure 禁止 |
-| モデル選択 | ティアで自動決定（ユーザーは選べない） |
-| Standard ティア | Claude Sonnet |
-| Premium ティア | Claude Opus |
-| ライセンス制御 | STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
+| モデル選択 | クライアント選択（BYOK）— ユーザーが全モデルから自由に選択 |
+| モデルティア制限 | なし（BYOK のため全モデル利用可能） |
+| ライセンス制御 | 全プラン無制限（BYOK — ユーザー自身の API キーで利用） |
 
 ## ペルソナシステム（3 キャラクター）
 
@@ -26,26 +25,24 @@ allowed-tools: Read, Grep, Glob
 | `megumi` | Claude 恵 | Sonnet | 万能バランス型 |
 | `manabu` | Claude 学 | Opus | 深い思考・精密文書 |
 
-## モデルティア制御
+## モデル選択（BYOK）
 
 ```typescript
-import { getModelForTier, canUseAiAssistant } from '@/insight-common/config/ai-assistant';
+import { resolveModel, canUseAiAssistant } from '@/insight-common/config/ai-assistant';
 
 // ライセンスチェック
 canUseAiAssistant('PRO');  // true
-canUseAiAssistant('STD');  // true（月50回制限）
+canUseAiAssistant('STD');  // true（BYOK・無制限）
 
-// モデル決定
-const model = getModelForTier(balance.effectiveModelTier);
-// Standard → 'claude-sonnet-4-20250514'
-// Premium  → 'claude-opus-4-6-20260131'
+// モデル決定（ユーザー選択を考慮）
+const model = resolveModel('standard', userPreference);
+// ユーザーが自由に選択可能（ティア制限なし）
 ```
 
-## クレジットプール
+## クレジット管理
 
-- `ai_assistant` + `ai_editor` で**共有プール**
-- 追加パック: Standard 200回 / Premium 200回（価格はパートナーと協議の上決定）
-- Standard クレジットを先に消費、次に Premium
+- BYOK モードのため月間クレジット制限なし（全プラン無制限）
+- 使用量トラッキングは監査・分析用に維持
 
 ## Tool Use（IOSH スプレッドシート操作）
 

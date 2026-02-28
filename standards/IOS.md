@@ -1122,7 +1122,7 @@ enum PlanCode: String, CaseIterable, Sendable {
     /// デフォルト有効期間（日）
     var defaultDurationDays: Int {
         switch self {
-        case .trial: return 14
+        case .trial: return 30
         case .std: return 365
         case .pro: return 365
         case .ent: return -1

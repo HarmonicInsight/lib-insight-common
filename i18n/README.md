@@ -46,8 +46,8 @@ console.log(t('common.save'));        // "保存" or "Save"
 console.log(t('license.title'));      // "ライセンス" or "License"
 
 // パラメータ付き
-console.log(t('license.trialDaysLeft', { days: 14 }));
-// "トライアル残り14日" or "14 days left in trial"
+console.log(t('license.trialDaysLeft', { days: 30 }));
+// "トライアル残り30日" or "30 days left in trial"
 ```
 
 ### React
@@ -78,8 +78,8 @@ print(t('common.save'))        # "保存" or "Save"
 print(t('license.title'))      # "ライセンス" or "License"
 
 # パラメータ付き
-print(t('license.trialDaysLeft', {'days': 14}))
-# "トライアル残り14日" or "14 days left in trial"
+print(t('license.trialDaysLeft', {'days': 30}))
+# "トライアル残り30日" or "30 days left in trial"
 ```
 
 ### Android

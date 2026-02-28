@@ -39,7 +39,7 @@ class ProductCode(Enum):
 class Plan(Enum):
     """プラン"""
     FREE = "FREE"      # フリー
-    TRIAL = "TRIAL"    # トライアル（14日間）
+    TRIAL = "TRIAL"    # トライアル（30日間）
     BIZ = "BIZ"        # Business
     ENT = "ENT"        # Enterprise
 
@@ -79,7 +79,7 @@ PRODUCT_PLANS: Dict[str, list] = {
 }
 
 # トライアル期間（日数）
-TRIAL_DAYS = 14
+TRIAL_DAYS = 30
 
 # ライセンスキー正規表現
 # 形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2

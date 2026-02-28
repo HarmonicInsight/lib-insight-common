@@ -81,7 +81,7 @@ export const PRODUCT_PLANS: Record<string, ProductCode[]> = {
   InsightSeniorOffice: ['ISOF'],
 };
 
-export const TRIAL_DAYS = 14;
+export const TRIAL_DAYS = 30;
 
 export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   E001: 'ライセンスキーの形式が正しくありません',

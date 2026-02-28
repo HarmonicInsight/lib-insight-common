@@ -339,7 +339,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | プリセット利用 | ○ | ○ | ○ | 定義済みスクリプトテンプレート |
 | JOB保存数 | 5 | 50 | 無制限 | 保存可能なJOB数 |
 | クラウド同期 | — | — | ○ | JOBのクラウド同期 |
-| AIコードエディター | 月5回 | 月50回 | 無制限 | AIによるPythonコード生成・編集 |
+| AIコードエディター | ○(BYOK) | ○(BYOK) | 無制限 | AIによるPythonコード生成・編集 |
 | オーケストレーター | — | — | ○ | Agent集中管理・JOB配信・実行監視 |
 | Agent管理 | — | — | 無制限 | 管理可能な Insight Business Suite 端末数 |
 | JOBスケジューラー | — | — | ○ | 定期実行スケジュール設定 |
@@ -459,10 +459,10 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | フォルダ一括処理 | ○ | ○ | ○ | 複数ファイルの一括処理 |
 | 2ファイル比較 | ○ | ○ | ○ | 2つのPowerPointファイルの差分比較 |
 | 自動バックアップ | — | — | ○ | 編集前の自動バックアップ作成 |
-| AIアシスタント | 月5回 | 月50回 | 無制限 | AIによるスライドテキストの校正・改善提案 |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | AIによるスライドテキストの校正・改善提案 |
 | AIコードエディター | — | — | 無制限 | AIによるPython自動処理 |
 | 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
-| ドキュメント評価 | 月5回 | 月50回 | 無制限 | AIによる多角的評価・スコアリング |
+| ドキュメント評価 | ○(BYOK) | ○(BYOK) | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | — | ○ | 3Dアバターによる音声会話 |
 
@@ -522,10 +522,10 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 掲示板 | — | — | ○ | チーム向け掲示板機能 |
 | 付箋 | ○ | ○ | ○ | セルに付箋（メモ）を貼り付け |
 | メッセージ送信 | — | — | ○ | チームメンバーへのメッセージ送信 |
-| AIアシスタント | 月5回 | 月50回 | 無制限 | AIチャットによるExcel操作支援 |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | AIチャットによるExcel操作支援 |
 | AIコードエディター | — | — | 無制限 | AIによるPython自動処理 |
 | 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
-| ドキュメント評価 | 月5回 | 月50回 | 無制限 | AIによる多角的評価・スコアリング |
+| ドキュメント評価 | ○(BYOK) | ○(BYOK) | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | — | ○ | 3Dアバターによる音声会話 |
 
@@ -579,10 +579,10 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 差し込み印刷 | — | — | ○ | データソース（Excel/CSV）からの差し込み印刷・文書生成 |
 | バッチ処理 | — | — | ○ | 複数ドキュメントの一括処理 |
 | マクロ実行 | — | — | ○ | VBAマクロの実行・変換 |
-| AIアシスタント | 月5回 | 月50回 | 無制限 | AIによるドキュメントの校正・要約・構成提案 |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | AIによるドキュメントの校正・要約・構成提案 |
 | AIコードエディター | — | — | 無制限 | AIによるPython自動処理 |
 | 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
-| ドキュメント評価 | 月5回 | 月50回 | 無制限 | AIによる多角的評価・スコアリング |
+| ドキュメント評価 | ○(BYOK) | ○(BYOK) | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | — | ○ | 3Dアバターによる音声会話 |
 
@@ -604,7 +604,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | プリセット利用 | ○ | ○ | ○ | 定義済みスクリプトテンプレート |
 | スクリプト保存数 | 5 | 50 | 無制限 | 保存可能なスクリプト数 |
 | クラウド同期 | — | — | ○ | スクリプトのクラウド同期 |
-| AIコードエディター | 月5回 | 月50回 | 無制限 | AIによるPythonコード生成・編集・デバッグ |
+| AIコードエディター | ○(BYOK) | ○(BYOK) | 無制限 | AIによるPythonコード生成・編集・デバッグ |
 
 ---
 
@@ -629,7 +629,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 表計算 | ○ | ○ | ○ | Excelファイルの読み込み・編集・保存 |
 | 文書作成 | ○ | ○ | ○ | Wordドキュメントの読み込み・編集・保存 |
 | iCloudメール | ○ | ○ | ○ | iCloudメールの送受信（iPhoneと同じメールをPCで閲覧） |
-| AIアシスタント | 月5回 | 月50回 | 無制限 | 自然言語操作支援（「A2に1万円入れて」等） |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | 自然言語操作支援（「A2に1万円入れて」等） |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | 読み上げ | ○ | ○ | ○ | メール・文書の音声読み上げ |
 | 文字サイズ調整 | ○ | ○ | ○ | 50%〜200%の拡大縮小 |
@@ -785,13 +785,13 @@ getResellerProducts('gold');        // 全製品
 | プラン | 説明 | 対象 | 有効期限 |
 |-------|------|------|---------|
 | FREE | 全機能利用可能（保存・エクスポート制限あり） | 評価・個人利用 | 無期限 |
-| TRIAL | 全機能利用可能（評価用） | 評価企業 | 14日間 |
-| BIZ | 法人向け標準機能（AI月50回） | 法人利用 | 365日 |
-| ENT | 法人向け全機能（AI無制限・カスタマイズ） | 大企業 | 要相談 |
+| TRIAL | 全機能利用可能（評価用） | 評価企業 | 30日間 |
+| BIZ | 法人向け全機能 | 法人利用 | 365日 |
+| ENT | 法人向け全機能（カスタマイズ・API/SSO/監査ログ） | 大企業 | 要相談 |
 
 ### Insight Performance Management (IOSH) 機能マトリクス
 
-> **FREE = 全機能利用可能（保存・エクスポート制限）**、**BIZ = 基本機能+AI（月50回）**、**ENT = 全機能+AI無制限**
+> **FREE = 全機能利用可能（保存・エクスポート制限）**、**BIZ/ENT = 全機能**。AI は全プラン BYOK（クライアント自社 API キー・回数制限なし・モデル制限なし）。
 
 | 機能 | FREE | TRIAL | BIZ | ENT |
 |------|:----:|:-----:|:---:|:---:|
@@ -804,7 +804,7 @@ getResellerProducts('gold');        // 全製品
 | 変更者表示 | ✅ | ✅ | ❌ | ✅ |
 | 掲示板 | ✅ | ✅ | ❌ | ✅ |
 | 付箋 | ✅ | ✅ | ✅ | ✅ |
-| AIアシスタント | ✅(5回) | ✅ | ✅(50回) | ✅ |
+| AIアシスタント | ✅(BYOK) | ✅(BYOK) | ✅(BYOK) | ✅(BYOK) |
 | AIコードエディター | ❌ | ✅ | ❌ | ✅ |
 | Pythonスクリプト | ❌ | ✅ | ❌ | ✅ |
 | メッセージ送信 | ❌ | ✅ | ❌ | ✅ |
@@ -818,50 +818,30 @@ getResellerProducts('gold');        // 全製品
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
+| API キー方式 | **BYOK**（クライアント企業が自社で Anthropic から購入） |
 | モデル管理 | `MODEL_REGISTRY` で一元管理（`config/ai-assistant.ts`） |
-| モデル選択 | ティアでデフォルト決定 + **ユーザーがティア内で変更可能** |
-| Standard ティア | Sonnet 系（デフォルト: 最新 Sonnet） |
-| Premium ティア | 全モデル利用可能（デフォルト: 最新 Opus） |
-| ライセンス制御 | FREE: 月5回 / TRIAL: 無制限 / BIZ: 月50回 / ENT: 無制限 |
-| 追加パック | Standard / Premium（価格はパートナーと協議の上決定） |
+| モデル選択 | **全プランで全モデル利用可能** — クライアントが自由に選択 |
+| 利用制限 | **なし**（回数制限なし・モデルティア制限なし） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
-
-**モデルティア:**
-
-| ティア | デフォルトモデル | 利用可能モデル | 利用条件 |
-|--------|----------------|---------------|---------|
-| Standard | 最新 Sonnet | Haiku + Sonnet 系 | 基本プラン（FREE/BIZ）、Standard アドオン、TRIAL |
-| Premium | 最新 Opus | 全モデル | Premium アドオン購入、ENT |
 
 ```typescript
 import {
   resolveModel,
-  getAvailableModelsForTier,
   getBaseSystemPrompt,
   canUseAiAssistant,
-  getAiCreditLabel,
   SPREADSHEET_TOOLS,
   MODEL_REGISTRY,
 } from '@/insight-common/config/ai-assistant';
-import { calculateCreditBalance } from '@/insight-common/config/usage-based-licensing';
 
-// ライセンスチェック
-canUseAiAssistant('BIZ');   // true（月50回）
-canUseAiAssistant('FREE');  // true（月5回）
+// ライセンスチェック（全プランで利用可能）
+canUseAiAssistant('BIZ');   // true
+canUseAiAssistant('FREE');  // true
 
-// モデル選択 UI: ティアで利用可能なモデル一覧
-const models = getAvailableModelsForTier('standard');
-// → [Haiku 4.5, Sonnet 4, Sonnet 4.6]
-
-// モデル決定（ユーザー選択を考慮）
-const balance = calculateCreditBalance('BIZ', 10, addonPacks);
-const model = resolveModel(balance.effectiveModelTier, userPreference);
-// → ユーザー未選択: 'claude-sonnet-4-6-20260210'（Standard デフォルト）
-// → ユーザーが Sonnet 4 を選択: 'claude-sonnet-4-20250514'
-
-// クレジット表示（ユーザー選択モデル名を含む）
-getAiCreditLabel(balance, 'ja', userPreference);
-// → "AIアシスタント（スタンダード（Sonnet 4.6））— 残り 40回"
+// モデル選択 UI: 全モデルが利用可能（BYOK — 制限なし）
+// クライアントが自社の API キーで任意のモデルを選択
+const model = resolveModel(userPreference);
+// → ユーザーが Opus を選択: 'claude-opus-4-6-...'
+// → ユーザーが Sonnet を選択: 'claude-sonnet-4-6-...'
 ```
 
 ### ライセンスキー形式
@@ -1349,7 +1329,7 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（Insight Business Suite 系のみ）
 - [ ] **AI アシスタント**: モデルティア（Standard/Premium）制御が実装されている
-- [ ] **AI アシスタント**: ライセンスゲート（FREE: 月5回 / TRIAL: 無制限 / BIZ: 月50回 / ENT: 無制限）が実装されている
+- [ ] **AI アシスタント**: BYOK（クライアント自社 API キー）が実装されている（回数制限なし・モデル制限なし）
 - [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
 - [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている
 - [ ] **Orchestrator**: InsightBot ENT で Agent 管理 UI が実装されている（INBT のみ）

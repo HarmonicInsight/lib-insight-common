@@ -243,7 +243,7 @@ object LicenseGenerator {
         expiresAt: LocalDate? = null
     ): String {
         val expiry = expiresAt ?: when (tier) {
-            LicenseTier.TRIAL -> LocalDate.now().plusDays(14)
+            LicenseTier.TRIAL -> LocalDate.now().plusDays(30)
             LicenseTier.STD, LicenseTier.PRO -> LocalDate.now().plusYears(1)
             LicenseTier.ENT -> LocalDate.now().plusYears(100)
         }

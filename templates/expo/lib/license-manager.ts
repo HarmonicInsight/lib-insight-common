@@ -105,7 +105,7 @@ class LicenseManager {
     const issueDate = new Date(year, month, 1);
     const expiryDate = new Date(issueDate);
     expiryDate.setDate(
-      expiryDate.getDate() + (plan === 'TRIAL' ? 14 : 365)
+      expiryDate.getDate() + (plan === 'TRIAL' ? 30 : 365)
     );
 
     const licenseData: LicenseData = {

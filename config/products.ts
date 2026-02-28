@@ -37,12 +37,12 @@ export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'ISOF' | 'INPY' | 'INMV' | 
  * プランコード（全製品 — 4ティア制）
  *
  * - FREE:  無料（無期限・Group A: 保存/エクスポート不可・Group B: 閲覧モードのみ・Standard モデルティア）
- * - TRIAL: 評価用（14日間・全機能・Standard モデルティア — Sonnet まで）
- * - BIZ:   ビジネス（365日・全機能・Standard モデルティア — Sonnet まで）
- * - ENT:   エンタープライズ（カスタマイズ都度見積もり・Premium モデルティア — Opus・API/SSO/監査ログ）
+ * - TRIAL: 評価用（30日間・全機能）
+ * - BIZ:   ビジネス（365日・全機能）
+ * - ENT:   エンタープライズ（カスタマイズ都度見積もり・API/SSO/監査ログ）
  *
  * AI API キーはクライアント企業が自社で Anthropic から購入（BYOK 方式）。
- * 月間使用回数制限なし。FREE/TRIAL/BIZ は Standard ティア、ENT のみ Premium ティア。
+ * 月間使用回数制限なし。モデルティア制限なし（クライアントが自由に選択）。
  *
  * ## 製品グループ別プラン適用
  * - Group A（エンドユーザー向け）: FREE / TRIAL / BIZ / ENT
@@ -361,8 +361,8 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Free',
     nameJa: 'フリー',
     priority: 0,
-    description: 'Free plan. Group A: all features but save/export disabled. Group B: view-only mode. Standard model tier (Sonnet). BYOK.',
-    descriptionJa: '無料プラン。Group A: 全機能利用可能（保存/エクスポート不可）。Group B: 閲覧モードのみ。AI: Standard ティア（Sonnet まで）。',
+    description: 'Free plan. Group A: all features but save/export disabled. Group B: view-only mode. BYOK — no model tier restrictions.',
+    descriptionJa: '無料プラン。Group A: 全機能利用可能（保存/エクスポート不可）。Group B: 閲覧モードのみ。AI: BYOK（クライアント選択・モデル制限なし）。',
     defaultDurationDays: -1,
   },
   TRIAL: {
@@ -370,17 +370,17 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Trial',
     nameJa: 'トライアル',
     priority: 1,
-    description: 'Full features for evaluation (14 days). Standard model tier (Sonnet). BYOK.',
-    descriptionJa: '全機能利用可能（14日間）。AI: Standard ティア（Sonnet まで）。APIキーはクライアント自社購入。',
-    defaultDurationDays: 14,
+    description: 'Full features for evaluation (30 days). BYOK — no model tier restrictions.',
+    descriptionJa: '全機能利用可能（30日間）。APIキーはクライアント自社購入。モデル制限なし。',
+    defaultDurationDays: 30,
   },
   BIZ: {
     code: 'BIZ',
     name: 'Business',
     nameJa: 'ビジネス',
     priority: 2,
-    description: 'All features for corporate use (365 days). Standard model tier (Sonnet). BYOK.',
-    descriptionJa: '法人向け全機能（365日）。AI: Standard ティア（Sonnet まで）。APIキーはクライアント自社購入。',
+    description: 'All features for corporate use (365 days). BYOK — no model tier restrictions.',
+    descriptionJa: '法人向け全機能（365日）。APIキーはクライアント自社購入。モデル制限なし。',
     defaultDurationDays: 365,
   },
   ENT: {
@@ -388,8 +388,8 @@ export const PLANS: Record<PlanCode, PlanInfo> = {
     name: 'Enterprise',
     nameJa: 'エンタープライズ',
     priority: 3,
-    description: 'Custom enterprise plan with API/SSO/Audit. Premium model tier (Opus). Quoted per engagement.',
-    descriptionJa: 'カスタマイズ都度見積もり。全機能 + API/SSO/監査ログ。AI: Premium ティア（Opus 対応）。',
+    description: 'Custom enterprise plan with API/SSO/Audit. BYOK — no model tier restrictions. Quoted per engagement.',
+    descriptionJa: 'カスタマイズ都度見積もり。全機能 + API/SSO/監査ログ。APIキーはクライアント自社購入。モデル制限なし。',
     defaultDurationDays: -1,
   },
 };

@@ -101,7 +101,7 @@ import { t, setLocale } from '@insight/i18n';
 
 setLocale('ja');
 console.log(t('common.save'));        // "保存"
-console.log(t('license.expires', { days: 14 })); // "残り14日"
+console.log(t('license.expires', { days: 30 })); // "残り30日"
 ```
 
 ### 翻訳キー構造

@@ -19,9 +19,9 @@
  * │   ┌──────────┬──────────┬──────────┬──────────┐              │
  * │   │  FREE    │  TRIAL   │   BIZ    │   ENT    │              │
  * │   │  無制限   │  無制限   │  無制限   │  無制限   │              │
- * │   │ (無期限) │ (14日)   │ (365日)  │ (要相談)  │              │
- * │   │ Standard │ Standard │ Standard │ Premium  │              │
- * │   │ (Sonnet) │ (Sonnet) │ (Sonnet) │ (Opus)   │              │
+ * │   │ (無期限) │ (30日)   │ (365日)  │ (要相談)  │              │
+ * │   │ BYOK     │ BYOK     │ BYOK     │ BYOK     │              │
+ * │   │ 制限なし  │ 制限なし  │ 制限なし  │ 制限なし  │              │
  * │   └──────────┴──────────┴──────────┴──────────┘              │
  * │                                                                │
  * │   ユーザーは自身の Claude API キーを設定                         │
@@ -229,13 +229,13 @@ export interface PurchasedAddonPack {
  * プラン別 AI クレジット定義（BYOK モード — 4ティア制）
  *
  * 【重要】
- * - FREE:  無制限（Standard モデル = Sonnet まで）
- * - TRIAL: 無制限（14日間・Standard モデル = Sonnet まで）
- * - BIZ:   無制限（Standard モデル = Sonnet まで）
- * - ENT:   無制限（Premium モデル = Opus 対応）
+ * - FREE:  無制限（BYOK — クライアント選択、モデル制限なし）
+ * - TRIAL: 無制限（30日間・BYOK — クライアント選択、モデル制限なし）
+ * - BIZ:   無制限（BYOK — クライアント選択、モデル制限なし）
+ * - ENT:   無制限（BYOK — クライアント選択、モデル制限なし）
  *
  * BYOK のため全プラン baseCredits = -1（無制限）。
- * クレジット管理は不要。プラン差はモデルティアのみ。
+ * クレジット管理は不要。モデルティア制限もなし（クライアントが自由に選択）。
  */
 export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
   FREE: {
@@ -244,8 +244,8 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     period: 'unlimited',
     aiEnabled: true,
     modelTier: 'standard',
-    descriptionJa: 'AI無制限（BYOK・Sonnetまで）',
-    descriptionEn: 'Unlimited AI (BYOK, up to Sonnet)',
+    descriptionJa: 'AI無制限（BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI (BYOK, no model restrictions)',
   },
   TRIAL: {
     plan: 'TRIAL',
@@ -253,8 +253,8 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     period: 'unlimited',
     aiEnabled: true,
     modelTier: 'standard',
-    descriptionJa: 'AI無制限（14日間・BYOK・Sonnetまで）',
-    descriptionEn: 'Unlimited AI for 14 days (BYOK, up to Sonnet)',
+    descriptionJa: 'AI無制限（30日間・BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI for 30 days (BYOK, no model restrictions)',
   },
   BIZ: {
     plan: 'BIZ',
@@ -262,8 +262,8 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     period: 'unlimited',
     aiEnabled: true,
     modelTier: 'standard',
-    descriptionJa: 'AI無制限（BYOK・Sonnetまで）',
-    descriptionEn: 'Unlimited AI (BYOK, up to Sonnet)',
+    descriptionJa: 'AI無制限（BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI (BYOK, no model restrictions)',
   },
   ENT: {
     plan: 'ENT',
@@ -271,8 +271,8 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     period: 'unlimited',
     aiEnabled: true,
     modelTier: 'premium',
-    descriptionJa: 'AI無制限（BYOK・Opus対応）',
-    descriptionEn: 'Unlimited AI (BYOK, including Opus)',
+    descriptionJa: 'AI無制限（BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI (BYOK, no model restrictions)',
   },
 };
 
@@ -289,8 +289,8 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
  * 将来、HARMONIC insight 側で API キーを管理する「マネージドキーモード」を
  * 導入する際に、以下のアドオンパック定義を有効化する予定。
  *
- * - Standard: 200回（Sonnet まで）
- * - Premium:  200回（Opus 対応）
+ * - Standard: 200回（Sonnet クラスまで）
+ * - Premium:  200回（全モデル対応）
  * - 価格はパートナーとの協議により決定（Stripe ダッシュボードで設定）
  * - 全プランで購入可能
  * - 複数パック購入可能（クレジットは累積加算）
@@ -303,16 +303,16 @@ export const AI_ADDON_PACKS: AddonPackDefinition[] = [
     credits: 200,
     validDays: 365,
     modelTier: 'standard',
-    descriptionJa: 'AI標準パック 200回（Sonnetまで）【マネージドキーモード用】',
-    descriptionEn: '200 AI Credits - Standard (up to Sonnet) [Managed-key mode]',
+    descriptionJa: 'AI標準パック 200回（Sonnetクラスまで）【マネージドキーモード用】',
+    descriptionEn: '200 AI Credits - Standard (up to Sonnet class) [Managed-key mode]',
   },
   {
     id: 'ai_credits_200_premium',
     credits: 200,
     validDays: 365,
     modelTier: 'premium',
-    descriptionJa: 'AIプレミアムパック 200回（Opus対応）【マネージドキーモード用】',
-    descriptionEn: '200 AI Credits - Premium (including Opus) [Managed-key mode]',
+    descriptionJa: 'AIプレミアムパック 200回（全モデル対応）【マネージドキーモード用】',
+    descriptionEn: '200 AI Credits - Premium (all models) [Managed-key mode]',
   },
 ];
 

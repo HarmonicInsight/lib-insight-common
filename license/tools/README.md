@@ -34,7 +34,7 @@ python generate-license.py -p INSS --plan BIZ -e user@example.com --expires 2027
 
 ## 使用例
 
-### 1. トライアルライセンス（14日間）
+### 1. トライアルライセンス（30日間）
 
 ```bash
 python generate-license.py -p INSS --trial -e user@example.com
@@ -101,7 +101,7 @@ python generate-license.py -p INSS --plan BIZ -e user@example.com --expires 2027
 
 | コード | 名称 | 期間 |
 |--------|------|------|
-| `TRIAL` | トライアル | 14日 |
+| `TRIAL` | トライアル | 30日 |
 | `BIZ` | Business | 年間 |
 | `ENT` | Enterprise | 要相談 |
 

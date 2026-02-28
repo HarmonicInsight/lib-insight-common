@@ -9,10 +9,10 @@
  *
  * | プラン | 価格 | 期間 | 制限 | AIモデル |
  * |--------|------|------|------|----------|
- * | FREE | ¥0 | 無期限 | Group A: 保存/エクスポート不可, Group B: 閲覧のみ | Standard (Sonnet) |
- * | TRIAL | ¥0 | 14日 | 全機能 | Standard (Sonnet) |
- * | BIZ | 下表参照 | 365日 | 全機能 | Standard (Sonnet) |
- * | ENT | 個別見積もり | 要相談 | 全機能 + API/SSO/監査 | Premium (Opus) |
+ * | FREE | ¥0 | 無期限 | Group A: 保存/エクスポート不可, Group B: 閲覧のみ | クライアント選択（BYOK） |
+ * | TRIAL | ¥0 | 30日 | 全機能 | クライアント選択（BYOK） |
+ * | BIZ | 下表参照 | 365日 | 全機能 | クライアント選択（BYOK） |
+ * | ENT | 個別見積もり | 要相談 | 全機能 + API/SSO/監査 | クライアント選択（BYOK） |
  *
  * ## 製品グループ
  * - Group A（エンドユーザー向け）: FREE / TRIAL / BIZ / ENT

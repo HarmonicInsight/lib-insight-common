@@ -8,10 +8,10 @@ import SwiftUI
 // config/products.ts のプラン体系に準拠。
 // Android の PlanCode.kt と機能一致。
 //
-// FREE:  無料（Group A: 保存不可, Group B: 閲覧のみ, Standard ティア）
-// TRIAL: 評価用（14日間, 全機能, Standard ティア）
-// BIZ:   ビジネス（365日, 全機能, Standard ティア）
-// ENT:   エンタープライズ（カスタマイズ, Premium ティア, API/SSO/監査）
+// FREE:  無料（Group A: 保存不可, Group B: 閲覧のみ, BYOK）
+// TRIAL: 評価用（30日間, 全機能, BYOK）
+// BIZ:   ビジネス（365日, 全機能, BYOK）
+// ENT:   エンタープライズ（カスタマイズ, BYOK, API/SSO/監査）
 // ============================================================
 
 enum PlanCode: String, CaseIterable, Codable, Sendable {
@@ -54,7 +54,7 @@ enum PlanCode: String, CaseIterable, Codable, Sendable {
     var defaultDurationDays: Int {
         switch self {
         case .free: return -1
-        case .trial: return 14
+        case .trial: return 30
         case .biz: return 365
         case .ent: return -1
         }

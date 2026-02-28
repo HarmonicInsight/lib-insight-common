@@ -7,11 +7,10 @@
  * 【設計方針】
  * - ペルソナ（3キャラクター）は内部用。UIには公開しない。
  * - モデル選択は MODEL_REGISTRY で一元管理。
- *   - ティア（Standard/Premium）でデフォルトモデルが決まる。
- *   - ユーザーはティア内で利用可能なモデルを選択できる。
+ *   - BYOK（Bring Your Own Key）— クライアントが自由にモデルを選択。
+ *   - モデルティア制限なし。全プランで全モデル利用可能。
  *   - 新モデル追加時はレジストリに1エントリ追加するだけ。
- * - Standard ティア: Sonnet 系（デフォルト: 最新 Sonnet）
- * - Premium ティア: Opus 系（デフォルト: 最新 Opus）
+ * - レジストリ内のデフォルト: Standard = Sonnet 系、Premium = Opus 系（UI のデフォルト選択用）
  * - 設定画面でモデル選択 UI を表示し、ユーザーが変更可能。
  *
  * 詳細仕様: standards/AI_ASSISTANT.md

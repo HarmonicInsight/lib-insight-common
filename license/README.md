@@ -39,7 +39,7 @@ IVIN-BIZ-2701-I9J0-K1L2-Z1A3     # InterviewInsight Business
 | コード | 名称 | 期間 | 説明 |
 |--------|------|------|------|
 | `FREE` | Free | 無期限 | 基本機能 |
-| `TRIAL` | Trial | 14日間 | 全機能利用可能（評価用） |
+| `TRIAL` | Trial | 30日間 | 全機能利用可能（評価用） |
 | `BIZ` | Business | 年間（365日） | 法人向け全機能 |
 | `ENT` | Enterprise | 要相談 | カスタマイズ |
 

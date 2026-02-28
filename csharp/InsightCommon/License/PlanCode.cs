@@ -3,10 +3,11 @@ namespace InsightCommon.License;
 /// <summary>
 /// ライセンスプラン（4ティア制: FREE / TRIAL / BIZ / ENT）
 ///
-/// - FREE:  無料（Group A: 保存/エクスポート不可, Group B: 閲覧モードのみ, Standard ティア）
-/// - TRIAL: 評価用（14日間, 全機能, Standard ティア）
-/// - BIZ:   ビジネス（365日, 全機能, Standard ティア）
-/// - ENT:   エンタープライズ（カスタマイズ, Premium ティア, API/SSO/監査ログ）
+/// - FREE:  無料（Group A: 保存/エクスポート不可, Group B: 閲覧モードのみ）
+/// - TRIAL: 評価用（30日間, 全機能）
+/// - BIZ:   ビジネス（365日, 全機能）
+/// - ENT:   エンタープライズ（カスタマイズ, API/SSO/監査ログ）
+/// 全プラン共通: BYOK（AIキーはクライアント自社購入）、モデルティア制限なし
 /// </summary>
 public enum PlanCode
 {

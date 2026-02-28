@@ -41,7 +41,7 @@ def parse_args():
   # Insight Deck Quality Gate Business（12ヶ月）
   python generate-license.py -p INSS --plan BIZ -e user@example.com -m 12
 
-  # InsightPy トライアル（14日間）
+  # InsightPy トライアル（30日間）
   python generate-license.py -p INPY --trial -e user@example.com
 
   # InsightCast Business（12ヶ月）
@@ -65,7 +65,7 @@ def parse_args():
   IVIN  - InterviewInsight
 
 プラン:
-  TRIAL  - トライアル（14日間）
+  TRIAL  - トライアル（30日間）
   BIZ    - Business
   ENT    - Enterprise
 '''
@@ -89,7 +89,7 @@ def parse_args():
     parser.add_argument(
         '--trial',
         action='store_true',
-        help='トライアル発行（14日間）'
+        help='トライアル発行（30日間）'
     )
 
     parser.add_argument(

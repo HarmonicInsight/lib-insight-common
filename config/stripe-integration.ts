@@ -241,7 +241,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     stripePriceIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRICE_ID',
 
     billingType: 'one_time',
-    description: 'AI Credits - Standard 200 (up to Sonnet)',
+    description: 'AI Credits - Standard 200 (up to Sonnet class)',
   },
   {
     productCode: 'INSS',
@@ -250,7 +250,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     stripePriceIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRICE_ID',
 
     billingType: 'one_time',
-    description: 'AI Credits - Premium 200 (including Opus)',
+    description: 'AI Credits - Premium 200 (all models)',
   },
 ];
 

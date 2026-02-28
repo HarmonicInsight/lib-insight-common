@@ -255,7 +255,7 @@ public static class InsightIcons
             IconEmoji: Emoji.AI,
             DefaultWidth: 320,
             MinWidth: 200,
-            LicenseGate: PanelLicenseGate.None  // STDは月50回制限
+            LicenseGate: PanelLicenseGate.None  // BYOK — 使用回数制限なし
         );
 
         public static readonly PanelDefinition Python = new(
