@@ -44,7 +44,7 @@ config/
 
 ```typescript
 type ProductCode = 'INCA' | 'INBT' | 'IVIN' | 'INMV' | 'INIG' | 'INSS' | 'IOSH' | 'IOSD' | 'INPY';
-type PlanCode = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+type PlanCode = 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
 ```
 
 ### 2. エクスポート規約
