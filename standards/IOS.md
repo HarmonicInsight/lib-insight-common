@@ -421,11 +421,11 @@ enum InsightColors {
     static let darkTextSecondary = Color(hex: "D6D3D1")
     static let darkBorder = Color(hex: "3D3835")
 
-    // MARK: - Plan（FREE 廃止 — CLAUDE.md §8 準拠）
+    // MARK: - Plan（FREE/TRIAL/BIZ/ENT 体系）
 
+    static let planFree = Color(hex: "A8A29E")
     static let planTrial = Color(hex: "2563EB")
-    static let planStd = Color(hex: "16A34A")
-    static let planPro = Color(hex: "B8942F")
+    static let planBiz = Color(hex: "16A34A")
     static let planEnt = Color(hex: "7C3AED")
 
     // MARK: - Adaptive Colors（Light/Dark 自動切替）

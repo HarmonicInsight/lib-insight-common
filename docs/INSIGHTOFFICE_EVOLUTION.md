@@ -505,7 +505,7 @@ if (!DataCollectionLimits.CanUseAiValidation(currentPlan, monthlyValidationUsage
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  InsightBot (Orchestrator) — INBT PRO/ENT                        │
+│  InsightBot (Orchestrator) — INBT BIZ/ENT                        │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │ JOB マネージャー                                         │   │
 │  │ ├ JOB 作成・編集（AI コードエディター）                   │   │
@@ -634,7 +634,7 @@ Orchestrator からワークフロー定義を受信:
 
 ### 3.3 ローカルワークフロー（Orchestrator 不要版）
 
-PRO Insight Business Suite ユーザー向け。Orchestrator なしでローカル PC 上の簡易自動化が可能。
+BIZ Insight Business Suite ユーザー向け。Orchestrator なしでローカル PC 上の簡易自動化が可能。
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
