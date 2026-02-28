@@ -56,7 +56,7 @@ Insight Business Suite を「単体の AI オフィスツール」から「企�
 | データ収集（Pillar 1） | **○** | — | — | IOSH 専用 |
 | RPA Agent（Pillar 2） | ○ | ○ | ○ | 全製品共通 |
 | リモート管理（Pillar 3） | ○ | ○ | ○ | 全製品共通 |
-| ローカルワークフロー | ○ | ○ | ○ | PRO+ |
+| ローカルワークフロー | ○ | ○ | ○ | BIZ+ |
 | AI アシスタント（既存） | ○ | ○ | ○ | 実装済み |
 | Python スクリプト（既存） | ○ | ○ | ○ | 実装済み |
 
@@ -458,7 +458,7 @@ public class AiTransferService
 // 機能利用可否チェック
 if (!DataCollectionLimits.CanUseDataCollection(currentPlan))
 {
-    ShowUpgradeDialog("データ収集機能は PRO / ENT プランで利用できます");
+    ShowUpgradeDialog("データ収集機能は BIZ / ENT プランで利用できます");
     return;
 }
 
@@ -479,9 +479,9 @@ if (!DataCollectionLimits.CanUseAiValidation(currentPlan, monthlyValidationUsage
 
 | プラン | データ収集 | テンプレート数 | AI 転記/月 | AI 検証/月 | データ保持 |
 |--------|:---------:|:------------:|:---------:|:---------:|:---------:|
-| TRIAL  | ✅ | 無制限 | 無制限 | 無制限 | 14日 |
-| STD    | ❌ | — | — | — | — |
-| PRO    | ✅ | 50 | 200 | 200 | 365日 |
+| TRIAL  | ✅ | 無制限 | 無制限 | 無制限 | 30日 |
+| FREE   | ❌ | — | — | — | — |
+| BIZ    | ✅ | 50 | 200 | 200 | 365日 |
 | ENT    | ✅ | 無制限 | 無制限 | 無制限 | 無制限 |
 
 ### 2.4 既存リソースとの対応表

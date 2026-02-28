@@ -397,7 +397,7 @@ def require_feature(feature: str):
     return decorator
 
 def require_tier(min_tier: str):
-    tier_order = ['TRIAL', 'STD', 'PRO', 'ENT']
+    tier_order = ['FREE', 'TRIAL', 'BIZ', 'ENT']
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -419,7 +419,7 @@ from src.i18n_helper import _
 from src.decorators import require_license, require_feature
 
 # ライセンス有効化
-result = license_manager.activate('INS-INSS-PRO-2501-1534-A7')
+result = license_manager.activate('INS-INSS-BIZ-2501-1534-A7')
 print(result['message'])
 
 # 翻訳
