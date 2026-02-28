@@ -63,7 +63,7 @@ Border:           #E7E2DA (Warm Gray)
 | コード | 製品名 | 備考 |
 |-------|-------|------|
 | INSS | Insight Deck Quality Gate | |
-| IOSH | Insight Performance Management | STD: 個人, PRO: 法人 |
+| IOSH | Insight Performance Management | BIZ: 法人, ENT: 企業 |
 | IOSD | Insight AI Briefcase | |
 | INPY | InsightPy | |
 | INMV | InsightCast | |

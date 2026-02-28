@@ -12,7 +12,7 @@ HARMONIC insight 製品エコシステムに新規製品を追加するガイド
 2. **製品名**（例: InsightNewProduct）
 3. **製品の説明**
 4. **ティア**（Tier 1: 業務変革ツール / Tier 2: AI活用ツール / Tier 3: Insight Business Suite）
-5. **価格帯**（STD / PRO / ENT 各プランの年額）
+5. **価格帯**（FREE / TRIAL / BIZ / ENT 各プランの年額）
 6. **プラットフォーム**（WPF / React / Python / Android / iOS）
 7. **AI アシスタント搭載の有無**
 8. **独自拡張子の有無**（Insight Business Suite 系の場合）

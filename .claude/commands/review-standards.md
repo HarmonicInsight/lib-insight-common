@@ -27,7 +27,7 @@ Task ツールのパラメータ:
 **ライセンス**
 - [ ] InsightLicenseManager が使用されている
 - [ ] ライセンス画面が Insight Slides 形式に準拠している
-- [ ] プラン体系: TRIAL / STD / PRO / ENT
+- [ ] プラン体系: FREE / TRIAL / BIZ / ENT
 
 **AI アシスタント（該当する場合）**
 - [ ] Claude (Anthropic) API のみ使用

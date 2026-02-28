@@ -72,7 +72,7 @@ bash ./scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
 | ブランド名 | `InsightOffice` (15px, SemiBold, Gold) | `Insight Office`, `InsightSheet` |
 | 製品名 | `Sheet` / `Doc` / `Slide` (15px, Normal, Gray) | `InsightSheet`, `Insight Slides` |
 | バージョン | `v2.1.0` (11px, Margin=12) | `2.1.0`, `ver2.1.0` |
-| プランバッジ | `◀ PRO` (11px) | `PRO`, `[PRO]` |
+| プランバッジ | `◀ BIZ` (11px) | `BIZ`, `[BIZ]` |
 | ライセンスボタン | `🔑 ライセンス` | `ライセンス` (アイコンなし) |
 
 詳細は `standards/CSHARP_WPF.md` の「StaticResource ルール」および「タイトルバーコンポーネント標準」セクションを参照してください。
