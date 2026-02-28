@@ -228,13 +228,13 @@ Slide:  [テキスト] [AI] [比較]
 
 ### 6.1 パネル別ライセンス要件
 
-| パネル | STD | PRO | ENT |
-|--------|:---:|:---:|:---:|
+| パネル | FREE | BIZ | ENT |
+|--------|:----:|:---:|:---:|
 | 履歴 | ✅ | ✅ | ✅ |
 | 変更ログ | ✅ | ✅ | ✅ |
-| AI（月50回） | ✅ | ✅ | ✅ |
 | AI（月200回） | ❌ | ✅ | ✅ |
-| 掲示板 | ❌ | ✅ | ✅ |
+| AI（無制限） | ❌ | ❌ | ✅ |
+| 掲示板 | ❌ | ❌ | ✅ |
 | Python | ❌ | ✅ | ✅ |
 | 参考資料 | ✅ | ✅ | ✅ |
 
@@ -249,10 +249,10 @@ public bool IsAvailable
         if (_definition.LicenseGate == PanelLicenseGate.None)
             return true;
 
-        var plan = _licenseManager.CurrentLicense?.Plan ?? PlanCode.TRIAL;
+        var plan = _licenseManager.CurrentLicense?.Plan ?? PlanCode.FREE;
         return _definition.LicenseGate switch
         {
-            PanelLicenseGate.Pro => plan >= PlanCode.PRO,
+            PanelLicenseGate.Biz => plan >= PlanCode.BIZ,
             PanelLicenseGate.Enterprise => plan >= PlanCode.ENT,
             _ => true
         };
@@ -376,7 +376,7 @@ var options = new InsightTitleBar.TitleBarOptions
 {
     Product = InsightTitleBar.Products.Sheet,
     Version = "v2.1.0",
-    Plan = PlanCode.Pro,
+    Plan = PlanCode.Biz,
     PanelToggles = new[]
     {
         new InsightTitleBar.PanelToggleInfo
@@ -411,14 +411,14 @@ var titleBar = InsightTitleBar.Create(
 
 ```csharp
 // プランバッジを個別生成
-var badge = InsightTitleBar.CreatePlanBadge(PlanCode.Pro, _theme);
+var badge = InsightTitleBar.CreatePlanBadge(PlanCode.Biz, _theme);
 ```
 
 | プラン | 表示 | 背景色 |
 |--------|------|--------|
-| TRIAL | `TRIAL` | PrimaryLight (#F0E6C8) |
-| STD | `STD` | PrimaryLight |
-| PRO | `PRO` | PrimaryLight |
+| FREE | `FREE` | PrimaryLight (#F0E6C8) |
+| TRIAL | `TRIAL` | PrimaryLight |
+| BIZ | `BIZ` | PrimaryLight |
 | ENT | `ENT` | PrimaryLight |
 
 ---

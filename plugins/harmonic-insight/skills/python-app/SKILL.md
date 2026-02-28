@@ -45,7 +45,7 @@ from insight_common.license import validate_license, LicenseInfo
 
 license_info: LicenseInfo = validate_license(
     email="user@example.com",
-    key="INSS-STD-2601-XXXX-XXXX-XXXX"
+    key="INSS-BIZ-2601-XXXX-XXXX-XXXX"
 )
 ```
 

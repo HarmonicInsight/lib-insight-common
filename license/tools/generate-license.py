@@ -5,7 +5,7 @@
 キー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
 使用方法:
-  python generate-license.py --product INSS --plan PRO --email user@example.com --expires 2027-01-31
+  python generate-license.py --product INSS --plan BIZ --email user@example.com --expires 2027-01-31
   python generate-license.py --product INSS --trial --email user@example.com
 """
 
@@ -35,23 +35,23 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 例:
-  # Insight Deck Quality Gate Pro（2027年1月まで）
-  python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-01-31
+  # Insight Deck Quality Gate Business（2027年1月まで）
+  python generate-license.py -p INSS --plan BIZ -e user@example.com --expires 2027-01-31
 
-  # Insight Deck Quality Gate Standard（12ヶ月）
-  python generate-license.py -p INSS --plan STD -e user@example.com -m 12
+  # Insight Deck Quality Gate Business（12ヶ月）
+  python generate-license.py -p INSS --plan BIZ -e user@example.com -m 12
 
-  # InsightPy トライアル（14日間）
+  # InsightPy トライアル（30日間）
   python generate-license.py -p INPY --trial -e user@example.com
 
-  # InsightCast Pro（12ヶ月）
-  python generate-license.py -p INMV --plan PRO -e user@example.com -m 12
+  # InsightCast Business（12ヶ月）
+  python generate-license.py -p INMV --plan BIZ -e user@example.com -m 12
 
-  # InsightBot Pro（12ヶ月）
-  python generate-license.py -p INBT --plan PRO -e user@example.com -m 12
+  # InsightBot Enterprise（12ヶ月）
+  python generate-license.py -p INBT --plan ENT -e user@example.com -m 12
 
-  # InterviewInsight Standard（12ヶ月）
-  python generate-license.py -p IVIN --plan STD -e user@example.com -m 12
+  # InterviewInsight Business（12ヶ月）
+  python generate-license.py -p IVIN --plan BIZ -e user@example.com -m 12
 
 製品コード:
   INSS  - Insight Deck Quality Gate
@@ -65,9 +65,9 @@ def parse_args():
   IVIN  - InterviewInsight
 
 プラン:
-  TRIAL  - トライアル（14日間）
-  STD    - Standard
-  PRO    - Professional
+  TRIAL  - トライアル（30日間）
+  BIZ    - Business
+  ENT    - Enterprise
 '''
     )
 

@@ -71,7 +71,7 @@ INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
 例：
 INS-INSS-TRIAL-A1B2-C3D4-X9    # Insight Deck Quality Gate トライアル
-INS-INCA-PRO-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Professional
+INS-INCA-BIZ-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Business
 ```
 
 ### 製品コード
@@ -92,9 +92,9 @@ INS-INCA-PRO-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Professional
 
 | ティア | 期間 | 用途 |
 |--------|------|------|
-| `TRIAL` | 任意指定 | トライアル版 |
-| `STD` | 年間 | Standard版 |
-| `PRO` | 年間 | Professional版 |
+| `FREE` | 無期限 | 基本機能（ライセンス不要） |
+| `TRIAL` | 30日間 | 全機能利用可能（評価用） |
+| `BIZ` | 年間 | Business版（法人向け全機能） |
 | `ENT` | 永久 | Enterprise版 |
 
 ---
@@ -375,14 +375,14 @@ def require_feature(feature: str):
 # 使用例
 @require_feature('batch_processing')
 def process_all_files(files: list):
-    """バッチ処理（STD以上）"""
+    """バッチ処理（BIZ以上）"""
     for file in files:
         process_file(file)
 
 
 @require_feature('cloud_sync')
 def sync_to_cloud():
-    """クラウド同期（PRO以上）"""
+    """クラウド同期（BIZ以上）"""
     pass
 ```
 
@@ -458,9 +458,9 @@ console.log(currentProduct.name);        // "Insight Deck Quality Gate"
 console.log(currentProduct.description); // "PowerPointコンテンツ抽出・更新"
 
 // ティア情報
-const proTier = products.tiers.PRO;
-console.log(proTier.name);      // "Professional"
-console.log(proTier.limits);    // { apiCalls: 100000, storage: "50GB" }
+const bizTier = products.tiers.BIZ;
+console.log(bizTier.name);      // "Business"
+console.log(bizTier.limits);    // { apiCalls: 100000, storage: "50GB" }
 ```
 
 ---

@@ -16,7 +16,7 @@ YourApp/
 │   ├── Colors.xaml           # Ivory & Gold カラー定義
 │   └── Styles.xaml           # 共通スタイル
 ├── License/
-│   ├── PlanCode.cs           # TRIAL/STD/PRO/ENT 列挙型
+│   ├── PlanCode.cs           # FREE/TRIAL/BIZ/ENT 列挙型
 │   ├── LicenseInfo.cs        # ライセンス情報クラス
 │   └── InsightLicenseManager.cs
 ├── Views/
@@ -61,7 +61,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 ```
 ┌────────────────────────────────────┐
 │      製品名（Gold色、中央）          │
-│         現在のプラン: STD            │
+│         現在のプラン: BIZ            │
 │     有効期限: 2027年01月31日         │
 │  ┌──────────────────────────────┐  │
 │  │ 機能一覧                      │  │

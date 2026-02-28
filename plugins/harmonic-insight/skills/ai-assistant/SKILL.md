@@ -16,7 +16,7 @@ allowed-tools: Read, Grep, Glob
 | モデル選択 | ティアで自動決定（ユーザーは選べない） |
 | Standard ティア | Claude Sonnet |
 | Premium ティア | Claude Opus |
-| ライセンス制御 | STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
+| ライセンス制御 | FREE: 不可 / TRIAL: 無制限（30日間） / BIZ: 月200回 / ENT: 無制限 |
 
 ## ペルソナシステム（3 キャラクター）
 
@@ -32,8 +32,8 @@ allowed-tools: Read, Grep, Glob
 import { getModelForTier, canUseAiAssistant } from '@/insight-common/config/ai-assistant';
 
 // ライセンスチェック
-canUseAiAssistant('PRO');  // true
-canUseAiAssistant('STD');  // true（月50回制限）
+canUseAiAssistant('BIZ');   // true（月200回制限）
+canUseAiAssistant('FREE');  // false
 
 // モデル決定
 const model = getModelForTier(balance.effectiveModelTier);

@@ -395,9 +395,9 @@ brand/colors.json に基づくカラー定義
     <color name="dark_border">#3D3835</color>
 
     <!-- === Plan === -->
+    <color name="plan_free">#A8A29E</color>
     <color name="plan_trial">#2563EB</color>
-    <color name="plan_std">#16A34A</color>
-    <color name="plan_pro">#B8942F</color>
+    <color name="plan_biz">#16A34A</color>
     <color name="plan_ent">#7C3AED</color>
 </resources>
 ```
@@ -1359,9 +1359,9 @@ Insight Business Suite 製品（INSS/IOSH/IOSD 等）の Android 版では、ラ
 package com.harmonic.insight.<appname>.license
 
 enum class PlanCode(val displayName: String) {
+    FREE("FREE"),
     TRIAL("TRIAL"),
-    STD("STD"),
-    PRO("PRO"),
+    BIZ("BIZ"),
     ENT("ENT"),
 }
 ```
@@ -1378,7 +1378,7 @@ import java.util.regex.Pattern
 class LicenseManager(context: Context, private val productCode: String) {
     companion object {
         private val KEY_PATTERN = Pattern.compile(
-            "^([A-Z]{4})-(TRIAL|STD|PRO)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+            "^([A-Z]{4})-(TRIAL|BIZ|ENT)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
         )
     }
 
