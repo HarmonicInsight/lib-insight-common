@@ -15,14 +15,14 @@
  * ┌────────────────────────────────────────────────────────────────┐
  * │                   BYOK AI ライセンスモデル                      │
  * │                                                                │
- * │   3ティアプラン体系                                             │
- * │   ┌──────────┬──────────┬──────────┐                          │
- * │   │  TRIAL   │   BIZ    │   ENT    │                          │
- * │   │  無制限   │  無制限   │  無制限   │                          │
- * │   │ (14日)   │ (365日)  │ (要相談)  │                          │
- * │   │ Premium  │ Standard │ Premium  │                          │
- * │   │ (Opus)   │ (Sonnet) │ (Opus)   │                          │
- * │   └──────────┴──────────┴──────────┘                          │
+ * │   4ティアプラン体系                                             │
+ * │   ┌──────────┬──────────┬──────────┬──────────┐              │
+ * │   │  FREE    │  TRIAL   │   BIZ    │   ENT    │              │
+ * │   │  無制限   │  無制限   │  無制限   │  無制限   │              │
+ * │   │ (無期限) │ (14日)   │ (365日)  │ (要相談)  │              │
+ * │   │ Standard │ Standard │ Standard │ Premium  │              │
+ * │   │ (Sonnet) │ (Sonnet) │ (Sonnet) │ (Opus)   │              │
+ * │   └──────────┴──────────┴──────────┴──────────┘              │
  * │                                                                │
  * │   ユーザーは自身の Claude API キーを設定                         │
  * │   → クレジット管理は不要（API 利用料はユーザー負担）             │
@@ -226,10 +226,11 @@ export interface PurchasedAddonPack {
 // =============================================================================
 
 /**
- * プラン別 AI クレジット定義（BYOK モード — 3ティア制）
+ * プラン別 AI クレジット定義（BYOK モード — 4ティア制）
  *
  * 【重要】
- * - TRIAL: 無制限（14日間・Premium モデル = Opus 対応）
+ * - FREE:  無制限（Standard モデル = Sonnet まで）
+ * - TRIAL: 無制限（14日間・Standard モデル = Sonnet まで）
  * - BIZ:   無制限（Standard モデル = Sonnet まで）
  * - ENT:   無制限（Premium モデル = Opus 対応）
  *
@@ -237,14 +238,23 @@ export interface PurchasedAddonPack {
  * クレジット管理は不要。プラン差はモデルティアのみ。
  */
 export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
+  FREE: {
+    plan: 'FREE',
+    baseCredits: -1,
+    period: 'unlimited',
+    aiEnabled: true,
+    modelTier: 'standard',
+    descriptionJa: 'AI無制限（BYOK・Sonnetまで）',
+    descriptionEn: 'Unlimited AI (BYOK, up to Sonnet)',
+  },
   TRIAL: {
     plan: 'TRIAL',
     baseCredits: -1,
     period: 'unlimited',
     aiEnabled: true,
-    modelTier: 'premium',
-    descriptionJa: 'AI無制限（14日間・BYOK・Opus対応）',
-    descriptionEn: 'Unlimited AI for 14 days (BYOK, including Opus)',
+    modelTier: 'standard',
+    descriptionJa: 'AI無制限（14日間・BYOK・Sonnetまで）',
+    descriptionEn: 'Unlimited AI for 14 days (BYOK, up to Sonnet)',
   },
   BIZ: {
     plan: 'BIZ',
@@ -440,7 +450,7 @@ export function calculateCreditBalance(
   const totalUsed = baseUsed + addonUsed;
   const totalRemaining = baseRemaining + addonRemaining;
 
-  // STD でもアドオンがあれば AI 有効
+  // アドオンがあれば AI 有効
   const aiEnabled = quota.aiEnabled || addonRemaining > 0;
 
   // モデルティア: プラン基本 or 有効な Premium アドオンがあれば premium
@@ -476,8 +486,8 @@ export function calculateCreditBalance(
  *
  * @example
  * ```typescript
- * const balance = calculateCreditBalance('PRO', 95, addonPacks);
- * const result = checkAiUsage('PRO', balance, true);
+ * const balance = calculateCreditBalance('BIZ', 95, addonPacks);
+ * const result = checkAiUsage('BIZ', balance, true);
  * if (!result.allowed) {
  *   console.log(result.reason); // "クレジットが不足しています"
  *   console.log(result.canPurchaseAddon); // true
@@ -507,14 +517,14 @@ export function checkAiUsage(
     };
   }
 
-  // AI 機能なし（STD でアドオンなし）
+  // AI 機能なし（アドオンなし）
   if (!balance.aiEnabled) {
     return {
       allowed: false,
       remaining: 0,
-      reason: 'このプランではAI機能はご利用いただけません。アドオンパックを購入するか、PROプランにアップグレードしてください。',
+      reason: 'このプランではAI機能はご利用いただけません。アドオンパックを購入するか、BIZプランにアップグレードしてください。',
       reasonCode: 'ai_not_available',
-      suggestedUpgrade: 'PRO',
+      suggestedUpgrade: 'BIZ',
       canPurchaseAddon: true,
     };
   }

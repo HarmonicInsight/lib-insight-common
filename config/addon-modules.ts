@@ -262,7 +262,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'ai_assistant',
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -333,7 +333,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'extension',
     panelPosition: 'bottom',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
     dependencies: [
       {
         name: 'Python',
@@ -520,7 +520,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'bottom',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -580,7 +580,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'reference_materials',
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -691,7 +691,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'board',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -742,7 +742,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'send_message',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -785,7 +785,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'dialog',
     requiredFeatureKey: 'voice_input',
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -851,7 +851,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'dialog',
     requiredFeatureKey: 'tts_reader',
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -972,7 +972,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'ai_editor',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       {
@@ -1114,7 +1114,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'extension',
     panelPosition: 'dialog',
     requiredFeatureKey: 'vrm_avatar',
-    allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       // -----------------------------------------------------------------

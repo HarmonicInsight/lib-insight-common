@@ -682,7 +682,7 @@ ${product === 'INBT' ? `【InsightBot 固有】
 ユーザーの質問や要望に丁寧に回答してください。`;
 
       case 'spreadsheet':
-        return `You are an AI assistant for InsightOfficeSheet, an Excel version control application.
+        return `You are an AI assistant for Insight Performance Management, an Excel version control application.
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
@@ -708,7 +708,7 @@ Respond in the same language as the user's message.
 - 統計分析、集計、データプロファイリング`;
 
       case 'document':
-        return `あなたはInsightOfficeDocのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
+        return `あなたはInsight AI BriefcaseのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
 ユーザーのメッセージと同じ言語で回答してください。
 
 主な機能：
@@ -798,7 +798,7 @@ Key capabilities:
 Please respond helpfully to user questions and requests.`;
 
     case 'spreadsheet':
-      return `You are an AI assistant for InsightOfficeSheet, an Excel version control application.
+      return `You are an AI assistant for Insight Performance Management, an Excel version control application.
 You have tools to read and write the currently open spreadsheet.
 Use tools to fulfill user requests about modifying, analyzing, or formatting data.
 Always explain what you are doing before and after using tools.
@@ -824,7 +824,7 @@ For accounting and finance queries:
 - Statistical analysis, aggregation, data profiling`;
 
     case 'document':
-      return `You are an AI assistant for InsightOfficeDoc, a Word document operations and automation tool.
+      return `You are an AI assistant for Insight AI Briefcase, a Word document operations and automation tool.
 Respond in the same language as the user's message.
 
 Key capabilities:
@@ -912,7 +912,7 @@ Return an empty array [] if no corrections are needed.`;
 // =============================================================================
 
 /**
- * InsightOfficeSheet 用のスプレッドシートツール定義
+ * Insight Performance Management 用のスプレッドシートツール定義
  *
  * 使い方:
  * ```typescript
@@ -1622,7 +1622,7 @@ export const TASK_CONTEXT_HINTS: Record<TaskContext, {
  * TASK_CONTEXT_HINTS と照合してコンテキストを推定する。
  */
 const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
-  // InsightOfficeSheet: スプレッドシート系 + 比較 + レポート + ドキュメント評価 + Finance
+  // Insight Performance Management: スプレッドシート系 + 比較 + レポート + ドキュメント評価 + Finance
   IOSH: [
     'simple_chat',
     'cell_edit',
@@ -1639,7 +1639,7 @@ const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
     'cell_edit',
     'document_review',
   ],
-  // InsightOfficeSlide: 文書校正 + ドキュメント評価 + レポート + コンテンツ作成
+  // Insight Deck Quality Gate: 文書校正 + ドキュメント評価 + レポート + コンテンツ作成
   INSS: [
     'simple_chat',
     'document_review',
@@ -1647,7 +1647,7 @@ const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
     'report_generation',
     'content_creation',      // Marketing プラグイン統合
   ],
-  // InsightOfficeDoc: 文書校正 + ドキュメント評価 + レポート + 契約書レビュー + コンテンツ作成
+  // Insight AI Briefcase: 文書校正 + ドキュメント評価 + レポート + 契約書レビュー + コンテンツ作成
   IOSD: [
     'simple_chat',
     'document_review',
@@ -1692,11 +1692,11 @@ export function getTaskContextsForProduct(product: ProductCode): TaskContext[] {
  *
  * @example
  * ```typescript
- * // InsightOfficeSheet で「2つのファイルの違いを全体的にまとめて」
+ * // Insight Performance Management で「2つのファイルの違いを全体的にまとめて」
  * inferTaskContext('IOSH', '2つのファイルの違いを全体的にまとめて', 'ja');
  * // 'full_document_compare'
  *
- * // InsightOfficeSlide で「誤字をチェックして」
+ * // Insight Deck Quality Gate で「誤字をチェックして」
  * inferTaskContext('INSS', '誤字をチェックして', 'ja');
  * // 'document_review'
  * ```
