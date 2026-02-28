@@ -304,6 +304,151 @@ anthropic-version: 2023-06-01
 - 古いメッセージは先頭から削除（system プロンプトは毎回再構築）
 - チャット履歴はローカルファイルに JSON 形式で永続化
 
+### 4.5 共通モジュール: AgenticSessionManager
+
+Tool Use ループ（§4.3）と会話履歴管理（§4.4）は `InsightCommon.AI.AgenticSessionManager` で統合実装されている。
+各アプリは製品固有のツール実行のみを `IToolExecutor` で実装すればよい。
+
+**構成ファイル:**
+
+| ファイル | 役割 |
+|---------|------|
+| `csharp/InsightCommon/AI/AgenticSessionManager.cs` | セッション管理本体（ループ・履歴・使用量） |
+| `csharp/InsightCommon/AI/IToolExecutor.cs` | ツール実行インターフェース + 実行結果モデル |
+| `csharp/InsightCommon/AI/ISessionCallback.cs` | UI 通知コールバック（任意実装） |
+
+**基本的な使い方:**
+
+```csharp
+using InsightCommon.AI;
+
+// 1. セッション構築
+var session = new AgenticSessionManager(claudeApiClient, new SessionOptions
+{
+    SystemPrompt = "あなたは...",
+    Tools = myToolDefinitions,              // Tool Use 対応製品のみ
+    ToolExecutor = new MyToolExecutor(),     // IToolExecutor 実装
+    Callback = new MyChatPanelCallback(),    // ISessionCallback 実装（任意）
+    MaxIterations = 10,                     // Tool Use ループ上限
+    MaxHistoryMessages = 30,                // API 送信用履歴上限
+    MaxStorageMessages = 100,               // ローカル保存用履歴上限
+});
+
+// 2. メッセージ送信（Tool Use ループは内部で自動処理）
+var response = await session.SendAsync("A1:C10を合計して", cancellationToken);
+// response.Text       → AI の最終テキスト応答
+// response.Iterations → API コール回数（ループ含む）
+// response.WasTruncated → MaxIterations 到達で打ち切られた場合 true
+
+// 3. 使用量確認
+var usage = session.Usage;
+// usage.TotalCalls, usage.TotalInputTokens, usage.TotalOutputTokens, usage.EstimatedCostUsd
+
+// 4. セッション永続化（プロジェクトファイル保存時）
+ChatSession exported = session.ExportSession();
+
+// 5. セッション復元（プロジェクトファイル読込時）
+session.ImportSession(existingChatSession);
+```
+
+**IToolExecutor の実装例（IOSH）:**
+
+```csharp
+public class SpreadsheetToolExecutor : IToolExecutor
+{
+    private readonly SpreadsheetControl _control;
+
+    public SpreadsheetToolExecutor(SpreadsheetControl control)
+    {
+        _control = control;
+    }
+
+    public async Task<ToolExecutionResult> ExecuteAsync(
+        string toolName, JsonElement input, CancellationToken ct)
+    {
+        return toolName switch
+        {
+            "get_cell_range" => await GetCellRange(input),
+            "set_cell_values" => await SetCellValues(input),
+            _ => new ToolExecutionResult
+            {
+                Content = $"Unknown tool: {toolName}",
+                IsError = true,
+            },
+        };
+    }
+}
+```
+
+**定数の根拠:**
+
+| 定数 | 値 | 根拠 |
+|------|-----|------|
+| `MaxIterations` | 10 | §4.3 Tool Use ループ最大イテレーション |
+| `MaxHistoryMessages` | 30 | §4.4 API 送信用最大メッセージ数 |
+| `MaxStorageMessages` | 100 | §10.4 ローカル保存最大メッセージ数 |
+
+### 4.6 AI メモリシステム
+
+AgenticSessionManager は AI メモリシステムを統合しており、会話から用語・人物・プロジェクト・ユーザー設定を自動抽出し、次回以降の system prompt に注入する。
+
+**設計方針: インライン抽出（追加 API コスト ゼロ）**
+
+通常の応答の中で `<ai_memory>` タグとしてメモリ抽出を行うため、追加の API 呼び出しは発生しない。system prompt に ~200 トークンの抽出指示が加わるのみ。
+
+**構成ファイル:**
+
+| ファイル | 役割 |
+|---------|------|
+| `csharp/InsightCommon/AI/AiMemoryModels.cs` | メモリエントリ型・ホットキャッシュ・プラン別制限 |
+| `csharp/InsightCommon/AI/MemoryExtractor.cs` | インライン抽出・プロンプト整形・抽出指示生成 |
+| `config/ai-memory.ts` | TypeScript 型定義（C# モデルの根拠） |
+
+**使い方:**
+
+```csharp
+using InsightCommon.AI;
+
+// 1. プロジェクトファイルからホットキャッシュを読み込み
+var hotCache = projectFile.LoadAiMemory(); // ZIP 内 ai_memory.json
+
+// 2. SessionOptions にホットキャッシュを渡す
+var session = new AgenticSessionManager(client, new SessionOptions
+{
+    SystemPrompt = basePrompt,
+    MemoryHotCache = hotCache,   // ← メモリ注入
+    Locale = "ja",               // ← 抽出指示・整形の言語
+    Callback = new MyChatPanelCallback(),
+});
+
+// 3. 応答からメモリが自動抽出される
+var response = await session.SendAsync("田中部長のKPI報告書を修正して", ct);
+// response.Text             → クリーンテキスト（<ai_memory> タグ除去済み）
+// response.ExtractedMemories → [PersonEntry("田中", 部長), GlossaryEntry("KPI", ...)]
+
+// 4. ISessionCallback.OnMemoryExtracted() でメモリパネル UI を更新
+//    ユーザー確認後、ホットキャッシュに保存 → 次回 system prompt に自動注入
+```
+
+**プラン別制限（`AiMemoryLimitsRegistry`）:**
+
+| プラン | ホットキャッシュ上限 | ディープストレージ上限 |
+|--------|:------------------:|:--------------------:|
+| TRIAL | 50 | 200 |
+| STD | 20 | 無効 |
+| PRO | 100 | 500 |
+| ENT | 無制限 | 無制限 |
+
+**メモリ抽出フロー:**
+
+```
+Claude 応答 → MemoryExtractor.Extract()
+  ├─ CleanText    → AgenticResponse.Text（表示用）
+  ├─ Entries      → AgenticResponse.ExtractedMemories
+  └─ Callback     → ISessionCallback.OnMemoryExtracted()
+                     → アプリ側で UI 表示・確認・保存
+```
+
 ---
 
 ## 5. システムプロンプト標準
@@ -317,6 +462,8 @@ anthropic-version: 2023-06-01
 [2. 応答ルール]
 [3. 製品固有の機能説明]
 [4. 開いているファイルのコンテキスト（動的）]
+[5. メモリ抽出指示（§4.6 — 自動追加）]
+[6. 蓄積メモリ（§4.6 — ホットキャッシュから自動注入）]
 ```
 
 ### 5.2 共通ベースプロンプト
