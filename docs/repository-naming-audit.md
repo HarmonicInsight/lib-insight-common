@@ -92,8 +92,8 @@ win-tool-...
 | 6 | `app-nocode-analyzer-C` | `win-app-nocode-analyzer` | C# | InsightNoCodeAnalyzer (INCA) | |
 | 7 | `app-insight-image-gen-C` | `win-app-insight-image-gen` | C# | InsightImageGen (INIG) | |
 | 8 | `app-insight-cast-gen-win-C` | `win-app-insight-cast` | C# | InsightCast (INMV) | |
-| 9 | `app-insight-py-win` | `win-app-insight-py` | Python | InsightPy (INPY) STD | |
-| 10 | `app-insight-py-pro-win` | `win-app-insight-py-pro` | Python | InsightPy (INPY) PRO | |
+| 9 | `app-insight-py-win` | `win-app-insight-py` | Python | InsightPy (INPY) BIZ | |
+| 10 | `app-insight-py-pro-win` | `win-app-insight-py-pro` | Python | InsightPy (INPY) BIZ+ | |
 | 11 | `Insight-launcher` | `win-app-insight-launcher` | C# | アプリランチャー | |
 | 12 | `insight-pinboard` | `win-app-insight-pinboard` | C# | ピンボード | |
 | 13 | `app-insight-sales-win` | `win-app-insight-sales` | TypeScript | 販売管理 | |

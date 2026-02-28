@@ -9,8 +9,8 @@ PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
 例:
 INSS-TRIAL-2701-A1B2-C3D4-X9Z1   # Insight Deck Quality Gate トライアル
-IOSH-PRO-2701-E5F6-G7H8-Y0W2     # Insight Performance Management Professional
-IVIN-STD-2701-I9J0-K1L2-Z1A3     # InterviewInsight Standard
+IOSH-BIZ-2701-E5F6-G7H8-Y0W2     # Insight Performance Management Business
+IVIN-BIZ-2701-I9J0-K1L2-Z1A3     # InterviewInsight Business
 ```
 
 ## 製品コード
@@ -38,9 +38,9 @@ IVIN-STD-2701-I9J0-K1L2-Z1A3     # InterviewInsight Standard
 
 | コード | 名称 | 期間 | 説明 |
 |--------|------|------|------|
-| `TRIAL` | Trial | 14日間 | 全機能利用可能（評価用） |
-| `STD` | Standard | 年間（365日） | 法人向け標準機能 |
-| `PRO` | Professional | 年間（365日） | 法人・チーム向け全機能 |
+| `FREE` | Free | 無期限 | 基本機能（ライセンス不要） |
+| `TRIAL` | Trial | 30日間 | 全機能利用可能（評価用） |
+| `BIZ` | Business | 年間（365日） | 法人向け全機能 |
 | `ENT` | Enterprise | 要相談 | カスタマイズ |
 
 ## 使用方法
@@ -57,7 +57,7 @@ import {
 // ライセンス生成
 const { licenseKey, expiresAt } = generateLicenseKey({
   productCode: 'INSS',
-  plan: 'STD',
+  plan: 'BIZ',
   email: 'user@example.com',
   expiresAt: new Date('2027-01-31')
 });
@@ -85,7 +85,7 @@ from insight_license import (
 # ライセンス生成
 result = generate_license_key(
     product_code=ProductCode.INSS,
-    plan=Plan.STD,
+    plan=Plan.BIZ,
     email="user@example.com",
     expires_at=datetime(2027, 1, 31)
 )
@@ -105,12 +105,11 @@ Phase 1: リリース初期
   → INSS-TRIAL-2701-XXXX-XXXX-XXXX  (期限付きでトライアル配布)
 
 Phase 2: 正式販売
-  → INSS-STD-2701-XXXX-XXXX-XXXX   (Standard版)
-  → INSS-PRO-2701-XXXX-XXXX-XXXX   (Professional版)
+  → INSS-BIZ-2701-XXXX-XXXX-XXXX   (Business版)
 
 Phase 3: 全製品展開
-  → IOSH-PRO-2701-XXXX-XXXX-XXXX  (Insight Performance Management)
-  → IVIN-STD-2701-XXXX-XXXX-XXXX  (InterviewInsight)
+  → IOSH-BIZ-2701-XXXX-XXXX-XXXX  (Insight Performance Management)
+  → IVIN-BIZ-2701-XXXX-XXXX-XXXX  (InterviewInsight)
 ```
 
 ## キー構造
@@ -118,7 +117,7 @@ Phase 3: 全製品展開
 | 部分 | 説明 |
 |------|------|
 | `PPPP` | 製品コード（4文字） |
-| `PLAN` | プラン（TRIAL/STD/PRO） |
+| `PLAN` | プラン（FREE/TRIAL/BIZ/ENT） |
 | `YYMM` | 有効期限（年月） |
 | `HASH` | メールハッシュ（SHA256 Base32 先頭4文字） |
 | `SIG1-SIG2` | HMAC-SHA256署名（Base32 先頭8文字） |
