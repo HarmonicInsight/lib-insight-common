@@ -617,13 +617,13 @@ export function selectTtsEngine(
 // =============================================================================
 
 /** TTS 機能が利用可能なプラン */
-export const TTS_ALLOWED_PLANS = ['TRIAL', 'STD', 'PRO', 'ENT'] as const;
+export const TTS_ALLOWED_PLANS = ['TRIAL', 'BIZ', 'ENT'] as const;
 
 /** エンジン別のプラン制限 */
 export const TTS_ENGINE_PLAN_REQUIREMENTS: Record<TtsEngineId, readonly string[]> = {
-  web_speech: ['TRIAL', 'STD', 'PRO', 'ENT'],
-  voicevox: ['TRIAL', 'STD', 'PRO', 'ENT'],
-  elevenlabs: ['TRIAL', 'PRO', 'ENT'],
+  web_speech: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+  voicevox: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+  elevenlabs: ['TRIAL', 'BIZ', 'ENT'],
 };
 
 /**

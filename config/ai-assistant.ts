@@ -1855,7 +1855,7 @@ export const AI_FEATURE_KEY = 'ai_assistant';
 /**
  * AI アシスタントが利用可能なプラン
  */
-export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
+export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'BIZ', 'ENT'];
 
 /**
  * AI アシスタントが利用可能かチェック（プランのみ）
@@ -1884,7 +1884,7 @@ export function getAiAssistantCredits(plan: PlanCode): number {
 export const AI_EDITOR_FEATURE_KEY = 'ai_editor';
 
 /** AI エディターが利用可能なプラン */
-export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
+export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'BIZ', 'ENT'];
 
 /**
  * AI エディターが利用可能かチェック（プランのみ）
@@ -1988,7 +1988,7 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
  * // 基本的な使い方（メモリのみ）
  * const result = buildEnhancedSystemPrompt({
  *   product: 'IOSH',
- *   plan: 'PRO',
+ *   plan: 'BIZ',
  *   userMessage: '今月の仕訳を準備してください',
  *   hotCache: loadedHotCache,
  *   locale: 'ja',
@@ -1998,7 +1998,7 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
  * // ドキュメントキャッシュ付き（before_ai_chat で解決済み）
  * const result = buildEnhancedSystemPrompt({
  *   product: 'IOSH',
- *   plan: 'PRO',
+ *   plan: 'BIZ',
  *   userMessage: 'A列の売上データを分析して',
  *   hotCache: loadedHotCache,
  *   documentCache: resolvedCache,  // ← document-cache.ts の ResolvedDocumentCache
@@ -2046,7 +2046,7 @@ export function buildEnhancedSystemPrompt(params: {
   const resolvedCache = documentCache ?? createEmptyResolvedCache();
   const documentCacheUsed = resolvedCache.available && resolvedCache.promptText.length > 0;
 
-  // 6. 利用可能コマンド一覧（PRO+ のみ表示）
+  // 6. 利用可能コマンド一覧（BIZ+ のみ表示）
   const availableCommands = getAvailableCommands(product, plan);
   let commandsInfo = '';
   if (availableCommands.length > 0) {

@@ -1178,7 +1178,7 @@ export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
   /** 過去データ参照（AI 検証の比較用） */
   historicalDataAccess: boolean;
 }> = {
-  TRIAL: {
+  FREE: {
     enabled: true,
     maxTemplates: -1,
     aiTransferPerMonth: -1,
@@ -1186,7 +1186,7 @@ export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
     dataRetentionDays: 14,
     historicalDataAccess: true,
   },
-  STD: {
+  TRIAL: {
     enabled: false,
     maxTemplates: 0,
     aiTransferPerMonth: 0,
@@ -1194,7 +1194,7 @@ export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
     dataRetentionDays: 0,
     historicalDataAccess: false,
   },
-  PRO: {
+  BIZ: {
     enabled: true,
     maxTemplates: 50,
     aiTransferPerMonth: 200,

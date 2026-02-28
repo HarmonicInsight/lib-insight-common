@@ -25,7 +25,7 @@
  * ├── document.xlsx                # 元の Office ファイル（製品により異なる）
  * ├── sticky_notes.json            # 付箋データ
  * ├── ai_memory.json               # AI ホットキャッシュ
- * ├── ai_memory_deep/              # AI ディープストレージ（PRO+）
+ * ├── ai_memory_deep/              # AI ディープストレージ（BIZ/ENT）
  * │   ├── glossary.json
  * │   ├── people.json
  * │   ├── projects.json
@@ -504,7 +504,7 @@ export const PROJECT_FILE_LIMITS: Record<PlanCode, ProjectFileLimits> = {
     maxScripts: 50,
     maxChatSessions: 100,
   },
-  STD: {
+  FREE: {
     maxHistoryVersions: 20,
     maxReferences: 10,
     maxReferenceSizeMB: 20,
@@ -512,7 +512,7 @@ export const PROJECT_FILE_LIMITS: Record<PlanCode, ProjectFileLimits> = {
     maxScripts: 10,
     maxChatSessions: 50,
   },
-  PRO: {
+  BIZ: {
     maxHistoryVersions: 100,
     maxReferences: 50,
     maxReferenceSizeMB: 100,

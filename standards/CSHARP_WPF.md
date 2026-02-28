@@ -119,7 +119,7 @@ YourApp/
 **左側（必須）:**
 1. 製品ロゴ/名前: `Insight {製品名}` (Gold 色)
 2. バージョン: `v1.0.0` (薄いグレー)
-3. プランバッジ: `◀ TRIAL` / `◀ STD` など
+3. プランバッジ: `◀ FREE` / `◀ TRIAL` / `◀ BIZ` など
 
 **右側（必須）:**
 1. 設定ボタン（オプション）: `⚙ 設定`
@@ -220,7 +220,7 @@ public static class AppInfo
 | 項目 | 値 |
 |-----|-----|
 | 形式 | `◀ {PLAN}` |
-| 例 | `◀ TRIAL`, `◀ STD`, `◀ PRO`, `◀ ENT` |
+| 例 | `◀ FREE`, `◀ TRIAL`, `◀ BIZ`, `◀ ENT` |
 | フォントサイズ | **11px** |
 | フォントウェイト | **SemiBold (600)** |
 | 文字色 | `TextAccentBrush` (#8C711E) |
@@ -290,7 +290,7 @@ public static class AppInfo
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────┐
-│ [InsightOffice][Sheet] [v2.1.0] [◀ PRO]     [⚙ 設定] [English] [🔑 ライセンス] [─][□][×] │
+│ [InsightOffice][Sheet] [v2.1.0] [◀ BIZ]     [⚙ 設定] [English] [🔑 ライセンス] [─][□][×] │
 │ ↑              ↑       ↑         ↑          ↑        ↑         ↑             ↑        │
 │ Gold/15px      Gray    Gray/11px  Badge     Optional  Language  License       Controls │
 │ SemiBold       15px               11px               Toggle     Button                 │
@@ -686,9 +686,9 @@ namespace YourApp.License;
 
 public enum PlanCode
 {
+    Free,
     Trial,
-    Std,
-    Pro,
+    Biz,
     Ent
 }
 
@@ -696,11 +696,11 @@ public static class PlanCodeExtensions
 {
     public static string ToDisplayName(this PlanCode plan) => plan switch
     {
+        PlanCode.Free => "FREE",
         PlanCode.Trial => "TRIAL",
-        PlanCode.Std => "STD",
-        PlanCode.Pro => "PRO",
+        PlanCode.Biz => "BIZ",
         PlanCode.Ent => "ENT",
-        _ => "TRIAL"
+        _ => "FREE"
     };
 }
 ```
@@ -713,7 +713,7 @@ namespace YourApp.License;
 public class InsightLicenseManager
 {
     private static readonly Regex KeyPattern = new(
-        @"^(XXXX)-(TRIAL|STD|PRO)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
+        @"^(XXXX)-(TRIAL|BIZ|ENT)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
         RegexOptions.Compiled);
 
     private readonly string _productCode;

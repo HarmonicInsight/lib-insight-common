@@ -19,7 +19,7 @@
  * - **キャッシュ粒度**: ドキュメントの部分単位（シート / スライド / セクション）
  * - **無効化戦略**: ドキュメントハッシュの変更を検知して自動無効化
  * - **保存場所**: プロジェクトファイル（ZIP）内の `ai_cache/` ディレクトリ
- * - **プラン別制限**: STD は基本キャッシュのみ、PRO+ は全文キャッシュ対応
+ * - **プラン別制限**: TRIAL は基本キャッシュのみ、BIZ+ は全文キャッシュ対応
  * - **TTL 管理**: キャッシュエントリに有効期限を設定し、古いキャッシュを自動削除
  *
  * ## ZIP 内部構造
@@ -281,12 +281,12 @@ export interface DocumentCacheLimits {
 /**
  * プラン別のキャッシュ制限定義
  *
- * - STD: 基本キャッシュのみ（小規模ドキュメント向け）
- * - PRO: 全文キャッシュ + 構造化データ
+ * - TRIAL: 基本キャッシュのみ（小規模ドキュメント向け）
+ * - BIZ: 全文キャッシュ + 構造化データ
  * - ENT: 無制限
  */
 export const DOCUMENT_CACHE_LIMITS: Record<PlanCode, DocumentCacheLimits> = {
-  TRIAL: {
+  FREE: {
     enabled: true,
     maxChunks: 50,
     maxTotalSizeMB: 10,
@@ -294,7 +294,7 @@ export const DOCUMENT_CACHE_LIMITS: Record<PlanCode, DocumentCacheLimits> = {
     ttlHours: 72,
     structuredDataEnabled: true,
   },
-  STD: {
+  TRIAL: {
     enabled: true,
     maxChunks: 20,
     maxTotalSizeMB: 5,
@@ -302,7 +302,7 @@ export const DOCUMENT_CACHE_LIMITS: Record<PlanCode, DocumentCacheLimits> = {
     ttlHours: 24,
     structuredDataEnabled: false,
   },
-  PRO: {
+  BIZ: {
     enabled: true,
     maxChunks: 100,
     maxTotalSizeMB: 50,

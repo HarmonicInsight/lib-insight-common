@@ -1318,7 +1318,7 @@ export function parseEvaluationResult(
  * ai_assistant と同じプラン制限に準拠する。
  */
 export function canUseDocumentEvaluation(plan: PlanCode): boolean {
-  const allowedPlans: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
+  const allowedPlans: PlanCode[] = ['FREE', 'TRIAL', 'BIZ', 'ENT'];
   return allowedPlans.includes(plan);
 }
 

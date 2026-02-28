@@ -70,8 +70,8 @@ async function main() {
     const testLicense = {
       user_id: user.id,
       product_code: 'INSS',
-      plan: 'PRO',
-      license_key: 'TEST-PRO-2512-XXXX-XXXX-XXXX',
+      plan: 'BIZ',
+      license_key: 'TEST-BIZ-2512-XXXX-XXXX-XXXX',
       is_active: true,
       expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1年後
     };
@@ -106,15 +106,15 @@ async function main() {
 
     const testCases = [
       { feature: 'basic', expected: true },
-      { feature: 'export_pdf', expected: true },  // PRO なので許可
-      { feature: 'batch_process', expected: true }, // PRO なので許可
+      { feature: 'export_pdf', expected: true },  // BIZ なので許可
+      { feature: 'batch_process', expected: true }, // BIZ なので許可
       { feature: 'api_access', expected: false },  // ENT のみ
     ];
 
     const FEATURE_MATRIX: Record<string, string[]> = {
-      'basic': ['TRIAL', 'STD', 'PRO', 'ENT'],
-      'export_pdf': ['STD', 'PRO', 'ENT'],
-      'batch_process': ['PRO', 'ENT'],
+      'basic': ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      'export_pdf': ['BIZ', 'ENT'],
+      'batch_process': ['BIZ', 'ENT'],
       'api_access': ['ENT'],
     };
 

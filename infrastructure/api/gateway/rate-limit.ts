@@ -27,19 +27,19 @@ export interface RateLimitConfig {
 
 // デフォルト設定
 export const DEFAULT_RATE_LIMITS: Record<string, RateLimitConfig> = {
+  FREE: {
+    requestsPerMinute: 10,
+    requestsPerHour: 100,
+    requestsPerDay: 500,
+    burstLimit: 3,
+  },
   TRIAL: {
     requestsPerMinute: 20,
     requestsPerHour: 200,
     requestsPerDay: 1000,
     burstLimit: 5,
   },
-  STD: {
-    requestsPerMinute: 60,
-    requestsPerHour: 1000,
-    requestsPerDay: 10000,
-    burstLimit: 15,
-  },
-  PRO: {
+  BIZ: {
     requestsPerMinute: 120,
     requestsPerHour: 5000,
     requestsPerDay: 50000,

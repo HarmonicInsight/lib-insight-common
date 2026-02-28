@@ -237,6 +237,15 @@
   },
   "tiers": {
     "individual": {
+      "FREE": {
+        "name": "Free",
+        "nameJa": "フリー",
+        "price": 0,
+        "currency": "JPY",
+        "aiCredits": 0,
+        "aiModel": null,
+        "description": "基本機能（ライセンス不要）"
+      },
       "TRIAL": {
         "name": "Trial",
         "nameJa": "トライアル",
@@ -244,20 +253,11 @@
         "currency": "JPY",
         "aiCredits": -1,
         "aiModel": "opus",
-        "description": "全機能無制限（14日間）"
+        "description": "全機能無制限（30日間）"
       },
-      "STD": {
-        "name": "Standard",
-        "nameJa": "スタンダード",
-        "price": null,
-        "currency": "JPY",
-        "aiCredits": 50,
-        "aiModel": "sonnet",
-        "description": "AI月50回付き（個別見積もり）"
-      },
-      "PRO": {
-        "name": "Professional",
-        "nameJa": "プロフェッショナル",
+      "BIZ": {
+        "name": "Business",
+        "nameJa": "ビジネス",
         "price": null,
         "currency": "JPY",
         "aiCredits": 200,
@@ -275,16 +275,16 @@
       }
     },
     "corporate": {
-      "STD": {
-        "name": "Standard",
-        "nameJa": "スタンダード",
-        "price": null,
+      "FREE": {
+        "name": "Free",
+        "nameJa": "フリー",
+        "price": 0,
         "currency": "JPY",
-        "description": "コンサル連動型（個別見積もり）"
+        "description": "基本機能（ライセンス不要）"
       },
-      "PRO": {
-        "name": "Professional",
-        "nameJa": "プロフェッショナル",
+      "BIZ": {
+        "name": "Business",
+        "nameJa": "ビジネス",
         "price": null,
         "currency": "JPY",
         "description": "コンサル連動型（個別見積もり）"

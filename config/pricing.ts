@@ -86,7 +86,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: 'RPA・ローコード移行コンサルティング案件と連動',
     tier: 1,
     pricingUnit: 'per_company',
-    notes: 'akaBot変換機能はPRO以上。移行アセスメント案件の中核ツールとして提供。価格は個別見積もり。',
+    notes: 'akaBot変換機能はBIZ以上。移行アセスメント案件の中核ツールとして提供。価格は個別見積もり。',
   },
 
   INBT: {
@@ -95,7 +95,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: '業務自動化コンサルティング案件と連動',
     tier: 1,
     pricingUnit: 'per_company',
-    notes: 'クラウド同期はJOB無制限はPRO以上。自動化コンサルとセットで提供。価格は個別見積もり。',
+    notes: 'クラウド同期・JOB無制限はBIZ以上。自動化コンサルとセットで提供。価格は個別見積もり。',
   },
 
   IVIN: {
@@ -117,7 +117,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: 'コンテンツ制作・研修動画コンサルティングと連動',
     tier: 2,
     pricingUnit: 'per_company',
-    notes: '4K出力・字幕カスタマイズ・トランジションはPRO以上。価格は個別見積もり。',
+    notes: '4K出力・字幕カスタマイズ・トランジションはBIZ以上。価格は個別見積もり。',
   },
 
   INIG: {
@@ -126,7 +126,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: 'AI活用・コンテンツ制作コンサルティングと連動',
     tier: 2,
     pricingUnit: 'per_company',
-    notes: '高解像度出力・クラウド同期はPRO以上。価格は個別見積もり。',
+    notes: '高解像度出力・クラウド同期はBIZ以上。価格は個別見積もり。',
   },
 
   // =========================================================================
@@ -139,7 +139,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
+    notes: 'FREE=基本機能（ライセンス不要）、BIZ=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
   },
 
   IOSH: {
@@ -148,7 +148,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
+    notes: 'FREE=基本機能（ライセンス不要）、BIZ=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
   },
 
   IOSD: {
@@ -157,7 +157,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: 'コンサル案件のクライアントにOffice業務ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
+    notes: 'FREE=基本機能（ライセンス不要）、BIZ=全機能+AI月200回+コラボレーション。パートナー販売可。価格は個別見積もり。',
   },
 
   INPY: {
@@ -166,7 +166,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: 'コンサル案件のクライアントに業務自動化ツールとして導入',
     tier: 3,
     pricingUnit: 'per_user',
-    notes: 'STD=基本機能+AI月50回、PRO=全機能+AI月200回。パートナー販売可。価格は個別見積もり。',
+    notes: 'FREE=基本機能（ライセンス不要）、BIZ=全機能+AI月200回。パートナー販売可。価格は個別見積もり。',
   },
 
   // =========================================================================
@@ -179,7 +179,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
     channelDescription: '地方創生・デジタルディバイド解消コンサル案件、企業のシニア社員向けツールとして導入',
     tier: 4,
     pricingUnit: 'per_user',
-    notes: 'STD=全機能+AI月50回（Haikuのみ）。PROプランなし（シンプルさ重視）。価格は個別見積もり。',
+    notes: 'FREE=基本機能（ライセンス不要）、BIZ=全機能+AI月200回。ENTのみ（シンプルさ重視）。価格は個別見積もり。',
   },
 };
 

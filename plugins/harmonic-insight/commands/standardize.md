@@ -142,7 +142,7 @@ git checkout -b feat/standardize-to-hi-standards
 
 - [ ] InsightLicenseManager クラス/モジュールが存在するか
 - [ ] ライセンス画面（LicenseView / LicenseScreen）が存在するか
-- [ ] プラン列挙型（TRIAL/STD/PRO/ENT）が定義されているか
+- [ ] プラン列挙型（FREE/TRIAL/BIZ/ENT）が定義されているか
 - [ ] ライセンスキー検証ロジックがあるか
 
 ### 2-2. 不足分の生成

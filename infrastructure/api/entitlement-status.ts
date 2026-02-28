@@ -8,7 +8,7 @@
  *
  * レスポンス:
  *   {
- *     plan: "STD",
+ *     plan: "BIZ",
  *     limits: { ... },
  *     expires_at: "2025-12-31",
  *     usage: { current: 5, limit: 30, remaining: 25, resetAt: "2025-02-01" }
@@ -78,10 +78,10 @@ export default async function handler(
       .single();
 
     if (!user) {
-      // ユーザーがいない場合はTRIALプラン
-      const limits = getPlanLimits(product_code, 'TRIAL');
+      // ユーザーがいない場合はFREEプラン
+      const limits = getPlanLimits(product_code, 'FREE');
       return res.status(200).json({
-        plan: 'TRIAL',
+        plan: 'FREE',
         limits,
         expires_at: null,
         is_active: true,
@@ -98,11 +98,11 @@ export default async function handler(
       .eq('product_code', product_code)
       .single();
 
-    // ライセンスなし → TRIALプラン
+    // ライセンスなし → FREEプラン
     if (!license) {
-      const limits = getPlanLimits(product_code, 'TRIAL');
+      const limits = getPlanLimits(product_code, 'FREE');
       return res.status(200).json({
-        plan: 'TRIAL',
+        plan: 'FREE',
         limits,
         expires_at: null,
         is_active: true,
@@ -114,12 +114,12 @@ export default async function handler(
     // プラン判定
     let effectivePlan: PlanCode = license.plan;
 
-    // 無効または期限切れの場合はTRIAL
+    // 無効または期限切れの場合はFREE
     if (!license.is_active) {
-      effectivePlan = 'TRIAL';
+      effectivePlan = 'FREE';
     }
     if (license.expires_at && new Date(license.expires_at) < new Date()) {
-      effectivePlan = 'TRIAL';
+      effectivePlan = 'FREE';
     }
 
     const limits = getPlanLimits(product_code, effectivePlan);

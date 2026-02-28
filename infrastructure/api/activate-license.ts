@@ -8,7 +8,7 @@
  *   - licenses テーブルに登録
  *
  * リクエスト:
- *   POST { license_key: "INSS-PRO-2512-XXXX-XXXX-XXXX" }
+ *   POST { license_key: "INSS-BIZ-2512-XXXX-XXXX-XXXX" }
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -22,7 +22,7 @@ const supabase = createClient(
 );
 
 // ライセンスキー形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
-const LICENSE_KEY_REGEX = /^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+const LICENSE_KEY_REGEX = /^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(FREE|TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
 interface ActivateRequest {
   license_key: string;

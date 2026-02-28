@@ -6,7 +6,7 @@
  *
  * ライセンスキー形式:
  *   {製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}
- *   例: IOSH-STD-2601-XXXX-XXXX-XXXX
+ *   例: IOSH-BIZ-2601-XXXX-XXXX-XXXX
  *
  * 使い方:
  *   import { licenseManager } from '@/lib/license-manager';
@@ -19,14 +19,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const PRODUCT_CODE = '__PRODUCT_CODE__';
 const STORAGE_KEY = '@insight_license';
 
-const KEY_PATTERN = /^([A-Z]{4})-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
+const KEY_PATTERN = /^([A-Z]{4})-(FREE|TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$/;
 
-export type PlanCode = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+export type PlanCode = 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
 
 export const PLAN_LABELS: Record<PlanCode, { en: string; ja: string }> = {
+  FREE: { en: 'Free', ja: 'フリー' },
   TRIAL: { en: 'Trial', ja: 'トライアル' },
-  STD: { en: 'Standard', ja: 'スタンダード' },
-  PRO: { en: 'Professional', ja: 'プロフェッショナル' },
+  BIZ: { en: 'Business', ja: 'ビジネス' },
   ENT: { en: 'Enterprise', ja: 'エンタープライズ' },
 };
 
@@ -105,7 +105,7 @@ class LicenseManager {
     const issueDate = new Date(year, month, 1);
     const expiryDate = new Date(issueDate);
     expiryDate.setDate(
-      expiryDate.getDate() + (plan === 'TRIAL' ? 14 : 365)
+      expiryDate.getDate() + (plan === 'TRIAL' ? 30 : 365)
     );
 
     const licenseData: LicenseData = {

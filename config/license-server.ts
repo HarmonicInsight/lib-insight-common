@@ -657,7 +657,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   direct_stripe: {
     channel: 'direct_stripe',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO', 'ENT'],
+    allowedPlans: ['BIZ', 'ENT'],
     requiresPayment: true,
     requiresPartner: false,
     autoApprove: true,
@@ -667,7 +667,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   direct_invoice: {
     channel: 'direct_invoice',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO', 'ENT'],
+    allowedPlans: ['BIZ', 'ENT'],
     requiresPayment: false, // 後払い
     requiresPartner: false,
     autoApprove: false, // 管理者承認
@@ -677,7 +677,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   partner_reseller: {
     channel: 'partner_reseller',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO'],
+    allowedPlans: ['BIZ'],
     requiresPayment: false, // パートナーとの精算は別
     requiresPartner: true,
     autoApprove: true,
@@ -702,12 +702,12 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
     requiresPartner: false,
     autoApprove: true,
     requiresEmail: true,
-    description: 'メール認証完了後に自動で7日間仮キーを発行。',
+    description: 'メール認証完了後に自動で30日間TRIALキーを発行。HARMONIC insightが自己発行。',
   },
   system_renewal: {
     channel: 'system_renewal',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO', 'ENT'],
+    allowedPlans: ['BIZ', 'ENT'],
     requiresPayment: true,
     requiresPartner: false,
     autoApprove: true,
@@ -717,7 +717,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   system_nfr: {
     channel: 'system_nfr',
     allowedKeyTypes: ['nfr'],
-    allowedPlans: ['PRO'], // NFRはPRO相当
+    allowedPlans: ['BIZ'], // NFRはBIZ相当
     requiresPayment: false,
     requiresPartner: true,
     autoApprove: true,
@@ -737,12 +737,12 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   admin_manual: {
     channel: 'admin_manual',
     allowedKeyTypes: ['production', 'provisional', 'nfr', 'demo'],
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
     requiresPayment: false,
     requiresPartner: false,
     autoApprove: true,
     requiresEmail: true,
-    description: '管理者が手動で発行。特殊ケース用。理由の記録が必須。',
+    description: '管理者が手動で発行。特殊ケース用。理由の記録が必須。FREEプランはキー不要のため発行対象外。',
   },
 };
 
@@ -875,6 +875,13 @@ export function validateIssuanceRequest(
   req: IssueLicenseRequest,
 ): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
+
+  // FREE プランはライセンスキー不要のため発行対象外
+  if (req.plan === 'FREE') {
+    errors.push('FREE プランはライセンスキーが不要です。キーなし（未入力）= FREE モードとして動作します。');
+    return { valid: false, errors };
+  }
+
   const rule = CHANNEL_ISSUANCE_RULES[req.channel];
 
   if (!rule) {
@@ -963,6 +970,31 @@ export function isPartnerChannel(channel: IssuanceChannel): boolean {
 }
 
 /**
+ * ライセンスキーが不要な FREE プランかどうかを判定
+ *
+ * FREE プランはライセンスキーが存在しない（未入力・null・空文字）状態で自動的に適用される。
+ * アプリ側ではキーが入力されていなければ FREE モードとして動作する。
+ */
+export function isFreeMode(licenseKey: string | null | undefined): boolean {
+  return !licenseKey || licenseKey.trim() === '';
+}
+
+/**
+ * ライセンスキーの有無からプラン種別を推定
+ *
+ * - キーなし → FREE（キー不要、制限付き機能のみ）
+ * - キーあり → サーバー検証が必要（TRIAL / BIZ / ENT のいずれか）
+ */
+export function resolveEffectivePlanFromKey(
+  licenseKey: string | null | undefined,
+): { plan: 'FREE'; requiresServerValidation: false } | { plan: null; requiresServerValidation: true } {
+  if (isFreeMode(licenseKey)) {
+    return { plan: 'FREE', requiresServerValidation: false };
+  }
+  return { plan: null, requiresServerValidation: true };
+}
+
+/**
  * 発行チャネルの表示名を取得
  */
 export function getChannelDisplayName(
@@ -996,5 +1028,7 @@ export default {
   validateIssuanceRequest,
   canPartnerIssueSpecialKey,
   isPartnerChannel,
+  isFreeMode,
+  resolveEffectivePlanFromKey,
   getChannelDisplayName,
 };

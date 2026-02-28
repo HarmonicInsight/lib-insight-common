@@ -12,7 +12,7 @@
  *   POST { product_code: "INSS", feature: "inmv_subtitle" }
  *
  * レスポンス:
- *   { allowed: true, plan: "PRO", expires_at: "2025-12-31" }
+ *   { allowed: true, plan: "BIZ", expires_at: "2025-12-31" }
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -85,12 +85,12 @@ export default async function handler(
       .eq('product_code', product_code)
       .single();
 
-    // ライセンスなし → TRIAL扱い
+    // ライセンスなし → FREE扱い
     if (!license) {
-      const allowed = canAccessFeature(feature, 'TRIAL');
+      const allowed = canAccessFeature(feature, 'FREE');
       return res.status(200).json({
         allowed,
-        plan: 'TRIAL',
+        plan: 'FREE',
         expires_at: null,
         reason: allowed ? undefined : 'アップグレードが必要です',
       });

@@ -16,9 +16,9 @@
  * │                                                                │
  * │   基本クレジット（プラン付属）                                   │
  * │   ┌──────────┬──────────┬──────────┬──────────┐               │
- * │   │  TRIAL   │   STD    │   PRO    │   ENT    │               │
- * │   │  無制限   │  50回    │  200回   │  無制限   │               │
- * │   │ (14日)   │  (/月)   │  (/月)   │  (/年)   │               │
+ * │   │  FREE    │  TRIAL   │   BIZ    │   ENT    │               │
+ * │   │  なし    │  無制限   │  200回   │  無制限   │               │
+ * │   │          │ (1ヶ月)  │  (/月)   │  (/年)   │               │
  * │   └──────────┴──────────┴──────────┴──────────┘               │
  * │                                                                │
  * │   アドオンパック（追加購入・2ティア制）                           │
@@ -184,7 +184,7 @@ export interface UsageCheckResult {
 
 /** 使用拒否の理由コード */
 export type UsageDeniedReason =
-  | 'ai_not_available'    // STD プランなど AI 機能なし
+  | 'ai_not_available'    // FREE プランなど AI 機能なし
   | 'credits_exhausted'   // クレジット使い切り
   | 'license_expired'     // ライセンス期限切れ
   | 'license_inactive';   // ライセンス無効
@@ -227,32 +227,32 @@ export interface PurchasedAddonPack {
  * プラン別 AI クレジット定義
  *
  * 【重要】
- * - TRIAL: 無制限（14日間・全機能・Premium モデル）
- * - STD: 月50回（Standard モデル）
- * - PRO: 月200回（Standard モデル、Premium アドオンで Opus 利用可）
- * - ENT: 無制限
+ * - FREE: AI アクセスなし（ライセンス不要）
+ * - TRIAL: 無制限（1ヶ月間・全機能・Premium モデル・自己発行）
+ * - BIZ: 月200回（Standard モデル、Premium アドオンで Opus 利用可）
+ * - ENT: 無制限（Premium モデル・コラボレーション）
  */
 export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
+  FREE: {
+    plan: 'FREE',
+    baseCredits: 0,
+    period: 'monthly',
+    aiEnabled: false,
+    modelTier: 'standard',
+    descriptionJa: 'AI機能なし（ライセンス不要）',
+    descriptionEn: 'No AI access (no license required)',
+  },
   TRIAL: {
     plan: 'TRIAL',
     baseCredits: -1,
     period: 'unlimited',
     aiEnabled: true,
     modelTier: 'premium',
-    descriptionJa: '全機能無制限（14日間・Opus対応）',
-    descriptionEn: 'Unlimited access for 14 days (including Opus)',
+    descriptionJa: '全機能無制限（1ヶ月間・Opus対応・自己発行）',
+    descriptionEn: 'Unlimited access for 1 month (including Opus, self-issued)',
   },
-  STD: {
-    plan: 'STD',
-    baseCredits: 50,
-    period: 'monthly',
-    aiEnabled: true,
-    modelTier: 'standard',
-    descriptionJa: 'AI月50回付き（Sonnetまで・Premiumアドオンで Opus利用可）',
-    descriptionEn: '50 AI credits/month (up to Sonnet, Opus via Premium add-on)',
-  },
-  PRO: {
-    plan: 'PRO',
+  BIZ: {
+    plan: 'BIZ',
     baseCredits: 200,
     period: 'monthly',
     aiEnabled: true,
@@ -266,8 +266,8 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     period: 'unlimited',
     aiEnabled: true,
     modelTier: 'premium',
-    descriptionJa: 'AI無制限（Opus対応）',
-    descriptionEn: 'Unlimited AI usage (including Opus)',
+    descriptionJa: 'AI無制限（Opus対応・コラボレーション）',
+    descriptionEn: 'Unlimited AI usage (including Opus, collaboration)',
   },
 };
 
@@ -281,7 +281,7 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
  * - Standard: 200回（Sonnet まで）
  * - Premium:  200回（Opus 対応）
  * - 価格はパートナーとの協議により決定（Stripe ダッシュボードで設定）
- * - 全プランで購入可能（STD でもアドオンでAI利用可能に）
+ * - 全プランで購入可能（FREE でもアドオンでAI利用可能に）
  * - 複数パック購入可能（クレジットは累積加算）
  * - 有効期限: 購入日から365日
  * - Standard と Premium を混在購入可能
@@ -440,7 +440,7 @@ export function calculateCreditBalance(
   const totalUsed = baseUsed + addonUsed;
   const totalRemaining = baseRemaining + addonRemaining;
 
-  // STD でもアドオンがあれば AI 有効
+  // FREE でもアドオンがあれば AI 有効
   const aiEnabled = quota.aiEnabled || addonRemaining > 0;
 
   // モデルティア: プラン基本 or 有効な Premium アドオンがあれば premium
@@ -476,8 +476,8 @@ export function calculateCreditBalance(
  *
  * @example
  * ```typescript
- * const balance = calculateCreditBalance('PRO', 95, addonPacks);
- * const result = checkAiUsage('PRO', balance, true);
+ * const balance = calculateCreditBalance('BIZ', 195, addonPacks);
+ * const result = checkAiUsage('BIZ', balance, true);
  * if (!result.allowed) {
  *   console.log(result.reason); // "クレジットが不足しています"
  *   console.log(result.canPurchaseAddon); // true
@@ -507,14 +507,14 @@ export function checkAiUsage(
     };
   }
 
-  // AI 機能なし（STD でアドオンなし）
+  // AI 機能なし（FREE でアドオンなし）
   if (!balance.aiEnabled) {
     return {
       allowed: false,
       remaining: 0,
-      reason: 'このプランではAI機能はご利用いただけません。アドオンパックを購入するか、PROプランにアップグレードしてください。',
+      reason: 'このプランではAI機能はご利用いただけません。アドオンパックを購入するか、BIZプランにアップグレードしてください。',
       reasonCode: 'ai_not_available',
-      suggestedUpgrade: 'PRO',
+      suggestedUpgrade: 'BIZ',
       canPurchaseAddon: true,
     };
   }

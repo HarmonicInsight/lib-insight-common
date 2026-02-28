@@ -14,7 +14,7 @@ HARMONIC insight — リモートコンフィグ クライアント (Python / Cu
         build_number=1,
         license_key=stored_license_key,
         device_id=get_or_create_device_id(),
-        plan="STD",
+        plan="BIZ",
     )
     client.initialize()
 
@@ -146,7 +146,7 @@ class RemoteConfigClient:
         build_number: int,
         license_key: str,
         device_id: str,
-        plan: str = "STD",
+        plan: str = "BIZ",
         user_id: str | None = None,
         locale: str = "ja",
         base_url: str = BASE_URL,

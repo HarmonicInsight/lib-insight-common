@@ -146,7 +146,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   {
     repo: 'win-app-insight-py-pro',
     productCode: 'INPY',
-    productName: 'InsightPy (PRO)',
+    productName: 'InsightPy (BIZ)',
     iconCopy: [
       { src: 'InsightPy/InsightPy.ico', dest: 'resources/InsightPy.ico' },
       { src: 'InsightPy/InsightPy_256.png', dest: 'resources/InsightPy_256.png' },

@@ -819,7 +819,7 @@ export class ClientLicenseManager {
           remaining: 0,
           reason: 'このプランではAI機能はご利用いただけません',
           reasonCode: 'ai_not_available',
-          suggestedUpgrade: 'PRO',
+          suggestedUpgrade: 'BIZ',
           canPurchaseAddon: true,
         };
       }

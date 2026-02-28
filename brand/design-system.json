@@ -176,7 +176,7 @@
         },
         "planBadge": {
           "format": "◀ {PLAN}",
-          "values": ["TRIAL", "STD", "PRO", "ENT"],
+          "values": ["FREE", "TRIAL", "BIZ", "ENT"],
           "fontSize": "11px",
           "fontWeight": 600,
           "textColor": "#8C711E",

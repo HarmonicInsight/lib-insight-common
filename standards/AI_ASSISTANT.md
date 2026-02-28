@@ -22,7 +22,7 @@ Insight Business Suite 系アプリには、Claude API を利用した AI アシ
 1. **BYOK（Bring Your Own Key）モデル** — ユーザーが自身の Claude API キーを入力
 2. **モデルレジストリ + ユーザー選択** — MODEL_REGISTRY で一元管理、ユーザーがティア内でモデルを選択可能
 3. **プロダクトコンテキスト** — 開いているファイルの内容を AI に自動提供
-4. **ライセンス制御** — TRIAL（無制限）/ STD（月50回）/ PRO（月200回）/ ENT（無制限）
+4. **ライセンス制御** — FREE（利用不可）/ TRIAL（無制限）/ BIZ（月200回）/ ENT（無制限）
 5. **Tool Use 対応** — スプレッドシート等で AI がデータを直接操作可能
 
 ---
@@ -481,19 +481,19 @@ IOSD（Word 操作）向けに、以下のツールを将来追加予定:
   name: 'AI Assistant',
   nameJa: 'AIアシスタント',
   type: 'boolean',
-  allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+  allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
   descriptionJa: 'AIチャットによるファイル操作支援',
 }
 ```
 
 ### 8.2 プラン別アクセス
 
-| プラン | AI アシスタント | 理由 |
-|--------|:----------:|------|
-| TRIAL | ✅（無制限） | 全機能評価のため |
-| STD | ✅（月50回） | 法人向け標準機能 |
-| PRO | ✅（月200回） | 法人・チーム向け全機能 |
-| ENT | ✅（無制限） | エンタープライズ全機能 |
+| プラン | AI アシスタント | モデルティア | 理由 |
+|--------|:----------:|:----------:|------|
+| FREE | ❌（利用不可） | — | 無料プランでは AI 機能なし |
+| TRIAL | ✅（無制限） | Premium | 全機能評価のため（1ヶ月間） |
+| BIZ | ✅（月200回） | Standard | 法人向け標準機能 |
+| ENT | ✅（無制限） | Premium | エンタープライズ全機能・コラボレーション |
 
 ### 8.3 ゲート実装
 
@@ -505,7 +505,7 @@ private void AiToggle_Click(object sender, RoutedEventArgs e)
 {
     if (!_licenseManager.CurrentLicense.Plan.HasAiFeature())
     {
-        ShowUpgradePrompt("AI_ProRequired");
+        ShowUpgradePrompt("AI_BizRequired");
         return;
     }
     viewModel.ChatVM.ToggleChatCommand.Execute(null);
@@ -513,7 +513,7 @@ private void AiToggle_Click(object sender, RoutedEventArgs e)
 
 // PlanCode 拡張メソッド
 public static bool HasAiFeature(this PlanCode plan) =>
-    plan is PlanCode.Free or PlanCode.Trial or PlanCode.Pro or PlanCode.Ent;
+    plan is PlanCode.Trial or PlanCode.Biz or PlanCode.Ent;
 ```
 
 **TypeScript:**
@@ -522,21 +522,21 @@ public static bool HasAiFeature(this PlanCode plan) =>
 import { checkFeature } from '@/insight-common/config/products';
 
 if (!checkFeature(productCode, 'ai_assistant', userPlan)) {
-  showUpgradeDialog('AI_ProRequired');
+  showUpgradeDialog('AI_BizRequired');
   return;
 }
 ```
 
 ### 8.4 アップグレードダイアログ
 
-AI ボタン押下時に STD ユーザーに表示するダイアログ:
+AI ボタン押下時に FREE ユーザーに表示するダイアログ:
 
 ```
 ┌────────────────────────────────────────┐
-│  AIアシスタントはPROプランの機能です      │
+│  AIアシスタントはBIZプランの機能です      │
 │                                        │
 │  AIアシスタントを利用するには、           │
-│  PROプラン以上へのアップグレードが        │
+│  BIZプラン以上へのアップグレードが        │
 │  必要です。                             │
 │                                        │
 │  [アップグレード]         [閉じる]       │
@@ -720,7 +720,7 @@ public class ToolResultBlock
 - [ ] 入力エリア（可変高さ TextBox、アドバイス/チェックボタン）
 - [ ] 処理中インジケーター（ペルソナアイコン + 「が考え中...」）
 - [ ] キャンセル機能（CancellationToken）
-- [ ] ライセンスゲート（TRIAL / STD（月50回）/ PRO（月200回）/ ENT）
+- [ ] ライセンスゲート（FREE（利用不可）/ TRIAL（無制限）/ BIZ（月200回）/ ENT（無制限））
 - [ ] チャット履歴永続化（JSON ファイル）
 - [ ] 設定永続化（API キー、ペルソナ、モデル）
 - [ ] エラーハンドリング（401 / 429 / 500 / タイムアウト）

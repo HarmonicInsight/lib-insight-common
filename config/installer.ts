@@ -12,7 +12,7 @@
  *
  * ```
  * ┌─────────────────────────────────────────────────────────────────────────┐
- * │  Orchestrator (INBT PRO/ENT)                                           │
+ * │  Orchestrator (INBT BIZ/ENT)                                           │
  * │  ┌───────────────────────────────────────────────────────────────────┐ │
  * │  │  Windows サービス + タスクトレイ管理アプリ                          │ │
  * │  │  - InsightBotService.exe (サービスプロセス — 常駐)                 │ │
@@ -405,7 +405,7 @@ export const INBT_INSTALLER: InstallerConfig = {
  * ├── InsightOfficeSheet.exe       # メインアプリ
  * ├── iosh-file.ico                # 独自拡張子アイコン
  * └── modules/
- *     └── python/                  # Python ランタイム（PRO のみ）
+ *     └── python/                  # Python ランタイム（BIZ/ENT のみ）
  * ```
  *
  * ## レジストリ登録
@@ -970,8 +970,8 @@ function createInsightOfficeComponents(product: 'INSS' | 'IOSH' | 'IOSD'): Insta
       id: 'python_runtime',
       name: 'Python Runtime',
       nameJa: 'Python 実行環境',
-      description: 'Embedded Python execution environment for scripting and automation (PRO/ENT)',
-      descriptionJa: 'スクリプト・自動化のための Python 実行環境（PRO/ENT）',
+      description: 'Embedded Python execution environment for scripting and automation (BIZ/ENT)',
+      descriptionJa: 'スクリプト・自動化のための Python 実行環境（BIZ/ENT）',
       sizeMB: 150,
       selection: 'optional',
       defaultChecked: false,
@@ -991,7 +991,7 @@ function createInsightOfficeComponents(product: 'INSS' | 'IOSH' | 'IOSD'): Insta
  * │                                                             │
  * │  ☑ InsightBot Studio（必須）                       60MB    │
  * │  ☑ AI コードエディター（推奨）                      5MB    │
- * │  ☐ Orchestrator サービス（オプション — PRO/ENT）    20MB    │
+ * │  ☐ Orchestrator サービス（オプション — BIZ/ENT）    20MB    │
  * │  ☐ Python 実行環境（オプション）                  150MB    │
  * │                                          ─────────         │
  * │                              合計:  65MB 〜 235MB          │
@@ -1029,8 +1029,8 @@ const INBT_COMPONENTS: InstallerComponent[] = [
     id: 'orchestrator',
     name: 'Orchestrator Service',
     nameJa: 'Orchestrator サービス',
-    description: 'Windows service for centralized Agent management and JOB dispatch (PRO/ENT)',
-    descriptionJa: 'Agent 集中管理・JOB 配信用 Windows サービス（PRO/ENT）',
+    description: 'Windows service for centralized Agent management and JOB dispatch (BIZ/ENT)',
+    descriptionJa: 'Agent 集中管理・JOB 配信用 Windows サービス（BIZ/ENT）',
     sizeMB: 20,
     selection: 'optional',
     defaultChecked: false,
