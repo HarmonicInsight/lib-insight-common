@@ -181,7 +181,7 @@ def require_feature(feature: str):
     return decorator
 
 def require_tier(min_tier: str):
-    tier_order = ['TRIAL', 'STD', 'PRO', 'ENT']
+    tier_order = ['FREE', 'TRIAL', 'BIZ', 'ENT']
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -206,7 +206,7 @@ from src.decorators import require_license, require_feature, require_tier
 from utils.python import format_date, format_currency
 
 # ライセンス有効化
-result = license_manager.activate('INS-SLIDE-PRO-2501-1534-A7')
+result = license_manager.activate('INS-SLIDE-BIZ-2501-1534-A7')
 print(result['message'])
 
 # 翻訳
@@ -227,7 +227,7 @@ def save_project():
 def sync_to_cloud():
     pass
 
-@require_tier('PRO')
+@require_tier('BIZ')
 def advanced_analysis():
     pass
 ```
@@ -236,13 +236,13 @@ def advanced_analysis():
 
 ## InsightSlide 特記事項
 
-既存のライセンス形式（`PRO-xxx`, `STD-xxx`, `TRIAL-xxx`）との互換性が必要な場合、
+既存のライセンス形式（`BIZ-xxx`, `TRIAL-xxx`）との互換性が必要な場合、
 license_manager.py の activate メソッドに以下を追加:
 
 ```python
 def activate(self, license_key: str) -> dict:
     # レガシー形式のチェック
-    if license_key.startswith(('PRO-', 'STD-', 'TRIAL-')):
+    if license_key.startswith(('BIZ-', 'TRIAL-')):
         return self._activate_legacy(license_key)
 
     # 新形式
