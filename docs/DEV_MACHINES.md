@@ -11,7 +11,7 @@
 | **OS** | Windows 11 Home 64bit |
 | **CPU** | Intel Core i7-11800H（2.30〜4.60GHz / 8コア16スレッド） |
 | **GPU** | NVIDIA GeForce RTX 3060 6GB + Intel UHD Graphics |
-| **メモリ** | 16GB DDR4 SO-DIMM（PC4-25600 / 8GB x 2 / 2チャネル） |
+| **メモリ** | 32GB DDR4 SO-DIMM（PC4-25600 / 16GB x 2 / 2チャネル）※購入後増設 |
 | **SSD** | 500GB NVMe SSD |
 | **ディスプレイ** | 15.6インチ ナローベゼル 非光沢 Full HD（1920x1080）240Hz |
 | **LAN** | 2.5Gb Ethernet x1 |
@@ -52,7 +52,7 @@
 | 課題 | 詳細 |
 |------|------|
 | **携帯性** | 両機とも 15.6インチで重く、客先持ち運びに不向き |
-| **メモリ** | 両機とも 16GB — 開発 + Stable Diffusion には不足気味 |
+| **メモリ (マシン2)** | 16GB — 開発 + Stable Diffusion には不足気味（マシン1 は 32GB に増設済み） |
 | **GPU (マシン1)** | RTX 3060 6GB — SD 1.5 は動くが SDXL は厳しい |
 | **GPU (マシン2)** | RTX 3050 4GB — Stable Diffusion にはVRAM不足 |
 | **SSD (マシン1)** | 500GB — 開発環境 + モデルファイルには容量不足 |
