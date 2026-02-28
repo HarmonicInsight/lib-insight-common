@@ -2,7 +2,7 @@
  * AI メモリシステム定義
  *
  * Anthropic Productivity Plugin の 2 層メモリアーキテクチャを参考に、
- * InsightOffice のプロジェクトファイル内でコンテキスト記憶を実現する。
+ * Insight Business Suite のプロジェクトファイル内でコンテキスト記憶を実現する。
  *
  * 参照: https://github.com/anthropics/knowledge-work-plugins
  *       → productivity/skills/memory-management/SKILL.md

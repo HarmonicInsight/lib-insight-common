@@ -506,7 +506,7 @@ if [ "$PLATFORM" = "csharp" ]; then
         fi
     else
         # Ribbon を使用していない場合はスキップ
-        print_warning "Syncfusion Ribbon が見つかりません（InsightOffice 系アプリでは必須）"
+        print_warning "Syncfusion Ribbon が見つかりません（Insight Business Suite 系アプリでは必須）"
     fi
 fi
 
@@ -896,7 +896,7 @@ if [ "$PLATFORM" = "expo" ]; then
     if [ -n "$license_ts" ]; then
         print_ok "license-manager.ts が存在"
     else
-        print_warning "license-manager.ts が見つかりません（InsightOffice 製品では必須）"
+        print_warning "license-manager.ts が見つかりません（Insight Business Suite 製品では必須）"
     fi
 
     # 6.7 TypeScript strict mode

@@ -57,7 +57,7 @@ grep -rn "console.log" --include="*.ts" --include="*.tsx" src/ app/ 2>/dev/null
 - [ ] Syncfusion キーが `third-party-licenses.json` 経由で登録
 - [ ] API キーがハードコードされていない
 
-### 5. AI アシスタント（InsightOffice 系のみ）
+### 5. AI アシスタント（Insight Business Suite 系のみ）
 
 - [ ] Claude API のみ使用（OpenAI/Azure 不可）
 - [ ] モデルティア制御が実装されている

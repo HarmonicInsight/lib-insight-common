@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace InsightCommon.ProjectFile;
 
 /// <summary>
-/// InsightOffice プロジェクトファイル（ZIP パッケージ）の読み書きマネージャー
+/// Insight Business Suite プロジェクトファイル（ZIP パッケージ）の読み書きマネージャー
 ///
 /// .inss / .iosh / .iosd ファイルを ZIP として作成・展開・保存する。
 /// 各アプリのファイル操作はこのクラスを通じて行う。
@@ -332,7 +332,7 @@ public class ProjectFileManager : IDisposable
     /// <summary>
     /// 「開く」ダイアログ用のフィルタ文字列を生成
     ///
-    /// 例: "InsightOfficeSheet プロジェクト (*.iosh)|*.iosh|Excel ファイル (*.xlsx;*.xls;*.csv)|*.xlsx;*.xls;*.csv|すべてのファイル (*.*)|*.*"
+    /// 例: "Insight Performance Management プロジェクト (*.iosh)|*.iosh|Excel ファイル (*.xlsx;*.xls;*.csv)|*.xlsx;*.xls;*.csv|すべてのファイル (*.*)|*.*"
     /// </summary>
     public static string GetOpenDialogFilter(string productCode, string locale = "ja")
     {
@@ -362,7 +362,7 @@ public class ProjectFileManager : IDisposable
 
     private static string CreateTempWorkDir()
     {
-        var dir = Path.Combine(Path.GetTempPath(), "InsightOffice", Guid.NewGuid().ToString("N")[..8]);
+        var dir = Path.Combine(Path.GetTempPath(), "InsightBusiness", Guid.NewGuid().ToString("N")[..8]);
         Directory.CreateDirectory(dir);
         return dir;
     }

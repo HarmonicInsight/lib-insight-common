@@ -40,8 +40,8 @@ SYNC_HASH_FILE=".icon-sync-hash"
 # 製品コード → 生成ディレクトリ名
 declare -A PRODUCT_DIR_MAP=(
   [INSS]="InsightOfficeSlide"
-  [IOSH]="InsightOfficeSheet"
-  [IOSD]="InsightOfficeDoc"
+  [IOSH]="InsightPerformanceManagement"
+  [IOSD]="InsightAIBriefcase"
   [ISOF]="InsightSeniorOffice"
   [INPY]="InsightPy"
   [INMV]="InsightCast"
@@ -90,7 +90,7 @@ Product Codes:
   Python: INMV, INIG
 
 Examples:
-  # WPF アプリ（InsightOfficeSheet）
+  # WPF アプリ（Insight Performance Management）
   ./insight-common/scripts/sync-app-icons.sh --product IOSH --pull Resources/
 
   # Expo アプリ（InsightCamera）

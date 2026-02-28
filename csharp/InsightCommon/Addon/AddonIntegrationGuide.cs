@@ -1,9 +1,9 @@
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// InsightOffice アプリ統合ガイド
+/// Insight Business Suite アプリ統合ガイド
 ///
-/// 各 InsightOffice アプリ（HMSH/HMDC/HMSL）が AddonManager を
+/// 各 Insight Business Suite アプリ（HMSH/HMDC/HMSL）が AddonManager を
 /// 初期化し、モジュール UI をホストするためのリファレンス実装。
 ///
 /// ## App.xaml.cs での初期化
@@ -123,7 +123,7 @@ namespace InsightCommon.Addon;
 /// | 項目 | IOSH | IOSD | INSS |
 /// |------|------|------|------|
 /// | ProductCode | "IOSH" | "IOSD" | "INSS" |
-/// | ProductName | "InsightOfficeSheet" | "InsightOfficeDoc" | "InsightOfficeSlide" |
+/// | ProductName | "Insight Performance Management" | "Insight AI Briefcase" | "Insight Deck Quality Gate" |
 /// | board/messaging | ✅ サポート | ❌ なし | ❌ なし |
 /// | ドキュメント形式 | .xlsx | .docx | .pptx |
 /// | Python ライブラリ | openpyxl | python-docx | python-pptx |

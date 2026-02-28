@@ -26,10 +26,10 @@
 
   <!-- Title -->
   <text x="450" y="40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="bold" fill="#1E293B">
-    HARMONIC insight ライセンスシスチE��
+    HARMONIC insight ライセンスシスチE��
   </text>
   <text x="450" y="65" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#64748B">
-    config/products.ts - 中央雁E��型�E機�E制御
+    config/products.ts - 中央雁E��型�E機�E制御
   </text>
 
   <!-- Central Box: config/products.ts -->
@@ -59,7 +59,7 @@
   <text x="645" y="175" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#86198F">COMMON_FEATURES</text>
   <text x="645" y="195" text-anchor="middle" font-family="monospace" font-size="11" fill="#A855F7">api_access | sso</text>
   <text x="645" y="212" text-anchor="middle" font-family="monospace" font-size="11" fill="#A855F7">audit_log | ...</text>
-  <text x="645" y="235" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748B">全製品�E通機�E</text>
+  <text x="645" y="235" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748B">全製品�E通機�E</text>
 
   <!-- PRODUCT_FEATURES Box (wider) -->
   <rect x="170" y="265" width="560" height="90" rx="8" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1"/>
@@ -100,7 +100,7 @@
     checkFeature(product, key, plan)
   </text>
   <text x="450" y="455" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#D1FAE5">
-    統一API: 製品固朁E+ 共通機�Eを�E動判宁E
+    統一API: 製品固朁E+ 共通機�Eを�E動判宁E
   </text>
 
   <!-- Arrows to products -->
@@ -117,7 +117,7 @@
   <rect x="100" y="530" width="180" height="80" rx="10" fill="white" stroke="#E2E8F0" stroke-width="2" filter="url(#shadow)"/>
   <rect x="100" y="530" width="180" height="30" rx="10" fill="url(#orangeGrad)"/>
   <rect x="100" y="550" width="180" height="10" fill="url(#orangeGrad)"/>
-  <text x="190" y="552" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="white">InsightOfficeSlide</text>
+  <text x="190" y="552" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="white">Insight Deck Quality Gate</text>
   <text x="190" y="580" text-anchor="middle" font-family="monospace" font-size="10" fill="#64748B">checkFeature('INSS',</text>
   <text x="190" y="595" text-anchor="middle" font-family="monospace" font-size="10" fill="#64748B">'extract', plan)</text>
 
@@ -137,9 +137,9 @@
 
   <!-- Benefits section -->
   <rect x="100" y="630" width="700" height="55" rx="8" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1"/>
-  <text x="120" y="655" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#0369A1">変更の影響篁E��:</text>
+  <text x="120" y="655" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#0369A1">変更の影響篁E��:</text>
   <text x="250" y="655" font-family="system-ui, sans-serif" font-size="11" fill="#0284C7">プラン変更 ↁEPLANSのみ</text>
-  <text x="410" y="655" font-family="system-ui, sans-serif" font-size="11" fill="#0284C7">共通機�E ↁECOMMON_FEATURESのみ</text>
-  <text x="610" y="655" font-family="system-ui, sans-serif" font-size="11" fill="#0284C7">製品機�E ↁE該当製品�Eみ</text>
+  <text x="410" y="655" font-family="system-ui, sans-serif" font-size="11" fill="#0284C7">共通機�E ↁECOMMON_FEATURESのみ</text>
+  <text x="610" y="655" font-family="system-ui, sans-serif" font-size="11" fill="#0284C7">製品機�E ↁE該当製品�Eみ</text>
   <text x="450" y="675" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">ↁE全製品に自動反映、他製品への影響なぁE/text>
 </svg>

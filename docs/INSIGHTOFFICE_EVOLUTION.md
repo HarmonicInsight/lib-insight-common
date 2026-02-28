@@ -1,6 +1,6 @@
-# InsightOffice 進化戦略 — 統合仕様書
+# Insight Business Suite 進化戦略 — 統合仕様書
 
-> **対象**: INSS / IOSH / IOSD（InsightOffice Suite 全製品）
+> **対象**: INSS / IOSH / IOSD（Insight Business Suite 全製品）
 > **最終更新**: 2026-02-23
 > **ステータス**: 設計完了 → 実装フェーズ
 
@@ -8,11 +8,11 @@
 
 ## 1. 概要 — 3 本柱の進化
 
-InsightOffice を「単体の AI オフィスツール」から「企業の業務基盤」へ進化させる。
+Insight Business Suite を「単体の AI オフィスツール」から「企業の業務基盤」へ進化させる。
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                    InsightOffice 進化ロードマップ                      │
+│                    Insight Business Suite 進化ロードマップ              │
 ├──────────────────────────────────────────────────────────────────────┤
 │                                                                      │
 │   現在                        進化後                                  │
@@ -34,8 +34,8 @@ InsightOffice を「単体の AI オフィスツール」から「企業の業�
 │          └─────────────────┼────────────────────────┘                │
 │                            │                                         │
 │                   ┌────────┴────────┐                                │
-│                   │ InsightOffice   │                                │
-│                   │ (C# WPF)       │                                │
+│                   │ Insight Business│                                │
+│                   │ Suite (C# WPF) │                                │
 │                   │ + Syncfusion   │                                │
 │                   └─────────────────┘                                │
 └──────────────────────────────────────────────────────────────────────┘
@@ -106,7 +106,7 @@ InsightOffice を「単体の AI オフィスツール」から「企業の業�
 ### 2.2 IOSH 側のプロジェクト構造（新規追加分）
 
 ```
-InsightOfficeSheet/
+InsightPerformanceManagement/
 ├── DataCollection/                    ★ 新規
 │   ├── Services/
 │   │   ├── DataCollectionApiClient.cs    # REST API クライアント
@@ -517,7 +517,7 @@ if (!DataCollectionLimits.CanUseAiValidation(currentPlan, monthlyValidationUsage
 │                         WebSocket (Port 9400)                     │
 │                              │                                    │
 ├──────────────────────────────┼────────────────────────────────────┤
-│  InsightOffice Agent モジュール (bot_agent)                        │
+│  Insight Business Suite Agent モジュール (bot_agent)               │
 │                              │                                    │
 │  ┌──────────────┐  ┌────────┴─────┐  ┌──────────────┐           │
 │  │ Agent A      │  │ Agent B      │  │ Agent C      │           │
@@ -532,7 +532,7 @@ if (!DataCollectionLimits.CanUseAiValidation(currentPlan, monthlyValidationUsage
 ### 3.2 IOSH 側の実装（bot_agent モジュール）
 
 ```
-InsightOfficeSheet/
+InsightPerformanceManagement/
 ├── BotAgent/                          ★ 新規
 │   ├── Services/
 │   │   ├── AgentConnectionService.cs     # WebSocket 接続管理
@@ -634,7 +634,7 @@ Orchestrator からワークフロー定義を受信:
 
 ### 3.3 ローカルワークフロー（Orchestrator 不要版）
 
-PRO InsightOffice ユーザー向け。Orchestrator なしでローカル PC 上の簡易自動化が可能。
+PRO Insight Business Suite ユーザー向け。Orchestrator なしでローカル PC 上の簡易自動化が可能。
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -679,7 +679,7 @@ PRO InsightOffice ユーザー向け。Orchestrator なしでローカル PC 上
 
 ### 4.1 概要
 
-コンサル導入先の InsightOffice を**リモートで一元管理**する。
+コンサル導入先の Insight Business Suite を**リモートで一元管理**する。
 ソフトウェア自体のアップデート + モジュール構成の配信 + 利用状況の監視。
 
 ```
@@ -708,7 +708,7 @@ PRO InsightOffice ユーザー向け。Orchestrator なしでローカル PC 上
 │                         REST API (HTTPS)                          │
 │                              │                                    │
 ├──────────────────────────────┼────────────────────────────────────┤
-│  InsightOffice 各端末                                              │
+│  Insight Business Suite 各端末                                     │
 │                              │                                    │
 │  ┌──────────────┐  ┌────────┴─────┐  ┌──────────────┐           │
 │  │ 経理-1       │  │ 営業-3       │  │ 法務-2       │           │
@@ -734,7 +734,7 @@ PRO InsightOffice ユーザー向け。Orchestrator なしでローカル PC 上
 ### 4.3 IOSH 側の実装
 
 ```
-InsightOfficeSheet/
+InsightPerformanceManagement/
 ├── RemoteManagement/                  ★ 新規
 │   ├── Services/
 │   │   ├── VersionCheckService.cs        # 起動時バージョンチェック
@@ -822,7 +822,7 @@ public class TelemetryService
 │  2. テナントに紐づけて配信                                    │
 │     POST /api/admin/profiles                                  │
 │                                                               │
-│  3. InsightOffice 起動時にプロファイルを取得                   │
+│  3. Insight Business Suite 起動時にプロファイルを取得          │
 │     GET /api/profiles/{licenseKey}                            │
 │                                                               │
 │  4. %APPDATA%/HarmonicInsight/IOSH/admin-profile.json に保存  │
@@ -878,7 +878,7 @@ const REMOTE_MANAGEMENT_API = {
 
 ### 5.1 問題認識
 
-InsightOffice の最大の価値は「Excel/Word/PowerPoint の読み書き・編集が安定動作する」こと。
+Insight Business Suite の最大の価値は「Excel/Word/PowerPoint の読み書き・編集が安定動作する」こと。
 データ収集・RPA Agent・リモート管理の追加で**コア品質が劣化するリスク**を回避する。
 
 ### 5.2 アーキテクチャによる分離
@@ -1093,7 +1093,7 @@ Phase 3-C: プロファイル配信（2-3 週間）
 
 ```csharp
 /// <summary>
-/// InsightOffice 全体で共有する HTTP クライアント基盤。
+/// Insight Business Suite 全体で共有する HTTP クライアント基盤。
 /// データ収集 / RPA Agent / リモート管理で共通使用。
 /// </summary>
 public class InsightHttpClient
@@ -1135,7 +1135,7 @@ addonManager.RegisterModule(new LocalWorkflowModule());
 ### 6.3 設定の保存先
 
 ```
-%APPDATA%/HarmonicInsight/InsightOfficeSheet/
+%APPDATA%/HarmonicInsight/InsightPerformanceManagement/
 ├── settings.json              # 既存: 一般設定
 ├── license.json               # 既存: ライセンス情報
 ├── admin-profile.json         # Pillar 3: 管理者プロファイル

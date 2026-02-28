@@ -395,11 +395,11 @@ public class AppConfig
                 },
 
                 // ══════════════════════════════════════════════════════
-                // Tier 3: InsightOffice Suite
+                // Tier 3: Insight Business Suite
                 // ══════════════════════════════════════════════════════
                 new()
                 {
-                    Name = "InsightOfficeSlide",
+                    Name = "Insight Deck Quality Gate",
                     ProductCode = "INSS",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-slide"),
                     SolutionPath = "InsightOfficeSlide.sln",
@@ -412,7 +412,7 @@ public class AppConfig
                 },
                 new()
                 {
-                    Name = "InsightOfficeSheet",
+                    Name = "Insight Performance Management",
                     ProductCode = "IOSH",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-sheet"),
                     SolutionPath = "HarmonicSheet.sln",
@@ -425,7 +425,7 @@ public class AppConfig
                 },
                 new()
                 {
-                    Name = "InsightOfficeDoc",
+                    Name = "Insight AI Briefcase",
                     ProductCode = "IOSD",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-doc"),
                     SolutionPath = "HarmonicDoc.sln",

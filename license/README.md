@@ -8,8 +8,8 @@ HARMONIC insight 製品群の共通ライセンス管理モジュールです。
 PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
 例:
-INSS-TRIAL-2701-A1B2-C3D4-X9Z1   # InsightOfficeSlide トライアル
-IOSH-PRO-2701-E5F6-G7H8-Y0W2     # InsightOfficeSheet Professional
+INSS-TRIAL-2701-A1B2-C3D4-X9Z1   # Insight Deck Quality Gate トライアル
+IOSH-PRO-2701-E5F6-G7H8-Y0W2     # Insight Performance Management Professional
 IVIN-STD-2701-I9J0-K1L2-Z1A3     # InterviewInsight Standard
 ```
 
@@ -19,9 +19,9 @@ IVIN-STD-2701-I9J0-K1L2-Z1A3     # InterviewInsight Standard
 
 | コード | 製品名 | 説明 |
 |--------|--------|------|
-| `INSS` | InsightOfficeSlide | AIアシスタント搭載 プレゼン支援 |
-| `IOSH` | InsightOfficeSheet | AIアシスタント搭載 スプレッドシート支援 |
-| `IOSD` | InsightOfficeDoc | AIアシスタント搭載 ドキュメント支援 |
+| `INSS` | Insight Deck Quality Gate | AIアシスタント搭載 プレゼン支援 |
+| `IOSH` | Insight Performance Management | AIアシスタント搭載 スプレッドシート支援 |
+| `IOSD` | Insight AI Briefcase | AIアシスタント搭載 ドキュメント支援 |
 | `INPY` | InsightPy | AIエディタ搭載 Python開発支援 |
 | `INMV` | InsightCast | 動画作成 |
 | `INIG` | InsightImageGen | AI画像・音声生成 |
@@ -109,7 +109,7 @@ Phase 2: 正式販売
   → INSS-PRO-2701-XXXX-XXXX-XXXX   (Professional版)
 
 Phase 3: 全製品展開
-  → IOSH-PRO-2701-XXXX-XXXX-XXXX  (InsightOfficeSheet)
+  → IOSH-PRO-2701-XXXX-XXXX-XXXX  (Insight Performance Management)
   → IVIN-STD-2701-XXXX-XXXX-XXXX  (InterviewInsight)
 ```
 

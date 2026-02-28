@@ -72,7 +72,7 @@
 
 | # | チェック項目 | 自動 | 説明 |
 |---|------------|:----:|------|
-| LI1 | InsightLicenseManager が実装されている | ✅ | InsightOffice 製品のみ |
+| LI1 | InsightLicenseManager が実装されている | ✅ | Insight Business Suite 製品のみ |
 | LI2 | ライセンスキー形式が正しい | ✅ | `{CODE}-{PLAN}-{YYMM}-XXXX-XXXX-XXXX` |
 | LI3 | ライセンス画面が Insight Slides 形式 | ⚠️ | UI レビュー |
 | LI4 | Syncfusion キーが `third-party-licenses.json` 経由 | ✅ | 直書き禁止 |
@@ -295,7 +295,7 @@
 
 ---
 
-## 8. AI アシスタント固有チェック（InsightOffice 系）
+## 8. AI アシスタント固有チェック（Insight Business Suite 系）
 
 | # | チェック項目 | 自動 | 説明 |
 |---|------------|:----:|------|

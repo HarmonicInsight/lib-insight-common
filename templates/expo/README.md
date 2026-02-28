@@ -59,7 +59,7 @@ templates/expo/
 | **SDK** | Expo 52+ |
 | **ナビゲーション** | expo-router (ファイルベースルーティング) |
 | **カラー** | `lib/colors.ts` から import（ハードコード禁止） |
-| **ライセンス** | `lib/license-manager.ts`（InsightOffice 製品のみ） |
+| **ライセンス** | `lib/license-manager.ts`（Insight Business Suite 製品のみ） |
 | **TypeScript** | strict mode 必須 |
 | **パッケージ名** | `com.harmonicinsight.*` |
 | **app.json** | backgroundColor/splash = Gold (#B8942F) |

@@ -22,7 +22,7 @@
  * │  │  - 自動起動 (Windows サービス)                                    │ │
  * │  └───────────────────────────────────────────────────────────────────┘ │
  * ├─────────────────────────────────────────────────────────────────────────┤
- * │  InsightOffice 系 (INSS/IOSH/IOSD)                                    │
+ * │  Insight Business Suite 系 (INSS/IOSH/IOSD)                           │
  * │  ┌───────────────────────────────────────────────────────────────────┐ │
  * │  │  デスクトップアプリ + ファイル関連付け                               │ │
  * │  │  - {Product}.exe (メインアプリ)                                   │ │
@@ -201,7 +201,7 @@ export interface InstallerConfig {
   firewallRules: FirewallRule[];
   /** 追加レジストリエントリ */
   registryEntries: RegistryEntry[];
-  /** ファイル関連付け（InsightOffice 系のみ） */
+  /** ファイル関連付け（Insight Business Suite 系のみ） */
   fileAssociations: boolean;
   /** 前提条件 */
   prerequisites: Array<{
@@ -301,8 +301,8 @@ export const INBT_INSTALLER: InstallerConfig = {
   service: {
     serviceName: 'InsightBotOrchestrator',
     displayName: 'InsightBot Orchestrator',
-    description: 'InsightBot Orchestrator — Centralized JOB dispatch, Agent management, and workflow execution for InsightOffice automation.',
-    descriptionJa: 'InsightBot Orchestrator — InsightOffice Agent への JOB 配信・管理・ワークフロー実行の中央サーバー。',
+    description: 'InsightBot Orchestrator — Centralized JOB dispatch, Agent management, and workflow execution for Insight Business Suite automation.',
+    descriptionJa: 'InsightBot Orchestrator — Insight Business Suite Agent への JOB 配信・管理・ワークフロー実行の中央サーバー。',
     executable: 'InsightBotService.exe',
     startType: 'auto',
     recovery: {
@@ -392,11 +392,11 @@ export const INBT_INSTALLER: InstallerConfig = {
 };
 
 // =============================================================================
-// InsightOffice 系 (INSS/IOSH/IOSD) インストーラー構成
+// Insight Business Suite 系 (INSS/IOSH/IOSD) インストーラー構成
 // =============================================================================
 
 /**
- * InsightOffice 系アプリのインストーラー構成を生成
+ * Insight Business Suite 系アプリのインストーラー構成を生成
  *
  * ## インストール構成（例: IOSH）
  *
@@ -416,7 +416,7 @@ export const INBT_INSTALLER: InstallerConfig = {
  *                                  → "...\InsightOfficeSheet.exe" "%1"
  * HKCR\.xlsx\shell\InsightOfficeSheet\command
  *                                  → "...\InsightOfficeSheet.exe" "%1"
- *                                  （コンテキストメニュー「InsightOfficeSheet で開く」）
+ *                                  （コンテキストメニュー「Insight Performance Management で開く」）
  * ```
  */
 function createInsightOfficeInstaller(product: 'INSS' | 'IOSH' | 'IOSD'): InstallerConfig {
@@ -542,7 +542,7 @@ function createInsightOfficeInstaller(product: 'INSS' | 'IOSH' | 'IOSD'): Instal
   };
 }
 
-// InsightOffice 各製品のインストーラー構成
+// Insight Business Suite 各製品のインストーラー構成
 export const INSS_INSTALLER: InstallerConfig = createInsightOfficeInstaller('INSS');
 export const IOSH_INSTALLER: InstallerConfig = createInsightOfficeInstaller('IOSH');
 export const IOSD_INSTALLER: InstallerConfig = createInsightOfficeInstaller('IOSD');
@@ -839,7 +839,7 @@ export function generateInnoSetupConfig(product: ProductCode): {
 /**
  * インストーラーのコンポーネント選択
  *
- * InsightOffice 系のインストーラーでは、ユーザーがインストールする
+ * Insight Business Suite 系のインストーラーでは、ユーザーがインストールする
  * コンポーネントを選択できる。コンポーネントは3種類に分類される:
  *
  * - required: 必須（チェックボックスを外せない）
@@ -854,7 +854,7 @@ export function generateInnoSetupConfig(product: ProductCode): {
  * // 製品のコンポーネント一覧を取得
  * const components = getInstallerComponents('IOSH');
  * // → [
- * //   { id: 'core', name: 'InsightOfficeSheet 本体', sizeMB: 50, selection: 'required', ... },
+ * //   { id: 'core', name: 'Insight Performance Management 本体', sizeMB: 50, selection: 'required', ... },
  * //   { id: 'ai_assistant', name: 'AI アシスタント', sizeMB: 5, selection: 'recommended', ... },
  * //   { id: 'python_runtime', name: 'Python 実行環境', sizeMB: 150, selection: 'optional', ... },
  * // ]
@@ -873,7 +873,7 @@ export function generateInnoSetupConfig(product: ProductCode): {
  * ```typescript
  * const section = generateInnoSetupComponents('IOSH');
  * // → [
- * //   'Name: "core"; Description: "InsightOfficeSheet 本体（必須）"; Types: full compact custom; Flags: fixed',
+ * //   'Name: "core"; Description: "Insight Performance Management 本体（必須）"; Types: full compact custom; Flags: fixed',
  * //   'Name: "ai_assistant"; Description: "AI アシスタント（推奨）"; Types: full compact custom',
  * //   'Name: "python_runtime"; Description: "Python 実行環境（オプション）"; Types: full',
  * // ]
@@ -922,11 +922,11 @@ export interface ComponentSizeResult {
 // ── 製品別コンポーネント定義 ──
 
 /**
- * InsightOffice 系（INSS/IOSH/IOSD）共通のコンポーネント構成
+ * Insight Business Suite 系（INSS/IOSH/IOSD）共通のコンポーネント構成
  *
  * ```
  * ┌─────────────────────────────────────────────────────────────┐
- * │  InsightOffice インストーラー                                │
+ * │  Insight Business Suite インストーラー                        │
  * │                                                             │
  * │  ☑ {製品名} 本体（必須）                          50MB     │
  * │  ☑ AI アシスタント（推奨）                         5MB     │
@@ -1134,7 +1134,7 @@ export function getDefaultComponentSelection(product: ProductCode): string[] {
  * ```
  * generateInnoSetupComponents('IOSH')
  * // [
- * //   'Name: "core"; Description: "InsightOfficeSheet 本体（必須）"; Types: full compact custom; Flags: fixed',
+ * //   'Name: "core"; Description: "Insight Performance Management 本体（必須）"; Types: full compact custom; Flags: fixed',
  * //   'Name: "ai_assistant"; Description: "AI アシスタント（推奨）  5 MB"; Types: full compact custom',
  * //   'Name: "python_runtime"; Description: "Python 実行環境（オプション）  150 MB"; Types: full',
  * // ]

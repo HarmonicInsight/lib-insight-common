@@ -439,11 +439,11 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
 
   // ══════════════════════════════════════════════════════
-  // Tier 3: InsightOffice Suite
+  // Tier 3: Insight Business Suite
   // ══════════════════════════════════════════════════════
   {
     productCode: 'INSS',
-    productName: 'InsightOfficeSlide',
+    productName: 'Insight Deck Quality Gate',
     masterPng: 'brand/icons/png/icon-insight-slide.png',
     motif: 'Presentation board + gear + arrows',
     motifJa: 'プレゼンボード + ギア + 矢印',
@@ -453,7 +453,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
   {
     productCode: 'IOSH',
-    productName: 'InsightOfficeSheet',
+    productName: 'Insight Performance Management',
     masterPng: 'brand/icons/png/icon-insight-sheet.png',
     motif: 'Spreadsheet grid + gear',
     motifJa: 'スプレッドシートグリッド + ギア',
@@ -463,7 +463,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
   {
     productCode: 'IOSD',
-    productName: 'InsightOfficeDoc',
+    productName: 'Insight AI Briefcase',
     masterPng: 'brand/icons/png/icon-insight-doc.png',
     motif: 'Document + gear + DB',
     motifJa: 'ドキュメント + ギア + DB',

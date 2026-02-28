@@ -1,11 +1,11 @@
 /**
- * InsightOffice アドインモジュール定義
+ * Insight Business Suite アドインモジュール定義
  *
  * ============================================================================
  * 【設計方針】
  * ============================================================================
  *
- * InsightOffice 系アプリ（INSS/IOSH/IOSD）は、コア機能に加えて
+ * Insight Business Suite 系アプリ（INSS/IOSH/IOSD）は、コア機能に加えて
  * アドインモジュールを追加・削除できるプラグインアーキテクチャを持つ。
  *
  * ## モジュールの種類
@@ -22,7 +22,7 @@
  *
  * ```
  * ┌──────────────────────────────────────────────────────────────┐
- * │  InsightOffice ホストアプリ (C# WPF)                          │
+ * │  Insight Business Suite ホストアプリ (C# WPF)                  │
  * │                                                              │
  * │  ┌─────────┐  ┌─────────┐  ┌─────────┐                     │
  * │  │コア機能  │  │コア機能  │  │コア機能  │                     │
@@ -966,8 +966,8 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     id: 'python_scripts',
     name: 'Python Script Runner',
     nameJa: 'Python スクリプト',
-    description: 'Browse, manage, and run Python scripts from a categorized list pane (like AI Assistant). Double-click opens the shared AI Code Editor. Equivalent to InsightPy embedded in InsightOffice. Admins can preload scripts for end users.',
-    descriptionJa: 'AIアシスタントと同様の右ペインにPythonスクリプト一覧を表示。ダブルクリックで共通のPythonエディターが開く。InsightPyをInsightOfficeに組み込んだもの。管理者が業務スクリプトを事前配布可能。',
+    description: 'Browse, manage, and run Python scripts from a categorized list pane (like AI Assistant). Double-click opens the shared AI Code Editor. Equivalent to InsightPy embedded in Insight Business Suite. Admins can preload scripts for end users.',
+    descriptionJa: 'AIアシスタントと同様の右ペインにPythonスクリプト一覧を表示。ダブルクリックで共通のPythonエディターが開く。InsightPyをInsight Business Suiteに組み込んだもの。管理者が業務スクリプトを事前配布可能。',
     version: '1.0.0',
     distribution: 'bundled',
     panelPosition: 'right',
@@ -1471,7 +1471,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
           { value: 'json', label: 'JSON', labelJa: 'JSON' },
           { value: 'csv', label: 'CSV', labelJa: 'CSV' },
           { value: 'xlsx', label: 'Excel (.xlsx)', labelJa: 'Excel (.xlsx)' },
-          { value: 'iosh', label: 'InsightOfficeSheet (.iosh)', labelJa: 'InsightOfficeSheet (.iosh)' },
+          { value: 'iosh', label: 'Insight Performance Management (.iosh)', labelJa: 'Insight Performance Management (.iosh)' },
         ],
       },
     ],
@@ -1484,7 +1484,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
 // =============================================================================
 
 /**
- * 各 InsightOffice 製品がサポートするアドインモジュールと、
+ * 各 Insight Business Suite 製品がサポートするアドインモジュールと、
  * デフォルトで有効になるモジュールを定義。
  *
  * - supportedModules: インストール可能なモジュール一覧
@@ -1537,17 +1537,17 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
     defaultEnabled: ['ai_assistant', 'reference_materials'],
   },
   // INPY / INBT はアドインではなくコア機能として提供
-  // InsightOffice 系のみがアドイン対象
+  // Insight Business Suite 系のみがアドイン対象
 };
 
 // =============================================================================
-// ローカルワークフロー（PRO InsightOffice のローカル自動化機能）
+// ローカルワークフロー（PRO Insight Business Suite のローカル自動化機能）
 // =============================================================================
 
 /**
  * ローカルワークフローモジュール
  *
- * Orchestrator なしで PRO InsightOffice ユーザーが使えるローカル自動化機能。
+ * Orchestrator なしで PRO Insight Business Suite ユーザーが使えるローカル自動化機能。
  * スクリプトの連続実行や、フォルダ内ファイルの一括処理を実現する。
  *
  * ## Orchestrator との違い
@@ -1557,7 +1557,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
  * | 実行場所 | 自分の PC のみ | リモート Agent に配信 |
  * | スケジュール | なし（手動起動） | cron 相当の定期実行 |
  * | 監視 | ローカル UI のみ | ダッシュボードで集約 |
- * | 対象 | PRO InsightOffice | PRO/ENT INBT |
+ * | 対象 | PRO Insight Business Suite | PRO/ENT INBT |
  *
  * ## ユースケース
  *
@@ -1703,7 +1703,7 @@ ADDON_MODULES.local_workflow = LOCAL_WORKFLOW_MODULE;
 /**
  * 管理者デプロイプロファイル
  *
- * コンサルタントや SIer が業務改善の一環として InsightOffice を導入する際、
+ * コンサルタントや SIer が業務改善の一環として Insight Business Suite を導入する際、
  * 現場の状況に応じてアドインの有効/無効やスクリプト一覧を制御する。
  *
  * ## ユースケース

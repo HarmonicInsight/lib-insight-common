@@ -11,8 +11,8 @@ insight-common の `brand/icons/generated/` をソースオブトゥルースと
 | VOICE_CLOCK | InsightVoiceClock | android-app-insight-voice-clock | Android Native |
 | CAMERA | InsightCamera | android-app-insight-camera | Android Native |
 | INSS | InsightOfficeSlide | app-insight-slides | WPF |
-| IOSH | InsightOfficeSheet | app-insight-sheet | WPF |
-| IOSD | InsightOfficeDoc | app-insight-doc | WPF |
+| IOSH | Insight Performance Management | app-insight-sheet | WPF |
+| IOSD | Insight AI Briefcase | app-insight-doc | WPF |
 | ISOF | InsightSeniorOffice | app-insight-senior-office | WPF |
 | INPY | InsightPy | app-insight-py | WPF |
 | INBT | InsightBot | app-insight-bot | WPF |

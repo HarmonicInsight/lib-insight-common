@@ -15,9 +15,9 @@
 ```
 brand/icons/
 ├── png/                              # マスター PNG アイコン（1024x1024、正式版）
-│   ├── icon-insight-slide.png        # INSS - InsightOfficeSlide
-│   ├── icon-insight-sheet.png        # IOSH - InsightOfficeSheet
-│   ├── icon-insight-doc.png          # IOSD - InsightOfficeDoc
+│   ├── icon-insight-slide.png        # INSS - Insight Deck Quality Gate
+│   ├── icon-insight-sheet.png        # IOSH - Insight Performance Management
+│   ├── icon-insight-doc.png          # IOSD - Insight AI Briefcase
 │   ├── icon-insight-py.png           # INPY - InsightPy
 │   ├── icon-insight-cast.png        # INMV - InsightCast
 │   ├── icon-insight-imagegen.png     # INIG - InsightImageGen
@@ -32,7 +32,7 @@ brand/icons/
 │   ├── icon-pinboard.png             # Insight PinBoard
 │   └── icon-voice-memo.png           # Insight Voice Memo
 ├── generated/                        # generate-app-icon.py による生成済みアイコン
-│   ├── InsightOfficeSheet/           # WPF: .ico + 個別PNG
+│   ├── InsightPerformanceManagement/ # WPF: .ico + 個別PNG
 │   ├── InsightNoCodeAnalyzer/        # Tauri: icon.ico + icon.png + sized PNGs
 │   ├── InsightCamera/                # Expo: icon.png + splash + Android mipmap
 │   ├── InsightQR/                    # Web: favicon.ico + manifest PNGs
@@ -59,13 +59,13 @@ brand/icons/
 | `icon-insight-cast.png` | INMV | InsightCast | Python/PyInstaller | 映写機 + フィルムストリップ + ギア |
 | `icon-insight-imagegen.png` | INIG | InsightImageGen | Python/PyInstaller | モニター + アパーチャ + 画像 + ギア |
 
-### Tier 3: InsightOffice Suite
+### Tier 3: Insight Business Suite
 
 | ファイル | コード | 製品名 | プラットフォーム | モチーフ |
 |---------|:------:|--------|:---------------:|---------|
-| `icon-insight-slide.png` | INSS | InsightOfficeSlide | C# WPF | プレゼンボード + ギア + 矢印 |
-| `icon-insight-sheet.png` | IOSH | InsightOfficeSheet | C# WPF | スプレッドシートグリッド + ギア |
-| `icon-insight-doc.png` | IOSD | InsightOfficeDoc | C# WPF | ドキュメント + ギア + DB |
+| `icon-insight-slide.png` | INSS | Insight Deck Quality Gate | C# WPF | プレゼンボード + ギア + 矢印 |
+| `icon-insight-sheet.png` | IOSH | Insight Performance Management | C# WPF | スプレッドシートグリッド + ギア |
+| `icon-insight-doc.png` | IOSD | Insight AI Briefcase | C# WPF | ドキュメント + ギア + DB |
 | `icon-insight-py.png` | INPY | InsightPy | Python/PyInstaller | Python ヘビ + 回路基板 |
 
 ### Tier 4: Accessibility

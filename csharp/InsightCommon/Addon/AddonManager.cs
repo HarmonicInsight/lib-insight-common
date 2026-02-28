@@ -5,10 +5,10 @@ using InsightCommon.License;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// アドインマネージャー（InsightOffice 全アプリ共通）
+/// アドインマネージャー（Insight Business Suite 全アプリ共通）
 ///
 /// モジュールの有効/無効管理、依存解決、管理者プロファイル適用、設定永続化を担当。
-/// 各 InsightOffice アプリ（HMSH/HMDC/HMSL）は App.xaml.cs でこのクラスを初期化し、
+/// 各 Insight Business Suite アプリ（HMSH/HMDC/HMSL）は App.xaml.cs でこのクラスを初期化し、
 /// モジュールの状態に応じて UI パネルを表示/非表示する。
 ///
 /// 使用例:

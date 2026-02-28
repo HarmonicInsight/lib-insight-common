@@ -8,11 +8,11 @@ using InsightCommon.Theme;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// Python スクリプト一覧パネル（InsightOffice 共通）
+/// Python スクリプト一覧パネル（Insight Business Suite 共通）
 ///
 /// ユーザー作成スクリプトと管理者事前配布スクリプトを一覧表示し、
 /// ワンクリックで実行できる UI。InsightPy のスクリプト管理を
-/// InsightOffice アプリに組み込んだもの。
+/// Insight Business Suite アプリに組み込んだもの。
 ///
 /// 使用例:
 /// <code>

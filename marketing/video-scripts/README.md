@@ -11,9 +11,9 @@
 
 | # | 製品コード | 製品名 | カテゴリ | ターゲット |
 |---|-----------|--------|---------|-----------|
-| 1 | INSS | InsightOfficeSlide | PowerPointツール | 資料整理・コンテンツ管理者、営業・企画 |
-| 2 | IOSH | InsightOfficeSheet | Excel管理 | 経理・事務・チーム管理者 |
-| 3 | IOSD | InsightOfficeDoc | Word自動化 | 総務・法務・ドキュメント作成者 |
+| 1 | INSS | Insight Deck Quality Gate | PowerPointツール | 資料整理・コンテンツ管理者、営業・企画 |
+| 2 | IOSH | Insight Performance Management | Excel管理 | 経理・事務・チーム管理者 |
+| 3 | IOSD | Insight AI Briefcase | Word自動化 | 総務・法務・ドキュメント作成者 |
 | 4 | INPY | InsightPy | Python実行環境 | 業務自動化担当・データ分析者 |
 | 5 | INMV | InsightCast | 動画作成 | マーケター・教育者・SNS運用 |
 | 6 | INIG | InsightImageGen | AI画像・音声生成 | クリエイター・マーケター |
@@ -30,9 +30,9 @@
 
 | 製品コード | 製品名 | 状態 |
 |-----------|--------|------|
-| ~~HMSH~~ | ~~HarmonicSheet~~ | IOSH（InsightOfficeSheet）にリブランド |
-| ~~HMDC~~ | ~~HarmonicDoc~~ | IOSD（InsightOfficeDoc）にリブランド |
-| ~~HMSL~~ | ~~HarmonicSlide~~ | INSS（InsightOfficeSlide）に統合 |
+| ~~HMSH~~ | ~~HarmonicSheet~~ | IOSH（Insight Performance Management）にリブランド |
+| ~~HMDC~~ | ~~HarmonicDoc~~ | IOSD（Insight AI Briefcase）にリブランド |
+| ~~HMSL~~ | ~~HarmonicSlide~~ | INSS（Insight Deck Quality Gate）に統合 |
 | ~~FGIN~~ | ~~ForguncyInsight~~ | 廃止（代替なし） |
 | ~~INSP~~ | ~~InsightSlide Pro~~ | 廃止（代替なし） |
 
@@ -54,7 +54,7 @@
 
 ---
 
-### 1. InsightOfficeSlide（INSS） PowerPointツール
+### 1. Insight Deck Quality Gate（INSS） PowerPointツール
 
 **ターゲット**: コンテンツ管理者、資料の棚卸し担当、営業・企画・プレゼン作成者
 
@@ -68,7 +68,7 @@
 
 ---
 
-### 2. InsightOfficeSheet（IOSH） Excel版Git
+### 2. Insight Performance Management（IOSH） Excel版Git
 
 **ターゲット**: 経理担当、事務職、チームでExcelを共有している人
 
@@ -82,7 +82,7 @@
 
 ---
 
-### 3. InsightOfficeDoc（IOSD） Word自動化
+### 3. Insight AI Briefcase（IOSD） Word自動化
 
 **ターゲット**: 総務、法務、レポート作成が多い人
 
@@ -195,14 +195,14 @@
 
 | 優先度 | 製品 | 理由 |
 |--------|------|------|
-| ☆☆☆ | InsightOfficeSheet (IOSH) | Excel利用者が圧倒的に多い。バージョン管理の課題は共感が高い |
+| ☆☆☆ | Insight Performance Management (IOSH) | Excel利用者が圧倒的に多い。バージョン管理の課題は共感が高い |
 | ☆☆☆ | InsightCast (INMV) | 動画マーケティング需要が高い。自社製品で自社動画を作る実績にもなる |
 | ☆☆☆ | InsightPy (INPY) | Python需要が拡大中。非エンジニア向けの訴求が刺さる |
 | ☆☆☆ | InsightBot (INBT) | RPA市場が拡大中。かんたんRPAは訴求力が高い |
 | ☆☆☆ | InsightImageGen (INIG) | AI画像生成の話題性が高くSNSでバズりやすい |
-| ☆☆☆ | InsightOfficeSlide (INSS) | PowerPoint利用者は多く、営業職に訴求しやすい |
+| ☆☆☆ | Insight Deck Quality Gate (INSS) | PowerPoint利用者は多く、営業職に訴求しやすい |
 | ☆☆☆ | InterviewInsight (IVIN) | 採用市場は常に需要あり。人事向けの訴求が刺さる |
-| ☆☆☆ | InsightOfficeDoc (IOSD) | Word自動化のニッチな需要あり |
+| ☆☆☆ | Insight AI Briefcase (IOSD) | Word自動化のニッチな需要あり |
 | ☆☆☆ | INCA | BtoB向け。ターゲットは狭いが単価が高い |
 
 ---
@@ -213,9 +213,9 @@
 `marketing/video-scripts/` 配下に製品コードごとのファイルとして作成済みです。
 
 ### 現行製品スクリプト
-- `INSS_scripts.md` — InsightOfficeSlide 5本
-- `IOSH_scripts.md` — InsightOfficeSheet 5本（旧 HMSH_scripts.md）
-- `IOSD_scripts.md` — InsightOfficeDoc 5本（旧 HMDC_scripts.md）
+- `INSS_scripts.md` — Insight Deck Quality Gate 5本
+- `IOSH_scripts.md` — Insight Performance Management 5本（旧 HMSH_scripts.md）
+- `IOSD_scripts.md` — Insight AI Briefcase 5本（旧 HMDC_scripts.md）
 - `INPY_scripts.md` — InsightPy 5本
 - `INMV_scripts.md` — InsightCast 5本
 - `INIG_scripts.md` — InsightImageGen 5本

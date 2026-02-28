@@ -4,7 +4,7 @@ using System.Globalization;
 namespace InsightCommon.AI;
 
 /// <summary>
-/// AIアシスタントのチャットメッセージ — 全InsightOffice系アプリで共通利用
+/// AIアシスタントのチャットメッセージ — 全Insight Business Suite系アプリで共通利用
 /// </summary>
 public class AiMessage
 {

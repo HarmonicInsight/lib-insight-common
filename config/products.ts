@@ -231,71 +231,71 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
   },
 
   // =========================================================================
-  // Tier 3: InsightOffice Suite（コンサル導入ツール）
+  // Tier 3: Insight Business Suite（コンサル導入ツール）
   // =========================================================================
 
   INSS: {
     code: 'INSS',
-    name: 'InsightOfficeSlide',
-    nameJa: 'InsightOfficeSlide',
-    description: 'AI-powered presentation creation and editing tool — MS Office not required',
-    descriptionJa: 'AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要）',
+    name: 'Insight Deck Quality Gate',
+    nameJa: 'Insight Deck Quality Gate',
+    description: 'AI-powered presentation quality gate — review, extract & automate slide decks',
+    descriptionJa: 'AIアシスタント搭載 — プレゼン資料の品質管理・抽出・自動化ツール',
     masterIcon: 'brand/icons/png/icon-insight-slide.png',
     targetPlatform: 'wpf',
     iconBuildPath: 'Resources/',
     projectFile: {
       extension: 'inss',
       mimeType: 'application/x-insightoffice-slide',
-      description: 'InsightOfficeSlide Project',
-      descriptionJa: 'InsightOfficeSlide プロジェクト',
+      description: 'Insight Deck Quality Gate Project',
+      descriptionJa: 'Insight Deck Quality Gate プロジェクト',
       iconFileName: 'inss-file.ico',
       innerDocumentFormat: '.pptx',
-      contextMenuLabel: 'Open with InsightOfficeSlide',
-      contextMenuLabelJa: 'InsightOfficeSlide で開く',
+      contextMenuLabel: 'Open with Insight Deck Quality Gate',
+      contextMenuLabelJa: 'Insight Deck Quality Gate で開く',
       contextMenuTargetExtensions: ['pptx', 'ppt'],
       supportsAiMemory: true,
     },
   },
   IOSH: {
     code: 'IOSH',
-    name: 'InsightOfficeSheet',
-    nameJa: 'InsightOfficeSheet',
-    description: 'AI-powered spreadsheet creation and editing tool — MS Office not required',
-    descriptionJa: 'AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要）',
+    name: 'Insight Performance Management',
+    nameJa: 'Insight Performance Management',
+    description: 'AI-powered performance management tool for business metrics and financial analysis',
+    descriptionJa: 'AIアシスタント搭載 — 経営数値管理・財務分析ツール',
     masterIcon: 'brand/icons/png/icon-insight-sheet.png',
     targetPlatform: 'wpf',
     iconBuildPath: 'Resources/',
     projectFile: {
       extension: 'iosh',
       mimeType: 'application/x-insightoffice-sheet',
-      description: 'InsightOfficeSheet Project',
-      descriptionJa: 'InsightOfficeSheet プロジェクト',
+      description: 'Insight Performance Management Project',
+      descriptionJa: 'Insight Performance Management プロジェクト',
       iconFileName: 'iosh-file.ico',
       innerDocumentFormat: '.xlsx',
-      contextMenuLabel: 'Open with InsightOfficeSheet',
-      contextMenuLabelJa: 'InsightOfficeSheet で開く',
+      contextMenuLabel: 'Open with Insight Performance Management',
+      contextMenuLabelJa: 'Insight Performance Management で開く',
       contextMenuTargetExtensions: ['xlsx', 'xls', 'csv'],
       supportsAiMemory: true,
     },
   },
   IOSD: {
     code: 'IOSD',
-    name: 'InsightOfficeDoc',
-    nameJa: 'InsightOfficeDoc',
-    description: 'AI-powered document creation and editing tool — MS Office not required',
-    descriptionJa: 'AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要）',
+    name: 'Insight AI Briefcase',
+    nameJa: 'Insight AI Briefcase',
+    description: 'AI-powered business document management briefcase — MS Office not required',
+    descriptionJa: 'AIアシスタント搭載 — 業務文書一括管理ブリーフケース（MS Office 不要）',
     masterIcon: 'brand/icons/png/icon-insight-doc.png',
     targetPlatform: 'wpf',
     iconBuildPath: 'Resources/',
     projectFile: {
       extension: 'iosd',
       mimeType: 'application/x-insightoffice-doc',
-      description: 'InsightOfficeDoc Project',
-      descriptionJa: 'InsightOfficeDoc プロジェクト',
+      description: 'Insight AI Briefcase Project',
+      descriptionJa: 'Insight AI Briefcase プロジェクト',
       iconFileName: 'iosd-file.ico',
       innerDocumentFormat: '.docx',
-      contextMenuLabel: 'Open with InsightOfficeDoc',
-      contextMenuLabelJa: 'InsightOfficeDoc で開く',
+      contextMenuLabel: 'Open with Insight AI Briefcase',
+      contextMenuLabelJa: 'Insight AI Briefcase で開く',
       contextMenuTargetExtensions: ['docx', 'doc'],
       supportsAiMemory: true,
     },
@@ -428,7 +428,7 @@ export const COMMON_FEATURES: FeatureDefinition[] = [
  */
 export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // ========================================
-  // InsightOfficeSlide (INSS) — Tier 3
+  // Insight Deck Quality Gate (INSS) — Tier 3
   // AIアシスタント搭載PowerPointツール
   // ========================================
   INSS: [
@@ -697,7 +697,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'スライド内テキストのスペルチェック',
     },
     // ------------------------------------------------------------------
-    // 独自機能（InsightOffice 固有）
+    // 独自機能（Insight Business Suite 固有）
     // ------------------------------------------------------------------
     {
       key: 'extract',
@@ -805,8 +805,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // InsightOfficeSheet (IOSH) — Tier 3
-  // AIアシスタント搭載Excel管理ツール
+  // Insight Performance Management (IOSH) — Tier 3
+  // AIアシスタント搭載 経営数値管理ツール
   // ========================================
   IOSH: [
     // ------------------------------------------------------------------
@@ -1117,7 +1117,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       descriptionJa: 'シート保護（パスワード付き）・ブック構成の保護・セルのロック/解除',
     },
     // ------------------------------------------------------------------
-    // 独自機能（InsightOffice 固有）
+    // 独自機能（Insight Business Suite 固有）
     // ------------------------------------------------------------------
     {
       key: 'version_control',
@@ -1308,8 +1308,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // InsightOfficeDoc (IOSD) — Tier 3
-  // AIアシスタント搭載Word管理ツール
+  // Insight AI Briefcase (IOSD) — Tier 3
+  // AIアシスタント搭載 業務文書管理ブリーフケース
   // ========================================
   IOSD: [
     // ------------------------------------------------------------------
@@ -1793,7 +1793,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       nameJa: 'オーケストレーター',
       type: 'boolean',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      descriptionJa: 'InsightOffice Agent の集中管理・JOB配信・実行監視',
+      descriptionJa: 'Insight Business Suite Agent の集中管理・JOB配信・実行監視',
     },
     {
       key: 'agents',
@@ -1802,7 +1802,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       type: 'limit',
       allowedPlans: ['TRIAL', 'PRO', 'ENT'],
       limitValues: { TRIAL: 5, PRO: 50, ENT: -1 },
-      descriptionJa: '管理可能な Agent（InsightOffice 端末）数（PRO: 50台 / ENT: 無制限）',
+      descriptionJa: '管理可能な Agent（Insight Business Suite 端末）数（PRO: 50台 / ENT: 無制限）',
     },
     {
       key: 'scheduler',
@@ -2151,8 +2151,8 @@ export function resolveProductByExtension(extension: string): ProductCode | null
  * @returns 「〜で開く」を表示すべき製品一覧
  *
  * @example
- * getContextMenuProducts('xlsx')  // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
- * getContextMenuProducts('pptx')  // [{ product: 'INSS', label: 'InsightOfficeSlide で開く' }]
+ * getContextMenuProducts('xlsx')  // [{ product: 'IOSH', label: 'Insight Performance Management で開く' }]
+ * getContextMenuProducts('pptx')  // [{ product: 'INSS', label: 'Insight Deck Quality Gate で開く' }]
  */
 export function getContextMenuProducts(
   extension: string,
@@ -2186,15 +2186,15 @@ export function getProjectFileConfig(product: ProductCode): ProjectFileConfig | 
  * @example
  * const reg = getFileAssociationInfo('IOSH');
  * // {
- * //   progId: 'HarmonicInsight.InsightOfficeSheet',
+ * //   progId: 'HarmonicInsight.InsightOfficeSheet',  // レジストリキーのため据え置き
  * //   extension: '.iosh',
  * //   mimeType: 'application/x-insightoffice-sheet',
- * //   description: 'InsightOfficeSheet プロジェクト',
+ * //   description: 'Insight Performance Management プロジェクト',
  * //   iconFileName: 'iosh-file.ico',
- * //   openCommand: '"%INSTALL_DIR%\\InsightOfficeSheet.exe" "%1"',
+ * //   openCommand: '"%INSTALL_DIR%\\InsightOfficeSheet.exe" "%1"',  // exe名は外部リポジトリ変更後に更新
  * //   contextMenu: {
  * //     targetExtensions: ['.xlsx', '.xls', '.csv'],
- * //     label: 'InsightOfficeSheet で開く',
+ * //     label: 'Insight Performance Management で開く',
  * //   },
  * // }
  */

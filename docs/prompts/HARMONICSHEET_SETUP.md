@@ -1,6 +1,6 @@
-# InsightOfficeSheet (IOSH) セットアップガイド
+# Insight Performance Management (IOSH) セットアップガイド
 
-> Excel操作・自動化ツール「InsightOfficeSheet」の開発セットアップ手順
+> Excel操作・自動化ツール「Insight Performance Management」の開発セットアップ手順
 
 ---
 
@@ -9,7 +9,7 @@
 | 項目 | 内容 |
 |------|------|
 | 製品コード | IOSH |
-| 製品名 | InsightOfficeSheet |
+| 製品名 | Insight Performance Management |
 | 説明 | Excel操作・自動化ツール |
 | プラットフォーム | Windows (WPF / C#) |
 | 対応Excel形式 | .xlsx, .xls, .xlsm, .xlsb |
@@ -49,7 +49,7 @@ git submodule update --init --recursive
 
 ### 3. サードパーティライセンス（Syncfusion）
 
-InsightOfficeSheet は Syncfusion SfSpreadsheet を使用しています。ライセンスキーは `insight-common/config/third-party-licenses.json` で全製品共通管理されています。
+Insight Performance Management は Syncfusion SfSpreadsheet を使用しています。ライセンスキーは `insight-common/config/third-party-licenses.json` で全製品共通管理されています。
 
 ```csharp
 // App.xaml.cs の OnStartup 冒頭
@@ -73,7 +73,7 @@ var licenseManager = new InsightLicenseManager("IOSH");
 
 ### 5. メニュー構造
 
-`insight-common/ui/menu-structure.json` の `insightOfficeSheet` セクションに定義されたメニューを実装してください。
+`insight-common/ui/menu-structure.json` の `insightPerformanceManagement` セクションに定義されたメニューを実装してください。
 
 #### 必須メニュー項目
 
@@ -93,7 +93,7 @@ var licenseManager = new InsightLicenseManager("IOSH");
 - 履歴ファイルについて
 - よくある質問 (FAQ)
 - ショートカットキー一覧
-- InsightOfficeSheetについて
+- Insight Performance Managementについて
 
 ### 6. ヘルプシステム
 
@@ -111,7 +111,7 @@ var licenseManager = new InsightLicenseManager("IOSH");
 
 ### 7. 履歴ファイル（.hsheet）
 
-InsightOfficeSheet は変更履歴を `.hsheet` ファイル（ZIP アーカイブ）として保存します。
+Insight Performance Management は変更履歴を `.hsheet` ファイル（ZIP アーカイブ）として保存します。
 
 ```
 元ファイル: C:\Users\data\売上.xlsx

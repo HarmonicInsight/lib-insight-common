@@ -1,13 +1,13 @@
-# InsightOfficeSheet クイックスタートガイド
+# Insight Performance Management クイックスタートガイド
 
-> InsightOfficeSheet は、Excel ファイルの読み書き・数式解析・マクロ実行・一括処理ができるツールです。
+> Insight Performance Management は、Excel ファイルの読み書き・数式解析・マクロ実行・一括処理ができるツールです。
 > ITの専門知識がなくても、かんたんに使えるように設計されています。
 
 ---
 
 ## はじめに
 
-### InsightOfficeSheet でできること
+### Insight Performance Management でできること
 
 | 機能 | 説明 | プラン |
 |------|------|--------|
@@ -22,14 +22,14 @@
 
 ## Step 1: アプリを起動する
 
-1. デスクトップの **InsightOfficeSheet** アイコンをダブルクリック
+1. デスクトップの **Insight Performance Management** アイコンをダブルクリック
 2. 初回起動時はライセンス認証画面が表示されます
 
 ### ライセンス認証
 
 ```
 ┌────────────────────────────────────┐
-│       InsightOfficeSheet                │
+│       Insight Performance Management                │
 │                                    │
 │  メールアドレス: [          ]      │
 │  ライセンスキー: [          ]      │

@@ -25,7 +25,7 @@
  * │ Tier 2: AI活用ツール                                           │
  * │ INMV / INIG                                                    │
  * ├──────────────────────────────────────────────────────────────────┤
- * │ Tier 3: InsightOffice Suite（導入ツール）                       │
+ * │ Tier 3: Insight Business Suite（導入ツール）                     │
  * │ INSS / IOSH / IOSD / INPY                                     │
  * ├──────────────────────────────────────────────────────────────────┤
  * │ Tier 4: Insight Senior Office（社会貢献ツール）                 │
@@ -130,7 +130,7 @@ export const PRODUCT_SALES_INFO: Record<ProductCode, ProductSalesInfo> = {
   },
 
   // =========================================================================
-  // Tier 3: InsightOffice Suite（コンサル導入ツール）
+  // Tier 3: Insight Business Suite（コンサル導入ツール）
   // =========================================================================
 
   INSS: {

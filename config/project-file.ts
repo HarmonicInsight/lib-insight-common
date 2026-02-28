@@ -1,11 +1,11 @@
 /**
- * InsightOffice プロジェクトファイル（ZIP パッケージ）仕様
+ * Insight Business Suite プロジェクトファイル（ZIP パッケージ）仕様
  *
  * ============================================================================
  * 【概要】
  * ============================================================================
  *
- * InsightOffice 各製品（INSS / IOSH / IOSD）のプロジェクトファイルは
+ * Insight Business Suite 各製品（INSS / IOSH / IOSD）のプロジェクトファイルは
  * **ZIP 形式のアーカイブ**として、Office ドキュメント + メタデータ + 付随データを
  * 1 ファイルに集約する。
  *
@@ -825,7 +825,7 @@ export type NewDocumentType = 'blank_spreadsheet' | 'blank_document' | 'blank_pr
  * 新規ドキュメント作成テンプレート定義
  *
  * Syncfusion を使って空の Office ドキュメントを生成する際の情報。
- * MS Office を購入せずに、InsightOffice 単体で Office 互換ファイルの
+ * MS Office を購入せずに、Insight Business Suite 単体で Office 互換ファイルの
  * 作成・編集・保存がすべて完結する。
  *
  * ## C# WPF 実装例
@@ -1015,7 +1015,7 @@ export function createNewDocumentMetadata(
 /**
  * 既存の Office ファイルからプロジェクトファイルへの変換に必要な情報
  *
- * ユーザーが .xlsx をダブルクリック → 「InsightOfficeSheet で開く」を選択した場合、
+ * ユーザーが .xlsx をダブルクリック → 「Insight Performance Management で開く」を選択した場合、
  * .xlsx を .iosh（ZIP）にパッケージングする際のガイドライン。
  */
 export const MIGRATION_GUIDE = {

@@ -1058,11 +1058,11 @@ export const CRON_JOBS = {
 // =============================================================================
 
 // =============================================================================
-// InsightOffice 系デフォルトフィーチャーフラグ
+// Insight Business Suite 系デフォルトフィーチャーフラグ
 // =============================================================================
 
 /**
- * InsightOffice 系アプリ（INSS / IOSH / IOSD / ISOF）向けの
+ * Insight Business Suite 系アプリ（INSS / IOSH / IOSD / ISOF）向けの
  * デフォルトフィーチャーフラグ定義。
  *
  * サーバーにフラグが未登録の場合のフォールバック値として使用。
@@ -1153,7 +1153,7 @@ export const PRODUCT_REMOTE_CONFIG_DEFAULTS: Record<string, {
   /** API キープロバイダー一覧 */
   requiredApiKeys: ApiKeyProvider[];
 }> = {
-  // InsightOffice Suite（Syncfusion + Claude）
+  // Insight Business Suite（Syncfusion + Claude）
   INSS: {
     pollingIntervalMs: 4 * 60 * 60 * 1000,
     initialDelayMs: 5_000,

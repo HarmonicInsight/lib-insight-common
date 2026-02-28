@@ -189,7 +189,7 @@ com.harmonic.insight.<アプリ名>
 │   ├── Services/                           # ビジネスロジック・API
 │   │   └── <Service>.swift
 │   │
-│   ├── License/                            # ライセンス管理（InsightOffice 製品のみ）
+│   ├── License/                            # ライセンス管理（Insight Business Suite 製品のみ）
 │   │   ├── PlanCode.swift
 │   │   ├── LicenseManager.swift
 │   │   └── LicenseView.swift
@@ -1072,7 +1072,7 @@ background.save("icon.png")
 
 ## 14. ライセンス管理
 
-InsightOffice 製品（INSS/IOSH/IOSD 等）の iOS 版では、ライセンス管理が必須。
+Insight Business Suite 製品（INSS/IOSH/IOSD 等）の iOS 版では、ライセンス管理が必須。
 ユーティリティアプリ（ConsulType、Horoscope 等）では任意。
 
 ### PlanCode.swift
@@ -1430,7 +1430,7 @@ struct LicenseView: View {
 - [ ] テストが実行される
 - [ ] `v*` タグで GitHub Release が自動作成される
 
-### ライセンス（InsightOffice 製品のみ）
+### ライセンス（Insight Business Suite 製品のみ）
 
 - [ ] `LicenseManager` クラスが実装されている
 - [ ] ライセンスキー形式: `{製品コード}-{プラン}-{YYMM}-XXXX-XXXX-XXXX`

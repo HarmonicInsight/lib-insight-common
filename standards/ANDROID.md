@@ -1350,7 +1350,7 @@ android.nonTransitiveRClass=true
 
 ## 12. ライセンス管理
 
-InsightOffice 製品（INSS/IOSH/IOSD 等）の Android 版では、ライセンス管理が必須。
+Insight Business Suite 製品（INSS/IOSH/IOSD 等）の Android 版では、ライセンス管理が必須。
 ユーティリティアプリ（カメラ、ランチャー、時計等）では任意。
 
 ### PlanCode.kt
@@ -1486,7 +1486,7 @@ templates/expo/
 | **ナビゲーション** | expo-router（ファイルベースルーティング） |
 | **状態管理** | React hooks / Zustand（必要な場合） |
 | **カラー** | `lib/colors.ts` から import（ハードコード禁止） |
-| **ライセンス** | `lib/license-manager.ts`（InsightOffice 製品のみ） |
+| **ライセンス** | `lib/license-manager.ts`（Insight Business Suite 製品のみ） |
 | **TypeScript** | strict mode 必須 |
 | **パッケージ名** | `com.harmonicinsight.*` |
 | **ビルド** | EAS Build（`eas.json` 必須） |
@@ -1559,7 +1559,7 @@ import { colors } from '@/lib/colors';
 - [ ] パッケージ名が `com.harmonicinsight.*` 形式
 - [ ] expo-router を使用（ファイルベースルーティング）
 - [ ] ハードコードカラーが使用されていない
-- [ ] `lib/license-manager.ts` が実装（InsightOffice 製品のみ）
+- [ ] `lib/license-manager.ts` が実装（Insight Business Suite 製品のみ）
 
 ---
 
@@ -1651,7 +1651,7 @@ import { colors } from '@/lib/colors';
 - [ ] `--stacktrace` フラグ付きでビルド
 - [ ] APK / AAB サイズがログに表示される
 
-### ライセンス（InsightOffice 製品のみ）
+### ライセンス（Insight Business Suite 製品のみ）
 
 - [ ] `LicenseManager` クラスが実装されている
 - [ ] ライセンスキー形式: `{製品コード}-{プラン}-{YYMM}-XXXX-XXXX-XXXX`

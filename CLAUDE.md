@@ -36,7 +36,7 @@
 
 #### テーマ A: Ivory & Gold（デフォルト）
 
-**対象**: InsightOffice 系（INSS/IOSH/IOSD/INPY）、ISOF、マーケティング系（INMV/INIG）、公開 Web サイト
+**対象**: Insight Business Suite 系（INSS/IOSH/IOSD/INPY）、ISOF、マーケティング系（INMV/INIG）、公開 Web サイト
 
 ```
 ❌ 絶対禁止: Blue (#2563EB) をプライマリカラーとして使用
@@ -91,7 +91,7 @@
 - **React/Next.js**: `standards/REACT.md`
 - **Android**: `standards/ANDROID.md`
 - **iOS**: `standards/IOS.md`
-- **AI アシスタント**: `standards/AI_ASSISTANT.md`（InsightOffice 系アプリ共通）
+- **AI アシスタント**: `standards/AI_ASSISTANT.md`（Insight Business Suite 系アプリ共通）
 - **ローカライゼーション**: `standards/LOCALIZATION.md`（全プラットフォーム共通）
 - **リリースチェック**: `standards/RELEASE_CHECKLIST.md`（全プラットフォーム共通）
 - **寒色系カラー標準**: `standards/COOL_COLOR.md`（業務系アプリ: INBT/INCA/IVIN）
@@ -261,7 +261,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 │  Tier 2: AI活用ツール                                           │
 │  INMV / INIG                                                    │
 ├──────────────────────────────────────────────────────────────────┤
-│  Tier 3: InsightOffice Suite（導入ツール）                       │
+│  Tier 3: Insight Business Suite（導入ツール）                     │
 │  INSS / IOSH / IOSD / INPY                                     │
 │  コンサル案件のクライアントに業務ツールとして導入                  │
 ├──────────────────────────────────────────────────────────────────┤
@@ -341,7 +341,7 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | クラウド同期 | — | ○ | ○ | JOBのクラウド同期 |
 | AIコードエディター | 月50回 | 月200回 | 無制限 | AIによるPythonコード生成・編集 |
 | オーケストレーター | — | ○ | ○ | Agent集中管理・JOB配信・実行監視 |
-| Agent管理 | — | 50台 | 無制限 | 管理可能なInsightOffice端末数 |
+| Agent管理 | — | 50台 | 無制限 | 管理可能なInsight Business Suite端末数 |
 | JOBスケジューラー | — | ○ | ○ | 定期実行スケジュール設定 |
 
 #### IVIN — InterviewInsight
@@ -405,17 +405,17 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ---
 
-### Tier 3: InsightOffice Suite
+### Tier 3: Insight Business Suite
 
-> InsightOffice 系は共通で **新規ドキュメント作成（MS Office 不要）**、AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> Insight Business Suite 系は共通で **新規ドキュメント作成（MS Office 不要）**、AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
 > Syncfusion で Office 互換ファイル（.xlsx / .docx / .pptx）を直接生成するため、MS Office を購入せずにドキュメントの作成・編集・保存がすべて完結する。
 > 独自プロジェクトファイル形式（.inss / .iosh / .iosd）対応、AI メモリ機能あり。
 
-#### INSS — InsightOfficeSlide
+#### INSS — Insight Deck Quality Gate
 
 | 項目 | 内容 |
 |------|------|
-| **説明** | AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要） |
+| **説明** | AIアシスタント搭載 — プレゼン資料の品質管理・抽出・自動化ツール（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
 | **バージョン** | **2.2.0** (build 50) — **安定版** |
 | **リポジトリ** | `win-app-insight-slide` |
@@ -466,11 +466,11 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
 
-#### IOSH — InsightOfficeSheet
+#### IOSH — Insight Performance Management
 
 | 項目 | 内容 |
 |------|------|
-| **説明** | AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要） |
+| **説明** | AIアシスタント搭載 — 経営数値管理・財務分析ツール |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
 | **バージョン** | **2.0.0** (build 38) — **安定版** |
 | **リポジトリ** | `win-app-insight-sheet` |
@@ -529,11 +529,11 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
 
-#### IOSD — InsightOfficeDoc
+#### IOSD — Insight AI Briefcase
 
 | 項目 | 内容 |
 |------|------|
-| **説明** | AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要） |
+| **説明** | AIアシスタント搭載 — 業務文書一括管理ブリーフケース（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
 | **バージョン** | 1.1.0 (build 5) — 開発中 |
 | **リポジトリ** | `win-app-insight-doc` |
@@ -789,7 +789,7 @@ getResellerProducts('gold');        // 全製品
 | PRO | 法人向け全機能（AI月200回・コラボレーション） | 法人・チーム | 365日 |
 | ENT | カスタマイズ | 大企業 | 要相談 |
 
-### InsightOfficeSheet (IOSH) 機能マトリクス
+### Insight Performance Management (IOSH) 機能マトリクス
 
 > **STD = 基本機能+AI（月50回）**、**PRO = 全機能+AI月200回+コラボレーション**、**ENT = AI無制限**
 
@@ -809,11 +809,11 @@ getResellerProducts('gold');        // 全製品
 | Pythonスクリプト | ✅ | ❌ | ✅ | ✅ |
 | メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
 
-### InsightOffice AI アシスタント共通仕様
+### Insight Business Suite AI アシスタント共通仕様
 
 > 詳細は `standards/AI_ASSISTANT.md` を参照
 
-**対象製品**: INSS / IOSH / IOSD（全 InsightOffice 系アプリ）+ INPY / INBT
+**対象製品**: INSS / IOSH / IOSD（全 Insight Business Suite 系アプリ）+ INPY / INBT
 
 | 項目 | 仕様 |
 |------|------|
@@ -1108,7 +1108,7 @@ getAutoUpdateManifestUrl('wpf', 'INSS');
 
 ### 設計思想
 
-InsightOffice のプロジェクトファイル（.inss / .iosh / .iosd）は **ZIP 形式のアーカイブ**。
+Insight Business Suite のプロジェクトファイル（.inss / .iosh / .iosd）は **ZIP 形式のアーカイブ**。
 Office ドキュメント + メタデータ + 付随データを 1 ファイルに集約し、ファイル 1 つ移動すれば全データが移動する。
 .docx / .xlsx / .pptx / .epub 等と同じ業界標準の ZIP ベースアプローチ。
 
@@ -1151,7 +1151,7 @@ report.iosh (ZIP archive)
 - `System.IO.Compression.ZipArchive`（.NET 標準）を使用、外部ライブラリ不要
 - **保存時**: 一時ファイルに書き込み → 完了後にリネーム（アトミック保存で破損防止）
 - **読込時**: 一時ディレクトリに展開 → アプリ終了時にクリーンアップ
-- **マイグレーション**: 既存 .xlsx を右クリック→「InsightOfficeSheet で開く」で .iosh に自動変換
+- **マイグレーション**: 既存 .xlsx を右クリック→「Insight Performance Management で開く」で .iosh に自動変換
 
 ### API
 
@@ -1164,8 +1164,8 @@ import {
 } from '@/insight-common/config/products';
 
 resolveProductByExtension('iosh');  // 'IOSH'
-getContextMenuProducts('xlsx');     // [{ product: 'IOSH', label: 'InsightOfficeSheet で開く' }]
-getFileAssociationInfo('IOSH');     // { progId: 'HarmonicInsight.InsightOfficeSheet', ... }
+getContextMenuProducts('xlsx');     // [{ product: 'IOSH', label: 'Insight Performance Management で開く' }]
+getFileAssociationInfo('IOSH');     // { progId: 'HarmonicInsight.InsightOfficeSheet', ... }  // progIdはレジストリキーのため据え置き
 
 // ZIP パッケージ仕様（config/project-file.ts）
 import {
@@ -1209,7 +1209,7 @@ checkProjectFileLimits('STD', { historyVersions: 25 });
 ### 概要
 
 InsightBot を UiPath Orchestrator 相当の中央管理サーバーとして位置付け、
-InsightOffice 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）として
+Insight Business Suite 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）として
 リモート JOB 配信・実行監視を実現する。
 
 ```
@@ -1222,7 +1222,7 @@ InsightOffice 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）とし�
 │                     WebSocket / REST                      │
 ├──────────────────────┼───────────────────────────────────┤
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
-│  │ Agent A  │  │ Agent B  │  │ Agent C  │  ← InsightOffice│
+│  │ Agent A  │  │ Agent B  │  │ Agent C  │  ← Insight Biz  │
 │  │ IOSH     │  │ INSS     │  │ IOSD     │    + bot_agent │
 │  │ 経理PC   │  │ 営業PC   │  │ 法務PC   │    モジュール   │
 │  └──────────┘  └──────────┘  └──────────┘               │
@@ -1232,7 +1232,7 @@ InsightOffice 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末）とし�
 ### UiPath との差別化
 
 UiPath はファイルを「外から」UI オートメーションで操作する。
-InsightBot + InsightOffice はドキュメントを「中から」直接操作する。
+InsightBot + Insight Business Suite はドキュメントを「中から」直接操作する。
 ファイルロック・UI 遅延の問題がなく、セル・スライド・段落を高速に処理。
 
 ### プラン別制限（INBT）
@@ -1267,7 +1267,7 @@ ORCHESTRATOR_API.defaultPort;           // 9400
 ORCHESTRATOR_API.endpoints.jobs.dispatch;  // { method: 'POST', path: '/api/jobs/:jobId/dispatch' }
 ```
 
-### InsightOffice 側（Agent モジュール）
+### Insight Business Suite 側（Agent モジュール）
 
 ```typescript
 // addon-modules.ts の bot_agent モジュールを有効化
@@ -1291,7 +1291,7 @@ BPO（業務プロセス外注）での大量書類作成に対応。
 │                                                          │
 │  → Agent に一括配信                                      │
 ├──────────────────────────────────────────────────────────┤
-│  Agent (InsightOffice)                                    │
+│  Agent (Insight Business Suite)                            │
 │  Step 1: 売上.xlsx を開く → スクリプト実行 → 保存して閉じる │
 │  Step 2: 経費.xlsx を開く → スクリプト実行 → 保存して閉じる │
 │  Step 3: 報告書.docx を開く → スクリプト実行 → 保存して閉じる│
@@ -1307,9 +1307,9 @@ BPO（業務プロセス外注）での大量書類作成に対応。
 | **市民開発** | パワーユーザー | PRO | Python + AI エディター + ローカルワークフロー |
 | **リモート RPA** | BPO / IT 部門 | PRO/ENT (INBT) | Orchestrator + Agent + スケジューラー |
 
-### ローカルワークフロー（PRO InsightOffice）
+### ローカルワークフロー（PRO Insight Business Suite）
 
-PRO の InsightOffice ユーザーは Orchestrator なしで、ローカル PC 上の簡易自動化が可能。
+PRO の Insight Business Suite ユーザーは Orchestrator なしで、ローカル PC 上の簡易自動化が可能。
 
 ```typescript
 import { canEnableModule } from '@/insight-common/config/addon-modules';
@@ -1347,14 +1347,14 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **ライセンス**: ライセンス画面が Insight Slides 形式に準拠
 - [ ] **サードパーティ**: Syncfusion キーが `third-party-licenses.json` 経由で登録されている
 - [ ] **製品コード**: config/products.ts に登録されている
-- [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（InsightOffice 系のみ）
+- [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（Insight Business Suite 系のみ）
 - [ ] **AI アシスタント**: モデルティア（Standard/Premium）制御が実装されている
 - [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
 - [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
 - [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている
 - [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
 - [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT PRO+ のみ）
-- [ ] **ローカルワークフロー**: PRO InsightOffice でローカル連続処理が動作する（PRO+ のみ）
+- [ ] **ローカルワークフロー**: PRO Insight Business Suite でローカル連続処理が動作する（PRO+ のみ）
 - [ ] **メニューアイコン**: `brand/menu-icons.json` の定義に従っている（Lucide Icons 統一）
 - [ ] **メニューアイコン**: 非標準アイコンライブラリ（Material Design / Font Awesome 等）を使用して**いない**
 - [ ] **メニューアイコン**: `validate-menu-icons.sh` が成功する

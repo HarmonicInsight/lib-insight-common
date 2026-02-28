@@ -7,7 +7,7 @@ namespace InsightCommon.Addon;
 /// <summary>
 /// 管理者デプロイプロファイル
 ///
-/// コンサルタントや SIer が業務改善の一環として InsightOffice を導入する際、
+/// コンサルタントや SIer が業務改善の一環として Insight Business Suite を導入する際、
 /// 現場に応じてアドインの有効/無効やスクリプト一覧を制御する。
 ///
 /// 配置場所: %APPDATA%/HarmonicInsight/{product}/admin-profile.json

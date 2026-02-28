@@ -13,7 +13,7 @@
   "entries": [
     {
       "code": "INSS",
-      "name": "InsightOfficeSlide",
+      "name": "Insight Deck Quality Gate",
       "masterIcon": "brand/icons/png/icon-insight-slide.png",
       "category": "office",
       "displayOrder": 100,
@@ -28,7 +28,7 @@
     },
     {
       "code": "IOSH",
-      "name": "InsightOfficeSheet",
+      "name": "Insight Performance Management",
       "masterIcon": "brand/icons/png/icon-insight-sheet.png",
       "category": "office",
       "displayOrder": 110,
@@ -43,7 +43,7 @@
     },
     {
       "code": "IOSD",
-      "name": "InsightOfficeDoc",
+      "name": "Insight AI Briefcase",
       "masterIcon": "brand/icons/png/icon-insight-doc.png",
       "category": "office",
       "displayOrder": 120,

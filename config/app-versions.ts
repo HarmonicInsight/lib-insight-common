@@ -227,7 +227,7 @@ export const APP_VERSIONS: Record<ProductCode, AppVersionInfo> = {
   },
 
   // ===========================================================================
-  // Tier 3: InsightOffice Suite
+  // Tier 3: Insight Business Suite
   // ===========================================================================
 
   INSS: {

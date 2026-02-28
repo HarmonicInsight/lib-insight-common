@@ -3,7 +3,7 @@ using System;
 namespace InsightCommon.StickyNotes;
 
 /// <summary>
-/// セルに貼り付ける付箋データ — InsightOfficeSheet で利用
+/// セルに貼り付ける付箋データ — Insight Performance Management で利用
 /// </summary>
 public class StickyNote
 {

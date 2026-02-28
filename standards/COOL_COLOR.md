@@ -26,7 +26,7 @@ Ivory & Gold テーマはブランドの高級感・信頼感を表現するの�
 | **INCA** | InsightNoCodeAnalyzer | コード解析結果・移行アセスメント画面 |
 | **IVIN** | InterviewInsight | ヒアリングデータ分析・調査結果ダッシュボード |
 
-> **注**: InsightOffice 系（INSS/IOSH/IOSD）、InsightSeniorOffice（ISOF）、マーケティング系（INMV/INIG）は引き続き **Ivory & Gold テーマ** を使用してください。
+> **注**: Insight Business Suite 系（INSS/IOSH/IOSD）、InsightSeniorOffice（ISOF）、マーケティング系（INMV/INIG）は引き続き **Ivory & Gold テーマ** を使用してください。
 
 ---
 
@@ -389,7 +389,7 @@ extension Color {
   │
   ├── 製品カテゴリは？
   │    │
-  │    ├── InsightOffice 系 (INSS/IOSH/IOSD/INPY)
+  │    ├── Insight Business Suite 系 (INSS/IOSH/IOSD/INPY)
   │    │    → Ivory & Gold テーマ
   │    │
   │    ├── InsightSeniorOffice (ISOF)

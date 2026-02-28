@@ -22,7 +22,7 @@ public static class InsightTitleBar
     // ═══════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// InsightOffice製品定義
+    /// Insight Business Suite 製品定義
     /// </summary>
     public record ProductInfo(
         string Code,
@@ -39,26 +39,26 @@ public static class InsightTitleBar
     {
         public static readonly ProductInfo Sheet = new(
             Code: "IOSH",
-            NameJa: "InsightOffice Sheet",
-            NameEn: "InsightOffice Sheet",
-            ShortName: "Sheet",
-            Description: "AIアシスタント搭載スプレッドシート"
+            NameJa: "Insight Performance Management",
+            NameEn: "Insight Performance Management",
+            ShortName: "Performance",
+            Description: "AIアシスタント搭載 経営数値管理ツール"
         );
 
         public static readonly ProductInfo Doc = new(
             Code: "IOSD",
-            NameJa: "InsightOffice Doc",
-            NameEn: "InsightOffice Doc",
-            ShortName: "Doc",
-            Description: "AIアシスタント搭載ドキュメント"
+            NameJa: "Insight AI Briefcase",
+            NameEn: "Insight AI Briefcase",
+            ShortName: "Briefcase",
+            Description: "AIアシスタント搭載 業務文書管理ブリーフケース"
         );
 
         public static readonly ProductInfo Slide = new(
             Code: "INSS",
-            NameJa: "InsightOffice Slide",
-            NameEn: "InsightOffice Slide",
-            ShortName: "Slide",
-            Description: "AIアシスタント搭載プレゼンテーション"
+            NameJa: "Insight Deck Quality Gate",
+            NameEn: "Insight Deck Quality Gate",
+            ShortName: "DQG",
+            Description: "AIアシスタント搭載 プレゼン品質管理ツール"
         );
 
         public static readonly ProductInfo SeniorOffice = new(

@@ -1,15 +1,15 @@
 // =============================================================================
-// HARMONIC insight — InsightOffice リモートコンフィグ統合
+// HARMONIC insight — Insight Business Suite リモートコンフィグ統合
 // =============================================================================
 //
 // 【対象製品】
-// - INSS (InsightOfficeSlide)  — プレゼンテーション
-// - IOSH (InsightOfficeSheet)  — スプレッドシート
-// - IOSD (InsightOfficeDoc)    — ドキュメント
+// - INSS (Insight Deck Quality Gate)  — プレゼンテーション
+// - IOSH (Insight Performance Management)  — スプレッドシート
+// - IOSD (Insight AI Briefcase)    — ドキュメント
 // - ISOF (InsightSeniorOffice) — シニア向け統合ツール
 //
 // 【概要】
-// RemoteConfigService をラップし、InsightOffice 系アプリ固有の
+// RemoteConfigService をラップし、Insight Business Suite 系アプリ固有の
 // 統合ロジックを提供する:
 //
 //   1. Syncfusion ライセンスキーのリモートローテーション
@@ -86,7 +86,7 @@ using System.Threading.Tasks;
 namespace HarmonicInsight.RemoteConfig;
 
 /// <summary>
-/// InsightOffice 系アプリ向けリモートコンフィグ統合
+/// Insight Business Suite 系アプリ向けリモートコンフィグ統合
 ///
 /// RemoteConfigService + Syncfusion キーローテーション + Claude API キー +
 /// モデルレジストリ + Velopack 自動更新を一括管理する。

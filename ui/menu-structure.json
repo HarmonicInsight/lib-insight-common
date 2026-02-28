@@ -215,7 +215,7 @@
         { "id": "history-files", "label": { "ja": "履歴ファイルについて", "en": "About History Files" }, "icon": "Archive", "path": "/help/history-files" },
         { "id": "faq", "label": { "ja": "よくある質問", "en": "FAQ" }, "icon": "HelpCircle", "path": "/help/faq" },
         { "id": "keyboard-shortcuts", "label": { "ja": "ショートカットキー一覧", "en": "Keyboard Shortcuts" }, "icon": "Keyboard", "path": "/help/shortcuts" },
-        { "id": "about", "label": { "ja": "InsightOfficeSheetについて", "en": "About InsightOfficeSheet" }, "icon": "Info", "path": "/help/about" }
+        { "id": "about", "label": { "ja": "Insight Performance Managementについて", "en": "About Insight Performance Management" }, "icon": "Info", "path": "/help/about" }
       ]
     }
   },

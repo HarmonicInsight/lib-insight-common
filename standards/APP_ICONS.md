@@ -59,9 +59,9 @@
 
 | コード | 製品名 | プラットフォーム | アイコン配置先 | ビルド設定 |
 |-------|--------|----------------|-------------|-----------|
-| **INSS** | InsightOfficeSlide | C# WPF | `Resources/InsightOfficeSlide.ico` | `.csproj` の `<ApplicationIcon>` |
-| **IOSH** | InsightOfficeSheet | C# WPF | `Resources/InsightOfficeSheet.ico` | `.csproj` の `<ApplicationIcon>` |
-| **IOSD** | InsightOfficeDoc | C# WPF | `Resources/InsightOfficeDoc.ico` | `.csproj` の `<ApplicationIcon>` |
+| **INSS** | Insight Deck Quality Gate | C# WPF | `Resources/InsightOfficeSlide.ico` | `.csproj` の `<ApplicationIcon>` |
+| **IOSH** | Insight Performance Management | C# WPF | `Resources/InsightOfficeSheet.ico` | `.csproj` の `<ApplicationIcon>` |
+| **IOSD** | Insight AI Briefcase | C# WPF | `Resources/InsightOfficeDoc.ico` | `.csproj` の `<ApplicationIcon>` |
 | **INPY** | InsightPy | Python/PyInstaller | `resources/InsightPy.ico` | PyInstaller `--icon` |
 | **INMV** | InsightCast | Python/PyInstaller | `resources/InsightCast.ico` | PyInstaller `--icon` |
 | **INIG** | InsightImageGen | Python/PyInstaller | `resources/InsightImageGen.ico` | PyInstaller `--icon` |
@@ -257,9 +257,9 @@ export const metadata = {
 
 | 製品コード | 製品名 | シンボル | 説明 |
 |-----------|--------|---------|------|
-| INSS | InsightOfficeSlide | スライド + 矢印 | プレゼン + 抽出を示す矢印 |
-| IOSH | InsightOfficeSheet | スプレッドシートグリッド | ヘッダー行 + 行のグリッド |
-| IOSD | InsightOfficeDoc | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
+| INSS | Insight Deck Quality Gate | スライド + 矢印 | プレゼン + 抽出を示す矢印 |
+| IOSH | Insight Performance Management | スプレッドシートグリッド | ヘッダー行 + 行のグリッド |
+| IOSD | Insight AI Briefcase | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
 | INPY | InsightPy | Python ロゴ風 | ヘビ or Py文字 |
 | INMV | InsightCast | 再生ボタン | フィルムストリップ + 再生 |
 | INIG | InsightImageGen | 画像生成 | ブラシ + 画像フレーム |
@@ -381,7 +381,7 @@ Android ランチャーアプリがアイコンを解決するためのマニフ
   "entries": [
     {
       "code": "INSS",
-      "name": "InsightOfficeSlide",
+      "name": "Insight Deck Quality Gate",
       "category": "office",
       "displayOrder": 100,
       "isProduct": true
@@ -434,7 +434,7 @@ getLauncherIcon('IOSH', 'xxhdpi');
 
 // 全製品のアイコンをまとめて取得（グリッド表示用）
 const icons = getLauncherIconsForDensity('xxhdpi');
-// → [{ code: 'INSS', name: 'InsightOfficeSlide', path: '...', size: 144 }, ...]
+// → [{ code: 'INSS', name: 'Insight Deck Quality Gate', path: '...', size: 144 }, ...]
 
 // カテゴリ別にグルーピング
 const grouped = getLauncherIconsByCategory('xxhdpi');

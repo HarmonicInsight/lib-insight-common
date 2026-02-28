@@ -561,10 +561,10 @@ export interface FreeeProductItemMapping {
 
 /** 製品 → freee 品目マッピング定義 */
 export const FREEE_PRODUCT_ITEM_MAPPINGS: FreeeProductItemMapping[] = [
-  // --- Tier 3: InsightOffice Suite ---
-  { productCode: 'INSS', freeeItemName: 'InsightOfficeSlide ライセンス', freeeItemNameEn: 'InsightOfficeSlide License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'IOSH', freeeItemName: 'InsightOfficeSheet ライセンス', freeeItemNameEn: 'InsightOfficeSheet License', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'IOSD', freeeItemName: 'InsightOfficeDoc ライセンス', freeeItemNameEn: 'InsightOfficeDoc License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  // --- Tier 3: Insight Business Suite ---
+  { productCode: 'INSS', freeeItemName: 'Insight Deck Quality Gate ライセンス', freeeItemNameEn: 'Insight Deck Quality Gate License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  { productCode: 'IOSH', freeeItemName: 'Insight Performance Management ライセンス', freeeItemNameEn: 'Insight Performance Management License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  { productCode: 'IOSD', freeeItemName: 'Insight AI Briefcase ライセンス', freeeItemNameEn: 'Insight AI Briefcase License', revenueAccountName: '売上高', revenueTaxCode: 1 },
   { productCode: 'INPY', freeeItemName: 'InsightPy ライセンス', freeeItemNameEn: 'InsightPy License', revenueAccountName: '売上高', revenueTaxCode: 1 },
 
   // --- Tier 4: InsightSeniorOffice ---

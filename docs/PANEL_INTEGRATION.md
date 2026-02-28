@@ -1,8 +1,8 @@
-# InsightOffice パネル統合ガイド
+# Insight Business Suite パネル統合ガイド
 
 > **対象アプリ**: IOSH (Sheet), IOSD (Doc), INSS (Slide)
 
-このドキュメントでは、3つのInsightOfficeアプリで共通のSyncfusionメニュー、タイトルバー、サイドパネルを統一する方法を説明します。
+このドキュメントでは、3つのInsight Business Suiteアプリで共通のSyncfusionメニュー、タイトルバー、サイドパネルを統一する方法を説明します。
 
 ---
 

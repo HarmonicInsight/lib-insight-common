@@ -5,7 +5,7 @@ namespace InsightCommon.AI;
 
 /// <summary>
 /// Win+H キーストロークで Windows 音声入力を起動するヘルパー
-/// 全InsightOffice系アプリで共通利用
+/// 全Insight Business Suite系アプリで共通利用
 /// </summary>
 public static class VoiceInputHelper
 {

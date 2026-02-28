@@ -1,12 +1,12 @@
 ---
 name: ai-assistant
-description: InsightOffice AI アシスタント実装標準。Claude API 統合、ペルソナシステム、モデルティア制御、クレジット管理、Tool Use の実装時に自動適用。
+description: Insight Business Suite AI アシスタント実装標準。Claude API 統合、ペルソナシステム、モデルティア制御、クレジット管理、Tool Use の実装時に自動適用。
 allowed-tools: Read, Grep, Glob
 ---
 
 # AI アシスタント実装標準
 
-対象製品: INSS / IOSH / IOSD / INPY / INBT（全 InsightOffice 系）
+対象製品: INSS / IOSH / IOSD / INPY / INBT（全 Insight Business Suite 系）
 
 ## 絶対ルール
 

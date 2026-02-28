@@ -6,7 +6,7 @@ using System.Windows.Controls;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// AI コードエディターホスト（WebView2 ベース、InsightOffice 共通）
+/// AI コードエディターホスト（WebView2 ベース、Insight Business Suite 共通）
 ///
 /// WebView2 で React + CodeMirror エディターをホストし、
 /// C# ↔ JavaScript 間のブリッジを提供する。

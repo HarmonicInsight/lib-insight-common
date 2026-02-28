@@ -6,7 +6,7 @@ using InsightCommon.Theme;
 namespace InsightCommon.Addon;
 
 /// <summary>
-/// アドイン管理画面（InsightOffice 全アプリ共通）
+/// アドイン管理画面（Insight Business Suite 全アプリ共通）
 ///
 /// モジュール一覧を表示し、ユーザーが有効/無効を切り替える UI。
 /// 管理者プロファイルによるロック状態も表示する。

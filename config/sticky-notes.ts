@@ -1,5 +1,5 @@
 /**
- * InsightOfficeSheet 付箋（Sticky Notes）機能 — 共通型定義
+ * Insight Performance Management 付箋（Sticky Notes）機能 — 共通型定義
  *
  * ============================================================================
  * 【概要】
@@ -16,8 +16,8 @@
  * - 全プラン利用可能（TRIAL / STD / PRO / ENT）
  *
  * ## 対象製品
- * - IOSH（InsightOfficeSheet）— 初期対応
- * - IOSD（InsightOfficeDoc）— 将来対応予定
+ * - IOSH（Insight Performance Management）— 初期対応
+ * - IOSD（Insight AI Briefcase）— 将来対応予定
  */
 
 // =============================================================================

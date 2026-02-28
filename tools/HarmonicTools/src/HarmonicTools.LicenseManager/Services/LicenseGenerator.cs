@@ -23,10 +23,10 @@ public class LicenseGenerator
         // Tier 2: AI活用ツール
         ["INMV"] = "InsightCast",
         ["INIG"] = "InsightImageGen",
-        // Tier 3: InsightOffice Suite
-        ["INSS"] = "InsightOfficeSlide",
-        ["IOSH"] = "InsightOfficeSheet",
-        ["IOSD"] = "InsightOfficeDoc",
+        // Tier 3: Insight Business Suite
+        ["INSS"] = "Insight Deck Quality Gate",
+        ["IOSH"] = "Insight Performance Management",
+        ["IOSD"] = "Insight AI Briefcase",
         ["INPY"] = "InsightPy",
         // Tier 4: Accessibility
         ["ISOF"] = "InsightSeniorOffice",

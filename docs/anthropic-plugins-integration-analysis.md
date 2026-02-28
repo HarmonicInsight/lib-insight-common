@@ -316,7 +316,7 @@ plugin-name/
 
 ---
 
-## 5. 共通化提案: InsightOffice プラグインシステム
+## 5. 共通化提案: Insight Business Suite プラグインシステム
 
 ### 5.1 プラグインアーキテクチャの導入
 
@@ -385,7 +385,7 @@ insight-common/
 
 ## 6. 直接統合提案: AI アシスタントへのスキル組み込み
 
-### 6.1 IOSH（InsightOfficeSheet）向けスキル
+### 6.1 IOSH（Insight Performance Management）向けスキル
 
 Finance プラグインと Data Analysis プラグインを統合:
 
@@ -421,7 +421,7 @@ export const IOSH_SKILLS: SkillDefinition[] = [
 ];
 ```
 
-### 6.2 IOSD（InsightOfficeDoc）向けスキル
+### 6.2 IOSD（Insight AI Briefcase）向けスキル
 
 Legal プラグインと Marketing プラグインを統合:
 
@@ -433,7 +433,7 @@ Legal プラグインと Marketing プラグインを統合:
 | `document-content-creation` | Marketing: content-creation | ブログ / プレスリリース / ケーススタディ作成 |
 | `document-brand-review` | Marketing: brand-voice | ブランドガイドライン準拠チェック |
 
-### 6.3 INSS（InsightOfficeSlide）向けスキル
+### 6.3 INSS（Insight Deck Quality Gate）向けスキル
 
 | スキル名 | 参考元 | 概要 |
 |---------|--------|------|
@@ -510,7 +510,7 @@ HI 優先度:
 
 ### 8.1 AI アシスタントへの 2 層メモリシステム導入
 
-Productivity プラグインのメモリアーキテクチャを InsightOffice AI アシスタントに統合:
+Productivity プラグインのメモリアーキテクチャを Insight Business Suite AI アシスタントに統合:
 
 ```
 プロジェクトファイル（.iosh / .inss / .iosd）
@@ -690,7 +690,7 @@ Anthropic プラグインは MCP サーバーを前提としている。HI 製�
 
 ```
 現在: ユーザー → Claude API（直接）
-将来: ユーザー → InsightOffice → MCP Layer → Claude API + 外部ツール
+将来: ユーザー → Insight Business Suite → MCP Layer → Claude API + 外部ツール
 ```
 
 ### ライセンスゲートとの統合

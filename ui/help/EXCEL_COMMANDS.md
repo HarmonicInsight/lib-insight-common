@@ -19,7 +19,7 @@
 10. [表示形式（セルの書式設定）](#10-表示形式セルの書式設定)
 11. [印刷のコツ](#11-印刷のコツ)
 12. [エラー値の意味と対処法](#12-エラー値の意味と対処法)
-13. [InsightOfficeSheet 固有のコマンド](#13-harmonicsheet-固有のコマンド)
+13. [Insight Performance Management 固有のコマンド](#13-harmonicsheet-固有のコマンド)
 
 ---
 
@@ -504,9 +504,9 @@ Excel でセルに表示されるエラーの意味と対処方法です。
 
 ---
 
-## 13. InsightOfficeSheet 固有のコマンド
+## 13. Insight Performance Management 固有のコマンド
 
-InsightOfficeSheet ならではの便利なコマンドです。
+Insight Performance Management ならではの便利なコマンドです。
 
 ### シート読取（Ctrl + R）
 

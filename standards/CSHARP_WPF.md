@@ -138,7 +138,7 @@ YourApp/
 
 ### タイトルバーコンポーネント標準
 
-> **注意**: InsightOffice 系アプリ（Sheet/Doc/Slide）で統一された仕様です。
+> **注意**: Insight Business Suite 系アプリ（Sheet/Doc/Slide）で統一された仕様です。
 
 #### ブランド名 "InsightOffice"
 
@@ -1111,7 +1111,7 @@ SfSkinManager.SetTheme(window, new Theme("MaterialLight"));
 
 ## Syncfusion Ribbon / BackStage 標準（InsightOffice 統一仕様）
 
-InsightOffice 系アプリ（Sheet/Doc/Slide）では Syncfusion Ribbon コンポーネントを使用します。
+Insight Business Suite 系アプリ（Sheet/Doc/Slide）では Syncfusion Ribbon コンポーネントを使用します。
 3つのアプリで実装を統一し、保守性を高めるため、以下の標準に従ってください。
 
 ### 基本原則
@@ -1193,7 +1193,7 @@ InsightOffice 系アプリ（Sheet/Doc/Slide）では Syncfusion Ribbon コン�
 
 ### BackStage 標準構成
 
-InsightOffice 系アプリでは以下の BackStage コマンドを統一的に実装します。
+Insight Business Suite 系アプリでは以下の BackStage コマンドを統一的に実装します。
 
 #### 共通 BackStage コマンド
 
@@ -1347,7 +1347,7 @@ private void CloseBackStage()
 
 ### BackStage 印刷機能標準（Excel 互換）
 
-InsightOffice 系アプリでは、Excel と同様の印刷エクスペリエンスを提供します。
+Insight Business Suite 系アプリでは、Excel と同様の印刷エクスペリエンスを提供します。
 BackStage の「印刷」コマンドをクリックすると、以下の印刷パネルを表示します。
 
 #### 印刷パネル レイアウト
@@ -1736,7 +1736,7 @@ Syncfusion 等のサードパーティライセンスキーは `insight-common/c
 | IOSD | Word 操作 | SfRichTextBoxAdv (DocIO) | `Syncfusion.SfRichTextBoxAdv.WPF`, `Syncfusion.DocIO.WPF` |
 | INSS | PowerPoint 操作 | SfPresentation | `Syncfusion.Presentation.WPF` |
 
-### IOSD (InsightOfficeDoc) における DocIO 使用パターン
+### IOSD (Insight AI Briefcase) における DocIO 使用パターン
 
 DocIO は Word 文書 (.docx/.doc) の読み書き・操作を行うライブラリです。IOSD では以下のパターンで使用します。
 
@@ -1878,7 +1878,7 @@ public void ConvertToPdf(WordDocument document, string outputPath)
 }
 ```
 
-### IOSH (InsightOfficeSheet) における XlsIO 使用パターン
+### IOSH (Insight Performance Management) における XlsIO 使用パターン
 
 XlsIO は Excel ブック (.xlsx/.xls) の読み書き・操作を行うライブラリです。
 
@@ -2115,6 +2115,6 @@ protected override void OnStartup(StartupEventArgs e)
 
 ## 参考実装
 
-- **InsightOfficeSheet**: `win-app-insight-sheet` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
+- **Insight Performance Management**: `win-app-insight-sheet` リポジトリ（Syncfusion SfSpreadsheet + ThirdPartyLicenses 統合）
 - **InsightNoCodeAnalyzer**: `win-app-nocode-analyzer` リポジトリ
 - **InsightSlide**: ライセンス画面のリファレンス実装

@@ -42,8 +42,8 @@ Options:
   -h, --help        このヘルプ
 
 Examples:
-  # WPF アプリ (InsightOfficeSheet)
-  cd /path/to/InsightOfficeSheet
+  # WPF アプリ (Insight Performance Management)
+  cd /path/to/InsightPerformanceManagement
   ./insight-common/scripts/setup-icon-sync.sh --product IOSH
 
   # Android ランチャー

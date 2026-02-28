@@ -158,9 +158,9 @@ Claude Codeで直接構築することで、柔軟性とコスト削減を両立
 
 | 製品 | 現在 | 移行先（検討中） | 理由 |
 |------|------|-----------------|------|
-| InsightOfficeSlide (INSS) | Python + Tkinter | C# + WPF | PPT完全互換が必要 |
-| InsightOfficeSheet (IOSH) | C# + WPF | C# + WPF 維持 | Excel完全互換が必要 |
-| InsightOfficeDoc (IOSD) | C# + WPF | C# + WPF 維持 | Word完全互換が必要 |
+| Insight Deck Quality Gate (INSS) | Python + Tkinter | C# + WPF | PPT完全互換が必要 |
+| Insight Performance Management (IOSH) | C# + WPF | C# + WPF 維持 | Excel完全互換が必要 |
+| Insight AI Briefcase (IOSD) | C# + WPF | C# + WPF 維持 | Word完全互換が必要 |
 | InsightPy (INPY) | Python + Tkinter | Python維持 | Python実行環境が本質 |
 | InsightCast (INMV) | Python + Tkinter | Tauri or 維持 | 軽量配布 or 現状維持 |
 | InterviewInsight (IVIN) | Python + Tkinter | C# + WPF | 音声・動画解析連携 |

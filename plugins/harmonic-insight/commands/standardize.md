@@ -39,7 +39,7 @@ git checkout -b feat/standardize-to-hi-standards
 以下の順で製品コードを推定:
 1. `package.json` の `name` / `productCode` フィールド
 2. `.csproj` の `AssemblyName` / `Product`
-3. リポジトリ名（InsightOfficeSheet → IOSH, InsightSlide → INSS 等）
+3. リポジトリ名（InsightPerformanceManagement → IOSH, InsightSlide → INSS 等）
 4. 見つからない場合はユーザーに確認
 
 **このコマンドは既存コードを変更します。作業ブランチで実行されていることを確認してから進めてください。**

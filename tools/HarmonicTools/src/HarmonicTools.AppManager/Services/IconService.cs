@@ -329,7 +329,7 @@ public class IconService
             // Tier 3
             new()
             {
-                ProductCode = "INSS", ProductName = "InsightOfficeSlide",
+                ProductCode = "INSS", ProductName = "Insight Deck Quality Gate",
                 MasterSvg = @"brand\icons\svg\icon-insight-slide.svg",
                 MasterPng = @"brand\icons\png\icon-insight-slide.png",
                 Motif = "プレゼンボード + ギア + 矢印",
@@ -337,7 +337,7 @@ public class IconService
             },
             new()
             {
-                ProductCode = "IOSH", ProductName = "InsightOfficeSheet",
+                ProductCode = "IOSH", ProductName = "Insight Performance Management",
                 MasterSvg = @"brand\icons\svg\icon-insight-sheet.svg",
                 MasterPng = @"brand\icons\png\icon-insight-sheet.png",
                 Motif = "スプレッドシートグリッド + ギア",
@@ -345,7 +345,7 @@ public class IconService
             },
             new()
             {
-                ProductCode = "IOSD", ProductName = "InsightOfficeDoc",
+                ProductCode = "IOSD", ProductName = "Insight AI Briefcase",
                 MasterSvg = @"brand\icons\svg\icon-insight-doc.svg",
                 MasterPng = @"brand\icons\png\icon-insight-doc.png",
                 Motif = "ドキュメント + ギア + DB",

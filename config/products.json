@@ -7,8 +7,8 @@
       {
         "id": "insight-office-slide",
         "code": "INSS",
-        "name": "InsightOfficeSlide",
-        "displayName": "InsightOfficeSlide",
+        "name": "Insight Deck Quality Gate",
+        "displayName": "Insight Deck Quality Gate",
         "description": "AIアシスタント搭載 — プレゼンテーション作成・編集ツール（MS Office 不要）",
         "category": "office",
         "salesChannel": "standalone",
@@ -32,11 +32,11 @@
         ]
       },
       {
-        "id": "insight-office-sheet",
+        "id": "insight-performance-management",
         "code": "IOSH",
-        "name": "InsightOfficeSheet",
-        "displayName": "InsightOfficeSheet",
-        "description": "AIアシスタント搭載 — スプレッドシート作成・編集ツール（MS Office 不要）",
+        "name": "Insight Performance Management",
+        "displayName": "Insight Performance Management",
+        "description": "AIアシスタント搭載 — 経営数値管理・財務分析ツール",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",
@@ -59,11 +59,11 @@
         ]
       },
       {
-        "id": "insight-office-doc",
+        "id": "insight-ai-briefcase",
         "code": "IOSD",
-        "name": "InsightOfficeDoc",
-        "displayName": "InsightOfficeDoc",
-        "description": "AIアシスタント搭載 — ドキュメント作成・編集ツール（MS Office 不要）",
+        "name": "Insight AI Briefcase",
+        "displayName": "Insight AI Briefcase",
+        "description": "AIアシスタント搭載 — 業務文書一括管理ブリーフケース（MS Office 不要）",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",

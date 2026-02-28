@@ -1,18 +1,18 @@
 name: Sync skills to dependent repos
 
-# 手動実行�Eみ、E
-# .claude/commands/ のスキルファイルを�E依存リポジトリに同期し、E
-# SessionStart フックも設定して以降�E自動同期を有効化する、E
+# 手動実行�Eみ、E
+# .claude/commands/ のスキルファイルを�E依存リポジトリに同期し、E
+# SessionStart フックも設定して以降�E自動同期を有効化する、E
 
 on:
   workflow_dispatch:
     inputs:
       repos:
-        description: '同期対象リポジトリ�E�カンマ区刁E��、空=全て�E�E
+        description: '同期対象リポジトリ�E�カンマ区刁E��、空=全て�E�E
         required: false
         type: string
       dry_run:
-        description: 'Dry run�E�ER を作�EしなぁE��E
+        description: 'Dry run�E�ER を作�EしなぁE��E
         required: false
         type: boolean
         default: false
@@ -28,7 +28,7 @@ jobs:
       max-parallel: 5
       matrix:
         include:
-          # ── Tier 1: 業務変革チE�Eル ──
+          # ── Tier 1: 業務変革チE�Eル ──
           - repo: win-app-nocode-analyzer
             product: INCA
             name: InsightNoCodeAnalyzer
@@ -39,7 +39,7 @@ jobs:
             product: IVIN
             name: InterviewInsight
 
-          # ── Tier 2: AI活用チE�Eル ──
+          # ── Tier 2: AI活用チE�Eル ──
           - repo: win-app-insight-cast
             product: INMV
             name: InsightCast
@@ -47,16 +47,16 @@ jobs:
             product: INIG
             name: InsightImageGen
 
-          # ── Tier 3: InsightOffice Suite ──
+          # ── Tier 3: Insight Business Suite ──
           - repo: win-app-insight-slide
             product: INSS
-            name: InsightOfficeSlide
+            name: Insight Deck Quality Gate
           - repo: win-app-insight-sheet
             product: IOSH
-            name: InsightOfficeSheet
+            name: Insight Performance Management
           - repo: win-app-insight-doc
             product: IOSD
-            name: InsightOfficeDoc
+            name: Insight AI Briefcase
           - repo: win-app-insight-py
             product: INPY
             name: InsightPy
@@ -69,7 +69,7 @@ jobs:
             product: ISOF
             name: InsightSeniorOffice
 
-          # ── ユーチE��リチE�� ──
+          # ── ユーチE��リチE�� ──
           - repo: win-app-insight-launcher
             product: LAUNCHER
             name: InsightLauncher
@@ -103,7 +103,7 @@ jobs:
             product: QR
             name: InsightQR (Android)
 
-          # ── コンサルチE��ングチE�Eル ──
+          # ── コンサルチE��ングチE�Eル ──
           - repo: android-app-consul-evaluate
             product: CONSUL_EVAL
             name: ConsulEvaluate
@@ -158,7 +158,7 @@ jobs:
 
           mkdir -p "$DEST"
 
-          # 全スキルファイルをコピ�E
+          # 全スキルファイルをコピ�E
           SYNCED=0
           for src_file in "$SRC"/*.md; do
             [ -f "$src_file" ] || continue
@@ -184,7 +184,7 @@ jobs:
           SETTINGS="target-repo/.claude/settings.json"
           SYNC_CMD='bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh'
 
-          # sync-skills.sh もコピ�E
+          # sync-skills.sh もコピ�E
           if [ -d "target-repo/insight-common/scripts" ]; then
             echo "insight-common submodule detected  Esync-skills.sh available via submodule"
           else
@@ -198,17 +198,17 @@ jobs:
               echo "hook_updated=false" >> "$GITHUB_ENV"
             else
               echo "Adding sync-skills hook to existing settings.json"
-              # jq で SessionStart フックを追加�E�既存�Eフックを壊さなぁE��E
+              # jq で SessionStart フックを追加�E�既存�Eフックを壊さなぁE��E
               if command -v jq &> /dev/null; then
                 HOOK='{"type":"command","command":"bash ${CLAUDE_PROJECT_DIR}/insight-common/scripts/sync-skills.sh"}'
                 ENTRY="{\"matcher\":\"\",\"hooks\":[$HOOK]}"
 
                 # SessionStart キーが存在するか確誁E
                 if jq -e '.hooks.SessionStart' "$SETTINGS" > /dev/null 2>&1; then
-                  # 既存�E SessionStart 配�Eに追加
+                  # 既存�E SessionStart 配�Eに追加
                   jq --argjson entry "$ENTRY" '.hooks.SessionStart += [$entry]' "$SETTINGS" > "${SETTINGS}.tmp"
                 else
-                  # hooks.SessionStart を新規作�E
+                  # hooks.SessionStart を新規作�E
                   jq --argjson entry "$ENTRY" '.hooks.SessionStart = [$entry]' "$SETTINGS" > "${SETTINGS}.tmp"
                 fi
                 mv "${SETTINGS}.tmp" "$SETTINGS"
@@ -219,7 +219,7 @@ jobs:
               fi
             fi
           else
-            # settings.json が存在しなぁE��合�E新規作�E
+            # settings.json が存在しなぁE��合�E新規作�E
             echo "Creating new .claude/settings.json"
             mkdir -p "$(dirname "$SETTINGS")"
             cat > "$SETTINGS" << 'SETTINGSEOF'

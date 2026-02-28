@@ -23,13 +23,13 @@ allowed-tools: Read, Grep, Glob
 | INMV | InsightCast |
 | INIG | InsightImageGen |
 
-### Tier 3: InsightOffice Suite（導入ツール）
+### Tier 3: Insight Business Suite（導入ツール）
 
 | コード | 製品名 |
 |-------|-------|
-| INSS | InsightOfficeSlide |
-| IOSH | InsightOfficeSheet |
-| IOSD | InsightOfficeDoc |
+| INSS | Insight Deck Quality Gate |
+| IOSH | Insight Performance Management |
+| IOSD | Insight AI Briefcase |
 | INPY | InsightPy |
 
 ### Tier 4: InsightSeniorOffice
