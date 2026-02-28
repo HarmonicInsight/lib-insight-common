@@ -10,9 +10,9 @@ allowed-tools: Read, Grep, Glob
 
 | プラン | 説明 | 有効期限 |
 |-------|------|---------|
-| TRIAL | 全機能利用可能（評価用） | 14日間 |
+| TRIAL | 全機能利用可能（評価用） | 30日間 |
 | STD | 法人向け標準機能 | 365日 |
-| PRO | 全機能 + AI月200回 + コラボレーション | 365日 |
+| PRO | 全機能 + AI無制限（BYOK） + コラボレーション | 365日 |
 | ENT | カスタマイズ | 要相談 |
 
 ## ライセンスキー形式
@@ -59,7 +59,7 @@ https://license.harmonicinsight.com
 | `direct_stripe` | Stripe 決済完了 → 自動発行 |
 | `direct_invoice` | 請求書払い → 管理者承認後 |
 | `partner_reseller` | パートナー経由 → 自動発行 |
-| `system_trial` | メール認証後 → 自動発行（14日） |
+| `system_trial` | メール認証後 → 自動発行（30日） |
 | `system_renewal` | サブスク自動更新 |
 
 ## プラットフォーム別実装

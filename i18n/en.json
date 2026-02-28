@@ -50,9 +50,9 @@
     "upgrade": "Upgrade",
     "upgradePrompt": "Upgrade to unlock more features.",
     "tiers": {
+      "FREE": "Free",
       "TRIAL": "Trial",
-      "STD": "Standard",
-      "PRO": "Professional",
+      "BIZ": "Business",
       "ENT": "Enterprise"
     },
     "errors": {

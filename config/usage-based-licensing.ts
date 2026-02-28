@@ -1,49 +1,46 @@
 /**
- * 使用回数ベース ライセンス設定
+ * 使用回数ベース ライセンス設定（BYOK モード）
  *
  * ============================================================================
  * 【設計方針】
  * ============================================================================
  *
- * ## クレジットプール型 AI 使用量管理
+ * ## BYOK（Bring Your Own Key）アプローチ
  *
- * AI 機能（ai_assistant + ai_editor）は共有クレジットプールで管理する。
- * プラン別の基本クレジットに加え、アドオンパックで追加購入が可能。
+ * ユーザーは自身の Claude API キーを持ち込んで AI 機能を利用する。
+ * そのため、月間クレジット制限は存在しない（全プラン無制限）。
+ * モデルティア制限もなし — 全プランで全モデル利用可能。
  *
  * ```
  * ┌────────────────────────────────────────────────────────────────┐
- * │                    AI クレジットプール                          │
+ * │                   BYOK AI ライセンスモデル                      │
  * │                                                                │
- * │   基本クレジット（プラン付属）                                   │
- * │   ┌──────────┬──────────┬──────────┬──────────┐               │
- * │   │  TRIAL   │   STD    │   PRO    │   ENT    │               │
- * │   │  無制限   │  50回    │  200回   │  無制限   │               │
- * │   │ (14日)   │  (/月)   │  (/月)   │  (/年)   │               │
- * │   └──────────┴──────────┴──────────┴──────────┘               │
+ * │   4ティアプラン体系                                             │
+ * │   ┌──────────┬──────────┬──────────┬──────────┐              │
+ * │   │  FREE    │  TRIAL   │   BIZ    │   ENT    │              │
+ * │   │  無制限   │  無制限   │  無制限   │  無制限   │              │
+ * │   │ (無期限) │ (30日)   │ (365日)  │ (要相談)  │              │
+ * │   │ BYOK     │ BYOK     │ BYOK     │ BYOK     │              │
+ * │   │ 制限なし  │ 制限なし  │ 制限なし  │ 制限なし  │              │
+ * │   └──────────┴──────────┴──────────┴──────────┘              │
  * │                                                                │
- * │   アドオンパック（追加購入・2ティア制）                           │
+ * │   ユーザーは自身の Claude API キーを設定                         │
+ * │   → クレジット管理は不要（API 利用料はユーザー負担）             │
+ * │   → モデル制限なし（全プランで全モデル利用可能）                 │
+ * │                                                                │
+ * │   アドオンパック（将来のマネージドキーモード用に予約）            │
  * │   ┌──────────────────────────────────────────────┐             │
- * │   │  Standard  200回（Sonnet まで）                │             │
- * │   │  Premium   200回（Opus 対応）                  │             │
- * │   │  価格: パートナーとの協議により決定              │             │
- * │   │  有効期限: 購入日から365日                      │             │
- * │   │  複数パック購入可能（クレジットは累積加算）     │             │
- * │   └──────────────────────────────────────────────┘             │
- * │                                                                │
- * │   消費ルール                                                    │
- * │   ┌──────────────────────────────────────────────┐             │
- * │   │  1. 基本クレジットを先に消費                   │             │
- * │   │  2. 基本クレジット枯渇後にアドオンを消費       │             │
- * │   │  3. ai_assistant / ai_editor 共通プール        │             │
- * │   │  4. 1 API コール = 1 クレジット消費            │             │
+ * │   │  ※ 現在は BYOK のため使用しない                │             │
+ * │   │  ※ 将来マネージドキーモード導入時に有効化予定  │             │
  * │   └──────────────────────────────────────────────┘             │
  * └────────────────────────────────────────────────────────────────┘
  * ```
  *
  * ## 使用量トラッキング
  *
+ * BYOK モードでもトラッキングは維持する（監査・分析用）。
  * - サーバーサイド: `ai_usage_logs` テーブルで全 API コールを記録
- * - クライアントサイド: キャッシュされた残量を表示、API コール前にサーバーに確認
+ * - クライアントサイド: 使用統計の表示（残量管理は不要）
  * - 監査: 使用量、モデル、トークン数、推定コストを記録
  *
  * ## DB テーブル構成
@@ -51,8 +48,8 @@
  * | テーブル             | 役割                                    |
  * |---------------------|----------------------------------------|
  * | `ai_usage_logs`     | 個別 AI コールの記録（監査・分析用）       |
- * | `ai_usage_summary`  | ユーザー×製品の集計（クレジット残量）      |
- * | `ai_addon_packs`    | 購入済みアドオンパック                    |
+ * | `ai_usage_summary`  | ユーザー×製品の集計（統計用）              |
+ * | `ai_addon_packs`    | 購入済みアドオンパック（将来用に予約）      |
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -64,15 +61,21 @@ import type { ProductCode, PlanCode } from './products';
 /** AI クレジットの消費対象となる機能 */
 export type AiFeatureType = 'ai_assistant' | 'ai_editor';
 
-/** クレジット付与の基準期間 */
+/**
+ * クレジット付与の基準期間
+ *
+ * BYOK モードでは全プラン 'unlimited' だが、
+ * 将来のマネージドキーモード用に型定義は維持する。
+ */
 export type QuotaPeriod = 'monthly' | 'annual' | 'unlimited';
 
 /**
  * AI モデルティア
  *
- * アドオンパックごとに利用可能なモデルの上限を制御する。
- * - standard: Haiku / Sonnet まで
- * - premium: Haiku / Sonnet / Opus（全モデル）
+ * BYOK のため全ティアで全モデル利用可能（モデル制限なし）。
+ * 型定義は後方互換のために維持するが、実質的な制限は行わない。
+ * - standard: 全モデル利用可能（BYOK）
+ * - premium: 全モデル利用可能（BYOK）
  */
 export type AiModelTier = 'standard' | 'premium';
 
@@ -184,8 +187,8 @@ export interface UsageCheckResult {
 
 /** 使用拒否の理由コード */
 export type UsageDeniedReason =
-  | 'ai_not_available'    // STD プランなど AI 機能なし
-  | 'credits_exhausted'   // クレジット使い切り
+  | 'ai_not_available'    // AI 機能が無効化されている
+  | 'credits_exhausted'   // クレジット使い切り（将来のマネージドキーモード用）
   | 'license_expired'     // ライセンス期限切れ
   | 'license_inactive';   // ライセンス無効
 
@@ -224,41 +227,44 @@ export interface PurchasedAddonPack {
 // =============================================================================
 
 /**
- * プラン別 AI クレジット定義
+ * プラン別 AI クレジット定義（BYOK モード — 4ティア制）
  *
  * 【重要】
- * - TRIAL: 無制限（14日間・全機能・Premium モデル）
- * - STD: 月50回（Standard モデル）
- * - PRO: 月200回（Standard モデル、Premium アドオンで Opus 利用可）
- * - ENT: 無制限
+ * - FREE:  無制限（BYOK — クライアント選択、全モデル利用可能）
+ * - TRIAL: 無制限（30日間・BYOK — クライアント選択、全モデル利用可能）
+ * - BIZ:   無制限（BYOK — クライアント選択、全モデル利用可能）
+ * - ENT:   無制限（BYOK — クライアント選択、全モデル利用可能）
+ *
+ * BYOK のため全プラン baseCredits = -1（無制限）。
+ * クレジット管理は不要。モデルティア制限もなし（クライアントが自由に選択）。
  */
 export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
+  FREE: {
+    plan: 'FREE',
+    baseCredits: -1,
+    period: 'unlimited',
+    aiEnabled: true,
+    modelTier: 'standard',
+    descriptionJa: 'AI無制限（BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI (BYOK, no model restrictions)',
+  },
   TRIAL: {
     plan: 'TRIAL',
     baseCredits: -1,
     period: 'unlimited',
     aiEnabled: true,
-    modelTier: 'premium',
-    descriptionJa: '全機能無制限（14日間・Opus対応）',
-    descriptionEn: 'Unlimited access for 14 days (including Opus)',
+    modelTier: 'standard',
+    descriptionJa: 'AI無制限（30日間・BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI for 30 days (BYOK, no model restrictions)',
   },
-  STD: {
-    plan: 'STD',
-    baseCredits: 50,
-    period: 'monthly',
+  BIZ: {
+    plan: 'BIZ',
+    baseCredits: -1,
+    period: 'unlimited',
     aiEnabled: true,
     modelTier: 'standard',
-    descriptionJa: 'AI月50回付き（Sonnetまで・Premiumアドオンで Opus利用可）',
-    descriptionEn: '50 AI credits/month (up to Sonnet, Opus via Premium add-on)',
-  },
-  PRO: {
-    plan: 'PRO',
-    baseCredits: 200,
-    period: 'monthly',
-    aiEnabled: true,
-    modelTier: 'standard',
-    descriptionJa: 'AI月200回付き（Sonnetまで・Premiumアドオンで Opus利用可）',
-    descriptionEn: '200 AI credits/month (up to Sonnet, Opus via Premium add-on)',
+    descriptionJa: 'AI無制限（BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI (BYOK, no model restrictions)',
   },
   ENT: {
     plan: 'ENT',
@@ -266,8 +272,8 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
     period: 'unlimited',
     aiEnabled: true,
     modelTier: 'premium',
-    descriptionJa: 'AI無制限（Opus対応）',
-    descriptionEn: 'Unlimited AI usage (including Opus)',
+    descriptionJa: 'AI無制限（BYOK・モデル制限なし）',
+    descriptionEn: 'Unlimited AI (BYOK, no model restrictions)',
   },
 };
 
@@ -276,33 +282,38 @@ export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
 // =============================================================================
 
 /**
- * AI クレジット アドオンパック（2ティア制）
+ * AI クレジット アドオンパック（将来のマネージドキーモード用に予約）
  *
- * - Standard: 200回（Sonnet まで）
- * - Premium:  200回（Opus 対応）
+ * 【注意】現在は BYOK（Bring Your Own Key）モードのため、アドオンパックは使用しない。
+ * ユーザーは自身の Claude API キーを設定するため、クレジット管理は不要。
+ *
+ * 将来、HARMONIC insight 側で API キーを管理する「マネージドキーモード」を
+ * 導入する際に、以下のアドオンパック定義を有効化する予定。
+ *
+ * - Standard: 200回（Sonnet クラスまで）
+ * - Premium:  200回（全モデル対応）
  * - 価格はパートナーとの協議により決定（Stripe ダッシュボードで設定）
- * - 全プランで購入可能（STD でもアドオンでAI利用可能に）
+ * - 全プランで購入可能
  * - 複数パック購入可能（クレジットは累積加算）
  * - 有効期限: 購入日から365日
- * - Standard と Premium を混在購入可能
- *   → 消費時に Premium パックのクレジットがあれば Opus 利用可能
  */
 export const AI_ADDON_PACKS: AddonPackDefinition[] = [
+  // --- 将来のマネージドキーモード用（現在は BYOK のため未使用） ---
   {
     id: 'ai_credits_200_standard',
     credits: 200,
     validDays: 365,
     modelTier: 'standard',
-    descriptionJa: 'AI標準パック 200回（Sonnetまで）',
-    descriptionEn: '200 AI Credits - Standard (up to Sonnet)',
+    descriptionJa: 'AI標準パック 200回（Sonnetクラスまで）【マネージドキーモード用】',
+    descriptionEn: '200 AI Credits - Standard (up to Sonnet class) [Managed-key mode]',
   },
   {
     id: 'ai_credits_200_premium',
     credits: 200,
     validDays: 365,
     modelTier: 'premium',
-    descriptionJa: 'AIプレミアムパック 200回（Opus対応）',
-    descriptionEn: '200 AI Credits - Premium (including Opus)',
+    descriptionJa: 'AIプレミアムパック 200回（全モデル対応）【マネージドキーモード用】',
+    descriptionEn: '200 AI Credits - Premium (all models) [Managed-key mode]',
   },
 ];
 
@@ -350,46 +361,37 @@ export function getModelTier(plan: PlanCode): AiModelTier {
 /**
  * モデルティアに基づいて使用可能なモデル ID 一覧を取得
  *
+ * BYOK — モデルティア制限なし。全プランで全モデル利用可能。
  * MODEL_REGISTRY（ai-assistant.ts）から動的に生成。
  * レジストリにモデルを追加すれば自動的にここにも反映される。
  */
 export function getAllowedModels(tier: AiModelTier): string[] {
-  // パターンベースで判定（opus を含むモデルは premium のみ）
-  // 実行時はアプリ側で getAvailableModelsForTier()（ai-assistant.ts）を推奨
-  if (tier === 'premium') {
-    // premium: 全モデル利用可能
-    return [
-      'claude-haiku-4-5-20251001',
-      'claude-sonnet-4-20250514',
-      'claude-sonnet-4-6-20260210',
-      'claude-opus-4-6-20260210',
-    ];
-  }
-  // standard: Haiku + Sonnet 系
+  // BYOK — 全ティアで全モデル利用可能
   return [
     'claude-haiku-4-5-20251001',
     'claude-sonnet-4-20250514',
     'claude-sonnet-4-6-20260210',
+    'claude-opus-4-6-20260210',
   ];
 }
 
 /**
  * 指定モデルがティアで利用可能かチェック
+ *
+ * BYOK — モデルティア制限なし。全プランで全モデル利用可能。
  */
 export function isModelAllowedForTier(model: string, tier: AiModelTier): boolean {
-  // premium ティアは全モデル利用可能
-  if (tier === 'premium') return true;
-  // standard ティアは opus 系以外
-  return !model.includes('opus');
+  // BYOK — 全ティアで全モデル利用可能
+  return true;
 }
 
 /**
  * モデルに必要な最低ティアを取得
  *
- * Opus 系モデル（opus-4, opus-4-6 等）は premium ティアが必要。
+ * BYOK — モデルティア制限なし。全モデルが standard ティアで利用可能。
  */
 export function getRequiredTierForModel(model: string): AiModelTier {
-  if (model.includes('opus')) return 'premium';
+  // BYOK — 全モデルが standard（最低ティア）で利用可能
   return 'standard';
 }
 
@@ -440,7 +442,7 @@ export function calculateCreditBalance(
   const totalUsed = baseUsed + addonUsed;
   const totalRemaining = baseRemaining + addonRemaining;
 
-  // STD でもアドオンがあれば AI 有効
+  // アドオンがあれば AI 有効
   const aiEnabled = quota.aiEnabled || addonRemaining > 0;
 
   // モデルティア: プラン基本 or 有効な Premium アドオンがあれば premium
@@ -476,8 +478,8 @@ export function calculateCreditBalance(
  *
  * @example
  * ```typescript
- * const balance = calculateCreditBalance('PRO', 95, addonPacks);
- * const result = checkAiUsage('PRO', balance, true);
+ * const balance = calculateCreditBalance('BIZ', 95, addonPacks);
+ * const result = checkAiUsage('BIZ', balance, true);
  * if (!result.allowed) {
  *   console.log(result.reason); // "クレジットが不足しています"
  *   console.log(result.canPurchaseAddon); // true
@@ -507,14 +509,14 @@ export function checkAiUsage(
     };
   }
 
-  // AI 機能なし（STD でアドオンなし）
+  // AI 機能なし（アドオンなし）
   if (!balance.aiEnabled) {
     return {
       allowed: false,
       remaining: 0,
-      reason: 'このプランではAI機能はご利用いただけません。アドオンパックを購入するか、PROプランにアップグレードしてください。',
+      reason: 'このプランではAI機能はご利用いただけません。アドオンパックを購入するか、BIZプランにアップグレードしてください。',
       reasonCode: 'ai_not_available',
-      suggestedUpgrade: 'PRO',
+      suggestedUpgrade: 'BIZ',
       canPurchaseAddon: true,
     };
   }

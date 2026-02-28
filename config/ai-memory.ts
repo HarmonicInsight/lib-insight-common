@@ -151,17 +151,17 @@ export interface MemoryLimits {
 
 /** プラン別メモリ制限定義 */
 export const MEMORY_LIMITS_BY_PLAN: Record<PlanCode, MemoryLimits> = {
+  FREE: {
+    hotCacheMaxEntries: 20,
+    deepStorageMaxEntries: -1, // ディープストレージなし（0ではなく無効化）
+    enabled: true,
+  },
   TRIAL: {
     hotCacheMaxEntries: 50,
     deepStorageMaxEntries: 200,
     enabled: true,
   },
-  STD: {
-    hotCacheMaxEntries: 20,
-    deepStorageMaxEntries: -1, // ディープストレージなし（0ではなく無効化）
-    enabled: true,
-  },
-  PRO: {
+  BIZ: {
     hotCacheMaxEntries: 100,
     deepStorageMaxEntries: 500,
     enabled: true,
@@ -212,7 +212,7 @@ export function isMemoryEnabled(plan: PlanCode): boolean {
 export function isDeepStorageEnabled(plan: PlanCode): boolean {
   const limits = MEMORY_LIMITS_BY_PLAN[plan];
   if (!limits) return false;
-  return limits.deepStorageMaxEntries !== -1 || plan === 'ENT' || plan === 'PRO' || plan === 'TRIAL';
+  return limits.deepStorageMaxEntries !== -1 || plan === 'ENT' || plan === 'BIZ' || plan === 'TRIAL';
 }
 
 /**

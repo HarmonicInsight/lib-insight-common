@@ -92,7 +92,7 @@ class LicenseManager(context: Context) {
         val month = yymm.substring(2, 4).toInt()
         val issueDate = LocalDate.of(year, month, 1)
         val expiry = when (plan) {
-            PlanCode.TRIAL -> issueDate.plusDays(14)
+            PlanCode.TRIAL -> issueDate.plusDays(30)
             else -> issueDate.plusDays(365)
         }
 

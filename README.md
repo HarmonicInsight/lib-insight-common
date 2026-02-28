@@ -296,7 +296,7 @@ INS-[PRODUCT]-[TIER]-[XXXX]-[XXXX]-[CC]
 
 | コード | 名称 | 期間 |
 |--------|------|------|
-| TRIAL | Trial | 任意指定（デフォルト14日） |
+| TRIAL | Trial | 任意指定（デフォルト30日） |
 | STD | Standard | 年間 |
 | PRO | Professional | 年間 |
 | ENT | Enterprise | 永久 |

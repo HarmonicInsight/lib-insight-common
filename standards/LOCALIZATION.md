@@ -327,7 +327,7 @@ set_locale(detect_locale())
 
 # 使用
 print(t('common.save'))  # "保存" or "Save"
-print(t('license.trialDaysLeft', {'days': 14}))
+print(t('license.trialDaysLeft', {'days': 30}))
 ```
 
 ---

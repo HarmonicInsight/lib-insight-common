@@ -33,8 +33,32 @@
 /** 製品コード */
 export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'ISOF' | 'INPY' | 'INMV' | 'INBT' | 'INCA' | 'INIG' | 'IVIN';
 
-/** プランコード（全製品＝法人向け — FREE廃止） */
-export type PlanCode = 'TRIAL' | 'STD' | 'PRO' | 'ENT';
+/**
+ * プランコード（全製品 — 4ティア制）
+ *
+ * - FREE:  無料（無期限・Group A: 保存/エクスポート不可・Group B: 閲覧モードのみ・BYOK 全モデル利用可能）
+ * - TRIAL: 評価用（30日間・全機能）
+ * - BIZ:   ビジネス（365日・全機能）
+ * - ENT:   エンタープライズ（カスタマイズ都度見積もり・API/SSO/監査ログ）
+ *
+ * AI API キーはクライアント企業が自社で Anthropic から購入（BYOK 方式）。
+ * 月間使用回数制限なし。モデルティア制限なし（クライアントが自由に選択）。
+ *
+ * ## 製品グループ別プラン適用
+ * - Group A（エンドユーザー向け）: FREE / TRIAL / BIZ / ENT
+ *   FREE は全機能使えるが保存・エクスポート不可
+ * - Group B（コンサルツール）: FREE / ENT のみ
+ *   FREE は閲覧モードのみ（起動可・操作不可）
+ */
+export type PlanCode = 'FREE' | 'TRIAL' | 'BIZ' | 'ENT';
+
+/**
+ * 製品グループ
+ *
+ * - group_a: エンドユーザー向けアプリ（FREE/TRIAL/BIZ/ENT）
+ * - group_b: コンサルティングツール（FREE/ENT のみ）
+ */
+export type ProductGroup = 'group_a' | 'group_b';
 
 /** 製品または共通を示す型 */
 export type ProductOrCommon = ProductCode | 'COMMON';
@@ -63,7 +87,7 @@ export interface ProjectFileConfig {
    *
    * true の場合、プロジェクトファイル内に以下のメモリファイルを格納:
    * - ai_memory.json（ホットキャッシュ）
-   * - ai_memory_deep/（ディープストレージ: PRO+ のみ）
+   * - ai_memory_deep/（ディープストレージ: BIZ/ENT のみ）
    *
    * 参照: config/ai-memory.ts
    */
@@ -114,7 +138,7 @@ export interface PlanInfo {
  *   name: 'Subtitle',
  *   nameJa: '字幕',
  *   type: 'boolean',
- *   allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+ *   allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
  * }
  *
  * @example 数値制限機能
@@ -123,8 +147,8 @@ export interface PlanInfo {
  *   name: 'Script Storage',
  *   nameJa: 'スクリプト保存数',
  *   type: 'limit',
- *   allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
- *   limitValues: { TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+ *   allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+ *   limitValues: { TRIAL: -1, BIZ: -1, ENT: -1 },
  * }
  */
 export interface FeatureDefinition {
@@ -238,8 +262,8 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     code: 'INSS',
     name: 'Insight Deck Quality Gate',
     nameJa: 'Insight Deck Quality Gate',
-    description: 'AI-powered presentation quality gate — review, extract & automate slide decks',
-    descriptionJa: 'AIアシスタント搭載 — プレゼン資料の品質管理・抽出・自動化ツール',
+    description: 'AI-powered presentation quality gate — review, score, and improve slide decks',
+    descriptionJa: 'AIアシスタント搭載 — プレゼンテーション品質評価・改善ツール（MS Office 不要）',
     masterIcon: 'brand/icons/png/icon-insight-slide.png',
     targetPlatform: 'wpf',
     iconBuildPath: 'Resources/',
@@ -260,8 +284,8 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     code: 'IOSH',
     name: 'Insight Performance Management',
     nameJa: 'Insight Performance Management',
-    description: 'AI-powered performance management tool for business metrics and financial analysis',
-    descriptionJa: 'AIアシスタント搭載 — 経営数値管理・財務分析ツール',
+    description: 'AI-powered spreadsheet for performance management and data analysis — MS Office not required',
+    descriptionJa: 'AIアシスタント搭載 — 業績管理・データ分析スプレッドシートツール（MS Office 不要）',
     masterIcon: 'brand/icons/png/icon-insight-sheet.png',
     targetPlatform: 'wpf',
     iconBuildPath: 'Resources/',
@@ -282,8 +306,8 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
     code: 'IOSD',
     name: 'Insight AI Briefcase',
     nameJa: 'Insight AI Briefcase',
-    description: 'AI-powered business document management briefcase — MS Office not required',
-    descriptionJa: 'AIアシスタント搭載 — 業務文書一括管理ブリーフケース（MS Office 不要）',
+    description: 'AI-powered document creation and management briefcase — MS Office not required',
+    descriptionJa: 'AIアシスタント搭載 — AI文書作成・管理ブリーフケース（MS Office 不要）',
     masterIcon: 'brand/icons/png/icon-insight-doc.png',
     targetPlatform: 'wpf',
     iconBuildPath: 'Resources/',
@@ -332,43 +356,73 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
 // =============================================================================
 
 export const PLANS: Record<PlanCode, PlanInfo> = {
+  FREE: {
+    code: 'FREE',
+    name: 'Free',
+    nameJa: 'フリー',
+    priority: 0,
+    description: 'Free plan. Group A: all features but save/export disabled. Group B: view-only mode. BYOK — no model tier restrictions.',
+    descriptionJa: '無料プラン。Group A: 全機能利用可能（保存/エクスポート不可）。Group B: 閲覧モードのみ。AI: BYOK（クライアント選択・モデル制限なし）。',
+    defaultDurationDays: -1,
+  },
   TRIAL: {
     code: 'TRIAL',
     name: 'Trial',
     nameJa: 'トライアル',
-    priority: 4,  // 全機能使えるため最上位と同等
-    description: 'Full features for evaluation (14 days)',
-    descriptionJa: '全機能利用可能（14日間）',
-    defaultDurationDays: 14,
+    priority: 1,
+    description: 'Full features for evaluation (30 days). BYOK — no model tier restrictions.',
+    descriptionJa: '全機能利用可能（30日間）。APIキーはクライアント自社購入。モデル制限なし。',
+    defaultDurationDays: 30,
   },
-  STD: {
-    code: 'STD',
-    name: 'Standard',
-    nameJa: 'スタンダード',
+  BIZ: {
+    code: 'BIZ',
+    name: 'Business',
+    nameJa: 'ビジネス',
     priority: 2,
-    description: 'Standard features for corporate use (365 days)',
-    descriptionJa: '法人向け標準機能（365日）',
-    defaultDurationDays: 365,
-  },
-  PRO: {
-    code: 'PRO',
-    name: 'Pro',
-    nameJa: 'プロ',
-    priority: 3,
-    description: 'All features including AI (200/month) and collaboration (365 days)',
-    descriptionJa: '法人向け全機能 — AI月200回・コラボレーション（365日）',
+    description: 'All features for corporate use (365 days). BYOK — no model tier restrictions.',
+    descriptionJa: '法人向け全機能（365日）。APIキーはクライアント自社購入。モデル制限なし。',
     defaultDurationDays: 365,
   },
   ENT: {
     code: 'ENT',
     name: 'Enterprise',
     nameJa: 'エンタープライズ',
-    priority: 4,
-    description: 'Custom features and dedicated support',
-    descriptionJa: 'カスタマイズ（要相談）',
+    priority: 3,
+    description: 'Custom enterprise plan with API/SSO/Audit. BYOK — no model tier restrictions. Quoted per engagement.',
+    descriptionJa: 'カスタマイズ都度見積もり。全機能 + API/SSO/監査ログ。APIキーはクライアント自社購入。モデル制限なし。',
     defaultDurationDays: -1,
   },
 };
+
+// =============================================================================
+// 製品グループ定義
+// =============================================================================
+
+/**
+ * 製品グループ定義
+ *
+ * - group_a: エンドユーザー向けアプリ（FREE/TRIAL/BIZ/ENT）
+ *   FREE は全機能使えるが保存・エクスポート不可
+ * - group_b: コンサルティングツール（FREE/ENT のみ）
+ *   FREE は閲覧モードのみ（起動可・操作不可）
+ */
+export const PRODUCT_GROUPS: Record<ProductGroup, ProductCode[]> = {
+  group_a: ['INSS', 'IOSH', 'IOSD', 'INPY', 'ISOF', 'INMV', 'INIG'],
+  group_b: ['INBT', 'INCA', 'IVIN'],
+};
+
+/** 製品コードから所属グループを取得 */
+export function getProductGroup(code: ProductCode): ProductGroup {
+  if (PRODUCT_GROUPS.group_b.includes(code)) return 'group_b';
+  return 'group_a';
+}
+
+/** 製品コードから利用可能なプランの一覧を取得 */
+export function getAllowedPlans(code: ProductCode): PlanCode[] {
+  return getProductGroup(code) === 'group_a'
+    ? ['FREE', 'TRIAL', 'BIZ', 'ENT']
+    : ['FREE', 'ENT'];
+}
 
 // =============================================================================
 // 共通機能（全製品で利用可能）
@@ -409,7 +463,7 @@ export const COMMON_FEATURES: FeatureDefinition[] = [
     name: 'Priority Support',
     nameJa: '優先サポート',
     type: 'boolean',
-    allowedPlans: ['PRO', 'ENT'],
+    allowedPlans: ['BIZ', 'ENT'],
     descriptionJa: '優先的なサポート対応',
   },
 ];
@@ -440,7 +494,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Create New Presentation',
       nameJa: '新規プレゼンテーション作成',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '空の PowerPoint プレゼンテーションを新規作成（MS Office 不要）',
     },
     {
@@ -448,7 +502,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Slide Editing',
       nameJa: 'スライド編集',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドのテキスト・レイアウト編集（MS Office 不要 — Syncfusion エンジン）',
     },
     {
@@ -456,7 +510,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Save As',
       nameJa: '名前を付けて保存',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '.pptx / .ppt 形式での保存',
     },
     {
@@ -464,7 +518,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Print',
       nameJa: '印刷',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドの印刷（配布資料・ノート付き・複数スライドページ対応）',
     },
     {
@@ -472,7 +526,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'PDF Export',
       nameJa: 'PDF出力',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'プレゼンテーションをPDF形式でエクスポート',
     },
     {
@@ -480,7 +534,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Undo / Redo',
       nameJa: '元に戻す・やり直し',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '操作の取り消し・やり直し（複数レベル対応）',
     },
     {
@@ -488,7 +542,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Clipboard',
       nameJa: 'クリップボード',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'コピー・切り取り・貼り付け・形式を選択して貼り付け',
     },
     // ------------------------------------------------------------------
@@ -499,7 +553,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Text Formatting',
       nameJa: 'テキスト書式',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'フォント（種類・サイズ・太字・斜体・下線・影・色）、段落（配置・行間・箇条書き・番号付き）',
     },
     {
@@ -507,7 +561,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Slide Management',
       nameJa: 'スライド操作',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドの追加・複製・削除・並べ替え・レイアウト変更・セクション管理',
     },
     {
@@ -515,7 +569,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Find & Replace',
       nameJa: '検索・置換',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライド内テキストの検索・一括置換',
     },
     // ------------------------------------------------------------------
@@ -526,7 +580,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Image',
       nameJa: '画像挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '画像ファイルの挿入・トリミング・サイズ変更・位置調整',
     },
     {
@@ -534,7 +588,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Shape',
       nameJa: '図形挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '図形・矢印・吹き出し・テキストボックス・ワードアートの挿入・書式設定',
     },
     {
@@ -542,7 +596,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Table',
       nameJa: '表の挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドへの表の挿入・行列追加・セル結合・スタイル設定',
     },
     {
@@ -550,7 +604,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Chart',
       nameJa: 'グラフの挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '棒・折れ線・円・散布図等のグラフをスライドに挿入・データ編集',
     },
     {
@@ -558,7 +612,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert SmartArt',
       nameJa: 'SmartArt挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'SmartArt（リスト・手順・循環・階層・関係等）の挿入・編集',
     },
     {
@@ -566,7 +620,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Media',
       nameJa: 'メディア挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '動画・音声ファイルの挿入・再生設定',
     },
     {
@@ -574,7 +628,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Hyperlink',
       nameJa: 'ハイパーリンク',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テキスト・オブジェクトへのハイパーリンク挿入（URL・スライド内・メール）',
     },
     {
@@ -582,7 +636,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Comments',
       nameJa: 'コメント',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドへのコメント挿入・返信・解決',
     },
     {
@@ -590,7 +644,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Header & Footer',
       nameJa: 'ヘッダーとフッター',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライド番号・日付・フッターテキストの設定',
     },
     // ------------------------------------------------------------------
@@ -601,7 +655,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Design Theme',
       nameJa: 'デザインテーマ',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テーマ・バリエーションの適用・配色/フォント/効果のカスタマイズ',
     },
     {
@@ -609,7 +663,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Slide Size',
       nameJa: 'スライドのサイズ',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドサイズの設定（標準 4:3 / ワイド 16:9 / カスタム）',
     },
     {
@@ -617,18 +671,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Slide Master',
       nameJa: 'スライドマスター',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドマスター・レイアウトの編集によるデザイン統一',
     },
     // ------------------------------------------------------------------
-    // 画面切り替え・アニメーションタブ相当 — PRO/ENT
+    // 画面切り替え・アニメーションタブ相当 — BIZ/ENT
     // ------------------------------------------------------------------
     {
       key: 'slide_transition',
       name: 'Slide Transition',
       nameJa: 'スライド切替効果',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライド間のトランジション効果の設定（フェード・プッシュ・ワイプ等）',
     },
     {
@@ -636,7 +690,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Animation',
       nameJa: 'アニメーション',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'オブジェクトのアニメーション効果（開始・強調・終了・軌跡）の設定・タイミング調整',
     },
     // ------------------------------------------------------------------
@@ -647,7 +701,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Object Formatting',
       nameJa: 'オブジェクト書式',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '図形・画像の塗りつぶし・枠線・効果（影・反射・光彩）・サイズ・回転',
     },
     {
@@ -655,7 +709,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Arrange Objects',
       nameJa: 'オブジェクトの整列',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'オブジェクトの整列・配置・グループ化・前面/背面移動・回転',
     },
     // ------------------------------------------------------------------
@@ -666,7 +720,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Slide Show',
       nameJa: 'スライドショー',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドショーの再生（最初から・現在のスライドから）',
     },
     {
@@ -674,7 +728,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Presenter View',
       nameJa: '発表者ツール',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '発表者ツール（ノート表示・次スライドプレビュー・タイマー・レーザーポインター）',
     },
     {
@@ -682,7 +736,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Speaker Notes',
       nameJa: '発表者ノート',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドごとの発表者メモの編集・印刷',
     },
     // ------------------------------------------------------------------
@@ -693,7 +747,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Spell Check',
       nameJa: 'スペルチェック',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライド内テキストのスペルチェック',
     },
     // ------------------------------------------------------------------
@@ -704,7 +758,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Content Extraction',
       nameJa: 'コンテンツ抽出',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'PowerPointからテキスト・画像を抽出',
     },
     {
@@ -712,8 +766,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Content Update',
       nameJa: 'コンテンツ更新',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: -1, PRO: -1, ENT: -1 },
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'スライドの一括更新',
     },
     {
@@ -721,7 +775,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'JSON I/O',
       nameJa: 'JSON入出力',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'JSON形式でのデータ入出力',
     },
     {
@@ -729,7 +783,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Batch Processing',
       nameJa: 'フォルダ一括処理',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '複数ファイルの一括処理',
     },
     {
@@ -737,7 +791,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'File Compare',
       nameJa: '2ファイル比較',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '2つのPowerPointファイルの差分比較',
     },
     {
@@ -745,7 +799,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Auto Backup',
       nameJa: '自動バックアップ',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '編集前の自動バックアップ作成',
     },
     // ------------------------------------------------------------------
@@ -756,25 +810,25 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるスライドテキストの校正・改善提案（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるスライドテキストの校正・改善提案（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'ai_editor',
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるPythonコードの生成・編集でPowerPointを自動処理（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるPythonコードの生成・編集でPowerPointを自動処理（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'reference_materials',
       name: 'Reference Materials',
       nameJa: '参考資料',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
     },
     {
@@ -782,16 +836,16 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Document Evaluation',
       nameJa: 'ドキュメント評価',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるプレゼンテーションの多角的評価・スコアリング・改善提案（Opus推奨・STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるプレゼンテーションの多角的評価・スコアリング・改善提案（Opus推奨・BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'voice_input',
       name: 'Voice Input',
       nameJa: '音声入力',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '音声認識によるハンズフリー入力',
     },
     {
@@ -799,7 +853,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'VRM Avatar',
       nameJa: 'VRMアバター',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
   ],
@@ -817,7 +871,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Create New Spreadsheet',
       nameJa: '新規スプレッドシート作成',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '空の Excel スプレッドシートを新規作成（MS Office 不要）',
     },
     {
@@ -825,7 +879,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Read Excel',
       nameJa: 'Excel読み込み・編集',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'Excelファイルの読み込み・編集・保存（MS Office 不要 — Syncfusion エンジン）',
     },
     {
@@ -833,7 +887,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Save As',
       nameJa: '名前を付けて保存',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '.xlsx / .xls / .csv / .tsv 形式での保存',
     },
     {
@@ -841,7 +895,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Print',
       nameJa: '印刷',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スプレッドシートの印刷（範囲指定・ヘッダーフッター・改ページ設定対応）',
     },
     {
@@ -849,7 +903,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'PDF Export',
       nameJa: 'PDF出力',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スプレッドシートをPDF形式でエクスポート',
     },
     {
@@ -857,7 +911,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Undo / Redo',
       nameJa: '元に戻す・やり直し',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '操作の取り消し・やり直し（複数レベル対応）',
     },
     {
@@ -865,7 +919,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Clipboard',
       nameJa: 'クリップボード',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'コピー・切り取り・貼り付け・形式を選択して貼り付け',
     },
     // ------------------------------------------------------------------
@@ -876,7 +930,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Cell Formatting',
       nameJa: 'セル書式設定',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'フォント（種類・サイズ・太字・斜体・下線・色）、セル背景色・罫線の設定',
     },
     {
@@ -884,7 +938,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Number Format',
       nameJa: '表示形式',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '数値・通貨・日付・パーセント・会計・分類・文字列等のセル表示形式設定',
     },
     {
@@ -892,7 +946,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Alignment',
       nameJa: '配置',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '水平・垂直配置、折り返し、縮小して全体を表示、インデント、テキスト方向',
     },
     {
@@ -900,7 +954,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Merge Cells',
       nameJa: 'セルの結合',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セルの結合・結合解除（横方向・縦方向・結合して中央揃え）',
     },
     // ------------------------------------------------------------------
@@ -911,7 +965,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Row & Column Operations',
       nameJa: '行と列の操作',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '行・列の挿入・削除・非表示・再表示・高さ/幅の調整・自動調整',
     },
     {
@@ -919,7 +973,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Sheet Management',
       nameJa: 'シート管理',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'シートの追加・削除・名前変更・移動・コピー・タブ色設定・非表示/再表示',
     },
     {
@@ -927,7 +981,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Freeze Panes',
       nameJa: 'ウィンドウ枠の固定',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '先頭行・先頭列・任意セル位置でのウィンドウ枠固定',
     },
     // ------------------------------------------------------------------
@@ -938,7 +992,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Formulas & Functions',
       nameJa: '数式と関数',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '数式入力・関数挿入（SUM / VLOOKUP / IF / COUNT 等 400+ 関数）、オートSUM',
     },
     {
@@ -946,7 +1000,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Named Ranges',
       nameJa: '名前の定義',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セル範囲への名前定義・名前の管理・数式での名前参照',
     },
     {
@@ -954,7 +1008,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Formula Auditing',
       nameJa: '数式の検証',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '参照元/参照先トレース・エラーチェック・数式の評価',
     },
     // ------------------------------------------------------------------
@@ -965,7 +1019,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Find & Replace',
       nameJa: '検索・置換',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セル値の検索・一括置換（正規表現対応）',
     },
     {
@@ -973,7 +1027,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Sort & Filter',
       nameJa: 'ソート・フィルタ',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '列のソート・オートフィルタ・カスタムフィルタ・色フィルタ',
     },
     {
@@ -981,7 +1035,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Auto Fill',
       nameJa: 'オートフィル',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '連続データの自動入力（数値・日付・曜日・カスタムリスト）',
     },
     // ------------------------------------------------------------------
@@ -992,7 +1046,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Chart',
       nameJa: 'グラフ作成',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '棒・折れ線・円・散布図・面・レーダー等のグラフ作成・編集（Syncfusion Chart）',
     },
     {
@@ -1000,7 +1054,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Image',
       nameJa: '画像の挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '画像ファイルの挿入・サイズ変更・位置調整',
     },
     {
@@ -1008,7 +1062,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Shape',
       nameJa: '図形の挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '図形・テキストボックス・ワードアートの挿入',
     },
     {
@@ -1016,7 +1070,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Hyperlink',
       nameJa: 'ハイパーリンク',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セルへのハイパーリンクの挿入・編集（URL・メール・シート内参照）',
     },
     {
@@ -1024,7 +1078,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Comments',
       nameJa: 'コメント',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セルへのコメント挿入・編集・削除・スレッド表示',
     },
     // ------------------------------------------------------------------
@@ -1035,18 +1089,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Page Setup',
       nameJa: 'ページ設定',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '用紙サイズ・余白・印刷の向き・拡大縮小・印刷範囲・改ページの設定',
     },
     // ------------------------------------------------------------------
-    // データタブ相当（上級） — PRO/ENT
+    // データタブ相当（上級） — BIZ/ENT
     // ------------------------------------------------------------------
     {
       key: 'conditional_formatting',
       name: 'Conditional Formatting',
       nameJa: '条件付き書式',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セル値に応じた自動書式設定（カラースケール・データバー・アイコンセット）',
     },
     {
@@ -1054,7 +1108,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Pivot Table',
       nameJa: 'ピボットテーブル',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'データの集計・クロス分析（Syncfusion Pivot Table）',
     },
     {
@@ -1062,7 +1116,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Data Validation',
       nameJa: 'データ入力規則',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セルへの入力制限・ドロップダウンリスト・エラーメッセージ設定',
     },
     {
@@ -1070,7 +1124,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Text to Columns',
       nameJa: '区切り位置',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テキストデータを区切り文字で複数列に分割',
     },
     {
@@ -1078,7 +1132,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Remove Duplicates',
       nameJa: '重複の削除',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '選択範囲内の重複データを検出・削除',
     },
     {
@@ -1086,7 +1140,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Group & Outline',
       nameJa: 'グループ化とアウトライン',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '行・列のグループ化・アウトライン表示・小計',
     },
     {
@@ -1094,7 +1148,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Goal Seek',
       nameJa: 'ゴールシーク',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '目標値に対するセル値の逆算（What-If 分析）',
     },
     // ------------------------------------------------------------------
@@ -1105,7 +1159,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Spell Check',
       nameJa: 'スペルチェック',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セル内テキストのスペルチェック',
     },
     {
@@ -1113,7 +1167,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Protect Sheet / Workbook',
       nameJa: 'シート・ブックの保護',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'シート保護（パスワード付き）・ブック構成の保護・セルのロック/解除',
     },
     // ------------------------------------------------------------------
@@ -1124,7 +1178,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Version Control',
       nameJa: 'バージョン管理',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'ファイルのバージョン管理・履歴保持',
     },
     {
@@ -1132,7 +1186,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Diff Compare',
       nameJa: '差分比較',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'バージョン間のセル差分比較',
     },
     {
@@ -1140,7 +1194,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Change Log',
       nameJa: 'セル変更ログ',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セル単位の変更履歴の記録・表示',
     },
     {
@@ -1148,7 +1202,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Export',
       nameJa: 'エクスポート',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '変更履歴・差分のエクスポート出力',
     },
     {
@@ -1156,7 +1210,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'File Compare',
       nameJa: '2ファイル比較',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '2つのExcelファイルのセル単位差分比較',
     },
     {
@@ -1164,7 +1218,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Show Author',
       nameJa: '変更者表示',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セル変更ログで変更者（誰が変更したか）を表示（チーム利用向け）',
     },
     {
@@ -1172,7 +1226,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Board',
       nameJa: '掲示板',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'チーム向け掲示板機能',
     },
     {
@@ -1180,7 +1234,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Sticky Notes',
       nameJa: '付箋',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'セルに付箋（メモ）を貼り付け。色分け・バージョン管理連動',
     },
     {
@@ -1188,7 +1242,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Send Message',
       nameJa: 'メッセージ送信',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'チームメンバーへのメッセージ送信',
     },
     // ------------------------------------------------------------------
@@ -1199,25 +1253,25 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIチャットによるExcel操作支援（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIチャットによるExcel操作支援（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'ai_editor',
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるPythonコードの生成・編集でExcelを自動処理（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるPythonコードの生成・編集でExcelを自動処理（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'reference_materials',
       name: 'Reference Materials',
       nameJa: '参考資料',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
     },
     {
@@ -1225,16 +1279,16 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Document Evaluation',
       nameJa: 'ドキュメント評価',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるスプレッドシートの多角的評価・スコアリング・改善提案（Opus推奨・STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるスプレッドシートの多角的評価・スコアリング・改善提案（Opus推奨・BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'voice_input',
       name: 'Voice Input',
       nameJa: '音声入力',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '音声認識によるハンズフリー入力',
     },
     {
@@ -1242,7 +1296,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'VRM Avatar',
       nameJa: 'VRMアバター',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
     // ------------------------------------------------------------------
@@ -1254,7 +1308,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Data Collection',
       nameJa: 'データ収集',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'サーバー管理テンプレートによるエンタープライズデータ収集（テンプレート選択→入力→送信）',
     },
     {
@@ -1262,18 +1316,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Auto-Transfer',
       nameJa: 'AI 自動転記',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AI が既存 Excel データをデータ収集テンプレートに自動転記（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AI が既存 Excel データをデータ収集テンプレートに自動転記（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'data_collection_ai_validate',
       name: 'AI Validation',
       nameJa: 'AI 検証',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AI による入力データの妥当性検証・異常値検出・整合性チェック（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AI による入力データの妥当性検証・異常値検出・整合性チェック（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     // ------------------------------------------------------------------
     // データ収集プラットフォーム（Data Collection Platform）
@@ -1284,7 +1338,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Data Collection',
       nameJa: 'データ収集',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'サーバー管理テンプレートによるエンタープライズデータ収集（テンプレート選択→入力→送信）',
     },
     {
@@ -1292,18 +1346,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Auto-Transfer',
       nameJa: 'AI 自動転記',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AI が既存 Excel データをデータ収集テンプレートに自動転記（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AI が既存 Excel データをデータ収集テンプレートに自動転記（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'data_collection_ai_validate',
       name: 'AI Validation',
       nameJa: 'AI 検証',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AI による入力データの妥当性検証・異常値検出・整合性チェック（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AI による入力データの妥当性検証・異常値検出・整合性チェック（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
   ],
 
@@ -1320,7 +1374,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Create New Document',
       nameJa: '新規ドキュメント作成',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '空の Word ドキュメントを新規作成（MS Office 不要）',
     },
     {
@@ -1328,7 +1382,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Read Document',
       nameJa: 'ドキュメント読取・書込',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'Wordドキュメントの読み込み・編集・保存（MS Office 不要 — Syncfusion エンジン）',
     },
     {
@@ -1336,7 +1390,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Save As',
       nameJa: '名前を付けて保存',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '.docx / .doc / .rtf / .txt 形式での保存',
     },
     {
@@ -1344,7 +1398,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Print',
       nameJa: '印刷',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'ドキュメントの印刷（ページ範囲指定・部数・用紙サイズ対応）',
     },
     {
@@ -1352,7 +1406,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'PDF Export',
       nameJa: 'PDF出力',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'ドキュメントをPDF形式でエクスポート',
     },
     {
@@ -1360,7 +1414,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Undo / Redo',
       nameJa: '元に戻す・やり直し',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '操作の取り消し・やり直し（複数レベル対応）',
     },
     {
@@ -1368,7 +1422,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Clipboard',
       nameJa: 'クリップボード',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'コピー・切り取り・貼り付け・形式を選択して貼り付け',
     },
     // ------------------------------------------------------------------
@@ -1379,7 +1433,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Font Formatting',
       nameJa: 'フォント書式',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'フォント種類・サイズ・太字・斜体・下線・取り消し線・上付き/下付き・文字色・蛍光ペン',
     },
     {
@@ -1387,7 +1441,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Paragraph Formatting',
       nameJa: '段落書式',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '配置（左揃え・中央・右揃え・両端揃え）・行間・段落前後の間隔・インデント',
     },
     {
@@ -1395,7 +1449,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Bullets & Numbering',
       nameJa: '箇条書きと段落番号',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '箇条書き・番号付きリスト・アウトライン番号・リストレベルの変更',
     },
     {
@@ -1403,7 +1457,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Styles',
       nameJa: 'スタイル',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '見出しスタイル（H1〜H6）・本文・引用・リスト等の適用・カスタムスタイル作成',
     },
     {
@@ -1411,7 +1465,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Find & Replace',
       nameJa: '検索・置換',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テキストの検索・一括置換（正規表現対応・書式検索）',
     },
     // ------------------------------------------------------------------
@@ -1422,7 +1476,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Table',
       nameJa: '表の挿入・編集',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '表の挿入・行列追加・セル結合・罫線スタイル設定・表スタイルの適用',
     },
     {
@@ -1430,7 +1484,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Image',
       nameJa: '画像挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '画像ファイルの挿入・トリミング・サイズ変更・文字列の折り返し設定',
     },
     {
@@ -1438,7 +1492,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Shape',
       nameJa: '図形挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '図形・テキストボックス・ワードアートの挿入・書式設定',
     },
     {
@@ -1446,7 +1500,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Chart',
       nameJa: 'グラフの挿入',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'グラフの挿入・データ編集（棒・折れ線・円等）',
     },
     {
@@ -1454,7 +1508,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Hyperlink',
       nameJa: 'ハイパーリンク',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テキスト・画像へのハイパーリンク挿入（URL・メール・文書内参照）',
     },
     {
@@ -1462,7 +1516,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Bookmark',
       nameJa: 'ブックマーク',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'ブックマークの挿入・管理・相互参照',
     },
     {
@@ -1470,7 +1524,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Comments',
       nameJa: 'コメント',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テキストへのコメント挿入・返信・解決・削除',
     },
     {
@@ -1478,7 +1532,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Header & Footer',
       nameJa: 'ヘッダー・フッター',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'ページヘッダー・フッターの編集（ページ番号・日付・ロゴ・奇数/偶数ページ別）',
     },
     {
@@ -1486,7 +1540,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Page Break',
       nameJa: '改ページ・セクション区切り',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '改ページ・セクション区切り（次のページ・現在の位置・偶数/奇数ページ）の挿入',
     },
     {
@@ -1494,7 +1548,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Insert Symbol',
       nameJa: '記号と特殊文字',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '特殊文字・記号・絵文字の挿入',
     },
     {
@@ -1502,7 +1556,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Footnote & Endnote',
       nameJa: '脚注・文末脚注',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '脚注・文末脚注の挿入・編集・番号書式設定',
     },
     // ------------------------------------------------------------------
@@ -1513,7 +1567,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Page Setup',
       nameJa: 'ページ設定',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '用紙サイズ・余白・ページの向き（縦/横）・段組みの設定',
     },
     {
@@ -1521,7 +1575,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Borders & Shading',
       nameJa: '罫線と網かけ',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'ページ罫線・段落罫線・網かけの設定',
     },
     {
@@ -1529,7 +1583,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Columns',
       nameJa: '段組み',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '文書の段組みレイアウト（1段・2段・3段・カスタム）',
     },
     {
@@ -1537,7 +1591,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Watermark',
       nameJa: '透かし',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テキスト・画像の透かし挿入（「社外秘」「下書き」等）',
     },
     {
@@ -1545,18 +1599,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Line Numbers',
       nameJa: '行番号',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '行番号の表示設定（連続・ページごとにリセット・セクションごと）',
     },
     // ------------------------------------------------------------------
-    // 参考資料タブ相当 — PRO/ENT
+    // 参考資料タブ相当 — BIZ/ENT
     // ------------------------------------------------------------------
     {
       key: 'table_of_contents',
       name: 'Table of Contents',
       nameJa: '目次生成',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '見出しスタイルから目次を自動生成・更新',
     },
     // ------------------------------------------------------------------
@@ -1567,7 +1621,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Spell Check',
       nameJa: 'スペルチェック',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '文書内テキストのスペルチェック・文章校正',
     },
     {
@@ -1575,7 +1629,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Word Count',
       nameJa: '文字カウント',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '文字数・単語数・段落数・行数のカウント表示',
     },
     {
@@ -1583,7 +1637,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Track Changes',
       nameJa: '変更履歴の記録',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '編集内容の変更履歴を記録・承認・却下（Word 互換の変更追跡）',
     },
     {
@@ -1591,18 +1645,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Protect Document',
       nameJa: '文書の保護',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '編集制限・パスワード保護・読み取り専用の設定',
     },
     // ------------------------------------------------------------------
-    // フォーマット変換・テンプレート — 全プラン/PRO
+    // フォーマット変換・テンプレート — 全プラン
     // ------------------------------------------------------------------
     {
       key: 'convert',
       name: 'Convert Format',
       nameJa: 'フォーマット変換',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'PDF・HTML・RTF・テキスト等へのフォーマット変換',
     },
     {
@@ -1610,7 +1664,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Template',
       nameJa: 'テンプレート',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'テンプレートからのドキュメント生成',
     },
     {
@@ -1618,7 +1672,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Mail Merge',
       nameJa: '差し込み印刷',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'データソース（Excel/CSV）からの差し込み印刷・文書生成',
     },
     {
@@ -1626,7 +1680,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Batch Processing',
       nameJa: 'バッチ処理',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '複数ドキュメントの一括処理',
     },
     {
@@ -1634,7 +1688,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Macro Execution',
       nameJa: 'マクロ実行',
       type: 'boolean',
-      allowedPlans: ['PRO', 'ENT'],
+      allowedPlans: ['BIZ', 'ENT'],
       descriptionJa: 'VBAマクロの実行・変換',
     },
     // ------------------------------------------------------------------
@@ -1645,25 +1699,25 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるドキュメントの校正・要約・構成提案（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるドキュメントの校正・要約・構成提案（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'ai_editor',
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるPythonコードの生成・編集でWordを自動処理（PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるPythonコードの生成・編集でWordを自動処理（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'reference_materials',
       name: 'Reference Materials',
       nameJa: '参考資料',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '参考資料の添付・AI コンテキストとしての活用',
     },
     {
@@ -1671,16 +1725,16 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Document Evaluation',
       nameJa: 'ドキュメント評価',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるWord文書の多角的評価・スコアリング・改善提案（Opus推奨・STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるWord文書の多角的評価・スコアリング・改善提案（Opus推奨・BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'voice_input',
       name: 'Voice Input',
       nameJa: '音声入力',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '音声認識によるハンズフリー入力',
     },
     {
@@ -1688,7 +1742,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'VRM Avatar',
       nameJa: 'VRMアバター',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
   ],
@@ -1702,7 +1756,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Code Execution',
       nameJa: 'コード実行',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'Pythonコードの実行',
     },
     {
@@ -1710,7 +1764,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Presets',
       nameJa: 'プリセット利用',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: '定義済みスクリプトテンプレートの利用',
     },
     {
@@ -1718,8 +1772,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Script Storage',
       nameJa: 'スクリプト保存数',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: '保存可能なスクリプト数',
     },
     {
@@ -1727,7 +1781,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Cloud Sync',
       nameJa: 'クラウド同期',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スクリプトのクラウド同期',
     },
     {
@@ -1735,9 +1789,9 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
   ],
 
@@ -1750,7 +1804,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Script Execution',
       nameJa: 'スクリプト実行',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['ENT'],
       descriptionJa: 'RPAスクリプトの実行',
     },
     {
@@ -1758,7 +1812,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Presets',
       nameJa: 'プリセット利用',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+      allowedPlans: ['ENT'],
       descriptionJa: '定義済みスクリプトテンプレートの利用',
     },
     {
@@ -1766,8 +1820,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Job Storage',
       nameJa: 'JOB保存数',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: -1, ENT: -1 },
+      allowedPlans: ['ENT'],
+      limitValues: { ENT: -1 },
       descriptionJa: '保存可能なJOB数',
     },
     {
@@ -1775,7 +1829,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Cloud Sync',
       nameJa: 'クラウド同期',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['ENT'],
       descriptionJa: 'JOBのクラウド同期',
     },
     {
@@ -1783,16 +1837,16 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
-      limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 },
-      descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援（STD: 月50回 / PRO: 月200回 / ENT: 無制限）',
+      allowedPlans: ['ENT'],
+      limitValues: { ENT: -1 },
+      descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
       key: 'orchestrator',
       name: 'Orchestrator',
       nameJa: 'オーケストレーター',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['ENT'],
       descriptionJa: 'Insight Business Suite Agent の集中管理・JOB配信・実行監視',
     },
     {
@@ -1800,16 +1854,16 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Agent Management',
       nameJa: 'Agent管理',
       type: 'limit',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
-      limitValues: { TRIAL: 5, PRO: 50, ENT: -1 },
-      descriptionJa: '管理可能な Agent（Insight Business Suite 端末）数（PRO: 50台 / ENT: 無制限）',
+      allowedPlans: ['ENT'],
+      limitValues: { ENT: -1 },
+      descriptionJa: '管理可能な Agent（Insight Business Suite 端末）数（ENT: 無制限）',
     },
     {
       key: 'scheduler',
       name: 'Job Scheduler',
       nameJa: 'JOBスケジューラー',
       type: 'boolean',
-      allowedPlans: ['TRIAL', 'PRO', 'ENT'],
+      allowedPlans: ['ENT'],
       descriptionJa: 'JOBの定期実行スケジュール設定（cron 相当）',
     },
   ],
@@ -1818,35 +1872,35 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // InsightNoCodeAnalyzer (INCA)
   // ========================================
   INCA: [
-    { key: 'rpa_analysis', name: 'RPA Analysis', nameJa: 'RPA解析', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'BizRobo等のRPAソース解析' },
-    { key: 'lowcode_analysis', name: 'Low-code Analysis', nameJa: 'ローコード解析', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'Forguncy等のローコードツール解析' },
-    { key: 'migration_assessment', name: 'Migration Assessment', nameJa: '移行アセスメント', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: '工数見積もり・複雑度分析' },
-    { key: 'akabot_conversion', name: 'akaBot Conversion', nameJa: 'akaBot変換', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: 'BizRoboからakaBotへの変換' },
-    { key: 'export_json', name: 'JSON Export', nameJa: 'JSON出力', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: '解析結果のJSON形式出力' },
-    { key: 'export_markdown', name: 'Markdown Export', nameJa: 'Markdown出力', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: '解析結果のMarkdown形式出力' },
+    { key: 'rpa_analysis', name: 'RPA Analysis', nameJa: 'RPA解析', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'BizRobo等のRPAソース解析' },
+    { key: 'lowcode_analysis', name: 'Low-code Analysis', nameJa: 'ローコード解析', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'Forguncy等のローコードツール解析' },
+    { key: 'migration_assessment', name: 'Migration Assessment', nameJa: '移行アセスメント', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: '工数見積もり・複雑度分析' },
+    { key: 'akabot_conversion', name: 'akaBot Conversion', nameJa: 'akaBot変換', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'BizRoboからakaBotへの変換' },
+    { key: 'export_json', name: 'JSON Export', nameJa: 'JSON出力', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: '解析結果のJSON形式出力' },
+    { key: 'export_markdown', name: 'Markdown Export', nameJa: 'Markdown出力', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: '解析結果のMarkdown形式出力' },
   ],
 
   // ========================================
   // InsightImageGen (INIG)
   // ========================================
   INIG: [
-    { key: 'generate_image', name: 'Image Generation', nameJa: '画像生成', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'Stable Diffusionによる画像生成' },
-    { key: 'batch_image', name: 'Batch Image Generation', nameJa: 'バッチ画像生成', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: '複数画像の一括生成' },
-    { key: 'generate_audio', name: 'Audio Generation', nameJa: '音声生成', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'VOICEVOXによる音声生成' },
-    { key: 'character_prompts', name: 'Character Prompts', nameJa: 'キャラクタープロンプト', type: 'limit', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], limitValues: { TRIAL: -1, STD: 20, PRO: -1, ENT: -1 }, descriptionJa: '保存可能なキャラクタープロンプト数' },
-    { key: 'hi_res', name: 'High Resolution', nameJa: '高解像度出力', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: '高解像度画像の生成' },
-    { key: 'cloud_sync', name: 'Cloud Sync', nameJa: 'クラウド同期', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: 'プロンプト・設定のクラウド同期' },
+    { key: 'generate_image', name: 'Image Generation', nameJa: '画像生成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'Stable Diffusionによる画像生成' },
+    { key: 'batch_image', name: 'Batch Image Generation', nameJa: 'バッチ画像生成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '複数画像の一括生成' },
+    { key: 'generate_audio', name: 'Audio Generation', nameJa: '音声生成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'VOICEVOXによる音声生成' },
+    { key: 'character_prompts', name: 'Character Prompts', nameJa: 'キャラクタープロンプト', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1}, descriptionJa: '保存可能なキャラクタープロンプト数' },
+    { key: 'hi_res', name: 'High Resolution', nameJa: '高解像度出力', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '高解像度画像の生成' },
+    { key: 'cloud_sync', name: 'Cloud Sync', nameJa: 'クラウド同期', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'プロンプト・設定のクラウド同期' },
   ],
 
   // ========================================
   // InsightCast (INMV)
   // ========================================
   INMV: [
-    { key: 'generate', name: 'Video Generation', nameJa: '動画生成', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: '画像・テキストから動画を生成' },
-    { key: 'subtitle', name: 'Subtitle', nameJa: '字幕', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: '動画への字幕追加' },
-    { key: 'subtitle_style', name: 'Subtitle Style', nameJa: '字幕スタイル選択', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: '字幕のフォント・色・位置のカスタマイズ' },
-    { key: 'transition', name: 'Transition', nameJa: 'トランジション', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: 'シーン間のトランジション効果' },
-    { key: 'pptx_import', name: 'PPTX Import', nameJa: 'PPTX取込', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: 'PowerPointファイルからの素材取込' },
+    { key: 'generate', name: 'Video Generation', nameJa: '動画生成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '画像・テキストから動画を生成' },
+    { key: 'subtitle', name: 'Subtitle', nameJa: '字幕', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '動画への字幕追加' },
+    { key: 'subtitle_style', name: 'Subtitle Style', nameJa: '字幕スタイル選択', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '字幕のフォント・色・位置のカスタマイズ' },
+    { key: 'transition', name: 'Transition', nameJa: 'トランジション', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'シーン間のトランジション効果' },
+    { key: 'pptx_import', name: 'PPTX Import', nameJa: 'PPTX取込', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'PowerPointファイルからの素材取込' },
   ],
 
   // ========================================
@@ -1854,18 +1908,18 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // シニア向け統合オフィスツール
   // ========================================
   ISOF: [
-    { key: 'create_new', name: 'Create New Document', nameJa: '新規作成', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: '空の Excel スプレッドシート・Word ドキュメントを新規作成（MS Office 不要）' },
-    { key: 'spreadsheet', name: 'Spreadsheet', nameJa: '表計算', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: 'Excelファイルの読み込み・編集・保存' },
-    { key: 'document', name: 'Document', nameJa: '文書作成', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: 'Wordドキュメントの読み込み・編集・保存' },
-    { key: 'icloud_mail', name: 'iCloud Mail', nameJa: 'iCloudメール', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: 'iCloudメールの送受信（iPhoneと同じメールをPCで閲覧）' },
-    { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['TRIAL', 'STD', 'ENT'], limitValues: { TRIAL: -1, STD: 50, ENT: -1 }, descriptionJa: 'AIによる自然言語操作支援（「A2に1万円入れて」等）（STD: 月50回 / ENT: 無制限）' },
-    { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: '音声認識によるハンズフリー入力' },
-    { key: 'text_to_speech', name: 'Text to Speech', nameJa: '読み上げ', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: 'メール・文書の音声読み上げ' },
-    { key: 'font_scaling', name: 'Font Scaling', nameJa: '文字サイズ調整', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: '文字サイズ50%〜200%の拡大縮小' },
-    { key: 'setup_wizard', name: 'Setup Wizard', nameJa: '初期設定ウィザード', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: '5ステップの簡単初期設定（名前・メール・文字サイズ）' },
-    { key: 'tutorial', name: 'Tutorial', nameJa: 'チュートリアル', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: '10ステップの対話型ガイドツアー' },
-    { key: 'print', name: 'Print', nameJa: '印刷', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: 'シニア向け大きい文字での印刷' },
-    { key: 'contacts', name: 'Contacts', nameJa: '連絡先管理', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'ENT'], descriptionJa: '家族・友人・病院等のグループ別連絡先管理' },
+    { key: 'create_new', name: 'Create New Document', nameJa: '新規作成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '空の Excel スプレッドシート・Word ドキュメントを新規作成（MS Office 不要）' },
+    { key: 'spreadsheet', name: 'Spreadsheet', nameJa: '表計算', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'Excelファイルの読み込み・編集・保存' },
+    { key: 'document', name: 'Document', nameJa: '文書作成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'Wordドキュメントの読み込み・編集・保存' },
+    { key: 'icloud_mail', name: 'iCloud Mail', nameJa: 'iCloudメール', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'iCloudメールの送受信（iPhoneと同じメールをPCで閲覧）' },
+    { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1}, descriptionJa: 'AIによる自然言語操作支援（「A2に1万円入れて」等）（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
+    { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '音声認識によるハンズフリー入力' },
+    { key: 'text_to_speech', name: 'Text to Speech', nameJa: '読み上げ', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'メール・文書の音声読み上げ' },
+    { key: 'font_scaling', name: 'Font Scaling', nameJa: '文字サイズ調整', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '文字サイズ50%〜200%の拡大縮小' },
+    { key: 'setup_wizard', name: 'Setup Wizard', nameJa: '初期設定ウィザード', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '5ステップの簡単初期設定（名前・メール・文字サイズ）' },
+    { key: 'tutorial', name: 'Tutorial', nameJa: 'チュートリアル', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '10ステップの対話型ガイドツアー' },
+    { key: 'print', name: 'Print', nameJa: '印刷', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'シニア向け大きい文字での印刷' },
+    { key: 'contacts', name: 'Contacts', nameJa: '連絡先管理', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '家族・友人・病院等のグループ別連絡先管理' },
   ],
 
   // ========================================
@@ -1874,17 +1928,17 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   // Syncfusion ej2-react-grids によるグリッド機能搭載
   // ========================================
   IVIN: [
-    { key: 'interview_session', name: 'Interview Session', nameJa: 'インタビューセッション', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'AIインタビューセッションの作成・実行' },
-    { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: '音声認識によるインタビュー回答の入力' },
-    { key: 'voice_synthesis', name: 'Voice Synthesis', nameJa: '音声合成', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'AI面接官の質問読み上げ（TTS）' },
-    { key: 'excel_grid', name: 'Excel Grid View', nameJa: 'Excelグリッド表示', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'Syncfusion ej2-react-grids によるインタビュー結果の一覧表示・ソート・フィルタ' },
-    { key: 'excel_import', name: 'Excel Import', nameJa: 'Excelインポート', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'Excel ファイルからのデータ取り込み（テンプレート・回答者・案件の一括登録）' },
-    { key: 'excel_export', name: 'Excel Export', nameJa: 'Excelエクスポート', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'インタビュー結果のExcel形式エクスポート' },
-    { key: 'ai_analysis', name: 'AI Analysis', nameJa: 'AI分析', type: 'limit', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], limitValues: { TRIAL: -1, STD: 50, PRO: 200, ENT: -1 }, descriptionJa: 'AIによる回答の構造化・感情分析・課題抽出（STD: 月50回 / PRO: 月200回 / ENT: 無制限）' },
-    { key: 'data_mart', name: 'Data Mart', nameJa: 'データマート', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: 'インタビュー結果の自動分類・ナレッジマート生成' },
-    { key: 'search', name: 'Full-text Search', nameJa: '全文検索', type: 'boolean', allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'], descriptionJa: 'インタビュー回答のハイブリッド検索' },
-    { key: 'vrm_avatar', name: 'VRM Avatar', nameJa: 'VRMアバター', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: 'VRM 3Dアバターによる面接官キャラクター表示' },
-    { key: 'batch_interview', name: 'Batch Interview', nameJa: 'バッチインタビュー', type: 'boolean', allowedPlans: ['TRIAL', 'PRO', 'ENT'], descriptionJa: '複数回答者への一括インタビュー配信・管理' },
+    { key: 'interview_session', name: 'Interview Session', nameJa: 'インタビューセッション', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'AIインタビューセッションの作成・実行' },
+    { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: '音声認識によるインタビュー回答の入力' },
+    { key: 'voice_synthesis', name: 'Voice Synthesis', nameJa: '音声合成', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'AI面接官の質問読み上げ（TTS）' },
+    { key: 'excel_grid', name: 'Excel Grid View', nameJa: 'Excelグリッド表示', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'Syncfusion ej2-react-grids によるインタビュー結果の一覧表示・ソート・フィルタ' },
+    { key: 'excel_import', name: 'Excel Import', nameJa: 'Excelインポート', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'Excel ファイルからのデータ取り込み（テンプレート・回答者・案件の一括登録）' },
+    { key: 'excel_export', name: 'Excel Export', nameJa: 'Excelエクスポート', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'インタビュー結果のExcel形式エクスポート' },
+    { key: 'ai_analysis', name: 'AI Analysis', nameJa: 'AI分析', type: 'limit', allowedPlans: ['ENT'], limitValues: { ENT: -1 }, descriptionJa: 'AIによる回答の構造化・感情分析・課題抽出（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
+    { key: 'data_mart', name: 'Data Mart', nameJa: 'データマート', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'インタビュー結果の自動分類・ナレッジマート生成' },
+    { key: 'search', name: 'Full-text Search', nameJa: '全文検索', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'インタビュー回答のハイブリッド検索' },
+    { key: 'vrm_avatar', name: 'VRM Avatar', nameJa: 'VRMアバター', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: 'VRM 3Dアバターによる面接官キャラクター表示' },
+    { key: 'batch_interview', name: 'Batch Interview', nameJa: 'バッチインタビュー', type: 'boolean', allowedPlans: ['ENT'], descriptionJa: '複数回答者への一括インタビュー配信・管理' },
   ],
 };
 
@@ -1895,16 +1949,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
 /** デフォルトのプラン別制限 */
 export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   TRIAL: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: false },
-  STD: { monthlyLimit: -1, maxFileSizeMB: 100, maxStorageItems: 50, maxResolution: '1080p', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: false },
-  PRO: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: true },
+  BIZ: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: true },
   ENT: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: true, priorityProcessing: true },
 };
 
 /** InsightCast 専用のプラン別制限 */
 export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   TRIAL: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: false },
-  STD: { monthlyLimit: -1, maxFileSizeMB: 200, maxStorageItems: -1, maxResolution: '1080p', hasWatermark: false, batchEnabled: false, apiEnabled: false, priorityProcessing: false },
-  PRO: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: false },
+  BIZ: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: false },
   ENT: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: true, priorityProcessing: true },
 };
 
@@ -1959,8 +2011,8 @@ export function getCommonFeatureDefinition(featureKey: string): FeatureDefinitio
  * @returns 利用可能かどうか
  *
  * @example
- * checkProductFeature('INMV', 'subtitle', 'PRO')  // true
- * checkProductFeature('INMV', 'subtitle', 'STD')  // false
+ * checkProductFeature('INMV', 'subtitle', 'BIZ')  // true
+ * checkProductFeature('INMV', 'subtitle', 'ENT')  // true
  */
 export function checkProductFeature(product: ProductCode, featureKey: string, plan: PlanCode): boolean {
   const feature = getFeatureDefinition(product, featureKey);
@@ -1981,7 +2033,7 @@ export function checkProductFeature(product: ProductCode, featureKey: string, pl
  *
  * @example
  * checkCommonFeature('api_access', 'ENT')  // true
- * checkCommonFeature('api_access', 'PRO')  // false
+ * checkCommonFeature('api_access', 'BIZ')  // false
  */
 export function checkCommonFeature(featureKey: string, plan: PlanCode): boolean {
   const feature = getCommonFeatureDefinition(featureKey);
@@ -2097,7 +2149,7 @@ export function getProductDisplayName(product: ProductCode, locale: 'en' | 'ja' 
 /**
  * 機能に必要な最低プランを取得
  *
- * TRIAL は評価用の特殊プランのため除外し、購入可能なプラン（STD/PRO/ENT）から
+ * TRIAL は評価用の特殊プランのため除外し、購入可能なプラン（BIZ/ENT）から
  * 最低要件を返す。TRIAL のみで利用可能な機能は 'TRIAL' を返す。
  */
 export function getRequiredPlan(product: ProductCode, featureKey: string): PlanCode | null {

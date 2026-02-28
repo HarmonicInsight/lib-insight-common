@@ -38,9 +38,9 @@ class ProductCode(Enum):
 
 class Plan(Enum):
     """プラン"""
-    TRIAL = "TRIAL"    # トライアル（14日間）
-    STD = "STD"        # Standard
-    PRO = "PRO"        # Professional
+    FREE = "FREE"      # フリー
+    TRIAL = "TRIAL"    # トライアル（30日間）
+    BIZ = "BIZ"        # Business
     ENT = "ENT"        # Enterprise
 
 
@@ -58,9 +58,9 @@ PRODUCT_NAMES: Dict[ProductCode, str] = {
 }
 
 PLAN_NAMES: Dict[Plan, str] = {
+    Plan.FREE: "フリー",
     Plan.TRIAL: "トライアル",
-    Plan.STD: "Standard",
-    Plan.PRO: "Professional",
+    Plan.BIZ: "Business",
     Plan.ENT: "Enterprise",
 }
 
@@ -79,12 +79,12 @@ PRODUCT_PLANS: Dict[str, list] = {
 }
 
 # トライアル期間（日数）
-TRIAL_DAYS = 14
+TRIAL_DAYS = 30
 
 # ライセンスキー正規表現
 # 形式: PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 LICENSE_KEY_REGEX = re.compile(
-    r"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(TRIAL|STD|PRO|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+    r"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(FREE|TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
 )
 
 

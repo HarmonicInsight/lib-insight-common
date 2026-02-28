@@ -7,11 +7,10 @@
  * 【設計方針】
  * - ペルソナ（3キャラクター）は内部用。UIには公開しない。
  * - モデル選択は MODEL_REGISTRY で一元管理。
- *   - ティア（Standard/Premium）でデフォルトモデルが決まる。
- *   - ユーザーはティア内で利用可能なモデルを選択できる。
+ *   - BYOK（Bring Your Own Key）— クライアントが自由にモデルを選択。
+ *   - モデルティア制限なし。全プランで全モデル利用可能。
  *   - 新モデル追加時はレジストリに1エントリ追加するだけ。
- * - Standard ティア: Sonnet 系（デフォルト: 最新 Sonnet）
- * - Premium ティア: Opus 系（デフォルト: 最新 Opus）
+ * - レジストリ内のデフォルト: Sonnet 系（UI のデフォルト選択用）
  * - 設定画面でモデル選択 UI を表示し、ユーザーが変更可能。
  *
  * 詳細仕様: standards/AI_ASSISTANT.md
@@ -243,13 +242,12 @@ export const MODEL_REGISTRY: ModelDefinition[] = [
     displayName: 'Opus 4',
     version: '4',
     releaseDate: '2025-05-14',
-    minimumTier: 'premium',
+    minimumTier: 'standard',
     inputPer1M: 15,
     outputPer1M: 75,
     maxContextTokens: 200_000,
     icon: '💎',
     status: 'active',
-    isDefaultForTier: 'premium',
     descriptionJa: '最高性能。レポート・精密文書・深い分析に最適',
     descriptionEn: 'Most capable. Best for reports, precision documents, and deep analysis.',
   },
@@ -258,13 +256,13 @@ export const MODEL_REGISTRY: ModelDefinition[] = [
 /**
  * ユーザーのモデル選択設定
  *
- * ユーザーが自分のティア内で利用可能なモデルを選択できる。
- * 未設定の場合はティアのデフォルトモデルが使用される。
+ * BYOK のため全プランで全モデル利用可能。ユーザーが自由にモデルを選択できる。
+ * 未設定の場合はデフォルトモデル（Sonnet）が使用される。
  */
 export interface UserModelPreference {
-  /** Standard ティアで使用するモデル ID */
+  /** Standard ティアで使用するモデル ID（BYOK — モデル制限なし） */
   standardTierModel?: string;
-  /** Premium ティアで使用するモデル ID */
+  /** Premium ティアで使用するモデル ID（BYOK — モデル制限なし） */
   premiumTierModel?: string;
 }
 
@@ -278,7 +276,7 @@ export function getModelFromRegistry(modelId: string): ModelDefinition | undefin
 /**
  * ティアで利用可能なモデル一覧を取得
  *
- * ユーザーのモデル選択 UI で表示するリスト。
+ * BYOK のため全プランで全モデル利用可能。ティアによるフィルタリングは行わない。
  * active なモデルのみ返す（deprecated / preview は含まない）。
  * preview は includePreview: true で含められる（ENT 向け）。
  */
@@ -287,8 +285,7 @@ export function getAvailableModelsForTier(
   options?: { includePreview?: boolean; includeDeprecated?: boolean },
 ): ModelDefinition[] {
   return MODEL_REGISTRY.filter(m => {
-    // ティアチェック
-    if (tier === 'standard' && m.minimumTier === 'premium') return false;
+    // BYOK — ティアによるモデル制限なし（全モデル利用可能）
 
     // ステータスチェック
     if (m.status === 'deprecated' && !options?.includeDeprecated) return false;
@@ -345,11 +342,9 @@ export function resolveModel(
 
     if (preferredId) {
       const model = getModelFromRegistry(preferredId);
-      // モデルが存在し、ティアで利用可能で、deprecated でないこと
+      // モデルが存在し、deprecated でないこと（BYOK — ティア制限なし）
       if (model && model.status !== 'deprecated') {
-        if (tier === 'premium' || model.minimumTier === 'standard') {
-          return model.id;
-        }
+        return model.id;
       }
     }
   }
@@ -410,21 +405,11 @@ export function validateModelSelection(
     };
   }
 
-  if (model.status === 'preview' && tier !== 'premium') {
-    return {
-      valid: false,
-      reason: `Preview model "${model.displayName}" requires Premium tier`,
-      reasonJa: `プレビューモデル "${model.displayName}" は Premium ティアが必要です`,
-    };
+  if (model.status === 'preview') {
+    // BYOK — preview モデルも全ティアで利用可能
   }
 
-  if (tier === 'standard' && model.minimumTier === 'premium') {
-    return {
-      valid: false,
-      reason: `Model "${model.displayName}" requires Premium tier`,
-      reasonJa: `モデル "${model.displayName}" は Premium ティアが必要です`,
-    };
-  }
+  // BYOK — モデルティア制限なし。全プランで全モデル利用可能。
 
   return { valid: true };
 }
@@ -1855,7 +1840,7 @@ export const AI_FEATURE_KEY = 'ai_assistant';
 /**
  * AI アシスタントが利用可能なプラン
  */
-export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
+export const AI_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'BIZ', 'ENT'];
 
 /**
  * AI アシスタントが利用可能かチェック（プランのみ）
@@ -1884,7 +1869,7 @@ export function getAiAssistantCredits(plan: PlanCode): number {
 export const AI_EDITOR_FEATURE_KEY = 'ai_editor';
 
 /** AI エディターが利用可能なプラン */
-export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
+export const AI_EDITOR_ALLOWED_PLANS: PlanCode[] = ['TRIAL', 'BIZ', 'ENT'];
 
 /**
  * AI エディターが利用可能かチェック（プランのみ）
@@ -1908,8 +1893,8 @@ export function canUseAiEditor(plan: PlanCode): boolean {
  * @example
  * ```typescript
  * const msg = getAiCreditLabel(credits, 'ja');
- * // → "AIアシスタント（Sonnet）— 残り 85回"
- * // → "AIアシスタント（Opus）— 残り 150回"
+ * // → "AIアシスタント（無制限）"  (BYOK — all plans unlimited)
+ * // → "AIアシスタント（スタンダード（Sonnet 4.6））— 残り 85回"  (addon pack)
  * ```
  */
 export function getAiCreditLabel(
@@ -1988,7 +1973,7 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
  * // 基本的な使い方（メモリのみ）
  * const result = buildEnhancedSystemPrompt({
  *   product: 'IOSH',
- *   plan: 'PRO',
+ *   plan: 'BIZ',
  *   userMessage: '今月の仕訳を準備してください',
  *   hotCache: loadedHotCache,
  *   locale: 'ja',
@@ -1998,7 +1983,7 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
  * // ドキュメントキャッシュ付き（before_ai_chat で解決済み）
  * const result = buildEnhancedSystemPrompt({
  *   product: 'IOSH',
- *   plan: 'PRO',
+ *   plan: 'BIZ',
  *   userMessage: 'A列の売上データを分析して',
  *   hotCache: loadedHotCache,
  *   documentCache: resolvedCache,  // ← document-cache.ts の ResolvedDocumentCache
@@ -2046,7 +2031,7 @@ export function buildEnhancedSystemPrompt(params: {
   const resolvedCache = documentCache ?? createEmptyResolvedCache();
   const documentCacheUsed = resolvedCache.available && resolvedCache.promptText.length > 0;
 
-  // 6. 利用可能コマンド一覧（PRO+ のみ表示）
+  // 6. 利用可能コマンド一覧（BIZ+ のみ表示）
   const availableCommands = getAvailableCommands(product, plan);
   let commandsInfo = '';
   if (availableCommands.length > 0) {

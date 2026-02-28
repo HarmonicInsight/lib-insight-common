@@ -312,12 +312,12 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | RPA解析 | ○ | ○ | ○ | BizRobo等のRPAソース解析 |
 | ローコード解析 | ○ | ○ | ○ | Forguncy等のローコードツール解析 |
 | 移行アセスメント | ○ | ○ | ○ | 工数見積もり・複雑度分析 |
-| akaBot変換 | — | ○ | ○ | BizRoboからakaBotへの変換 |
+| akaBot変換 | — | — | ○ | BizRoboからakaBotへの変換 |
 | JSON出力 | ○ | ○ | ○ | 解析結果のJSON形式出力 |
 | Markdown出力 | ○ | ○ | ○ | 解析結果のMarkdown形式出力 |
 
@@ -333,16 +333,16 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | スクリプト実行 | ○ | ○ | ○ | RPAスクリプトの実行 |
 | プリセット利用 | ○ | ○ | ○ | 定義済みスクリプトテンプレート |
-| JOB保存数 | 50 | 無制限 | 無制限 | 保存可能なJOB数 |
-| クラウド同期 | — | ○ | ○ | JOBのクラウド同期 |
-| AIコードエディター | 月50回 | 月200回 | 無制限 | AIによるPythonコード生成・編集 |
-| オーケストレーター | — | ○ | ○ | Agent集中管理・JOB配信・実行監視 |
-| Agent管理 | — | 50台 | 無制限 | 管理可能なInsight Business Suite端末数 |
-| JOBスケジューラー | — | ○ | ○ | 定期実行スケジュール設定 |
+| JOB保存数 | 5 | 50 | 無制限 | 保存可能なJOB数 |
+| クラウド同期 | — | — | ○ | JOBのクラウド同期 |
+| AIコードエディター | ○(BYOK) | ○(BYOK) | 無制限 | AIによるPythonコード生成・編集 |
+| オーケストレーター | — | — | ○ | Agent集中管理・JOB配信・実行監視 |
+| Agent管理 | — | — | 無制限 | 管理可能な Insight Business Suite 端末数 |
+| JOBスケジューラー | — | — | ○ | 定期実行スケジュール設定 |
 
 #### IVIN — InterviewInsight
 
@@ -372,15 +372,15 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | 動画生成 | ○ | ○ | ○ | 画像・テキストから動画を生成 |
-| 字幕 | — | ○ | ○ | 動画への字幕追加 |
-| 字幕スタイル選択 | — | ○ | ○ | フォント・色・位置のカスタマイズ |
-| トランジション | — | ○ | ○ | シーン間のトランジション効果 |
-| PPTX取込 | — | ○ | ○ | PowerPointファイルからの素材取込 |
+| 字幕 | — | — | ○ | 動画への字幕追加 |
+| 字幕スタイル選択 | — | — | ○ | フォント・色・位置のカスタマイズ |
+| トランジション | — | — | ○ | シーン間のトランジション効果 |
+| PPTX取込 | — | — | ○ | PowerPointファイルからの素材取込 |
 
-**プラン別制限（INMV固有）:** STD: 最大200MB / 1080p、PRO+: 無制限 / 4K
+**プラン別制限（INMV固有）:** BIZ: 最大200MB / 1080p、ENT: 無制限 / 4K
 
 #### INIG — InsightImageGen
 
@@ -394,20 +394,20 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | 画像生成 | ○ | ○ | ○ | Stable Diffusionによる画像生成 |
 | バッチ画像生成 | ○ | ○ | ○ | 複数画像の一括生成 |
 | 音声生成 | ○ | ○ | ○ | VOICEVOXによる音声生成 |
-| キャラクタープロンプト | 20個 | 無制限 | 無制限 | 保存可能なプロンプト数 |
-| 高解像度出力 | — | ○ | ○ | 高解像度画像の生成 |
-| クラウド同期 | — | ○ | ○ | プロンプト・設定の同期 |
+| キャラクタープロンプト | 5個 | 20個 | 無制限 | 保存可能なプロンプト数 |
+| 高解像度出力 | — | — | ○ | 高解像度画像の生成 |
+| クラウド同期 | — | — | ○ | プロンプト・設定の同期 |
 
 ---
 
 ### Tier 3: Insight Business Suite
 
-> Insight Business Suite 系は共通で **新規ドキュメント作成（MS Office 不要）**、AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（PRO+）を搭載。
+> Insight Business Suite 系は共通で **新規ドキュメント作成（MS Office 不要）**、AI アシスタント（Claude API）、参考資料、ドキュメント評価、音声入力、VRMアバター（ENT）を搭載。
 > Syncfusion で Office 互換ファイル（.xlsx / .docx / .pptx）を直接生成するため、MS Office を購入せずにドキュメントの作成・編集・保存がすべて完結する。
 > 独自プロジェクトファイル形式（.inss / .iosh / .iosd）対応、AI メモリ機能あり。
 
@@ -424,8 +424,8 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | **新規作成** | **○** | **○** | **○** | **空の PowerPoint を新規作成（MS Office 不要）** |
 | スライド編集 | ○ | ○ | ○ | スライドのテキスト・レイアウト編集 |
 | テキスト書式 | ○ | ○ | ○ | フォント（種類・サイズ・太字・斜体・下線・色）、段落（配置・行間・箇条書き） |
@@ -447,24 +447,24 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 発表者ツール | ○ | ○ | ○ | ノート表示・次スライドプレビュー・タイマー・レーザーポインター |
 | 発表者ノート | ○ | ○ | ○ | スライドごとの発表者メモの編集・印刷 |
 | 印刷 | ○ | ○ | ○ | 配布資料・ノート付き印刷 |
-| PDF出力 | ○ | ○ | ○ | PDF形式でエクスポート |
+| PDF出力 | — | ○ | ○ | PDF形式でエクスポート |
 | 検索・置換 | ○ | ○ | ○ | スライド内テキストの検索・一括置換 |
 | スペルチェック | ○ | ○ | ○ | スライド内テキストのスペルチェック |
-| スライドマスター | — | ○ | ○ | スライドマスター・レイアウトの編集 |
-| スライド切替効果 | — | ○ | ○ | スライド間のトランジション効果 |
-| アニメーション | — | ○ | ○ | オブジェクトのアニメーション効果（開始・強調・終了・軌跡） |
+| スライドマスター | — | — | ○ | スライドマスター・レイアウトの編集 |
+| スライド切替効果 | — | — | ○ | スライド間のトランジション効果 |
+| アニメーション | — | — | ○ | オブジェクトのアニメーション効果（開始・強調・終了・軌跡） |
 | コンテンツ抽出 | ○ | ○ | ○ | PowerPointからテキスト・画像を抽出 |
 | スライド一括更新 | ○ | ○ | ○ | スライドの一括更新 |
 | JSON入出力 | ○ | ○ | ○ | JSON形式でのデータ入出力 |
 | フォルダ一括処理 | ○ | ○ | ○ | 複数ファイルの一括処理 |
 | 2ファイル比較 | ○ | ○ | ○ | 2つのPowerPointファイルの差分比較 |
-| 自動バックアップ | — | ○ | ○ | 編集前の自動バックアップ作成 |
-| AIアシスタント | 月50回 | 月200回 | 無制限 | AIによるスライドテキストの校正・改善提案 |
-| AIコードエディター | — | 月200回 | 無制限 | AIによるPython自動処理 |
+| 自動バックアップ | — | — | ○ | 編集前の自動バックアップ作成 |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | AIによるスライドテキストの校正・改善提案 |
+| AIコードエディター | — | — | 無制限 | AIによるPython自動処理 |
 | 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
-| ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
+| ドキュメント評価 | ○(BYOK) | ○(BYOK) | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
-| VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
+| VRMアバター | — | — | ○ | 3Dアバターによる音声会話 |
 
 #### IOSH — Insight Performance Management
 
@@ -479,8 +479,8 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | **新規作成** | **○** | **○** | **○** | **空の Excel スプレッドシートを新規作成（MS Office 不要）** |
 | Excel読み込み・編集 | ○ | ○ | ○ | Excelファイルの読み込み・編集・保存 |
 | セル書式設定 | ○ | ○ | ○ | フォント（種類・サイズ・太字・斜体・下線・色）、背景色・罫線 |
@@ -503,31 +503,31 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | コメント | ○ | ○ | ○ | セルへのコメント挿入・編集・スレッド表示 |
 | ページ設定 | ○ | ○ | ○ | 用紙サイズ・余白・印刷の向き・印刷範囲 |
 | 印刷 | ○ | ○ | ○ | 範囲指定・ヘッダーフッター・改ページ設定対応 |
-| PDF出力 | ○ | ○ | ○ | PDF形式でエクスポート |
+| PDF出力 | — | ○ | ○ | PDF形式でエクスポート |
 | スペルチェック | ○ | ○ | ○ | セル内テキストのスペルチェック |
 | シート・ブックの保護 | ○ | ○ | ○ | シート保護（パスワード付き）・ブック構成の保護 |
-| 条件付き書式 | — | ○ | ○ | カラースケール・データバー・アイコンセット |
-| ピボットテーブル | — | ○ | ○ | データの集計・クロス分析 |
-| データ入力規則 | — | ○ | ○ | 入力制限・ドロップダウンリスト |
-| 区切り位置 | — | ○ | ○ | テキストデータを区切り文字で複数列に分割 |
-| 重複の削除 | — | ○ | ○ | 選択範囲内の重複データ検出・削除 |
-| グループ化とアウトライン | — | ○ | ○ | 行・列のグループ化・アウトライン・小計 |
-| ゴールシーク | — | ○ | ○ | 目標値に対するセル値の逆算（What-If 分析） |
+| 条件付き書式 | — | — | ○ | カラースケール・データバー・アイコンセット |
+| ピボットテーブル | — | — | ○ | データの集計・クロス分析 |
+| データ入力規則 | — | — | ○ | 入力制限・ドロップダウンリスト |
+| 区切り位置 | — | — | ○ | テキストデータを区切り文字で複数列に分割 |
+| 重複の削除 | — | — | ○ | 選択範囲内の重複データ検出・削除 |
+| グループ化とアウトライン | — | — | ○ | 行・列のグループ化・アウトライン・小計 |
+| ゴールシーク | — | — | ○ | 目標値に対するセル値の逆算（What-If 分析） |
 | バージョン管理 | ○ | ○ | ○ | ファイルのバージョン管理・履歴保持 |
 | 差分比較 | ○ | ○ | ○ | バージョン間のセル差分比較 |
 | セル変更ログ | ○ | ○ | ○ | セル単位の変更履歴の記録・表示 |
-| エクスポート | ○ | ○ | ○ | 変更履歴・差分のエクスポート出力 |
+| エクスポート | — | ○ | ○ | 変更履歴・差分のエクスポート出力 |
 | 2ファイル比較 | ○ | ○ | ○ | 2つのExcelファイルのセル単位差分比較 |
-| 変更者表示 | — | ○ | ○ | 変更者（誰が変更したか）を表示 |
-| 掲示板 | — | ○ | ○ | チーム向け掲示板機能 |
+| 変更者表示 | — | — | ○ | 変更者（誰が変更したか）を表示 |
+| 掲示板 | — | — | ○ | チーム向け掲示板機能 |
 | 付箋 | ○ | ○ | ○ | セルに付箋（メモ）を貼り付け |
-| メッセージ送信 | — | ○ | ○ | チームメンバーへのメッセージ送信 |
-| AIアシスタント | 月50回 | 月200回 | 無制限 | AIチャットによるExcel操作支援 |
-| AIコードエディター | — | 月200回 | 無制限 | AIによるPython自動処理 |
+| メッセージ送信 | — | — | ○ | チームメンバーへのメッセージ送信 |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | AIチャットによるExcel操作支援 |
+| AIコードエディター | — | — | 無制限 | AIによるPython自動処理 |
 | 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
-| ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
+| ドキュメント評価 | ○(BYOK) | ○(BYOK) | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
-| VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
+| VRMアバター | — | — | ○ | 3Dアバターによる音声会話 |
 
 #### IOSD — Insight AI Briefcase
 
@@ -542,8 +542,8 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | **新規作成** | **○** | **○** | **○** | **空の Word ドキュメントを新規作成（MS Office 不要）** |
 | ドキュメント読取・書込 | ○ | ○ | ○ | Word ドキュメントの読み込み・編集・保存 |
 | フォント書式 | ○ | ○ | ○ | フォント種類・サイズ・太字・斜体・下線・取り消し線・文字色・蛍光ペン |
@@ -568,23 +568,23 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 透かし | ○ | ○ | ○ | テキスト・画像の透かし挿入 |
 | 行番号 | ○ | ○ | ○ | 行番号の表示設定 |
 | 印刷 | ○ | ○ | ○ | ページ範囲指定・部数・用紙サイズ対応 |
-| PDF出力 | ○ | ○ | ○ | PDF形式でエクスポート |
-| フォーマット変換 | ○ | ○ | ○ | PDF・HTML・RTF・テキスト等への変換 |
+| PDF出力 | — | ○ | ○ | PDF形式でエクスポート |
+| フォーマット変換 | — | ○ | ○ | PDF・HTML・RTF・テキスト等への変換 |
 | スペルチェック | ○ | ○ | ○ | 文書内テキストのスペルチェック・文章校正 |
 | 文字カウント | ○ | ○ | ○ | 文字数・単語数・段落数・行数のカウント |
 | 文書の保護 | ○ | ○ | ○ | 編集制限・パスワード保護・読み取り専用 |
-| 目次生成 | — | ○ | ○ | 見出しスタイルから目次を自動生成・更新 |
-| 変更履歴の記録 | — | ○ | ○ | 変更追跡・承認・却下（Word 互換） |
-| テンプレート | — | ○ | ○ | テンプレートからのドキュメント生成 |
-| 差し込み印刷 | — | ○ | ○ | データソース（Excel/CSV）からの差し込み印刷・文書生成 |
-| バッチ処理 | — | ○ | ○ | 複数ドキュメントの一括処理 |
-| マクロ実行 | — | ○ | ○ | VBAマクロの実行・変換 |
-| AIアシスタント | 月50回 | 月200回 | 無制限 | AIによるドキュメントの校正・要約・構成提案 |
-| AIコードエディター | — | 月200回 | 無制限 | AIによるPython自動処理 |
+| 目次生成 | — | — | ○ | 見出しスタイルから目次を自動生成・更新 |
+| 変更履歴の記録 | — | — | ○ | 変更追跡・承認・却下（Word 互換） |
+| テンプレート | — | — | ○ | テンプレートからのドキュメント生成 |
+| 差し込み印刷 | — | — | ○ | データソース（Excel/CSV）からの差し込み印刷・文書生成 |
+| バッチ処理 | — | — | ○ | 複数ドキュメントの一括処理 |
+| マクロ実行 | — | — | ○ | VBAマクロの実行・変換 |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | AIによるドキュメントの校正・要約・構成提案 |
+| AIコードエディター | — | — | 無制限 | AIによるPython自動処理 |
 | 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
-| ドキュメント評価 | 月50回 | 月200回 | 無制限 | AIによる多角的評価・スコアリング |
+| ドキュメント評価 | ○(BYOK) | ○(BYOK) | 無制限 | AIによる多角的評価・スコアリング |
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
-| VRMアバター | — | ○ | ○ | 3Dアバターによる音声会話 |
+| VRMアバター | — | — | ○ | 3Dアバターによる音声会話 |
 
 #### INPY — InsightPy
 
@@ -598,13 +598,13 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 **主要機能:**
 
-| 機能 | STD | PRO | ENT | 説明 |
-|------|:---:|:---:|:---:|------|
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
 | コード実行 | ○ | ○ | ○ | Pythonコードの実行 |
 | プリセット利用 | ○ | ○ | ○ | 定義済みスクリプトテンプレート |
-| スクリプト保存数 | 50 | 無制限 | 無制限 | 保存可能なスクリプト数 |
-| クラウド同期 | — | ○ | ○ | スクリプトのクラウド同期 |
-| AIコードエディター | 月50回 | 月200回 | 無制限 | AIによるPythonコード生成・編集・デバッグ |
+| スクリプト保存数 | 5 | 50 | 無制限 | 保存可能なスクリプト数 |
+| クラウド同期 | — | — | ○ | スクリプトのクラウド同期 |
+| AIコードエディター | ○(BYOK) | ○(BYOK) | 無制限 | AIによるPythonコード生成・編集・デバッグ |
 
 ---
 
@@ -619,24 +619,24 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | **バージョン** | **1.5.0** (build 22) — **安定版** |
 | **リポジトリ** | `win-app-insight-sheet-senior` |
 | **カラーテーマ** | Ivory & Gold |
-| **プラン体系** | STD / ENT のみ（PROなし） |
+| **プラン体系** | FREE / BIZ / ENT |
 
 **主要機能:**
 
-| 機能 | STD | ENT | 説明 |
-|------|:---:|:---:|------|
-| **新規作成** | **○** | **○** | **空の表計算・文書を新規作成（MS Office 不要）** |
-| 表計算 | ○ | ○ | Excelファイルの読み込み・編集・保存 |
-| 文書作成 | ○ | ○ | Wordドキュメントの読み込み・編集・保存 |
-| iCloudメール | ○ | ○ | iCloudメールの送受信（iPhoneと同じメールをPCで閲覧） |
-| AIアシスタント | 月50回 | 無制限 | 自然言語操作支援（「A2に1万円入れて」等） |
-| 音声入力 | ○ | ○ | 音声認識によるハンズフリー入力 |
-| 読み上げ | ○ | ○ | メール・文書の音声読み上げ |
-| 文字サイズ調整 | ○ | ○ | 50%〜200%の拡大縮小 |
-| 初期設定ウィザード | ○ | ○ | 5ステップの簡単初期設定 |
-| チュートリアル | ○ | ○ | 10ステップの対話型ガイドツアー |
-| 印刷 | ○ | ○ | シニア向け大きい文字での印刷 |
-| 連絡先管理 | ○ | ○ | グループ別連絡先管理 |
+| 機能 | FREE | BIZ | ENT | 説明 |
+|------|:----:|:---:|:---:|------|
+| **新規作成** | **○** | **○** | **○** | **空の表計算・文書を新規作成（MS Office 不要）** |
+| 表計算 | ○ | ○ | ○ | Excelファイルの読み込み・編集・保存 |
+| 文書作成 | ○ | ○ | ○ | Wordドキュメントの読み込み・編集・保存 |
+| iCloudメール | ○ | ○ | ○ | iCloudメールの送受信（iPhoneと同じメールをPCで閲覧） |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | 自然言語操作支援（「A2に1万円入れて」等） |
+| 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
+| 読み上げ | ○ | ○ | ○ | メール・文書の音声読み上げ |
+| 文字サイズ調整 | ○ | ○ | ○ | 50%〜200%の拡大縮小 |
+| 初期設定ウィザード | ○ | ○ | ○ | 5ステップの簡単初期設定 |
+| チュートリアル | ○ | ○ | ○ | 10ステップの対話型ガイドツアー |
+| 印刷 | ○ | ○ | ○ | シニア向け大きい文字での印刷 |
+| 連絡先管理 | ○ | ○ | ○ | グループ別連絡先管理 |
 
 ---
 
@@ -656,14 +656,14 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ---
 
-### 全製品共通機能（ENT/PRO）
+### 全製品共通機能（ENT）
 
-| 機能 | PRO | ENT | 説明 |
+| 機能 | BIZ | ENT | 説明 |
 |------|:---:|:---:|------|
 | API利用 | — | ○ | 外部システムからのAPI経由アクセス |
 | シングルサインオン | — | ○ | 企業の認証基盤との連携 |
 | 監査ログ | — | ○ | 操作履歴の詳細記録 |
-| 優先サポート | ○ | ○ | 優先的なサポート対応 |
+| 優先サポート | — | ○ | 優先的なサポート対応 |
 
 > **考え方**: 全製品コンサルティング案件の一環として提供。ソフトウェア単体ではなく、コンサルフィーと組み合わせて収益化。パートナー（代理店）経由での販売も可能。
 
@@ -780,34 +780,34 @@ getResellerProducts('gold');        // 全製品
 
 ## 8. ライセンスシステム
 
-### プラン体系（全製品 法人向け — FREE廃止）
+### プラン体系（全製品 法人向け — 4ティア）
 
 | プラン | 説明 | 対象 | 有効期限 |
 |-------|------|------|---------|
-| TRIAL | 全機能利用可能（評価用） | 評価企業 | 14日間 |
-| STD | 法人向け標準機能 | 法人利用 | 365日 |
-| PRO | 法人向け全機能（AI月200回・コラボレーション） | 法人・チーム | 365日 |
-| ENT | カスタマイズ | 大企業 | 要相談 |
+| FREE | 全機能利用可能（保存・エクスポート制限あり） | 評価・個人利用 | 無期限 |
+| TRIAL | 全機能利用可能（評価用） | 評価企業 | 30日間 |
+| BIZ | 法人向け全機能 | 法人利用 | 365日 |
+| ENT | 法人向け全機能（カスタマイズ・API/SSO/監査ログ） | 大企業 | 要相談 |
 
 ### Insight Performance Management (IOSH) 機能マトリクス
 
-> **STD = 基本機能+AI（月50回）**、**PRO = 全機能+AI月200回+コラボレーション**、**ENT = AI無制限**
+> **FREE = 全機能利用可能（保存・エクスポート制限）**、**BIZ/ENT = 全機能**。AI は全プラン BYOK（クライアント自社 API キー・回数制限なし・モデル制限なし）。
 
-| 機能 | TRIAL | STD | PRO | ENT |
-|------|:-----:|:---:|:---:|:---:|
+| 機能 | FREE | TRIAL | BIZ | ENT |
+|------|:----:|:-----:|:---:|:---:|
 | Excel読み込み・編集 | ✅ | ✅ | ✅ | ✅ |
 | バージョン管理 | ✅ | ✅ | ✅ | ✅ |
 | 差分比較 | ✅ | ✅ | ✅ | ✅ |
 | セル変更ログ | ✅ | ✅ | ✅ | ✅ |
-| エクスポート | ✅ | ✅ | ✅ | ✅ |
+| エクスポート | ❌ | ✅ | ✅ | ✅ |
 | 2ファイル比較 | ✅ | ✅ | ✅ | ✅ |
-| 変更者表示 | ✅ | ❌ | ✅ | ✅ |
-| 掲示板 | ✅ | ❌ | ✅ | ✅ |
+| 変更者表示 | ✅ | ✅ | ❌ | ✅ |
+| 掲示板 | ✅ | ✅ | ❌ | ✅ |
 | 付箋 | ✅ | ✅ | ✅ | ✅ |
-| AIアシスタント | ✅ | ✅(50回) | ✅(200回) | ✅ |
-| AIコードエディター | ✅ | ❌ | ✅(200回) | ✅ |
-| Pythonスクリプト | ✅ | ❌ | ✅ | ✅ |
-| メッセージ送信 | ✅ | ❌ | ✅ | ✅ |
+| AIアシスタント | ✅(BYOK) | ✅(BYOK) | ✅(BYOK) | ✅(BYOK) |
+| AIコードエディター | ❌ | ✅ | ❌ | ✅ |
+| Pythonスクリプト | ❌ | ✅ | ❌ | ✅ |
+| メッセージ送信 | ❌ | ✅ | ❌ | ✅ |
 
 ### Insight Business Suite AI アシスタント共通仕様
 
@@ -818,57 +818,37 @@ getResellerProducts('gold');        // 全製品
 | 項目 | 仕様 |
 |------|------|
 | AI プロバイダー | **Claude (Anthropic) API** のみ |
+| API キー方式 | **BYOK**（クライアント企業が自社で Anthropic から購入） |
 | モデル管理 | `MODEL_REGISTRY` で一元管理（`config/ai-assistant.ts`） |
-| モデル選択 | ティアでデフォルト決定 + **ユーザーがティア内で変更可能** |
-| Standard ティア | Sonnet 系（デフォルト: 最新 Sonnet） |
-| Premium ティア | 全モデル利用可能（デフォルト: 最新 Opus） |
-| ライセンス制御 | TRIAL: 無制限 / STD: 月50回 / PRO: 月200回 / ENT: 無制限 |
-| 追加パック | Standard / Premium（価格はパートナーと協議の上決定） |
+| モデル選択 | **全プランで全モデル利用可能** — クライアントが自由に選択 |
+| 利用制限 | **なし**（回数制限なし・モデルティア制限なし） |
 | 機能キー | `ai_assistant`（products.ts で統一） |
-
-**モデルティア:**
-
-| ティア | デフォルトモデル | 利用可能モデル | 利用条件 |
-|--------|----------------|---------------|---------|
-| Standard | 最新 Sonnet | Haiku + Sonnet 系 | 基本プラン（STD/PRO）、Standard アドオン |
-| Premium | 最新 Opus | 全モデル | Premium アドオン購入、TRIAL、ENT |
 
 ```typescript
 import {
   resolveModel,
-  getAvailableModelsForTier,
   getBaseSystemPrompt,
   canUseAiAssistant,
-  getAiCreditLabel,
   SPREADSHEET_TOOLS,
   MODEL_REGISTRY,
 } from '@/insight-common/config/ai-assistant';
-import { calculateCreditBalance } from '@/insight-common/config/usage-based-licensing';
 
-// ライセンスチェック
-canUseAiAssistant('PRO');   // true
-canUseAiAssistant('STD');   // true（月50回）
+// ライセンスチェック（全プランで利用可能）
+canUseAiAssistant('BIZ');   // true
+canUseAiAssistant('FREE');  // true
 
-// モデル選択 UI: ティアで利用可能なモデル一覧
-const models = getAvailableModelsForTier('standard');
-// → [Haiku 4.5, Sonnet 4, Sonnet 4.6]
-
-// モデル決定（ユーザー選択を考慮）
-const balance = calculateCreditBalance('PRO', 10, addonPacks);
-const model = resolveModel(balance.effectiveModelTier, userPreference);
-// → ユーザー未選択: 'claude-sonnet-4-6-20260210'（Standard デフォルト）
-// → ユーザーが Sonnet 4 を選択: 'claude-sonnet-4-20250514'
-
-// クレジット表示（ユーザー選択モデル名を含む）
-getAiCreditLabel(balance, 'ja', userPreference);
-// → "AIアシスタント（スタンダード（Sonnet 4.6））— 残り 90回"
+// モデル選択 UI: 全モデルが利用可能（BYOK — 制限なし）
+// クライアントが自社の API キーで任意のモデルを選択
+const model = resolveModel(userPreference);
+// → ユーザーが Opus を選択: 'claude-opus-4-6-...'
+// → ユーザーが Sonnet を選択: 'claude-sonnet-4-6-...'
 ```
 
 ### ライセンスキー形式
 
 ```
 {製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}
-例: INCA-STD-2601-XXXX-XXXX-XXXX
+例: INCA-BIZ-2601-XXXX-XXXX-XXXX
 ```
 
 ### ライセンス画面（必須）
@@ -880,7 +860,7 @@ getAiCreditLabel(balance, 'ja', userPreference);
 │      Insight Product Name          │  ← Gold色、中央配置
 │                                    │
 │         現在のプラン                │
-│            STD                     │  ← プラン名、大きく表示
+│            BIZ                     │  ← プラン名、大きく表示
 │     有効期限: 2027年01月31日        │
 │                                    │
 │  ┌──────────────────────────────┐  │
@@ -981,7 +961,7 @@ const result = validateIssuanceRequest({
   customerEmail: 'user@example.com',
   customerName: '山田太郎',
   productCode: 'INSS',
-  plan: 'STD',
+  plan: 'BIZ',
   keyType: 'production',
   channel: 'partner_reseller',
   issuer: { type: 'partner', id: 'partner-123', partnerId: 'partner-123', partnerTier: 'silver' },
@@ -1080,7 +1060,7 @@ const notifyType = getUpdateNotificationType(result);
 // → 'dialog' | 'banner' | 'badge' | 'none' | 'force_dialog'
 
 // フィーチャーフラグ判定
-isFeatureEnabled(flag, { productCode: 'INSS', userId: 'user-123', plan: 'PRO' });
+isFeatureEnabled(flag, { productCode: 'INSS', userId: 'user-123', plan: 'BIZ' });
 
 // ポーリング間隔
 REMOTE_CONFIG_SETTINGS.polling.defaultIntervalMs;  // 4時間
@@ -1129,7 +1109,7 @@ report.iosh (ZIP archive)
 ├── document.xlsx                # 元の Office ファイル（製品により .pptx / .docx）
 ├── sticky_notes.json            # 付箋データ
 ├── ai_memory.json               # AI ホットキャッシュ
-├── ai_memory_deep/              # AI ディープストレージ（PRO+）
+├── ai_memory_deep/              # AI ディープストレージ（ENT）
 │   ├── glossary.json
 │   ├── people.json
 │   ├── projects.json
@@ -1165,7 +1145,7 @@ import {
 
 resolveProductByExtension('iosh');  // 'IOSH'
 getContextMenuProducts('xlsx');     // [{ product: 'IOSH', label: 'Insight Performance Management で開く' }]
-getFileAssociationInfo('IOSH');     // { progId: 'HarmonicInsight.InsightOfficeSheet', ... }  // progIdはレジストリキーのため据え置き
+getFileAssociationInfo('IOSH');     // { progId: 'HarmonicInsight.InsightPerformanceManagement', ... }
 
 // ZIP パッケージ仕様（config/project-file.ts）
 import {
@@ -1200,7 +1180,7 @@ const newMeta = createNewDocumentMetadata('IOSH', 'blank_spreadsheet', '山田�
 // → metadata.originalFileName === '新しいスプレッドシート.xlsx'
 
 // プラン別容量制限チェック
-checkProjectFileLimits('STD', { historyVersions: 25 });
+checkProjectFileLimits('BIZ', { historyVersions: 25 });
 // → { withinLimits: false, exceeded: ['history_versions (25/20)'] }
 ```
 
@@ -1214,7 +1194,7 @@ Insight Business Suite 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末�
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  InsightBot (Orchestrator) — PRO/ENT                     │
+│  InsightBot (Orchestrator) — ENT                           │
 │  ├ JOB 作成・編集（AI エディター）                         │
 │  ├ Agent ダッシュボード（登録・状態監視）                   │
 │  ├ スケジューラー（cron 相当の定期実行）                    │
@@ -1222,8 +1202,8 @@ Insight Business Suite 各アプリ（INSS/IOSH/IOSD）を Agent（実行端末�
 │                     WebSocket / REST                      │
 ├──────────────────────┼───────────────────────────────────┤
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
-│  │ Agent A  │  │ Agent B  │  │ Agent C  │  ← Insight Biz  │
-│  │ IOSH     │  │ INSS     │  │ IOSD     │    + bot_agent │
+│  │ Agent A  │  │ Agent B  │  │ Agent C  │ ← Business Suite│
+│  │ IOSH     │  │ INSS     │  │ IOSD     │  + bot_agent  │
 │  │ 経理PC   │  │ 営業PC   │  │ 法務PC   │    モジュール   │
 │  └──────────┘  └──────────┘  └──────────┘               │
 └─────────────────────────────────────────────────────────┘
@@ -1237,13 +1217,13 @@ InsightBot + Insight Business Suite はドキュメントを「中から」直�
 
 ### プラン別制限（INBT）
 
-| 機能 | STD | PRO | ENT |
-|------|:---:|:---:|:---:|
-| Orchestrator | ❌ | ✅ | ✅ |
-| Agent 管理数 | - | 50台 | 無制限 |
-| スケジューラー | ❌ | ✅ | ✅ |
-| 同時 JOB 配信 | - | 10 | 無制限 |
-| ログ保持期間 | - | 90日 | 365日 |
+| 機能 | FREE | BIZ | ENT |
+|------|:----:|:---:|:---:|
+| Orchestrator | ❌ | ❌ | ✅ |
+| Agent 管理数 | - | - | 無制限 |
+| スケジューラー | ❌ | ❌ | ✅ |
+| 同時 JOB 配信 | - | - | 無制限 |
+| ログ保持期間 | - | - | 365日 |
 
 ### API
 
@@ -1255,12 +1235,12 @@ import {
 } from '@/insight-common/config/orchestrator';
 
 // Orchestrator 利用可否
-canUseOrchestrator('PRO');  // true
-canUseOrchestrator('STD');  // false
+canUseOrchestrator('ENT');  // true
+canUseOrchestrator('BIZ');  // false
 
 // Agent 追加可否
-canAddAgent('PRO', 45);     // true（50台まで）
-canAddAgent('PRO', 50);     // false（上限到達）
+canAddAgent('ENT', 45);     // true
+canAddAgent('ENT', 100);    // true（無制限）
 
 // API エンドポイント
 ORCHESTRATOR_API.defaultPort;           // 9400
@@ -1272,7 +1252,7 @@ ORCHESTRATOR_API.endpoints.jobs.dispatch;  // { method: 'POST', path: '/api/jobs
 ```typescript
 // addon-modules.ts の bot_agent モジュールを有効化
 // → InsightBot Orchestrator からの JOB 受信が可能に
-canEnableModule('IOSH', 'bot_agent', 'PRO', ['python_runtime']);  // { allowed: true }
+canEnableModule('IOSH', 'bot_agent', 'ENT', ['python_runtime']);  // { allowed: true }
 ```
 
 ### ワークフロー（バッチ処理 / BPO パターン）
@@ -1303,24 +1283,24 @@ BPO（業務プロセス外注）での大量書類作成に対応。
 
 | パターン | 対象ユーザー | プラン | 機能 |
 |---------|------------|--------|------|
-| **個人 AI 利用** | 一般ユーザー | STD | AI チャット + 基本機能 |
-| **市民開発** | パワーユーザー | PRO | Python + AI エディター + ローカルワークフロー |
-| **リモート RPA** | BPO / IT 部門 | PRO/ENT (INBT) | Orchestrator + Agent + スケジューラー |
+| **個人 AI 利用** | 一般ユーザー | FREE/BIZ | AI チャット + 基本機能 |
+| **市民開発** | パワーユーザー | ENT | Python + AI エディター + ローカルワークフロー |
+| **リモート RPA** | BPO / IT 部門 | ENT (INBT) | Orchestrator + Agent + スケジューラー |
 
-### ローカルワークフロー（PRO Insight Business Suite）
+### ローカルワークフロー（ENT Insight Business Suite）
 
-PRO の Insight Business Suite ユーザーは Orchestrator なしで、ローカル PC 上の簡易自動化が可能。
+ENT の Insight Business Suite ユーザーは Orchestrator なしで、ローカル PC 上の簡易自動化が可能。
 
 ```typescript
 import { canEnableModule } from '@/insight-common/config/addon-modules';
 
-// PRO ユーザーはローカルワークフローを有効化可能
-canEnableModule('IOSH', 'local_workflow', 'PRO', ['python_runtime', 'python_scripts']);
+// ENT ユーザーはローカルワークフローを有効化可能
+canEnableModule('IOSH', 'local_workflow', 'ENT', ['python_runtime', 'python_scripts']);
 // { allowed: true }
 
-// STD ユーザーは不可
-canEnableModule('IOSH', 'local_workflow', 'STD', ['python_runtime', 'python_scripts']);
-// { allowed: false, reasonJa: 'ローカルワークフローには TRIAL/PRO/ENT プランが必要です' }
+// BIZ ユーザーは不可
+canEnableModule('IOSH', 'local_workflow', 'BIZ', ['python_runtime', 'python_scripts']);
+// { allowed: false, reasonJa: 'ローカルワークフローには TRIAL/ENT プランが必要です' }
 ```
 
 ### Orchestrator ワークフロー API
@@ -1349,12 +1329,12 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **製品コード**: config/products.ts に登録されている
 - [ ] **AI アシスタント**: `standards/AI_ASSISTANT.md` に準拠（Insight Business Suite 系のみ）
 - [ ] **AI アシスタント**: モデルティア（Standard/Premium）制御が実装されている
-- [ ] **AI アシスタント**: ライセンスゲート（TRIAL/STD/PRO/ENT — STD: 月50回 / PRO: 月200回）が実装されている
+- [ ] **AI アシスタント**: BYOK（クライアント自社 API キー）が実装されている（回数制限なし・モデル制限なし）
 - [ ] **プロジェクトファイル**: 独自拡張子（.inss/.iosh/.iosd）がインストーラーで登録されている
 - [ ] **プロジェクトファイル**: コマンドライン引数でファイルパスを受け取る起動処理が実装されている
-- [ ] **Orchestrator**: InsightBot PRO+ で Agent 管理 UI が実装されている（INBT のみ）
-- [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT PRO+ のみ）
-- [ ] **ローカルワークフロー**: PRO Insight Business Suite でローカル連続処理が動作する（PRO+ のみ）
+- [ ] **Orchestrator**: InsightBot ENT で Agent 管理 UI が実装されている（INBT のみ）
+- [ ] **ワークフロー**: BPO パターン（Orchestrator → Agent 連続ファイル処理）が動作する（INBT ENT のみ）
+- [ ] **ローカルワークフロー**: ENT Insight Business Suite でローカル連続処理が動作する（ENT のみ）
 - [ ] **メニューアイコン**: `brand/menu-icons.json` の定義に従っている（Lucide Icons 統一）
 - [ ] **メニューアイコン**: 非標準アイコンライブラリ（Material Design / Font Awesome 等）を使用して**いない**
 - [ ] **メニューアイコン**: `validate-menu-icons.sh` が成功する

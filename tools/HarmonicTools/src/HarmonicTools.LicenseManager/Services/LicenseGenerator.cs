@@ -32,13 +32,13 @@ public class LicenseGenerator
         ["ISOF"] = "InsightSeniorOffice",
     };
 
-    public static readonly string[] PlanCodes = { "TRIAL", "STD", "PRO" };
+    public static readonly string[] PlanCodes = { "FREE", "TRIAL", "BIZ", "ENT" };
 
     /// <summary>
     /// ライセンスキーを生成
     /// </summary>
     /// <param name="productCode">製品コード</param>
-    /// <param name="plan">プラン (TRIAL, STD, PRO)</param>
+    /// <param name="plan">プラン (FREE, TRIAL, BIZ, ENT)</param>
     /// <param name="email">メールアドレス</param>
     /// <param name="expiryYear">有効期限年 (2桁)</param>
     /// <param name="expiryMonth">有効期限月</param>

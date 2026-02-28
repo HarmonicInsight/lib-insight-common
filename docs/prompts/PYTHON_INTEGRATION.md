@@ -181,7 +181,7 @@ def require_feature(feature: str):
     return decorator
 
 def require_tier(min_tier: str):
-    tier_order = ['TRIAL', 'STD', 'PRO', 'ENT']
+    tier_order = ['FREE', 'TRIAL', 'BIZ', 'ENT']
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -211,7 +211,7 @@ print(result['message'])
 
 # 翻訳
 print(_('common.save'))  # 保存
-print(_('license.expires', days=14))  # 残り14日
+print(_('license.expires', days=30))  # 残り30日
 
 # ユーティリティ
 from datetime import datetime

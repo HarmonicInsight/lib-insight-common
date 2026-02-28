@@ -7,11 +7,11 @@ Insight Series のライセンスキーを発行するCLIツール
 ```
 PPPP-PLAN-YYMM-HASH-SIG1-SIG2
 
-例: INSS-PRO-2701-A3F8-K9X2-M4PQ
+例: INSS-BIZ-2701-A3F8-K9X2-M4PQ
     │    │    │    │    └─ 署名（8文字）
     │    │    │    └────── メールハッシュ（4文字）
     │    │    └─────────── 有効期限（2027年1月）
-    │    └──────────────── プラン（Pro）
+    │    └──────────────── プラン（Business）
     └───────────────────── 製品（Insight Deck Quality Gate）
 ```
 
@@ -29,12 +29,12 @@ cd insight-common/license/tools
 ## 使い方
 
 ```bash
-python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-01-31
+python generate-license.py -p INSS --plan BIZ -e user@example.com --expires 2027-01-31
 ```
 
 ## 使用例
 
-### 1. トライアルライセンス（14日間）
+### 1. トライアルライセンス（30日間）
 
 ```bash
 python generate-license.py -p INSS --trial -e user@example.com
@@ -45,23 +45,23 @@ python generate-license.py -p IVIN --trial -e user@example.com
 ### 2. 年間ライセンス（12ヶ月）
 
 ```bash
-# Insight Deck Quality Gate Standard
-python generate-license.py -p INSS --plan STD -e user@example.com -m 12
+# Insight Deck Quality Gate Business
+python generate-license.py -p INSS --plan BIZ -e user@example.com -m 12
 
-# Insight Performance Management Standard
-python generate-license.py -p IOSH --plan STD -e user@example.com -m 12
+# Insight Performance Management Business
+python generate-license.py -p IOSH --plan BIZ -e user@example.com -m 12
 
 # InsightPy
-python generate-license.py -p INPY --plan STD -e user@example.com -m 12
+python generate-license.py -p INPY --plan BIZ -e user@example.com -m 12
 
 # InterviewInsight
-python generate-license.py -p IVIN --plan STD -e user@example.com -m 12
+python generate-license.py -p IVIN --plan BIZ -e user@example.com -m 12
 ```
 
 ### 3. 指定日までのライセンス
 
 ```bash
-python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027-12-31
+python generate-license.py -p INSS --plan BIZ -e user@example.com --expires 2027-12-31
 ```
 
 ---
@@ -72,7 +72,7 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
 |-----------|--------|------|:----:|
 | `--product` | `-p` | 製品コード | ○ |
 | `--email` | `-e` | メールアドレス | ○ |
-| `--plan` | - | プラン (STD/PRO) | △ |
+| `--plan` | - | プラン (BIZ/ENT) | △ |
 | `--trial` | - | トライアル発行 | △ |
 | `--expires` | - | 有効期限 (YYYY-MM-DD) | - |
 | `--months` | `-m` | 有効期間（月数） | - |
@@ -101,9 +101,9 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
 
 | コード | 名称 | 期間 |
 |--------|------|------|
-| `TRIAL` | トライアル | 14日 |
-| `STD` | Standard | 年間 |
-| `PRO` | Pro | 年間 |
+| `TRIAL` | トライアル | 30日 |
+| `BIZ` | Business | 年間 |
+| `ENT` | Enterprise | 要相談 |
 
 ---
 
@@ -115,12 +115,12 @@ python generate-license.py -p INSS --plan PRO -e user@example.com --expires 2027
 ========================================
 
 製品:       Insight Deck Quality Gate (INSS)
-プラン:     Pro (PRO)
+プラン:     Business (BIZ)
 メール:     user@example.com
 有効期限:   2027-01-31
 
 ----------------------------------------
-ライセンスキー: INSS-PRO-2701-A3F8-K9X2-M4PQ
+ライセンスキー: INSS-BIZ-2701-A3F8-K9X2-M4PQ
 ----------------------------------------
 ```
 

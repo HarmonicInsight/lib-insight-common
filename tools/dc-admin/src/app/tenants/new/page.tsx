@@ -96,7 +96,7 @@ export default function TenantCreatePage() {
                   onChange={(e) => updateField('plan', e.target.value)}
                   className="w-full px-3 py-2 border border-[#E2E8F0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 >
-                  <option value="TRIAL">TRIAL (14日間)</option>
+                  <option value="TRIAL">TRIAL (30日間)</option>
                   <option value="PRO">PRO</option>
                   <option value="ENT">ENT</option>
                 </select>

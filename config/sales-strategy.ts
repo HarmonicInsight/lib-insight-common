@@ -323,7 +323,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     customerSegments: CONSULTING_SEGMENTS,
     marketingChannels: CONSULTING_MARKETING,
     trialStrategy: {
-      durationDays: 14,
+      durationDays: 30,
       expectedConversionRate: 0.40,
       noCreditCardRequired: true,
     },
@@ -337,7 +337,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     customerSegments: CONSULTING_SEGMENTS,
     marketingChannels: CONSULTING_MARKETING,
     trialStrategy: {
-      durationDays: 14,
+      durationDays: 30,
       expectedConversionRate: 0.45,
       noCreditCardRequired: true,
     },
@@ -351,7 +351,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     customerSegments: CONSULTING_SEGMENTS,
     marketingChannels: CONSULTING_MARKETING,
     trialStrategy: {
-      durationDays: 14,
+      durationDays: 30,
       expectedConversionRate: 0.40,
       noCreditCardRequired: true,
     },
@@ -365,7 +365,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
     customerSegments: CONSULTING_SEGMENTS,
     marketingChannels: CONSULTING_MARKETING,
     trialStrategy: {
-      durationDays: 14,
+      durationDays: 30,
       expectedConversionRate: 0.40,
       noCreditCardRequired: true,
     },
@@ -451,7 +451,7 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
       },
     ],
     trialStrategy: {
-      durationDays: 14,
+      durationDays: 30,
       expectedConversionRate: 0.50,
       noCreditCardRequired: true,
     },
