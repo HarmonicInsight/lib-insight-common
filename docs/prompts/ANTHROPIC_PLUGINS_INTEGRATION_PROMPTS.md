@@ -62,7 +62,7 @@ insight-common サブモジュールを最新に更新してください。
      - `/variance-analysis` — 比較タイプ選択（budget-vs-actual/yoy/mom/qoq）
      - `/reconciliation` — 2つのデータ範囲を指定
    - `getCommandsForProduct('IOSH')` で利用可能コマンド一覧を取得
-   - PRO プラン以上でのみ表示
+   - BIZ プラン以上でのみ表示
 
 3. メモリシステムの組み込み
    - .iosh プロジェクトファイル（ZIP）内に ai_memory.json を追加
