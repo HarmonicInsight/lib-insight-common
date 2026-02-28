@@ -50,9 +50,9 @@
     "upgrade": "アップグレード",
     "upgradePrompt": "より多くの機能をご利用いただくには、アップグレードをご検討ください。",
     "tiers": {
+      "FREE": "フリー",
       "TRIAL": "トライアル",
-      "STD": "スタンダード",
-      "PRO": "プロフェッショナル",
+      "BIZ": "ビジネス",
       "ENT": "エンタープライズ"
     },
     "errors": {
@@ -178,9 +178,9 @@
     "retry": "再試行"
   },
   "products": {
-    "INSS": "InsightOfficeSlide",
-    "IOSH": "InsightOfficeSheet",
-    "IOSD": "InsightOfficeDoc",
+    "INSS": "Insight Deck Quality Gate",
+    "IOSH": "Insight Performance Management",
+    "IOSD": "Insight AI Briefcase",
     "INPY": "InsightPy",
     "INMV": "InsightCast",
     "INIG": "InsightImageGen",

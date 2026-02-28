@@ -149,7 +149,7 @@
       "borderBottom": "none",
       "elements": {
         "brandName": {
-          "text": "InsightOffice",
+          "text": "Insight",
           "fontSize": "15px",
           "fontWeight": 600,
           "color": "#B8942F",
@@ -158,7 +158,7 @@
         },
         "productName": {
           "format": "{ProductName}",
-          "examples": ["Sheet", "Doc", "Slide"],
+          "examples": ["Performance Management", "AI Briefcase", "Deck Quality Gate"],
           "fontSize": "15px",
           "fontWeight": 400,
           "color": "#57534E",
@@ -176,7 +176,7 @@
         },
         "planBadge": {
           "format": "◀ {PLAN}",
-          "values": ["TRIAL", "STD", "PRO", "ENT"],
+          "values": ["FREE", "TRIAL", "BIZ", "ENT"],
           "fontSize": "11px",
           "fontWeight": 600,
           "textColor": "#8C711E",

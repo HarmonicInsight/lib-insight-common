@@ -50,9 +50,9 @@
     "upgrade": "Upgrade",
     "upgradePrompt": "Upgrade to unlock more features.",
     "tiers": {
+      "FREE": "Free",
       "TRIAL": "Trial",
-      "STD": "Standard",
-      "PRO": "Professional",
+      "BIZ": "Business",
       "ENT": "Enterprise"
     },
     "errors": {
@@ -178,9 +178,9 @@
     "retry": "Retry"
   },
   "products": {
-    "INSS": "InsightOfficeSlide",
-    "IOSH": "InsightOfficeSheet",
-    "IOSD": "InsightOfficeDoc",
+    "INSS": "Insight Deck Quality Gate",
+    "IOSH": "Insight Performance Management",
+    "IOSD": "Insight AI Briefcase",
     "INPY": "InsightPy",
     "INMV": "InsightCast",
     "INIG": "InsightImageGen",
