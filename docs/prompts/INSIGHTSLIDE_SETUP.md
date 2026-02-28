@@ -24,8 +24,8 @@ git submodule update --init --recursive
 ### 2. 既存ライセンス形式との互換性
 
 InsightSlide には既存のライセンス形式があります：
-- `PRO-XXXX-XXXX-XXXX` (永続)
-- `STD-XXXX-XXXX-2025` (年間)
+- `BIZ-XXXX-XXXX-XXXX` (永続)
+- `BIZ-XXXX-XXXX-2025` (年間)
 - `TRIAL-XXXXXX-YYYYMMDD` (トライアル)
 
 新しい形式 `INS-SLIDE-XXX-XXXX-XXXX-XX` に移行しつつ、レガシーサポートを維持してください。
@@ -54,12 +54,12 @@ class UnifiedLicenseManager:
         if license_key.startswith("INS-"):
             return self.validator.validate(license_key, expires_at)
 
-        # レガシー形式 (PRO-/STD-/TRIAL-)
+        # レガシー形式 (BIZ-/TRIAL-)
         return self._validate_legacy(license_key)
 
     def _validate_legacy(self, key: str) -> LicenseInfo:
         # 既存の検証ロジックをここに移植
-        # PRO-/STD-/TRIAL- 形式をサポート
+        # BIZ-/TRIAL- 形式をサポート
         pass
 ```
 
