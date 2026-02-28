@@ -408,12 +408,12 @@ TTS 機能はライセンスプランで制御可能。
 import { canUseTts } from '@/insight-common/config/tts';
 
 // Web Speech API / VoiceVox: 全プランで利用可能
-canUseTts('STD', 'web_speech');  // { allowed: true }
-canUseTts('STD', 'voicevox');    // { allowed: true }
+canUseTts('FREE', 'web_speech');  // { allowed: true }
+canUseTts('BIZ', 'voicevox');    // { allowed: true }
 
-// ElevenLabs: TRIAL / PRO / ENT のみ
-canUseTts('STD', 'elevenlabs');  // { allowed: false, reasonJa: '...' }
-canUseTts('PRO', 'elevenlabs');  // { allowed: true }
+// ElevenLabs: TRIAL / BIZ / ENT のみ
+canUseTts('FREE', 'elevenlabs');  // { allowed: false, reasonJa: '...' }
+canUseTts('BIZ', 'elevenlabs');   // { allowed: true }
 ```
 
 ---

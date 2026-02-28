@@ -22,14 +22,14 @@ HARMONIC insight の **Ivory & Gold デザイン標準** および **ライセ�
 
 - `InsightLicenseManager` が使用されているか
 - ライセンスキー形式: `{製品コード}-{プラン}-{YYMM}-{HASH}-{SIG1}-{SIG2}`
-- プラン体系: TRIAL / STD / PRO / ENT（FREE は廃止済み）
+- プラン体系: FREE / TRIAL / BIZ / ENT
 - ライセンス画面が Insight Slides 形式に準拠しているか
 
 ### 3. AI アシスタント（Insight Business Suite 系）
 
 - Claude (Anthropic) API のみ使用（OpenAI/Azure 禁止）
 - モデルティア: Standard (Sonnet) / Premium (Opus) — ユーザーがティア内で選択可能
-- ライセンスゲート: STD 月50回 / PRO 月200回
+- ライセンスゲート: BIZ 月200回 / ENT 無制限
 - `standards/AI_ASSISTANT.md` に準拠しているか
 
 ### 4. サードパーティライセンス
