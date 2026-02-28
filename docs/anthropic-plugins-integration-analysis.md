@@ -348,7 +348,7 @@ insight-common/
   "description": "経理・財務ワークフロー支援。仕訳準備、差異分析、月次クローズを効率化。",
   "author": { "name": "HARMONIC insight" },
   "targetProducts": ["IOSH", "INPY"],
-  "requiredPlan": "PRO",
+  "requiredPlan": "BIZ",
   "locale": ["ja", "en"],
   "aiFeatureKey": "ai_assistant"
 }
@@ -356,7 +356,7 @@ insight-common/
 
 **Anthropic 拡張ポイント**:
 - `targetProducts`: 対象 HI 製品コード
-- `requiredPlan`: 必須プラン（TRIAL/STD/PRO/ENT）
+- `requiredPlan`: 必須プラン（FREE/TRIAL/BIZ/ENT）
 - `locale`: 対応言語
 - `aiFeatureKey`: ライセンスゲートのキー
 
@@ -408,14 +408,14 @@ export const IOSH_SKILLS: SkillDefinition[] = [
     description: '仕訳準備・承認ワークフロー支援',
     triggerPatterns: ['仕訳', '計上', 'accrual', 'journal entry', '減価償却'],
     systemPromptExtension: `/* Finance plugin の journal-entry-prep SKILL.md から抽出 */`,
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
   },
   {
     name: 'spreadsheet-variance-analysis',
     description: '差異分析・要因分析',
     triggerPatterns: ['差異', '分析', 'variance', '予実', '乖離'],
     systemPromptExtension: `/* Finance plugin の variance-analysis SKILL.md から抽出 */`,
-    requiredPlan: 'PRO',
+    requiredPlan: 'BIZ',
   },
   // ...
 ];
