@@ -686,9 +686,9 @@ namespace YourApp.License;
 
 public enum PlanCode
 {
+    Free,
     Trial,
-    Std,
-    Pro,
+    Biz,
     Ent
 }
 
@@ -696,11 +696,11 @@ public static class PlanCodeExtensions
 {
     public static string ToDisplayName(this PlanCode plan) => plan switch
     {
+        PlanCode.Free  => "FREE",
         PlanCode.Trial => "TRIAL",
-        PlanCode.Std => "STD",
-        PlanCode.Pro => "PRO",
-        PlanCode.Ent => "ENT",
-        _ => "TRIAL"
+        PlanCode.Biz   => "BIZ",
+        PlanCode.Ent   => "ENT",
+        _ => "FREE"
     };
 }
 ```
@@ -713,7 +713,7 @@ namespace YourApp.License;
 public class InsightLicenseManager
 {
     private static readonly Regex KeyPattern = new(
-        @"^(XXXX)-(TRIAL|STD|PRO)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
+        @"^(XXXX)-(TRIAL|BIZ|ENT)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
         RegexOptions.Compiled);
 
     private readonly string _productCode;
@@ -1690,6 +1690,93 @@ public class PrintViewModel : ViewModelBase
 - [ ] BackStage に必須コマンド（新規作成/開く/保存/名前を付けて保存/印刷/閉じる）がある
 - [ ] BackStage コマンドの Header が統一フォーマットに従っている
 
+### Ribbon ヘルプバー（必須）
+
+Home タブの**最後**の RibbonBar に「ヘルプ」ボタンを配置する。
+
+```xml
+<!-- Home タブの最後に配置 -->
+<syncfusion:RibbonBar Header="{Binding LocHelp}">
+    <syncfusion:RibbonButton Label="{Binding LocHelp}" SizeForm="Small"
+        Command="{Binding ShowHelpCommand}"
+        ToolTip="{Binding TipHelp}"
+        IconTemplate="{StaticResource IconHelpSmall}" />
+</syncfusion:RibbonBar>
+```
+
+**IconTemplate 定義:**
+
+```xml
+<DataTemplate x:Key="IconHelpSmall">
+    <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+               HorizontalAlignment="Center" VerticalAlignment="Center" />
+</DataTemplate>
+```
+
+**ViewModel コマンド:**
+
+```csharp
+[RelayCommand]
+private void ShowHelp()
+{
+    new Views.HelpWindow { Owner = Application.Current.MainWindow }.ShowDialog();
+}
+
+[RelayCommand]
+private void ShowHelpSection(string? sectionId)
+{
+    new Views.HelpWindow(sectionId) { Owner = Application.Current.MainWindow }.ShowDialog();
+}
+```
+
+**F1 キーバインド:**
+
+```xml
+<Window.InputBindings>
+    <KeyBinding Key="F1" Command="{Binding ShowHelpSectionCommand}" CommandParameter="overview" />
+</Window.InputBindings>
+```
+
+### コンテキストヘルプボタン（?）標準
+
+全パネルヘッダーの右端に `?` アイコンボタンを配置し、パネル固有のヘルプセクションに直行できるようにする。
+
+```xml
+<!-- 標準パターン: 各パネルヘッダーに設置 -->
+<Button Style="{StaticResource SecondaryButtonStyle}"
+        Command="{Binding ShowHelpSectionCommand}"
+        CommandParameter="ai-assistant"
+        ToolTip="{Binding TipPanelHelp}"
+        Padding="3,1" Margin="6,0,0,0" FontSize="10"
+        MinWidth="0" MinHeight="0">
+    <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="11" />
+</Button>
+```
+
+| ルール | 内容 |
+|--------|------|
+| コマンド | `ShowHelpSectionCommand` にバインド |
+| パラメータ | `CommandParameter` にセクション ID（string）を渡す |
+| ダイアログから | `HelpWindow.ShowSection(owner, sectionId)` static メソッドを使用 |
+| ツールチップ | `"このパネルのヘルプを表示します"` で統一 |
+
+> 詳細は `standards/HELP_SYSTEM.md` を参照
+
+### AI アシスタントパネル標準
+
+AI アシスタントパネルの配置・構成ルール。
+
+| 項目 | 仕様 |
+|------|------|
+| 配置 | 右サイドパネル（Grid の最終列） |
+| 実装 | UserControl として切り出し → 同一 DataContext で PopOut Window に共有 |
+| パネルトグル | タイトルバーボタンで Gold/inactive 切替 |
+| リサイズ | GridSplitter でリサイズ可能（MinWidth: 280px） |
+| CompareMode | 比較モード時は非表示 → 復帰時に自動復元 |
+| ? ボタン | パネルヘッダーに `CommandParameter="ai-assistant"` で設置 |
+
+> 詳細は `standards/AI_ASSISTANT.md` を参照
+
 ---
 
 ## よくある間違い
@@ -2110,6 +2197,47 @@ protected override void OnStartup(StartupEventArgs e)
 - [ ] App.xaml.cs の OnStartup で `ThirdPartyLicenseProvider.RegisterSyncfusion()` を呼んでいる
 - [ ] 正しい Edition を指定している（現在の全製品は `uiEdition`）
 - [ ] キーがハードコード**のみ**で管理されて**いない**（JSON読み込み優先）
+
+---
+
+## アクセシビリティ（UI スケーリング）
+
+全 WPF アプリは `InsightScaleManager` による UI スケーリングを実装する。
+詳細は `standards/ACCESSIBILITY.md` を参照。
+
+### 必須実装
+
+1. **スケール適用**: `InsightWindowChrome.Apply()` 経由で自動適用（手動不要）
+2. **キーバインド**: Ctrl+Plus / Ctrl+Minus / Ctrl+0 を ViewModel + XAML KeyBinding で追加
+3. **倍率表示**: ステータスバーに `InsightScaleManager.Instance.ScalePercent` をバインド
+
+### コード例
+
+```csharp
+// ViewModel
+[RelayCommand] private void ZoomIn()    => InsightScaleManager.Instance.ZoomIn();
+[RelayCommand] private void ZoomOut()   => InsightScaleManager.Instance.ZoomOut();
+[RelayCommand] private void ResetZoom() => InsightScaleManager.Instance.Reset();
+```
+
+```xml
+<!-- XAML KeyBinding -->
+<KeyBinding Key="OemPlus" Modifiers="Ctrl" Command="{Binding ZoomInCommand}" />
+<KeyBinding Key="OemMinus" Modifiers="Ctrl" Command="{Binding ZoomOutCommand}" />
+<KeyBinding Key="D0" Modifiers="Ctrl" Command="{Binding ResetZoomCommand}" />
+```
+
+### 禁止
+
+- FontSize を個別に変更してスケーリングしてはいけない → `LayoutTransform` 方式を使う
+- `InsightScaleManager` を介さず独自のスケール機構を実装してはいけない
+
+### チェックリスト
+
+- [ ] Ctrl+Plus / Ctrl+Minus / Ctrl+0 キーバインドがある
+- [ ] ステータスバーに現在のスケール倍率が表示されている
+- [ ] 50%〜200% の全プリセットで UI が正常に表示される
+- [ ] アプリ再起動後にスケール値が復元される
 
 ---
 

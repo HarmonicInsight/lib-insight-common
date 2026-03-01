@@ -8,12 +8,12 @@ namespace InsightCommon.Addon;
 /// アドインマネージャー（Insight Business Suite 全アプリ共通）
 ///
 /// モジュールの有効/無効管理、依存解決、管理者プロファイル適用、設定永続化を担当。
-/// 各 Insight Business Suite アプリ（HMSH/HMDC/HMSL）は App.xaml.cs でこのクラスを初期化し、
+/// 各 Insight Business Suite アプリ（IOSH/IOSD/INSS）は App.xaml.cs でこのクラスを初期化し、
 /// モジュールの状態に応じて UI パネルを表示/非表示する。
 ///
 /// 使用例:
 /// <code>
-/// var addonManager = new AddonManager("HMSH", "HarmonicSheet", licenseManager);
+/// var addonManager = new AddonManager("IOSH", "InsightPerformanceManagement", licenseManager);
 /// addonManager.Initialize();
 ///
 /// // モジュール有効/無効チェック
@@ -97,7 +97,7 @@ public class AddonManager
             return [];
 
         var result = new List<AddonModuleViewModel>();
-        var currentPlan = PlanDisplay.GetName(_licenseManager.CurrentLicense.Plan);
+        var currentPlan = PlanDisplay.GetKeyName(_licenseManager.CurrentLicense.Plan);
 
         foreach (var moduleId in support.SupportedModules)
         {
@@ -267,7 +267,7 @@ public class AddonManager
             return (false, "管理者プロファイルにより無効化が固定されています。");
 
         // ライセンスチェック
-        var currentPlan = PlanDisplay.GetName(_licenseManager.CurrentLicense.Plan);
+        var currentPlan = PlanDisplay.GetKeyName(_licenseManager.CurrentLicense.Plan);
         if (!info.AllowedPlans.Contains(currentPlan))
             return (false, $"{info.NameJa}には {string.Join("/", info.AllowedPlans)} プランが必要です。");
 

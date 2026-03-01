@@ -43,7 +43,7 @@
                     │     (3人格AI, 比較,         (参照資料連携,
                     │      バージョン管理)          publish済みバイナリ同梱)
                     │
-                    │                    ★ InsightCast
+                    │                    ★ Insight Training Studio
                     │                      (VoiceVox+FFmpeg,
                     │                       バッチ制作, 200MB)
                     │
@@ -59,7 +59,7 @@
 | **InsightDoc** | publishフォルダにビルド済みバイナリが既に存在。即配布可能 | READMEがinsight-commonの説明。製品としての差別化が最も弱い | ⚠️ 配布可能だが差別化に課題 |
 | **InsightSheet** | AI Tool Use（6ツール）+ RPA Agent + バージョン管理 + データ収集 + 多言語(日英中)。完成度A+ | SpreadsheetToolExecutor.csの6ツール実装は先進的だが、ドキュメントがない | ✅ フロントドアに最適 |
 | **InterviewInsight** | 439ファイル。Web(Next.js) + Desktop(Tauri) + API(Python FastAPI)の3面展開。VRM30キャラ。最もエンタープライズ | 3つのアプリ(web/desktop/api)が並行開発で複雑。デプロイ手順が重い | ⚠️ SaaS運用体制が必要 |
-| **InsightCast** | VoiceVox(無料TTS) + FFmpeg = 限界費用ゼロ。PptxImporter.csでPPTX→動画変換 | 200MBリポジトリ。バイナリが大きい。Setup Wizardあるが初回体験が複雑 | ⚠️ UX改善余地あり |
+| **Insight Training Studio** | VoiceVox(無料TTS) + FFmpeg = 限界費用ゼロ。PptxImporter.csでPPTX→動画変換 | 200MBリポジトリ。バイナリが大きい。Setup Wizardあるが初回体験が複雑 | ⚠️ UX改善余地あり |
 
 ---
 
@@ -146,7 +146,7 @@ LinkedIn投稿例（FPTの個人アカウント）:
 │                                                                      │
 │   Engine 1                Engine 2               Engine 3            │
 │   ──────────              ──────────             ──────────          │
-│   Insight Business Suite     InterviewInsight        InsightCast        │
+│   Insight Business Suite     InterviewInsight        Insight Training Studio        │
 │   (Slide + Doc + Sheet)   (SaaS)                 (デスクトップ)      │
 │                                                                      │
 │   収益モデル:             収益モデル:             収益モデル:         │
@@ -163,7 +163,7 @@ LinkedIn投稿例（FPTの個人アカウント）:
 │                                                                      │
 │   フロントドア:           フロントドア:           フロントドア:       │
 │   InsightSheet FREE       無料デモ動画            「この動画も        │
-│                           (InsightCastで制作)      InsightCastで      │
+│                           (Insight Training Studioで制作)      Insight Training Studioで      │
 │                                                   作りました」       │
 │                                                                      │
 │   2026年収益目標:         2026年収益目標:         2026年収益目標:     │
@@ -295,7 +295,7 @@ InsightSlide と InsightDoc を **単体販売しない**。Suite のバンド�
 
 顧客 #3: LinkedIn / ウェビナー からのインバウンド
   ├─ 「業務ヒアリングを AI で自動化する」ウェビナーを開催
-  ├─ InsightCast で制作したデモ動画をフックに
+  ├─ Insight Training Studio で制作したデモ動画をフックに
   ├─ 参加者に TRIAL を提供
   └─ 本格導入へ
 
@@ -305,19 +305,19 @@ InsightSlide と InsightDoc を **単体販売しない**。Suite のバンド�
   → 信頼性が飛躍的に向上（影響力の武器: 社会的証明）
 ```
 
-### 3.4 Engine 3: InsightCast ── 自己証明マーケティング
+### 3.4 Engine 3: Insight Training Studio ── 自己証明マーケティング
 
 #### 核心戦略: 「広告が製品デモになる」
 
 ```
-InsightCast の最大の差別化:
+Insight Training Studio の最大の差別化:
 
   通常のSaaS:
     広告を作る → 製品を説明する → 試してもらう → 契約
     (広告制作コスト: 1本 ¥300,000)
 
-  InsightCast:
-    InsightCast で広告を作る → 「この動画もInsightCastで作りました」
+  Insight Training Studio:
+    Insight Training Studio で広告を作る → 「この動画もInsight Training Studioで作りました」
     (広告制作コスト: ¥0 + 自分の時間)
 
   → 広告=製品デモ=教育コンテンツ
@@ -329,14 +329,14 @@ InsightCast の最大の差別化:
     → Suite との連携ストーリーが完成
 ```
 
-#### InsightCast のYouTubeチャンネル戦略
+#### Insight Training Studio のYouTubeチャンネル戦略
 
 | 動画カテゴリ | 内容 | 目的 | 頻度 |
 |-------------|------|------|------|
-| **製品デモ** | InsightCast の機能紹介（InsightCast 自身で制作） | 自己証明 + SEO | 月2本 |
-| **Insight Business Suite紹介** | Sheet/Slide/Doc のデモ動画（InsightCast で制作） | Suite の認知 + Cast の実力証明 | 月1本 |
+| **製品デモ** | Insight Training Studio の機能紹介（Insight Training Studio 自身で制作） | 自己証明 + SEO | 月2本 |
+| **Insight Business Suite紹介** | Sheet/Slide/Doc のデモ動画（Insight Training Studio で制作） | Suite の認知 + Cast の実力証明 | 月1本 |
 | **「AI×業務効率化」知見** | コンサルタント視点のTips（FPT MDの知見） | 思想リーダーシップ + チャンネル成長 | 月2本 |
-| **ユースケース動画** | 「建設現場の安全教育動画をInsightCastで」等 | セグメント特化SEO | 月1本 |
+| **ユースケース動画** | 「建設現場の安全教育動画をInsight Training Studioで」等 | セグメント特化SEO | 月1本 |
 
 ---
 
@@ -403,7 +403,7 @@ Stage 4: 「購入」（TRIAL → BIZ/ENT）
 ```
 Stage 1: 「問題の自覚」
   ・LinkedIn投稿:「業務ヒアリング、まだ対面＋議事録手打ちですか？」
-  ・ウェビナー:「AI対話型調査の最前線」（InsightCast で制作した動画でフック）
+  ・ウェビナー:「AI対話型調査の最前線」（Insight Training Studio で制作した動画でフック）
 
 Stage 2: 「デモ体験」
   ・デモ環境を用意（Vercel + Supabase でクイックデプロイ可能）
@@ -455,7 +455,7 @@ Cialdini の「影響力の武器」:
 | Day 8-14 | InsightSheet FREE版を公開。知人・元同僚に配布 | ダウンロード数（数字の証明） |
 | Day 15-30 | FPT社内パイロットの初期フィードバックを収集 | ユーザーの声（定性的証明） |
 | Day 31-45 | InterviewInsight のデモを FPT プロジェクトで実施 | 「大手コンサルファームで評価中」 |
-| Day 46-60 | InsightCast でデモ動画・事例動画を制作 | 製品の実力証明（自己証明） |
+| Day 46-60 | Insight Training Studio でデモ動画・事例動画を制作 | 製品の実力証明（自己証明） |
 | Day 61-75 | FPT パイロットの定量結果をまとめる | 「レビュー時間XX%削減」等の数字 |
 | Day 76-90 | ケーススタディ1本を公開 | LPに掲載可能な導入事例 |
 
@@ -475,7 +475,7 @@ Week 1 (3/2-3/6):
   ├─ [FPT] LinkedIn に「AI×コンサル」の知見投稿を1本公開
   │    → 「業務時間の60%がドキュメント作業。ここをAIが変える」
   │
-  └─ [HI] InsightCast で InsightSheet の紹介動画を1本制作
+  └─ [HI] Insight Training Studio で InsightSheet の紹介動画を1本制作
        → 「Excelファイルは1つだけ。履歴は全部残る。」のメッセージ
 
 Week 2 (3/9-3/13):
@@ -490,12 +490,12 @@ Week 2 (3/9-3/13):
   └─ [HI] Insight Business Suite の価格表ページを作成
 
 Week 3 (3/16-3/20):
-  ┌─ [HI] プレスリリース #1: InsightCast
+  ┌─ [HI] プレスリリース #1: Insight Training Studio
   │    → 「VoiceVox + FFmpeg で限界費用ゼロの動画制作ツール」
   │    → PR TIMES で配信
   │
   ├─ [HI] YouTube チャンネルに動画2本を公開
-  │    1. InsightCast 製品紹介（InsightCast で制作）
+  │    1. Insight Training Studio 製品紹介（Insight Training Studio で制作）
   │    2. InsightSheet FREE版の使い方
   │
   └─ [FPT] LinkedIn 投稿 #2:「コンサル提案書のAIレビュー」
@@ -549,7 +549,7 @@ Week 9-12:
   ├─ [HI] InterviewInsight パイロット結果をケーススタディ化
   │    → LP に掲載
   │
-  ├─ [HI] InsightCast のFreemium版検討
+  ├─ [HI] Insight Training Studio のFreemium版検討
   │    → FREE: 月3本まで（ウォーターマーク付き）
   │    → BIZ: 無制限
   │
@@ -563,7 +563,7 @@ KPI（90日目時点の目標）:
   ├─ InsightSheet BIZ 購入: 10件
   ├─ Insight Business Suite 購入: 3件
   ├─ InterviewInsight パイロット: 3件
-  ├─ InsightCast ダウンロード: 30件
+  ├─ Insight Training Studio ダウンロード: 30件
   ├─ YouTube チャンネル登録: 150名
   ├─ YouTube 動画本数: 10本
   ├─ LinkedIn 投稿: 20本以上
@@ -593,11 +593,11 @@ KPI（90日目時点の目標）:
 │                                                                  │
 │   ■ InterviewInsight（SaaS）                                    │
 │   ──────────────────────                                        │
-│     FREE     : ¥0（デモ閲覧のみ）                              │
+│     FREE     : ¥0（全機能・保存不可）                           │
 │     BIZ/ENT  : 個別見積もり                                     │
 │                                                                  │
-│   ■ InsightCast                                                 │
-│   ───────────                                                   │
+│   ■ Insight Training Studio                                     │
+│   ─────────────────────────                                     │
 │     FREE     : ¥0（月3本、ウォーターマーク付き）                │
 │     BIZ/ENT  : 個別見積もり                                     │
 │                                                                  │
@@ -605,8 +605,8 @@ KPI（90日目時点の目標）:
 │   ─────────────                                                 │
 │     Suite + Cast BIZ/ENT : 個別見積もり                          │
 │                                                                  │
-│   ★ すべての有料プランに TRIAL（1ヶ月全機能）を提供              │
-│   ★ AI利用料は価格に内包（別途チケット不要）                     │
+│   ★ TRIAL = BIZ 同等（自社が無料配布・無期限）                   │
+│   ★ AI = 全プラン BYOK（制限なし）                               │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -616,8 +616,8 @@ KPI（90日目時点の目標）:
 | 設計判断 | 根拠 |
 |---------|------|
 | **InsightSheet FREE版をフロントドアに** | フロントドア戦略。¥0で体験 → BIZ版へ。個別見積もりで柔軟対応 |
-| **AI利用料を内包** | 「AIの利用に追加料金がかかる」は日本の法人にとって心理的障壁。「全部コミコミ」の安心感 |
-| **InsightCast を年額に** | 動画制作は継続利用なので年額が自然。限界費用ゼロのため高い利益率 |
+| **AI = 全プラン BYOK** | ユーザーが自身の Claude API キーを持ち込む。制限なし。HARMONIC側コスト=ゼロ |
+| **Insight Training Studio を年額に** | 動画制作は継続利用なので年額が自然。限界費用ゼロのため高い利益率 |
 | **InterviewInsight だけ月額** | SaaS モデルは月額が標準。解約の柔軟性がB2Bの導入障壁を下げる |
 | **BIZ/ENTは全製品個別見積もり** | 顧客規模・ニーズに応じた柔軟な価格設定。バンドルディスカウントも個別対応 |
 
@@ -750,7 +750,7 @@ Insight Business Suite の競合ポジション:
          │
          │                            ★ Insight Business Suite
          │                              (個別見積もり)
-         │                              AI内包、ローカル完結
+         │                              AI BYOK、ローカル完結
          │
   低価格 │
          └─────────────────────────────────────────────→
@@ -778,7 +778,7 @@ InterviewInsight の競合ポジション:
            フォーム型                              対話型
 
 
-InsightCast の競合ポジション:
+Insight Training Studio の競合ポジション:
 
   コスト ▲
          │
@@ -788,7 +788,7 @@ InsightCast の競合ポジション:
          │
          │              Lumen5 ($79/月)
          │
-         │                     ★ InsightCast
+         │                     ★ Insight Training Studio
          │                       (個別見積もり, 限界費用ゼロ)
          │                       VoiceVox = 無料TTS
          │                       FFmpeg = 無料エンコーダ
@@ -804,7 +804,7 @@ InsightCast の競合ポジション:
 |------|-------------------|--------------------------|
 | Insight Business Suite | 「ローカル完結 + AI + バージョン管理」 | 「Microsoft 365の代替」（勝てない） |
 | InterviewInsight | 「AI対話型ナレッジキャプチャ（新カテゴリー）」 | 「オンラインアンケートツール」（レッドオーシャン） |
-| InsightCast | 「限界費用ゼロの動画内製化」 | 「プロ品質の動画制作」（Synthesia等と正面衝突） |
+| Insight Training Studio | 「限界費用ゼロの動画内製化」 | 「プロ品質の動画制作」（Synthesia等と正面衝突） |
 
 ---
 
@@ -857,7 +857,7 @@ InsightCast の競合ポジション:
 | product-priority-analysis.md | 2本柱 → 3エンジンに進化。InsightMigration は別軸として継続 | **統合済み** |
 | global-strategy-2026.md | 3層構造を継承。二刀流戦略を「オープンな二足のわらじ」に進化 | **統合・進化済み** |
 | license-structure-2026.md | FREE/TRIAL/BIZ/ENTの4段階を完全採用。価格を微調整 | **採用済み** |
-| pricing-licensing-strategy-2026.md | 価格設計の根拠として活用。AI内包戦略を継続 | **採用済み** |
+| pricing-licensing-strategy-2026.md | 価格設計の根拠として活用。AI = 全プラン BYOK に移行 | **採用済み** |
 | marketing-action-plan-2026-spring.md | PR2本の計画を継承。タイムラインを具体化 | **統合済み** |
 | marketing-book-notes.md | 7冊の理論を教育フェーズ設計の根拠に活用 | **活用済み** |
 | marketing-books-summary.md | フレームワーク統合に使用 | **活用済み** |
@@ -870,7 +870,7 @@ InsightCast の競合ポジション:
 |---|--------|--------------|---------|--------|
 | 1 | InsightSheet FREE版ビルドの作成（PlanCode.FREE ゲーティング有効化） | win-app-insight-sheet | 4h | **最優先** |
 | 2 | InsightSheet ダウンロードページの作成 | h-insight.jp (Webサイト) | 2h | **最優先** |
-| 3 | InsightCast FREE版の検討（月3本制限 + ウォーターマーク） | win-app-insight-cast | 8h | 高 |
+| 3 | Insight Training Studio FREE版の検討（月3本制限 + ウォーターマーク） | win-app-insight-cast | 8h | 高 |
 | 4 | InterviewInsight デモ環境のデプロイ（Vercel + DB） | web-app-auto-interview | 4h | 高 |
 | 5 | InsightDoc の publish/ からバイナリを除去、CI/CD化 | win-app-insight-doc | 2h | 中 |
 | 6 | Insight Business Suite のバンドルライセンスキー生成対応 | insight-common | 4h | 中 |

@@ -11,44 +11,31 @@
 
 ## 1. 統一プラン体系
 
-### 正式プラン名: FREE / TRIAL / BIZ / ENT
+### 正式プラン名: FREE / TRIAL / BIZ / ENT（実質3プラン）
 
 | プラン | 説明 | ライセンス | 有効期限 | AI利用 |
 |--------|------|-----------|----------|--------|
-| **FREE** | 基本機能のみ。ライセンス不要 | 不要 | 無期限 | なし |
-| **TRIAL** | 全機能無制限（評価用）。自社発行 | 自社発行 | 1か月間 | Premium含む全機能無制限 |
-| **BIZ** | 法人1端末。全機能 + AI（Standardティア） | 購入 | 365日 | 月200回（Haiku/Sonnet）※超過時は顧客自身でAPI購入 |
-| **ENT** | 法人複数端末。全機能 + コラボレーション + AI（Premiumティア） | 契約 | **個別見積もり** | 無制限（Opus含む） |
+| **FREE** | 全機能利用可能。**保存・エクスポート不可** | 不要 | 無期限 | BYOK（制限なし） |
+| **TRIAL** | **= BIZ と同等**。自社が無料で配布 | 自社発行 | **無期限** | BYOK（制限なし） |
+| **BIZ** | 全機能 + 保存・エクスポート可能 | 購入 | 365日 | BYOK（制限なし） |
+| **ENT** | BIZ + カスタマイズ（SSO・監査・API等） | 契約 | **個別見積もり** | BYOK（制限なし） |
 
-> **廃止されたプラン名**: Personal / Standard / Professional / Enterprise / Starter / Business / Creator
-> これらは旧文書で使用されていた名称。今後は FREE / TRIAL / BIZ / ENT に統一する。
-
-### 旧プラン名 → 新プラン名の対照表
-
-| 旧名称 | 新名称 | 備考 |
-|--------|--------|------|
-| Free | FREE | 同一 |
-| Personal（買い切り） | **廃止** | BIZ に統合 |
-| Standard（買い切り） | **廃止** | BIZ に統合 |
-| Professional（年額） | **BIZ** | 年額PC端末ライセンス |
-| Enterprise（年額/PC） | **ENT** | **個別見積もり** に変更 |
-| Starter（InterviewInsight） | **BIZ** | InterviewInsightのBIZ |
-| Business（InterviewInsight） | **廃止** | BIZ と ENT の2段階に簡素化 |
-| Creator（InsightCast） | **廃止** | BIZ に統合 |
+> **TRIAL = BIZ**: 機能は同一。TRIAL は自社が無料配布する BIZ 相当のライセンス。
+> **AI = 全プラン BYOK**: ユーザーが自身の Claude API キーを持ち込む。モデル制限・回数制限なし。
 
 ---
 
-## 2. 製品名の統一
+## 2. 製品名
 
-| コード | 正式名称 | 旧名称・別名（廃止） | 種別 |
-|--------|---------|---------------------|------|
-| IOSH | InsightSheet | InsightSheet | デスクトップ |
-| INSS | InsightSlide | — | デスクトップ |
-| IOSD | InsightDoc | InsightDoc | デスクトップ |
-| INMV | **InsightCast** | InsightMovie ※コード上はINMVだが製品名はInsightCast | デスクトップ |
-| IVIN | InterviewInsight | — | SaaS |
+| コード | 正式名称 | 種別 |
+|--------|---------|------|
+| IOSH | InsightSheet | デスクトップ |
+| INSS | InsightSlide | デスクトップ |
+| IOSD | InsightDoc | デスクトップ |
+| INMV | **Insight Training Studio** | デスクトップ |
+| IVIN | InterviewInsight | SaaS |
 
-> **注**: InsightCastの内部コードはINMV（InsightMovie）だが、外部マーケティングでは「InsightCast」を使用。
+> **注**: Insight Training Studioの内部コードはINMV（InsightMovie）だが、外部マーケティングでは「Insight Training Studio」を使用。
 
 ---
 
@@ -74,18 +61,14 @@
 | **Suite BIZ** | **個別見積もり** |
 | **Suite ENT** | **個別見積もり** |
 
-#### InsightSheet FREE版の機能
+#### InsightSheet プラン別機能
 
 | 機能 | FREE | BIZ | ENT |
 |------|------|-----|-----|
-| Excel読込・編集・保存 | ✅ | ✅ | ✅ |
-| バージョン管理（履歴保存・復元） | ✅ | ✅ | ✅ |
-| 差分比較 | ✅（3件まで） | ✅ | ✅ |
-| AI Chat（Claude対話） | ❌ | ✅ | ✅ |
-| AI Tool Use（セル直接操作） | ❌ | ✅ | ✅ |
-| RPA Agent | ❌ | ❌ | ✅ |
-| データ収集クライアント | ❌ | ❌ | ✅ |
-| 掲示板・チームコラボ | ❌ | ❌ | ✅ |
+| 全機能（編集・AI・データ収集・コラボ） | ✅ | ✅ | ✅ |
+| AI（BYOK・全モデル・制限なし） | ✅ | ✅ | ✅ |
+| **保存・エクスポート** | **❌** | **✅** | **✅** |
+| SSO / 監査ログ / API連携 | ❌ | ❌ | ✅（カスタマイズ） |
 
 ---
 
@@ -93,31 +76,27 @@
 
 | プラン | 価格 |
 |--------|------|
-| **FREE** | ¥0（デモ閲覧のみ） |
+| **FREE** | ¥0（全機能・保存不可） |
 | **BIZ** | **個別見積もり** |
 | **ENT** | **個別見積もり** |
 
 | 項目 | FREE | BIZ | ENT |
 |------|------|-----|-----|
-| インタビュー | デモ閲覧のみ | 月50件 | 無制限 |
-| VRMアバター | — | 5体 | 全30体 + カスタム |
-| AI分析 | — | Sonnet | 全モデル（Opus含む） |
+| インタビュー | 全機能（保存不可） | 月50件 | 無制限 |
+| VRMアバター | ○（保存不可） | 5体 | 全30体 + カスタム |
+| AI分析 | BYOK（全モデル） | BYOK（全モデル） | BYOK（全モデル） |
 | ユーザー数 | — | 1 | 個別見積もり |
-| 感情分析 | — | — | ✅ |
-| Webhook連携 | — | — | ✅ |
-| Interview Mart | — | — | ✅ |
-| SSO/SAML | — | — | ✅ |
-| GDPR準拠 | — | — | ✅ |
+| 感情分析 | ○（保存不可） | ○ | ○ |
+| Webhook連携 | — | — | ✅（カスタマイズ） |
+| Interview Mart | — | — | ✅（カスタマイズ） |
+| SSO/SAML | — | — | ✅（カスタマイズ） |
+| GDPR準拠 | — | — | ✅（カスタマイズ） |
 | SLA | — | — | 99.9% |
 
-> **旧3段階（Starter/Business/Enterprise）→ 新2段階（BIZ/ENT）への変更理由:**
-> - 全製品で統一された4プラン体系（FREE/TRIAL/BIZ/ENT）を維持するため
-> - 1人会社の営業リソースで3段階の説明は複雑すぎる
-> - BIZで小規模利用、ENTは個別見積もりで柔軟に対応
 
 ---
 
-### 3.3 InsightCast（PC端末ライセンス・年額）
+### 3.3 Insight Training Studio（PC端末ライセンス・年額）
 
 | プラン | 価格 |
 |--------|------|
@@ -160,7 +139,7 @@
 | InsightSheet | ¥0 | 個別見積もり | 個別見積もり | **年額/PC** |
 | InsightSlide | ¥0 | Suite専売 | Suite専売 | **年額/PC** |
 | InsightDoc | — | Suite専売 | Suite専売 | **年額/PC** |
-| InsightCast | ¥0 | 個別見積もり | 個別見積もり | **年額/PC** |
+| Insight Training Studio | ¥0 | 個別見積もり | 個別見積もり | **年額/PC** |
 
 ### Suite バンドル（PC端末ライセンス）
 
@@ -177,20 +156,19 @@
 
 ---
 
-## 5. 解消された矛盾の記録
+## 5. 確定事項サマリー（2026年3月1日）
 
-| # | 矛盾の内容 | 決定 | 根拠 |
-|---|-----------|------|------|
-| 1 | **プラン名**: 5段階 vs 4段階 vs 3段階 | **FREE/TRIAL/BIZ/ENTの4段階** | license-structureが実装仕様として確定済み。全製品例外なし |
-| 2 | **ENT価格**: 固定価格 vs 個別見積もり | **全製品ENTは個別見積もり** | ユーザー確認済み（2/28） |
-| 3 | **InsightSheet最低価格**: 固定価格 vs 個別見積もり | **個別見積もり** | BIZ/ENTともに個別見積もりに統一（3/1確定） |
-| 4 | **InsightCast課金モデル**: 月額 vs 年額 | **年額** | 限界費用ゼロ。年額¥9,800のインパクト大 |
-| 5 | **InsightCast製品名**: InsightCast vs InsightMovie | **InsightCast**（コードはINMV） | ユーザー確認済み（2/28） |
-| 6 | **InterviewInsight段階数**: 3段階 vs 2段階 | **BIZ/ENTの2段階** | 全製品統一。1人会社で3段階は非現実的 |
-| 7 | **InterviewInsight BIZ価格**: 固定価格 vs 個別見積もり | **個別見積もり** | BIZ/ENTともに個別見積もりに統一（3/1確定） |
-| 8 | **二刀流モデル**: 「隠す」vs「オープン」 | **「オープンな二足のわらじ」** | 隠蔽は現実的に不可能。comprehensiveが最新 |
-| 9 | **AIチケット制 vs 内包** | **プラン内包（超過時は顧客がAPI購入）** | 基本利用はプラン内包。追加パックは廃止、顧客が直接API契約 |
-| 10 | **InsightCast BIZ内容**: 月15本制限 vs 無制限 | **無制限** | 限界費用ゼロ。制限する理由なし |
+| # | 項目 | 決定 |
+|---|------|------|
+| 1 | プラン体系 | 実質3プラン（FREE / BIZ / ENT）。TRIAL = BIZ 無料配布 |
+| 2 | 全製品 BIZ/ENT 価格 | 個別見積もり |
+| 3 | AI 方式 | 全プラン BYOK（制限なし） |
+| 4 | FREE の設計 | 全機能利用可能、保存・エクスポート不可 |
+| 5 | コラボレーション | 全プラン共通（データ収集含む） |
+| 6 | ENT 限定 | カスタマイズのみ（SSO / 監査 / API / 複数PC管理） |
+| 7 | INMV 製品名 | Insight Training Studio（コード: INMV） |
+| 8 | INMV 課金モデル | 年額（限界費用ゼロ） |
+| 9 | INSS / IOSD | Suite 専売（単体販売なし） |
 
 ---
 

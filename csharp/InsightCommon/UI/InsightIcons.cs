@@ -75,6 +75,7 @@ public static class InsightIcons
     public const string Chat       = "\uE8D4";   // チャット
     public const string Python     = "\uE943";   // Python/コード
     public const string Reference  = "\uE723";   // 参考資料 (Attach)
+    public const string Memory     = "\uE945";   // AIメモリ (Knowledge)
     public const string Comment    = "\uE90A";   // コメント
     public const string Notes      = "\uE70B";   // スピーカーノート
     public const string Settings   = "\uE713";   // 設定
@@ -167,6 +168,7 @@ public static class InsightIcons
         public const string AI         = "🤖";   // \U0001F916 AIアシスタント
         public const string Python     = "🐍";   // \U0001F40D Python
         public const string Reference  = "📎";   // \U0001F4CE 参考資料
+        public const string Memory     = "🧠";   // \U0001F9E0 AIメモリ
         public const string Notes      = "📝";   // \U0001F4DD ノート
 
         // ── ファイル ──
@@ -280,6 +282,17 @@ public static class InsightIcons
             LicenseGate: PanelLicenseGate.None
         );
 
+        public static readonly PanelDefinition Memory = new(
+            Id: "memory",
+            NameJa: "AIメモリ",
+            NameEn: "AI Memory",
+            IconMdl2: InsightIcons.Memory,
+            IconEmoji: Emoji.Memory,
+            DefaultWidth: 280,
+            MinWidth: 180,
+            LicenseGate: PanelLicenseGate.None
+        );
+
         public static readonly PanelDefinition Notes = new(
             Id: "notes",
             NameJa: "スピーカーノート",
@@ -302,6 +315,7 @@ public static class InsightIcons
             AI,
             Python,
             Reference,
+            Memory,
             Notes
         ];
 

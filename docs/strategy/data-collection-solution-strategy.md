@@ -448,11 +448,11 @@ InsightSheetは**パートナーリセラーモデルとの相性が特に良い
 
 ```
 現在の2本柱:
-  柱1: InsightCast（広告直販SaaS）
+  柱1: Insight Training Studio（広告直販SaaS）
   柱2: コンサルDXスイート（FPTチャネル）
 
 InsightSheetの外出しが成功した場合:
-  柱1: InsightCast（広告直販SaaS）
+  柱1: Insight Training Studio（広告直販SaaS）
   柱2: コンサルDXスイート（FPTチャネル）
   柱3候補: InsightSheet（汎用データ収集）← 新たな収益の柱
 

@@ -7,9 +7,10 @@
 1. `$ARGUMENTS` が指定されている場合はそのディレクトリを対象に、未指定の場合はカレントディレクトリを対象にする
 2. `scripts/validate-standards.sh` を実行する
 3. `scripts/validate-menu-icons.sh` を実行する（メニューアイコン標準検証）
-4. 業務系アプリ（INBT/INCA/IVIN）の場合は `scripts/validate-cool-color.sh` も実行する
-5. エラーがあれば一覧を表示し、修正案を提示する
-6. 警告があれば一覧を表示する
+4. C# (WPF) プロジェクトの場合は `scripts/validate-help.sh` も実行する（ヘルプシステム標準検証）
+5. 業務系アプリ（INBT/INCA/IVIN）の場合は `scripts/validate-cool-color.sh` も実行する
+6. エラーがあれば一覧を表示し、修正案を提示する
+7. 警告があれば一覧を表示する
 
 ```bash
 # デザイン標準検証
@@ -17,11 +18,15 @@ bash ./scripts/validate-standards.sh ${ARGUMENTS:-.}
 
 # メニューアイコン標準検証
 bash ./scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
+
+# ヘルプシステム標準検証（WPF プロジェクトの場合）
+bash ./scripts/validate-help.sh ${ARGUMENTS:-.}
 ```
 
 検証に失敗した場合は、以下を参照して修正案を提示してください:
 - **デザイン標準**: CLAUDE.md のデザインシステム（Ivory & Gold / Cool Blue & Slate）
 - **メニューアイコン**: `standards/MENU_ICONS.md` と `brand/menu-icons.json`
+- **ヘルプシステム**: `standards/HELP_SYSTEM.md` と `config/help-content.ts`
 
 ## 主な検証項目
 
@@ -37,6 +42,18 @@ bash ./scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
 - 非標準アイコンライブラリ（Material Design / Font Awesome 等）が混入していないか
 - `brand/menu-icons.json` に定義されたアイコン名が使用されているか
 - アイコンのスタイル（strokeWidth: 1.5、サイズ: 16/20/24/32px）が統一されているか
+
+### ヘルプシステム標準（WPF プロジェクト）
+- HelpWindow.xaml / HelpWindow.xaml.cs が存在するか
+- セクション ID が全て string 型であること（integer 禁止）
+- HelpWindow が ShowDialog() で開かれていること（Show() 禁止）
+- HelpWindow.xaml にハードコード色がないこと（DynamicResource 必須）
+- 必須6セクション（overview, ui-layout, shortcuts, license, system-req, support）が含まれること
+- F1 キーバインドで HelpWindow が開くこと
+- コンテキストヘルプ（?）ボタンがパネルヘッダーに存在すること
+- static ShowSection() メソッドが実装されていること
+- ウィンドウサイズが標準 (1050×740) に準拠していること
+- Ribbon Home タブにヘルプバーが存在すること
 
 ### C# (WPF) 固有
 - **Colors.xaml / Styles.xaml が存在するか**

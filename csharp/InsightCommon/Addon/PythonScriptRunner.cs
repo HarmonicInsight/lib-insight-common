@@ -24,11 +24,11 @@ namespace InsightCommon.Addon;
 /// Python スクリプトには以下の環境変数が自動で設定される:
 /// - INPUT_PATH: 入力ファイルパス（ドキュメント処理時）
 /// - OUTPUT_PATH: 出力ファイルパス（ドキュメント処理時）
-/// - PRODUCT_CODE: 製品コード（HMSH/HMDC/HMSL）
+/// - PRODUCT_CODE: 製品コード（IOSH/IOSD/INSS）
 ///
 /// 使用例:
 /// <code>
-/// var runner = new PythonScriptRunner("HMSH", addonManager);
+/// var runner = new PythonScriptRunner("IOSH", addonManager);
 ///
 /// // 構文検証
 /// var valid = await runner.ValidateSyntaxAsync("print('hello')");

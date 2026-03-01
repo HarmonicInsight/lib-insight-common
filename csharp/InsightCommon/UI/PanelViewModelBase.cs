@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using InsightCommon.AI;
 using InsightCommon.License;
 
 namespace InsightCommon.UI;
@@ -144,7 +146,7 @@ public abstract class PanelViewModelBase : INotifyPropertyChanged
             var plan = _licenseManager.CurrentLicense?.Plan ?? PlanCode.Trial;
             return _definition.LicenseGate switch
             {
-                PanelLicenseGate.Pro => plan >= PlanCode.Pro,
+                PanelLicenseGate.Pro => plan >= PlanCode.Biz,
                 PanelLicenseGate.Enterprise => plan >= PlanCode.Ent,
                 _ => true
             };
@@ -156,8 +158,8 @@ public abstract class PanelViewModelBase : INotifyPropertyChanged
     /// </summary>
     public string? RequiredPlanName => _definition.LicenseGate switch
     {
-        PanelLicenseGate.Pro => "PRO",
-        PanelLicenseGate.Enterprise => "ENTERPRISE",
+        PanelLicenseGate.Pro => "BIZ",
+        PanelLicenseGate.Enterprise => "ENT",
         _ => null
     };
 
@@ -354,6 +356,45 @@ public abstract class ReferencePanelViewModelBase : PanelViewModelBase
     /// 全削除コマンド
     /// </summary>
     public abstract ICommand ClearAllCommand { get; }
+}
+
+/// <summary>
+/// AIメモリパネルViewModel基底クラス
+/// </summary>
+public abstract class MemoryPanelViewModelBase : PanelViewModelBase
+{
+    protected MemoryPanelViewModelBase(InsightLicenseManager? licenseManager = null)
+        : base(InsightIcons.Panels.Memory, licenseManager) { }
+
+    /// <summary>
+    /// 現在のエントリ数
+    /// </summary>
+    public abstract int EntryCount { get; }
+
+    /// <summary>
+    /// 検索テキスト
+    /// </summary>
+    public abstract string SearchText { get; set; }
+
+    /// <summary>
+    /// エントリ種別フィルタ（null=全て, "person"/"glossary"/"project"/"preference"）
+    /// </summary>
+    public abstract string? TypeFilter { get; set; }
+
+    /// <summary>
+    /// エントリ削除コマンド（パラメータ: エントリID）
+    /// </summary>
+    public abstract ICommand RemoveEntryCommand { get; }
+
+    /// <summary>
+    /// 全エントリクリアコマンド
+    /// </summary>
+    public abstract ICommand ClearAllCommand { get; }
+
+    /// <summary>
+    /// MemoryExtractor が抽出した保留中エントリを表示（ユーザー承認 UI）
+    /// </summary>
+    public abstract void ShowPendingEntries(IReadOnlyList<MemoryEntry> entries);
 }
 
 /// <summary>

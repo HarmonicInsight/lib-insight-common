@@ -534,7 +534,7 @@ public static class InsightTitleBar
     /// </summary>
     public static string GetFeatureAvailableIcon(bool isAvailable)
     {
-        return isAvailable ? InsightIcons.Emoji.CheckMark : $"{InsightIcons.Emoji.Lock} PRO";
+        return isAvailable ? InsightIcons.Emoji.CheckMark : $"{InsightIcons.Emoji.Lock} BIZ";
     }
 
     /// <summary>
@@ -553,8 +553,7 @@ public static class InsightTitleBar
         return plan switch
         {
             PlanCode.Ent => InsightIcons.Emoji.Crown,
-            PlanCode.Pro => InsightIcons.Emoji.Star,
-            PlanCode.Std => InsightIcons.Emoji.CheckMark,
+            PlanCode.Biz => InsightIcons.Emoji.Star,
             PlanCode.Trial => "⏱",
             _ => InsightIcons.Emoji.Lock,
         };

@@ -101,7 +101,7 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 
 | 製品 | 今期残り | 第1期 新規 | 第2期 新規 | 第3期 新規 |
 |------|:-------:|:---------:|:---------:|:---------:|
-| InsightCast | 3社 | 24社 | 40社 | 50社 |
+| Insight Training Studio | 3社 | 24社 | 40社 | 50社 |
 | InterviewInsight | 1社 | 7社 | 12社 | 18社 |
 | InsightSlide | 1社 | 5社 | 10社 | 15社 |
 | InsightMigration | 1案件 | 2案件 | 3案件 | 4案件 |
@@ -123,7 +123,7 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
   【開発仕上げ】     【本気スタート】    【攻め開始】      【刈り取り】      【初売上確定】
 
   ・IC最終調整       ・LP/サイト公開     ・PR#2 DXスイート ・デモ実施        ・初成約クロージング
-  ・LP/サイト準備     ・PR#1 InsightCast ・YouTube 2本目   ・FPTパイロット   ・6月末に実績数字
+  ・LP/サイト準備     ・PR#1 Insight Training Studio ・YouTube 2本目   ・FPTパイロット   ・6月末に実績数字
   ・価格ページ整備    ・YouTube 1本目    ・広告テスト開始    進行             を確定させる
   ・FPTとMigration   ・パートナー       ・FPTにDXスイート ・トライアル      ・7月（第1期）に
    パイロット相談      声かけ開始        共有・デモ        →Business転換     繋がる状態を作る
@@ -141,9 +141,9 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 
 | やること | 完了基準 | 備考 |
 |---------|---------|------|
-| InsightCast の最終動作確認 | Free/Business両プランで問題なし | |
+| Insight Training Studio の最終動作確認 | Free/Business両プランで問題なし | |
 | LP・価格ページのドラフト | テキスト確定 | デザインは3月 |
-| PR TIMES原稿の下書き | InsightCast分 | 3月配信に備える |
+| PR TIMES原稿の下書き | Insight Training Studio分 | 3月配信に備える |
 | FPTにMigrationパイロットの打診 | 「やりましょう」の口頭合意 | これが5月売上の種 |
 | デモ動画の構成案 | 3分×2本の台本 | YouTube用 |
 
@@ -151,14 +151,14 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 
 | 週 | アクション | 期待成果 |
 |----|----------|---------|
-| 1週目 | LP公開、InsightCast Free版の登録導線整備 | 検索流入の受け皿完成 |
-| 2週目 | YouTube 1本目公開（InsightCast概要） | 認知開始 |
-| 3週目 | **PR#1 配信**（InsightCast） | Free登録5件/週 |
+| 1週目 | LP公開、Insight Training Studio Free版の登録導線整備 | 検索流入の受け皿完成 |
+| 2週目 | YouTube 1本目公開（Insight Training Studio概要） | 認知開始 |
+| 3週目 | **PR#1 配信**（Insight Training Studio） | Free登録5件/週 |
 | 4週目 | パートナー候補2-3人に声かけ | 「興味あり」の返事 |
 
 ```
 3月の目標:
-  ✓ PR#1 InsightCast 配信完了
+  ✓ PR#1 Insight Training Studio 配信完了
   ✓ YouTube 1本公開
   ✓ LP公開・Free登録が動いている状態
   ✓ パートナー候補と接触開始
@@ -250,7 +250,7 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 | チャネル | 製品 | 社数 | 売上月数 | 単価 | 売上 |
 |---------|------|:----:|:------:|-----:|-----:|
 | FPT | InsightMigration パイロット | 1案件 | — | ¥5.0M | ¥5.0M |
-| 広告直販 | InsightCast Business | 3社 | 平均1.5ヶ月 | ¥80K/月 | ¥0.3M |
+| 広告直販 | Insight Training Studio Business | 3社 | 平均1.5ヶ月 | ¥80K/月 | ¥0.3M |
 | Web直販 | InsightSheet | 1社 | — | ¥2.0M | ¥2.0M |
 | FPT | InterviewInsight Std | 1社 | 1ヶ月 | ¥50K/月 | ¥0.1M |
 | FPT | InsightSlide Std | 1社 | 1ヶ月 | ¥30K/月 | ¥0.03M |
@@ -280,7 +280,7 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 
 ```
 期末MRR内訳（2026年6月末）:
-  InsightCast      3社 × ¥80K  = ¥240K
+  Insight Training Studio      3社 × ¥80K  = ¥240K
   InterviewInsight 1社 × ¥50K  = ¥50K
   InsightSlide     1社 × ¥30K  = ¥30K
   InsightSheet 保守  1社 × ¥25K* = ¥25K
@@ -321,7 +321,7 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 
 ```
 第1期の重点:
-  ① InsightCast 広告ファネル本格稼働（月2社ペース）
+  ① Insight Training Studio 広告ファネル本格稼働（月2社ペース）
   ② InsightMigration 2案件完了（FPT経由の利益エンジン確立）
   ③ パートナー5人体制・初回成約
   ④ DXスイートのクロスセル実績を作る
@@ -332,7 +332,7 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 
 | カテゴリ | 製品 | 新規 | 継続 | 売上 |
 |---------|------|:----:|:----:|-----:|
-| **InsightCast** | Business（24新規 + 3継続） | — | — | ¥16.6M |
+| **Insight Training Studio** | Business（24新規 + 3継続） | — | — | ¥16.6M |
 | **InsightMigration** | 2案件 | 2案件 | — | ¥15.0M |
 | **InsightSheet** | 3ライセンス + 1保守 | 3社 | 1社 | ¥5.1M |
 | **InterviewInsight** | FPT+パートナー+Web | 7社 | 1社 | ¥3.0M |
@@ -341,10 +341,10 @@ Q4: 4月〜6月      ← 新年度開始・最大の商機
 | **Web直販** | 各製品 | — | — | ¥2.0M |
 | **第1期 合計** | | | | **¥45.0M** |
 
-### 4-3. InsightCast 月次積み上げ（第1期）
+### 4-3. Insight Training Studio 月次積み上げ（第1期）
 
 ```
-InsightCast Business 顧客数・MRR推移
+Insight Training Studio Business 顧客数・MRR推移
 
 月       新規  チャーン  累計   MRR
 ──────────────────────────────────
@@ -411,7 +411,7 @@ IC合計: ¥16.6M
 | AI API | ¥2,400K | ¥200K | 顧客数増加に連動 |
 | サーバ・インフラ | ¥1,800K | ¥150K | |
 | FPT外注費 | ¥6,000K | — | Migration 2案件 |
-| 広告費 | ¥3,000K | ¥250K | InsightCast集客 |
+| 広告費 | ¥3,000K | ¥250K | Insight Training Studio集客 |
 | ツール・サービス | ¥600K | ¥50K | |
 | 雑費・交通費 | ¥500K | — | |
 | **合計** | **¥14,300K** | | |
@@ -433,7 +433,7 @@ IC合計: ¥16.6M
 | Q1 | InsightMigration 初案件完了 | FPTチャネルの実績確定 |
 | Q2 | パートナー経由初成約 | CH2の有効性を確認 |
 | Q2 | Migration Ops 初顧客 | 移行→保守の転換モデル確立 |
-| Q3 | InsightCast累計15社 | 広告ファネルの安定稼働確認 |
+| Q3 | Insight Training Studio累計15社 | 広告ファネルの安定稼働確認 |
 | Q4 | MRR ¥2.9M | 年間サブスクだけで¥35M規模 |
 | Q4 | クロスセル初発生 | II→IS or IC→Sheet の横展開 |
 
@@ -442,7 +442,7 @@ IC合計: ¥16.6M
 ```
 第1期 売上構成 (¥45.0M)
 
-InsightCast         ¥16.6M  37%  ██████████████████
+Insight Training Studio         ¥16.6M  37%  ██████████████████
 InsightMigration    ¥15.0M  33%  █████████████████
 InsightSheet   ¥5.1M  11%  ██████
 InterviewInsight     ¥3.0M   7%  ████
@@ -463,7 +463,7 @@ InsightSlide         ¥1.5M   3%  ██
 
 ```
 第2期の重点:
-  ① InsightCast 広告費増額・Enterprise獲得開始
+  ① Insight Training Studio 広告費増額・Enterprise獲得開始
   ② InsightMigration 年3案件の安定パイプライン
   ③ Migration Ops 3社（移行完了顧客を確実に転換）
   ④ パートナー10人（外部展開本格化）
@@ -488,8 +488,8 @@ InsightSlide         ¥1.5M   3%  ██
 
 | カテゴリ | 新規売上 | 継続売上 | 合計 |
 |---------|--------:|--------:|-----:|
-| **InsightCast Business** | ¥19.2M | ¥19.2M | ¥38.4M |
-| **InsightCast Enterprise** | ¥6.0M | — | ¥6.0M |
+| **Insight Training Studio Business** | ¥19.2M | ¥19.2M | ¥38.4M |
+| **Insight Training Studio Enterprise** | ¥6.0M | — | ¥6.0M |
 | **InsightMigration** 3案件 | ¥22.5M | — | ¥22.5M |
 | **Migration Ops** 4社 | ¥3.6M | ¥2.2M | ¥5.8M |
 | **InterviewInsight** | ¥4.3M | ¥3.4M | ¥7.7M |
@@ -554,9 +554,9 @@ InsightSlide         ¥1.5M   3%  ██
 |------|-------------|------|
 | Q1 | MRR ¥4M突破 | サブスクだけで年¥48M規模 |
 | Q1 | 業務委託1名目 稼働 | 代表の時間を開発・営業に集中 |
-| Q2 | InsightCast累計40社 | 口コミ・紹介が自律的に発生 |
+| Q2 | Insight Training Studio累計40社 | 口コミ・紹介が自律的に発生 |
 | Q2 | パートナー経由年間10社達成 | チャネルとして成立 |
-| Q3 | InsightCast Enterprise初契約 | ¥250K/月の大型サブスク |
+| Q3 | Insight Training Studio Enterprise初契約 | ¥250K/月の大型サブスク |
 | Q4 | MRR ¥6.8M（ARR ¥82M） | 第3期のスケールに向けた基盤完成 |
 
 ---
@@ -567,20 +567,20 @@ InsightSlide         ¥1.5M   3%  ██
 
 ```
 第3期の重点:
-  ① InsightCast Enterprise比率30%へ引き上げ
+  ① Insight Training Studio Enterprise比率30%へ引き上げ
   ② 新移行パターン開拓（UiPath→Power Automate等）
   ③ パートナー15人（自走するチャネル）
   ④ 業務委託3名体制（CS + 開発支援 + マーケ）
   ⑤ 正社員1名目の採用検討
-  ⑥ InsightCast英語版の検討着手
+  ⑥ Insight Training Studio英語版の検討着手
 ```
 
 ### 6-2. 第3期 売上内訳
 
 | カテゴリ | 新規売上 | 継続売上 | 合計 |
 |---------|--------:|--------:|-----:|
-| **InsightCast Business** | ¥19.2M | ¥34.6M | ¥53.8M |
-| **InsightCast Enterprise** | ¥15.0M | ¥10.8M | ¥25.8M |
+| **Insight Training Studio Business** | ¥19.2M | ¥34.6M | ¥53.8M |
+| **Insight Training Studio Enterprise** | ¥15.0M | ¥10.8M | ¥25.8M |
 | **InsightMigration** 4案件 | ¥30.0M | — | ¥30.0M |
 | **Migration Ops** 8社 | ¥4.8M | ¥7.2M | ¥12.0M |
 | **InterviewInsight** | ¥6.5M | ¥6.0M | ¥12.5M |
@@ -627,7 +627,7 @@ InsightSlide         ¥1.5M   3%  ██
 ```
 第3期 売上構成 (¥160.0M)
 
-InsightCast (B+E)   ¥79.6M   50%  █████████████████████████
+Insight Training Studio (B+E)   ¥79.6M   50%  █████████████████████████
 InsightMigration    ¥30.0M   19%  ██████████
 InsightSheet  ¥13.9M    9%  █████
 InterviewInsight    ¥12.5M    8%  ████
@@ -645,7 +645,7 @@ Web直販              ¥5.0M    3%  ██
 | 時期 | マイルストーン | 意味 |
 |------|-------------|------|
 | Q1 | MRR ¥8M突破 | サブスクだけで月次黒字が当たり前 |
-| Q2 | InsightCast累計100社 | SaaS事業として一定の規模感 |
+| Q2 | Insight Training Studio累計100社 | SaaS事業として一定の規模感 |
 | Q2 | 新移行パターン初案件 | BizRobo以外→市場拡大 |
 | Q3 | MRR ¥10M突破 | **ARR ¥120M到達** |
 | Q4 | パートナー15人 | チャネルの自走 |
@@ -776,7 +776,7 @@ Web直販              ¥5.0M    3%  ██
 
 ```
 保守的シナリオ（第3期: ¥85M）の前提:
-  ・InsightCast 広告ROI が想定の60%（月1.2社獲得）
+  ・Insight Training Studio 広告ROI が想定の60%（月1.2社獲得）
   ・InsightMigration が年1-2件（FPTパイプライン遅延）
   ・パートナーが5人で頭打ち（外部展開失敗）
   ・クロスセル率15%（バンドル不発）
@@ -789,18 +789,18 @@ Web直販              ¥5.0M    3%  ██
   ・広告チャネルを多様化（LinkedIn、SEO、ウェビナー）
   ・FPT以外のMigrationチャネル開拓
   ・パートナー報酬引き上げ（卸値65%に）
-  ・InsightCastの口コミ誘導を強化
+  ・Insight Training Studioの口コミ誘導を強化
 ```
 
 ### 8-3. 積極的シナリオの前提と追加投資
 
 ```
 積極的シナリオ（第3期: ¥250M）の前提:
-  ・InsightCast が教育 or 建設でバズる（月8社獲得）
+  ・Insight Training Studio が教育 or 建設でバズる（月8社獲得）
   ・新移行パターン（UiPath→Power Automate）が第2期から発生
   ・SIer法人パートナー1-2社が参加
   ・DXスイートの大手コンサルファーム全社導入が1社
-  ・InsightCast英語版で海外顧客が発生
+  ・Insight Training Studio英語版で海外顧客が発生
 
 追加投資:
   ・広告費 月¥1M以上（第2期後半〜）
@@ -826,7 +826,7 @@ Web直販              ¥5.0M    3%  ██
 ### 9-1. 広告費の段階的増額ルール
 
 ```
-InsightCast 広告費のステップアップ:
+Insight Training Studio 広告費のステップアップ:
 
   今期残り: 月¥100K（テスト運用）
     │  CPA < ¥200K（LTV/CPA > 9.6倍）を確認
@@ -938,7 +938,7 @@ InsightCast 広告費のステップアップ:
 
   事業構造:
   ・売上の73%がサブスク → 安定経営
-  ・InsightCastが売上の50% → SaaS事業として確立
+  ・Insight Training Studioが売上の50% → SaaS事業として確立
   ・3年間の累計営業利益: ¥217M
   ・3年間の累計税引後利益: ¥103M
 
@@ -950,7 +950,7 @@ InsightCast 広告費のステップアップ:
 
   次のフェーズ（第4期以降）:
   ・ARR ¥200M → 組織的な拡大フェーズ
-  ・InsightCast英語版 → 海外展開
+  ・Insight Training Studio英語版 → 海外展開
   ・SIer法人パートナー → チャネルの質的転換
   ・新移行パターン → Migration事業の市場拡大
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

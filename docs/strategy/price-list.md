@@ -5,7 +5,8 @@
 > 最終更新: 2026年3月1日
 > 価格はすべて税別
 > 正についての参照: pricing-unified-2026.md（Single Source of Truth）
-> 正式プラン体系: **FREE / TRIAL / BIZ / ENT**
+> 正式プラン体系: **FREE / TRIAL / BIZ / ENT**（実質3プラン: TRIAL = BIZ）
+> AI: **全プラン BYOK**（ユーザーが自身の Claude API キーを持ち込む。制限なし）
 
 ---
 
@@ -15,16 +16,16 @@
 
 | プラン | 価格 | 内容 |
 |--------|------|------|
-| **FREE** | **¥0** | Excel読込・編集・保存、バージョン管理、差分比較（3件まで） |
-| **BIZ** | **個別見積もり** | 全機能 + AI Chat + AI Tool Use |
-| **ENT** | **個別見積もり** | RPA Agent、データ収集クライアント、掲示板・チームコラボ |
+| **FREE** | **¥0** | 全機能利用可能（AI含む・BYOK）。**保存・エクスポート不可** |
+| **BIZ** | **個別見積もり** | 全機能 + 保存・エクスポート可能 + データ収集・コラボレーション |
+| **ENT** | **個別見積もり** | BIZ + カスタマイズ（SSO・監査ログ・API連携・複数PC管理） |
 
 ### 1-2. InsightSlide（INSS）/ InsightDoc（IOSD）
 
 > **Suite専売**（単体販売なし）。Insight Business Suite の一部として提供。
 > 理由: InsightDocの差別化が弱く単体では売れない。Suiteとして「3製品セット」のインパクトを出す。
 
-### 1-3. InsightCast（INMV / AI動画変換）
+### 1-3. Insight Training Studio（INMV / AI動画変換）
 
 | プラン | 価格 | 内容 |
 |--------|------|------|
@@ -58,9 +59,9 @@
 
 | プラン | 価格 | 内容 |
 |--------|------|------|
-| **FREE** | **¥0** | デモ閲覧のみ |
-| **BIZ** | **個別見積もり** | 月50件、VRM 5体、AI分析（Sonnet） |
-| **ENT** | **個別見積もり** | 無制限、全VRM+カスタム、Opus含む全モデル、SSO/SAML、SLA 99.9% |
+| **FREE** | **¥0** | 全機能（保存不可）。AI = BYOK（全モデル・制限なし） |
+| **BIZ** | **個別見積もり** | 月50件、VRM 5体、AI = BYOK（全モデル）、保存・エクスポート可能 |
+| **ENT** | **個別見積もり** | 無制限、全VRM+カスタム、SSO/SAML、SLA 99.9%（カスタマイズ） |
 
 ---
 
@@ -120,7 +121,7 @@
   InsightSheet         年額/PC       ¥0          個別見積もり
   InsightSlide               年額/PC       ¥0          Suite専売
   InsightDoc           年額/PC       —           Suite専売
-  InsightCast                年額/PC       ¥0          個別見積もり
+  Insight Training Studio                年額/PC       ¥0          個別見積もり
   Insight Business Suite     年額/PC       —           個別見積もり
   Suite + Cast               年額/PC       —           個別見積もり
   ─────────────────────────────────────────────────────────────────────

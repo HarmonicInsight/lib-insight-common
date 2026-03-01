@@ -3,7 +3,7 @@ namespace InsightCommon.Addon;
 /// <summary>
 /// Insight Business Suite アプリ統合ガイド
 ///
-/// 各 Insight Business Suite アプリ（HMSH/HMDC/HMSL）が AddonManager を
+/// 各 Insight Business Suite アプリ（IOSH/IOSD/INSS）が AddonManager を
 /// 初期化し、モジュール UI をホストするためのリファレンス実装。
 ///
 /// ## App.xaml.cs での初期化
@@ -22,18 +22,18 @@ namespace InsightCommon.Addon;
 ///         base.OnStartup(e);
 ///
 ///         // Step 1: ライセンスマネージャー初期化
-///         LicenseManager = new InsightLicenseManager("HMSH", "HarmonicSheet");
+///         LicenseManager = new InsightLicenseManager("IOSH", "InsightPerformanceManagement");
 ///
 ///         // Step 2: アドインマネージャー初期化
-///         AddonManager = new AddonManager("HMSH", "HarmonicSheet", LicenseManager);
+///         AddonManager = new AddonManager("IOSH", "InsightPerformanceManagement", LicenseManager);
 ///         AddonManager.Initialize();
 ///
 ///         // Step 3: モジュールサービス初期化（有効なモジュールのみ）
 ///         if (AddonManager.IsEnabled("python_runtime"))
-///             PythonRunner = new PythonScriptRunner("HMSH", AddonManager);
+///             PythonRunner = new PythonScriptRunner("IOSH", AddonManager);
 ///
 ///         if (AddonManager.IsEnabled("reference_materials"))
-///             ReferenceService = new ReferenceMaterialsService("HarmonicSheet");
+///             ReferenceService = new ReferenceMaterialsService("InsightPerformanceManagement");
 ///
 ///         if (AddonManager.IsEnabled("voice_input") || AddonManager.IsEnabled("vrm_avatar"))
 ///             VoiceService = new VoiceAndAvatarService(AddonManager);
@@ -48,10 +48,10 @@ namespace InsightCommon.Addon;
 ///         switch (e.ModuleId)
 ///         {
 ///             case "python_runtime" when e.IsEnabled:
-///                 PythonRunner ??= new PythonScriptRunner("HMSH", AddonManager);
+///                 PythonRunner ??= new PythonScriptRunner("IOSH", AddonManager);
 ///                 break;
 ///             case "reference_materials" when e.IsEnabled:
-///                 ReferenceService ??= new ReferenceMaterialsService("HarmonicSheet");
+///                 ReferenceService ??= new ReferenceMaterialsService("InsightPerformanceManagement");
 ///                 break;
 ///         }
 ///     }
@@ -90,7 +90,7 @@ namespace InsightCommon.Addon;
 ///             _bottomPanelHost.RegisterPanel("ai_code_editor",
 ///                 new AiCodeEditorHost(addonManager, App.PythonRunner));
 ///             _bottomPanelHost.RegisterPanel("python_scripts",
-///                 new PythonScriptsPanel(addonManager, App.PythonRunner, "HarmonicSheet"));
+///                 new PythonScriptsPanel(addonManager, App.PythonRunner, "InsightPerformanceManagement"));
 ///         }
 ///
 ///         BottomPanelContainer.Content = _bottomPanelHost;

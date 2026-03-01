@@ -1,6 +1,6 @@
 # AI アシスタント 標準仕様
 
-> Insight Business Suite 系アプリ（INSS/IOSH/IOSD）共通の AI アシスタント実装ガイド
+> Insight Business Suite 系アプリ（INSS/IOSH/IOSD/INMV）共通の AI アシスタント実装ガイド
 
 ---
 
@@ -16,6 +16,7 @@ Insight Business Suite 系アプリには、Claude API を利用した AI アシ
 | INSS | Insight Deck Quality Gate | スライドテキストの校正・改善提案 |
 | IOSH | Insight Performance Management | Excel データの操作・分析・書式設定（Tool Use） |
 | IOSD | Insight AI Briefcase | Word ドキュメントの校正・要約・構成提案 |
+| INMV | Insight Training Studio | 動画構成提案・ナレーション作成・字幕最適化（Tool Use） |
 
 ### 設計原則
 
@@ -24,6 +25,7 @@ Insight Business Suite 系アプリには、Claude API を利用した AI アシ
 3. **プロダクトコンテキスト** — 開いているファイルの内容を AI に自動提供
 4. **ライセンス制御** — 全プラン BYOK（クレジット制限なし）
 5. **Tool Use 対応** — スプレッドシート等で AI がデータを直接操作可能
+6. **プロンプト選択型 UI** — 多くの人に AI を活用させるには、自由入力のチャット形式では難しい。目的に応じたプロンプトを事前に用意し、ユーザーがそれを選択する形式にすべき。想定運用: 8割のユーザーはプリセットのAIプロンプトを選択して実行、2割の上級ユーザーがプロンプトエディタで新しいプロンプトを試行→有効なものを社内に展開・共有する流れとする
 
 ---
 
@@ -401,6 +403,7 @@ AgenticSessionManager は AI メモリシステムを統合しており、会話
 | ファイル | 役割 |
 |---------|------|
 | `csharp/InsightCommon/AI/AiMemoryModels.cs` | メモリエントリ型・ホットキャッシュ・プラン別制限 |
+| `csharp/InsightCommon/AI/AiMemoryService.cs` | メモリ CRUD・マージ・重複排除・プラン制限適用 |
 | `csharp/InsightCommon/AI/MemoryExtractor.cs` | インライン抽出・プロンプト整形・抽出指示生成 |
 | `config/ai-memory.ts` | TypeScript 型定義（C# モデルの根拠） |
 
@@ -434,9 +437,9 @@ var response = await session.SendAsync("田中部長のKPI報告書を修正し�
 
 | プラン | ホットキャッシュ上限 | ディープストレージ上限 |
 |--------|:------------------:|:--------------------:|
+| FREE | 20 | 無効 |
 | TRIAL | 50 | 200 |
-| STD | 20 | 無効 |
-| PRO | 100 | 500 |
+| BIZ | 100 | 500 |
 | ENT | 無制限 | 無制限 |
 
 **メモリ抽出フロー:**
@@ -517,6 +520,23 @@ Respond in the same language as the user's message.
 - 文書の要約・構成提案
 - フォーマット変換のアドバイス
 - テンプレート活用の提案
+
+ユーザーの質問や要望に丁寧に回答してください。
+```
+
+#### Insight Training Studio (INMV)
+
+```
+あなたはInsight Training StudioのAIアシスタントです。研修動画・デモ動画の構成提案・ナレーション作成・字幕最適化を支援します。
+ユーザーのメッセージと同じ言語で回答してください。
+ツールを使って現在開いている動画プロジェクトのタイムライン・シーン・ナレーションを読み書きできます。
+ツールを使用する前後に、何をしているかを説明してください。
+
+専門知識：
+- 動画構成提案（認知負荷理論に基づくチャンキング、シーン分割戦略）
+- ナレーションスクリプト作成（日本語: 250-300文字/分、同期ポイント記法 [SYNC: 説明]）
+- 字幕最適化（1行20文字以内、表示時間1.5-7秒）
+- ストーリーボード設計（導入→本編→まとめ、モダリティ原則）
 
 ユーザーの質問や要望に丁寧に回答してください。
 ```
@@ -615,6 +635,28 @@ IOSD（Word 操作）向けに、以下のツールを将来追加予定:
 | `get_document_structure` | 見出し構造の取得 |
 | `find_text` | テキスト検索 |
 
+### 7.4 Tool Use 定義（INMV — 動画操作）
+
+Insight Training Studio で利用する 5 つの標準ツール:
+
+| ツール名 | 説明 | パラメータ |
+|---------|------|-----------|
+| `get_timeline` | タイムライン全体の構造（シーン一覧・順序・尺）を取得 | なし |
+| `get_scene` | 特定シーンの詳細（ナレーション・字幕・画像・設定）を取得 | `scene_id` |
+| `update_scene_narration` | シーンのナレーションテキストを更新 | `scene_id`, `narration_text`, `language?` |
+| `update_subtitles` | シーンの字幕エントリを更新 | `scene_id`, `subtitles[]` (text, start_time, end_time) |
+| `get_narration_scripts` | 全シーンのナレーション一覧を取得 | `include_empty?` |
+
+**ナレーション品質基準（ツール内蔵）:**
+- 日本語: 250-300 文字/分（TTS 読み上げ速度の目安）
+- 同期ポイント記法: `[SYNC: 画面切り替え]` で視覚要素との同期を指示
+- 1シーンのナレーションは 2 分以内を推奨
+
+**字幕制約（ツール内蔵）:**
+- 日本語: 1 行 20 文字以内
+- 表示時間: 1.5〜7 秒
+- 1 字幕エントリに最大 2 行
+
 ---
 
 ## 8. ライセンス制御
@@ -630,7 +672,7 @@ IOSD（Word 操作）向けに、以下のツールを将来追加予定:
   name: 'AI Assistant',
   nameJa: 'AIアシスタント',
   type: 'boolean',
-  allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+  allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
   descriptionJa: 'AIチャットによるファイル操作支援',
 }
 ```
@@ -639,9 +681,9 @@ IOSD（Word 操作）向けに、以下のツールを将来追加予定:
 
 | プラン | AI アシスタント | 理由 |
 |--------|:----------:|------|
+| FREE | ✅（無制限・BYOK） | BYOK — ユーザー自身の API キーで利用 |
 | TRIAL | ✅（無制限・BYOK） | 全機能評価のため |
-| STD | ✅（無制限・BYOK） | BYOK — ユーザー自身の API キーで利用 |
-| PRO | ✅（無制限・BYOK） | BYOK — ユーザー自身の API キーで利用 |
+| BIZ | ✅（無制限・BYOK） | BYOK — ユーザー自身の API キーで利用 |
 | ENT | ✅（無制限・BYOK） | BYOK — ユーザー自身の API キーで利用 |
 
 ### 8.3 ゲート実装
@@ -662,7 +704,7 @@ private void AiToggle_Click(object sender, RoutedEventArgs e)
 
 // PlanCode 拡張メソッド
 public static bool HasAiFeature(this PlanCode plan) =>
-    plan is PlanCode.Free or PlanCode.Trial or PlanCode.Pro or PlanCode.Ent;
+    plan is PlanCode.Free or PlanCode.Trial or PlanCode.Biz or PlanCode.Ent;
 ```
 
 **TypeScript:**
@@ -678,14 +720,14 @@ if (!checkFeature(productCode, 'ai_assistant', userPlan)) {
 
 ### 8.4 アップグレードダイアログ
 
-AI ボタン押下時に STD ユーザーに表示するダイアログ:
+AI ボタン押下時に FREE ユーザーに表示するダイアログ:
 
 ```
 ┌────────────────────────────────────────┐
-│  AIアシスタントはPROプランの機能です      │
+│  AIアシスタントはBIZプランの機能です      │
 │                                        │
 │  AIアシスタントを利用するには、           │
-│  PROプラン以上へのアップグレードが        │
+│  BIZプラン以上へのアップグレードが        │
 │  必要です。                             │
 │                                        │
 │  [アップグレード]         [閉じる]       │
@@ -891,6 +933,14 @@ public class ToolResultBlock
 
 **ドキュメント系（IOSD）:**
 - [ ] 将来の Tool Use 対応準備（get_paragraphs 等）
+
+**動画系（INMV）:**
+- [ ] Tool Use 対応（5 ツール定義: get_timeline, get_scene, update_scene_narration, update_subtitles, get_narration_scripts）
+- [ ] Tool Use ループ（最大 10 イテレーション）
+- [ ] ツール実行ステータス表示
+- [ ] ナレーション品質チェック（250-300 文字/分、同期ポイント記法）
+- [ ] 字幕制約バリデーション（1 行 20 文字以内、表示 1.5-7 秒）
+- [ ] ドキュメント評価対応（動画プリセット 4 種: 研修/デモ/マーケティング/オンボーディング）
 
 ---
 

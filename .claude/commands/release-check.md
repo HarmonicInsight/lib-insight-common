@@ -92,11 +92,26 @@ bash ./insight-common/scripts/release-check.sh ${ARGUMENTS:-.}
 | MI2 | 非標準ライブラリ未使用 | ✅ / ❌ | Material Design / Font Awesome 等 |
 | MI3 | 標準アイコン名準拠 | ✅ / ❌ | brand/menu-icons.json |
 | MI4 | アイコンスタイル統一 | ✅ / ❌ | strokeWidth: 1.5, サイズ: 16/20/24/32 |
+| H1 | HelpWindow 存在 | ✅ / ❌ | HelpWindow.xaml + .cs |
+| H2 | セクション ID string | ✅ / ❌ | integer 禁止 |
+| H3 | ShowDialog() 使用 | ✅ / ❌ | Show() 禁止 |
+| H4 | XAML ハードコード色 | ✅ / ❌ | DynamicResource 必須 |
+| H5 | 必須6セクション | ✅ / ❌ | overview, ui-layout, shortcuts, license, system-req, support |
+| H6 | F1 キーバインド | ✅ / ❌ | |
+| H7 | ? ボタン | ✅ / ❌ | パネルヘッダー |
+| H8 | static ShowSection() | ✅ / ❌ | |
 | ... | ... | ... | ... |
 ```
 
 **メニューアイコン検証**: `release-check.sh` に `validate-menu-icons.sh` が統合されているため自動実行される。
-手動で個別実行する場合:
+
+**ヘルプシステム検証**（C# WPF プロジェクトの場合）:
+```bash
+bash ./scripts/validate-help.sh ${ARGUMENTS:-.}
+bash ./insight-common/scripts/validate-help.sh ${ARGUMENTS:-.}
+```
+
+手動でメニューアイコン検証を個別実行する場合:
 ```bash
 bash ./scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
 bash ./insight-common/scripts/validate-menu-icons.sh ${ARGUMENTS:-.}
@@ -336,6 +351,8 @@ Phase 4: ストアメタデータ  ✅ 完了
 ## 参照ドキュメント
 
 - `standards/RELEASE_CHECKLIST.md` — 全チェック項目の詳細定義（チェック ID 付き）
+- `standards/HELP_SYSTEM.md` — ヘルプシステム標準仕様
+- `config/help-content.ts` — 製品別ヘルプセクション定義（ソースオブトゥルース）
 - `standards/MENU_ICONS.md` — メニューアイコン標準（Lucide Icons 統一）
 - `brand/menu-icons.json` — メニューアイコン正規定義（ソースオブトゥルース）
 - `standards/LOCALIZATION.md` — ストアメタデータのローカライゼーション

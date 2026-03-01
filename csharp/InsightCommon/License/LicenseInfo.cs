@@ -26,7 +26,7 @@ public class LicenseInfo
     }
 
     /// <summary>
-    /// プラン表示名（統一: FREE / TRIAL / STD / PRO / ENT）
+    /// プラン表示名（統一: FREE / TRIAL / BIZ / ENT）
     /// </summary>
     public string PlanDisplayName => PlanDisplay.GetName(Plan);
 }

@@ -86,7 +86,7 @@ export interface CustomerSegment {
   /** ターゲット企業規模 */
   companySize: 'medium' | 'large' | 'enterprise';
   /** 推奨プラン */
-  recommendedPlan: 'STD' | 'PRO' | 'ENT';
+  recommendedPlan: 'BIZ' | 'ENT';
 }
 
 /** マーケティングチャネル */
@@ -177,14 +177,14 @@ const CONSULTING_SEGMENTS: CustomerSegment[] = [
     nameJa: '中堅企業DX推進部門',
     description: 'DX推進の一環でツール導入・業務効率化を進めたい中堅企業',
     companySize: 'medium',
-    recommendedPlan: 'PRO',
+    recommendedPlan: 'ENT',
   },
   {
     name: 'SI Partner / Consulting Firm',
     nameJa: 'SIパートナー・コンサルファーム',
     description: '自社のコンサル案件でクライアントにツールを導入したいSIer・コンサルファーム',
     companySize: 'large',
-    recommendedPlan: 'PRO',
+    recommendedPlan: 'ENT',
   },
 ];
 
@@ -410,14 +410,14 @@ export const PRODUCT_SALES_STRATEGY: Record<ProductCode, ProductSalesStrategy> =
         nameJa: '福祉法人・介護施設',
         description: 'Office未導入の施設でExcel報告書を扱う職員向け',
         companySize: 'medium',
-        recommendedPlan: 'STD',
+        recommendedPlan: 'BIZ',
       },
       {
         name: 'Enterprise HR / General Affairs',
         nameJa: '企業 人事・総務部門',
         description: 'Office操作が困難なシニア社員向けの代替ツール',
         companySize: 'large',
-        recommendedPlan: 'STD',
+        recommendedPlan: 'BIZ',
       },
     ],
     marketingChannels: [

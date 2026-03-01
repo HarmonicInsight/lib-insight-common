@@ -29,22 +29,16 @@
  * │ │invoice.paid → 新キー発行 → メール送信 → 自動切り替え      │ │
  * │ └──────────────────────────────────────────────────────────────┘ │
  * │                                                                    │
- * │ ── AI アドオン購入 ──                                              │
- * │ ┌──────────────────────────────────────────────────────────────┐ │
- * │ │checkout.session.completed (mode: payment)                   │ │
- * │ │→ ai_addon_packs に登録 → クレジット即時反映                 │ │
- * │ └──────────────────────────────────────────────────────────────┘ │
  * └─────────────────────────────────────────────────────────────────────┘
  *
  * ## 対象製品：
- * - 個人・法人向け： INSS, IOSH, IOSD, INPY（Stripe + 自社サイト）
+ * - 法人向け： INSS, IOSH, IOSD, INPY（Stripe + 自社サイト）
  * - コンサル連動型: INCA, INBT, INMV, INIG, IVIN（Stripe 請求書 or 手動）
- * - AI アドオンパック: 全製品共通
  *
  * ## Stripe 製品構成
- * - 各製品×各プラン = 1 Stripe Product + 1 Stripe Price
+ * - 各製品×各プラン（BIZ/ENT） = 1 Stripe Product + 1 Stripe Price
  * - サブスクリプション（年間）= recurring（価格は Stripe ダッシュボードで設定）
- * - AI アドオン = one-time（価格は Stripe ダッシュボードで設定）
+ * - AI は全プラン BYOK（Stripe 決済対象外）
  */
 
 import type { ProductCode, PlanCode } from './products';
@@ -87,11 +81,7 @@ export interface StripeCheckoutMetadata {
   /** プランコード */
   plan: PlanCode;
   /** 購入種別 */
-  purchase_type: 'license' | 'addon';
-  /** アドオンパック ID（addon の場合） */
-  addon_pack_id?: string;
-  /** アドオンモデルティア（addon の場合） */
-  addon_model_tier?: 'standard' | 'premium';
+  purchase_type: 'license';
   /** 顧客名 */
   customer_name: string;
   /** 会社名（任意） */
@@ -108,8 +98,6 @@ export interface StripeWebhookHandlerResult {
   channel: IssuanceChannel;
   /** 発行されたライセンスキー（ライセンス購入の場合） */
   licenseKey?: string;
-  /** 発行されたアドオンパック ID（アドオン購入の場合） */
-  addonPackId?: string;
   /** エラーメッセージ */
   error?: string;
   /** 処理の詳細 */
@@ -141,116 +129,88 @@ export interface StripeCustomerInfo {
  *
  * 命名規則:
  * - 環境変数: STRIPE_{PRODUCT_CODE}_{PLAN}_PRODUCT_ID / STRIPE_{PRODUCT_CODE}_{PLAN}_PRICE_ID
- * - 例: STRIPE_INSS_STD_PRODUCT_ID, STRIPE_INSS_STD_PRICE_ID
+ * - 例: STRIPE_INSS_BIZ_PRODUCT_ID, STRIPE_INSS_BIZ_PRICE_ID
  */
 export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
   // --- Insight Business Suite（Tier 3） ---
   // INSS (Insight Deck Quality Gate)
   {
     productCode: 'INSS',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_INSS_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INSS_STD_PRICE_ID',
-
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_INSS_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_INSS_BIZ_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight Deck Quality Gate Standard (Annual)',
+    description: 'Insight Deck Quality Gate BIZ (Annual)',
   },
   {
     productCode: 'INSS',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_INSS_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INSS_PRO_PRICE_ID',
-
+    plan: 'ENT',
+    stripeProductIdEnvKey: 'STRIPE_INSS_ENT_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_INSS_ENT_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight Deck Quality Gate Professional (Annual)',
+    description: 'Insight Deck Quality Gate ENT (Annual)',
   },
 
   // IOSH (Insight Performance Management)
   {
     productCode: 'IOSH',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_IOSH_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSH_STD_PRICE_ID',
-
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_IOSH_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_IOSH_BIZ_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight Performance Management Standard (Annual)',
+    description: 'Insight Performance Management BIZ (Annual)',
   },
   {
     productCode: 'IOSH',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_IOSH_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSH_PRO_PRICE_ID',
-
+    plan: 'ENT',
+    stripeProductIdEnvKey: 'STRIPE_IOSH_ENT_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_IOSH_ENT_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight Performance Management Professional (Annual)',
+    description: 'Insight Performance Management ENT (Annual)',
   },
 
   // IOSD (Insight AI Briefcase)
   {
     productCode: 'IOSD',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_IOSD_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSD_STD_PRICE_ID',
-
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_IOSD_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_IOSD_BIZ_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight AI Briefcase Standard (Annual)',
+    description: 'Insight AI Briefcase BIZ (Annual)',
   },
   {
     productCode: 'IOSD',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_IOSD_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSD_PRO_PRICE_ID',
-
+    plan: 'ENT',
+    stripeProductIdEnvKey: 'STRIPE_IOSD_ENT_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_IOSD_ENT_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight AI Briefcase Professional (Annual)',
+    description: 'Insight AI Briefcase ENT (Annual)',
   },
 
   // INPY (InsightPy)
   {
     productCode: 'INPY',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_INPY_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INPY_STD_PRICE_ID',
-
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_INPY_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_INPY_BIZ_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightPy Standard (Annual)',
+    description: 'InsightPy BIZ (Annual)',
   },
   {
     productCode: 'INPY',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_INPY_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INPY_PRO_PRICE_ID',
-
+    plan: 'ENT',
+    stripeProductIdEnvKey: 'STRIPE_INPY_ENT_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_INPY_ENT_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightPy Professional (Annual)',
-  },
-
-  // --- AI アドオンパック（全製品共通、one-time、ティア別） ---
-  {
-    productCode: 'INSS',
-    plan: 'STD', // プランに関係なく購入可能（metadata で制御）
-    stripeProductIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRICE_ID',
-
-    billingType: 'one_time',
-    description: 'AI Credits - Standard 200 (up to Sonnet class)',
-  },
-  {
-    productCode: 'INSS',
-    plan: 'STD', // プランに関係なく購入可能（metadata で制御）
-    stripeProductIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRICE_ID',
-
-    billingType: 'one_time',
-    description: 'AI Credits - Premium 200 (all models)',
+    description: 'InsightPy ENT (Annual)',
   },
 ];
 
@@ -307,16 +267,12 @@ export const STRIPE_WEBHOOK_HANDLERS: Record<StripeWebhookEvent, {
   actions: string[];
 }> = {
   'checkout.session.completed': {
-    description: '新規購入完了 → ライセンスキー発行 or アドオンクレジット付与',
+    description: '新規購入完了 → ライセンスキー発行',
     issuanceChannel: 'direct_stripe',
     actions: [
-      'metadata から product_code, plan, purchase_type を取得',
-      'purchase_type === "license" の場合：',
-      '  → 統合発行エンジンでキー生成 + DB登録 + 監査ログ',
-      '  → Resend でライセンスキーメール送信',
-      'purchase_type === "addon" の場合：',
-      '  → ai_addon_packs テーブルにクレジット登録',
-      '  → メールで購入確認を送信',
+      'metadata から product_code, plan を取得',
+      '統合発行エンジンでキー生成 + DB登録 + 監査ログ',
+      'Resend でライセンスキーメール送信',
     ],
   },
   'invoice.paid': {
@@ -395,31 +351,19 @@ export function getStripeMapping(
 }
 
 /**
- * AI アドオンの Stripe マッピングを取得
- */
-export function getAddonStripeMapping(): StripeProductMapping | null {
-  return STRIPE_PRODUCT_MAPPINGS.find(
-    m => m.billingType === 'one_time',
-  ) ?? null;
-}
-
-/**
  * Stripe Checkout メタデータを生成
  */
 export function buildCheckoutMetadata(params: {
   productCode: ProductCode;
   plan: PlanCode;
-  purchaseType: 'license' | 'addon';
   customerName: string;
   customerCompany?: string;
   locale?: 'ja' | 'en';
-  addonPackId?: string;
 }): StripeCheckoutMetadata {
   return {
     product_code: params.productCode,
     plan: params.plan,
-    purchase_type: params.purchaseType,
-    addon_pack_id: params.addonPackId,
+    purchase_type: 'license',
     customer_name: params.customerName,
     customer_company: params.customerCompany,
     locale: params.locale ?? 'ja',
@@ -439,18 +383,16 @@ export function parseCheckoutMetadata(
 
   const productCode = metadata.product_code;
   const plan = metadata.plan;
-  const purchaseType = metadata.purchase_type;
   const customerName = metadata.customer_name;
 
-  if (!productCode || !plan || !purchaseType || !customerName) {
+  if (!productCode || !plan || !customerName) {
     return null;
   }
 
   return {
     product_code: productCode as ProductCode,
     plan: plan as PlanCode,
-    purchase_type: purchaseType as 'license' | 'addon',
-    addon_pack_id: metadata.addon_pack_id,
+    purchase_type: 'license' as const,
     customer_name: customerName,
     customer_company: metadata.customer_company,
     locale: (metadata.locale as 'ja' | 'en') || 'ja',
@@ -584,7 +526,6 @@ export default {
 
   // ヘルパー
   getStripeMapping,
-  getAddonStripeMapping,
   buildCheckoutMetadata,
   parseCheckoutMetadata,
   isStripeConfigured,

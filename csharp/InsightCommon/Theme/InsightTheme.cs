@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Media;
 using InsightCommon.License;
+using InsightCommon.UI;
 
 namespace InsightCommon.Theme;
 
@@ -116,8 +117,7 @@ public class InsightTheme
     public static Color GetPlanColor(PlanCode plan) => plan switch
     {
         PlanCode.Ent   => InsightColors.PlanEnt,
-        PlanCode.Pro   => InsightColors.PlanPro,
-        PlanCode.Std   => InsightColors.PlanStd,
+        PlanCode.Biz   => InsightColors.PlanBiz,
         PlanCode.Trial => InsightColors.PlanTrial,
         _              => InsightColors.PlanFree,
     };
@@ -131,4 +131,15 @@ public class InsightTheme
     public static readonly double FontSizeHeading = 15;
     public static readonly double FontSizeTitle = 20;
     public static readonly double FontSizePlanDisplay = 28;
+
+    // ── スケーリング ──
+
+    /// <summary>
+    /// 現在のスケールファクターを適用したフォントサイズを返す。
+    /// LayoutTransform 方式では通常不要だが、Popup 等の独立ウィンドウ用。
+    /// </summary>
+    /// <param name="baseFontSize">基準フォントサイズ</param>
+    /// <returns>スケール適用後のフォントサイズ</returns>
+    public static double ScaledFontSize(double baseFontSize)
+        => baseFontSize * InsightScaleManager.Instance.ScaleFactor;
 }

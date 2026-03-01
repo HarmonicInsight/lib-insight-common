@@ -856,6 +856,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
+    {
+      key: 'font_scaling',
+      name: 'UI Scaling',
+      nameJa: 'UIスケーリング',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）',
+    },
   ],
 
   // ========================================
@@ -1359,6 +1367,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AI による入力データの妥当性検証・異常値検出・整合性チェック（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
+    {
+      key: 'font_scaling',
+      name: 'UI Scaling',
+      nameJa: 'UIスケーリング',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）',
+    },
   ],
 
   // ========================================
@@ -1745,6 +1761,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
+    {
+      key: 'font_scaling',
+      name: 'UI Scaling',
+      nameJa: 'UIスケーリング',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）',
+    },
   ],
 
   // ========================================
@@ -1792,6 +1816,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援（BYOK — 回数制限なし・クライアント自社APIキー使用）',
+    },
+    {
+      key: 'font_scaling',
+      name: 'UI Scaling',
+      nameJa: 'UIスケーリング',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）',
     },
   ],
 
@@ -1866,6 +1898,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['ENT'],
       descriptionJa: 'JOBの定期実行スケジュール設定（cron 相当）',
     },
+    {
+      key: 'font_scaling',
+      name: 'UI Scaling',
+      nameJa: 'UIスケーリング',
+      type: 'boolean',
+      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）',
+    },
   ],
 
   // ========================================
@@ -1901,6 +1941,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
     { key: 'subtitle_style', name: 'Subtitle Style', nameJa: '字幕スタイル選択', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '字幕のフォント・色・位置のカスタマイズ' },
     { key: 'transition', name: 'Transition', nameJa: 'トランジション', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'シーン間のトランジション効果' },
     { key: 'pptx_import', name: 'PPTX Import', nameJa: 'PPTX取込', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'PowerPointファイルからの素材取込' },
+    // AI 機能（Insight Business Suite 共通仕様に準拠）
+    { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによる動画構成提案・ナレーション作成・字幕最適化（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
+    { key: 'ai_editor', name: 'AI Code Editor', nameJa: 'AIコードエディター', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによるPython自動処理（BYOK — 回数制限なし）' },
+    { key: 'reference_materials', name: 'Reference Materials', nameJa: '参考資料', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '参考資料の添付・AIコンテキスト活用' },
+    { key: 'document_evaluation', name: 'Document Evaluation', nameJa: 'ドキュメント評価', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによる動画の多角的評価・スコアリング（BYOK — 回数制限なし）' },
+    { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '音声認識によるハンズフリー入力' },
+    { key: 'vrm_avatar', name: 'VRM Avatar', nameJa: 'VRMアバター', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '3Dアバターによる音声会話' },
+    { key: 'font_scaling', name: 'UI Scaling', nameJa: 'UIスケーリング', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）' },
   ],
 
   // ========================================
@@ -1915,7 +1963,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
     { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1}, descriptionJa: 'AIによる自然言語操作支援（「A2に1万円入れて」等）（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
     { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '音声認識によるハンズフリー入力' },
     { key: 'text_to_speech', name: 'Text to Speech', nameJa: '読み上げ', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'メール・文書の音声読み上げ' },
-    { key: 'font_scaling', name: 'Font Scaling', nameJa: '文字サイズ調整', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '文字サイズ50%〜200%の拡大縮小' },
+    { key: 'font_scaling', name: 'UI Scaling', nameJa: 'UIスケーリング', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）' },
     { key: 'setup_wizard', name: 'Setup Wizard', nameJa: '初期設定ウィザード', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '5ステップの簡単初期設定（名前・メール・文字サイズ）' },
     { key: 'tutorial', name: 'Tutorial', nameJa: 'チュートリアル', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '10ステップの対話型ガイドツアー' },
     { key: 'print', name: 'Print', nameJa: '印刷', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'シニア向け大きい文字での印刷' },

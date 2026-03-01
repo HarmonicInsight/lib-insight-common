@@ -277,7 +277,7 @@ public sealed class RemoteConfigService : IDisposable
         int buildNumber,
         string licenseKey,
         string deviceId,
-        string plan = "STD",
+        string plan = "BIZ",
         string? userId = null,
         string locale = "ja")
     {

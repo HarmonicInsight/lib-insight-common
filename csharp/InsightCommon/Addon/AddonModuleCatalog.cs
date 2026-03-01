@@ -23,7 +23,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Bundled,
             PanelPosition = AddonPanelPosition.Right,
             RequiredFeatureKey = "ai_assistant",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["FREE", "TRIAL", "BIZ", "ENT"],
             RequiresModules = [],
             Icon = "Chat",
             ThemeColor = "#B8942F",
@@ -38,7 +38,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Extension,
             PanelPosition = AddonPanelPosition.Bottom,
             RequiredFeatureKey = "ai_editor",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["TRIAL", "BIZ", "ENT"],
             RequiresModules = [],
             Icon = "Code",
             ThemeColor = "#3776AB",
@@ -53,7 +53,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Bundled,
             PanelPosition = AddonPanelPosition.Bottom,
             RequiredFeatureKey = "ai_editor",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["TRIAL", "BIZ", "ENT"],
             RequiresModules = ["ai_assistant", "python_runtime"],
             Icon = "CodeEdit",
             ThemeColor = "#B8942F",
@@ -68,7 +68,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Bundled,
             PanelPosition = AddonPanelPosition.Tab,
             RequiredFeatureKey = "ai_editor",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["TRIAL", "BIZ", "ENT"],
             RequiresModules = ["python_runtime"],
             Icon = "PlayList",
             ThemeColor = "#3776AB",
@@ -83,7 +83,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Bundled,
             PanelPosition = AddonPanelPosition.Right,
             RequiredFeatureKey = "reference_materials",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["FREE", "TRIAL", "BIZ", "ENT"],
             RequiresModules = [],
             Icon = "Library",
             ThemeColor = "#16A34A",
@@ -98,7 +98,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Bundled,
             PanelPosition = AddonPanelPosition.Right,
             RequiredFeatureKey = "board",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["TRIAL", "BIZ", "ENT"],
             RequiresModules = [],
             Icon = "People",
             ThemeColor = "#7C3AED",
@@ -113,7 +113,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Bundled,
             PanelPosition = AddonPanelPosition.Right,
             RequiredFeatureKey = "send_message",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["TRIAL", "BIZ", "ENT"],
             RequiresModules = [],
             Icon = "Mail",
             ThemeColor = "#0891B2",
@@ -128,7 +128,7 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Bundled,
             PanelPosition = AddonPanelPosition.Dialog,
             RequiredFeatureKey = "voice_input",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["FREE", "TRIAL", "BIZ", "ENT"],
             RequiresModules = [],
             Icon = "Microphone",
             ThemeColor = "#DC2626",
@@ -143,10 +143,25 @@ public static class AddonModuleCatalog
             Distribution = AddonDistributionType.Extension,
             PanelPosition = AddonPanelPosition.Dialog,
             RequiredFeatureKey = "vrm_avatar",
-            AllowedPlans = ["TRIAL", "PRO", "ENT"],
+            AllowedPlans = ["TRIAL", "BIZ", "ENT"],
             RequiresModules = ["ai_assistant", "voice_input"],
             Icon = "Person",
             ThemeColor = "#EC4899",
+        },
+        ["ai_memory"] = new AddonModuleInfo
+        {
+            Id = "ai_memory",
+            Name = "AI Memory",
+            NameJa = "AI メモリ",
+            Description = "Persistent memory for AI — remembers people, terms, projects across sessions",
+            DescriptionJa = "AIの永続メモリ — 人物・用語・プロジェクト・設定をセッション横断で記憶",
+            Distribution = AddonDistributionType.Bundled,
+            PanelPosition = AddonPanelPosition.Right,
+            RequiredFeatureKey = "ai_assistant",
+            AllowedPlans = ["FREE", "TRIAL", "BIZ", "ENT"],
+            RequiresModules = ["ai_assistant"],
+            Icon = "Brain",
+            ThemeColor = "#8B5CF6",
         },
     };
 
@@ -155,29 +170,29 @@ public static class AddonModuleCatalog
     /// </summary>
     public static readonly Dictionary<string, ProductAddonSupport> ProductSupport = new()
     {
-        ["HMSH"] = new ProductAddonSupport
+        ["IOSH"] = new ProductAddonSupport
         {
             SupportedModules = [
-                "ai_assistant", "python_runtime", "ai_code_editor", "python_scripts",
+                "ai_assistant", "ai_memory", "python_runtime", "ai_code_editor", "python_scripts",
                 "reference_materials", "board", "messaging", "voice_input", "vrm_avatar"
             ],
-            DefaultEnabled = ["ai_assistant", "board", "messaging"],
+            DefaultEnabled = ["ai_assistant", "ai_memory", "board", "messaging"],
         },
-        ["HMDC"] = new ProductAddonSupport
+        ["IOSD"] = new ProductAddonSupport
         {
             SupportedModules = [
-                "ai_assistant", "python_runtime", "ai_code_editor", "python_scripts",
+                "ai_assistant", "ai_memory", "python_runtime", "ai_code_editor", "python_scripts",
                 "reference_materials", "voice_input", "vrm_avatar"
             ],
-            DefaultEnabled = ["ai_assistant", "reference_materials"],
+            DefaultEnabled = ["ai_assistant", "ai_memory", "reference_materials"],
         },
-        ["HMSL"] = new ProductAddonSupport
+        ["INSS"] = new ProductAddonSupport
         {
             SupportedModules = [
-                "ai_assistant", "python_runtime", "ai_code_editor", "python_scripts",
+                "ai_assistant", "ai_memory", "python_runtime", "ai_code_editor", "python_scripts",
                 "reference_materials", "voice_input", "vrm_avatar"
             ],
-            DefaultEnabled = ["ai_assistant"],
+            DefaultEnabled = ["ai_assistant", "ai_memory"],
         },
     };
 

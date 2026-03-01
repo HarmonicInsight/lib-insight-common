@@ -579,10 +579,6 @@ export const FREEE_PRODUCT_ITEM_MAPPINGS: FreeeProductItemMapping[] = [
   { productCode: 'INBT', freeeItemName: 'InsightBot ライセンス', freeeItemNameEn: 'InsightBot License', revenueAccountName: '売上高', revenueTaxCode: 1 },
   { productCode: 'IVIN', freeeItemName: 'InterviewInsight ライセンス', freeeItemNameEn: 'InterviewInsight License', revenueAccountName: '売上高', revenueTaxCode: 1 },
 
-  // --- AI アドオン ---
-  { productCode: 'AI_ADDON_STANDARD', freeeItemName: 'AI クレジット Standard 200', freeeItemNameEn: 'AI Credits Standard 200', revenueAccountName: '売上高', revenueTaxCode: 1 },
-  { productCode: 'AI_ADDON_PREMIUM', freeeItemName: 'AI クレジット Premium 200', freeeItemNameEn: 'AI Credits Premium 200', revenueAccountName: '売上高', revenueTaxCode: 1 },
-
   // --- コンサルティング ---
   { productCode: 'CONSULTING', freeeItemName: 'コンサルティングサービス', freeeItemNameEn: 'Consulting Service', revenueAccountName: '売上高', revenueTaxCode: 1 },
 ];

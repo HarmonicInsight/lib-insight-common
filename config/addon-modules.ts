@@ -321,6 +321,100 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
   },
 
   // =========================================================================
+  // AI メモリ（セッション横断の永続記憶）
+  // =========================================================================
+  ai_memory: {
+    id: 'ai_memory',
+    name: 'AI Memory',
+    nameJa: 'AI メモリ',
+    description: 'Persistent memory for AI — remembers people, terms, projects, and preferences across sessions. Stored in the project file ZIP.',
+    descriptionJa: 'AIの永続メモリ — 人物・用語・プロジェクト・設定をセッション横断で記憶。プロジェクトファイルZIP内に保存。',
+    version: '1.0.0',
+    distribution: 'bundled',
+    panelPosition: 'right',
+    requiredFeatureKey: 'ai_assistant',
+    allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+    dependencies: [],
+    ioContracts: [
+      {
+        id: 'load_memory',
+        name: 'Load Memory',
+        nameJa: 'メモリ読込',
+        description: 'Load hot cache from project file ZIP',
+        input: [
+          { key: 'zip_path', type: 'file_path', description: 'プロジェクトファイルパス', required: true },
+        ],
+        process: 'ZIP 内の ai_memory.json を読み込み、AiMemoryHotCache にデシリアライズ',
+        output: [
+          { key: 'hot_cache', type: 'json', description: 'AiMemoryHotCache オブジェクト', required: true },
+          { key: 'entry_count', type: 'number', description: 'エントリ数', required: true },
+        ],
+        transport: 'in_process',
+        async: false,
+        streaming: false,
+      },
+      {
+        id: 'save_memory',
+        name: 'Save Memory',
+        nameJa: 'メモリ保存',
+        description: 'Save hot cache to project file ZIP',
+        input: [
+          { key: 'zip_path', type: 'file_path', description: 'プロジェクトファイルパス', required: true },
+          { key: 'hot_cache', type: 'json', description: 'AiMemoryHotCache オブジェクト', required: true },
+        ],
+        process: 'AiMemoryHotCache をシリアライズし、ZIP 内の ai_memory.json に書き込み',
+        output: [
+          { key: 'success', type: 'boolean', description: '保存成功か', required: true },
+        ],
+        transport: 'in_process',
+        async: false,
+        streaming: false,
+      },
+      {
+        id: 'merge_entries',
+        name: 'Merge Entries',
+        nameJa: 'エントリマージ',
+        description: 'Merge new memory entries with deduplication',
+        input: [
+          { key: 'entries', type: 'json', description: '新規 MemoryEntry の配列', required: true },
+        ],
+        process: '重複排除ルールに基づきマージ。person=Name一致, glossary=Term一致, project=Name一致, preference=Key一致。制限超過分はスキップ。',
+        output: [
+          { key: 'added', type: 'number', description: '新規追加数', required: true },
+          { key: 'updated', type: 'number', description: '更新数', required: true },
+          { key: 'skipped', type: 'number', description: 'スキップ数', required: true },
+        ],
+        transport: 'in_process',
+        async: false,
+        streaming: false,
+      },
+      {
+        id: 'search',
+        name: 'Search Memory',
+        nameJa: 'メモリ検索',
+        description: 'Search hot cache entries by keyword',
+        input: [
+          { key: 'query', type: 'string', description: '検索キーワード（部分一致）', required: true },
+          { key: 'type_filter', type: 'string', description: 'エントリ種別フィルタ: person/glossary/project/preference', required: false },
+        ],
+        process: 'ホットキャッシュ内をキーワード部分一致（大小無視）で検索',
+        output: [
+          { key: 'results', type: 'json', description: 'マッチした MemoryEntry の配列', required: true },
+          { key: 'count', type: 'number', description: 'マッチ数', required: true },
+        ],
+        transport: 'in_process',
+        async: false,
+        streaming: false,
+      },
+    ],
+    tools: [],
+    requiresModules: ['ai_assistant'],
+    icon: 'Brain',
+    themeColor: '#8B5CF6',
+    settingsSchema: [],
+  },
+
+  // =========================================================================
   // Python 実行エンジン（InsightPy コア）
   // =========================================================================
   python_runtime: {
@@ -1494,6 +1588,7 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
   INSS: {
     supportedModules: [
       'ai_assistant',
+      'ai_memory',
       'python_runtime',
       'ai_code_editor',
       'python_scripts',
@@ -1503,11 +1598,12 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'vrm_avatar',
       'local_workflow',
     ],
-    defaultEnabled: ['ai_assistant'],
+    defaultEnabled: ['ai_assistant', 'ai_memory'],
   },
   IOSH: {
     supportedModules: [
       'ai_assistant',
+      'ai_memory',
       'python_runtime',
       'ai_code_editor',
       'python_scripts',
@@ -1520,11 +1616,12 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'local_workflow',
       'data_collection',
     ],
-    defaultEnabled: ['ai_assistant', 'board', 'messaging'],
+    defaultEnabled: ['ai_assistant', 'ai_memory', 'board', 'messaging'],
   },
   IOSD: {
     supportedModules: [
       'ai_assistant',
+      'ai_memory',
       'python_runtime',
       'ai_code_editor',
       'python_scripts',
@@ -1534,7 +1631,18 @@ export const PRODUCT_ADDON_SUPPORT: Partial<Record<ProductCode, ProductAddonSupp
       'vrm_avatar',
       'local_workflow',
     ],
-    defaultEnabled: ['ai_assistant', 'reference_materials'],
+    defaultEnabled: ['ai_assistant', 'ai_memory', 'reference_materials'],
+  },
+  INMV: {
+    supportedModules: [
+      'ai_assistant',
+      'ai_memory',
+      'reference_materials',
+      'voice_input',
+      'tts_reader',
+      'vrm_avatar',
+    ],
+    defaultEnabled: ['ai_assistant'],
   },
   // INPY / INBT はアドインではなくコア機能として提供
   // Insight Business Suite 系のみがアドイン対象

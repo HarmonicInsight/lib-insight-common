@@ -270,7 +270,7 @@ public class InsightLicenseDialog : Window
 
         panel.Children.Add(new TextBlock
         {
-            Text = $"{_options.ProductCode}-STD-YYMM-XXXX-XXXX-XXXX",
+            Text = $"{_options.ProductCode}-BIZ-YYMM-XXXX-XXXX-XXXX",
             FontSize = 10,
             Foreground = _theme.TextMutedBrush,
             Margin = new Thickness(0, 0, 0, 4),
@@ -403,7 +403,7 @@ public class InsightLicenseDialog : Window
                     }
                     else
                     {
-                        tb.Text = feature.UnavailableText ?? L("×STD以上が必要", "× STD or higher");
+                        tb.Text = feature.UnavailableText ?? L("×BIZ以上が必要", "× BIZ or higher");
                         tb.Foreground = _theme.TextMutedBrush;
                     }
                 }

@@ -421,11 +421,11 @@ enum InsightColors {
     static let darkTextSecondary = Color(hex: "D6D3D1")
     static let darkBorder = Color(hex: "3D3835")
 
-    // MARK: - Plan（FREE 廃止 — CLAUDE.md §8 準拠）
+    // MARK: - Plan（4ティア制: FREE/TRIAL/BIZ/ENT — CLAUDE.md §8 準拠）
 
+    static let planFree = Color(hex: "6B7280")
     static let planTrial = Color(hex: "2563EB")
-    static let planStd = Color(hex: "16A34A")
-    static let planPro = Color(hex: "B8942F")
+    static let planBiz = Color(hex: "B8942F")
     static let planEnt = Color(hex: "7C3AED")
 
     // MARK: - Adaptive Colors（Light/Dark 自動切替）
@@ -1077,34 +1077,34 @@ Insight Business Suite 製品（INSS/IOSH/IOSD 等）の iOS 版では、ライ�
 
 ### PlanCode.swift
 
-> **注意**: CLAUDE.md §8 に基づき、FREE プランは廃止。TRIAL が最下位プラン。
+> **注意**: CLAUDE.md §8 に基づき、4ティア制: FREE / TRIAL / BIZ / ENT。
 
 ```swift
 import SwiftUI
 
-/// ライセンスプランコード（全製品 法人向け — FREE 廃止）
+/// ライセンスプランコード（全製品 法人向け — 4ティア制）
 enum PlanCode: String, CaseIterable, Sendable {
+    case free = "FREE"
     case trial = "TRIAL"
-    case std = "STD"
-    case pro = "PRO"
+    case biz = "BIZ"
     case ent = "ENT"
 
     var displayName: String { rawValue }
 
     var displayNameJa: String {
         switch self {
+        case .free: return "フリー"
         case .trial: return "トライアル"
-        case .std: return "スタンダード"
-        case .pro: return "プロ"
+        case .biz: return "ビジネス"
         case .ent: return "エンタープライズ"
         }
     }
 
     var color: Color {
         switch self {
+        case .free: return InsightColors.planFree
         case .trial: return InsightColors.planTrial
-        case .std: return InsightColors.planStd
-        case .pro: return InsightColors.planPro
+        case .biz: return InsightColors.planBiz
         case .ent: return InsightColors.planEnt
         }
     }
@@ -1112,9 +1112,9 @@ enum PlanCode: String, CaseIterable, Sendable {
     /// プラン優先度（高いほど上位プラン、TRIAL=4 で全機能利用可能）
     var priority: Int {
         switch self {
+        case .free: return 0
         case .trial: return 4
-        case .std: return 1
-        case .pro: return 2
+        case .biz: return 2
         case .ent: return 3
         }
     }
@@ -1122,9 +1122,9 @@ enum PlanCode: String, CaseIterable, Sendable {
     /// デフォルト有効期間（日）
     var defaultDurationDays: Int {
         switch self {
+        case .free: return -1
         case .trial: return 30
-        case .std: return 365
-        case .pro: return 365
+        case .biz: return 365
         case .ent: return -1
         }
     }
@@ -1149,7 +1149,7 @@ final class LicenseManager {
     let productCode: String
 
     private let keyPattern = try! NSRegularExpression(
-        pattern: "^([A-Z]{4})-(TRIAL|STD|PRO|ENT)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+        pattern: "^([A-Z]{4})-(TRIAL|BIZ|ENT)-(\\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
     )
 
     var currentPlan: PlanCode = .trial

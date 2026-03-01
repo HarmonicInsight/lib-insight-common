@@ -17,7 +17,7 @@ namespace InsightCommon.Addon;
 /// 使用例:
 /// <code>
 /// var scriptsPanel = new PythonScriptsPanel(
-///     addonManager, pythonRunner, "HarmonicSheet");
+///     addonManager, pythonRunner, "InsightPerformanceManagement");
 /// bottomPanelHost.RegisterPanel("python_scripts", scriptsPanel);
 /// </code>
 /// </summary>
@@ -540,7 +540,7 @@ public class ScriptEditRequestEventArgs : EventArgs
 ///
 /// 使用例:
 /// <code>
-/// var container = new PythonScriptManagerContainer(addonManager, pythonRunner, "HarmonicSheet");
+/// var container = new PythonScriptManagerContainer(addonManager, pythonRunner, "InsightPerformanceManagement");
 /// rightPanelHost.RegisterPanel("python_scripts", container);
 /// </code>
 /// </summary>

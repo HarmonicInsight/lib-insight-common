@@ -147,6 +147,9 @@ public static class InsightWindowChrome
         };
         titleBar.Children.Add(dragArea);
 
+        // UI スケーリング自動適用
+        InsightScaleManager.Instance.ApplyToWindow(window);
+
         return titleBar;
     }
 
@@ -206,13 +209,70 @@ public static class InsightWindowChrome
     // ── ヘルパー: 標準メニュー構成 ──
 
     /// <summary>
-    /// 統一「ヘルプ」メニューを生成
+    /// 統一「ヘルプ」メニューを生成（HelpMenuItemDefinition ベース）
+    ///
+    /// <para>
+    /// 各アプリの HelpWindow セクションに対応するメニュー項目を柔軟に構成できる。
+    /// config/help-content.ts の定義に基づいてアプリ側で helpTopics を構築すること。
+    /// </para>
+    ///
+    /// <example>
+    /// <code>
+    /// var helpTopics = new List&lt;HelpMenuItemDefinition&gt;
+    /// {
+    ///     new() { Id = "overview",      Label = "操作マニュアル", InputGestureText = "F1", OnClick = () => ShowHelpSection("overview") },
+    ///     new() { Id = "shortcuts",     Label = "ショートカット一覧",                      OnClick = () => ShowHelpSection("shortcuts") },
+    /// };
+    /// var menu = InsightWindowChrome.CreateHelpMenu("製品名", helpTopics, onLicenseManage, onAbout);
+    /// </code>
+    /// </example>
     /// </summary>
     /// <param name="productName">製品名</param>
+    /// <param name="helpTopics">ヘルプトピック一覧</param>
     /// <param name="onLicenseManage">ライセンス管理クリック時</param>
     /// <param name="onAbout">バージョン情報クリック時</param>
-    /// <param name="onDocumentation">ドキュメント/マニュアルクリック時</param>
-    /// <param name="onFaq">FAQクリック時（省略可）</param>
+    public static MenuItem CreateHelpMenu(
+        string productName,
+        IReadOnlyList<HelpMenuItemDefinition> helpTopics,
+        Action onLicenseManage,
+        Action onAbout)
+    {
+        var helpMenu = new MenuItem { Header = "ヘルプ(_H)" };
+
+        foreach (var topic in helpTopics)
+        {
+            var item = new MenuItem { Header = topic.Label };
+            if (topic.InputGestureText != null)
+            {
+                item.InputGestureText = topic.InputGestureText;
+            }
+            var onClick = topic.OnClick;
+            item.Click += (_, _) => onClick();
+            helpMenu.Items.Add(item);
+        }
+
+        if (helpTopics.Count > 0)
+        {
+            helpMenu.Items.Add(new Separator());
+        }
+
+        var licenseItem = new MenuItem { Header = "ライセンス管理..." };
+        licenseItem.Click += (_, _) => onLicenseManage();
+        helpMenu.Items.Add(licenseItem);
+
+        helpMenu.Items.Add(new Separator());
+
+        var aboutItem = new MenuItem { Header = $"{productName} について" };
+        aboutItem.Click += (_, _) => onAbout();
+        helpMenu.Items.Add(aboutItem);
+
+        return helpMenu;
+    }
+
+    /// <summary>
+    /// 統一「ヘルプ」メニューを生成（レガシー）
+    /// </summary>
+    [Obsolete("IReadOnlyList<HelpMenuItemDefinition> を受け取るオーバーロードを使用してください")]
     public static MenuItem CreateHelpMenu(
         string productName,
         Action onLicenseManage,

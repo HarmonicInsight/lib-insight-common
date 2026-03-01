@@ -1,7 +1,7 @@
 /**
  * AI アシスタント 共通設定
  *
- * Insight Business Suite 系アプリ（INSS/IOSH/IOSD/INPY/INBT）で共有する
+ * Insight Business Suite 系アプリ（INSS/IOSH/IOSD/INPY/INBT）+ INMV で共有する
  * AI アシスタントのプロンプト・ツール定義・モデル選択・型定義
  *
  * 【設計方針】
@@ -578,7 +578,7 @@ export const MAX_TOOL_USE_ITERATIONS = 10;
 // =============================================================================
 
 /** 製品別 AI コンテキストタイプ */
-export type AiContextType = 'slide' | 'spreadsheet' | 'document' | 'code';
+export type AiContextType = 'slide' | 'spreadsheet' | 'document' | 'code' | 'video';
 
 /** 製品から AI コンテキストタイプを取得 */
 export function getAiContextType(product: ProductCode): AiContextType | null {
@@ -589,6 +589,7 @@ export function getAiContextType(product: ProductCode): AiContextType | null {
     ISOF: 'spreadsheet',
     INPY: 'code',
     INBT: 'code',
+    INMV: 'video',
   };
   return contextMap[product] ?? null;
 }
@@ -651,7 +652,7 @@ ${product === 'INBT' ? `【InsightBot 固有】
 
       case 'slide':
         return `あなたはPowerPointプレゼンテーションの内容を分析・修正するAIアシスタントです。
-日本語で回答してください。
+ユーザーのメッセージと同じ言語で回答してください。
 
 スライドデータの各行には行番号（row=N）が付いています。
 特定の行について言及するときは「#N」の形式で行番号を使ってください。
@@ -715,6 +716,35 @@ Respond in the same language as the user's message.
 ※ 法的助言ではなくワークフロー支援です。最終判断は法務専門家が行います。
 
 ユーザーの質問や要望に丁寧に回答してください。`;
+
+      case 'video':
+        return `あなたはInsight Training StudioのAIアシスタントです。教育・研修動画の構成提案・ナレーション作成・字幕最適化を支援します。
+ユーザーのメッセージと同じ言語で回答してください。
+
+【動画構成の専門知識】
+ストーリーボード設計:
+- 認知負荷理論に基づくチャンキング（1シーン1コンセプト）
+- 導入（フック・目的提示）→ 本編（段階的深化）→ まとめ（要点整理・CTA）の3部構成
+- シーン間の論理的つながりとトランジション設計
+
+ナレーション品質基準:
+- 適正ペース: 250-300文字/分（日本語）、120-150 words/min（英語）
+- 同期ポイント記法: シーン切替・画像表示タイミングを [SYNC: 画像名] で明示
+- 短い文で区切る（1文20-30文字目安）、専門用語は初出時に解説
+- 聴覚的な分かりやすさ（同音異義語の回避、数値は読み上げ形式）
+
+字幕ルール:
+- 1行20文字以内（日本語）、42文字以内（英語）
+- 表示時間: 1.5-7秒/エントリ
+- 改行は意味の切れ目で行う
+- 話者が複数の場合は話者ラベルを付与
+
+主な機能:
+- タイムライン構造の分析・最適化
+- シーン構成の提案・改善
+- ナレーションスクリプトの作成・校正
+- 字幕テキストの最適化
+- 動画全体のストーリーフロー評価`;
 
       default:
         return 'あなたはAIアシスタントです。ユーザーの質問や要望に丁寧に回答してください。';
@@ -831,6 +861,36 @@ When handling contract-related queries, follow this process:
 Note: This is workflow assistance, not legal advice. All analysis should be reviewed by qualified legal professionals.
 
 Please respond helpfully to user questions and requests.`;
+
+    case 'video':
+      return `You are an AI assistant for Insight Training Studio, a training and presentation video creation tool.
+You help with video composition, narration scripting, and subtitle optimization.
+Respond in the same language as the user's message.
+
+VIDEO COMPOSITION EXPERTISE:
+Storyboard Design:
+- Chunking based on cognitive load theory (one concept per scene)
+- Three-part structure: Introduction (hook + objective) → Body (progressive deepening) → Summary (key points + CTA)
+- Logical connections between scenes and transition design
+
+Narration Quality Standards:
+- Target pace: 250-300 characters/min (Japanese), 120-150 words/min (English)
+- Sync point notation: Use [SYNC: image_name] for scene transitions and image display timing
+- Keep sentences short (20-30 characters per sentence), explain technical terms on first use
+- Auditory clarity (avoid homophones, use spoken form for numbers)
+
+Subtitle Rules:
+- Max 20 characters per line (Japanese), 42 characters (English)
+- Display duration: 1.5-7 seconds per entry
+- Line breaks at semantic boundaries
+- Speaker labels when multiple speakers are present
+
+Key capabilities:
+- Timeline structure analysis and optimization
+- Scene composition suggestions and improvements
+- Narration script creation and proofreading
+- Subtitle text optimization
+- Overall video story flow evaluation`;
 
     default:
       return 'You are an AI assistant. Please respond helpfully to user questions and requests.';
@@ -1342,6 +1402,114 @@ export interface PythonExecutionResult {
 }
 
 // =============================================================================
+// 動画 Tool Use 定義（INMV）
+// =============================================================================
+
+/**
+ * Insight Training Studio 用の動画操作ツール定義
+ *
+ * 使い方:
+ * ```typescript
+ * import { VIDEO_TOOLS } from '@/insight-common/config/ai-assistant';
+ * const tools = VIDEO_TOOLS.map(t => ({
+ *   name: t.name,
+ *   description: t.description,
+ *   input_schema: t.input_schema,
+ * }));
+ * ```
+ */
+export const VIDEO_TOOLS: ToolDefinition[] = [
+  {
+    name: 'get_timeline',
+    description:
+      'Get the full timeline structure of the current video project. ' +
+      'Returns an array of scenes with: sceneId, order, durationMs, title, hasNarration, hasSubtitles, thumbnailDescription.',
+    input_schema: {
+      type: 'object',
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'get_scene',
+    description:
+      'Get detailed information for a specific scene. ' +
+      'Returns: sceneId, title, durationMs, narrationText, subtitleEntries, imageDescriptions, transitionIn, transitionOut.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        scene_id: {
+          type: 'string',
+          description: 'Scene ID to retrieve',
+        },
+      },
+      required: ['scene_id'],
+    },
+  },
+  {
+    name: 'update_scene_narration',
+    description:
+      'Update the narration text for a specific scene. ' +
+      'The narration should follow quality standards: 250-300 chars/min pace, short sentences, sync points marked with [SYNC: image_name].',
+    input_schema: {
+      type: 'object',
+      properties: {
+        scene_id: {
+          type: 'string',
+          description: 'Scene ID to update',
+        },
+        narration_text: {
+          type: 'string',
+          description: 'New narration text for the scene',
+        },
+      },
+      required: ['scene_id', 'narration_text'],
+    },
+  },
+  {
+    name: 'update_subtitles',
+    description:
+      'Update subtitle entries for a specific scene. ' +
+      'Each entry has startMs, endMs, and text. Text should be max 20 chars/line (Japanese) or 42 chars/line (English). Display duration 1.5-7 seconds.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        scene_id: {
+          type: 'string',
+          description: 'Scene ID to update',
+        },
+        subtitles: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              startMs: { type: 'number', description: 'Start time in milliseconds' },
+              endMs: { type: 'number', description: 'End time in milliseconds' },
+              text: { type: 'string', description: 'Subtitle text (max 20 chars/line JP, 42 chars/line EN)' },
+            },
+            required: ['startMs', 'endMs', 'text'],
+          },
+          description: 'Array of subtitle entries',
+        },
+      },
+      required: ['scene_id', 'subtitles'],
+    },
+  },
+  {
+    name: 'get_narration_scripts',
+    description:
+      'Get all narration scripts across all scenes in order. ' +
+      'Returns an array of { sceneId, order, title, narrationText, durationMs, estimatedReadingTimeMs }. ' +
+      'Useful for reviewing the overall narration flow and consistency.',
+    input_schema: {
+      type: 'object',
+      properties: {},
+      required: [],
+    },
+  },
+];
+
+// =============================================================================
 // タスクコンテキスト別モデル推奨
 // =============================================================================
 
@@ -1654,6 +1822,13 @@ const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
     'code_generation',
     'report_generation',
   ],
+  // Insight Training Studio: 動画構成 + コンテンツ作成 + ドキュメント評価
+  INMV: [
+    'simple_chat',
+    'document_review',
+    'document_evaluation',
+    'content_creation',
+  ],
 };
 
 /**
@@ -1946,6 +2121,8 @@ export function getToolsForProduct(product: ProductCode): ToolDefinition[] {
       return CODE_EDITOR_TOOLS;
     case 'spreadsheet':
       return SPREADSHEET_TOOLS;
+    case 'video':
+      return VIDEO_TOOLS;
     default:
       return [];
   }

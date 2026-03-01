@@ -95,7 +95,7 @@ public static class AdminProfileLoader
     /// <summary>
     /// 管理者プロファイルを読み込む
     /// </summary>
-    /// <param name="productName">製品名（例: HarmonicSheet）</param>
+    /// <param name="productName">製品名（例: InsightPerformanceManagement）</param>
     /// <returns>プロファイル（存在しない場合は null）</returns>
     public static AdminDeployProfile? Load(string productName)
     {

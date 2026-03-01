@@ -10,7 +10,7 @@ namespace InsightCommon.Addon;
 /// PDF・テキスト・画像等の参考資料を管理し、
 /// AI アシスタントのコンテキストとして活用するためのサービス。
 ///
-/// HarmonicDoc で先行実装された参考資料機能を、
+/// Insight AI Briefcase (IOSD) で先行実装された参考資料機能を、
 /// 全 Insight Business Suite アプリで共用できるよう共通化したもの。
 ///
 /// I/O コントラクト:
@@ -19,7 +19,7 @@ namespace InsightCommon.Addon;
 ///
 /// 使用例:
 /// <code>
-/// var refService = new ReferenceMaterialsService("HarmonicSheet");
+/// var refService = new ReferenceMaterialsService("InsightPerformanceManagement");
 ///
 /// // 参考資料を添付
 /// var result = await refService.AttachAsync(@"C:\docs\spec.pdf", "pdf");

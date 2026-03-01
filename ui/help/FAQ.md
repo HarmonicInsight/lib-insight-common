@@ -150,6 +150,6 @@
 
 **A:** サポート窓口までお問い合わせください。
 
-- メール: support@harmonicinsight.com
+- メール: support@h-insight.jp
 - 受付時間: 平日 9:00 - 18:00（日本時間）
-- PRO / ENT プランのお客様は優先対応いたします
+- BIZ / ENT プランのお客様は優先対応いたします

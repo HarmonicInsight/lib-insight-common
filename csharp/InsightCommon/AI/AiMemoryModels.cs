@@ -205,9 +205,9 @@ public static class AiMemoryLimitsRegistry
 {
     private static readonly Dictionary<string, AiMemoryLimits> Limits = new()
     {
+        ["FREE"] = new AiMemoryLimits { HotCacheMaxEntries = 20, DeepStorageMaxEntries = -1, Enabled = true },
         ["TRIAL"] = new AiMemoryLimits { HotCacheMaxEntries = 50, DeepStorageMaxEntries = 200, Enabled = true },
-        ["STD"] = new AiMemoryLimits { HotCacheMaxEntries = 20, DeepStorageMaxEntries = -1, Enabled = true },
-        ["PRO"] = new AiMemoryLimits { HotCacheMaxEntries = 100, DeepStorageMaxEntries = 500, Enabled = true },
+        ["BIZ"] = new AiMemoryLimits { HotCacheMaxEntries = 100, DeepStorageMaxEntries = 500, Enabled = true },
         ["ENT"] = new AiMemoryLimits { HotCacheMaxEntries = -1, DeepStorageMaxEntries = -1, Enabled = true },
     };
 
@@ -234,6 +234,31 @@ public static class AiMemoryLimitsRegistry
         var plan = planCode.ToUpperInvariant();
         var limits = GetLimits(plan);
         if (!limits.Enabled) return false;
-        return plan is "TRIAL" or "PRO" or "ENT";
+        return plan is "TRIAL" or "BIZ" or "ENT";
     }
+}
+
+// =============================================================================
+// マージ結果
+// =============================================================================
+
+/// <summary>
+/// メモリエントリのマージ結果
+/// </summary>
+public class MemoryMergeResult
+{
+    /// <summary>新規追加されたエントリ数</summary>
+    public int Added { get; init; }
+
+    /// <summary>既存エントリを更新した数</summary>
+    public int Updated { get; init; }
+
+    /// <summary>制限超過等でスキップされた数</summary>
+    public int Skipped { get; init; }
+
+    /// <summary>新規追加されたエントリ一覧</summary>
+    public List<MemoryEntry> AddedEntries { get; init; } = new();
+
+    /// <summary>更新されたエントリ一覧</summary>
+    public List<MemoryEntry> UpdatedEntries { get; init; } = new();
 }

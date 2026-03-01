@@ -2,7 +2,7 @@
  * ドキュメント評価 共通モジュール
  *
  * ============================================================================
- * Insight Business Suite 系アプリ（INSS/IOSH/IOSD）共通のドキュメント評価機能。
+ * Insight Business Suite 系アプリ（INSS/IOSH/IOSD/INMV）共通のドキュメント評価機能。
  * ============================================================================
  *
  * ## 概要
@@ -75,7 +75,7 @@ import { getDefaultModelForTier } from './ai-assistant';
 // =============================================================================
 
 /** ドキュメントタイプ（AI コンテキストタイプに対応） */
-export type EvaluationDocumentType = 'slide' | 'spreadsheet' | 'document';
+export type EvaluationDocumentType = 'slide' | 'spreadsheet' | 'document' | 'video';
 
 /** 総合グレード */
 export type EvaluationGrade = 'S' | 'A' | 'B' | 'C' | 'D';
@@ -366,6 +366,55 @@ const DOCUMENT_DIMENSIONS: EvaluationDimensionDefinition[] = [
 ];
 
 /**
+ * 動画（INMV）の評価観点
+ *
+ * 研修・デモ・マーケティング動画の品質を、
+ * コンテンツ構成・ナレーション・視覚表現・エンゲージメント・制作品質の5軸で評価する。
+ */
+const VIDEO_DIMENSIONS: EvaluationDimensionDefinition[] = [
+  {
+    key: 'content_structure',
+    name: 'Content Structure & Learning Design',
+    nameJa: 'コンテンツ構成・学習設計',
+    description: 'Scene decomposition strategy, logical flow (intro → body → summary), chunking for cognitive load management, appropriate duration per scene, clear learning objectives',
+    descriptionJa: 'シーン分割の戦略、論理的フロー（導入→本編→まとめ）、認知負荷を考慮したチャンキング、シーンごとの適切な尺、学習目標の明確さ',
+    weight: 0.25,
+  },
+  {
+    key: 'narration_quality',
+    name: 'Narration & Script Quality',
+    nameJa: 'ナレーション・スクリプトの品質',
+    description: 'Script clarity and conciseness, appropriate speaking pace (250-300 chars/min for Japanese), sync points with visuals, consistent tone and terminology, natural sentence structure for TTS',
+    descriptionJa: 'スクリプトの明確さと簡潔さ、適切な読み上げ速度（日本語: 250-300文字/分）、視覚要素との同期ポイント、トーンと用語の一貫性、TTS向けの自然な文構造',
+    weight: 0.25,
+  },
+  {
+    key: 'visual_narrative',
+    name: 'Visual-Narrative Coherence',
+    nameJa: '視覚要素とナレーションの整合性',
+    description: 'Image-narration alignment (modality principle), visual hierarchy supporting key messages, smooth scene transitions, effective use of text overlays and annotations',
+    descriptionJa: '画像とナレーションの対応関係（モダリティ原則）、キーメッセージを支える視覚的階層、スムーズなシーン遷移、テキストオーバーレイ・注釈の効果的活用',
+    weight: 0.20,
+  },
+  {
+    key: 'audience_engagement',
+    name: 'Audience Engagement',
+    nameJa: '視聴者エンゲージメント',
+    description: 'Compelling opening that hooks the viewer, appropriate pacing and rhythm variation, clear call-to-action or takeaway, retention-friendly structure (no single scene > 2 minutes)',
+    descriptionJa: '視聴者を引き付けるオープニング、適切なペース配分とリズムの変化、明確なコール・トゥ・アクションまたはテイクアウェイ、離脱を防ぐ構成（1シーン2分以内）',
+    weight: 0.15,
+  },
+  {
+    key: 'production_quality',
+    name: 'Production Quality',
+    nameJa: '制作品質',
+    description: 'Subtitle accuracy and timing (1.5-7s display, max 20 chars/line for Japanese), consistent visual style, proper resolution and aspect ratio, accessibility considerations',
+    descriptionJa: '字幕の正確性とタイミング（表示1.5-7秒、日本語1行20文字以内）、一貫したビジュアルスタイル、適切な解像度とアスペクト比、アクセシビリティへの配慮',
+    weight: 0.15,
+  },
+];
+
+/**
  * ドキュメントタイプ別の評価観点マッピング
  */
 export const EVALUATION_DIMENSIONS: Record<
@@ -375,6 +424,7 @@ export const EVALUATION_DIMENSIONS: Record<
   slide: SLIDE_DIMENSIONS,
   spreadsheet: SPREADSHEET_DIMENSIONS,
   document: DOCUMENT_DIMENSIONS,
+  video: VIDEO_DIMENSIONS,
 };
 
 // =============================================================================
@@ -690,12 +740,109 @@ const DOCUMENT_PRESETS: EvaluationPreset[] = [
 ];
 
 /**
+ * 動画（INMV）の評価プリセット
+ *
+ * 動画の目的に応じて評価の重点と追加チェック項目が変わる。
+ */
+const VIDEO_PRESETS: EvaluationPreset[] = [
+  {
+    id: 'training_video',
+    docType: 'video',
+    labelJa: '研修動画',
+    labelEn: 'Training Video',
+    descriptionJa: '社員研修・教育目的の動画',
+    descriptionEn: 'Employee training and educational video',
+    icon: 'GraduationCap',
+    weightOverrides: { content_structure: 0.30, narration_quality: 0.25, visual_narrative: 0.20, audience_engagement: 0.10, production_quality: 0.15 },
+    additionalGuidanceJa: `研修動画の追加チェックポイント:
+- 学習目標が冒頭で明示されているか
+- 1シーンにつき1つの学習ポイントに絞れているか（認知負荷理論）
+- 理論→具体例→まとめのパターンが各セクションで守られているか
+- 専門用語が初出時に定義されているか
+- 最後に要点のまとめ・振り返りがあるか`,
+    additionalGuidanceEn: `Additional checks for training videos:
+- Are learning objectives stated upfront?
+- Is each scene focused on a single learning point (cognitive load theory)?
+- Does each section follow theory → example → summary pattern?
+- Are technical terms defined at first use?
+- Is there a summary/recap at the end?`,
+  },
+  {
+    id: 'product_demo',
+    docType: 'video',
+    labelJa: '製品デモ',
+    labelEn: 'Product Demo',
+    descriptionJa: '製品・サービスのデモンストレーション動画',
+    descriptionEn: 'Product or service demonstration video',
+    icon: 'Monitor',
+    weightOverrides: { content_structure: 0.20, narration_quality: 0.20, visual_narrative: 0.25, audience_engagement: 0.20, production_quality: 0.15 },
+    additionalGuidanceJa: `製品デモの追加チェックポイント:
+- 最初の30秒で製品の価値提案が伝わるか
+- 機能紹介が「機能→ベネフィット→ユースケース」の順で構成されているか
+- 操作手順が画面と同期して説明されているか
+- 競合優位性が暗黙的にでも伝わるか
+- CTAが明確か（問い合わせ・トライアル・次のステップ）`,
+    additionalGuidanceEn: `Additional checks for product demos:
+- Does the value proposition come through in the first 30 seconds?
+- Are features presented as feature → benefit → use case?
+- Are operation steps synchronized with screen visuals?
+- Is competitive advantage conveyed (even implicitly)?
+- Is the CTA clear (contact, trial, next steps)?`,
+  },
+  {
+    id: 'marketing_video',
+    docType: 'video',
+    labelJa: 'マーケティング動画',
+    labelEn: 'Marketing Video',
+    descriptionJa: 'ブランディング・プロモーション目的の動画',
+    descriptionEn: 'Branding and promotional video',
+    icon: 'Megaphone',
+    weightOverrides: { content_structure: 0.15, narration_quality: 0.20, visual_narrative: 0.25, audience_engagement: 0.25, production_quality: 0.15 },
+    additionalGuidanceJa: `マーケティング動画の追加チェックポイント:
+- ターゲット顧客の課題・ペインポイントに冒頭で触れているか
+- 感情的な訴求力があるか（ストーリーテリング・共感）
+- ブランドトーン・メッセージが一貫しているか
+- 視聴後の具体的なアクションが促されているか
+- 動画の尺がプラットフォーム・目的に適しているか`,
+    additionalGuidanceEn: `Additional checks for marketing videos:
+- Does the opening address target customer pain points?
+- Is there emotional appeal (storytelling, empathy)?
+- Are brand tone and messaging consistent?
+- Is a specific post-viewing action encouraged?
+- Is the video length appropriate for the platform and purpose?`,
+  },
+  {
+    id: 'onboarding_video',
+    docType: 'video',
+    labelJa: 'オンボーディング動画',
+    labelEn: 'Onboarding Video',
+    descriptionJa: '新規ユーザー向けの導入・セットアップガイド動画',
+    descriptionEn: 'New user onboarding and setup guide video',
+    icon: 'UserPlus',
+    weightOverrides: { content_structure: 0.30, narration_quality: 0.25, visual_narrative: 0.20, audience_engagement: 0.10, production_quality: 0.15 },
+    additionalGuidanceJa: `オンボーディング動画の追加チェックポイント:
+- ゴール状態（完了後にできるようになること）が冒頭で示されているか
+- 手順が「操作→確認→次へ」のリズムで進んでいるか
+- つまずきやすいポイントに事前に注意喚起があるか
+- スクリーンショット/画面録画と説明が完全に同期しているか
+- 各ステップに番号・進捗表示があるか`,
+    additionalGuidanceEn: `Additional checks for onboarding videos:
+- Is the goal state (what users can do after completion) shown upfront?
+- Do steps follow an action → verify → next rhythm?
+- Are common pitfalls flagged proactively?
+- Are screenshots/screen recordings perfectly synced with narration?
+- Are steps numbered with progress indicators?`,
+  },
+];
+
+/**
  * 全プリセットの統合マッピング
  */
 export const EVALUATION_PRESETS: Record<EvaluationDocumentType, EvaluationPreset[]> = {
   slide: SLIDE_PRESETS,
   spreadsheet: SPREADSHEET_PRESETS,
   document: DOCUMENT_PRESETS,
+  video: VIDEO_PRESETS,
 };
 
 // =============================================================================
@@ -707,6 +854,7 @@ const PRODUCT_EVALUATION_TYPE: Partial<Record<ProductCode, EvaluationDocumentTyp
   INSS: 'slide',
   IOSH: 'spreadsheet',
   IOSD: 'document',
+  INMV: 'video',
 };
 
 /**
@@ -1004,6 +1152,13 @@ location フィールドにはセルアドレスまたはシート名を記載�
 文書全体を通して「この文書は読者を動かせるか」という視点で評価してください。
 読者が読後に取るべきアクションが明確になっているかを特に重視してください。
 location フィールドには「第N段落」や「セクション: xxx」の形式で記載してください。`;
+      case 'video':
+        return `【対象ドキュメント: 動画プロジェクト（研修動画・デモ動画作成ツール）】
+入力データにはシーン構成、ナレーションスクリプト、字幕テキスト、タイムライン情報が含まれます。
+動画全体を通して「この動画は視聴者の理解と行動を促せるか」という視点で評価してください。
+認知負荷理論に基づくチャンキング、ナレーションと視覚要素の同期、視聴者の離脱を防ぐ構成を重視してください。
+日本語ナレーションの場合、読み上げ速度は250-300文字/分が目安です。字幕は1行20文字以内、表示時間1.5-7秒を基準とします。
+location フィールドには「シーン N」や「シーン N: ナレーション」の形式で記載してください。`;
     }
   }
 
@@ -1026,6 +1181,13 @@ Input data includes: paragraph text, heading structure, formatting info.
 Evaluate with the lens of "does this document move the reader to action?"
 Pay special attention to whether post-reading action items are clear.
 Use "Paragraph N" or "Section: xxx" for location fields.`;
+    case 'video':
+      return `DOCUMENT TYPE: Video Project (Training & Demo Video Creator)
+Input data includes: scene structure, narration scripts, subtitle text, timeline information.
+Evaluate with the lens of "does this video promote viewer understanding and action?"
+Focus on cognitive load theory-based chunking, narration-visual synchronization, and retention-friendly structure.
+For Japanese narration, target speaking pace is 250-300 characters/minute. Subtitles should be max 20 characters/line, displayed for 1.5-7 seconds.
+Use "Scene N" or "Scene N: Narration" for location fields.`;
   }
 }
 
@@ -1318,7 +1480,7 @@ export function parseEvaluationResult(
  * ai_assistant と同じプラン制限に準拠する。
  */
 export function canUseDocumentEvaluation(plan: PlanCode): boolean {
-  const allowedPlans: PlanCode[] = ['TRIAL', 'STD', 'PRO', 'ENT'];
+  const allowedPlans: PlanCode[] = ['TRIAL', 'BIZ', 'ENT'];
   return allowedPlans.includes(plan);
 }
 

@@ -18,7 +18,7 @@ public class InsightLicenseManager
     private const string SECRET_KEY = "insight-series-license-secret-2026";
 
     private static readonly Regex LICENSE_KEY_REGEX = new(
-        @"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN)-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
+        @"^(INSS|IOSH|IOSD|INPY|INMV|INBT|INCA|INIG|IVIN|ISOF)-(TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$",
         RegexOptions.Compiled);
 
     private readonly string _productCode;

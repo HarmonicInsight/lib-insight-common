@@ -23,6 +23,9 @@
 | 「ビルドエラー」「build failed」「コンパイルエラー」「リンクエラー」「署名エラー」 | `scripts/build-doctor.sh` を実行、`config/build-doctor.ts` と `standards/BUILD_DOCTOR.md` を参照 |
 | 「メニューアイコン」「ツールバー」「アイコン統一」「Lucide」 | `standards/MENU_ICONS.md` と `brand/menu-icons.json` を確認 |
 | メニュー・ツールバー・サイドバーの UI 実装 | `brand/menu-icons.json` のアイコン定義を参照、`config/menu-icons.ts` の API を使用 |
+| 「ヘルプ」「HelpWindow」「操作マニュアル」「?ボタン」「F1」 | `standards/HELP_SYSTEM.md` と `config/help-content.ts` を確認、`/validate-help` を提案 |
+| HelpWindow の新規作成・修正 | `standards/HELP_SYSTEM.md` の実装チェックリスト（§12）を参照、完了後 `/validate-help` を実行 |
+| 「文字サイズ」「拡大」「縮小」「ズーム」「アクセシビリティ」「シニア」「高齢者」「スケーリング」 | `standards/ACCESSIBILITY.md` と `config/ui-scale.ts` を確認 |
 
 ---
 
@@ -96,6 +99,7 @@
 - **リリースチェック**: `standards/RELEASE_CHECKLIST.md`（全プラットフォーム共通）
 - **寒色系カラー標準**: `standards/COOL_COLOR.md`（業務系アプリ: INBT/INCA/IVIN）
 - **メニューアイコン標準**: `standards/MENU_ICONS.md`（全製品共通 — Lucide Icons）
+- **アクセシビリティ**: `standards/ACCESSIBILITY.md`（全 WPF 製品共通 — UI スケーリング）
 
 ### 検証スクリプト
 
@@ -108,6 +112,9 @@
 
 # メニューアイコン標準検証（Lucide Icons 統一）
 ./scripts/validate-menu-icons.sh <project-directory>
+
+# ヘルプシステム標準検証（WPF プロジェクト）
+./scripts/validate-help.sh <project-directory>
 
 # リリース前の包括チェック（標準検証 + リリース固有チェック）
 ./scripts/release-check.sh <project-directory>
@@ -248,6 +255,12 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | AutomationProperties なしでリリース | 主要 UI コントロールに `AutomationProperties.Name` を設定 |
 | ハイパーリンク URL を未検証で使用 | 許可スキーム（http/https/mailto）のホワイトリスト検証 |
 | `UnobservedTaskException` をログなしで握りつぶし | App.xaml.cs でログ出力付きハンドラを登録 |
+| HelpWindow のセクション ID に integer を使用 | **string ID** を使用（`config/help-content.ts` 参照） |
+| HelpWindow を `Show()` で開く | **`ShowDialog()`** で開く（非モーダル禁止） |
+| HelpWindow の XAML で色をハードコード | `DynamicResource` / `StaticResource` を使用 |
+| ヘルプコンテンツに機能説明のみ記載 | **導入効果・ベネフィット**を先に伝える（`HELP_SYSTEM.md` §0） |
+| FontSize 個別変更でスケーリング | `InsightScaleManager` + `LayoutTransform` を使用（`standards/ACCESSIBILITY.md`） |
+| `InsightScaleManager` を介さず独自スケール機構を実装 | `InsightScaleManager.Instance` を使用 |
 
 ## 5. 製品コード一覧
 
@@ -375,10 +388,16 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 機能 | FREE | BIZ | ENT | 説明 |
 |------|:----:|:---:|:---:|------|
 | 動画生成 | ○ | ○ | ○ | 画像・テキストから動画を生成 |
-| 字幕 | — | — | ○ | 動画への字幕追加 |
-| 字幕スタイル選択 | — | — | ○ | フォント・色・位置のカスタマイズ |
-| トランジション | — | — | ○ | シーン間のトランジション効果 |
-| PPTX取込 | — | — | ○ | PowerPointファイルからの素材取込 |
+| 字幕 | ○ | ○ | ○ | 動画への字幕追加 |
+| 字幕スタイル選択 | ○ | ○ | ○ | フォント・色・位置のカスタマイズ |
+| トランジション | ○ | ○ | ○ | シーン間のトランジション効果 |
+| PPTX取込 | ○ | ○ | ○ | PowerPointファイルからの素材取込 |
+| AIアシスタント | ○(BYOK) | ○(BYOK) | 無制限 | AIによる動画構成提案・ナレーション作成・字幕最適化 |
+| AIコードエディター | ○(BYOK) | ○(BYOK) | 無制限 | AIによるPython自動処理 |
+| 参考資料 | ○ | ○ | ○ | 参考資料の添付・AIコンテキスト活用 |
+| ドキュメント評価 | ○(BYOK) | ○(BYOK) | 無制限 | AIによる動画の多角的評価・スコアリング |
+| 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
+| VRMアバター | ○ | ○ | ○ | 3Dアバターによる音声会話 |
 
 **プラン別制限（INMV固有）:** BIZ: 最大200MB / 1080p、ENT: 無制限 / 4K
 
@@ -813,7 +832,7 @@ getResellerProducts('gold');        // 全製品
 
 > 詳細は `standards/AI_ASSISTANT.md` を参照
 
-**対象製品**: INSS / IOSH / IOSD（全 Insight Business Suite 系アプリ）+ INPY / INBT
+**対象製品**: INSS / IOSH / IOSD（全 Insight Business Suite 系アプリ）+ INPY / INBT / INMV
 
 | 項目 | 仕様 |
 |------|------|
@@ -1358,6 +1377,18 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **リモートコンフィグ**: 起動時のバージョンチェックが実装されている（`remote-config.ts`）
 - [ ] **リモートコンフィグ**: API キー（Claude/Syncfusion）がリモート取得に対応している
 - [ ] **リモートコンフィグ**: モデルレジストリがリモート更新に対応している（AI 搭載アプリのみ）
+- [ ] **ヘルプ**: `HelpWindow.xaml` + `.cs` が存在する（WPF アプリ）
+- [ ] **ヘルプ**: セクション ID が全て string 型（integer 禁止）
+- [ ] **ヘルプ**: `ShowDialog()` で開く（`Show()` 禁止）
+- [ ] **ヘルプ**: 必須6セクション（overview, ui-layout, shortcuts, license, system-req, support）が含まれる
+- [ ] **ヘルプ**: AI 搭載製品は `ai-assistant` セクションが含まれる
+- [ ] **ヘルプ**: 全パネルヘッダーに ? ボタンがある
+- [ ] **ヘルプ**: F1 キーで HelpWindow が開く
+- [ ] **ヘルプ**: `static ShowSection()` メソッドが実装されている
+- [ ] **ヘルプ**: ヘルプコンテンツがマーケティング方針（`HELP_SYSTEM.md` §0）に準拠
+- [ ] **アクセシビリティ**: `InsightScaleManager.ApplyToWindow()` が呼ばれている（InsightWindowChrome 経由で自動適用）
+- [ ] **アクセシビリティ**: Ctrl+Plus / Ctrl+Minus / Ctrl+0 キーバインドがある
+- [ ] **アクセシビリティ**: ステータスバーにスケール倍率が表示されている
 
 ## 14. リリースチェック
 
@@ -1425,6 +1456,9 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 - [ ] **セキュリティ**: `UnobservedTaskException` ハンドラが登録済み（ログ出力付き）
 - [ ] **配布**: インストーラーの動作確認（クリーン環境）
 - [ ] **ファイル関連付け**: 独自拡張子の登録・動作確認
+- [ ] **ヘルプ**: HelpWindow が `standards/HELP_SYSTEM.md` に準拠
+- [ ] **ヘルプ**: ヘルプコンテンツのセクション ID が string（integer 禁止）
+- [ ] **ヘルプ**: 共通コンテンツ（ライセンス・システム要件・サポート）が最新
 
 #### React / Next.js 固有
 - [ ] **ビルド**: `next build` が成功する
@@ -1540,6 +1574,9 @@ const iosProfile = getRecommendedIosProfile('cutting_edge');
 # メニューアイコン標準検証
 ./insight-common/scripts/validate-menu-icons.sh .
 
+# ヘルプシステム標準検証（WPF プロジェクト）
+./insight-common/scripts/validate-help.sh .
+
 # セットアップ確認
 ./insight-common/scripts/check-app.sh
 
@@ -1552,6 +1589,12 @@ cat insight-common/standards/IOS.md         # iOS
 
 # メニューアイコン標準
 cat insight-common/standards/MENU_ICONS.md
+
+# アクセシビリティ標準（UI スケーリング）
+cat insight-common/standards/ACCESSIBILITY.md
+
+# ヘルプシステム標準
+cat insight-common/standards/HELP_SYSTEM.md
 
 # リリースチェックリスト
 cat insight-common/standards/RELEASE_CHECKLIST.md

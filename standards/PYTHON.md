@@ -78,9 +78,9 @@ from datetime import datetime
 from dataclasses import dataclass
 
 class PlanCode(Enum):
+    FREE = "FREE"
     TRIAL = "TRIAL"
-    STD = "STD"
-    PRO = "PRO"
+    BIZ = "BIZ"
     ENT = "ENT"
 
 @dataclass
@@ -96,7 +96,7 @@ class LicenseInfo:
 
 class InsightLicenseManager:
     KEY_PATTERN = re.compile(
-        r"^([A-Z]{4})-(TRIAL|STD|PRO)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
+        r"^([A-Z]{4})-(TRIAL|BIZ|ENT)-(\d{4})-([A-Z0-9]{4})-([A-Z0-9]{4})-([A-Z0-9]{4})$"
     )
 
     def __init__(self, product_code: str, app_name: str):

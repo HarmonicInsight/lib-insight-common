@@ -437,8 +437,8 @@ const SKILL_CONTENT_CREATION: SkillDefinition = {
   nameEn: 'Content Creation',
   descriptionJa: 'ブログ・プレスリリース・ケーススタディ等のビジネス文書を作成支援',
   descriptionEn: 'Assist with creating blog posts, press releases, case studies and business documents',
-  targetProducts: ['IOSD', 'INSS'],
-  targetContexts: ['document', 'slide'],
+  targetProducts: ['IOSD', 'INSS', 'INMV'],
+  targetContexts: ['document', 'slide', 'video'],
   requiredPlan: 'BIZ',
   triggerPatterns: [
     'ブログ', 'blog', 'プレスリリース', 'press release', 'ケーススタディ',
@@ -564,6 +564,98 @@ pandas / numpy / matplotlib / seaborn を活用したデータ分析を支援し
 };
 
 // =============================================================================
+// INMV（Insight Training Studio）向けスキル
+// =============================================================================
+
+/** ナレーションスクリプト作成スキル */
+const SKILL_VIDEO_SCRIPT: SkillDefinition = {
+  id: 'video-script-writing',
+  category: 'content-creation',
+  nameJa: 'ナレーションスクリプト作成',
+  nameEn: 'Narration Script Writing',
+  descriptionJa: '研修・教育動画のナレーションスクリプトを構造化作成',
+  descriptionEn: 'Create structured narration scripts for training and educational videos',
+  targetProducts: ['INMV'],
+  targetContexts: ['video'],
+  requiredPlan: 'BIZ',
+  triggerPatterns: [
+    'ナレーション', 'narration', 'スクリプト', 'script', '台本', '読み上げ',
+    'セリフ', '原稿', 'voiceover', 'VO',
+  ],
+  sourcePlugin: 'content-creation',
+  sourceSkill: 'video-script-writing',
+  systemPromptExtension: `
+【ナレーションスクリプト作成スキル】
+教育・研修動画のナレーションスクリプトを構造化作成します。
+
+【スクリプト構造】
+1. シーンごとにセクション分割
+   - シーンID・タイトル・想定時間
+   - ナレーションテキスト（読み上げ原稿）
+   - 同期ポイント [SYNC: 画像名/アニメーション]
+   - 画面上の補足テキスト（字幕用）
+
+2. 品質基準
+   - 1分あたり250-300文字（日本語）/ 120-150語（英語）
+   - 1文は短く（20-30文字）
+   - 専門用語は初出時に平易な言葉で解説
+   - 数値は読み上げ形式（「1,234」→「千二百三十四」）
+
+3. 構成パターン
+   - 学習目標の提示 → 概要説明 → 詳細解説 → 演習・確認 → まとめ
+   - 各セクションの冒頭で「これから〇〇について説明します」と予告
+   - セクション末で「ここまでのポイントは〇〇です」と振り返り
+`,
+};
+
+/** ストーリーボード設計スキル */
+const SKILL_STORYBOARD: SkillDefinition = {
+  id: 'video-storyboard',
+  category: 'content-creation',
+  nameJa: 'ストーリーボード設計',
+  nameEn: 'Video Storyboard Design',
+  descriptionJa: '動画のシーン構成・画面設計を提案',
+  descriptionEn: 'Design video scene composition and visual layout',
+  targetProducts: ['INMV'],
+  targetContexts: ['video'],
+  requiredPlan: 'BIZ',
+  triggerPatterns: [
+    'ストーリーボード', 'storyboard', 'シーン構成', 'scene', '画面設計',
+    '構成', '流れ', 'フロー', 'flow', 'レイアウト', 'layout',
+  ],
+  sourcePlugin: 'content-creation',
+  sourceSkill: 'video-storyboard',
+  systemPromptExtension: `
+【ストーリーボード設計スキル】
+動画のシーン構成・画面設計を提案します。
+
+【設計原則】
+1. 認知負荷理論
+   - 1シーン1コンセプト（チャンキング）
+   - 視覚要素とナレーションの整合性（モダリティ原理）
+   - 冗長な装飾は排除（コヒーレンス原理）
+
+2. シーン設計テンプレート
+   - シーンID・タイトル・想定時間（秒）
+   - 画面レイアウト（画像配置・テキスト領域）
+   - トランジション（前シーンからの接続方法）
+   - ナレーション概要
+   - 字幕の要否
+
+3. 動画タイプ別ガイドライン
+   - 研修動画: 5-15分、段階的難易度、理解確認ポイント
+   - 製品デモ: 2-5分、機能ハイライト、ユースケース
+   - マーケティング: 30秒-3分、フック→価値提案→CTA
+   - オンボーディング: 3-10分、ステップバイステップ、即実践可能
+
+4. ペーシング
+   - 導入（全体の10-15%）: 視聴者の関心を掴む
+   - 本編（全体の70-80%）: 核心内容を段階的に展開
+   - まとめ（全体の10-15%）: 要点整理・次のアクション
+`,
+};
+
+// =============================================================================
 // 全製品共通スキル
 // =============================================================================
 
@@ -575,8 +667,8 @@ const SKILL_TASK_MANAGEMENT: SkillDefinition = {
   nameEn: 'Task Management',
   descriptionJa: 'プロジェクト内のタスク管理・進捗トラッキングを支援',
   descriptionEn: 'Assist with in-project task management and progress tracking',
-  targetProducts: ['IOSH', 'INSS', 'IOSD', 'INPY', 'INBT'],
-  targetContexts: ['spreadsheet', 'slide', 'document', 'code'],
+  targetProducts: ['IOSH', 'INSS', 'IOSD', 'INPY', 'INBT', 'INMV'],
+  targetContexts: ['spreadsheet', 'slide', 'document', 'code', 'video'],
   requiredPlan: 'BIZ',
   triggerPatterns: [
     'タスク', 'task', 'TODO', 'やること', '進捗', 'progress',
@@ -610,8 +702,8 @@ const SKILL_MEMORY_MANAGEMENT: SkillDefinition = {
   nameEn: 'Context Memory',
   descriptionJa: 'ユーザーの組織コンテキスト（人物・略語・プロジェクト）を学習・保持',
   descriptionEn: 'Learn and retain organizational context (people, abbreviations, projects)',
-  targetProducts: ['IOSH', 'INSS', 'IOSD', 'INPY', 'INBT'],
-  targetContexts: ['spreadsheet', 'slide', 'document', 'code'],
+  targetProducts: ['IOSH', 'INSS', 'IOSD', 'INPY', 'INBT', 'INMV'],
+  targetContexts: ['spreadsheet', 'slide', 'document', 'code', 'video'],
   requiredPlan: 'BIZ',
   triggerPatterns: [
     '覚えて', 'remember', '記憶', 'memory', '略語', 'acronym',
@@ -667,6 +759,9 @@ export const ALL_SKILLS: SkillDefinition[] = [
   SKILL_STAKEHOLDER_UPDATE,
   // INPY（Data）
   SKILL_DATA_ANALYSIS,
+  // INMV（Content Creation）
+  SKILL_VIDEO_SCRIPT,
+  SKILL_STORYBOARD,
   // 全製品共通（Productivity）
   SKILL_TASK_MANAGEMENT,
   SKILL_MEMORY_MANAGEMENT,
@@ -768,6 +863,39 @@ export const ALL_COMMANDS: CommandDefinition[] = [
     promptTemplate: '対象者「{{audience}}」向けのステークホルダー報告スライドを構成してください。現在のスライドデータを参照し、エグゼクティブサマリー、詳細進捗、数値レビュー、ネクストステップの構成で提案してください。',
     sourcePlugin: 'product-management',
     sourceCommand: 'stakeholder-update',
+  },
+  // INMV 向け
+  {
+    name: 'create-storyboard',
+    nameJa: 'ストーリーボード生成',
+    nameEn: 'Create Storyboard',
+    descriptionJa: '動画のシーン構成・ストーリーボードを生成します',
+    descriptionEn: 'Generate scene composition and storyboard for the video',
+    targetProducts: ['INMV'],
+    requiredPlan: 'BIZ',
+    parameters: [
+      { name: 'type', nameJa: '動画タイプ', type: 'select', required: true, options: ['training', 'product_demo', 'marketing', 'onboarding'] },
+      { name: 'duration', nameJa: '目標時間（分）', type: 'number', required: false, defaultValue: 5 },
+    ],
+    promptTemplate: '動画タイプ「{{type}}」、目標時間「{{duration}}分」のストーリーボードを生成してください。現在のタイムラインデータを参照し、シーン構成・画面レイアウト・トランジション・ナレーション概要を提案してください。',
+    sourcePlugin: 'content-creation',
+    sourceCommand: 'create-storyboard',
+  },
+  {
+    name: 'write-narration',
+    nameJa: 'ナレーション生成',
+    nameEn: 'Write Narration',
+    descriptionJa: 'シーンのナレーションスクリプトを生成します',
+    descriptionEn: 'Generate narration scripts for scenes',
+    targetProducts: ['INMV'],
+    requiredPlan: 'BIZ',
+    parameters: [
+      { name: 'scope', nameJa: '対象範囲', type: 'select', required: true, options: ['all_scenes', 'current_scene', 'empty_scenes'] },
+      { name: 'tone', nameJa: 'トーン', type: 'select', required: false, options: ['professional', 'friendly', 'academic', 'casual'] },
+    ],
+    promptTemplate: '対象範囲「{{scope}}」、トーン「{{tone}}」でナレーションスクリプトを生成してください。品質基準（250-300文字/分、短文、同期ポイント記法）に従い、現在のタイムラインデータに基づいて各シーンのナレーションを作成してください。',
+    sourcePlugin: 'content-creation',
+    sourceCommand: 'write-narration',
   },
   // INPY 向け
   {
