@@ -16,14 +16,15 @@
 |------|:---------:|:---:|:------:|---------|
 | **IOSH** (InsightSheet) | 120 / 32 | 22,000 | **A** | 最も完成度が高い。データ収集・Excel分析・修復・AI Tool Use搭載。フロントドア確定 |
 | **INMV** (InsightCast) | 82 / 21 | 22,500 | **A-** | VOICEVOX+FFmpeg+DALL-E+Claude。独立したニッチ市場を持つ。単独展開可能 |
-| **IOSD** (InsightDoc) | 94 / 36 | 18,300 | **B+** | テンプレート一括生成・差し込み印刷。Suite内では最もBPO向き。Word置き換え価値が高い |
+| **IOSD** (Doc Factory) | 94 / 36 | 18,300 | **A-** | Word+Excel+PDFを1アプリ統合。自社テンプレート→AI検出→Excel入力→書類量産。BPO市場直撃 |
 | **INSS** (InsightSlide) | 49 / 18 | 12,000 | **B** | コンパクトだが核心機能（AI校正・比較・抽出）は完成。Suiteの入口として機能する |
 
 ### 戦略の核心（3文で）
 
 1. **InsightSheet を「日本発のAI×Excel業務改善ツール」としてフロントドアに据え、FREE版で市場を開拓する**
-2. **InsightCast は「教育動画の限界費用ゼロ化」という独自ポジションで、建設・製造・介護の現場教育市場を狙う**
-3. **FPT MDの「大企業DX推進の現場を知る人間」という信頼資産と、HARMONIC insightの「その現場から生まれたツール」というストーリーを一本化し、唯一無二のブランドを構築する**
+2. **Doc Factory を「BPO会社のドキュメント量産基盤」として、Word+Excel統合 × テンプレート工場のポジションで法人直販する**
+3. **InsightCast は「教育動画の限界費用ゼロ化」という独自ポジションで、建設・製造・介護の現場教育市場を狙う**
+4. **FPT MDの「大企業DX推進の現場を知る人間」という信頼資産と、HARMONIC insightの「その現場から生まれたツール」というストーリーを一本化し、唯一無二のブランドを構築する**
 
 ---
 
@@ -76,25 +77,36 @@
 
 ---
 
-### 1.3 IOSD — Insight AI Doc Factory（Word業務改善）
+### 1.3 IOSD — Insight AI Doc Factory（BPO向けドキュメント量産基盤）
 
 **コード精査で判明した強み:**
+- **Word+Excel+PDF 3エンジン統合**: SfRichTextBoxAdv（Word）+ SfSpreadsheet（Excel）+ PdfViewer（PDF）を1アプリに統合。リボンUIもモード切替で対応（MainWindow.RibbonCommands.cs: 860行）。**1つのアプリで Word と Excel を両方操作できる**のは唯一無二
 - **4層アーキテクチャ**: App / Core / Data / Common。IOSHと同じエンタープライズ構造
-- **テンプレートシステム**: TemplateCatalogService + TemplatePackageService + TemplateEditorDialog。.hdtpkgテンプレートパッケージ
-- **差し込み印刷（Mail Merge）**: MailMergeDialog + AI自動フィールド検出。Excelデータから文書一括生成
-- **プロジェクトプロファイル**: ProjectProfileService。案件ごとの設定管理
+- **テンプレート工場パイプライン**: 顧客の自社Wordテンプレート → TemplatePackageService（.hdtpkg化）→ AI自動フィールド検出 → TemplateExcelService（Excel入力フォーム自動生成・色分けセル）→ Mail Merge → 書類量産
+- **差し込み印刷（Mail Merge）**: MailMergeDialog + AI自動フィールド検出。Excelデータから文書一括生成。BPOオペレーターが最も多用する機能
+- **コアサービス**: Core Services 4,649行。テンプレート解析・フィールドマッピング・バリデーションのビジネスロジック
+- **プロジェクトプロファイル**: ProjectProfileService。案件ごとの設定管理（BPOの顧客別案件に最適）
 - **参考資料パネル**: ReferencePanelView。AI回答の根拠資料を添付可能
 - **豊富なダイアログ**: 26以上のView/Dialog。Word操作の細部まで実装
 - **多言語**: ja / en / zh の3言語対応
-- **Syncfusion RichTextBox**: Word互換の本格リッチテキストエディタ + PDFビューア
 
-**弱点:**
-- インストーラー未確認（HarmonicDocとしてのパッケージング）
-- 製品としてのポジショニングが「Word + AI」では差別化が弱い
-- INSS/IOSHに比べて独自の「キラー機能」が見えにくい
+**Word+Excel統合の戦略的意味:**
+```
+従来のBPOオペレーション:
+  Excel（データ入力）→ 保存 → Word を開く → 差し込み → 保存 → PDF変換 → 確認
+  = 3アプリ切替 × 1000件 = 3000回のアプリ切替
+
+Insight AI Doc Factory:
+  同一ウィンドウ内で Excel入力 → Word生成 → PDF確認 まで完結
+  = アプリ切替ゼロ × 1000件 = 作業時間 1/3
+```
 
 **市場的価値:**
-> 「テンプレート一括生成」と「差し込み印刷」の組み合わせは、**BPO・行政・法務**の大量文書作成需要に直結。「Wordを買わずにWordファイルを量産できる」が最大の価値。
+> **BPO会社に売る。** テンプレートは顧客企業から受け取る。汎用テンプレは不要。
+> 「自社テンプレート → AI検出 → Excel入力フォーム自動生成 → 書類量産」のパイプラインが核心。
+> Word+Excel が1アプリで動く = **MS Office ライセンスが不要** = BPO のPC調達コストを劇的に削減。
+> 100台のBPCオペレーターPCから MS Office を撤去し、Doc Factory に置き換えるだけで、
+> MS 365 Business Basic（¥899/月/人）× 100人 = **年間¥1,078,800のコスト削減**を顧客に提示できる。
 
 ---
 
@@ -207,17 +219,20 @@ Phase 1: 社内利用（FPT内部）
 ├── InsightSheet → コンサルタントの工数報告・分析レポート管理
 ├── InsightSlide → 提案書のAIレビュー・品質チェック
 ├── InsightCast → 新入社員教育・プロジェクト引き継ぎ動画
-└── InsightDoc → 契約書テンプレート・報告書一括生成
+└── Doc Factory → 契約書テンプレート・報告書一括生成
 
 Phase 2: FPTクライアントへの推薦
 ├── 「弊社でも使っているツールですが…」→ 最強の推薦文
 ├── FPT案件のデリバリーで自然に使用
-└── クライアントが「あのツールは何ですか？」と聞いてくる
+├── クライアントが「あのツールは何ですか？」と聞いてくる
+└── FPTクライアントのBPO部門にDoc Factoryを提案
 
-Phase 3: FPTパートナー化
+Phase 3: FPTパートナー化 + ベトナムBPO市場進出
 ├── FPT Consulting JapanがHIの正式パートナー（Gold Tier）に
 ├── FPTの既存クライアントへのアップセル
-└── FPTベトナム本社への展開（東南アジア進出の足がかり）
+├── FPTベトナム本社への展開（東南アジア進出の足がかり）
+└── ベトナムBPOセンター向けDoc Factory展開
+     → 日本企業の文書をベトナムBPOで量産するフローに直撃
 ```
 
 > **重要**: Phase 1は**利益相反にならない**。社内ツールの選定はMDの権限内であり、自社開発ツールの採用は合理的な経営判断。ただし、**FPT内部の承認プロセス**は透明に行い、議事録を残す。
@@ -234,14 +249,17 @@ Phase 3: FPTパートナー化
 │  Phase 1: 種まき  │    │  Phase 2: 収穫開始     │    │  Phase 3: スケール   │
 │                   │    │                         │    │                      │
 │  InsightSheet     │    │  InsightSheet BIZ/ENT   │    │  Suite バンドル      │
-│  FREE版リリース   │    │  有料転換開始            │    │  3製品セット         │
+│  FREE版リリース   │    │  有料転換開始            │    │  4製品セット         │
 │                   │    │                         │    │                      │
-│  InsightCast      │    │  InsightCast Business   │    │  東南アジア展開      │
-│  FREE版リリース   │    │  教育動画案件獲得        │    │  FPTベトナム経由     │
+│  Doc Factory      │    │  Doc Factory BIZ/ENT    │    │  東南アジア展開      │
+│  BPO会社へ直販    │    │  BPO案件拡大            │    │  FPTベトナム経由     │
+│                   │    │                         │    │  (ベトナムBPO市場)   │
+│  InsightCast      │    │  InsightCast Business   │    │                      │
+│  FREE版リリース   │    │  教育動画案件獲得        │    │  パートナー5社       │
 │                   │    │                         │    │                      │
-│  LinkedIn         │    │  セミナー登壇            │    │  パートナー5社       │
-│  ソートリーダー   │    │  パートナー2社獲得       │    │                      │
-│  シップ開始       │    │                         │    │                      │
+│  LinkedIn         │    │  InsightSlide リリース   │    │                      │
+│  ソートリーダー   │    │  セミナー登壇            │    │                      │
+│  シップ開始       │    │  パートナー2社獲得       │    │                      │
 └───────────────────┘    └───────────────────────┘    └──────────────────────┘
 ```
 
@@ -278,9 +296,37 @@ FREE版は「売上ゼロの投資」ではなく、**「有料版への最強�
 
 > **FREE版の設計哲学**: 月3本・720pで「動画制作の楽しさ」を体感させる。HI透かし入りの動画は「自己証明マーケティング」にもなる（視聴者が「この動画はInsightCastで作られました」を見る）。
 
-#### InsightSlide / InsightDoc は Phase 2 まで待つ
+#### Doc Factory の BPO 会社向け直販戦略
 
-**理由**: 4製品同時リリースはリソースを分散させる。InsightSheetとInsightCastはそれぞれ独立したユースケースを持つため、2製品に集中する。InsightSlide / InsightDocは、BIZ版購入者への「Suite アップグレード」として提示する方がLTVが高い。
+Doc Factory は FREE 版の「種まき」ではなく、**BPO 会社への法人直販**で攻める。理由: BPO 会社は「大量文書作成」が本業であり、ROI が即座に計算できる。
+
+**BPO 会社への提案ロジック:**
+
+```
+BPO会社の現状:
+  MS 365 Business Basic: ¥899/月/人 × 100人 = ¥1,078,800/年
+  + Word/Excel を交互に開く作業の人件費ロス
+  + テンプレート管理の属人化
+
+Doc Factory 導入後:
+  Doc Factory ENT: 個別見積もり（MS 365 より安価に設定可能）
+  + Word+Excel が1アプリ → 作業時間 1/3
+  + テンプレート→Excel入力フォーム自動生成 → 属人化解消
+  + AI フィールド検出 → セットアップ工数の削減
+```
+
+**初期ターゲット BPO 会社の選定基準:**
+
+| 条件 | 理由 |
+|------|------|
+| 従業員 50-500人 | 意思決定が速く、MSライセンス費が痛い規模 |
+| 文書作成が主要業務 | 契約書・報告書・請求書等の量産が日常業務 |
+| 顧客企業からテンプレートを受領している | Doc Factory の「テンプレート工場」が直撃する業務形態 |
+| MS Office のライセンスコストを課題視 | Doc Factory の「Office不要」が即座にROIに変換される |
+
+#### InsightSlide は Phase 2 で Suite に統合
+
+**理由**: 3製品同時リリース（Sheet + Doc Factory + Cast）でリソースを最適配分。InsightSlideは、Phase 2で Suite バンドルの一部として提供する方がLTVが高い。
 
 ---
 
@@ -308,14 +354,24 @@ FREEユーザー100社
 | 介護施設の研修担当 | スタッフ教育の動画が足りない。多言語対応も必要 | VOICEVOX多話者 + 字幕自動生成 | ¥80,000/月 |
 | コンサルファーム | クライアント向け報告動画を毎回手作業で制作 | テンプレート + バッチ生成 | ¥250,000/月（ENT） |
 
+#### Doc Factory の BPO 案件拡大
+
+Phase 1 で獲得した初期 BPO 顧客の実績をベースに、横展開を加速。
+
+| アクション | 目標 |
+|-----------|------|
+| 初期顧客の導入事例（匿名可）を作成 | 「作業時間 X% 削減」「MS Office ライセンス費 Y万円削減」の数字 |
+| BPO 業界セミナーでの事例発表 | 1回以上 |
+| BPO 会社の横展開（紹介経由） | +5社 |
+
 #### Suite バンドル準備
 
-InsightSlide + InsightDoc を正式リリースし、**Insight Business Suite** として3製品バンドルを開始。
+InsightSlide を正式リリースし、**Insight Business Suite** として4製品バンドルを開始。
 
 | プラン | 内容 | 価格 |
 |--------|------|------|
-| Suite PROFESSIONAL | Sheet + Slide + Doc（BIZ機能） | ¥59,800/年（単品合計¥89,400の33%OFF） |
-| Suite ENTERPRISE | Sheet + Slide + Doc（ENT機能）+ Bot連携 | ¥98,000/年/PC |
+| Suite PROFESSIONAL | Sheet + Slide + Doc Factory（BIZ機能） | 個別見積もり |
+| Suite ENTERPRISE | Sheet + Slide + Doc Factory（ENT機能）+ Bot連携 | 個別見積もり |
 
 ---
 
@@ -327,13 +383,20 @@ InsightSlide + InsightDoc を正式リリースし、**Insight Business Suite** 
 FPT Consulting Japan → FPT Corporation（ベトナム本社）
                           │
                           ├── FPT Software（開発子会社）
-                          │    → InsightCast の多言語版テスト（ベトナム語）
+                          │    ├── InsightCast の多言語版テスト（ベトナム語）
+                          │    └── Doc Factory のBPOセンター導入
+                          │         → 日本企業の文書をベトナムで量産
                           │
                           ├── FPT IS（国内IT）
                           │    → InsightSheet のベトナム企業への導入
                           │
-                          └── FPT Education
-                               → InsightCast の教育機関向け展開
+                          ├── FPT Education
+                          │    → InsightCast の教育機関向け展開
+                          │
+                          └── ベトナムBPO会社（FPT紹介経由）
+                               → Doc Factory のベトナムBPO市場展開
+                               → 日本語テンプレート→ベトナムで量産の
+                                  クロスボーダーBPOに対応
 ```
 
 > **FPTコネクションの最大活用**: FPTグループは東南アジア最大のIT企業。ベトナム・フィリピン・タイ・インドネシアに拠点を持つ。このネットワークを「パートナー」として活用するのが、東南アジア進出の最もコスト効率の高い方法。
@@ -344,9 +407,10 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 |---------------|--------|---------|---------|
 | 中堅SIer（日本） | Silver | Sheet + Suite | セミナー登壇→個別商談 |
 | RPAベンダー（日本） | Silver | Sheet + Bot | InsightBot連携で協業提案 |
+| BPOコンサル（日本） | Silver | Doc Factory | BPO業界セミナー→個別商談 |
 | 建設業コンサル（日本） | Registered | Cast | h-insight.jp経由 |
-| FPTベトナム | Gold | 全製品 | 社内関係 |
-| 東南アジアSIer | Registered | Sheet | FPT紹介 |
+| FPTベトナム | Gold | 全製品（特にDoc Factory） | 社内関係。ベトナムBPOセンターへの導入 |
+| 東南アジアBPO/SIer | Registered | Sheet + Doc Factory | FPT紹介 |
 
 ---
 
@@ -382,7 +446,51 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 2. **Microsoft 365 Copilotとの差別化**: Copilotは「Excelの中のAI」。InsightSheetは「Excelの外のAI＋バージョン管理＋データ収集」。つまり、**Excelを取り巻く業務フロー全体**をカバーする
 3. **BYOK（持ち込みAPIキー）**: Copilot Pro（月額4,497円/人）のような固定課金ではなく、「自社のClaude APIキーで使い放題」。大企業のIT部門が最も重視する「コスト予測可能性」を提供
 
-### 4.2 InsightCast vs 競合
+### 4.2 Doc Factory vs 競合（BPO文書作成市場）
+
+```
+                        ▲ テンプレート→量産の自動化度
+                        │
+                        │  ★ Doc Factory
+                        │    (Word+Excel統合 + AIフィールド検出
+                        │     + テンプレート工場パイプライン)
+                        │
+                        │         ★ WPS Office
+                        │           (安価だがAI/自動化なし)
+                        │
+                        │    ★ LibreOffice
+                        │      (無料だが自動化なし)
+                        │
+                 ★ Word + Excel   ★ Google Workspace
+                   (MS 365)         (Web制約)
+                        │
+                        │              ★ DocuSign CLM
+                        │                (契約書特化)
+                        │
+                        └──────────────────────────────→ MS Office依存度からの解放
+                          低 ← ────────────────── → 高
+```
+
+**Doc Factory が BPO 市場で勝てる理由:**
+
+1. **Word+Excel が1アプリ**: BPOオペレーターは Word と Excel を交互に開く。Doc Factory は同一ウィンドウ内で両方を操作できる唯一のツール。アプリ切替ゼロ = 作業時間 1/3
+2. **テンプレート工場パイプライン**: 顧客から受け取った Word テンプレート → AI がフィールドを自動検出 → Excel 入力フォームを自動生成（色分けセル） → データ入力 → 書類量産。**セットアップ工数が激減**
+3. **MS Office 不要**: Syncfusion エンジンで .docx/.xlsx/.pdf を直接操作。100台の BPO PCから MS 365 を撤去可能 = **年間100万円超のコスト削減**
+4. **AI アシスタント**: Claude API（BYOK）で、テンプレートの改善提案・入力データの検証・生成文書の品質チェックを自動化
+5. **WPS Office / LibreOffice との差別化**: 「安い Office 互換」ではなく「テンプレートからの書類量産基盤」。Doc Factory のコア価値は Office 互換性ではなく **自動化パイプライン**
+
+**BPO 会社へのワンスライド提案:**
+
+| 従来（MS Office） | Doc Factory |
+|-------------------|-------------|
+| Word + Excel + PDF の3アプリ切替 | 1アプリで完結 |
+| テンプレート設定は手作業 | AI が自動検出 |
+| Excel入力フォームを手作業で作成 | テンプレートから自動生成 |
+| 差し込み印刷の設定が複雑 | ワンクリック量産 |
+| MS 365 ライセンス ¥899/月/人 | MS Office 不要 |
+| 品質チェックは目視 | AI が自動チェック |
+
+### 4.3 InsightCast vs 競合
 
 | 機能 | InsightCast | Synthesia | HeyGen | Lumen5 | Canva Video |
 |------|:-----------:|:---------:|:------:|:------:|:-----------:|
@@ -435,31 +543,41 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 |------|------|
 | InsightSheet FREE登録 | 100社 |
 | InsightCast FREE登録 | 50社 |
-| 有料転換 | 0社（FREE期間中） |
-| 売上 | ¥0 |
+| Doc Factory BPO直販 | 3社（初期パイロット） |
+| 有料転換 | 0社（Sheet/Cast はFREE期間中） |
+| Doc Factory 売上 | 個別見積もり × 3社（パイロット価格） |
 | 投資（開発・マーケ） | ▲¥500,000（LinkedIn広告・セミナー費） |
+
+> **Doc Factory は Phase 1 から有料**。BPO会社には FREE 版を配る必要がない。
+> 「MS Office ライセンス費の削減額 > Doc Factory のライセンス費」で ROI を即座に証明できるため、
+> 無料体験ではなく、パイロット導入（有料）→ 全社展開のアプローチが適切。
 
 ### 6.2 Phase 2 終了時点（2026末）
 
 | 項目 | 数値 |
 |------|------|
-| InsightSheet BIZ | 30社 × ¥29,800/年 = ¥894,000 |
-| InsightSheet ENT | 5社 × 10PC × ¥49,800/年 = ¥2,490,000 |
-| InsightCast BIZ | 15社 × ¥80,000/月 × 6ヶ月 = ¥7,200,000 |
-| InsightCast ENT | 3社 × ¥250,000/月 × 6ヶ月 = ¥4,500,000 |
-| Suite PROFESSIONAL | 10社 × ¥59,800/年 = ¥598,000 |
-| **合計** | **¥15,682,000** |
-| FPT経由コンサル案件 | ¥5,000,000（別途） |
+| InsightSheet BIZ/ENT | 有料転換 35社（個別見積もり） |
+| Doc Factory BPO | 10社（パイロット3社 → 全社展開 + 新規7社） |
+| InsightCast BIZ/ENT | 18社（個別見積もり） |
+| Suite PROFESSIONAL | 10社（個別見積もり） |
+| **合計** | 個別見積もりのため非公開（パートナーとの協議による） |
+| FPT経由コンサル案件 | 別途 |
+
+> **価格は全製品個別見積もり。** 上記の社数は保守的シナリオ。
+> Doc Factory の BPO 案件は「PC台数 × 単価」で大型化しやすい（50-100台規模）。
 
 ### 6.3 Phase 3 終了時点（2027 H1末）
 
 | 項目 | 数値 |
 |------|------|
 | InsightSheet 累計有料 | 80社（新規50社 + 継続30社） |
+| Doc Factory 累計BPO | 25社（日本15社 + ベトナムBPO 10社） |
 | InsightCast 累計有料 | 40社（新規22社 + 継続18社） |
 | Suite | 30社 |
 | パートナー経由 | 20社 |
-| **年間ARR** | **¥35,000,000〜¥45,000,000** |
+
+> **ベトナムBPO市場**: FPTベトナム経由で、日本企業のBPO拠点（ベトナム）への Doc Factory 導入。
+> 日本語テンプレート → ベトナムBPOセンターで量産という業務フローに直撃。
 
 ---
 
@@ -471,14 +589,16 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 |:--:|-----------|---------|
 | 1-2 | InsightSheet FREE版のビルド・インストーラー作成 | setup.exeが動作 |
 | 3-4 | InsightCast FREE版のビルド・インストーラー更新 | 月3本制限のロジック実装 |
-| 5 | insight-office.com のランディングページ作成 | 2製品のLP + ダウンロードリンク |
+| 4-5 | Doc Factory のデモ環境構築 + BPO向けデモシナリオ作成 | テンプレート→Excel入力→量産のデモが一通り動作 |
+| 5 | h-insight.jp のランディングページ更新（3製品） | 3製品のLP + ダウンロードリンク（Sheet/Cast）+ お問い合わせ（Doc Factory） |
 
 ### Week 2: 発信を始める
 
 | 日 | アクション | 完了条件 |
 |:--:|-----------|---------|
 | 6-7 | LinkedIn初投稿:「28年のDX推進で見てきたExcel業務の限界」 | 投稿公開・反応確認 |
-| 8-9 | erikhiroyuki.com に「HARMONIC insight」セクション追加 | パーソナルブランドとの統合 |
+| 8-9 | BPO会社リスト作成（従業員50-500人・文書作成が主要業務） | ターゲットBPO会社10社のリスト |
+| 9-10 | erikhiroyuki.com に「HARMONIC insight」セクション追加 | パーソナルブランドとの統合 |
 | 10 | FPT社内でInsightSheet評価版の共有（非公式） | 3-5人のコンサルタントが使い始める |
 
 ### Week 3: 最初のユーザーを獲得する
@@ -486,6 +606,7 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 | 日 | アクション | 完了条件 |
 |:--:|-----------|---------|
 | 11-12 | h-insight.jp経由の既存クライアント3社にFREE版案内 | 3社がダウンロード |
+| 12-13 | BPO会社3社にDoc Factoryのデモ打診（メール/電話） | 2社以上がデモに応諾 |
 | 13-14 | LinkedIn DM:ターゲット企業のIT部門長10人にコンタクト | 3人以上が反応 |
 | 15 | 週次フィードバック収集開始（ユーザーヒアリング） | フィードバックフォーム稼働 |
 
@@ -493,9 +614,10 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 
 | 日 | アクション | 完了条件 |
 |:--:|-----------|---------|
-| 16-18 | ユーザーフィードバックに基づく改善（最優先バグ修正） | 1回のアップデートリリース |
+| 16-17 | BPO会社へのDoc Factoryデモ実施（対面 or オンライン） | 2社にデモ完了 |
+| 17-18 | ユーザーフィードバックに基づく改善（最優先バグ修正） | 1回のアップデートリリース |
 | 19-20 | 2本目のLinkedIn投稿 + InsightCastのデモ動画公開 | 動画再生100回 |
-| 21 | 月次レビュー: KPI確認（DL数・アクティブ率・フィードバック） | ダッシュボード稼働 |
+| 21 | 月次レビュー: KPI確認（DL数・アクティブ率・BPOデモ結果） | ダッシュボード稼働 |
 
 ---
 
@@ -531,6 +653,8 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 | **一人開発のスケーラビリティ** | 高 | ①Claude CodeによるAI駆動開発で生産性維持 ②Phase 2後半で初の外部開発者（パートタイム）を採用 ③insight-commonの共通基盤を最大活用 |
 | **日本市場の縮小** | 低 | Phase 3で東南アジア展開。FPTネットワークがセーフティネット |
 | **Syncfusion Community License上限** | 中 | 売上$1M以下・開発者5名以下の条件。Phase 2内は十分。超過時はIndividual License（$995/年）に移行 |
+| **BPO会社のIT投資決裁の遅さ** | 中 | ROI試算シート（MS Office削減額 vs Doc Factory費用）を事前に用意。POC（概念実証）を2週間無料で提供し、数字で意思決定を加速 |
+| **WPS Office の低価格攻勢** | 低 | Doc Factory の差別化軸は「Office互換」ではなく「テンプレート→量産の自動化パイプライン」。WPS にはない AI フィールド検出・Excel入力フォーム自動生成が核心 |
 
 ---
 
@@ -544,19 +668,34 @@ FPT Consulting Japan → FPT Corporation（ベトナム本社）
 2. **FPTネットワーク**
    → 東南アジア最大のIT企業の日本法人MDとして、大企業IT部門への直接アクセスを持つ。これは広告費では買えない
 
-3. **4製品 × 共通基盤（insight-common）の技術的堀**
+3. **Word+Excel+PDF を1アプリに統合した唯一のデスクトップツール**
+   → Doc Factory は Syncfusion の SfRichTextBoxAdv + SfSpreadsheet + PdfViewer を1アプリに統合。これは MS Office でもできない（Word と Excel は別アプリ）。BPOオペレーターのアプリ切替をゼロにする
+
+4. **4製品 × 共通基盤（insight-common）の技術的堀**
    → 75,000行以上のC#コード、Syncfusion統合、Claude AI Tool Use、多言語対応、ライセンスシステム。これを一から構築するには2-3年かかる。つまり、**今が競合に対する最大のアドバンテージ期間**
 
 ### 最後のメッセージ
 
 > 製品は「かなり上がってきている」のではなく、**すでに市場投入可能なレベルに達している**。
-> 特にInsightSheet（22,000行、4層アーキテクチャ、データ収集15モデル、AI Tool Use）は、
-> 日本市場のExcel業務改善カテゴリで最も完成度の高いデスクトップAIツールの一つ。
 >
-> 今必要なのは「もう少し機能を追加する」ではなく、**「最初の100人に使ってもらう」こと**。
-> FREE版をリリースし、フィードバックループを回し始めること。
+> **InsightSheet**（22,000行、4層アーキテクチャ、データ収集15モデル、AI Tool Use）は、
+> 日本市場のExcel業務改善カテゴリで最も完成度の高いデスクトップAIツール。
+>
+> **Doc Factory**（18,300行、Word+Excel+PDF 3エンジン統合、テンプレート工場パイプライン）は、
+> BPO会社の「テンプレート→書類量産」業務を根本から変えるツール。
+> 1つのアプリでWordとExcelが操作できるのは、この製品だけ。
+>
+> **InsightCast**（22,500行、VOICEVOX+FFmpeg+Claude、バッチ100本生成）は、
+> 現場教育動画の限界費用ゼロ化を実現する唯一のデスクトップツール。
+>
+> 今必要なのは「もう少し機能を追加する」ではなく：
+> - InsightSheet / InsightCast → **FREE版をリリースし、最初の100社に使ってもらう**
+> - Doc Factory → **BPO会社3社にデモし、最初のパイロット導入を獲得する**
+>
 > それが、全ての戦略の起点になる。
 
 ---
 
 *本文書は4リポジトリのソースコード精査（C# 75,000行、XAML 107ファイル）に基づく事実ベースの戦略です。*
+*IOSD は 2026年3月に「Insight AI Briefcase」から「Insight AI Doc Factory」にリブランド。*
+*コード精査により、Word+Excel+PDF 3エンジン統合 × テンプレート工場パイプラインが BPO 市場に直撃することを確認。*
