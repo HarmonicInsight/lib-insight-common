@@ -17,7 +17,7 @@
  *
  * ## 対象製品
  * - IOSH（Insight Performance Management）— 初期対応
- * - IOSD（Insight AI Briefcase）— 将来対応予定
+ * - IOSD（Insight AI Doc Factory）— 将来対応予定
  */
 
 // =============================================================================

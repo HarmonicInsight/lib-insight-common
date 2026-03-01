@@ -13,7 +13,7 @@
 |---|-----------|--------|---------|-----------|
 | 1 | INSS | Insight Deck Quality Gate | PowerPointツール | 資料整理・コンテンツ管理者、営業・企画 |
 | 2 | IOSH | Insight Performance Management | Excel管理 | 経理・事務・チーム管理者 |
-| 3 | IOSD | Insight AI Briefcase | Word自動化 | 総務・法務・ドキュメント作成者 |
+| 3 | IOSD | Insight AI Doc Factory | Word自動化 | 総務・法務・ドキュメント作成者 |
 | 4 | INPY | InsightPy | Python実行環境 | 業務自動化担当・データ分析者 |
 | 5 | INMV | Insight Training Studio | 動画作成 | マーケター・教育者・SNS運用 |
 | 6 | INIG | InsightImageGen | AI画像・音声生成 | クリエイター・マーケター |
@@ -31,7 +31,7 @@
 | 製品コード | 製品名 | 状態 |
 |-----------|--------|------|
 | ~~HMSH~~ | ~~HarmonicSheet~~ | IOSH（Insight Performance Management）にリブランド |
-| ~~HMDC~~ | ~~HarmonicDoc~~ | IOSD（Insight AI Briefcase）にリブランド |
+| ~~HMDC~~ | ~~HarmonicDoc~~ | IOSD（Insight AI Doc Factory）にリブランド |
 | ~~HMSL~~ | ~~HarmonicSlide~~ | INSS（Insight Deck Quality Gate）に統合 |
 | ~~FGIN~~ | ~~ForguncyInsight~~ | 廃止（代替なし） |
 | ~~INSP~~ | ~~InsightSlide Pro~~ | 廃止（代替なし） |
@@ -82,7 +82,7 @@
 
 ---
 
-### 3. Insight AI Briefcase（IOSD） Word自動化
+### 3. Insight AI Doc Factory（IOSD） Word自動化
 
 **ターゲット**: 総務、法務、レポート作成が多い人
 
@@ -202,7 +202,7 @@
 | ☆☆☆ | InsightImageGen (INIG) | AI画像生成の話題性が高くSNSでバズりやすい |
 | ☆☆☆ | Insight Deck Quality Gate (INSS) | PowerPoint利用者は多く、営業職に訴求しやすい |
 | ☆☆☆ | InterviewInsight (IVIN) | 採用市場は常に需要あり。人事向けの訴求が刺さる |
-| ☆☆☆ | Insight AI Briefcase (IOSD) | Word自動化のニッチな需要あり |
+| ☆☆☆ | Insight AI Doc Factory (IOSD) | Word自動化のニッチな需要あり |
 | ☆☆☆ | INCA | BtoB向け。ターゲットは狭いが単価が高い |
 
 ---
@@ -215,7 +215,7 @@
 ### 現行製品スクリプト
 - `INSS_scripts.md` — Insight Deck Quality Gate 5本
 - `IOSH_scripts.md` — Insight Performance Management 5本（旧 HMSH_scripts.md）
-- `IOSD_scripts.md` — Insight AI Briefcase 5本（旧 HMDC_scripts.md）
+- `IOSD_scripts.md` — Insight AI Doc Factory 5本（旧 HMDC_scripts.md）
 - `INPY_scripts.md` — InsightPy 5本
 - `INMV_scripts.md` — Insight Training Studio 5本
 - `INIG_scripts.md` — InsightImageGen 5本

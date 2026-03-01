@@ -79,7 +79,7 @@
 | **O** | **業務ヒアリング自動化は Blue Ocean**。コンサル業界で最もペインが大きい「ヒアリング→要件整理」を自動化できる。FPTの業務と直結 |
 | **T** | Typeform + AI、UserTesting、Dovetail 等の海外ツール |
 
-#### IOSD — Insight AI Briefcase（急成長中）
+#### IOSD — Insight AI Doc Factory（急成長中）
 
 | | 内容 |
 |---|---|

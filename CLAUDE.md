@@ -548,11 +548,11 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 | 音声入力 | ○ | ○ | ○ | 音声認識によるハンズフリー入力 |
 | VRMアバター | — | — | ○ | 3Dアバターによる音声会話 |
 
-#### IOSD — Insight AI Briefcase
+#### IOSD — Insight AI Doc Factory
 
 | 項目 | 内容 |
 |------|------|
-| **説明** | AIアシスタント搭載 — 業務文書一括管理ブリーフケース（MS Office 不要） |
+| **説明** | AIアシスタント搭載 — 自社テンプレートから書類を量産するドキュメント工場（MS Office 不要） |
 | **技術** | C# WPF (.NET 8.0) + Syncfusion |
 | **バージョン** | 1.1.0 (build 5) — 開発中 |
 | **リポジトリ** | `win-app-insight-doc` |

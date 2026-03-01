@@ -7,7 +7,7 @@
 
 ---
 
-## IOSD（Insight AI Briefcase）— 契約書レビュースキル統合
+## IOSD（Insight AI Doc Factory）— 契約書レビュースキル統合
 
 ```
 insight-common サブモジュールを最新に更新してください。

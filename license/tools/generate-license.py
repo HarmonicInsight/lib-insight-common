@@ -56,7 +56,7 @@ def parse_args():
 製品コード:
   INSS  - Insight Deck Quality Gate
   IOSH  - Insight Performance Management
-  IOSD  - Insight AI Briefcase
+  IOSD  - Insight AI Doc Factory
   INPY  - InsightPy
   INMV  - Insight Training Studio
   INIG  - InsightImageGen

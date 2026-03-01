@@ -123,7 +123,7 @@ namespace InsightCommon.Addon;
 /// | 項目 | IOSH | IOSD | INSS |
 /// |------|------|------|------|
 /// | ProductCode | "IOSH" | "IOSD" | "INSS" |
-/// | ProductName | "Insight Performance Management" | "Insight AI Briefcase" | "Insight Deck Quality Gate" |
+/// | ProductName | "Insight Performance Management" | "Insight AI Doc Factory" | "Insight Deck Quality Gate" |
 /// | board/messaging | ✅ サポート | ❌ なし | ❌ なし |
 /// | ドキュメント形式 | .xlsx | .docx | .pptx |
 /// | Python ライブラリ | openpyxl | python-docx | python-pptx |

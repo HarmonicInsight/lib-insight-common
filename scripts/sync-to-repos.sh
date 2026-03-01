@@ -36,7 +36,7 @@ REPOS=(
   "win-app-insight-image-gen|INIG|InsightImageGen|InsightImageGen|resources|ico_png"
   "win-app-insight-slide|INSS|Insight Deck Quality Gate|InsightOfficeSlide|Resources|ico_png"
   "win-app-insight-sheet|IOSH|InsightPerformanceManagement|InsightPerformanceManagement|Resources|ico_png"
-  "win-app-insight-doc|IOSD|InsightAIBriefcase|InsightAIBriefcase|Resources|ico_png"
+  "win-app-insight-doc|IOSD|InsightAIDocFactory|InsightAIDocFactory|Resources|ico_png"
   "win-app-insight-py|INPY|InsightPy|InsightPy|resources|ico_png"
   "win-app-insight-py-pro|INPY|InsightPy|InsightPy|resources|ico_png"
   "win-app-insight-sheet-senior|ISOF|InsightSeniorOffice|InsightSeniorOffice|Resources|ico_png"

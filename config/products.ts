@@ -304,22 +304,22 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
   },
   IOSD: {
     code: 'IOSD',
-    name: 'Insight AI Briefcase',
-    nameJa: 'Insight AI Briefcase',
-    description: 'AI-powered document creation and management briefcase — MS Office not required',
-    descriptionJa: 'AIアシスタント搭載 — AI文書作成・管理ブリーフケース（MS Office 不要）',
+    name: 'Insight AI Doc Factory',
+    nameJa: 'Insight AI Doc Factory',
+    description: 'AI-powered document factory — generate documents from your templates at scale, MS Office not required',
+    descriptionJa: 'AIアシスタント搭載 — 自社テンプレートから書類を量産するドキュメント工場（MS Office 不要）',
     masterIcon: 'brand/icons/png/icon-insight-doc.png',
     targetPlatform: 'wpf',
     iconBuildPath: 'Resources/',
     projectFile: {
       extension: 'iosd',
       mimeType: 'application/x-insightoffice-doc',
-      description: 'Insight AI Briefcase Project',
-      descriptionJa: 'Insight AI Briefcase プロジェクト',
+      description: 'Insight AI Doc Factory Project',
+      descriptionJa: 'Insight AI Doc Factory プロジェクト',
       iconFileName: 'iosd-file.ico',
       innerDocumentFormat: '.docx',
-      contextMenuLabel: 'Open with Insight AI Briefcase',
-      contextMenuLabelJa: 'Insight AI Briefcase で開く',
+      contextMenuLabel: 'Open with Insight AI Doc Factory',
+      contextMenuLabelJa: 'Insight AI Doc Factory で開く',
       contextMenuTargetExtensions: ['docx', 'doc'],
       supportsAiMemory: true,
     },
@@ -1378,8 +1378,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // Insight AI Briefcase (IOSD) — Tier 3
-  // AIアシスタント搭載 業務文書管理ブリーフケース
+  // Insight AI Doc Factory (IOSD) — Tier 3
+  // AIアシスタント搭載 自社テンプレートから書類を量産するドキュメント工場
   // ========================================
   IOSD: [
     // ------------------------------------------------------------------

@@ -10,7 +10,7 @@ Insight Series の各リポジトリに insight-common を組み込む手順で�
 |-----------|-------------|-----------|
 | Insight Deck Quality Gate | Python + Tkinter | `INSS` |
 | Insight Performance Management | C# + WPF | `IOSH` |
-| Insight AI Briefcase | C# + WPF | `IOSD` |
+| Insight AI Doc Factory | C# + WPF | `IOSD` |
 | InsightPy | Python | `INPY` |
 | Insight Training Studio | C# + WPF | `INMV` |
 | InsightImageGen | Python | `INIG` |

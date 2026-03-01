@@ -1823,7 +1823,7 @@ Syncfusion 等のサードパーティライセンスキーは `insight-common/c
 | IOSD | Word 操作 | SfRichTextBoxAdv (DocIO) | `Syncfusion.SfRichTextBoxAdv.WPF`, `Syncfusion.DocIO.WPF` |
 | INSS | PowerPoint 操作 | SfPresentation | `Syncfusion.Presentation.WPF` |
 
-### IOSD (Insight AI Briefcase) における DocIO 使用パターン
+### IOSD (Insight AI Doc Factory) における DocIO 使用パターン
 
 DocIO は Word 文書 (.docx/.doc) の読み書き・操作を行うライブラリです。IOSD では以下のパターンで使用します。
 

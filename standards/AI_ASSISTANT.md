@@ -15,7 +15,7 @@ Insight Business Suite 系アプリには、Claude API を利用した AI アシ
 |--------|--------|-----------|
 | INSS | Insight Deck Quality Gate | スライドテキストの校正・改善提案 |
 | IOSH | Insight Performance Management | Excel データの操作・分析・書式設定（Tool Use） |
-| IOSD | Insight AI Briefcase | Word ドキュメントの校正・要約・構成提案 |
+| IOSD | Insight AI Doc Factory | Word ドキュメントの校正・要約・構成提案 |
 | INMV | Insight Training Studio | 動画構成提案・ナレーション作成・字幕最適化（Tool Use） |
 
 ### 設計原則
@@ -509,10 +509,10 @@ Always explain what you are doing before and after using tools.
 Respond in the same language as the user's message.
 ```
 
-#### Insight AI Briefcase (IOSD)
+#### Insight AI Doc Factory (IOSD)
 
 ```
-あなたはInsight AI BriefcaseのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
+あなたはInsight AI Doc FactoryのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
 ユーザーのメッセージと同じ言語で回答してください。
 
 主な機能：

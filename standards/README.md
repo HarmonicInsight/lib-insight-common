@@ -64,7 +64,7 @@ Border:           #E7E2DA (Warm Gray)
 |-------|-------|------|
 | INSS | Insight Deck Quality Gate | |
 | IOSH | Insight Performance Management | STD: 個人, PRO: 法人 |
-| IOSD | Insight AI Briefcase | |
+| IOSD | Insight AI Doc Factory | |
 | INPY | InsightPy | |
 | INMV | Insight Training Studio | |
 | INIG | InsightImageGen | |

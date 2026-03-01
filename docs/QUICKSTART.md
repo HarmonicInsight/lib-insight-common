@@ -16,7 +16,7 @@ git submodule add https://github.com/HarmonicInsight/cross-lib-insight-common.gi
 |--------|--------|
 | Insight Deck Quality Gate | `INSS` |
 | Insight Performance Management | `IOSH` |
-| Insight AI Briefcase | `IOSD` |
+| Insight AI Doc Factory | `IOSD` |
 | InsightPy | `INPY` |
 | Insight Training Studio | `INMV` |
 | InsightImageGen | `INIG` |

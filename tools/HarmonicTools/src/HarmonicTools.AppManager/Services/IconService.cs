@@ -345,7 +345,7 @@ public class IconService
             },
             new()
             {
-                ProductCode = "IOSD", ProductName = "Insight AI Briefcase",
+                ProductCode = "IOSD", ProductName = "Insight AI Doc Factory",
                 MasterSvg = @"brand\icons\svg\icon-insight-doc.svg",
                 MasterPng = @"brand\icons\png\icon-insight-doc.png",
                 Motif = "ドキュメント + ギア + DB",

@@ -17,7 +17,7 @@ brand/icons/
 ├── png/                              # マスター PNG アイコン（1024x1024、正式版）
 │   ├── icon-insight-slide.png        # INSS - Insight Deck Quality Gate
 │   ├── icon-insight-sheet.png        # IOSH - Insight Performance Management
-│   ├── icon-insight-doc.png          # IOSD - Insight AI Briefcase
+│   ├── icon-insight-doc.png          # IOSD - Insight AI Doc Factory
 │   ├── icon-insight-py.png           # INPY - InsightPy
 │   ├── icon-insight-cast.png        # INMV - Insight Training Studio
 │   ├── icon-insight-imagegen.png     # INIG - InsightImageGen
@@ -65,7 +65,7 @@ brand/icons/
 |---------|:------:|--------|:---------------:|---------|
 | `icon-insight-slide.png` | INSS | Insight Deck Quality Gate | C# WPF | プレゼンボード + ギア + 矢印 |
 | `icon-insight-sheet.png` | IOSH | Insight Performance Management | C# WPF | スプレッドシートグリッド + ギア |
-| `icon-insight-doc.png` | IOSD | Insight AI Briefcase | C# WPF | ドキュメント + ギア + DB |
+| `icon-insight-doc.png` | IOSD | Insight AI Doc Factory | C# WPF | ドキュメント + ギア + DB |
 | `icon-insight-py.png` | INPY | InsightPy | Python/PyInstaller | Python ヘビ + 回路基板 |
 
 ### Tier 4: Accessibility

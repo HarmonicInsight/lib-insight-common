@@ -77,7 +77,7 @@ function withTax(priceExTax: number): number {
  * ├──────┼──────────────────────────────────┼────────────┼────────────┤
  * │  3   │ Insight Performance Management   │  ¥98,000   │ ¥107,800   │
  * │  3   │ Insight Deck Quality Gate        │ ¥148,000   │ ¥162,800   │
- * │  3   │ Insight AI Briefcase             │ ¥198,000   │ ¥217,800   │
+ * │  3   │ Insight AI Doc Factory             │ ¥198,000   │ ¥217,800   │
  * │  3   │ InsightPy                        │  ¥78,000   │  ¥85,800   │
  * │  4   │ InsightSeniorOffice              │  ¥48,000   │  ¥52,800   │
  * │  2   │ Insight Training Studio           │ ¥128,000   │ ¥140,800   │
@@ -141,7 +141,7 @@ export const PRODUCT_LICENSES: ProductLicense[] = [
   },
   {
     productCode: 'IOSD',
-    productName: 'Insight AI Briefcase',
+    productName: 'Insight AI Doc Factory',
     tier: 3,
     group: 'group_a',
     availablePlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
@@ -149,7 +149,7 @@ export const PRODUCT_LICENSES: ProductLicense[] = [
     bizPriceYearlyInTax: withTax(198_000),
     entPricing: '個別見積もり',
     licenseModel: 'per_device',
-    note: '旧 InsightOfficeDoc。AI搭載ドキュメント管理ブリーフケース。',
+    note: '旧 InsightOfficeDoc。AI搭載ドキュメント工場。',
   },
   {
     productCode: 'INPY',

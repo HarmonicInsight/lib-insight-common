@@ -5,7 +5,7 @@
 // 【対象製品】
 // - INSS (Insight Deck Quality Gate)       — プレゼンテーション
 // - IOSH (Insight Performance Management)  — スプレッドシート
-// - IOSD (Insight AI Briefcase)            — ドキュメント
+// - IOSD (Insight AI Doc Factory)            — ドキュメント
 // - ISOF (InsightSeniorOffice) — シニア向け統合ツール
 //
 // 【概要】

@@ -335,7 +335,7 @@ const SKILL_QUERY_WRITING: SkillDefinition = {
 };
 
 // =============================================================================
-// IOSD（Insight AI Briefcase）向けスキル
+// IOSD（Insight AI Doc Factory）向けスキル
 // =============================================================================
 
 /** 契約書レビュースキル（Legal: contract-review 参考） */

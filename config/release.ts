@@ -360,8 +360,8 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
 
   IOSD: {
     code: 'IOSD',
-    name: 'Insight AI Briefcase',
-    nameJa: 'Insight AI Briefcase',
+    name: 'Insight AI Doc Factory',
+    nameJa: 'Insight AI Doc Factory',
     platform: 'wpf',
     storeDistribution: 'direct',
     versioningScheme: 'semver',

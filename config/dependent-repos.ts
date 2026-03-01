@@ -126,7 +126,7 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   {
     repo: 'win-app-insight-doc',
     productCode: 'IOSD',
-    productName: 'Insight AI Briefcase',
+    productName: 'Insight AI Doc Factory',
     iconCopy: [
       { src: 'InsightOfficeDoc/InsightOfficeDoc.ico', dest: 'Resources/InsightOfficeDoc.ico' },
       { src: 'InsightOfficeDoc/InsightOfficeDoc_256.png', dest: 'Resources/InsightOfficeDoc_256.png' },

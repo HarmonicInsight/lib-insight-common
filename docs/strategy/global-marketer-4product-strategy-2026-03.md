@@ -76,7 +76,7 @@
 
 ---
 
-### 1.3 IOSD — Insight AI Briefcase（Word業務改善）
+### 1.3 IOSD — Insight AI Doc Factory（Word業務改善）
 
 **コード精査で判明した強み:**
 - **4層アーキテクチャ**: App / Core / Data / Common。IOSHと同じエンタープライズ構造

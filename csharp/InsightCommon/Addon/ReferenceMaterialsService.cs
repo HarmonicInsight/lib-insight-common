@@ -10,7 +10,7 @@ namespace InsightCommon.Addon;
 /// PDF・テキスト・画像等の参考資料を管理し、
 /// AI アシスタントのコンテキストとして活用するためのサービス。
 ///
-/// Insight AI Briefcase (IOSD) で先行実装された参考資料機能を、
+/// Insight AI Doc Factory (IOSD) で先行実装された参考資料機能を、
 /// 全 Insight Business Suite アプリで共用できるよう共通化したもの。
 ///
 /// I/O コントラクト:
