@@ -12,7 +12,7 @@ export default function TenantCreatePage() {
     code: '',
     companyName: '',
     companyNameJa: '',
-    plan: 'PRO' as const,
+    plan: 'BIZ' as const,
     region: 'ap-northeast-1',
     contactEmail: '',
     contactName: '',
@@ -97,7 +97,7 @@ export default function TenantCreatePage() {
                   className="w-full px-3 py-2 border border-[#E2E8F0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 >
                   <option value="TRIAL">TRIAL (30日間)</option>
-                  <option value="PRO">PRO</option>
+                  <option value="BIZ">BIZ</option>
                   <option value="ENT">ENT</option>
                 </select>
               </div>

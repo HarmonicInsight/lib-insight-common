@@ -205,9 +205,9 @@ public static class AiMemoryLimitsRegistry
 {
     private static readonly Dictionary<string, AiMemoryLimits> Limits = new()
     {
+        ["FREE"] = new AiMemoryLimits { HotCacheMaxEntries = 10, DeepStorageMaxEntries = -1, Enabled = true },
         ["TRIAL"] = new AiMemoryLimits { HotCacheMaxEntries = 50, DeepStorageMaxEntries = 200, Enabled = true },
-        ["STD"] = new AiMemoryLimits { HotCacheMaxEntries = 20, DeepStorageMaxEntries = -1, Enabled = true },
-        ["PRO"] = new AiMemoryLimits { HotCacheMaxEntries = 100, DeepStorageMaxEntries = 500, Enabled = true },
+        ["BIZ"] = new AiMemoryLimits { HotCacheMaxEntries = 100, DeepStorageMaxEntries = 500, Enabled = true },
         ["ENT"] = new AiMemoryLimits { HotCacheMaxEntries = -1, DeepStorageMaxEntries = -1, Enabled = true },
     };
 
@@ -234,6 +234,6 @@ public static class AiMemoryLimitsRegistry
         var plan = planCode.ToUpperInvariant();
         var limits = GetLimits(plan);
         if (!limits.Enabled) return false;
-        return plan is "TRIAL" or "PRO" or "ENT";
+        return plan is "TRIAL" or "BIZ" or "ENT";
     }
 }

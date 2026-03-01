@@ -154,16 +154,16 @@ export const LICENSE_KEY_CONFIGS: Record<LicenseKeyType, LicenseKeyConfig> = {
   production: {
     type: 'production',
     validityDays: 365,
-    effectivePlan: 'STD', // 決済時のプランで上書き
-    keyPlanCode: 'STD',   // 決済時のプランで上書き
+    effectivePlan: 'BIZ', // 決済時のプランで上書き
+    keyPlanCode: 'BIZ',   // 決済時のプランで上書き
     description: '決済完了後に発行。12ヶ月間有効。',
   },
   nfr: {
     type: 'nfr',
     validityDays: 365,
-    effectivePlan: 'PRO',
+    effectivePlan: 'BIZ',
     keyPlanCode: 'NFR',
-    description: 'リセラーパートナー社内評価用。PRO相当の全機能。',
+    description: 'リセラーパートナー社内評価用。BIZ相当の全機能。',
   },
   demo: {
     type: 'demo',

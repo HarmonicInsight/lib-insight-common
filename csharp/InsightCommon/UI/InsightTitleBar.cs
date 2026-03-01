@@ -553,8 +553,7 @@ public static class InsightTitleBar
         return plan switch
         {
             PlanCode.Ent => InsightIcons.Emoji.Crown,
-            PlanCode.Pro => InsightIcons.Emoji.Star,
-            PlanCode.Std => InsightIcons.Emoji.CheckMark,
+            PlanCode.Biz => InsightIcons.Emoji.Star,
             PlanCode.Trial => "⏱",
             _ => InsightIcons.Emoji.Lock,
         };

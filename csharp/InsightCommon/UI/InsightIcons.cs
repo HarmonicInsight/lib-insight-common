@@ -244,7 +244,7 @@ public static class InsightIcons
             IconEmoji: Emoji.Board,
             DefaultWidth: 280,
             MinWidth: 180,
-            LicenseGate: PanelLicenseGate.Pro
+            LicenseGate: PanelLicenseGate.Biz
         );
 
         public static readonly PanelDefinition AI = new(
@@ -266,7 +266,7 @@ public static class InsightIcons
             IconEmoji: Emoji.Python,
             DefaultWidth: 350,
             MinWidth: 200,
-            LicenseGate: PanelLicenseGate.Pro
+            LicenseGate: PanelLicenseGate.Biz
         );
 
         public static readonly PanelDefinition Reference = new(

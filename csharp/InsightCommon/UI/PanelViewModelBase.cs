@@ -144,8 +144,8 @@ public abstract class PanelViewModelBase : INotifyPropertyChanged
             var plan = _licenseManager.CurrentLicense?.Plan ?? PlanCode.Trial;
             return _definition.LicenseGate switch
             {
-                PanelLicenseGate.Pro => plan >= PlanCode.Pro,
-                PanelLicenseGate.Enterprise => plan >= PlanCode.Ent,
+                PanelLicenseGate.Biz => plan >= PlanCode.Biz,
+                PanelLicenseGate.Ent => plan >= PlanCode.Ent,
                 _ => true
             };
         }
@@ -156,8 +156,8 @@ public abstract class PanelViewModelBase : INotifyPropertyChanged
     /// </summary>
     public string? RequiredPlanName => _definition.LicenseGate switch
     {
-        PanelLicenseGate.Pro => "PRO",
-        PanelLicenseGate.Enterprise => "ENTERPRISE",
+        PanelLicenseGate.Biz => "BIZ",
+        PanelLicenseGate.Ent => "ENT",
         _ => null
     };
 
@@ -430,6 +430,6 @@ public record PanelDefinition(
 public enum PanelLicenseGate
 {
     None,
-    Pro,
-    Enterprise
+    Biz,
+    Ent
 }

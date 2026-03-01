@@ -657,7 +657,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   direct_stripe: {
     channel: 'direct_stripe',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO', 'ENT'],
+    allowedPlans: ['BIZ', 'ENT'],
     requiresPayment: true,
     requiresPartner: false,
     autoApprove: true,
@@ -667,7 +667,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   direct_invoice: {
     channel: 'direct_invoice',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO', 'ENT'],
+    allowedPlans: ['BIZ', 'ENT'],
     requiresPayment: false, // 後払い
     requiresPartner: false,
     autoApprove: false, // 管理者承認
@@ -677,7 +677,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   partner_reseller: {
     channel: 'partner_reseller',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO'],
+    allowedPlans: ['BIZ', 'ENT'],
     requiresPayment: false, // パートナーとの精算は別
     requiresPartner: true,
     autoApprove: true,
@@ -707,7 +707,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   system_renewal: {
     channel: 'system_renewal',
     allowedKeyTypes: ['production'],
-    allowedPlans: ['STD', 'PRO', 'ENT'],
+    allowedPlans: ['BIZ', 'ENT'],
     requiresPayment: true,
     requiresPartner: false,
     autoApprove: true,
@@ -717,7 +717,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   system_nfr: {
     channel: 'system_nfr',
     allowedKeyTypes: ['nfr'],
-    allowedPlans: ['PRO'], // NFRはPRO相当
+    allowedPlans: ['BIZ'], // NFRはBIZ相当（全機能利用可能）
     requiresPayment: false,
     requiresPartner: true,
     autoApprove: true,
@@ -737,7 +737,7 @@ export const CHANNEL_ISSUANCE_RULES: Record<IssuanceChannel, ChannelIssuanceRule
   admin_manual: {
     channel: 'admin_manual',
     allowedKeyTypes: ['production', 'provisional', 'nfr', 'demo'],
-    allowedPlans: ['TRIAL', 'STD', 'PRO', 'ENT'],
+    allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
     requiresPayment: false,
     requiresPartner: false,
     autoApprove: true,

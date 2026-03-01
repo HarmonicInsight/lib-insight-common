@@ -18,8 +18,7 @@ public static class InsightColors
     // ── プラン別カラー ──
     public static readonly Color PlanFree  = FromHex("#A8A29E");  // Stone 400
     public static readonly Color PlanTrial = FromHex("#2563EB");  // Blue
-    public static readonly Color PlanStd   = FromHex("#16A34A");  // Green
-    public static readonly Color PlanPro   = FromHex("#B8942F");  // Gold
+    public static readonly Color PlanBiz   = FromHex("#B8942F");  // Gold
     public static readonly Color PlanEnt   = FromHex("#7C3AED");  // Purple
 
     // ── Ivory & Gold テーマ（標準） ──

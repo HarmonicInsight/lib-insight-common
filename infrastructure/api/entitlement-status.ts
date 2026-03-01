@@ -8,7 +8,7 @@
  *
  * レスポンス:
  *   {
- *     plan: "STD",
+ *     plan: "BIZ",
  *     limits: { ... },
  *     expires_at: "2025-12-31",
  *     usage: { current: 5, limit: 30, remaining: 25, resetAt: "2025-02-01" }

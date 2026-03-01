@@ -1361,9 +1361,7 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 
 ## 14. リリースチェック
 
-> **リリース前に必ず実行。** 詳細は `standards/RELEASE_CHECKLIST.md` を参照。
-
-### リリースチェックの実行
+> **リリース前に必ず実行。** プラットフォーム別の詳細チェックリストは `standards/RELEASE_CHECKLIST.md` を参照。
 
 ```bash
 # 自動スクリプト（標準検証 + リリース固有チェック）
@@ -1372,69 +1370,6 @@ ORCHESTRATOR_API.endpoints.workflows.executions; // GET  /api/workflows/:workflo
 # Claude Code スキル（対話的にチェック + 修正案提示）
 /release-check <project-directory>
 ```
-
-### リリース前チェックリスト
-
-#### 全プラットフォーム共通
-- [ ] **バージョン**: バージョン番号が更新されている
-- [ ] **コード品質**: TODO/FIXME/HACK が残っていない
-- [ ] **コード品質**: デバッグ出力（console.log / print / Log.d）が残っていない
-- [ ] **コード品質**: 空の catch ブロックがない（例外の握りつぶし禁止）
-- [ ] **コード品質**: バージョン番号が全箇所で一致している
-- [ ] **セキュリティ**: ハードコードされた API キー・シークレットがない
-- [ ] **セキュリティ**: ライセンス秘密鍵がソースにハードコードされていない
-- [ ] **セキュリティ**: .env / credentials / secrets が .gitignore に含まれている
-- [ ] **ローカライゼーション**: 日本語 + 英語リソースのキーが完全一致
-- [ ] **Git**: 未コミットの変更がない
-- [ ] **検証**: `release-check.sh` が成功する
-
-#### Android 固有（Native Kotlin）
-- [ ] **バージョン**: `versionCode` がインクリメントされている
-- [ ] **バージョン**: `versionName` が更新されている
-- [ ] **署名**: `signingConfigs` が設定されている
-- [ ] **署名**: keystore がリポジトリに含まれて**いない**
-- [ ] **ストア**: Play Store メタデータ（タイトル・説明・リリースノート）が日英で作成済み
-- [ ] **ストア**: 文字数制限を超えていない（title:30, short:80, full:4000, changelog:500）
-- [ ] **ストア**: スクリーンショットが日英で用意されている
-- [ ] **ビルド**: Release AAB/APK がビルドできる
-
-#### Android 固有（Expo / React Native）
-- [ ] **バージョン**: `app.json` の `version` + `android.versionCode` が更新されている
-- [ ] **EAS**: `eas.json` の `production` プロファイルが `app-bundle` ビルド
-- [ ] **ビルド**: `eas build --platform android --profile production` が成功する
-
-#### iOS 固有
-- [ ] **バージョン**: Bundle Version がインクリメントされている
-- [ ] **ストア**: App Store メタデータが日英で作成済み
-- [ ] **ビルド**: Archive ビルドが成功する
-
-#### C# (WPF) 固有
-- [ ] **バージョン**: AssemblyVersion / FileVersion が更新されている
-- [ ] **バージョン**: バージョン番号が .csproj / XAML / C# コードで一致
-- [ ] **バージョン**: Copyright 年が最新
-- [ ] **サードパーティ**: Syncfusion キーがハードコードされて**いない**
-- [ ] **セキュリティ**: ライセンス秘密鍵がハードコードされていない（`standards/CSHARP_WPF.md` 参照）
-- [ ] **セキュリティ**: API キーが DPAPI / Credential Manager で暗号化保存
-- [ ] **セキュリティ**: license.json が暗号化保存（DPAPI 推奨）
-- [ ] **アクセシビリティ**: 主要 UI コントロールに `AutomationProperties.Name` 設定
-- [ ] **コード品質**: 空の catch ブロックがない
-- [ ] **コード品質**: Dispose でイベント購読が解除されている
-- [ ] **ローカライゼーション**: XAML 内に日本語ハードコードテキストがない
-- [ ] **ローカライゼーション**: C# コード内のメッセージがローカライズ済み
-- [ ] **セキュリティ**: ハイパーリンク URL スキーム検証済み（javascript: XSS 防止）
-- [ ] **セキュリティ**: `UnobservedTaskException` ハンドラが登録済み（ログ出力付き）
-- [ ] **配布**: インストーラーの動作確認（クリーン環境）
-- [ ] **ファイル関連付け**: 独自拡張子の登録・動作確認
-
-#### React / Next.js 固有
-- [ ] **ビルド**: `next build` が成功する
-- [ ] **品質**: TypeScript strict mode が有効
-- [ ] **品質**: console.log が残っていない
-- [ ] **環境**: 本番環境変数が設定されている
-
-#### Python 固有
-- [ ] **バージョン**: pyproject.toml のバージョンが更新されている
-- [ ] **依存**: 全パッケージがピン留め（`==`）されている
 
 ## 15. アプリバージョン管理
 

@@ -127,7 +127,7 @@ public sealed class InsightOfficeRemoteConfig : IDisposable
     /// <param name="appVersion">現在のバージョン</param>
     /// <param name="buildNumber">ビルド番号</param>
     /// <param name="licenseKey">ライセンスキー</param>
-    /// <param name="plan">プラン（STD / PRO / ENT）</param>
+    /// <param name="plan">プラン（FREE / TRIAL / BIZ / ENT）</param>
     /// <param name="userId">ユーザーID（フィーチャーフラグ用、省略可）</param>
     /// <param name="locale">ロケール（ja / en）</param>
     public InsightOfficeRemoteConfig(

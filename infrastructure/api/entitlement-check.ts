@@ -12,7 +12,7 @@
  *   POST { product_code: "INSS", feature: "inmv_subtitle" }
  *
  * レスポンス:
- *   { allowed: true, plan: "PRO", expires_at: "2025-12-31" }
+ *   { allowed: true, plan: "BIZ", expires_at: "2025-12-31" }
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';

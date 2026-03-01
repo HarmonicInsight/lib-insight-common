@@ -141,116 +141,56 @@ export interface StripeCustomerInfo {
  *
  * 命名規則:
  * - 環境変数: STRIPE_{PRODUCT_CODE}_{PLAN}_PRODUCT_ID / STRIPE_{PRODUCT_CODE}_{PLAN}_PRICE_ID
- * - 例: STRIPE_INSS_STD_PRODUCT_ID, STRIPE_INSS_STD_PRICE_ID
+ * - 例: STRIPE_INSS_BIZ_PRODUCT_ID, STRIPE_INSS_BIZ_PRICE_ID
  */
 export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
   // --- Insight Business Suite（Tier 3） ---
   // INSS (Insight Deck Quality Gate)
   {
     productCode: 'INSS',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_INSS_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INSS_STD_PRICE_ID',
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_INSS_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_INSS_BIZ_PRICE_ID',
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight Deck Quality Gate Standard (Annual)',
-  },
-  {
-    productCode: 'INSS',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_INSS_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INSS_PRO_PRICE_ID',
-
-    billingType: 'recurring',
-    billingInterval: 'year',
-    description: 'Insight Deck Quality Gate Professional (Annual)',
+    description: 'Insight Deck Quality Gate Business (Annual)',
   },
 
   // IOSH (Insight Performance Management)
   {
     productCode: 'IOSH',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_IOSH_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSH_STD_PRICE_ID',
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_IOSH_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_IOSH_BIZ_PRICE_ID',
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight Performance Management Standard (Annual)',
-  },
-  {
-    productCode: 'IOSH',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_IOSH_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSH_PRO_PRICE_ID',
-
-    billingType: 'recurring',
-    billingInterval: 'year',
-    description: 'Insight Performance Management Professional (Annual)',
+    description: 'Insight Performance Management Business (Annual)',
   },
 
   // IOSD (Insight AI Briefcase)
   {
     productCode: 'IOSD',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_IOSD_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSD_STD_PRICE_ID',
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_IOSD_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_IOSD_BIZ_PRICE_ID',
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight AI Briefcase Standard (Annual)',
-  },
-  {
-    productCode: 'IOSD',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_IOSD_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_IOSD_PRO_PRICE_ID',
-
-    billingType: 'recurring',
-    billingInterval: 'year',
-    description: 'Insight AI Briefcase Professional (Annual)',
+    description: 'Insight AI Briefcase Business (Annual)',
   },
 
   // INPY (InsightPy)
   {
     productCode: 'INPY',
-    plan: 'STD',
-    stripeProductIdEnvKey: 'STRIPE_INPY_STD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INPY_STD_PRICE_ID',
+    plan: 'BIZ',
+    stripeProductIdEnvKey: 'STRIPE_INPY_BIZ_PRODUCT_ID',
+    stripePriceIdEnvKey: 'STRIPE_INPY_BIZ_PRICE_ID',
 
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'InsightPy Standard (Annual)',
-  },
-  {
-    productCode: 'INPY',
-    plan: 'PRO',
-    stripeProductIdEnvKey: 'STRIPE_INPY_PRO_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_INPY_PRO_PRICE_ID',
-
-    billingType: 'recurring',
-    billingInterval: 'year',
-    description: 'InsightPy Professional (Annual)',
-  },
-
-  // --- AI アドオンパック（全製品共通、one-time、ティア別） ---
-  {
-    productCode: 'INSS',
-    plan: 'STD', // プランに関係なく購入可能（metadata で制御）
-    stripeProductIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_AI_ADDON_STANDARD_PRICE_ID',
-
-    billingType: 'one_time',
-    description: 'AI Credits - Standard 200 (up to Sonnet class)',
-  },
-  {
-    productCode: 'INSS',
-    plan: 'STD', // プランに関係なく購入可能（metadata で制御）
-    stripeProductIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRODUCT_ID',
-    stripePriceIdEnvKey: 'STRIPE_AI_ADDON_PREMIUM_PRICE_ID',
-
-    billingType: 'one_time',
-    description: 'AI Credits - Premium 200 (all models)',
+    description: 'InsightPy Business (Annual)',
   },
 ];
 

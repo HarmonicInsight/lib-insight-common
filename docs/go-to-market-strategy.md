@@ -93,7 +93,7 @@
 | | 内容 |
 |---|---|
 | **S** | FFmpegベースの動画パイプライン、VOICEVOX 30+話者、9グリッドテキストオーバーレイ |
-| **W** | **OpenAI API使用（CLAUDE.md標準違反）**、InsightMovie→InsightCastリネーム中、インストーラバイナリがgitに混入、LP記載機能と実装のギャップ |
+| **W** | **OpenAI API使用（CLAUDE.md標準違反）**、インストーラバイナリがgitに混入、LP記載機能と実装のギャップ |
 | **O** | 社内教育動画の自動生成需要 |
 | **T** | Synthesia、HeyGen、Canva Video |
 
@@ -406,7 +406,7 @@ Phase 1 ピン        Phase 2 ピン          Phase 3 ピン
 | **IOSD** | テストカバレッジの拡充 | 高 |
 | **IOSD** | バージョン番号の整合 | 中 |
 | **INMV** | **OpenAI → Claude API への移行（標準違反）** | **最高** |
-| **INMV** | InsightMovie → InsightCast リネーム完了 | 最高 |
+| **INMV** | ~~InsightMovie → InsightCast リネーム完了~~ (完了済み) | — |
 | **INMV** | インストーラバイナリの git 除去 | 高 |
 | **IVIN** | OpenAI フォールバックの除去 | 高 |
 | **IVIN** | Tauri デスクトップの実装 or 方針決定 | 中 |

@@ -268,7 +268,7 @@ public sealed class RemoteConfigService : IDisposable
     /// <param name="buildNumber">ビルド番号（例: 50）</param>
     /// <param name="licenseKey">ライセンスキー</param>
     /// <param name="deviceId">デバイスID（マシン固有）</param>
-    /// <param name="plan">現在のプラン（STD, PRO, ENT）</param>
+    /// <param name="plan">現在のプラン（FREE, TRIAL, BIZ, ENT）</param>
     /// <param name="userId">ユーザーID（フィーチャーフラグ判定用）</param>
     /// <param name="locale">ロケール（ja / en）</param>
     public RemoteConfigService(
@@ -277,7 +277,7 @@ public sealed class RemoteConfigService : IDisposable
         int buildNumber,
         string licenseKey,
         string deviceId,
-        string plan = "STD",
+        string plan = "BIZ",
         string? userId = null,
         string locale = "ja")
     {

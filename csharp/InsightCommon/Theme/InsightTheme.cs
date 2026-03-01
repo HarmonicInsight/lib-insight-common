@@ -116,8 +116,7 @@ public class InsightTheme
     public static Color GetPlanColor(PlanCode plan) => plan switch
     {
         PlanCode.Ent   => InsightColors.PlanEnt,
-        PlanCode.Pro   => InsightColors.PlanPro,
-        PlanCode.Std   => InsightColors.PlanStd,
+        PlanCode.Biz   => InsightColors.PlanBiz,
         PlanCode.Trial => InsightColors.PlanTrial,
         _              => InsightColors.PlanFree,
     };
