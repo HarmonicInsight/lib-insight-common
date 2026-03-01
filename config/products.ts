@@ -36,17 +36,18 @@ export type ProductCode = 'INSS' | 'IOSH' | 'IOSD' | 'ISOF' | 'INPY' | 'INMV' | 
 /**
  * プランコード（全製品 — 4ティア制）
  *
- * - FREE:  無料（無期限・Group A: 保存/エクスポート不可・Group B: 閲覧モードのみ・BYOK 全モデル利用可能）
+ * - FREE:  無料（無期限・Group A: 保存/エクスポート不可 + AI 機能不可・Group B: 閲覧モードのみ）
  * - TRIAL: 評価用（30日間・全機能）
  * - BIZ:   ビジネス（365日・全機能）
  * - ENT:   エンタープライズ（カスタマイズ都度見積もり・API/SSO/監査ログ）
  *
  * AI API キーはクライアント企業が自社で Anthropic から購入（BYOK 方式）。
- * 月間使用回数制限なし。モデルティア制限なし（クライアントが自由に選択）。
+ * TRIAL/BIZ/ENT: 月間使用回数制限なし。モデルティア制限なし（クライアントが自由に選択）。
+ * FREE: AI 機能利用不可（AI アシスタント・AI エディター・ドキュメント評価・VRM アバター）。
  *
  * ## 製品グループ別プラン適用
  * - Group A（エンドユーザー向け）: FREE / TRIAL / BIZ / ENT
- *   FREE は全機能使えるが保存・エクスポート不可
+ *   FREE は保存・エクスポート不可 + AI 機能不可
  * - Group B（コンサルツール）: FREE / ENT のみ
  *   FREE は閲覧モードのみ（起動可・操作不可）
  */
@@ -810,8 +811,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるスライドテキストの校正・改善提案（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -819,8 +820,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるPythonコードの生成・編集でPowerPointを自動処理（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -836,8 +837,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Document Evaluation',
       nameJa: 'ドキュメント評価',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるプレゼンテーションの多角的評価・スコアリング・改善提案（Opus推奨・BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -853,7 +854,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'VRM Avatar',
       nameJa: 'VRMアバター',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
     {
@@ -1261,8 +1262,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIチャットによるExcel操作支援（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -1270,8 +1271,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるPythonコードの生成・編集でExcelを自動処理（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -1287,8 +1288,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Document Evaluation',
       nameJa: 'ドキュメント評価',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるスプレッドシートの多角的評価・スコアリング・改善提案（Opus推奨・BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -1304,7 +1305,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'VRM Avatar',
       nameJa: 'VRMアバター',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
     // ------------------------------------------------------------------
@@ -1715,8 +1716,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Assistant',
       nameJa: 'AIアシスタント',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるドキュメントの校正・要約・構成提案（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -1724,8 +1725,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるPythonコードの生成・編集でWordを自動処理（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -1741,8 +1742,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'Document Evaluation',
       nameJa: 'ドキュメント評価',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるWord文書の多角的評価・スコアリング・改善提案（Opus推奨・BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -1758,7 +1759,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'VRM Avatar',
       nameJa: 'VRMアバター',
       type: 'boolean',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'VRM 3Dアバターによる音声会話（TTS + STT + リップシンク）',
     },
     {
@@ -1813,8 +1814,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       name: 'AI Code Editor',
       nameJa: 'AIコードエディター',
       type: 'limit',
-      allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      limitValues: { TRIAL: -1, BIZ: -1, ENT: -1},
       descriptionJa: 'AIによるPythonコードの生成・編集・構文検証・デバッグ支援（BYOK — 回数制限なし・クライアント自社APIキー使用）',
     },
     {
@@ -1942,12 +1943,12 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
     { key: 'transition', name: 'Transition', nameJa: 'トランジション', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'シーン間のトランジション効果' },
     { key: 'pptx_import', name: 'PPTX Import', nameJa: 'PPTX取込', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'PowerPointファイルからの素材取込' },
     // AI 機能（Insight Business Suite 共通仕様に準拠）
-    { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによる動画構成提案・ナレーション作成・字幕最適化（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
-    { key: 'ai_editor', name: 'AI Code Editor', nameJa: 'AIコードエディター', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによるPython自動処理（BYOK — 回数制限なし）' },
+    { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['TRIAL', 'BIZ', 'ENT'], limitValues: { TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによる動画構成提案・ナレーション作成・字幕最適化（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
+    { key: 'ai_editor', name: 'AI Code Editor', nameJa: 'AIコードエディター', type: 'limit', allowedPlans: ['TRIAL', 'BIZ', 'ENT'], limitValues: { TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによるPython自動処理（BYOK — 回数制限なし）' },
     { key: 'reference_materials', name: 'Reference Materials', nameJa: '参考資料', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '参考資料の添付・AIコンテキスト活用' },
-    { key: 'document_evaluation', name: 'Document Evaluation', nameJa: 'ドキュメント評価', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによる動画の多角的評価・スコアリング（BYOK — 回数制限なし）' },
+    { key: 'document_evaluation', name: 'Document Evaluation', nameJa: 'ドキュメント評価', type: 'limit', allowedPlans: ['TRIAL', 'BIZ', 'ENT'], limitValues: { TRIAL: -1, BIZ: -1, ENT: -1 }, descriptionJa: 'AIによる動画の多角的評価・スコアリング（BYOK — 回数制限なし）' },
     { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '音声認識によるハンズフリー入力' },
-    { key: 'vrm_avatar', name: 'VRM Avatar', nameJa: 'VRMアバター', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '3Dアバターによる音声会話' },
+    { key: 'vrm_avatar', name: 'VRM Avatar', nameJa: 'VRMアバター', type: 'boolean', allowedPlans: ['TRIAL', 'BIZ', 'ENT'], descriptionJa: '3Dアバターによる音声会話' },
     { key: 'font_scaling', name: 'UI Scaling', nameJa: 'UIスケーリング', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）' },
   ],
 
@@ -1960,7 +1961,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
     { key: 'spreadsheet', name: 'Spreadsheet', nameJa: '表計算', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'Excelファイルの読み込み・編集・保存' },
     { key: 'document', name: 'Document', nameJa: '文書作成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'Wordドキュメントの読み込み・編集・保存' },
     { key: 'icloud_mail', name: 'iCloud Mail', nameJa: 'iCloudメール', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'iCloudメールの送受信（iPhoneと同じメールをPCで閲覧）' },
-    { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1}, descriptionJa: 'AIによる自然言語操作支援（「A2に1万円入れて」等）（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
+    { key: 'ai_assistant', name: 'AI Assistant', nameJa: 'AIアシスタント', type: 'limit', allowedPlans: ['TRIAL', 'BIZ', 'ENT'], limitValues: { TRIAL: -1, BIZ: -1, ENT: -1}, descriptionJa: 'AIによる自然言語操作支援（「A2に1万円入れて」等）（BYOK — 回数制限なし・クライアント自社APIキー使用）' },
     { key: 'voice_input', name: 'Voice Input', nameJa: '音声入力', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '音声認識によるハンズフリー入力' },
     { key: 'text_to_speech', name: 'Text to Speech', nameJa: '読み上げ', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'メール・文書の音声読み上げ' },
     { key: 'font_scaling', name: 'UI Scaling', nameJa: 'UIスケーリング', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: 'UI全体50%〜200%の拡大縮小（Ctrl+Plus/Minus）' },

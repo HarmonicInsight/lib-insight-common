@@ -230,23 +230,23 @@ export interface PurchasedAddonPack {
  * プラン別 AI クレジット定義（BYOK モード — 4ティア制）
  *
  * 【重要】
- * - FREE:  無制限（BYOK — クライアント選択、全モデル利用可能）
+ * - FREE:  AI 機能利用不可（baseCredits = 0, aiEnabled = false）
  * - TRIAL: 無制限（30日間・BYOK — クライアント選択、全モデル利用可能）
  * - BIZ:   無制限（BYOK — クライアント選択、全モデル利用可能）
  * - ENT:   無制限（BYOK — クライアント選択、全モデル利用可能）
  *
- * BYOK のため全プラン baseCredits = -1（無制限）。
- * クレジット管理は不要。モデルティア制限もなし（クライアントが自由に選択）。
+ * FREE プランでは AI 機能（AIアシスタント・AIエディター・ドキュメント評価・VRMアバター）は利用不可。
+ * TRIAL/BIZ/ENT は BYOK のため baseCredits = -1（無制限）。モデルティア制限なし。
  */
 export const AI_QUOTA_BY_PLAN: Record<PlanCode, AiQuotaDefinition> = {
   FREE: {
     plan: 'FREE',
-    baseCredits: -1,
+    baseCredits: 0,
     period: 'unlimited',
-    aiEnabled: true,
+    aiEnabled: false,
     modelTier: 'standard',
-    descriptionJa: 'AI無制限（BYOK・モデル制限なし）',
-    descriptionEn: 'Unlimited AI (BYOK, no model restrictions)',
+    descriptionJa: 'AI機能なし（TRIAL/BIZ/ENT で利用可能）',
+    descriptionEn: 'No AI features (available in TRIAL/BIZ/ENT)',
   },
   TRIAL: {
     plan: 'TRIAL',
