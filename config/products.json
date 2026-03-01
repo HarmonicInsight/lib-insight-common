@@ -59,11 +59,11 @@
         ]
       },
       {
-        "id": "insight-ai-briefcase",
+        "id": "insight-ai-doc-factory",
         "code": "IOSD",
-        "name": "Insight AI Briefcase",
-        "displayName": "Insight AI Briefcase",
-        "description": "AIアシスタント搭載 — AI文書作成・管理ブリーフケース（MS Office 不要）",
+        "name": "Insight AI Doc Factory",
+        "displayName": "Insight AI Doc Factory",
+        "description": "AIアシスタント搭載 — AI文書作成・管理ツール（MS Office 不要）",
         "category": "office",
         "platform": ["windows"],
         "framework": "wpf",

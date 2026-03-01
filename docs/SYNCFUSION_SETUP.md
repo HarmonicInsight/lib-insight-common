@@ -136,7 +136,7 @@ Syncfusion Community License は以下の条件を満たす個人・企業が無
 </ItemGroup>
 ```
 
-#### IOSD（Insight AI Briefcase — Word）
+#### IOSD（Insight AI Doc Factory — Word）
 
 ```xml
 <ItemGroup>

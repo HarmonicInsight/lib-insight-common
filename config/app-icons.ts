@@ -463,7 +463,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   },
   {
     productCode: 'IOSD',
-    productName: 'Insight AI Briefcase',
+    productName: 'Insight AI Doc Factory',
     masterPng: 'brand/icons/png/icon-insight-doc.png',
     motif: 'Document + gear + DB',
     motifJa: 'ドキュメント + ギア + DB',

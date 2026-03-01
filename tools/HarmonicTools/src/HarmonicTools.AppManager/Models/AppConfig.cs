@@ -425,7 +425,7 @@ public class AppConfig
                 },
                 new()
                 {
-                    Name = "Insight AI Briefcase",
+                    Name = "Insight AI Doc Factory",
                     ProductCode = "IOSD",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-doc"),
                     SolutionPath = "HarmonicDoc.sln",

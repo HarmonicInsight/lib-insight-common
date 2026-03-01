@@ -26,7 +26,7 @@ class ProductCode(Enum):
     """製品コード（文書用）"""
     INSS = "INSS"  # Insight Deck Quality Gate
     IOSH = "IOSH"  # Insight Performance Management
-    IOSD = "IOSD"  # Insight AI Briefcase
+    IOSD = "IOSD"  # Insight AI Doc Factory
     INPY = "INPY"  # InsightPy
     INMV = "INMV"  # Insight Training Studio
     INBT = "INBT"  # InsightBot (RPA)
@@ -47,7 +47,7 @@ class Plan(Enum):
 PRODUCT_NAMES: Dict[ProductCode, str] = {
     ProductCode.INSS: "Insight Deck Quality Gate",
     ProductCode.IOSH: "Insight Performance Management",
-    ProductCode.IOSD: "Insight AI Briefcase",
+    ProductCode.IOSD: "Insight AI Doc Factory",
     ProductCode.INPY: "InsightPy",
     ProductCode.INMV: "Insight Training Studio",
     ProductCode.INBT: "InsightBot",
@@ -68,7 +68,7 @@ PLAN_NAMES: Dict[Plan, str] = {
 PRODUCT_PLANS: Dict[str, list] = {
     "Insight Deck Quality Gate": [ProductCode.INSS],
     "Insight Performance Management": [ProductCode.IOSH],
-    "Insight AI Briefcase": [ProductCode.IOSD],
+    "Insight AI Doc Factory": [ProductCode.IOSD],
     "InsightPy": [ProductCode.INPY],
     "Insight Training Studio": [ProductCode.INMV],
     "InsightBot": [ProductCode.INBT],

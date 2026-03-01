@@ -34,7 +34,7 @@
 
 6. **Insight Deck Quality Gate (INSS)** - AIアシスタント搭載 プレゼンテーション作成・編集（MS Office 不要）
 7. **Insight Performance Management (IOSH)** - AIアシスタント搭載 スプレッドシート作成・編集（MS Office 不要）
-8. **Insight AI Briefcase (IOSD)** - AIアシスタント搭載 ドキュメント作成・編集（MS Office 不要）
+8. **Insight AI Doc Factory (IOSD)** - AIアシスタント搭載 ドキュメント作成・編集（MS Office 不要）
 9. **InsightPy (INPY)** - AIエディタ搭載 業務調査・データ収集Python実行基盤
 
 ## 価値観

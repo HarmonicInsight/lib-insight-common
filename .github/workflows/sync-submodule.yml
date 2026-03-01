@@ -91,8 +91,8 @@ jobs:
 
           - repo: win-app-insight-doc
             product: IOSD
-            name: Insight AI Briefcase
-            icon_src: InsightAIBriefcase
+            name: Insight AI Doc Factory
+            icon_src: InsightAIDocFactory
             icon_dest: Resources
             copy_mode: ico_png
 

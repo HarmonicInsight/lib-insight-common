@@ -526,27 +526,27 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
   },
   {
     code: 'IOSD',
-    slug: 'insight-ai-briefcase',
+    slug: 'insight-ai-doc-factory',
     status: 'development',
     displayOrder: 30,
     category: 'consulting',
     svgIcon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
     colorGradient: 'from-amber-500 to-yellow-700',
     platforms: ['windows'],
-    name: { en: 'Insight AI Briefcase', ja: 'Insight AI Briefcase', zh: 'Insight AI Briefcase' },
+    name: { en: 'Insight AI Doc Factory', ja: 'Insight AI Doc Factory', zh: 'Insight AI Doc Factory' },
     tagline: {
-      en: 'AI-Powered Business Document Briefcase — Organize, Manage & Create with Intelligence',
-      ja: 'AI搭載 ビジネス文書ブリーフケース — インテリジェントな整理・管理・作成',
+      en: 'AI-Powered Business Doc Factory — Organize, Manage & Create with Intelligence',
+      ja: 'AI搭載 ビジネス文書ファクトリー — インテリジェントな整理・管理・作成',
       zh: 'AI驱动的商务文档公文包 — 智能整理、管理与创建',
     },
     description: {
-      en: 'Your AI-powered briefcase for business documents. Insight AI Briefcase consolidates contracts, proposals, reports, and reference materials into a single managed workspace. Register source documents and the AI assistant cross-references them to draft new content, summarize existing files, and answer questions about your document portfolio. Full version history keeps every revision safe, while AI-driven insights help you create polished deliverables faster.',
-      ja: 'ビジネス文書のためのAI搭載ブリーフケース。契約書、提案書、報告書、参考資料を1つの管理されたワークスペースに集約します。ソース文書を登録すると、AIアシスタントがそれらを相互参照して新しいコンテンツの起草、既存ファイルの要約、ドキュメントポートフォリオに関する質問への回答を行います。完全なバージョン履歴ですべての改訂を安全に保持し、AIドリブンのインサイトで洗練された成果物をより速く作成できます。',
-      zh: '您的AI商务文档公文包。Insight AI Briefcase将合同、提案、报告和参考资料整合到一个统一管理的工作空间中。注册源文档后，AI助手会交叉引用它们来起草新内容、摘要现有文件并回答关于您文档组合的问题。完整的版本历史确保每次修订安全保存，AI驱动的洞察帮助您更快地创建精美的交付物。',
+      en: 'Your AI-powered factory for business documents. Insight AI Doc Factory consolidates contracts, proposals, reports, and reference materials into a single managed workspace. Register source documents and the AI assistant cross-references them to draft new content, summarize existing files, and answer questions about your document portfolio. Full version history keeps every revision safe, while AI-driven insights help you create polished deliverables faster.',
+      ja: 'ビジネス文書のためのAI搭載ドキュメントファクトリー。契約書、提案書、報告書、参考資料を1つの管理されたワークスペースに集約します。ソース文書を登録すると、AIアシスタントがそれらを相互参照して新しいコンテンツの起草、既存ファイルの要約、ドキュメントポートフォリオに関する質問への回答を行います。完全なバージョン履歴ですべての改訂を安全に保持し、AIドリブンのインサイトで洗練された成果物をより速く作成できます。',
+      zh: '您的AI商务文档工厂。Insight AI Doc Factory将合同、提案、报告和参考资料整合到一个统一管理的工作空间中。注册源文档后，AI助手会交叉引用它们来起草新内容、摘要现有文件并回答关于您文档组合的问题。完整的版本历史确保每次修订安全保存，AI驱动的洞察帮助您更快地创建精美的交付物。',
     },
     features: {
       en: [
-        'AI-powered document briefcase — organize contracts, proposals & reports in one workspace',
+        'AI-powered document factory — organize contracts, proposals & reports in one workspace',
         'Cross-reference registered materials for AI-assisted drafting',
         'Full version history — every revision safely preserved',
         'Document Q&A — ask questions about your entire document portfolio',
@@ -554,7 +554,7 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
         'Export to PDF, Word, and other formats',
       ],
       ja: [
-        'AI搭載の文書ブリーフケース — 契約書・提案書・報告書を1つのワークスペースで管理',
+        'AI搭載の文書ファクトリー — 契約書・提案書・報告書を1つのワークスペースで管理',
         '登録資料の相互参照によるAIアシスト起草',
         '完全なバージョン履歴 — すべての改訂を安全に保持',
         'ドキュメントQ&A — ドキュメントポートフォリオ全体への質問',
@@ -572,13 +572,13 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
     },
     useCases: {
       en: [
-        'Consolidating project documents into a single managed briefcase',
+        'Consolidating project documents into a single managed workspace',
         'AI-assisted contract and proposal drafting from reference materials',
         'Executive briefing preparation with cross-referenced source documents',
         'Consulting deliverable management with full version tracking',
       ],
       ja: [
-        'プロジェクト文書を1つの管理されたブリーフケースに集約',
+        'プロジェクト文書を1つの管理されたワークスペースに集約',
         '参考資料からのAIアシスト契約書・提案書起草',
         '相互参照されたソース文書によるエグゼクティブブリーフィング準備',
         '完全なバージョン追跡付きコンサルティング成果物管理',

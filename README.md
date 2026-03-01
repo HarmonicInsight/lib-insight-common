@@ -61,7 +61,7 @@ insight-common/
 |:------:|-------|---------|------|:----:|
 | INSS | **Insight Deck Quality Gate** | AI駆動プレゼン品質管理 | C# WPF | 安定版 |
 | IOSH | **Insight Performance Management** | AI搭載 経営数値管理・財務分析 | C# WPF | 安定版 |
-| IOSD | **Insight AI Briefcase** | AI搭載 業務文書一括管理ブリーフケース | C# WPF | 開発中 |
+| IOSD | **Insight AI Doc Factory** | AI搭載 業務文書一括管理ツール | C# WPF | 開発中 |
 | INPY | **InsightPy** | AIエディタ搭載 Python実行基盤 | C# WPF | 開発中 |
 | ISOF | **Insight Senior Office** | シニア向け統合オフィス | C# WPF | 安定版 |
 | INBT | **InsightBot** | AIエディタ搭載 業務最適化RPA | C# WPF | 開発中 |
@@ -214,15 +214,15 @@ Excelベースの財務ワークフローを強力なパフォーマンス管理
 
 ---
 
-#### IOSD — Insight AI Briefcase
+#### IOSD — Insight AI Doc Factory
 
-> AI搭載 ビジネス文書ブリーフケース — インテリジェントな整理・管理・作成
+> AI搭載 ビジネス文書ファクトリー — インテリジェントな整理・管理・作成
 
-ビジネス文書のためのAI搭載ブリーフケース。契約書、提案書、報告書、参考資料を1つの管理されたワークスペースに集約します。ソース文書を登録すると、AIアシスタントがそれらを相互参照して新しいコンテンツの起草、既存ファイルの要約、ドキュメントポートフォリオに関する質問への回答を行います。
+ビジネス文書のためのAI搭載ドキュメントファクトリー。契約書、提案書、報告書、参考資料を1つの管理されたワークスペースに集約します。ソース文書を登録すると、AIアシスタントがそれらを相互参照して新しいコンテンツの起草、既存ファイルの要約、ドキュメントポートフォリオに関する質問への回答を行います。
 
 | 特徴 | 説明 |
 |------|------|
-| AI文書ブリーフケース | 契約書・提案書・報告書を1ワークスペースで管理 |
+| AI文書ファクトリー | 契約書・提案書・報告書を1ワークスペースで管理 |
 | 相互参照AIアシスト起草 | 登録資料を参照してAIが新規コンテンツを起草 |
 | バージョン履歴 | すべての改訂を安全に保持 |
 | ドキュメントQ&A | ポートフォリオ全体に対する質問回答 |
@@ -282,7 +282,7 @@ Excelベースの財務ワークフローを強力なパフォーマンス管理
 |:------:|-----------------|--------------|-----------|-----|:------:|
 | INSS | **Insight Deck Quality Gate** | InsightOfficeSlide | `win-app-insight-slide` | `InsightOfficeSlide.exe` | `.inss` |
 | IOSH | **Insight Performance Management** | InsightOfficeSheet | `win-app-insight-sheet` | `InsightOfficeSheet.exe` | `.iosh` |
-| IOSD | **Insight AI Briefcase** | InsightOfficeDoc | `win-app-insight-doc` | `InsightOfficeDoc.exe` | `.iosd` |
+| IOSD | **Insight AI Doc Factory** | InsightOfficeDoc | `win-app-insight-doc` | `InsightOfficeDoc.exe` | `.iosd` |
 
 **据え置きの内部識別子**: exe名、ico/pngファイル名、レジストリ progId（`HarmonicInsight.InsightOffice*`）、MIME type（`application/x-insightoffice-*`）、sln/csproj パス、リポジトリ名、製品コード（INSS/IOSH/IOSD）、ファイル拡張子（.inss/.iosh/.iosd）はすべて互換性維持のため据え置きです。
 

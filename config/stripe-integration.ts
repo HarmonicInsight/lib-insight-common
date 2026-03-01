@@ -173,7 +173,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     description: 'Insight Performance Management ENT (Annual)',
   },
 
-  // IOSD (Insight AI Briefcase)
+  // IOSD (Insight AI Doc Factory)
   {
     productCode: 'IOSD',
     plan: 'BIZ',
@@ -181,7 +181,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     stripePriceIdEnvKey: 'STRIPE_IOSD_BIZ_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight AI Briefcase BIZ (Annual)',
+    description: 'Insight AI Doc Factory BIZ (Annual)',
   },
   {
     productCode: 'IOSD',
@@ -190,7 +190,7 @@ export const STRIPE_PRODUCT_MAPPINGS: StripeProductMapping[] = [
     stripePriceIdEnvKey: 'STRIPE_IOSD_ENT_PRICE_ID',
     billingType: 'recurring',
     billingInterval: 'year',
-    description: 'Insight AI Briefcase ENT (Annual)',
+    description: 'Insight AI Doc Factory ENT (Annual)',
   },
 
   // INPY (InsightPy)

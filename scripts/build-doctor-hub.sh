@@ -88,7 +88,7 @@ PRODUCT_REGISTRY = {
     'win-app-insight-image-gen':    {'code': 'INIG',  'name': 'InsightImageGen',        'tier': 2, 'tech': 'Python',  'platform': 'python'},
     'win-app-insight-slide':        {'code': 'INSS',  'name': 'Insight Deck Quality Gate', 'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},
     'win-app-insight-sheet':        {'code': 'IOSH',  'name': 'Insight Performance Management', 'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},
-    'win-app-insight-doc':          {'code': 'IOSD',  'name': 'Insight AI Briefcase',   'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},
+    'win-app-insight-doc':          {'code': 'IOSD',  'name': 'Insight AI Doc Factory',   'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},
     'win-app-insight-py':           {'code': 'INPY',  'name': 'InsightPy',              'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},
     'win-app-insight-py-pro':       {'code': 'INPY',  'name': 'InsightPy PRO',          'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},
     'win-app-insight-sheet-senior': {'code': 'ISOF',  'name': 'InsightSeniorOffice',    'tier': 4, 'tech': 'C# WPF',  'platform': 'wpf'},

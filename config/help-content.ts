@@ -602,13 +602,13 @@ const IOSH_HELP: ProductHelpConfig = {
 };
 
 /**
- * IOSD — Insight AI Briefcase（16セクション）
+ * IOSD — Insight AI Doc Factory（16セクション）
  *
  * 注意: 既存実装で XAML ハードコード色がある場合は DynamicResource に修正すること。
  */
 const IOSD_HELP: ProductHelpConfig = {
   productCode: 'IOSD',
-  productName: { ja: 'Insight AI Briefcase', en: 'Insight AI Briefcase' },
+  productName: { ja: 'Insight AI Doc Factory', en: 'Insight AI Doc Factory' },
   colorTheme: 'ivory_gold',
   supportedLanguages: ['ja', 'en', 'zh'],
   marketing: {

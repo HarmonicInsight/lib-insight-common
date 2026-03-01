@@ -61,7 +61,7 @@
 |-------|--------|----------------|-------------|-----------|
 | **INSS** | Insight Deck Quality Gate | C# WPF | `Resources/InsightOfficeSlide.ico` | `.csproj` の `<ApplicationIcon>` |
 | **IOSH** | Insight Performance Management | C# WPF | `Resources/InsightOfficeSheet.ico` | `.csproj` の `<ApplicationIcon>` |
-| **IOSD** | Insight AI Briefcase | C# WPF | `Resources/InsightOfficeDoc.ico` | `.csproj` の `<ApplicationIcon>` |
+| **IOSD** | Insight AI Doc Factory | C# WPF | `Resources/InsightOfficeDoc.ico` | `.csproj` の `<ApplicationIcon>` |
 | **INPY** | InsightPy | Python/PyInstaller | `resources/InsightPy.ico` | PyInstaller `--icon` |
 | **INMV** | Insight Training Studio | C# WPF | `Resources/InsightCast.ico` | `.csproj` の `<ApplicationIcon>` |
 | **INIG** | InsightImageGen | Python/PyInstaller | `resources/InsightImageGen.ico` | PyInstaller `--icon` |
@@ -259,7 +259,7 @@ export const metadata = {
 |-----------|--------|---------|------|
 | INSS | Insight Deck Quality Gate | スライド + 矢印 | プレゼン + 抽出を示す矢印 |
 | IOSH | Insight Performance Management | スプレッドシートグリッド | ヘッダー行 + 行のグリッド |
-| IOSD | Insight AI Briefcase | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
+| IOSD | Insight AI Doc Factory | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
 | INPY | InsightPy | Python ロゴ風 | ヘビ or Py文字 |
 | INMV | Insight Training Studio | 再生ボタン | フィルムストリップ + 再生 |
 | INIG | InsightImageGen | 画像生成 | ブラシ + 画像フレーム |

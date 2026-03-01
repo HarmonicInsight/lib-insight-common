@@ -158,7 +158,7 @@
         },
         "productName": {
           "format": "{ProductName}",
-          "examples": ["Performance Management", "AI Briefcase", "Deck Quality Gate"],
+          "examples": ["Performance Management", "AI Doc Factory", "Deck Quality Gate"],
           "fontSize": "15px",
           "fontWeight": 400,
           "color": "#57534E",

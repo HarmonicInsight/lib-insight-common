@@ -694,7 +694,7 @@ Respond in the same language as the user's message.
 - 統計分析、集計、データプロファイリング`;
 
       case 'document':
-        return `あなたはInsight AI BriefcaseのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
+        return `あなたはInsight AI Doc FactoryのAIアシスタントです。Wordドキュメントの操作・自動化を支援します。
 ユーザーのメッセージと同じ言語で回答してください。
 
 主な機能：
@@ -839,7 +839,7 @@ For accounting and finance queries:
 - Statistical analysis, aggregation, data profiling`;
 
     case 'document':
-      return `You are an AI assistant for Insight AI Briefcase, a Word document operations and automation tool.
+      return `You are an AI assistant for Insight AI Doc Factory, a Word document operations and automation tool.
 Respond in the same language as the user's message.
 
 Key capabilities:
@@ -1800,7 +1800,7 @@ const PRODUCT_TASK_CONTEXTS: Partial<Record<ProductCode, TaskContext[]>> = {
     'report_generation',
     'content_creation',      // Marketing プラグイン統合
   ],
-  // Insight AI Briefcase: 文書校正 + ドキュメント評価 + レポート + 契約書レビュー + コンテンツ作成
+  // Insight AI Doc Factory: 文書校正 + ドキュメント評価 + レポート + 契約書レビュー + コンテンツ作成
   IOSD: [
     'simple_chat',
     'document_review',

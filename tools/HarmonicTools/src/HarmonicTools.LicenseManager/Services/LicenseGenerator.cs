@@ -26,7 +26,7 @@ public class LicenseGenerator
         // Tier 3: Insight Business Suite
         ["INSS"] = "Insight Deck Quality Gate",
         ["IOSH"] = "Insight Performance Management",
-        ["IOSD"] = "Insight AI Briefcase",
+        ["IOSD"] = "Insight AI Doc Factory",
         ["INPY"] = "InsightPy",
         // Tier 4: Accessibility
         ["ISOF"] = "InsightSeniorOffice",

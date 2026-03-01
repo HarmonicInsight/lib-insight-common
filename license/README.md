@@ -21,7 +21,7 @@ IVIN-BIZ-2701-I9J0-K1L2-Z1A3     # InterviewInsight Business
 |--------|--------|------|
 | `INSS` | Insight Deck Quality Gate | AIアシスタント搭載 プレゼン支援 |
 | `IOSH` | Insight Performance Management | AIアシスタント搭載 スプレッドシート支援 |
-| `IOSD` | Insight AI Briefcase | AIアシスタント搭載 ドキュメント支援 |
+| `IOSD` | Insight AI Doc Factory | AIアシスタント搭載 ドキュメント支援 |
 | `INPY` | InsightPy | AIエディタ搭載 Python開発支援 |
 | `INMV` | Insight Training Studio | 動画作成 |
 | `INIG` | InsightImageGen | AI画像・音声生成 |

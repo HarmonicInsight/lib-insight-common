@@ -86,7 +86,7 @@ win-tool-...
 |--:|-----------|--------|------|------|------|
 | 1 | `app-Insight-bot-C` | `win-app-insight-bot` | C# | InsightBot (INBT) | サブモジュール参照あり（要URL更新） |
 | 2 | `app-Insight-slide` | `win-app-insight-slide` | C# | Insight Deck Quality Gate (INSS) | |
-| 3 | `app-Insight-doc` | `win-app-insight-doc` | C# | Insight AI Briefcase (IOSD) | |
+| 3 | `app-Insight-doc` | `win-app-insight-doc` | C# | Insight AI Doc Factory (IOSD) | |
 | 4 | `app-Insight-excel` | `win-app-insight-sheet` | C# | Insight Performance Management (IOSH) | ※製品名に合わせてsheet |
 | 5 | `app-harmonic-sheet` | `win-app-insight-sheet-senior` | C# | シニア向けSheet | |
 | 6 | `app-nocode-analyzer-C` | `win-app-nocode-analyzer` | C# | InsightNoCodeAnalyzer (INCA) | |
@@ -241,7 +241,7 @@ win-tool-...
 |-----------|--------|---------------------|--------------|
 | **INSS** | Insight Deck Quality Gate | `win-app-insight-slide` | |
 | **IOSH** | Insight Performance Management | `win-app-insight-sheet` | `win-app-insight-sheet-senior` |
-| **IOSD** | Insight AI Briefcase | `win-app-insight-doc` | `cross-app-insight-documentor` |
+| **IOSD** | Insight AI Doc Factory | `win-app-insight-doc` | `cross-app-insight-documentor` |
 | **INPY** | InsightPy | `win-app-insight-py` | `win-app-insight-py-pro` |
 | **INCA** | InsightNoCodeAnalyzer | `win-app-nocode-analyzer` | `web-app-nocode-analyzer`, `win-app-forguncy` |
 | **INBT** | InsightBot | `win-app-insight-bot` | `cross-app-insight-bot-orchestrator` |

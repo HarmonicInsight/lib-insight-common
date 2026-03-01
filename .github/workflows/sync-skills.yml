@@ -56,7 +56,7 @@ jobs:
             name: Insight Performance Management
           - repo: win-app-insight-doc
             product: IOSD
-            name: Insight AI Briefcase
+            name: Insight AI Doc Factory
           - repo: win-app-insight-py
             product: INPY
             name: InsightPy

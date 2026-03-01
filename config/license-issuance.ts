@@ -325,7 +325,7 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
   },
   IOSD: {
     productCode: 'IOSD',
-    productName: 'Insight AI Briefcase',
+    productName: 'Insight AI Doc Factory',
     windows: 'https://download.harmonicinsight.com/insightofficedoc/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/insightofficedoc',
   },

@@ -51,7 +51,7 @@ export interface LicenseData {
 export const PRODUCT_NAMES: Record<ProductCode, string> = {
   INSS: 'Insight Deck Quality Gate',
   IOSH: 'Insight Performance Management',
-  IOSD: 'Insight AI Briefcase',
+  IOSD: 'Insight AI Doc Factory',
   INPY: 'InsightPy',
   INMV: 'Insight Training Studio',
   INBT: 'InsightBot',
@@ -71,7 +71,7 @@ export const PLAN_NAMES: Record<Plan, string> = {
 export const PRODUCT_PLANS: Record<string, ProductCode[]> = {
   'Insight Deck Quality Gate': ['INSS'],
   'Insight Performance Management': ['IOSH'],
-  'Insight AI Briefcase': ['IOSD'],
+  'Insight AI Doc Factory': ['IOSD'],
   InsightPy: ['INPY'],
   'Insight Training Studio': ['INMV'],
   InsightBot: ['INBT'],

@@ -421,7 +421,7 @@ export const IOSH_SKILLS: SkillDefinition[] = [
 ];
 ```
 
-### 6.2 IOSD（Insight AI Briefcase）向けスキル
+### 6.2 IOSD（Insight AI Doc Factory）向けスキル
 
 Legal プラグインと Marketing プラグインを統合:
 

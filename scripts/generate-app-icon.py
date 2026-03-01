@@ -141,7 +141,7 @@ PRODUCT_ICONS = {
         'build_path': 'Resources/',
     },
     'IOSD': {
-        'name': 'InsightAIBriefcase',
+        'name': 'InsightAIDocFactory',
         'icon': 'icon-insight-doc.png',
         'platform': 'wpf',
         'build_path': 'Resources/',

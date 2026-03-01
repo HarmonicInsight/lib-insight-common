@@ -11,7 +11,7 @@
 // 【対象製品】
 // - INSS (Insight Deck Quality Gate)       — WPF
 // - IOSH (Insight Performance Management)  — WPF
-// - IOSD (Insight AI Briefcase)            — WPF
+// - IOSD (Insight AI Doc Factory)            — WPF
 // - ISOF (InsightSeniorOffice) — WPF
 // - INBT (InsightBot)          — WPF
 // - INPY (InsightPy)           — WPF

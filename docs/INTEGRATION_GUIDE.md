@@ -1,6 +1,6 @@
 # Insight Series 共通リソース統合ガイド
 
-このドキュメントは、Insight Series の各アプリケーション（Insight Deck Quality Gate, Insight Performance Management, Insight AI Briefcase, InsightPy, Insight Training Studio, InsightImageGen, InsightBot, InsightNoCodeAnalyzer, InterviewInsight）が `insight-common` リポジトリの共通リソースを使用するための手順を説明します。
+このドキュメントは、Insight Series の各アプリケーション（Insight Deck Quality Gate, Insight Performance Management, Insight AI Doc Factory, InsightPy, Insight Training Studio, InsightImageGen, InsightBot, InsightNoCodeAnalyzer, InterviewInsight）が `insight-common` リポジトリの共通リソースを使用するための手順を説明します。
 
 ## 概要
 
@@ -80,7 +80,7 @@ INS-INCA-PRO-E5F6-G7H8-Y0     # InsightNoCodeAnalyzer Professional
 |--------|--------|-----------|
 | `INSS` | Insight Deck Quality Gate | Insight Deck Quality Gate |
 | `IOSH` | Insight Performance Management | Insight Performance Management |
-| `IOSD` | Insight AI Briefcase | Insight AI Briefcase |
+| `IOSD` | Insight AI Doc Factory | Insight AI Doc Factory |
 | `INPY` | InsightPy | InsightPy |
 | `INMV` | Insight Training Studio | Insight Training Studio |
 | `INIG` | InsightImageGen | InsightImageGen |

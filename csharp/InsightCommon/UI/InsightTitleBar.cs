@@ -47,10 +47,10 @@ public static class InsightTitleBar
 
         public static readonly ProductInfo Doc = new(
             Code: "IOSD",
-            NameJa: "Insight AI Briefcase",
-            NameEn: "Insight AI Briefcase",
-            ShortName: "Briefcase",
-            Description: "AIアシスタント搭載 業務文書管理ブリーフケース"
+            NameJa: "Insight AI Doc Factory",
+            NameEn: "Insight AI Doc Factory",
+            ShortName: "Doc Factory",
+            Description: "AIアシスタント搭載 業務文書管理ツール"
         );
 
         public static readonly ProductInfo Slide = new(
