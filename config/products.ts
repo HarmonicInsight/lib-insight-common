@@ -235,13 +235,13 @@ export const PRODUCTS: Record<ProductCode, ProductInfo> = {
 
   INMV: {
     code: 'INMV',
-    name: 'InsightCast',
-    nameJa: 'InsightCast',
-    description: 'Automated video creation from images and text',
-    descriptionJa: '画像とテキストから動画を自動作成',
+    name: 'Insight Training Studio',
+    nameJa: 'Insight Training Studio',
+    description: 'Training and presentation video creation tool',
+    descriptionJa: '教育・プレゼン動画作成ツール',
     masterIcon: 'brand/icons/png/icon-insight-cast.png',
-    targetPlatform: 'python',
-    iconBuildPath: 'resources/',
+    targetPlatform: 'wpf',
+    iconBuildPath: 'Resources/',
   },
   INIG: {
     code: 'INIG',
@@ -1893,7 +1893,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
   ],
 
   // ========================================
-  // InsightCast (INMV)
+  // Insight Training Studio (INMV)
   // ========================================
   INMV: [
     { key: 'generate', name: 'Video Generation', nameJa: '動画生成', type: 'boolean', allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'], descriptionJa: '画像・テキストから動画を生成' },
@@ -1953,7 +1953,7 @@ export const DEFAULT_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   ENT: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: true, priorityProcessing: true },
 };
 
-/** InsightCast 専用のプラン別制限 */
+/** Insight Training Studio 専用のプラン別制限 */
 export const INMV_PLAN_LIMITS: Record<PlanCode, PlanLimits> = {
   TRIAL: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: false },
   BIZ: { monthlyLimit: -1, maxFileSizeMB: -1, maxStorageItems: -1, maxResolution: '4K', hasWatermark: false, batchEnabled: true, apiEnabled: false, priorityProcessing: false },

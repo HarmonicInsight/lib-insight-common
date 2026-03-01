@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insight Deck Quality Gate - コンサルグレードAI提案書レビュー</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    width: 210mm; height: 297mm;
+    color: #2c2c2c; background: #FAF8F5;
+    overflow: hidden; position: relative;
+  }
+  :root {
+    --gold: #B8942F; --gold-light: #D4B65A; --ivory: #FAF8F5;
+    --navy: #1B2A4A; --navy-light: #2C3E5A;
+    --warm-gray: #6B6560; --light-border: #E8E2D9; --card-bg: #FFFFFF;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1B2A4A 0%, #2C3E5A 60%, #3A5070 100%);
+    color: #FAF8F5; padding: 14mm 14mm 12mm; position: relative;
+  }
+  .header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1mm; background:linear-gradient(90deg, #B8942F, #D4B65A, #B8942F); }
+  .brand-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:5mm; }
+  .logo { display:flex; align-items:center; gap:3mm; }
+  .logo-mark { width:9mm; height:9mm; border:0.5mm solid #B8942F; border-radius:2mm; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:4mm; color:#B8942F; }
+  .logo-text { font-size:3mm; font-weight:300; letter-spacing:1.5mm; color:#B8942F; }
+  .tag { font-size:2.5mm; letter-spacing:1mm; text-transform:uppercase; color:rgba(250,248,245,0.6); }
+  .product-name { font-size:11mm; font-weight:700; letter-spacing:0.5mm; margin-bottom:3mm; }
+  .subtitle { font-size:3.8mm; font-weight:300; line-height:1.8; color:rgba(250,248,245,0.85); max-width:160mm; }
+
+  .accent-strip {
+    background:var(--navy); padding:3.5mm 14mm;
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom:0.3mm solid var(--light-border);
+  }
+  .accent-item { text-align:center; }
+  .accent-item .value { font-size:4.5mm; font-weight:700; color:var(--gold); display:block; }
+  .accent-item .label { font-size:2.4mm; color:rgba(250,248,245,0.6); letter-spacing:0.5mm; }
+
+  .main { padding:5mm 14mm 4mm; }
+
+  .section-title {
+    font-size:3.5mm; font-weight:700; color:var(--navy);
+    letter-spacing:0.8mm; text-transform:uppercase;
+    margin-bottom:3mm; padding-bottom:1.5mm;
+    border-bottom:0.3mm solid var(--gold);
+  }
+
+  .cs-grid { display:flex; gap:4mm; margin-bottom:4mm; }
+  .cs-box { flex:1; padding:3.5mm 4.5mm; border-radius:2mm; }
+  .cs-challenge { background:#fff; border:0.3mm solid var(--light-border); }
+  .cs-solution { background:var(--navy); color:var(--ivory); }
+  .cs-box h3 { font-size:3.2mm; font-weight:700; margin-bottom:2mm; letter-spacing:0.3mm; }
+  .cs-challenge h3 { color:var(--navy); }
+  .cs-solution h3 { color:var(--gold); }
+  .cs-box ul { list-style:none; font-size:2.6mm; line-height:1.8; }
+  .cs-box li { padding-left:3.5mm; position:relative; }
+  .cs-challenge li::before { content:'—'; position:absolute; left:0; color:var(--warm-gray); }
+  .cs-solution li::before { content:'—'; position:absolute; left:0; color:var(--gold); }
+
+  .persona-grid { display:flex; gap:3mm; margin-bottom:4mm; }
+  .persona-card {
+    flex:1; border-radius:2mm; padding:3.5mm 4mm; text-align:center;
+    background:var(--card-bg); border:0.3mm solid var(--light-border);
+  }
+  .persona-card .rank { font-size:2.2mm; font-weight:600; color:var(--gold); letter-spacing:0.8mm; text-transform:uppercase; margin-bottom:1mm; }
+  .persona-card .name { font-size:3.8mm; font-weight:700; color:var(--navy); margin-bottom:0.8mm; }
+  .persona-card .model { font-size:2.4mm; color:var(--warm-gray); margin-bottom:1.5mm; }
+  .persona-card .desc { font-size:2.4mm; line-height:1.5; color:var(--warm-gray); }
+  .persona-highlight { border-color: var(--gold); }
+
+  .features-grid { display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin-bottom:4mm; }
+  .feature-card { background:var(--card-bg); border:0.3mm solid var(--light-border); border-radius:2mm; padding:3mm 4mm; }
+  .feature-card h4 { font-size:3mm; font-weight:700; color:var(--navy); margin-bottom:1.5mm; padding-left:3mm; border-left:0.8mm solid var(--gold); }
+  .feature-card p { font-size:2.4mm; color:var(--warm-gray); line-height:1.6; }
+
+  .roi-strip {
+    background:var(--card-bg); border:0.3mm solid var(--light-border);
+    border-radius:2mm; padding:3.5mm 5mm;
+    display:flex; justify-content:space-around; align-items:center;
+    margin-bottom:4mm;
+  }
+  .roi-item { text-align:center; }
+  .roi-item .roi-label { font-size:2.4mm; color:var(--warm-gray); margin-bottom:0.8mm; }
+  .roi-item .roi-value { font-size:5mm; font-weight:700; }
+  .roi-item .roi-note { font-size:2.2mm; color:var(--warm-gray); }
+  .roi-before { color:#8B4513; }
+  .roi-after { color:var(--gold); }
+  .roi-arrow { font-size:4mm; color:var(--navy); }
+
+  .pricing-strip {
+    background:var(--navy); border-radius:2mm;
+    padding:4mm 5mm; display:flex; justify-content:center; align-items:center; gap:6mm;
+    margin-bottom:4mm;
+  }
+  .plan { text-align:center; }
+  .plan-name { font-size:2.5mm; color:rgba(250,248,245,0.5); letter-spacing:0.8mm; text-transform:uppercase; margin-bottom:1mm; }
+  .price { font-size:5mm; font-weight:700; color:var(--ivory); }
+  .price-note { font-size:2.2mm; color:rgba(250,248,245,0.4); }
+  .plan-divider { width:0.3mm; height:14mm; background:rgba(184,148,47,0.3); }
+  .plan-highlight .price { color:var(--gold); }
+
+  .origin-box {
+    border-left:1mm solid var(--gold); padding:3mm 5mm;
+    margin-bottom:4mm; background:var(--card-bg);
+  }
+  .origin-box p { font-size:2.6mm; color:var(--warm-gray); line-height:1.8; font-style:italic; }
+  .origin-box .author { font-size:2.4mm; color:var(--navy); font-weight:600; font-style:normal; margin-top:2mm; }
+
+  .target-strip { display:flex; gap:2.5mm; margin-bottom:3mm; }
+  .target-tag { border:0.3mm solid var(--gold); border-radius:1.5mm; padding:1.2mm 3.5mm; font-size:2.4mm; font-weight:600; color:var(--navy); }
+
+  .footer {
+    position:absolute; bottom:0; left:0; right:0;
+    background:var(--navy); padding:4mm 14mm;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .footer-left { font-size:2.4mm; color:rgba(250,248,245,0.5); line-height:1.6; }
+  .footer-cta { background:var(--gold); color:var(--navy); font-size:3mm; font-weight:700; padding:2.5mm 7mm; border-radius:1.5mm; text-align:center; line-height:1.4; letter-spacing:0.3mm; }
+  .footer-cta small { font-size:2.2mm; font-weight:400; display:block; }
+  .footer-right { text-align:right; font-size:2.4mm; color:rgba(250,248,245,0.5); line-height:1.6; }
+
+  @media print { body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand-row">
+    <div class="logo"><div class="logo-mark">HI</div><span class="logo-text">HARMONIC INSIGHT</span></div>
+    <span class="tag">AI Presentation Review</span>
+  </div>
+  <div class="product-name">Insight Deck Quality Gate</div>
+  <div class="subtitle">提案書の品質を、属人性から解放する。<br>3段階AIコンシェルジュが、コンサルグレードのレビューを即座に実行します。</div>
+</div>
+
+<div class="accent-strip">
+  <div class="accent-item"><span class="value">150枚 → 30分</span><span class="label">提案書レビュー時間</span></div>
+  <div class="accent-item"><span class="value">3段階AI</span><span class="label">コンシェルジュ</span></div>
+  <div class="accent-item"><span class="value">ローカル完結</span><span class="label">機密データ保護</span></div>
+  <div class="accent-item"><span class="value">年間¥4,500,000</span><span class="label">相当の工数削減</span></div>
+</div>
+
+<div class="main">
+
+  <div class="section-title">課題と解決</div>
+  <div class="cs-grid">
+    <div class="cs-box cs-challenge">
+      <h3>現場の課題</h3>
+      <ul>
+        <li>金曜夜に150枚のPPTを手動レビュー。週末が消える</li>
+        <li>レビュー品質が担当者の経験に依存。属人的で再現性がない</li>
+        <li>見落としによる顧客提案の失敗リスクが常にある</li>
+        <li>機密提案資料をクラウドAIにアップロードできない</li>
+      </ul>
+    </div>
+    <div class="cs-box cs-solution">
+      <h3>Insight Deck Quality Gate の解決</h3>
+      <ul>
+        <li>AIが全スライドを構造的にレビュー。30分で完了</li>
+        <li>3段階AIコンシェルジュで品質基準を統一</li>
+        <li>誤字脱字・論理矛盾・デザイン不整合を自動検出</li>
+        <li>完全ローカル処理。機密データは外部に出ない</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">3段階AIコンシェルジュ</div>
+  <div class="persona-grid">
+    <div class="persona-card">
+      <div class="rank">First Responder</div>
+      <div class="name">俊介</div>
+      <div class="model">Claude Haiku</div>
+      <div class="desc">即座に反応し、定型チェックを<br>高速処理。日常レビューに最適。</div>
+    </div>
+    <div class="persona-card persona-highlight">
+      <div class="rank">Senior Analyst</div>
+      <div class="name">めぐみ</div>
+      <div class="model">Claude Sonnet</div>
+      <div class="desc">深い分析と洞察を提供。<br>品質と速度の最適解。</div>
+    </div>
+    <div class="persona-card">
+      <div class="rank">Executive Adviser</div>
+      <div class="name">学</div>
+      <div class="model">Claude Opus</div>
+      <div class="desc">戦略レベルの判断を支援。<br>重要提案書の最終チェックに。</div>
+    </div>
+  </div>
+
+  <div class="section-title">主要機能</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <h4>テキスト抽出・構造化分析</h4>
+      <p>PPTXからテキストを抽出し、スライド構造を可視化。内容の整合性を自動チェック。</p>
+    </div>
+    <div class="feature-card">
+      <h4>PPTX差分比較・マージ</h4>
+      <p>2つのPPTXを比較し変更箇所をハイライト。チームでの共同編集を安全に管理。</p>
+    </div>
+    <div class="feature-card">
+      <h4>バージョン管理</h4>
+      <p>全変更履歴を保存。任意の版に1クリックで復元。上書き事故を完全に防止。</p>
+    </div>
+    <div class="feature-card">
+      <h4>多言語翻訳</h4>
+      <p>プレゼン資料をAIが日英中に翻訳。海外向け提案資料の作成工数を大幅削減。</p>
+    </div>
+  </div>
+
+  <div class="section-title">投資対効果</div>
+  <div class="roi-strip">
+    <div class="roi-item"><div class="roi-label">手動レビュー</div><div class="roi-value roi-before">年間250時間</div><div class="roi-note">150枚 x 月2回 x 10ヶ月</div></div>
+    <div class="roi-arrow">→</div>
+    <div class="roi-item"><div class="roi-label">Insight Deck Quality Gate 導入後</div><div class="roi-value roi-after">年間25時間</div><div class="roi-note">90%の工数削減</div></div>
+    <div style="width:0.3mm;height:12mm;background:var(--light-border)"></div>
+    <div class="roi-item"><div class="roi-label">削減価値（¥30,000/h換算）</div><div class="roi-value" style="color:var(--gold)">¥6,750,000/年</div></div>
+  </div>
+
+  <div class="pricing-strip">
+    <div class="plan"><div class="plan-name">FREE</div><div class="price">¥0</div><div class="price-note">基本機能</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan"><div class="plan-name">TRIAL</div><div class="price">1ヶ月無料</div><div class="price-note">全機能・全AIモデル</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan plan-highlight"><div class="plan-name">BIZ</div><div class="price">個別見積もり</div><div class="price-note">全機能・AI内包</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan"><div class="plan-name">ENT</div><div class="price">個別見積もり</div><div class="price-note">全機能・Opus・コラボレーション</div></div>
+  </div>
+
+  <div class="origin-box">
+    <p>「完璧な分析結果を、PowerPointに転記するだけで半日が消える。」——この光景を何百回と見てきた。レビューの品質を属人性から解放すること。それがInsight Deck Quality Gateの使命です。</p>
+    <div class="author">— HARMONIC insight 開発者 / IT・業務コンサルタント 30年</div>
+  </div>
+
+  <div class="target-strip">
+    <div class="target-tag">コンサルティングファーム</div>
+    <div class="target-tag">監査法人</div>
+    <div class="target-tag">シンクタンク</div>
+    <div class="target-tag">経営企画部門</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">HARMONIC insight 合同会社<br>insight-office.com</div>
+  <div class="footer-cta">デモを依頼する<small>製品の詳細をご案内いたします</small></div>
+  <div class="footer-right">お問い合わせ<br>contact@insight-office.com</div>
+</div>
+
+</body>
+</html>

@@ -115,7 +115,7 @@ PRODUCT_ICONS = {
 
     # --- Tier 2: AI Content Creation Tools ---
     'INMV': {
-        'name': 'InsightCast',
+        'name': 'Insight Training Studio',
         'icon': 'icon-insight-cast.png',
         'platform': 'python',
         'build_path': 'resources/',

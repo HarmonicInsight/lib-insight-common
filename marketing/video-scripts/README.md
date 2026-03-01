@@ -1,6 +1,6 @@
 # YouTube 30秒動画 企画書
 
-> **制作方法**: InsightCast（INMV）で画面スクリーンショット + VOICEVOX（ずんだもん）音声を組み合わせ
+> **制作方法**: Insight Training Studio（INMV）で画面スクリーンショット + VOICEVOX（ずんだもん）音声を組み合わせ
 > **動画形式**: 30秒 / YouTube Shorts対応（縦型推奨 1080x1920 or 横型 1920x1080）
 
 ---
@@ -15,7 +15,7 @@
 | 2 | IOSH | Insight Performance Management | Excel管理 | 経理・事務・チーム管理者 |
 | 3 | IOSD | Insight AI Briefcase | Word自動化 | 総務・法務・ドキュメント作成者 |
 | 4 | INPY | InsightPy | Python実行環境 | 業務自動化担当・データ分析者 |
-| 5 | INMV | InsightCast | 動画作成 | マーケター・教育者・SNS運用 |
+| 5 | INMV | Insight Training Studio | 動画作成 | マーケター・教育者・SNS運用 |
 | 6 | INIG | InsightImageGen | AI画像・音声生成 | クリエイター・マーケター |
 
 ### 法人向け（Corporate）
@@ -110,7 +110,7 @@
 
 ---
 
-### 5. InsightCast（INMV） AI動画作成
+### 5. Insight Training Studio（INMV） AI動画作成
 
 **ターゲット**: マーケター、教育者、SNS運用担当
 
@@ -196,7 +196,7 @@
 | 優先度 | 製品 | 理由 |
 |--------|------|------|
 | ☆☆☆ | Insight Performance Management (IOSH) | Excel利用者が圧倒的に多い。バージョン管理の課題は共感が高い |
-| ☆☆☆ | InsightCast (INMV) | 動画マーケティング需要が高い。自社製品で自社動画を作る実績にもなる |
+| ☆☆☆ | Insight Training Studio (INMV) | 動画マーケティング需要が高い。自社製品で自社動画を作る実績にもなる |
 | ☆☆☆ | InsightPy (INPY) | Python需要が拡大中。非エンジニア向けの訴求が刺さる |
 | ☆☆☆ | InsightBot (INBT) | RPA市場が拡大中。かんたんRPAは訴求力が高い |
 | ☆☆☆ | InsightImageGen (INIG) | AI画像生成の話題性が高くSNSでバズりやすい |
@@ -217,7 +217,7 @@
 - `IOSH_scripts.md` — Insight Performance Management 5本（旧 HMSH_scripts.md）
 - `IOSD_scripts.md` — Insight AI Briefcase 5本（旧 HMDC_scripts.md）
 - `INPY_scripts.md` — InsightPy 5本
-- `INMV_scripts.md` — InsightCast 5本
+- `INMV_scripts.md` — Insight Training Studio 5本
 - `INIG_scripts.md` — InsightImageGen 5本
 - `INBT_scripts.md` — InsightBot 5本
 - `INCA_scripts.md` — InsightNoCodeAnalyzer 5本

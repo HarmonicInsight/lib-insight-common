@@ -44,7 +44,7 @@ def parse_args():
   # InsightPy トライアル（30日間）
   python generate-license.py -p INPY --trial -e user@example.com
 
-  # InsightCast Business（12ヶ月）
+  # Insight Training Studio Business（12ヶ月）
   python generate-license.py -p INMV --plan BIZ -e user@example.com -m 12
 
   # InsightBot Business（12ヶ月）
@@ -58,7 +58,7 @@ def parse_args():
   IOSH  - Insight Performance Management
   IOSD  - Insight AI Briefcase
   INPY  - InsightPy
-  INMV  - InsightCast
+  INMV  - Insight Training Studio
   INIG  - InsightImageGen
   INBT  - InsightBot
   INCA  - InsightNoCodeAnalyzer

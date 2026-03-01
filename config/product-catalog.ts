@@ -749,16 +749,16 @@ export const PRODUCT_CATALOG: CatalogEntry[] = [
     svgIcon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z',
     colorGradient: 'from-red-500 to-rose-600',
     platforms: ['windows'],
-    name: { en: 'InsightCast', ja: 'InsightCast', zh: 'InsightCast' },
+    name: { en: 'Insight Training Studio', ja: 'Insight Training Studio', zh: 'Insight Training Studio' },
     tagline: {
-      en: 'Auto Video Creation from Images & Text',
-      ja: '画像とテキストから動画を自動作成',
-      zh: '从图像和文本自动创建视频',
+      en: 'Training & Presentation Video Creation Tool',
+      ja: '教育・プレゼン動画作成ツール',
+      zh: '教育・演示视频制作工具',
     },
     description: {
-      en: 'Enter descriptive text for images and InsightCast automatically converts it to speech and produces a video. Turn presentation materials into videos for playback, or create educational content with ease. It can also convert PowerPoint slides into images and turn speech notes into narration to automatically generate videos — dramatically improving the efficiency of presentation preparation and review.',
-      ja: '画像に説明用のテキストを入力するだけで、自動で音声化して動画を作成。プレゼンテーション資料を動画にして流したり、教育用の教材を動画にするのも簡単です。さらに、PowerPointの資料をスライド画像に変換し、スピーチノートを音声化して自動で動画を作成する機能も搭載。プレゼンテーションの準備やレビューの効率が格段に向上します。',
-      zh: '只需输入图像的说明文字，即可自动转换为语音并生成视频。轻松将演示资料制作为视频播放，或将教育教材转换为视频。还可以将PowerPoint资料转换为图像，将演讲备注转换为语音，自动生成视频——大幅提升演示准备和审阅的效率。',
+      en: 'Enter descriptive text for images and Insight Training Studio automatically converts it to speech and produces a video. Turn presentation materials into training videos for playback, or create educational content with ease. It can also convert PowerPoint slides into images and turn speech notes into narration to automatically generate videos — dramatically improving the efficiency of training material preparation and presentation review.',
+      ja: '画像に説明用のテキストを入力するだけで、自動で音声化して動画を作成。プレゼンテーション資料を教育・研修用の動画にして流したり、教育用の教材を動画にするのも簡単です。さらに、PowerPointの資料をスライド画像に変換し、スピーチノートを音声化して自動で動画を作成する機能も搭載。教育・プレゼンテーション資料の準備やレビューの効率が格段に向上します。',
+      zh: '只需输入图像的说明文字，即可自动转换为语音并生成视频。轻松将演示资料制作为培训视频播放，或将教育教材转换为视频。还可以将PowerPoint资料转换为图像，将演讲备注转换为语音，自动生成视频——大幅提升培训材料准备和演示审阅的效率。',
     },
     features: {
       en: [

@@ -82,10 +82,10 @@ export const DEPENDENT_REPOS: DependentRepo[] = [
   {
     repo: 'win-app-insight-cast',
     productCode: 'INMV',
-    productName: 'InsightCast',
+    productName: 'Insight Training Studio',
     iconCopy: [
-      { src: 'InsightCast/InsightCast.ico', dest: 'resources/InsightCast.ico' },
-      { src: 'InsightCast/InsightCast_256.png', dest: 'resources/InsightCast_256.png' },
+      { src: 'InsightCast/InsightCast.ico', dest: 'Resources/InsightCast.ico' },
+      { src: 'InsightCast/InsightCast_256.png', dest: 'Resources/InsightCast_256.png' },
     ],
     enabled: true,
   },

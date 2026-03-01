@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insight Training Studio for Sales — 提案書に、声をつけるだけ。</title>
+    <meta name="description" content="PowerPointにナレーション音声をつけて提案動画に。メールで送れば先方は好きな時間に視聴。コンサル・SIer・営業組織のためのプレゼンテーション動画生成ツール。">
+    <meta name="keywords" content="プレゼンテーション動画,プレゼン動画作成,動画生成ツール,提案動画,営業DX,コンサル提案,SIer営業,商談効率化,営業自動化,提案書動画化,Insight Training Studio">
+    <meta property="og:title" content="Insight Training Studio for Sales — 提案書に、声をつけるだけ。">
+    <meta property="og:description" content="PowerPointにナレーション音声をつけて提案動画に。メールで送れば先方は好きな時間に視聴。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://insightcast.jp/sales">
+    <link rel="canonical" href="https://insightcast.jp/sales">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           Insight Training Studio for Sales — Landing Page
+           Ivory & Gold / Premium Consultant Style
+           ============================================ */
+
+        :root {
+            --color-bg: #FAF8F5;
+            --color-bg-warm: #F5F0E8;
+            --color-bg-dark: #1C1C1C;
+            --color-bg-section: #FFFDF9;
+            --color-gold: #B8942F;
+            --color-gold-light: #D4B94E;
+            --color-gold-dark: #8B7225;
+            --color-gold-pale: rgba(184, 148, 47, 0.08);
+            --color-text: #2D2A26;
+            --color-text-secondary: #6B6560;
+            --color-text-light: #9B9590;
+            --color-text-inverse: #FAF8F5;
+            --color-border: #E8E2D8;
+            --color-border-light: #F0ECE4;
+            --color-success: #2D7A4F;
+            --color-accent: #3B5998;
+            --color-red: #C0392B;
+            --font-display: 'Inter', 'Noto Sans JP', sans-serif;
+            --font-body: 'Noto Sans JP', 'Inter', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(45, 42, 38, 0.06);
+            --shadow-md: 0 4px 16px rgba(45, 42, 38, 0.08);
+            --shadow-lg: 0 8px 32px rgba(45, 42, 38, 0.10);
+            --shadow-gold: 0 4px 20px rgba(184, 148, 47, 0.15);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 32px;
+            --max-width: 1140px;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* --- Header --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(250, 248, 245, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border-light);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--color-text);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-display);
+        }
+
+        .logo-text {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span {
+            color: var(--color-gold);
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--color-gold);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-left: 0.5rem;
+            padding: 0.15rem 0.6rem;
+            background: var(--color-gold-pale);
+            border: 1px solid rgba(184, 148, 47, 0.2);
+            border-radius: 100px;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .header-nav a:hover {
+            color: var(--color-gold);
+        }
+
+        .btn-cta-header {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1.5rem;
+            background: var(--color-gold);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .btn-cta-header:hover {
+            background: var(--color-gold-dark);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--color-text);
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            padding: 10rem 2rem 6rem;
+            text-align: center;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, var(--color-bg-dark) 100%);
+            position: relative;
+            overflow: hidden;
+            color: var(--color-text-inverse);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            height: 900px;
+            background: radial-gradient(circle, rgba(184, 148, 47, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            background: rgba(184, 148, 47, 0.15);
+            border: 1px solid rgba(184, 148, 47, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-gold-light);
+            letter-spacing: 0.08em;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--color-gold-light);
+        }
+
+        .hero-sub {
+            font-size: 1.2rem;
+            color: rgba(250, 248, 245, 0.7);
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            line-height: 1.9;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-gold-light);
+            line-height: 1.2;
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: rgba(250, 248, 245, 0.55);
+            margin-top: 0.3rem;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(184, 148, 47, 0.25);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--color-text-inverse);
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid rgba(250, 248, 245, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-gold);
+            color: var(--color-gold);
+        }
+
+        /* --- Section Common --- */
+        .section {
+            padding: 6rem 2rem;
+        }
+
+        .section-dark {
+            background: var(--color-bg-dark);
+            color: var(--color-text-inverse);
+        }
+
+        .section-warm {
+            background: var(--color-bg-warm);
+        }
+
+        .section-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            max-width: 640px;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        .section-dark .section-desc {
+            color: rgba(250, 248, 245, 0.7);
+        }
+
+        /* --- Pain Checklist --- */
+        .pain-checklist {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .pain-check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            background: white;
+            border: 1px solid var(--color-border-light);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .pain-check-item:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-border);
+        }
+
+        .pain-check-box {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--color-red);
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+            position: relative;
+        }
+
+        .pain-check-box::after {
+            content: '\2713';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--color-red);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .pain-check-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* --- Before/After Table --- */
+        .ba-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ba-table th,
+        .ba-table td {
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .ba-table thead th {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .ba-table thead th:nth-child(1) {
+            background: var(--color-bg-warm);
+            color: var(--color-text-secondary);
+            width: 22%;
+        }
+
+        .ba-table thead th:nth-child(2) {
+            background: #f5f0f0;
+            color: var(--color-text-secondary);
+            width: 39%;
+        }
+
+        .ba-table thead th:nth-child(3) {
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+            color: white;
+            width: 39%;
+        }
+
+        .ba-table tbody td:nth-child(2) {
+            color: var(--color-text-secondary);
+        }
+
+        .ba-table tbody td:nth-child(3) {
+            background: var(--color-gold-pale);
+            font-weight: 600;
+            color: var(--color-gold-dark);
+        }
+
+        .ba-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* --- Usecase Cards --- */
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .usecase-card {
+            background: rgba(250, 248, 245, 0.06);
+            border: 1px solid rgba(250, 248, 245, 0.1);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .usecase-card:hover {
+            background: rgba(250, 248, 245, 0.1);
+            border-color: rgba(184, 148, 47, 0.3);
+        }
+
+        .usecase-industry {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-gold-light);
+            letter-spacing: 0.08em;
+            margin-bottom: 0.8rem;
+        }
+
+        .usecase-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            color: var(--color-text-inverse);
+        }
+
+        .usecase-card p {
+            font-size: 0.88rem;
+            color: rgba(250, 248, 245, 0.65);
+            line-height: 1.7;
+        }
+
+        /* --- Catch Copy Section --- */
+        .catchcopy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .catchcopy-card {
+            background: white;
+            border: 1px solid var(--color-border-light);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .catchcopy-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-gold);
+        }
+
+        .catchcopy-type {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-gold);
+            letter-spacing: 0.08em;
+            margin-bottom: 0.8rem;
+        }
+
+        .catchcopy-text {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-text);
+            line-height: 1.5;
+        }
+
+        /* --- Steps --- */
+        .steps-horizontal {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: white;
+            border: 1px solid var(--color-border-light);
+            border-radius: var(--radius-md);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .step-card p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+        }
+
+        .step-arrow {
+            position: absolute;
+            right: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-gold);
+            font-size: 1.5rem;
+            z-index: 1;
+        }
+
+        /* --- Pricing Highlight --- */
+        .pricing-highlight {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .pricing-card-single {
+            background: white;
+            border: 2px solid var(--color-gold);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2.5rem;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .pricing-card-single .pricing-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-card-single .pricing-price {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-text);
+            line-height: 1.2;
+            margin-bottom: 0.3rem;
+        }
+
+        .pricing-card-single .pricing-price span {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+        }
+
+        .pricing-card-single .pricing-period {
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-card-single .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .pricing-card-single .pricing-features li {
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .pricing-card-single .pricing-features li::before {
+            content: '\2713';
+            color: var(--color-success);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .pricing-cta-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dark));
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .pricing-cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(184, 148, 47, 0.25);
+        }
+
+        .pricing-note {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+        }
+
+        .pricing-other-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--color-gold);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .pricing-other-link:hover {
+            color: var(--color-gold-dark);
+        }
+
+        /* --- ROI Calculator --- */
+        .roi-section {
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, #2A2520 100%);
+            color: var(--color-text-inverse);
+            padding: 5rem 2rem;
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .roi-text h3 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .roi-text p {
+            font-size: 0.95rem;
+            color: rgba(250, 248, 245, 0.7);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .roi-calc {
+            background: rgba(250, 248, 245, 0.06);
+            border: 1px solid rgba(250, 248, 245, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+        }
+
+        .roi-calc-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-gold-light);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .roi-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid rgba(250, 248, 245, 0.08);
+        }
+
+        .roi-row:last-child {
+            border-bottom: none;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            border-top: 2px solid var(--color-gold);
+        }
+
+        .roi-row-label {
+            font-size: 0.88rem;
+            color: rgba(250, 248, 245, 0.65);
+        }
+
+        .roi-row-value {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--color-text-inverse);
+        }
+
+        .roi-row:last-child .roi-row-label {
+            color: var(--color-gold-light);
+            font-weight: 600;
+        }
+
+        .roi-row:last-child .roi-row-value {
+            color: var(--color-gold-light);
+            font-size: 1.3rem;
+        }
+
+        /* --- CTA Section --- */
+        .cta-section {
+            padding: 6rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, var(--color-bg-dark) 100%);
+            color: var(--color-text-inverse);
+        }
+
+        .cta-section .section-title {
+            color: var(--color-text-inverse);
+        }
+
+        .cta-tagline {
+            font-size: 1.1rem;
+            color: rgba(250, 248, 245, 0.65);
+            max-width: 520px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background: var(--color-bg-dark);
+            border-top: 1px solid rgba(250, 248, 245, 0.08);
+            padding: 3rem 2rem;
+        }
+
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--color-gold);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .footer-brand-text {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: rgba(250, 248, 245, 0.8);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            font-size: 0.8rem;
+            color: rgba(250, 248, 245, 0.5);
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-gold);
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: rgba(250, 248, 245, 0.35);
+            width: 100%;
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(250, 248, 245, 0.06);
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .header-nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 8rem 1.5rem 4rem;
+            }
+
+            .hero h1 {
+                font-size: clamp(1.8rem, 6vw, 2.8rem);
+            }
+
+            .hero-stats {
+                gap: 2rem;
+            }
+
+            .hero-stat-number {
+                font-size: 2rem;
+            }
+
+            .steps-horizontal {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .step-arrow {
+                display: none;
+            }
+
+            .roi-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .ba-table {
+                font-size: 0.82rem;
+            }
+
+            .ba-table th,
+            .ba-table td {
+                padding: 0.8rem;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .section {
+                padding: 4rem 1.5rem;
+            }
+
+            .catchcopy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- Animations --- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ======== Header ======== -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">IC</div>
+                <div class="logo-text">Insight<span>Cast</span></div>
+                <span class="logo-sub">for Sales</span>
+            </a>
+            <nav class="header-nav">
+                <a href="#pain">課題</a>
+                <a href="#usecase">ユースケース</a>
+                <a href="#comparison">Before / After</a>
+                <a href="#pricing">料金</a>
+                <a href="index.html">教育・研修向け</a>
+                <a href="#contact" class="btn-cta-header">無料で試す</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="メニュー">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ======== Hero ======== -->
+    <section class="hero">
+        <div class="hero-badge">プレゼンテーション動画生成ツール</div>
+        <h1>提案書に、<br><em>声をつける</em>だけ。</h1>
+        <p class="hero-sub">
+            PowerPointにナレーション音声をつけて動画化。<br>
+            メールで送れば、先方は好きな時間に視聴できます。
+        </p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-number" style="font-size:1.8rem">&#x1F4E7;</div>
+                <div class="hero-stat-label">MTGなしで提案が届く</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number" style="font-size:1.8rem">&#x1F504;</div>
+                <div class="hero-stat-label">1回作れば何度でも再利用</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-number" style="font-size:1.8rem">&#x1F4DD;</div>
+                <div class="hero-stat-label">資料が「見られる」動画に</div>
+            </div>
+        </div>
+        <div class="hero-cta-group">
+            <a href="https://www.insight-office.com/ja/downloads" class="btn-primary" target="_blank">無料ダウンロード →</a>
+            <a href="#comparison" class="btn-secondary">使い方を見る</a>
+        </div>
+    </section>
+
+    <!-- ======== Pain ======== -->
+    <section class="section" id="pain">
+        <div class="section-inner fade-in">
+            <span class="section-label">課題</span>
+            <h2 class="section-title" style="text-align: center;">こんな非効率、続けていませんか？</h2>
+            <p class="section-desc" style="text-align: center; margin-left: auto; margin-right: auto;">
+                営業・提案の現場で、毎日繰り返される「もったいない時間」。
+            </p>
+            <div class="pain-checklist">
+                <div class="pain-check-item">
+                    <div class="pain-check-box"></div>
+                    <div class="pain-check-text">日程調整に3往復、結局2週間後</div>
+                </div>
+                <div class="pain-check-item">
+                    <div class="pain-check-box"></div>
+                    <div class="pain-check-text">同じ提案を10社に10回説明している</div>
+                </div>
+                <div class="pain-check-item">
+                    <div class="pain-check-box"></div>
+                    <div class="pain-check-text">資料を送っても「まだ読んでない」と言われる</div>
+                </div>
+                <div class="pain-check-item">
+                    <div class="pain-check-box"></div>
+                    <div class="pain-check-text">時給5万円の人が、毎週定例で同じ説明をしている</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== How It Works ======== -->
+    <section class="section section-warm" id="how">
+        <div class="section-inner fade-in">
+            <span class="section-label">使い方</span>
+            <h2 class="section-title">提案動画は、3ステップで完成。</h2>
+            <p class="section-desc">
+                いつもの提案書が、ナレーション付きのプレゼン動画に変わります。
+            </p>
+            <div class="steps-horizontal">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>提案書をアップロード</h3>
+                    <p>いつものPowerPointをそのままドラッグ&amp;ドロップ。新しく作り直す必要はありません。</p>
+                    <span class="step-arrow">→</span>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>ナレーション音声をつける</h3>
+                    <p>テキストを入力して、音声読み上げで変換。男性・女性など声質を選択できます。</p>
+                    <span class="step-arrow">→</span>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>動画をダウンロードして送付</h3>
+                    <p>MP4ファイルをダウンロード。メール添付やファイル共有で先方に送るだけ。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== Before / After ======== -->
+    <section class="section" id="comparison">
+        <div class="section-inner fade-in">
+            <span class="section-label">Before / After</span>
+            <h2 class="section-title">こんな使い方ができます。</h2>
+            <p class="section-desc">
+                口頭での説明を、ナレーション付き動画に置き換えるイメージです。
+            </p>
+            <table class="ba-table">
+                <thead>
+                    <tr>
+                        <th>場面</th>
+                        <th>Before</th>
+                        <th>After（Insight Training Studio）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>初回提案</strong></td>
+                        <td>MTG 1時間を設定</td>
+                        <td>動画15分 + 質疑30分</td>
+                    </tr>
+                    <tr>
+                        <td><strong>社内定例</strong></td>
+                        <td>毎週マネージャーが登壇</td>
+                        <td>動画再生 + 議論だけ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>事例共有</strong></td>
+                        <td>都度説明が必要</td>
+                        <td>1回作れば全社展開</td>
+                    </tr>
+                    <tr>
+                        <td><strong>オンボーディング</strong></td>
+                        <td>先輩が毎回対応</td>
+                        <td>動画で自習</td>
+                    </tr>
+                    <tr>
+                        <td><strong>製品デモ</strong></td>
+                        <td>エンジニアが毎回対応</td>
+                        <td>デモ動画を事前送付</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ======== Use Cases ======== -->
+    <section class="section section-dark" id="usecase">
+        <div class="section-inner fade-in">
+            <span class="section-label">ユースケース</span>
+            <h2 class="section-title">あらゆる「提案」を、動画で届ける。</h2>
+            <p class="section-desc">
+                コンサルティングファームからSIer、営業組織まで。幅広いシーンで活用できます。
+            </p>
+            <div class="usecase-grid">
+                <div class="usecase-card">
+                    <div class="usecase-industry">コンサルティング</div>
+                    <h3>提案書をナレーション付き動画に</h3>
+                    <p>提案書のPowerPointにナレーションをつけて動画化。メールで送れば、クライアントは好きな時間に視聴できます。</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-industry">SIer・IT企業</div>
+                    <h3>製品デモ・技術説明の動画化</h3>
+                    <p>製品概要や技術アーキテクチャのスライドにナレーションをつけてデモ動画に。エンジニアが毎回説明する手間を減らせます。</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-industry">営業組織</div>
+                    <h3>商談前の事前説明を動画で</h3>
+                    <p>「まず資料送っておいて」を動画で。読まれない資料が、見られる動画に変わる。商談のスタートラインが変わります。</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-industry">マネジメント</div>
+                    <h3>週次定例・報告を動画に置換</h3>
+                    <p>毎週同じ説明をしているマネージャーの時間を解放。報告は動画で事前共有、会議は議論だけに集中。</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-industry">社内展開</div>
+                    <h3>事例共有・ナレッジの全社展開</h3>
+                    <p>1回作れば100回届く。成功事例やベストプラクティスを動画にして、全社・全拠点に一斉展開。</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-industry">人事・採用</div>
+                    <h3>オンボーディングの動画化</h3>
+                    <p>先輩が毎回同じ説明をする時代は終わり。入社手続きから業務説明まで、動画で自習できる環境を構築。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== Catch Copy Variations ======== -->
+    <section class="section" id="catchcopy">
+        <div class="section-inner fade-in">
+            <span class="section-label">こんな方におすすめ</span>
+            <h2 class="section-title" style="text-align: center;">「伝える」にこんな課題はありませんか？</h2>
+            <p class="section-desc" style="text-align: center; margin-left: auto; margin-right: auto;">
+                PowerPointにナレーションをつけるだけで、これらの課題に対応できます。
+            </p>
+            <div class="catchcopy-grid">
+                <div class="catchcopy-card">
+                    <div class="catchcopy-type">日程調整</div>
+                    <div class="catchcopy-text">提案のために<br>MTGを設定するのが大変</div>
+                </div>
+                <div class="catchcopy-card">
+                    <div class="catchcopy-type">繰り返し</div>
+                    <div class="catchcopy-text">同じ説明を<br>何度もしている</div>
+                </div>
+                <div class="catchcopy-card">
+                    <div class="catchcopy-type">資料</div>
+                    <div class="catchcopy-text">送った資料が<br>読まれない</div>
+                </div>
+                <div class="catchcopy-card">
+                    <div class="catchcopy-type">研修</div>
+                    <div class="catchcopy-text">新人に毎回<br>同じことを教えている</div>
+                </div>
+                <div class="catchcopy-card">
+                    <div class="catchcopy-type">共有</div>
+                    <div class="catchcopy-text">事例やナレッジを<br>全社に広めたい</div>
+                </div>
+                <div class="catchcopy-card">
+                    <div class="catchcopy-type">外注</div>
+                    <div class="catchcopy-text">動画を作りたいが<br>外注は高すぎる</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== How It Helps ======== -->
+    <section class="roi-section" id="benefits">
+        <div class="section-inner fade-in">
+            <div class="roi-grid">
+                <div class="roi-text">
+                    <span class="section-label" style="color: var(--color-gold-light);">動画にするメリット</span>
+                    <h3>「読まれない資料」が<br>「見られる動画」に。</h3>
+                    <p>
+                        PDFやPowerPointを送っても、<br>
+                        忙しい相手はなかなか開いてくれません。<br>
+                        ナレーション付き動画なら、再生するだけで内容が伝わります。
+                    </p>
+                </div>
+                <div class="roi-calc">
+                    <div class="roi-calc-title">Insight Training Studioでできること</div>
+                    <div class="roi-row">
+                        <span class="roi-row-label">入力</span>
+                        <span class="roi-row-value">PowerPoint / 画像 / PDF</span>
+                    </div>
+                    <div class="roi-row">
+                        <span class="roi-row-label">ナレーション</span>
+                        <span class="roi-row-value">テキスト読み上げで音声化</span>
+                    </div>
+                    <div class="roi-row">
+                        <span class="roi-row-label">声質</span>
+                        <span class="roi-row-value">男性 / 女性から選択</span>
+                    </div>
+                    <div class="roi-row">
+                        <span class="roi-row-label">出力</span>
+                        <span class="roi-row-value">MP4動画ファイル</span>
+                    </div>
+                    <div class="roi-row">
+                        <span class="roi-row-label">修正</span>
+                        <span class="roi-row-value">テキスト変更ですぐ再生成</span>
+                    </div>
+                    <div class="roi-row">
+                        <span class="roi-row-label">料金</span>
+                        <span class="roi-row-value">Freeプランあり（月3本）</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== Pricing ======== -->
+    <section class="section section-warm" id="pricing">
+        <div class="section-inner fade-in">
+            <span class="section-label" style="display:block; text-align:center;">料金</span>
+            <h2 class="section-title" style="text-align: center;">まずは月8万円から。</h2>
+            <p class="section-desc" style="text-align: center; margin-left: auto; margin-right: auto;">
+                14日間の無料トライアル付き。効果を実感してから導入できます。
+            </p>
+            <div class="pricing-highlight">
+                <div class="pricing-card-single">
+                    <div class="pricing-name">Business</div>
+                    <div class="pricing-price">&yen;80,000<span>/月</span></div>
+                    <div class="pricing-period">年額 &yen;864,000（10%割引）</div>
+                    <ul class="pricing-features">
+                        <li>月30本まで動画生成</li>
+                        <li>1本あたり30分以内</li>
+                        <li>5ユーザーまで利用可</li>
+                        <li>自社ロゴ挿入</li>
+                        <li>男性 / 女性 / 多言語音声</li>
+                        <li>全テンプレート利用可</li>
+                        <li>透かしなし</li>
+                        <li>メールサポート</li>
+                    </ul>
+                    <a href="https://www.insight-office.com/ja/downloads" class="pricing-cta-primary" target="_blank">無料ダウンロード →</a>
+                </div>
+                <p class="pricing-note">
+                    大規模導入やカスタマイズが必要な場合は Enterprise プラン（&yen;250,000/月）もございます。<br>
+                    メニューや機能のカスタマイズ対応もご相談に応じます。
+                </p>
+                <a href="index.html#pricing" class="pricing-other-link">全プランの詳細を見る →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== CTA ======== -->
+    <section class="cta-section" id="contact">
+        <div class="section-inner fade-in">
+            <span class="section-label" style="color: var(--color-gold-light);">まずは無料で</span>
+            <h2 class="section-title" style="font-size: clamp(1.6rem, 3.5vw, 2.5rem); color: var(--color-text-inverse);">まずは1本、<br>試してみてください。</h2>
+            <p class="cta-tagline">
+                無料でダウンロードできます。<br>
+                いつもの提案書で、ナレーション付き動画を作ってみてください。
+            </p>
+            <div class="hero-cta-group">
+                <a href="https://www.insight-office.com/ja/downloads" class="btn-primary" target="_blank">
+                    無料ダウンロード →
+                </a>
+                <a href="https://www.insight-office.com/ja/products/insight-movie" class="btn-secondary" target="_blank">
+                    製品詳細を見る
+                </a>
+            </div>
+            <p style="font-size: 0.85rem; color: rgba(250,248,245,0.5); margin-top: 1.5rem;">
+                ご質問・お問い合わせは <a href="mailto:info@h-insight.jp" style="color: var(--color-gold-light);">info@h-insight.jp</a> まで
+            </p>
+        </div>
+    </section>
+
+    <!-- ======== Footer ======== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo-icon">IC</div>
+                <span class="footer-brand-text">Insight Training Studio</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">教育・研修向け</a>
+                <a href="https://www.insight-office.com" target="_blank">Insight Business Suite</a>
+                <a href="https://h-insight.jp" target="_blank">HARMONIC insight</a>
+                <a href="https://h-insight.jp/legal/terms" target="_blank">利用規約</a>
+                <a href="https://h-insight.jp/legal/privacy" target="_blank">プライバシーポリシー</a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 HARMONIC insight LLC. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======== Scripts ======== -->
+    <script>
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 20);
+        });
+
+        // Fade-in on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>

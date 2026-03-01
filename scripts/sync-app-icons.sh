@@ -83,11 +83,11 @@ Options:
   -h, --help        このヘルプを表示
 
 Product Codes:
-  WPF:   INSS, IOSH, IOSD, ISOF, INPY, INBT, LAUNCHER
+  WPF:   INSS, IOSH, IOSD, ISOF, INPY, INBT, INMV, LAUNCHER
   Tauri: INCA, IVIN
   Expo:  CAMERA, VOICE_CLOCK, PINBOARD, VOICE_MEMO
   Web:   QR
-  Python: INMV, INIG
+  Python: INIG
 
 Examples:
   # WPF アプリ（Insight Performance Management）

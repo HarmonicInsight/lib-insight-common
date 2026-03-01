@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insight Performance Management - コンサルグレードExcel版管理+AI分析</title>
+<style>
+  @page{size:A4;margin:0}*{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;width:210mm;height:297mm;color:#2c2c2c;background:#FAF8F5;overflow:hidden;position:relative}
+  :root{--gold:#B8942F;--ivory:#FAF8F5;--navy:#1B2A4A;--navy-light:#2C3E5A;--warm-gray:#6B6560;--light-border:#E8E2D9;--card-bg:#FFF}
+  .header{background:linear-gradient(135deg,#1B2A4A 0%,#2C3E5A 60%,#3A5070 100%);color:#FAF8F5;padding:14mm 14mm 12mm;position:relative}
+  .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1mm;background:linear-gradient(90deg,#B8942F,#D4B65A,#B8942F)}
+  .brand-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5mm}
+  .logo{display:flex;align-items:center;gap:3mm}
+  .logo-mark{width:9mm;height:9mm;border:0.5mm solid #B8942F;border-radius:2mm;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:4mm;color:#B8942F}
+  .logo-text{font-size:3mm;font-weight:300;letter-spacing:1.5mm;color:#B8942F}
+  .tag{font-size:2.5mm;letter-spacing:1mm;text-transform:uppercase;color:rgba(250,248,245,0.6)}
+  .product-name{font-size:11mm;font-weight:700;letter-spacing:0.5mm;margin-bottom:3mm}
+  .subtitle{font-size:3.8mm;font-weight:300;line-height:1.8;color:rgba(250,248,245,0.85);max-width:160mm}
+  .accent-strip{background:var(--navy);padding:3.5mm 14mm;display:flex;justify-content:space-between;align-items:center;border-bottom:0.3mm solid var(--light-border)}
+  .accent-item{text-align:center}.accent-item .value{font-size:4.5mm;font-weight:700;color:var(--gold);display:block}.accent-item .label{font-size:2.4mm;color:rgba(250,248,245,0.6);letter-spacing:0.5mm}
+  .main{padding:5mm 14mm 4mm}
+  .section-title{font-size:3.5mm;font-weight:700;color:var(--navy);letter-spacing:0.8mm;text-transform:uppercase;margin-bottom:3mm;padding-bottom:1.5mm;border-bottom:0.3mm solid var(--gold)}
+  .cs-grid{display:flex;gap:4mm;margin-bottom:4mm}.cs-box{flex:1;padding:3.5mm 4.5mm;border-radius:2mm}
+  .cs-challenge{background:#fff;border:0.3mm solid var(--light-border)}.cs-solution{background:var(--navy);color:var(--ivory)}
+  .cs-box h3{font-size:3.2mm;font-weight:700;margin-bottom:2mm;letter-spacing:0.3mm}.cs-challenge h3{color:var(--navy)}.cs-solution h3{color:var(--gold)}
+  .cs-box ul{list-style:none;font-size:2.6mm;line-height:1.8}.cs-box li{padding-left:3.5mm;position:relative}
+  .cs-challenge li::before{content:'—';position:absolute;left:0;color:var(--warm-gray)}.cs-solution li::before{content:'—';position:absolute;left:0;color:var(--gold)}
+  .arch-grid{display:flex;gap:3mm;margin-bottom:4mm}
+  .arch-card{flex:1;border-radius:2mm;padding:3.5mm 4mm;text-align:center;background:var(--card-bg);border:0.3mm solid var(--light-border)}
+  .arch-card .layer-name{font-size:3.5mm;font-weight:700;color:var(--navy);margin-bottom:1mm}
+  .arch-card .layer-sub{font-size:2.3mm;font-weight:600;color:var(--gold);letter-spacing:0.5mm;text-transform:uppercase;margin-bottom:1.5mm}
+  .arch-card .layer-desc{font-size:2.3mm;line-height:1.6;text-align:left;color:var(--warm-gray)}
+  .arch-highlight{border-color:var(--gold)}
+  .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-bottom:4mm}
+  .feature-card{background:var(--card-bg);border:0.3mm solid var(--light-border);border-radius:2mm;padding:3mm 4mm}
+  .feature-card h4{font-size:3mm;font-weight:700;color:var(--navy);margin-bottom:1.5mm;padding-left:3mm;border-left:0.8mm solid var(--gold)}
+  .feature-card p{font-size:2.4mm;color:var(--warm-gray);line-height:1.6}
+  .roi-box{background:var(--card-bg);border:0.3mm solid var(--light-border);border-radius:2mm;padding:3.5mm 5mm;margin-bottom:4mm}
+  .roi-table{width:100%;font-size:2.5mm;border-collapse:collapse}
+  .roi-table td{padding:1.5mm 2mm}.roi-table td:last-child{text-align:right;font-weight:600;color:var(--navy)}
+  .roi-table .roi-total{border-top:0.5mm solid var(--navy);font-weight:700;font-size:2.8mm}
+  .roi-table .roi-product{color:var(--gold);font-weight:700;font-size:2.8mm}
+  .pricing-strip{background:var(--navy);border-radius:2mm;padding:4mm 5mm;display:flex;justify-content:center;align-items:center;gap:5mm;margin-bottom:4mm}
+  .plan{text-align:center}.plan-name{font-size:2.5mm;color:rgba(250,248,245,0.5);letter-spacing:0.8mm;text-transform:uppercase;margin-bottom:1mm}
+  .price{font-size:4.5mm;font-weight:700;color:var(--ivory)}.price-note{font-size:2.2mm;color:rgba(250,248,245,0.4)}
+  .plan-divider{width:0.3mm;height:14mm;background:rgba(184,148,47,0.3)}.plan-highlight .price{color:var(--gold)}
+  .origin-box{border-left:1mm solid var(--gold);padding:3mm 5mm;margin-bottom:4mm;background:var(--card-bg)}
+  .origin-box p{font-size:2.6mm;color:var(--warm-gray);line-height:1.8;font-style:italic}
+  .origin-box .author{font-size:2.4mm;color:var(--navy);font-weight:600;font-style:normal;margin-top:2mm}
+  .target-strip{display:flex;gap:2.5mm;margin-bottom:3mm}
+  .target-tag{border:0.3mm solid var(--gold);border-radius:1.5mm;padding:1.2mm 3.5mm;font-size:2.4mm;font-weight:600;color:var(--navy)}
+  .footer{position:absolute;bottom:0;left:0;right:0;background:var(--navy);padding:4mm 14mm;display:flex;justify-content:space-between;align-items:center}
+  .footer-left{font-size:2.4mm;color:rgba(250,248,245,0.5);line-height:1.6}
+  .footer-cta{background:var(--gold);color:var(--navy);font-size:3mm;font-weight:700;padding:2.5mm 7mm;border-radius:1.5mm;text-align:center;line-height:1.4;letter-spacing:0.3mm}
+  .footer-cta small{font-size:2.2mm;font-weight:400;display:block}
+  .footer-right{text-align:right;font-size:2.4mm;color:rgba(250,248,245,0.5);line-height:1.6}
+  @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand-row">
+    <div class="logo"><div class="logo-mark">HI</div><span class="logo-text">HARMONIC INSIGHT</span></div>
+    <span class="tag">Excel Version Control + AI</span>
+  </div>
+  <div class="product-name">Insight Performance Management</div>
+  <div class="subtitle">Excelの混乱を終わらせる。<br>コンサルグレードの版管理とAI分析で、ファイル事故ゼロの世界を実現します。</div>
+</div>
+
+<div class="accent-strip">
+  <div class="accent-item"><span class="value">ファイル事故ゼロ</span><span class="label">Git的バージョン管理</span></div>
+  <div class="accent-item"><span class="value">AI Tool Use</span><span class="label">セル直接操作</span></div>
+  <div class="accent-item"><span class="value">RPA Agent</span><span class="label">業務自動化 標準搭載</span></div>
+  <div class="accent-item"><span class="value">年間¥4,500,000</span><span class="label">相当の業務効率化</span></div>
+</div>
+
+<div class="main">
+
+  <div class="section-title">課題と解決</div>
+  <div class="cs-grid">
+    <div class="cs-box cs-challenge">
+      <h3>現場の課題</h3>
+      <ul>
+        <li>「report_v2_final_最終版.xlsx」が複数存在する混乱</li>
+        <li>上書き保存による重要データの消失。損害賠償リスク</li>
+        <li>定型的なデータ加工・レポート作成に膨大な時間</li>
+        <li>RPA導入は高額（UiPath ¥63,000/年〜）で手が出ない</li>
+      </ul>
+    </div>
+    <div class="cs-box cs-solution">
+      <h3>Insight Performance Management の解決</h3>
+      <ul>
+        <li>全変更履歴を自動保存。任意の版に1クリックで復元</li>
+        <li>セル単位の変更追跡。「誰が何を変えたか」が一目瞭然</li>
+        <li>AIがセルを直接操作。数式作成・データ整形を自動化</li>
+        <li>RPA Agent標準搭載。追加契約なしで業務を自動化</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">3層アーキテクチャ</div>
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="layer-name">バージョン管理</div>
+      <div class="layer-sub">Git Layer</div>
+      <div class="layer-desc">全変更履歴の自動保存。セル単位の差分比較。1クリックで任意の版に復元。上書き事故を完全に防止。</div>
+    </div>
+    <div class="arch-card arch-highlight">
+      <div class="layer-name">AI Tool Use</div>
+      <div class="layer-sub">Claude Integration</div>
+      <div class="layer-desc">AIがセルを直接読み書き。数式の自動生成・修正。データ分析・パターン検出。自然言語でExcelを操作。</div>
+    </div>
+    <div class="arch-card">
+      <div class="layer-name">RPA Agent</div>
+      <div class="layer-sub">Automation Layer</div>
+      <div class="layer-desc">定型業務の自動実行。データ収集クライアント。スケジュール実行。外部ツール連携。</div>
+    </div>
+  </div>
+
+  <div class="section-title">主要機能</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <h4>セル単位の差分比較・マージ</h4>
+      <p>2つのExcelファイルの差分をセル単位で可視化。チームでの安全な共同編集を実現。</p>
+    </div>
+    <div class="feature-card">
+      <h4>AI Tool Use（6ツール）</h4>
+      <p>「A列の売上を月別集計して」と指示するだけ。AIがget/set/analyze等のツールでセルを直接操作。</p>
+    </div>
+    <div class="feature-card">
+      <h4>掲示板・コメント機能</h4>
+      <p>ファイル単位でコメント・指示を残せる掲示板。メールやチャットに散らばる指示を集約。</p>
+    </div>
+    <div class="feature-card">
+      <h4>データ収集クライアント</h4>
+      <p>外部データソースからExcelに自動取り込み。定期レポートのデータ収集を完全自動化。</p>
+    </div>
+  </div>
+
+  <div class="section-title">投資対効果</div>
+  <div class="roi-box">
+    <table class="roi-table">
+      <tr><td>バージョン管理によるファイル事故防止</td><td>¥100,000+/年</td></tr>
+      <tr><td>AI Tool Use によるデータ処理自動化（月30時間 x ¥30,000）</td><td>¥3,600,000/年</td></tr>
+      <tr><td>RPA Agent によるルーチン業務自動化</td><td>¥900,000/年</td></tr>
+      <tr class="roi-total"><td>推定年間削減効果</td><td>¥4,600,000/年</td></tr>
+      <tr class="roi-product"><td>Insight Performance Management PROFESSIONAL</td><td style="color:var(--gold)">¥29,800/年</td></tr>
+    </table>
+  </div>
+
+  <div class="pricing-strip">
+    <div class="plan"><div class="plan-name">Free</div><div class="price">¥0</div><div class="price-note">版管理+差分のみ・3ファイル</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan plan-highlight"><div class="plan-name">Professional</div><div class="price">¥29,800/年</div><div class="price-note">全機能・AI 300回/月・RPA</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan"><div class="plan-name">Enterprise</div><div class="price">¥49,800/年/PC</div><div class="price-note">AI 1,000回/月・チーム・監査ログ</div></div>
+  </div>
+
+  <div class="origin-box">
+    <p>「優秀なコンサルタントが、深夜までExcelと格闘している。」——30年間、何百回と見てきた光景です。ファイルの混乱を終わらせ、分析そのものに集中できる環境を。それがInsight Performance Managementの原点です。</p>
+    <div class="author">— HARMONIC insight 開発者 / IT・業務コンサルタント 30年</div>
+  </div>
+
+  <div class="target-strip">
+    <div class="target-tag">コンサルティングファーム</div>
+    <div class="target-tag">監査法人</div>
+    <div class="target-tag">金融・保険</div>
+    <div class="target-tag">経営企画</div>
+    <div class="target-tag">DX推進室</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">HARMONIC insight 合同会社<br>insight-office.com</div>
+  <div class="footer-cta">デモを依頼する<small>製品の詳細をご案内いたします</small></div>
+  <div class="footer-right">お問い合わせ<br>contact@insight-office.com</div>
+</div>
+
+</body>
+</html>

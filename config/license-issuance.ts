@@ -343,7 +343,7 @@ export const PRODUCT_DOWNLOAD_LINKS: Record<ProductCode, ProductDownloadLinks> =
   },
   INMV: {
     productCode: 'INMV',
-    productName: 'InsightCast',
+    productName: 'Insight Training Studio',
     windows: 'https://download.harmonicinsight.com/InsightCast/latest/windows',
     documentation: 'https://docs.harmonicinsight.com/InsightCast',
   },

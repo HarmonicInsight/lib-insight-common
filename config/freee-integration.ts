@@ -571,7 +571,7 @@ export const FREEE_PRODUCT_ITEM_MAPPINGS: FreeeProductItemMapping[] = [
   { productCode: 'ISOF', freeeItemName: 'InsightSeniorOffice ライセンス', freeeItemNameEn: 'InsightSeniorOffice License', revenueAccountName: '売上高', revenueTaxCode: 1 },
 
   // --- Tier 2: AI ツール ---
-  { productCode: 'INMV', freeeItemName: 'InsightCast ライセンス', freeeItemNameEn: 'InsightCast License', revenueAccountName: '売上高', revenueTaxCode: 1 },
+  { productCode: 'INMV', freeeItemName: 'Insight Training Studio ライセンス', freeeItemNameEn: 'Insight Training Studio License', revenueAccountName: '売上高', revenueTaxCode: 1 },
   { productCode: 'INIG', freeeItemName: 'InsightImageGen ライセンス', freeeItemNameEn: 'InsightImageGen License', revenueAccountName: '売上高', revenueTaxCode: 1 },
 
   // --- Tier 1: 業務変革ツール ---

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InterviewInsight - AIヒアリング・分析プラットフォーム</title>
+<style>
+  @page{size:A4;margin:0}*{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;width:210mm;height:297mm;color:#2c2c2c;background:#FAF8F5;overflow:hidden;position:relative}
+  :root{--gold:#B8942F;--ivory:#FAF8F5;--navy:#1B2A4A;--navy-light:#2C3E5A;--warm-gray:#6B6560;--light-border:#E8E2D9;--card-bg:#FFF}
+  .header{background:linear-gradient(135deg,#1B2A4A 0%,#2C3E5A 60%,#3A5070 100%);color:#FAF8F5;padding:14mm 14mm 12mm;position:relative}
+  .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1mm;background:linear-gradient(90deg,#B8942F,#D4B65A,#B8942F)}
+  .brand-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5mm}
+  .logo{display:flex;align-items:center;gap:3mm}
+  .logo-mark{width:9mm;height:9mm;border:0.5mm solid #B8942F;border-radius:2mm;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:4mm;color:#B8942F}
+  .logo-text{font-size:3mm;font-weight:300;letter-spacing:1.5mm;color:#B8942F}
+  .tag{font-size:2.5mm;letter-spacing:1mm;text-transform:uppercase;color:rgba(250,248,245,0.6)}
+  .product-name{font-size:10mm;font-weight:700;letter-spacing:0.5mm;margin-bottom:3mm}
+  .subtitle{font-size:3.8mm;font-weight:300;line-height:1.8;color:rgba(250,248,245,0.85);max-width:165mm}
+  .accent-strip{background:var(--navy);padding:3.5mm 14mm;display:flex;justify-content:space-between;align-items:center;border-bottom:0.3mm solid var(--light-border)}
+  .accent-item{text-align:center}.accent-item .value{font-size:4.5mm;font-weight:700;color:var(--gold);display:block}.accent-item .label{font-size:2.4mm;color:rgba(250,248,245,0.6);letter-spacing:0.5mm}
+  .main{padding:5mm 14mm 4mm}
+  .section-title{font-size:3.5mm;font-weight:700;color:var(--navy);letter-spacing:0.8mm;text-transform:uppercase;margin-bottom:3mm;padding-bottom:1.5mm;border-bottom:0.3mm solid var(--gold)}
+  .cs-grid{display:flex;gap:4mm;margin-bottom:4mm}.cs-box{flex:1;padding:3.5mm 4.5mm;border-radius:2mm}
+  .cs-challenge{background:#fff;border:0.3mm solid var(--light-border)}.cs-solution{background:var(--navy);color:var(--ivory)}
+  .cs-box h3{font-size:3.2mm;font-weight:700;margin-bottom:2mm}.cs-challenge h3{color:var(--navy)}.cs-solution h3{color:var(--gold)}
+  .cs-box ul{list-style:none;font-size:2.6mm;line-height:1.8}.cs-box li{padding-left:3.5mm;position:relative}
+  .cs-challenge li::before{content:'—';position:absolute;left:0;color:var(--warm-gray)}.cs-solution li::before{content:'—';position:absolute;left:0;color:var(--gold)}
+
+  .flow-strip{display:flex;align-items:center;gap:2mm;margin-bottom:4mm;background:var(--card-bg);border:0.3mm solid var(--light-border);border-radius:2mm;padding:3.5mm 4mm}
+  .flow-step{flex:1;text-align:center}
+  .flow-step .step-num{width:5.5mm;height:5.5mm;background:var(--navy);color:var(--gold);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:2.5mm;font-weight:700;margin-bottom:1mm}
+  .flow-step .step-title{font-size:2.8mm;font-weight:700;color:var(--navy);margin-bottom:0.5mm}
+  .flow-step .step-desc{font-size:2.2mm;color:var(--warm-gray)}
+  .flow-arrow{font-size:3.5mm;color:var(--gold);flex-shrink:0}
+
+  .two-col{display:flex;gap:4mm;margin-bottom:4mm}
+  .avatar-box{flex:1;background:var(--card-bg);border:0.3mm solid var(--gold);border-radius:2mm;padding:3.5mm 4mm;text-align:center}
+  .avatar-box .avatar-title{font-size:3.2mm;font-weight:700;color:var(--navy);margin-bottom:1mm}
+  .avatar-box .avatar-num{font-size:6mm;font-weight:700;color:var(--gold);margin:1mm 0}
+  .avatar-box .avatar-desc{font-size:2.4mm;color:var(--warm-gray);line-height:1.6}
+  .features-list{flex:1.2}
+  .feature-item{display:flex;align-items:flex-start;gap:2.5mm;margin-bottom:2.5mm}
+  .feature-item .dot{width:1.5mm;height:1.5mm;background:var(--gold);border-radius:50%;margin-top:1.5mm;flex-shrink:0}
+  .feature-item h4{font-size:2.8mm;font-weight:700;color:var(--navy)}
+  .feature-item p{font-size:2.3mm;color:var(--warm-gray)}
+
+  .roi-strip{background:var(--card-bg);border:0.3mm solid var(--light-border);border-radius:2mm;padding:3.5mm 5mm;display:flex;justify-content:space-around;align-items:center;margin-bottom:4mm}
+  .roi-item{text-align:center}.roi-item .roi-label{font-size:2.4mm;color:var(--warm-gray);margin-bottom:0.8mm}
+  .roi-item .roi-value{font-size:5mm;font-weight:700}.roi-item .roi-note{font-size:2.2mm;color:var(--warm-gray)}
+
+  .pricing-strip{background:var(--navy);border-radius:2mm;padding:4mm 4mm;display:flex;justify-content:center;align-items:center;gap:4mm;margin-bottom:4mm}
+  .plan{text-align:center}.plan-name{font-size:2.5mm;color:rgba(250,248,245,0.5);letter-spacing:0.8mm;text-transform:uppercase;margin-bottom:1mm}
+  .price{font-size:4.5mm;font-weight:700;color:var(--ivory)}.price-note{font-size:2mm;color:rgba(250,248,245,0.4)}
+  .plan-divider{width:0.3mm;height:14mm;background:rgba(184,148,47,0.3)}.plan-highlight .price{color:var(--gold)}
+
+  .badge-strip{display:flex;gap:2mm;flex-wrap:wrap;margin-bottom:3mm}
+  .badge{border:0.3mm solid var(--light-border);border-radius:1.5mm;padding:1mm 3mm;font-size:2.2mm;font-weight:600;color:var(--navy);background:var(--card-bg)}
+
+  .origin-box{border-left:1mm solid var(--gold);padding:3mm 5mm;margin-bottom:3mm;background:var(--card-bg)}
+  .origin-box p{font-size:2.6mm;color:var(--warm-gray);line-height:1.8;font-style:italic}
+  .origin-box .author{font-size:2.4mm;color:var(--navy);font-weight:600;font-style:normal;margin-top:2mm}
+
+  .footer{position:absolute;bottom:0;left:0;right:0;background:var(--navy);padding:4mm 14mm;display:flex;justify-content:space-between;align-items:center}
+  .footer-left{font-size:2.4mm;color:rgba(250,248,245,0.5);line-height:1.6}
+  .footer-cta{background:var(--gold);color:var(--navy);font-size:3mm;font-weight:700;padding:2.5mm 7mm;border-radius:1.5mm;text-align:center;line-height:1.4;letter-spacing:0.3mm}
+  .footer-cta small{font-size:2.2mm;font-weight:400;display:block}
+  .footer-right{text-align:right;font-size:2.4mm;color:rgba(250,248,245,0.5);line-height:1.6}
+  @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand-row">
+    <div class="logo"><div class="logo-mark">HI</div><span class="logo-text">HARMONIC INSIGHT</span></div>
+    <span class="tag">AI Interview Platform</span>
+  </div>
+  <div class="product-name">InterviewInsight</div>
+  <div class="subtitle">ヒアリングの質を変える。30年の対話技術をAIに。<br>VRMアバターが対話し、AIが分析する。フォームでは聞けなかった本音を構造化データで届けます。</div>
+</div>
+
+<div class="accent-strip">
+  <div class="accent-item"><span class="value">100人同時</span><span class="label">AIインタビュー</span></div>
+  <div class="accent-item"><span class="value">250時間→1週間</span><span class="label">工数削減</span></div>
+  <div class="accent-item"><span class="value">感情分析</span><span class="label">ためらい検出</span></div>
+  <div class="accent-item"><span class="value">GDPR準拠</span><span class="label">エンタープライズ対応</span></div>
+</div>
+
+<div class="main">
+
+  <div class="section-title">課題と解決</div>
+  <div class="cs-grid">
+    <div class="cs-box cs-challenge">
+      <h3>現場の課題</h3>
+      <ul>
+        <li>1,000人の社員の声を聞きたいが、物理的に不可能</li>
+        <li>アンケートやフォームでは建前しか出てこない</li>
+        <li>1対1ヒアリングは1人2.5時間。100人で250時間</li>
+        <li>ヒアリング結果の分析・構造化に膨大な工数がかかる</li>
+      </ul>
+    </div>
+    <div class="cs-box cs-solution">
+      <h3>InterviewInsight の解決</h3>
+      <ul>
+        <li>VRMアバターが100人に同時にインタビュー</li>
+        <li>アバター相手だから本音が出る。対面より率直な回答</li>
+        <li>100人を1週間で完了。工数を99%削減</li>
+        <li>AIが自動で文字起こし・感情分析・構造化レポートを生成</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">利用の流れ</div>
+  <div class="flow-strip">
+    <div class="flow-step"><div class="step-num">1</div><div class="step-title">質問設計</div><div class="step-desc">AIがテーマから<br>質問を自動生成</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-num">2</div><div class="step-title">URL配布</div><div class="step-desc">回答者にURLを送信<br>OTP認証でログイン</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-num">3</div><div class="step-title">アバター対話</div><div class="step-desc">VRMアバターが<br>対話形式でヒアリング</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-num">4</div><div class="step-title">AI分析</div><div class="step-desc">文字起こし<br>感情分析・分類</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="step-num">5</div><div class="step-title">レポート</div><div class="step-desc">構造化データで<br>ダッシュボード表示</div></div>
+  </div>
+
+  <div class="section-title">VRMアバター & 主要機能</div>
+  <div class="two-col">
+    <div class="avatar-box">
+      <div class="avatar-title">VRMアバター</div>
+      <div class="avatar-num">30体</div>
+      <div class="avatar-desc">カスタマイズ可能な3Dアバターが<br>親しみやすい雰囲気でインタビュー。<br>対面の「気まずさ」を排除し、<br><strong>心理的安全性を確保</strong>。</div>
+    </div>
+    <div class="features-list">
+      <div class="feature-item"><div class="dot"></div><div><h4>自動文字起こし & 要約</h4><p>音声を即座にテキスト化。AIが要点を自動抽出。</p></div></div>
+      <div class="feature-item"><div class="dot"></div><div><h4>感情分析 & ためらい検出</h4><p>回答者の感情・言いよどみをAIが検出し定量化。</p></div></div>
+      <div class="feature-item"><div class="dot"></div><div><h4>Interview Mart（横断分析）</h4><p>複数セッションを横断して傾向分析。ダッシュボード表示。</p></div></div>
+      <div class="feature-item"><div class="dot"></div><div><h4>Webhook API連携</h4><p>既存システムとリアルタイム連携。データの二重入力を排除。</p></div></div>
+      <div class="feature-item"><div class="dot"></div><div><h4>GDPR準拠 & SSO/SAML</h4><p>エンタープライズ級のセキュリティ。監査ログ完備。</p></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">投資対効果</div>
+  <div class="roi-strip">
+    <div class="roi-item"><div class="roi-label">手動ヒアリング</div><div class="roi-value" style="color:#8B4513">¥7,500,000/年</div><div class="roi-note">100人 x 2.5h x ¥30,000</div></div>
+    <div style="font-size:4mm;color:var(--navy)">→</div>
+    <div class="roi-item"><div class="roi-label">InterviewInsight</div><div class="roi-value" style="color:var(--gold)">¥1,176,000/年</div><div class="roi-note">PROFESSIONAL ¥98,000/月</div></div>
+    <div style="width:0.3mm;height:12mm;background:var(--light-border)"></div>
+    <div class="roi-item"><div class="roi-label">年間削減効果</div><div class="roi-value" style="color:var(--gold)">¥6,324,000</div><div class="roi-note">ROI 6.4倍</div></div>
+  </div>
+
+  <div class="pricing-strip">
+    <div class="plan"><div class="plan-name">Trial</div><div class="price">14日間無料</div><div class="price-note">全機能・機能制限あり</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan plan-highlight"><div class="plan-name">Professional</div><div class="price">¥98,000/月</div><div class="price-note">全30アバター・感情分析・API</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan"><div class="plan-name">Enterprise</div><div class="price">¥198,000/月</div><div class="price-note">無制限・SSO/SAML・GDPR・20名</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan"><div class="plan-name">Custom</div><div class="price">¥500,000〜/月</div><div class="price-note">オンプレ・多言語アバター・SLA</div></div>
+  </div>
+
+  <div class="badge-strip">
+    <div class="badge">GDPR準拠</div><div class="badge">SSO/SAML</div><div class="badge">OTP認証</div>
+    <div class="badge">監査ログ</div><div class="badge">99.9% SLA</div><div class="badge">マルチテナント</div>
+    <div class="badge">Webhook API</div><div class="badge">Prisma 35+テーブル</div>
+  </div>
+
+  <div class="origin-box">
+    <p>「3時間かけたヒアリングの議事録を、さらに3時間かけてまとめている。」——30年間の対話技術を凝縮し、ヒアリングの質そのものを変える。それがInterviewInsightの使命です。</p>
+    <div class="author">— HARMONIC insight 開発者 / IT・業務コンサルタント 30年</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">HARMONIC insight 合同会社<br>insight-office.com</div>
+  <div class="footer-cta">デモを依頼する<small>VRMアバターとの対話を体験できます</small></div>
+  <div class="footer-right">お問い合わせ<br>contact@insight-office.com</div>
+</div>
+
+</body>
+</html>

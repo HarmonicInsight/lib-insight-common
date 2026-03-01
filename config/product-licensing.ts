@@ -80,7 +80,7 @@ function withTax(priceExTax: number): number {
  * │  3   │ Insight AI Briefcase             │ ¥198,000   │ ¥217,800   │
  * │  3   │ InsightPy                        │  ¥78,000   │  ¥85,800   │
  * │  4   │ InsightSeniorOffice              │  ¥48,000   │  ¥52,800   │
- * │  2   │ InsightCast                      │ ¥128,000   │ ¥140,800   │
+ * │  2   │ Insight Training Studio           │ ¥128,000   │ ¥140,800   │
  * │  2   │ InsightImageGen                  │  ¥88,000   │  ¥96,800   │
  * └──────┴──────────────────────────────────┴────────────┴────────────┘
  *
@@ -185,7 +185,7 @@ export const PRODUCT_LICENSES: ProductLicense[] = [
   // -------------------------------------------------------------------------
   {
     productCode: 'INMV',
-    productName: 'InsightCast',
+    productName: 'Insight Training Studio',
     tier: 2,
     group: 'group_a',
     availablePlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
@@ -193,7 +193,7 @@ export const PRODUCT_LICENSES: ProductLicense[] = [
     bizPriceYearlyInTax: withTax(128_000),
     entPricing: '個別見積もり',
     licenseModel: 'per_device',
-    note: '動画自動生成ツール。コンテンツ制作の自動化による高い投資対効果。',
+    note: '教育・プレゼン動画作成ツール。コンテンツ制作の自動化による高い投資対効果。',
   },
   {
     productCode: 'INIG',
@@ -205,7 +205,7 @@ export const PRODUCT_LICENSES: ProductLicense[] = [
     bizPriceYearlyInTax: withTax(88_000),
     entPricing: '個別見積もり',
     licenseModel: 'per_device',
-    note: 'AI画像一括生成ツール。InsightCast の補助ツールとして位置付け、やや低めに設定。',
+    note: 'AI画像一括生成ツール。Insight Training Studio の補助ツールとして位置付け、やや低めに設定。',
   },
 
   // -------------------------------------------------------------------------

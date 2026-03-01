@@ -28,7 +28,7 @@ class ProductCode(Enum):
     IOSH = "IOSH"  # Insight Performance Management
     IOSD = "IOSD"  # Insight AI Briefcase
     INPY = "INPY"  # InsightPy
-    INMV = "INMV"  # InsightCast
+    INMV = "INMV"  # Insight Training Studio
     INBT = "INBT"  # InsightBot (RPA)
     INCA = "INCA"  # InsightNoCodeAnalyzer
     INIG = "INIG"  # InsightImageGen
@@ -49,7 +49,7 @@ PRODUCT_NAMES: Dict[ProductCode, str] = {
     ProductCode.IOSH: "Insight Performance Management",
     ProductCode.IOSD: "Insight AI Briefcase",
     ProductCode.INPY: "InsightPy",
-    ProductCode.INMV: "InsightCast",
+    ProductCode.INMV: "Insight Training Studio",
     ProductCode.INBT: "InsightBot",
     ProductCode.INCA: "InsightNoCodeAnalyzer",
     ProductCode.INIG: "InsightImageGen",
@@ -70,7 +70,7 @@ PRODUCT_PLANS: Dict[str, list] = {
     "Insight Performance Management": [ProductCode.IOSH],
     "Insight AI Briefcase": [ProductCode.IOSD],
     "InsightPy": [ProductCode.INPY],
-    "InsightCast": [ProductCode.INMV],
+    "Insight Training Studio": [ProductCode.INMV],
     "InsightBot": [ProductCode.INBT],
     "InsightNoCodeAnalyzer": [ProductCode.INCA],
     "InsightImageGen": [ProductCode.INIG],

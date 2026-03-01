@@ -84,7 +84,7 @@ PRODUCT_REGISTRY = {
     'win-app-nocode-analyzer':      {'code': 'INCA',  'name': 'InsightNoCodeAnalyzer',  'tier': 1, 'tech': 'Tauri',   'platform': 'tauri'},
     'win-app-insight-bot':          {'code': 'INBT',  'name': 'InsightBot',             'tier': 1, 'tech': 'C# WPF',  'platform': 'wpf'},
     'web-app-auto-interview':       {'code': 'IVIN',  'name': 'InterviewInsight',       'tier': 1, 'tech': 'Tauri',   'platform': 'tauri'},
-    'win-app-insight-cast':         {'code': 'INMV',  'name': 'InsightCast',            'tier': 2, 'tech': 'Python',  'platform': 'python'},
+    'win-app-insight-cast':         {'code': 'INMV',  'name': 'Insight Training Studio', 'tier': 2, 'tech': 'C# WPF',  'platform': 'wpf'},
     'win-app-insight-image-gen':    {'code': 'INIG',  'name': 'InsightImageGen',        'tier': 2, 'tech': 'Python',  'platform': 'python'},
     'win-app-insight-slide':        {'code': 'INSS',  'name': 'Insight Deck Quality Gate', 'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},
     'win-app-insight-sheet':        {'code': 'IOSH',  'name': 'Insight Performance Management', 'tier': 3, 'tech': 'C# WPF',  'platform': 'wpf'},

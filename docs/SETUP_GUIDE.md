@@ -12,7 +12,7 @@ Insight Series の各リポジトリに insight-common を組み込む手順で�
 | Insight Performance Management | C# + WPF | `IOSH` |
 | Insight AI Briefcase | C# + WPF | `IOSD` |
 | InsightPy | Python | `INPY` |
-| InsightCast | Python | `INMV` |
+| Insight Training Studio | C# + WPF | `INMV` |
 | InsightImageGen | Python | `INIG` |
 | InsightBot | Python | `INBT` |
 | InsightNoCodeAnalyzer | Tauri + React + TypeScript | `INCA` |

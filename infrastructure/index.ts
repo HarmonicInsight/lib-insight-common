@@ -108,7 +108,7 @@ export const PRODUCT_CODES = {
   IOSH: 'Insight Performance Management',
   IOSD: 'Insight AI Briefcase',
   INPY: 'InsightPy',
-  INMV: 'InsightCast',
+  INMV: 'Insight Training Studio',
   INBT: 'InsightBot',
   INCA: 'InsightNoCodeAnalyzer',
   INIG: 'InsightImageGen',

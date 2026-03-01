@@ -20,7 +20,7 @@ allowed-tools: Read, Grep, Glob
 
 | コード | 製品名 |
 |-------|-------|
-| INMV | InsightCast |
+| INMV | Insight Training Studio |
 | INIG | InsightImageGen |
 
 ### Tier 3: Insight Business Suite（導入ツール）

@@ -32,7 +32,7 @@ REPOS=(
   "win-app-nocode-analyzer|INCA|InsightNoCodeAnalyzer|InsightNoCodeAnalyzer/|src-tauri/icons/|dir"
   "win-app-insight-bot|INBT|InsightBot|InsightBot|Resources|ico_png"
   "web-app-auto-interview|IVIN|InterviewInsight|InterviewInsight/|src-tauri/icons/|dir"
-  "win-app-insight-cast|INMV|InsightCast|InsightCast|resources|ico_png"
+  "win-app-insight-cast|INMV|Insight Training Studio|InsightCast|resources|ico_png"
   "win-app-insight-image-gen|INIG|InsightImageGen|InsightImageGen|resources|ico_png"
   "win-app-insight-slide|INSS|Insight Deck Quality Gate|InsightOfficeSlide|Resources|ico_png"
   "win-app-insight-sheet|IOSH|InsightPerformanceManagement|InsightPerformanceManagement|Resources|ico_png"

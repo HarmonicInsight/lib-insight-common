@@ -419,7 +419,7 @@ export const APP_ICON_CONFIGS: AppIconConfig[] = [
   // ══════════════════════════════════════════════════════
   {
     productCode: 'INMV',
-    productName: 'InsightCast',
+    productName: 'Insight Training Studio',
     masterPng: 'brand/icons/png/icon-insight-cast.png',
     motif: 'Projector + film strip + gear',
     motifJa: '映写機 + フィルムストリップ + ギア',

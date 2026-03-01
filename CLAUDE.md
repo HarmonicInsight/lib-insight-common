@@ -290,9 +290,9 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 | 技術 | 対象製品 |
 |------|---------|
-| **C# WPF (.NET 8.0)** | INSS, IOSH, IOSD, INPY, ISOF, INBT, LAUNCHER(Win), PINBOARD |
+| **C# WPF (.NET 8.0)** | INSS, IOSH, IOSD, INPY, ISOF, INBT, INMV, LAUNCHER(Win), PINBOARD |
 | **Tauri (Rust + TypeScript)** | INCA, IVIN |
-| **Python (CustomTkinter)** | INMV, INIG |
+| **Python (CustomTkinter)** | INIG |
 | **Android Kotlin Native** | CAMERA, VOICE_CLOCK, QR(Android), LAUNCHER(Android), CONSUL_EVAL, VOICE_TASK_CALENDAR |
 | **Expo (React Native)** | QR(iOS), VOICE_MEMO |
 
@@ -360,12 +360,12 @@ Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 ### Tier 2: AI活用ツール
 
-#### INMV — InsightCast
+#### INMV — Insight Training Studio
 
 | 項目 | 内容 |
 |------|------|
 | **説明** | 画像とテキストから動画を自動作成 |
-| **技術** | Python (CustomTkinter + PyInstaller) |
+| **技術** | C# WPF (.NET 8.0) |
 | **バージョン** | 1.0.0 — 開発中 |
 | **リポジトリ** | `win-app-insight-cast` |
 | **カラーテーマ** | Ivory & Gold |

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insight Business Suite - 業務改善AIスイート</title>
+<style>
+  @page{size:A4;margin:0}*{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;width:210mm;height:297mm;color:#2c2c2c;background:#FAF8F5;overflow:hidden;position:relative}
+  :root{--gold:#B8942F;--ivory:#FAF8F5;--navy:#1B2A4A;--navy-light:#2C3E5A;--warm-gray:#6B6560;--light-border:#E8E2D9;--card-bg:#FFF}
+  .header{background:linear-gradient(135deg,#1B2A4A 0%,#2C3E5A 60%,#3A5070 100%);color:#FAF8F5;padding:14mm 14mm 10mm;position:relative}
+  .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1mm;background:linear-gradient(90deg,#B8942F,#D4B65A,#B8942F)}
+  .brand-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4mm}
+  .logo{display:flex;align-items:center;gap:3mm}
+  .logo-mark{width:9mm;height:9mm;border:0.5mm solid #B8942F;border-radius:2mm;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:4mm;color:#B8942F}
+  .logo-text{font-size:3mm;font-weight:300;letter-spacing:1.5mm;color:#B8942F}
+  .tag{font-size:2.5mm;letter-spacing:1mm;text-transform:uppercase;color:rgba(250,248,245,0.6)}
+  .product-name{font-size:10mm;font-weight:700;letter-spacing:0.5mm;margin-bottom:2mm}
+  .subtitle{font-size:3.8mm;font-weight:300;line-height:1.8;color:rgba(250,248,245,0.85);max-width:160mm}
+  .tagline-strip{background:var(--navy);text-align:center;padding:3mm 14mm;font-size:4mm;font-weight:600;letter-spacing:1.5mm;color:var(--gold);border-bottom:0.3mm solid var(--light-border)}
+  .main{padding:5mm 14mm 4mm}
+  .section-title{font-size:3.5mm;font-weight:700;color:var(--navy);letter-spacing:0.8mm;text-transform:uppercase;margin-bottom:3mm;padding-bottom:1.5mm;border-bottom:0.3mm solid var(--gold)}
+
+  .product-grid{display:flex;gap:3mm;margin-bottom:4mm}
+  .product-card{flex:1;border-radius:2mm;padding:3.5mm 4mm;background:var(--card-bg);border:0.3mm solid var(--light-border)}
+  .product-card .card-name{font-size:3.8mm;font-weight:700;color:var(--navy);margin-bottom:0.8mm}
+  .product-card .card-sub{font-size:2.4mm;font-weight:600;color:var(--gold);letter-spacing:0.3mm;margin-bottom:2mm;text-transform:uppercase}
+  .product-card .card-features{list-style:none;font-size:2.3mm;line-height:1.7}
+  .product-card .card-features li{padding-left:3mm;position:relative}
+  .product-card .card-features li::before{content:'—';position:absolute;left:0;color:var(--gold)}
+  .card-highlight{border-color:var(--gold)}
+
+  .foundation-box{background:var(--card-bg);border:0.3mm solid var(--light-border);border-radius:2mm;padding:3.5mm 5mm;margin-bottom:4mm}
+  .foundation-title{font-size:3mm;font-weight:700;color:var(--navy);margin-bottom:2mm;letter-spacing:0.5mm}
+  .foundation-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2.5mm}
+  .foundation-item{text-align:center;padding:2mm;border:0.2mm solid var(--light-border);border-radius:1.5mm}
+  .foundation-item .fi-label{font-size:2.5mm;font-weight:700;color:var(--navy);margin-bottom:0.5mm}
+  .foundation-item .fi-desc{font-size:2.1mm;color:var(--warm-gray)}
+
+  .vs-box{background:var(--card-bg);border:0.3mm solid var(--gold);border-radius:2mm;padding:4mm 5mm;margin-bottom:4mm;display:flex;gap:5mm;align-items:center}
+  .vs-left{flex:1.3}
+  .vs-title{font-size:3.2mm;font-weight:700;color:var(--navy);margin-bottom:2.5mm;letter-spacing:0.3mm}
+  .vs-table{width:100%;font-size:2.4mm;border-collapse:collapse}
+  .vs-table td{padding:1.5mm 0}
+  .vs-table td:nth-child(2),.vs-table td:nth-child(3){text-align:center;font-weight:600}
+  .vs-table .vs-header{font-weight:700;color:var(--warm-gray);border-bottom:0.3mm solid var(--light-border)}
+  .vs-right{text-align:center;background:var(--navy);border-radius:2mm;padding:4mm 4mm;color:var(--ivory)}
+  .savings-label{font-size:2.5mm;color:rgba(250,248,245,0.6);margin-bottom:1mm}
+  .savings-amount{font-size:5.5mm;font-weight:700;color:var(--gold)}
+  .savings-note{font-size:2.2mm;color:rgba(250,248,245,0.5);margin-top:1mm}
+
+  .usecase-grid{display:flex;gap:3mm;margin-bottom:4mm}
+  .usecase-card{flex:1;border:0.3mm solid var(--light-border);border-radius:2mm;padding:3mm 4mm;background:var(--card-bg)}
+  .usecase-card .uc-industry{font-size:2.8mm;font-weight:700;color:var(--navy);margin-bottom:1.5mm}
+  .usecase-card .uc-desc{font-size:2.3mm;color:var(--warm-gray);line-height:1.6;margin-bottom:1.5mm}
+  .usecase-card .uc-result{font-size:2.8mm;font-weight:700;color:var(--gold)}
+
+  .pricing-strip{background:var(--navy);border-radius:2mm;padding:4mm 5mm;display:flex;justify-content:center;align-items:center;gap:6mm;margin-bottom:4mm}
+  .plan{text-align:center}.plan-name{font-size:2.5mm;color:rgba(250,248,245,0.5);letter-spacing:0.8mm;text-transform:uppercase;margin-bottom:1mm}
+  .price{font-size:5mm;font-weight:700;color:var(--ivory)}.price-note{font-size:2.2mm;color:rgba(250,248,245,0.4)}
+  .plan-divider{width:0.3mm;height:14mm;background:rgba(184,148,47,0.3)}.plan-highlight .price{color:var(--gold)}
+
+  .origin-box{border-left:1mm solid var(--gold);padding:3mm 5mm;margin-bottom:3mm;background:var(--card-bg)}
+  .origin-box p{font-size:2.6mm;color:var(--warm-gray);line-height:1.8;font-style:italic}
+  .origin-box .author{font-size:2.4mm;color:var(--navy);font-weight:600;font-style:normal;margin-top:2mm}
+  .target-strip{display:flex;gap:2.5mm;margin-bottom:2mm}
+  .target-tag{border:0.3mm solid var(--gold);border-radius:1.5mm;padding:1.2mm 3.5mm;font-size:2.4mm;font-weight:600;color:var(--navy)}
+
+  .footer{position:absolute;bottom:0;left:0;right:0;background:var(--navy);padding:4mm 14mm;display:flex;justify-content:space-between;align-items:center}
+  .footer-left{font-size:2.4mm;color:rgba(250,248,245,0.5);line-height:1.6}
+  .footer-cta{background:var(--gold);color:var(--navy);font-size:3mm;font-weight:700;padding:2.5mm 7mm;border-radius:1.5mm;text-align:center;line-height:1.4;letter-spacing:0.3mm}
+  .footer-cta small{font-size:2.2mm;font-weight:400;display:block}
+  .footer-right{text-align:right;font-size:2.4mm;color:rgba(250,248,245,0.5);line-height:1.6}
+  @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand-row">
+    <div class="logo"><div class="logo-mark">HI</div><span class="logo-text">HARMONIC INSIGHT</span></div>
+    <span class="tag">Professional AI Office Suite</span>
+  </div>
+  <div class="product-name">Insight Business Suite</div>
+  <div class="subtitle">業務改善の全工程を、ひとつのスイートで。<br>DQG + PM + Briefcase。3つのプロフェッショナルツールがシームレスに連携します。</div>
+</div>
+
+<div class="tagline-strip">
+  30年のIT/業務コンサルティングの知見を凝縮した、唯一の業務改善AIスイート
+</div>
+
+<div class="main">
+
+  <div class="section-title">Suite 構成</div>
+  <div class="product-grid">
+    <div class="product-card card-highlight">
+      <div class="card-name">Insight Deck Quality Gate</div>
+      <div class="card-sub">提案書レビュー</div>
+      <ul class="card-features">
+        <li>3段階AIコンシェルジュ</li>
+        <li>テキスト抽出・構造化</li>
+        <li>PPTX差分・マージ</li>
+        <li>バージョン管理</li>
+        <li>多言語翻訳</li>
+      </ul>
+    </div>
+    <div class="product-card card-highlight">
+      <div class="card-name">Insight Performance Management</div>
+      <div class="card-sub">Excel版管理 + AI</div>
+      <ul class="card-features">
+        <li>Git的バージョン管理</li>
+        <li>AI Tool Use（セル直接操作）</li>
+        <li>RPA Agent標準搭載</li>
+        <li>セル単位の差分比較</li>
+        <li>データ収集クライアント</li>
+      </ul>
+    </div>
+    <div class="product-card">
+      <div class="card-name">Insight AI Briefcase</div>
+      <div class="card-sub">ドキュメント管理</div>
+      <ul class="card-features">
+        <li>ドラッグ&ドロップRAG</li>
+        <li>AI品質チェック</li>
+        <li>参照資料リンク</li>
+        <li>ドキュメント差分比較</li>
+        <li>全履歴管理</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foundation-box">
+    <div class="foundation-title">共通基盤 — insight-common</div>
+    <div class="foundation-grid">
+      <div class="foundation-item"><div class="fi-label">Claude AI統合</div><div class="fi-desc">Haiku / Sonnet / Opus</div></div>
+      <div class="foundation-item"><div class="fi-label">ローカル処理</div><div class="fi-desc">データは外部に出ない</div></div>
+      <div class="foundation-item"><div class="fi-label">日英中 3ヶ国語</div><div class="fi-desc">UI・AIともに多言語</div></div>
+      <div class="foundation-item"><div class="fi-label">Office2019テーマ</div><div class="fi-desc">統一UX・学習コスト低</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">専門ツールとしての優位性</div>
+  <div class="vs-box">
+    <div class="vs-left">
+      <div class="vs-title">汎用AIツールとの比較</div>
+      <table class="vs-table">
+        <tr class="vs-header"><td></td><td>汎用AI（Copilot等）</td><td>Insight Business Suite</td></tr>
+        <tr><td>設計思想</td><td>万人向け汎用</td><td style="color:var(--gold);font-weight:700">業務改善特化</td></tr>
+        <tr><td>Excelバージョン管理</td><td>なし</td><td style="color:var(--gold);font-weight:700">標準搭載</td></tr>
+        <tr><td>AI Tool Use（セル操作）</td><td>限定的</td><td style="color:var(--gold);font-weight:700">6ツール完全対応</td></tr>
+        <tr><td>RPA</td><td>別契約</td><td style="color:var(--gold);font-weight:700">標準搭載</td></tr>
+        <tr><td>提案書特化レビュー</td><td>汎用的</td><td style="color:var(--gold);font-weight:700">3段階AIコンシェルジュ</td></tr>
+        <tr><td>データの所在</td><td>クラウド</td><td style="color:var(--gold);font-weight:700">ローカル</td></tr>
+      </table>
+    </div>
+    <div class="vs-right">
+      <div class="savings-label">年間削減効果</div>
+      <div class="savings-amount">¥18,000,000</div>
+      <div class="savings-note">コンサルタント工数換算<br>（¥30,000/h x 600時間）</div>
+    </div>
+  </div>
+
+  <div class="section-title">導入効果</div>
+  <div class="usecase-grid">
+    <div class="usecase-card">
+      <div class="uc-industry">コンサルティング</div>
+      <div class="uc-desc">提案書150枚のAIレビュー + Excel分析の自動化 + ドキュメント品質統一</div>
+      <div class="uc-result">業務調査フェーズ 40〜60%削減</div>
+    </div>
+    <div class="usecase-card">
+      <div class="uc-industry">経営企画 / DX推進</div>
+      <div class="uc-desc">中期計画の分析基盤を内製化。外部コンサル依存を低減</div>
+      <div class="uc-result">外部委託費 年間数千万円削減</div>
+    </div>
+    <div class="usecase-card">
+      <div class="uc-industry">監査法人 / 金融</div>
+      <div class="uc-desc">機密データのローカル処理。監査証跡の自動記録</div>
+      <div class="uc-result">コンプライアンス要件を充足</div>
+    </div>
+  </div>
+
+  <div class="pricing-strip">
+    <div class="plan"><div class="plan-name">Trial</div><div class="price">14日間無料</div><div class="price-note">全機能・全3製品</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan plan-highlight"><div class="plan-name">Professional</div><div class="price">¥98,000/年</div><div class="price-note">3製品統合・AI込み</div></div>
+    <div class="plan-divider"></div>
+    <div class="plan"><div class="plan-name">Enterprise</div><div class="price">¥148,000/年/PC</div><div class="price-note">Opus無制限・組織管理・監査ログ</div></div>
+  </div>
+
+  <div class="origin-box">
+    <p>「汎用AIツールは、コンサルティングの『本当の現場』を知らない。だから、知っている人間が作った。30年分の『こうあるべき』を、すべて詰め込んだ。」</p>
+    <div class="author">— HARMONIC insight 開発者 / IT・業務コンサルタント 30年</div>
+  </div>
+
+  <div class="target-strip">
+    <div class="target-tag">コンサルティングファーム</div>
+    <div class="target-tag">監査法人</div>
+    <div class="target-tag">シンクタンク</div>
+    <div class="target-tag">上場企業 経営企画</div>
+    <div class="target-tag">DX推進部門</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">HARMONIC insight 合同会社<br>insight-office.com</div>
+  <div class="footer-cta">デモを依頼する<small>製品の詳細をご案内いたします</small></div>
+  <div class="footer-right">お問い合わせ<br>contact@insight-office.com</div>
+</div>
+
+</body>
+</html>

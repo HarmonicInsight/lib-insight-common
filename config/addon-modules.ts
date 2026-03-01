@@ -1245,7 +1245,7 @@ export const ADDON_MODULES: Record<string, AddonModuleDefinition> = {
     distribution: 'bundled',
     panelPosition: 'right',
     requiredFeatureKey: 'data_collection',
-    allowedPlans: ['TRIAL', 'ENT'],
+    allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
     dependencies: [],
     ioContracts: [
       // -----------------------------------------------------------------

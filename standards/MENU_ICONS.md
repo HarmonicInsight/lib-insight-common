@@ -224,7 +224,7 @@ WPF では Lucide アイコンの SVG パスデータを XAML リソースとし
 
 > **重要**: WPF で独自のアイコンフォント（Segoe MDL2 Assets 等）を使用しないこと。Lucide の SVG パスデータに統一する。
 
-### Python CustomTkinter（INMV, INIG）
+### Python CustomTkinter（INIG）
 
 ```python
 import json

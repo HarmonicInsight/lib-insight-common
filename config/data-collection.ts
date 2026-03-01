@@ -1186,17 +1186,17 @@ export const DATA_COLLECTION_LIMITS: Record<PlanCode, {
     dataRetentionDays: 30,
     historicalDataAccess: true,
   },
-  STD: {
-    enabled: false,
-    maxTemplates: 0,
-    aiTransferPerMonth: 0,
-    aiValidatePerMonth: 0,
-    dataRetentionDays: 0,
-    historicalDataAccess: false,
-  },
-  PRO: {
+  FREE: {
     enabled: true,
-    maxTemplates: 50,
+    maxTemplates: -1,
+    aiTransferPerMonth: -1,
+    aiValidatePerMonth: -1,
+    dataRetentionDays: 30,
+    historicalDataAccess: true,
+  },
+  BIZ: {
+    enabled: true,
+    maxTemplates: -1,
     aiTransferPerMonth: -1,
     aiValidatePerMonth: -1,
     dataRetentionDays: 365,

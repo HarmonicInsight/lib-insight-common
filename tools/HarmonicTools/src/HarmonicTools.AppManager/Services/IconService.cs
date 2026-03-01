@@ -311,7 +311,7 @@ public class IconService
             // Tier 2
             new()
             {
-                ProductCode = "INMV", ProductName = "InsightCast",
+                ProductCode = "INMV", ProductName = "Insight Training Studio",
                 MasterSvg = @"brand\icons\svg\icon-insight-cast.svg",
                 MasterPng = @"brand\icons\png\icon-insight-cast.png",
                 Motif = "映写機 + フィルム + ギア",

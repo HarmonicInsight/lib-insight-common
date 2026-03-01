@@ -19,7 +19,7 @@ brand/icons/
 │   ├── icon-insight-sheet.png        # IOSH - Insight Performance Management
 │   ├── icon-insight-doc.png          # IOSD - Insight AI Briefcase
 │   ├── icon-insight-py.png           # INPY - InsightPy
-│   ├── icon-insight-cast.png        # INMV - InsightCast
+│   ├── icon-insight-cast.png        # INMV - Insight Training Studio
 │   ├── icon-insight-imagegen.png     # INIG - InsightImageGen
 │   ├── icon-insight-bot.png          # INBT - InsightBot
 │   ├── icon-insight-nca.png          # INCA - InsightNoCodeAnalyzer
@@ -56,7 +56,7 @@ brand/icons/
 
 | ファイル | コード | 製品名 | プラットフォーム | モチーフ |
 |---------|:------:|--------|:---------------:|---------|
-| `icon-insight-cast.png` | INMV | InsightCast | Python/PyInstaller | 映写機 + フィルムストリップ + ギア |
+| `icon-insight-cast.png` | INMV | Insight Training Studio | C# WPF | 映写機 + フィルムストリップ + ギア |
 | `icon-insight-imagegen.png` | INIG | InsightImageGen | Python/PyInstaller | モニター + アパーチャ + 画像 + ギア |
 
 ### Tier 3: Insight Business Suite
@@ -90,8 +90,8 @@ brand/icons/
 
 | プラットフォーム | 生成形式 | 対象アプリ |
 |----------------|---------|-----------|
-| **C# WPF** | `.ico` (16-256px) + 個別 PNG | INSS, IOSH, IOSD, ISOF, LAUNCHER |
-| **Python/PyInstaller** | `.ico` (16-256px) + 個別 PNG | INPY, INMV, INIG |
+| **C# WPF** | `.ico` (16-256px) + 個別 PNG | INSS, IOSH, IOSD, ISOF, INMV, LAUNCHER |
+| **Python/PyInstaller** | `.ico` (16-256px) + 個別 PNG | INPY, INIG |
 | **Tauri + React** | `icon.ico` + `icon.png` + sized PNGs + Store logos | INCA, IVIN |
 | **Windows Service** | `.ico` (16-256px) + 個別 PNG | INBT |
 | **Expo (iOS/Android)** | `icon.png` (1024x1024) + Android mipmap + splash | QR, VOICE_TASK_CALENDAR, VOICE_MEMO |

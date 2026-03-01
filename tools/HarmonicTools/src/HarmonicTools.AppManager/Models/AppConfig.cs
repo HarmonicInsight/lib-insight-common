@@ -272,7 +272,7 @@ public class AppConfig
             }
         }
 
-        // v16: INMV (InsightMovie → InsightCast) のリポジトリリネーム
+        // v16: INMV (InsightMovie → Insight Training Studio) のリポジトリリネーム
         if (old.ConfigVersion < 16)
         {
             foreach (var app in migratedApps)
@@ -369,7 +369,7 @@ public class AppConfig
                 // ══════════════════════════════════════════════════════
                 new()
                 {
-                    Name = "InsightCast",
+                    Name = "Insight Training Studio",
                     ProductCode = "INMV",
                     BasePath = Path.Combine(DefaultDevRoot, "win-app-insight-cast"),
                     SolutionPath = "InsightCast.sln",

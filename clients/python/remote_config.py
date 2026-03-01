@@ -42,7 +42,6 @@ HARMONIC insight — リモートコンフィグ クライアント (Python / Cu
 - keyring (セキュアストレージ — 任意)
 
 【対象製品】
-- INMV (InsightCast) — Python + CustomTkinter + PyInstaller
 - INIG (InsightImageGen) — Python + CustomTkinter + PyInstaller
 ============================================================================
 """

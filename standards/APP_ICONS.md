@@ -63,7 +63,7 @@
 | **IOSH** | Insight Performance Management | C# WPF | `Resources/InsightOfficeSheet.ico` | `.csproj` の `<ApplicationIcon>` |
 | **IOSD** | Insight AI Briefcase | C# WPF | `Resources/InsightOfficeDoc.ico` | `.csproj` の `<ApplicationIcon>` |
 | **INPY** | InsightPy | Python/PyInstaller | `resources/InsightPy.ico` | PyInstaller `--icon` |
-| **INMV** | InsightCast | Python/PyInstaller | `resources/InsightCast.ico` | PyInstaller `--icon` |
+| **INMV** | Insight Training Studio | C# WPF | `Resources/InsightCast.ico` | `.csproj` の `<ApplicationIcon>` |
 | **INIG** | InsightImageGen | Python/PyInstaller | `resources/InsightImageGen.ico` | PyInstaller `--icon` |
 | **INBT** | InsightBot | Windows Service | `Resources/InsightBot.ico` | トレイアプリの `Icon` |
 | **INCA** | InsightNoCodeAnalyzer | Tauri + React | `src-tauri/icons/` | `tauri.conf.json` |
@@ -80,7 +80,7 @@
 
 ## 3. プラットフォーム別ビルド設定
 
-### WPF (C# / Windows) — INSS, IOSH, IOSD, ISOF, LAUNCHER
+### WPF (C# / Windows) — INSS, IOSH, IOSD, ISOF, INMV, LAUNCHER
 
 ```bash
 # アイコン生成
@@ -101,7 +101,7 @@ python insight-common/scripts/generate-app-icon.py --product IOSH --output src/I
 - `InsightOfficeSheet.ico` (マルチ解像度: 16/24/32/48/64/128/256px)
 - `InsightOfficeSheet_16.png` 〜 `InsightOfficeSheet_256.png` (個別 PNG)
 
-### Python / PyInstaller — INPY, INMV, INIG
+### Python / PyInstaller — INPY, INIG
 
 ```bash
 # アイコン生成
@@ -261,7 +261,7 @@ export const metadata = {
 | IOSH | Insight Performance Management | スプレッドシートグリッド | ヘッダー行 + 行のグリッド |
 | IOSD | Insight AI Briefcase | ドキュメント + 折り返し | テキスト行 + 右上の折り返し |
 | INPY | InsightPy | Python ロゴ風 | ヘビ or Py文字 |
-| INMV | InsightCast | 再生ボタン | フィルムストリップ + 再生 |
+| INMV | Insight Training Studio | 再生ボタン | フィルムストリップ + 再生 |
 | INIG | InsightImageGen | 画像生成 | ブラシ + 画像フレーム |
 | INBT | InsightBot | ロボット | ロボットの顔 |
 | INCA | InsightNoCodeAnalyzer | 解析グラフ | フローチャート + 虫眼鏡 |

@@ -42,7 +42,7 @@ jobs:
           # ── Tier 2: AI活用チE�Eル ──
           - repo: win-app-insight-cast
             product: INMV
-            name: InsightCast
+            name: Insight Training Studio
           - repo: win-app-insight-image-gen
             product: INIG
             name: InsightImageGen

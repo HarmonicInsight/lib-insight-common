@@ -12,7 +12,7 @@ public class LicenseDialogOptions
     /// <summary>陬ｽ蜩√さ繝ｼ繝会ｼ井ｾ・ "INMV"・・/summary>
     public required string ProductCode { get; set; }
 
-    /// <summary>陬ｽ蜩∝錐・郁｡ｨ遉ｺ逕ｨ縲∽ｾ・ "InsightCast"・・/summary>
+    /// <summary>陬ｽ蜩∝錐・郁｡ｨ遉ｺ逕ｨ縲∽ｾ・ "Insight Training Studio"・・/summary>
     public required string ProductName { get; set; }
 
     /// <summary>繝・・繝槭Δ繝ｼ繝・/summary>

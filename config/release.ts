@@ -300,8 +300,8 @@ export const RELEASE_CONFIGS: Record<ReleaseTargetCode, ReleaseConfig> = {
 
   INMV: {
     code: 'INMV',
-    name: 'InsightCast',
-    nameJa: 'InsightCast',
+    name: 'Insight Training Studio',
+    nameJa: 'Insight Training Studio',
     platform: 'python',
     storeDistribution: 'direct',
     versioningScheme: 'semver',

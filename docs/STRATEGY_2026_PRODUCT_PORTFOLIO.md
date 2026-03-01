@@ -83,7 +83,7 @@ FPT Consulting Japan のマネージングダイレクター（以下MD）とし
 │   │  役割: ソリューション提供・プロダクト収益                    │   │
 │   │  ・InsightOffice Suite で Office コスト削減                 │   │
 │   │  ・InterviewInsight で業務調査を自動化                      │   │
-│   │  ・InsightCast で社内教育コンテンツを量産                    │   │
+│   │  ・Insight Training Studio で社内教育コンテンツを量産          │   │
 │   │  ・ライセンス収益 + カスタマイズ収益                         │   │
 │   └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
@@ -151,7 +151,7 @@ FPT Consulting Japan のマネージングダイレクター（以下MD）とし
   → 初年度は導入支援込みのバンドル価格
 ```
 
-**InsightCast（INMV）の攻め方:**
+**Insight Training Studio（INMV）の攻め方:**
 
 ```
 ターゲット: 人事部門 / 教育研修部門 / マーケティング部門
@@ -167,7 +167,7 @@ FPT Consulting Japan のマネージングダイレクター（以下MD）とし
 
 差別化:
   ・Canva/Lumen5 → 英語圏向け、日本語TTS品質が低い
-  ・InsightCast → VOICEVOX統合で日本語TTS品質が圧倒的
+  ・Insight Training Studio → VOICEVOX統合で日本語TTS品質が圧倒的
   ・バッチ処理で100本の研修動画を一括生成可能
 ```
 
@@ -299,7 +299,7 @@ Step 3: コンサルファーム・SI企業への外販（2027-）
 
 これは「カテゴリークリエイター」になれる製品。
 
-### 4.3 InsightCast（INMV）
+### 4.3 Insight Training Studio（INMV）
 
 **ポジショニング**: "PowerPoint → 研修動画を全自動変換 — VOICEVOX日本語AI音声で外注費90%削減"
 
@@ -363,7 +363,7 @@ FPT案件受注
 課題発見 ──→ 「Office費用が高い」「変更管理ができない」
     │         「研修動画が足りない」
     ▼
-ツール提案 ──→ InsightOffice / InsightCast をデモ
+ツール提案 ──→ InsightOffice / Insight Training Studio をデモ
     │
     ▼
 導入・ライセンス契約（HARMONIC insight として）
@@ -425,7 +425,7 @@ HARMONIC insight Product Portfolio
 │  └── InsightOffice Doc   (IOSD) — ドキュメント      │
 └────────────────────────────────────────────────────┘
 
-┌─ InsightCast (INMV) ──────────────────────────────┐
+┌─ Insight Training Studio (INMV) ──────────────────┐
 │  "AI動画クリエイター"                               │
 │  PowerPoint → 研修動画を全自動変換                   │
 └────────────────────────────────────────────────────┘
@@ -456,7 +456,7 @@ HARMONIC insight Product Portfolio
 Layer 1: ライセンス収益（ストック）
   ・InsightOffice Suite: ¥xxx/user/月 × ユーザー数
   ・InterviewInsight: ¥xxx/組織/月
-  ・InsightCast: ¥xxx/user/月
+  ・Insight Training Studio: ¥xxx/user/月
   → 月次課金で安定収益を構築
 
 Layer 2: コンサル・導入支援（フロー）

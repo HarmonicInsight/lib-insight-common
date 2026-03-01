@@ -91,7 +91,7 @@ win-tool-...
 | 5 | `app-harmonic-sheet` | `win-app-insight-sheet-senior` | C# | シニア向けSheet | |
 | 6 | `app-nocode-analyzer-C` | `win-app-nocode-analyzer` | C# | InsightNoCodeAnalyzer (INCA) | |
 | 7 | `app-insight-image-gen-C` | `win-app-insight-image-gen` | C# | InsightImageGen (INIG) | |
-| 8 | `app-insight-cast-gen-win-C` | `win-app-insight-cast` | C# | InsightCast (INMV) | |
+| 8 | `app-insight-cast-gen-win-C` | `win-app-insight-cast` | C# | Insight Training Studio (INMV) | |
 | 9 | `app-insight-py-win` | `win-app-insight-py` | Python | InsightPy (INPY) STD | |
 | 10 | `app-insight-py-pro-win` | `win-app-insight-py-pro` | Python | InsightPy (INPY) PRO | |
 | 11 | `Insight-launcher` | `win-app-insight-launcher` | C# | アプリランチャー | |
@@ -173,7 +173,7 @@ win-tool-...
 | 1 | `app-intake-checker-ios` | `ios-app-intake-checker` | Swift | 薬・サプリ管理 |
 | 2 | `app-incline-insight-ios` | `ios-app-incline-insight` | Swift | |
 | 3 | `app-angle-insight-ios` | `ios-app-angle-insight` | Swift | |
-| 4 | `app-insight-cast-ios` | `ios-app-insight-cast` | Swift | InsightCast iOS版 |
+| 4 | `app-insight-cast-ios` | `ios-app-insight-cast` | Swift | Insight Training Studio iOS版 |
 
 ### mobile-（クロスプラットフォームモバイル）3件
 
@@ -246,7 +246,7 @@ win-tool-...
 | **INCA** | InsightNoCodeAnalyzer | `win-app-nocode-analyzer` | `web-app-nocode-analyzer`, `win-app-forguncy` |
 | **INBT** | InsightBot | `win-app-insight-bot` | `cross-app-insight-bot-orchestrator` |
 | **IVIN** | InterviewInsight | `web-app-auto-interview` | `web-app-live2d-interview`, `web-app-live2d-talker` |
-| **INMV** | InsightCast | `win-app-insight-cast` | `ios-app-insight-cast` |
+| **INMV** | Insight Training Studio | `win-app-insight-cast` | `ios-app-insight-cast` |
 | **INIG** | InsightImageGen | `win-app-insight-image-gen` | |
 
 ---

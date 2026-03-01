@@ -66,7 +66,7 @@ Border:           #E7E2DA (Warm Gray)
 | IOSH | Insight Performance Management | STD: 個人, PRO: 法人 |
 | IOSD | Insight AI Briefcase | |
 | INPY | InsightPy | |
-| INMV | InsightCast | |
+| INMV | Insight Training Studio | |
 | INIG | InsightImageGen | |
 | INBT | InsightBot | |
 | INCA | InsightNoCodeAnalyzer | |

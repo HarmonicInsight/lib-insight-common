@@ -21,7 +21,7 @@ insight-common の `brand/icons/generated/` をソースオブトゥルースと
 | PINBOARD | InsightPinBoard | expo-app-insight-pinboard | Expo |
 | VOICE_MEMO | InsightVoiceMemo | expo-app-insight-voice-memo | Expo |
 | QR | InsightQR | web-app-insight-qr | Web |
-| INMV | InsightCast | app-insight-cast | Python |
+| INMV | Insight Training Studio | app-insight-cast | WPF |
 | INIG | InsightImageGen | app-insight-image-gen | Python |
 | LAUNCHER | InsightLauncher | android-app-insight-launcher | Android Native |
 

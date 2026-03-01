@@ -67,7 +67,7 @@ insight-common/
 | INBT | **InsightBot** | AIエディタ搭載 業務最適化RPA | C# WPF | 開発中 |
 | INCA | **InsightNoCodeAnalyzer** | RPA・ローコード移行自動化 | Tauri | 開発中 |
 | IVIN | **InterviewInsight** | 自動ヒアリング・業務調査支援 | Tauri | 開発中 |
-| INMV | **InsightCast** | 画像・テキストから動画自動作成 | Python | 開発中 |
+| INMV | **Insight Training Studio** | 画像・テキストから動画自動作成 | C# WPF | 開発中 |
 | INIG | **InsightImageGen** | 業務資料向けAI画像大量生成 | Python | 開発中 |
 
 ---
@@ -133,7 +133,7 @@ AIが各ローコードプラットフォームの仕組みを解析、ロジッ
 
 ### Tier 2: AI活用ツール
 
-#### INMV — InsightCast
+#### INMV — Insight Training Studio
 
 > 画像とテキストから動画を自動作成
 
@@ -148,7 +148,7 @@ AIが各ローコードプラットフォームの仕組みを解析、ロジッ
 | PPTX取込 | PowerPointファイルからの素材取込（PRO+） |
 | マルチフォーマット出力 | 複数の動画形式で書き出し |
 
-**リポジトリ**: `win-app-insight-cast` / **技術**: Python (CustomTkinter) / **カラーテーマ**: Ivory & Gold
+**リポジトリ**: `win-app-insight-cast` / **技術**: C# WPF (.NET 8.0) / **カラーテーマ**: Ivory & Gold
 
 ---
 

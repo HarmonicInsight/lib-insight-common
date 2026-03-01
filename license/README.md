@@ -23,7 +23,7 @@ IVIN-BIZ-2701-I9J0-K1L2-Z1A3     # InterviewInsight Business
 | `IOSH` | Insight Performance Management | AIアシスタント搭載 スプレッドシート支援 |
 | `IOSD` | Insight AI Briefcase | AIアシスタント搭載 ドキュメント支援 |
 | `INPY` | InsightPy | AIエディタ搭載 Python開発支援 |
-| `INMV` | InsightCast | 動画作成 |
+| `INMV` | Insight Training Studio | 動画作成 |
 | `INIG` | InsightImageGen | AI画像・音声生成 |
 
 ### 【B】コンサルティング連動型（Corporate）

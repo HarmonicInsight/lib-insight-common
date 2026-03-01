@@ -88,7 +88,7 @@
     },
     {
       "code": "INMV",
-      "name": "InsightCast",
+      "name": "Insight Training Studio",
       "masterIcon": "brand/icons/png/icon-insight-cast.png",
       "category": "ai_tools",
       "displayOrder": 210,

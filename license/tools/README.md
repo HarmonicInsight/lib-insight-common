@@ -91,7 +91,7 @@ python generate-license.py -p INSS --plan BIZ -e user@example.com --expires 2027
 | `IOSH` | Insight Performance Management |
 | `IOSD` | Insight AI Briefcase |
 | `INPY` | InsightPy |
-| `INMV` | InsightCast |
+| `INMV` | Insight Training Studio |
 | `INBT` | InsightBot |
 | `INCA` | InsightNoCodeAnalyzer |
 | `INIG` | InsightImageGen |

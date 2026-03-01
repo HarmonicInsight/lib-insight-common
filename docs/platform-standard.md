@@ -162,7 +162,7 @@ Claude Codeで直接構築することで、柔軟性とコスト削減を両立
 | Insight Performance Management (IOSH) | C# + WPF | C# + WPF 維持 | Excel完全互換が必要 |
 | Insight AI Briefcase (IOSD) | C# + WPF | C# + WPF 維持 | Word完全互換が必要 |
 | InsightPy (INPY) | Python + Tkinter | Python維持 | Python実行環境が本質 |
-| InsightCast (INMV) | Python + Tkinter | Tauri or 維持 | 軽量配布 or 現状維持 |
+| Insight Training Studio (INMV) | C# + WPF | C# + WPF 維持 | 動画生成・Syncfusion連携 |
 | InterviewInsight (IVIN) | Python + Tkinter | C# + WPF | 音声・動画解析連携 |
 
 ### Flask の位置づけ

@@ -27,7 +27,7 @@
 
 ### Tier 2: AI活用ツール
 
-4. **InsightCast (INMV)** - 画像・テキストから動画作成
+4. **Insight Training Studio (INMV)** - 画像・テキストから動画作成
 5. **InsightImageGen (INIG)** - 業務資料向けAI画像の大量自動生成
 
 ### Tier 3: Insight Business Suite

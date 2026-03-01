@@ -1205,13 +1205,14 @@ export const PRODUCT_REMOTE_CONFIG_DEFAULTS: Record<string, {
     autoUpdateFramework: 'tauri-plugin-updater',
     requiredApiKeys: ['claude'],
   },
-  // Python アプリ（Claude のみ）
+  // Insight Training Studio（C# WPF — Claude のみ）
   INMV: {
     pollingIntervalMs: 4 * 60 * 60 * 1000,
     initialDelayMs: 5_000,
-    autoUpdateFramework: 'custom',
+    autoUpdateFramework: 'velopack',
     requiredApiKeys: ['claude'],
   },
+  // Python アプリ（Claude のみ）
   INIG: {
     pollingIntervalMs: 4 * 60 * 60 * 1000,
     initialDelayMs: 5_000,
