@@ -154,6 +154,8 @@ public sealed class InsightScaleManager : INotifyPropertyChanged
     private static string SettingsPath =>
         Path.Combine(SettingsDir, "ui-scale.json");
 
+    private static readonly JsonSerializerOptions CachedJsonOptions = new() { WriteIndented = true };
+
     private void Save()
     {
         try
@@ -164,7 +166,7 @@ public sealed class InsightScaleManager : INotifyPropertyChanged
                 ScaleFactor = _scaleFactor,
                 LastModified = DateTime.UtcNow.ToString("o"),
             };
-            var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(data, CachedJsonOptions);
             File.WriteAllText(SettingsPath, json);
         }
         catch

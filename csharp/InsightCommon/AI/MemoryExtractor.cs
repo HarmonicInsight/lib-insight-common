@@ -5,6 +5,9 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+// CA1305: StringBuilder補間は単純なテキスト連結（数値/日付フォーマットなし）のためカルチャ非依存
+#pragma warning disable CA1305
+
 namespace InsightCommon.AI;
 
 /// <summary>
