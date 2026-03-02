@@ -521,14 +521,7 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
       descriptionJa: 'スライドの印刷（配布資料・ノート付き・複数スライドページ対応）',
     },
-    {
-      key: 'pdf_export',
-      name: 'PDF Export',
-      nameJa: 'PDF出力',
-      type: 'boolean',
-      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
-      descriptionJa: 'プレゼンテーションをPDF形式でエクスポート',
-    },
+    // NOTE: PDF出力機能は INSS では不要（削除済み）
     {
       key: 'undo_redo',
       name: 'Undo / Redo',
@@ -754,6 +747,14 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
     // 独自機能（Insight Business Suite 固有）
     // ------------------------------------------------------------------
     {
+      key: 'excel_import',
+      name: 'Excel Import',
+      nameJa: 'Excelインポート',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      descriptionJa: 'Excelデータのスライドへのインポート（FREE: ボタン非アクティブ）',
+    },
+    {
       key: 'extract',
       name: 'Content Extraction',
       nameJa: 'コンテンツ抽出',
@@ -792,7 +793,15 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       nameJa: '2ファイル比較',
       type: 'boolean',
       allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      descriptionJa: '2つのPowerPointファイルの差分比較',
+      descriptionJa: '2つのPowerPointファイルの差分比較（FREE: 比較結果の閲覧のみ）',
+    },
+    {
+      key: 'compare_apply_changes',
+      name: 'Apply Selected Changes',
+      nameJa: '選択した変更を適用',
+      type: 'boolean',
+      allowedPlans: ['TRIAL', 'BIZ', 'ENT'],
+      descriptionJa: 'ファイル比較結果から選択した変更を適用（FREE: ボタン非アクティブ）',
     },
     {
       key: 'auto_backup',
@@ -811,8 +820,8 @@ export const PRODUCT_FEATURES: Record<ProductCode, FeatureDefinition[]> = {
       nameJa: 'AIアシスタント',
       type: 'limit',
       allowedPlans: ['FREE', 'TRIAL', 'BIZ', 'ENT'],
-      limitValues: { FREE: -1, TRIAL: -1, BIZ: -1, ENT: -1},
-      descriptionJa: 'AIによるスライドテキストの校正・改善提案（BYOK — 回数制限なし・クライアント自社APIキー使用）',
+      limitValues: { FREE: 0, TRIAL: -1, BIZ: -1, ENT: -1},
+      descriptionJa: 'AIによるスライドテキストの校正・改善提案（BYOK — クライアント自社APIキー使用）。FREE: プロンプトエディタは操作可能、実行ボタンは非アクティブ',
     },
     {
       key: 'ai_editor',
